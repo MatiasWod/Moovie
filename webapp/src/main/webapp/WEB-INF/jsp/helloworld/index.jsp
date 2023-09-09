@@ -25,43 +25,61 @@
 
 
 <div class="d-flex container flex-column justify-content-center height-full">
-    <nav class="navbar navbar-expand-lg navbar-light container-gray mb-4">
-        <div class="container">
-            <a class="navbar-brand">
-                <img src="${pageContext.request.contextPath}/images/logo.png" alt="logo" height="30">
-                Moovie
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="container d-flex flex-row-reverse collapse navbar-collapse" id="navbarSupportedContent">
-                <form class="d-flex me-2" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-                <ul class="navbar-nav">
-                    <li class="nav-item active margin-horizontal">
-                        <a>Discover</a>
-                    </li>
-                    <li class="nav-item active margin-horizontal">
-                        <a>Discover</a>
-                    </li>
-                    <li class="nav-item active margin-horizontal">
-                        <a>Discover</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <c:import url="navBar.jsp"/>
     <%--Main Body aca CONTENT--%>
     <div class="d-flex container container-gray-transp justify-content-around flex-column align-items-center">
         <p class="title-lg">Welcome to Moovie!</p>
         <div class="d-flex align-items-around flex-row mb-2 justify-content-center">
-            <img class="poster" src="https://image.tmdb.org/t/p/original/xnFFz3etm1vftF0ns8RMHA8XdqT.jpg">
-            <img class="poster" src="https://image.tmdb.org/t/p/original/ywBt4WKADdMVgxTR1rS2uFwMYTH.jpg">
-            <img class="poster" src="https://image.tmdb.org/t/p/original/gGC7zSDgG0FY0MbM1pjfhTCWQBI.jpg">
-            <img class="poster" src="https://image.tmdb.org/t/p/original/ywBt4WKADdMVgxTR1rS2uFwMYTH.jpg">
-            <img class="poster" src="https://image.tmdb.org/t/p/original/gGC7zSDgG0FY0MbM1pjfhTCWQBI.jpg">
+            <div class="poster card text-bg-dark">
+                <div class="card-img-container"> <!-- Add a container for the image -->
+                    <img src="https://image.tmdb.org/t/p/original/xnFFz3etm1vftF0ns8RMHA8XdqT.jpg" class="card-img" alt="...">
+                    <div class="card-img-overlay">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        <p class="card-text"><small>Last updated 3 mins ago</small></p>
+                    </div>
+                </div>
+            </div>
+            <div class="poster card text-bg-dark">
+                <div class="card-img-container"> <!-- Add a container for the image -->
+                    <img src="https://image.tmdb.org/t/p/original/ywBt4WKADdMVgxTR1rS2uFwMYTH.jpg" class="card-img" alt="...">
+                    <div class="card-img-overlay">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        <p class="card-text"><small>Last updated 3 mins ago</small></p>
+                    </div>
+                </div>
+            </div>
+            <div class="poster card text-bg-dark">
+                <div class="card-img-container"> <!-- Add a container for the image -->
+                    <img src="https://image.tmdb.org/t/p/original/gGC7zSDgG0FY0MbM1pjfhTCWQBI.jpg" class="card-img" alt="...">
+                    <div class="card-img-overlay">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        <p class="card-text"><small>Last updated 3 mins ago</small></p>
+                    </div>
+                </div>
+            </div>
+            <div class="poster card text-bg-dark">
+                <div class="card-img-container"> <!-- Add a container for the image -->
+                    <img src="https://image.tmdb.org/t/p/original/ywBt4WKADdMVgxTR1rS2uFwMYTH.jpg" class="card-img" alt="...">
+                    <div class="card-img-overlay">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        <p class="card-text"><small>Last updated 3 mins ago</small></p>
+                    </div>
+                </div>
+            </div>
+            <div class="poster card text-bg-dark">
+                <div class="card-img-container"> <!-- Add a container for the image -->
+                    <img src="https://image.tmdb.org/t/p/original/gGC7zSDgG0FY0MbM1pjfhTCWQBI.jpg" class="card-img" alt="...">
+                    <div class="card-img-overlay">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        <p class="card-text"><small>Last updated 3 mins ago</small></p>
+                    </div>
+                </div>
+            </div>
         </div>
         <div>
             <button class="btn btn-success button-fixed-width">Log In</button>
