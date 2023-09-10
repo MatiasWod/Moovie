@@ -49,6 +49,7 @@
 }
 .height-full{
     height: 100%;
+    width: 100%;
 }
 
 .card-img-container {
@@ -98,4 +99,27 @@
     background: linear-gradient(to left, transparent 80%, white);
     width: 100%;
     height: 100%;
+}
+
+.flex-grow-2{
+    flex-grow: 4;
+}
+
+.flex-grow-1{
+    flex-grow: 1;
+}
+
+.scrollableDiv {
+    overflow-y: auto;
+    height: 88vh;  /* Ajustar según necesidades */
+}
+
+.fullHeightDiv {
+    height: 88vh;
+}
+
+.filter-width{
+    width: 150px;
+    margin-right: 5px;
+    background-color: rgba(255, 255, 255, 0.8);
 }

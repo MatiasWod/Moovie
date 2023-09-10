@@ -7,7 +7,7 @@
     <link href="${pageContext.request.contextPath}/css/main.css?version=55" rel="stylesheet"/>
     <title>Moovie</title>
 </head>
-<body>
+<body class="bg-black">
 
 <div class="background carousel slide carousel-fade" data-bs-ride="carousel">
     <div class="carousel-inner">
