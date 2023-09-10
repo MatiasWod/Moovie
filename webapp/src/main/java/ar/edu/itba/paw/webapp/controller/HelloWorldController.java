@@ -29,6 +29,12 @@ public class HelloWorldController {
         return mav;
     }
 
+    @RequestMapping("/discover")
+    public ModelAndView discover() {
+        final ModelAndView mav = new ModelAndView("helloworld/discover");
+        return mav;
+    }
+
     @RequestMapping("/{id:\\d+}")
     public ModelAndView profile(@PathVariable("id") final long userId){
         final ModelAndView mav = new ModelAndView("helloworld/profile");
