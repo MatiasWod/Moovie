@@ -2,11 +2,6 @@
     font-weight: bold;
     font-size: xxx-large;
 }
-
-#grad{
-    background-color: blue;
-    background-image: linear-gradient(to bottom right, blue, darkolivegreen);
-}
 .margin-horizontal{
     margin-left: 2px;
     margin-right: 2px;
@@ -30,9 +25,13 @@
     width: 100%;
     height: 100%;
     background-size: cover;
-    filter: blur(10px);
     z-index: -1;
 }
+
+.image-blur {
+    filter: blur(10px);
+}
+
 .background{
     z-index: -1;
 }
@@ -56,7 +55,6 @@
     position: relative;
     overflow: hidden;
 }
-
 .card-img-overlay {
     position: absolute;
     top: 0;
@@ -67,8 +65,37 @@
     transition: opacity 0.3s ease;
     background-color: rgba(0, 0, 0, 0.5); /* Adjust the overlay color and opacity as needed */
 }
-
 .card-img-container:hover .card-img-overlay {
     opacity: 1;
 }
 
+.container-box {
+    position: relative;
+    height: 100%;
+}
+
+.fade-container {
+    top: 0;
+    position: absolute;
+    width: fit-content;
+    height: fit-content;
+}
+
+.fade-effect {
+    position: absolute;
+    background: linear-gradient(to bottom, transparent 70%, white 90%);
+    width: 100%;
+    height: 100%;
+}
+.fade-effect-right {
+    position: absolute;
+    background: linear-gradient(to right, transparent 80%, white);
+    width: 100%;
+    height: 100%;
+}
+.fade-effect-left {
+    position: absolute;
+    background: linear-gradient(to left, transparent 80%, white);
+    width: 100%;
+    height: 100%;
+}

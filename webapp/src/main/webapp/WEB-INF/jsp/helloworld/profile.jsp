@@ -6,9 +6,6 @@
 
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand">Moovie</a>
-</nav>
 <h2>Hello <c:out value="${userid}" escapeXml="true"/>!</h2>
 </body>
 </html>

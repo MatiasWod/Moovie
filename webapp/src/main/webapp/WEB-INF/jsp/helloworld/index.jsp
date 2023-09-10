@@ -12,13 +12,13 @@
 <div class="background carousel slide carousel-fade" data-bs-ride="carousel">
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <img src="https://a.ltrbxd.com/resized/sm/upload/az/63/do/1q/bottoms-1200-1200-675-675-crop-000000.jpg?v=2227c4e937" class="background-image" alt="...">
+            <img src="https://a.ltrbxd.com/resized/sm/upload/az/63/do/1q/bottoms-1200-1200-675-675-crop-000000.jpg?v=2227c4e937" class="background-image image-blur" alt="...">
         </div>
         <div class="carousel-item">
-            <img src="https://image.tmdb.org/t/p/original/35z8hWuzfFUZQaYog8E9LsXW3iI.jpg" class="background-image" alt="...">
+            <img src="https://image.tmdb.org/t/p/original/35z8hWuzfFUZQaYog8E9LsXW3iI.jpg" class="background-image image-blur" alt="...">
         </div>
         <div class="carousel-item">
-            <img src="https://image.tmdb.org/t/p/original/jZIYaISP3GBSrVOPfrp98AMa8Ng.jpg" class="background-image" alt="...">
+            <img src="https://image.tmdb.org/t/p/original/jZIYaISP3GBSrVOPfrp98AMa8Ng.jpg" class="background-image image-blur" alt="...">
         </div>
     </div>
 </div>
