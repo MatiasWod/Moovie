@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Cast.MovieActor;
-import ar.edu.itba.paw.models.Cast.TVActor;
-import ar.edu.itba.paw.models.Genre.MovieGenre;
-import ar.edu.itba.paw.models.Genre.TVGenre;
+import ar.edu.itba.paw.models.Genre.Genre;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,16 +13,10 @@ import java.util.Optional;
 @Repository
 public class GenreDaoJdbcImpl implements GenreDao{
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert tvGenrejdbcInsert;
-    private final SimpleJdbcInsert movieGenrejdbcInsert;
+    private final SimpleJdbcInsert genrejdbcInsert;
 
-    private static final RowMapper<MovieGenre> MOVIE_GENRE_ROW_MAPPER = (rs, rowNum) -> new MovieGenre(
-            rs.getInt("movieId"),
-            rs.getString("genre")
-    );
-
-    private static final RowMapper<TVGenre> TV_GENRE_ROW_MAPPER = (rs, rowNum) -> new TVGenre(
-            rs.getInt("tvId"),
+    private static final RowMapper<Genre> GENRE_ROW_MAPPER = (rs, rowNum) -> new Genre(
+            rs.getInt("mediaId"),
             rs.getString("genre")
     );
 
@@ -34,30 +25,18 @@ public class GenreDaoJdbcImpl implements GenreDao{
     @Autowired
     public GenreDaoJdbcImpl(final DataSource dataSource){
         jdbcTemplate = new JdbcTemplate(dataSource);
-        tvGenrejdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("tvGenre").usingGeneratedKeyColumns("tvId");
-        movieGenrejdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("movieGenre").usingGeneratedKeyColumns("movieId");
+        genrejdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("genres").usingGeneratedKeyColumns("mediaId");
         jdbcTemplate.execute(
-                "CREATE TABLE IF NOT EXISTS tvGenre(" +
-                        "tvId                    INTEGER NOT NULL," +
+                "CREATE TABLE IF NOT EXISTS genres(" +
+                        "mediaId                   INTEGER NOT NULL," +
                         "genre                   VARCHAR(100) NOT NULL," +
-                        "PRIMARY KEY(tvId))");
-
-        jdbcTemplate.execute(
-                "CREATE TABLE IF NOT EXISTS movieGenre(" +
-                        "movieId                    INTEGER NOT NULL," +
-                        "genre                      VARCHAR(100) NOT NULL," +
-                        "PRIMARY KEY(movieId))");
+                        "PRIMARY KEY(mediaId,genre)," +
+                        "FOREIGN KEY(mediaId)       REFERENCES media(mediaId) ON DELETE CASCADE)");
     }
 
     @Override
-    public Optional<MovieGenre> getGenreForMovie(int movieId) {
-        //revisar el findFirst, creo que siempre devuelve el primer género que encuentre que matchea con el movieId
-        return jdbcTemplate.query("SELECT * FROM movies WHERE movieId = ?",new Object[]{movieId},MOVIE_GENRE_ROW_MAPPER).stream().findFirst();
-    }
-
-    @Override
-    public Optional<TVGenre> getGenreForTvSerie(int tvId) {
+    public Optional<Genre> getGenreForMedia(int mediaId) {
         //revisar el findFirst, creo que siempre devuelve el primer género que encuentre que matchea con el tvId
-        return jdbcTemplate.query("SELECT * FROM tv WHERE tvId = ?",new Object[]{tvId},TV_GENRE_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT * FROM media WHERE mediaId = ?",new Object[]{mediaId},GENRE_ROW_MAPPER).stream().findFirst();
     }
 }

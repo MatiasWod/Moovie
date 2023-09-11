@@ -3,35 +3,26 @@ package ar.edu.itba.paw.models.Media;
 import java.util.Date;
 
 public class Movie extends Media{
-    private final int movieId;
-    private final String movieName;
     private final int runtime;
     private final int budget;
     private final int revenue;
+    private int directorId;
+    private final String director;
 
-    public Movie(int movieId,String movieName,Date releaseDate,int runtime, boolean adult, String overview, String backdropPath, String posterPath, String trailerLink,
-                 int tmdbRating, int totalRating, int voteCount, String status, String originalLanguage, int budget, int revenue) {
-        super(releaseDate, adult, overview, originalLanguage, backdropPath, posterPath, trailerLink, tmdbRating, totalRating, voteCount, status);
-        this.movieId = movieId;
-        this.movieName = movieName;
+    public Movie(int mediaId, boolean type, String name, String originalLanguage, boolean adult, Date releaseDate, String overview,
+                 String backdropPath, String posterPath, String trailerLink, float tmdbRating, int totalRating, int voteCount,
+                 String status, int runtime, int budget, int revenue, int directorId, String director) {
+        super(mediaId, type, name, originalLanguage, adult, releaseDate, overview, backdropPath, posterPath, trailerLink, tmdbRating, totalRating, voteCount, status);
         this.runtime = runtime;
         this.budget = budget;
         this.revenue = revenue;
+        this.directorId = directorId;
+        this.director = director;
     }
-
-    public int getMovieId() {
-        return movieId;
-    }
-
-    public String getMovieName() {
-        return movieName;
-    }
-
 
     public int getRuntime() {
         return runtime;
     }
-
 
     public int getBudget() {
         return budget;
@@ -41,4 +32,11 @@ public class Movie extends Media{
         return revenue;
     }
 
+    public int getDirectorId() {
+        return directorId;
+    }
+
+    public String getDirector() {
+        return director;
+    }
 }
