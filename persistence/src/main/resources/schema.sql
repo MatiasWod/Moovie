@@ -1,5 +1,5 @@
 --Movie
-CREATE TABLE movies IF NOT EXISTS
+CREATE TABLE IF NOT EXISTS movies
 (
     movieId                 INTEGER NOT NULL,
     movieName               VARCHAR(255) NOT NULL,
@@ -13,20 +13,20 @@ CREATE TABLE movies IF NOT EXISTS
     trailerLink             VARCHAR(255),
     budget                  INTEGER,
     revenue                 INTEGER,
-    voteRating              INTEGER NOT NULL,
+    totalRating             INTEGER NOT NULL,
     voteCount               INTEGER NOT NULL,
     status                  VARCHAR(20) NOT NULL,
     PRIMARY KEY(movieId)
 );
 
-CREATE TABLE movieGenres IF NOT EXISTS
+CREATE TABLE IF NOT EXISTS movieGenres
 (
     movieId                 INTEGER NOT NULL,
     genre                   VARCHAR(64) NOT NULL,
     FOREIGN KEY(movieId)    REFERENCES movies(movieId) ON DELETE CASCADE
 );
 
-CREATE TABLE movieCast IF NOT EXISTS
+CREATE TABLE IF NOT EXISTS movieCast
 (
     movieId                 INTEGER NOT NULL,
     actorName               VARCHAR(100) NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE movieCast IF NOT EXISTS
 
 
 --TV
-CREATE TABLE tv IF NOT EXISTS
+CREATE TABLE IF NOT EXISTS tv
 (
     tvId                    INTEGER NOT NULL,
     tvName                  VARCHAR(255) NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE tv IF NOT EXISTS
     backdropPath            VARCHAR(255),
     posterPath              VARCHAR(255),
     trailerLink             VARCHAR(255),
-    voteRating              INTEGER NOT NULL,
+    totalRating              INTEGER NOT NULL,
     voteCount               INTEGER NOT NULL,
     status                  VARCHAR(20) NOT NULL,
     numberOfEpisodes        INTEGER NOT NULL,
@@ -62,14 +62,14 @@ CREATE TABLE tv IF NOT EXISTS
     PRIMARY KEY(tvId)
     );
 
-CREATE TABLE tvGenres IF NOT EXISTS
+CREATE TABLE IF NOT EXISTS tvGenres
 (
     tvId                    INTEGER NOT NULL,
     genre                   VARCHAR(64) NOT NULL,
     FOREIGN KEY(tvId)       REFERENCES tv(tvId) ON DELETE CASCADE
     );
 
-CREATE TABLE tvCast IF NOT EXISTS
+CREATE TABLE IF NOT EXISTS tvCast
 (
     tvId                    INTEGER NOT NULL,
     actorName               VARCHAR(100) NOT NULL,
@@ -78,11 +78,11 @@ CREATE TABLE tvCast IF NOT EXISTS
     FOREIGN KEY(tvId)       REFERENCES tv(tvId) ON DELETE CASCADE
 );
 
-CREATE TABLE creators IF NOT EXISTS
+CREATE TABLE IF NOT EXISTS creators
 (
     tvId                    INTEGER NOT NULL,
     creatorName             VARCHAR(100) NOT NULL,
-    posterPath              VARCHAR(255),
+    profilePath              VARCHAR(255),
     FOREIGN KEY(tvId)       REFERENCES tv(tvId) ON DELETE CASCADE
 )
 
