@@ -1,10 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Cast.Actor;
 import ar.edu.itba.paw.models.Cast.MovieActor;
 import ar.edu.itba.paw.models.Cast.TVActor;
-import ar.edu.itba.paw.models.Movie.Movie;
-import ar.edu.itba.paw.services.ActorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -22,17 +19,19 @@ public class ActorDaoJdbcImpl implements ActorDao {
     private final SimpleJdbcInsert movieCastjdbcInsert;
 
     private static final RowMapper<MovieActor> MOVIE_ACTOR_ROW_MAPPER = (rs, rowNum) -> new MovieActor(
-            rs.getInt("movieId"),
+            rs.getInt("actorId"),
             rs.getString("actorName"),
             rs.getString("characterName"),
-            rs.getString("profilePath")
+            rs.getString("profilePath"),
+            rs.getInt("movieId")
     );
 
     private static final RowMapper<TVActor> TV_ACTOR_ROW_MAPPER = (rs, rowNum) -> new TVActor(
-            rs.getInt("tvId"),
+            rs.getInt("actorId"),
             rs.getString("actorName"),
             rs.getString("characterName"),
-            rs.getString("profilePath")
+            rs.getString("profilePath"),
+            rs.getInt("tvId")
     );
 
     private static final RowMapper<Integer> COUNT_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("count"));
@@ -44,19 +43,23 @@ public class ActorDaoJdbcImpl implements ActorDao {
         movieCastjdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("movieCast").usingGeneratedKeyColumns("movieId");
         jdbcTemplate.execute(
                 "CREATE TABLE IF NOT EXISTS tvCast(" +
-                        "tvId                    SERIAL PRIMARY KEY," +
+                        "tvId                    INTEGER NOT NULL," +
+                        "actorId                 INTEGER NOT NULL," +
                         "actorName               VARCHAR(100) NOT NULL," +
                         "characterName           VARCHAR(100)," +
                         "profilePath             VARCHAR(255)," +
+                        "PRIMARY KEY(tvId,actorId)," +
                         "FOREIGN KEY(tvId)       REFERENCES tv(tvId) ON DELETE CASCADE)");
 
         jdbcTemplate.execute(
                 "CREATE TABLE IF NOT EXISTS movieCast(" +
-                        "movieId                    SERIAL PRIMARY KEY," +
+                        "movieId                    INTEGER NOT NULL," +
+                        "actorId                    INTEGER NOT NULL," +
                         "actorName                  VARCHAR(100) NOT NULL," +
                         "characterName              VARCHAR(100)," +
                         "profilePath                VARCHAR(255)," +
-                        "FOREIGN KEY(tvId)          REFERENCES tv(tvId) ON DELETE CASCADE)");
+                        "PRIMARY KEY(movieId,actorId)," +
+                        "FOREIGN KEY(movieId)          REFERENCES movies(movieId) ON DELETE CASCADE)");
     }
 
     @Override

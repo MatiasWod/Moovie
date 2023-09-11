@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.TV.TVSerie;
+import ar.edu.itba.paw.models.Media.TVSerie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -22,12 +22,13 @@ public class TVSerieDaoJdbcImpl implements TVSerieDao{
             rs.getDate("release_date"),
             rs.getDate("lastAirDate"),
             rs.getDate("nextEpisodeToAir"),
-            rs.getString("originalLang"),
+            rs.getString("originalLanguage"),
             rs.getBoolean("adult"),
             rs.getString("overview"),
             rs.getString("backdropPath"),
             rs.getString("posterPath"),
             rs.getString("trailerLink"),
+            rs.getInt("tmdbRating"),
             rs.getInt("totalRating"),
             rs.getInt("voteCount"),
             rs.getString("status"),
@@ -43,7 +44,7 @@ public class TVSerieDaoJdbcImpl implements TVSerieDao{
         jdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("tv").usingGeneratedKeyColumns("tvId");
         jdbcTemplate.execute(
                 "CREATE TABLE IF NOT EXISTS tv(" +
-                        "tvId                           SERIAL PRIMARY KEY," +
+                        "tvId                           INTEGER NOT NULL," +
                         "tvName                         VARCHAR(255) NOT NULL," +
                         "releaseDate                    DATE NOT NULL," +
                         "lastAirDate                    DATE NOT NULL," +
@@ -55,11 +56,13 @@ public class TVSerieDaoJdbcImpl implements TVSerieDao{
                         "backdropPath                   VARCHAR(255)," +
                         "posterPath                     VARCHAR(255)," +
                         "trailerLink                    VARCHAR(255)," +
+                        "tmdbRating                     INTEGER NOT NULL," +
                         "totalRating                    INTEGER NOT NULL," +
                         "voteCount                      INTEGER NOT NULL," +
                         "status                         VARCHAR(20) NOT NULL," +
                         "numberOfEpisodes               INTEGER NOT NULL," +
-                        "numberOfSeasons                INTEGER NOT NULL)" );
+                        "numberOfSeasons                INTEGER NOT NULL," +
+                        "PRIMARY KEY(tvId))");
     }
 
     @Override

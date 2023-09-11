@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.TV.TVSerie;
+import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.persistence.TVSerieDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
