@@ -5,10 +5,12 @@ import ar.edu.itba.paw.models.Cast.MovieActor;
 import ar.edu.itba.paw.models.Cast.TVActor;
 import ar.edu.itba.paw.persistence.ActorDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class ActorServiceImpl implements ActorService{
     @Autowired
     private ActorDao actorDao;

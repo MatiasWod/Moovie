@@ -1,12 +1,12 @@
 package ar.edu.itba.paw.models.Genre;
 
 public abstract class Genre {
-    private final String[] genres;
+    private final String genre;
 
-    public Genre(String[] genres){
-        this.genres = genres;
+    public Genre(String genre){
+        this.genre = genre;
     }
-    public String[] getGenres(){
-        return genres;
+    public String getGenre(){
+        return genre;
     }
 }

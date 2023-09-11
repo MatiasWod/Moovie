@@ -19,7 +19,7 @@ public class TVSerieDaoJdbcImpl implements TVSerieDao{
     private static final RowMapper<TVSerie> TV_SERIE_ROW_MAPPER = (rs, rowNum) -> new TVSerie(
             rs.getInt("tvId"),
             rs.getString("tvName"),
-            rs.getDate("release_date"),
+            rs.getDate("releaseDate"),
             rs.getDate("lastAirDate"),
             rs.getDate("nextEpisodeToAir"),
             rs.getString("originalLanguage"),
@@ -47,9 +47,8 @@ public class TVSerieDaoJdbcImpl implements TVSerieDao{
                         "tvId                           INTEGER NOT NULL," +
                         "tvName                         VARCHAR(255) NOT NULL," +
                         "releaseDate                    DATE NOT NULL," +
-                        "lastAirDate                    DATE NOT NULL," +
-                        "nextEpisodeToAir               DATE NOT NULL," +
-                        "runtime                        INTEGER NOT NULL," +
+                        "lastAirDate                    DATE," +
+                        "nextEpisodeToAir               DATE," +
                         "originalLanguage               VARCHAR(2)," +
                         "adult                          BOOLEAN NOT NULL," +
                         "overview                       TEXT NOT NULL," +

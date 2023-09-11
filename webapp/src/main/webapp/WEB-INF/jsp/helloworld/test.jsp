@@ -21,9 +21,24 @@
                 <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
                     <jsp:include page="/WEB-INF/jsp/helloworld/card.jsp">
                         <jsp:param name="posterPath" value="${movie.posterPath}"/>
-                        <jsp:param name="movieName" value="${movie.movieName}"/>
+                        <jsp:param name="mediaName" value="${movie.movieName}"/>
                         <jsp:param name="releaseDate" value="${movie.releaseDate}"/>
-                        <jsp:param name="movieId" value="${movie.movieId}"/>
+                        <jsp:param name="mediaId" value="${movie.movieId}"/>
+                    </jsp:include>
+                </div>
+            </c:forEach>
+        </div>
+    </div>
+    <h4>Recently Added TV Shows</h4>
+    <div class="container-fluid">
+        <div class="row flex-row flex-nowrap overflow-auto">
+            <c:forEach var="tv" items="${tvList}">
+                <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                    <jsp:include page="/WEB-INF/jsp/helloworld/card.jsp">
+                        <jsp:param name="posterPath" value="${tv.posterPath}"/>
+                        <jsp:param name="mediaName" value="${tv.tvName}"/>
+                        <jsp:param name="releaseDate" value="${tv.releaseDate}"/>
+                        <jsp:param name="mediaId" value="${tv.tvId}"/>
                     </jsp:include>
                 </div>
             </c:forEach>
