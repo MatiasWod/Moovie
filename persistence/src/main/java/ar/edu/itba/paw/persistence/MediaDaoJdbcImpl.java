@@ -111,8 +111,8 @@ public class MediaDaoJdbcImpl implements MediaDao {
                 "CREATE TABLE IF NOT EXISTS movies(" +
                         "mediaId                 INTEGER NOT NULL," +
                         "runtime                 INTEGER," +
-                        "budget                  INTEGER," +
-                        "revenue                 INTEGER," +
+                        "budget                  BIGINT," +
+                        "revenue                 BIGINT," +
                         "directorId              INTEGER," +
                         "director                VARCHAR(255)," +
                         "UNIQUE(mediaId)," +
