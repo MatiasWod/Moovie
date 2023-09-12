@@ -4,14 +4,14 @@ import java.util.Date;
 
 public class Movie extends Media{
     private final int runtime;
-    private final int budget;
-    private final int revenue;
+    private final long budget;
+    private final long revenue;
     private int directorId;
     private final String director;
 
     public Movie(int mediaId, boolean type, String name, String originalLanguage, boolean adult, Date releaseDate, String overview,
                  String backdropPath, String posterPath, String trailerLink, float tmdbRating, int totalRating, int voteCount,
-                 String status, int runtime, int budget, int revenue, int directorId, String director) {
+                 String status, int runtime, long budget, long revenue, int directorId, String director) {
         super(mediaId, type, name, originalLanguage, adult, releaseDate, overview, backdropPath, posterPath, trailerLink, tmdbRating, totalRating, voteCount, status);
         this.runtime = runtime;
         this.budget = budget;
@@ -24,11 +24,11 @@ public class Movie extends Media{
         return runtime;
     }
 
-    public int getBudget() {
+    public long getBudget() {
         return budget;
     }
 
-    public int getRevenue() {
+    public long getRevenue() {
         return revenue;
     }
 

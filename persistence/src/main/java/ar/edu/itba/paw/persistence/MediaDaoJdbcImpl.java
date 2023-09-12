@@ -55,8 +55,8 @@ public class MediaDaoJdbcImpl implements MediaDao {
             rs.getInt("voteCount"),
             rs.getString("status"),
             rs.getInt("runtime"),
-            rs.getInt("budget"),
-            rs.getInt("revenue"),
+            rs.getLong("budget"),
+            rs.getLong("revenue"),
             rs.getInt("directorId"),
             rs.getString("director")
     );
