@@ -13,6 +13,13 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class HelloWorldController {
 
+    private final UserService us;
+
+    @Autowired
+    public HelloWorldController(final UserService us){
+        this.us = us;
+    }
+
     @RequestMapping("/test")
     public ModelAndView helloWorld() {
         final ModelAndView mav = new ModelAndView("helloworld/index");

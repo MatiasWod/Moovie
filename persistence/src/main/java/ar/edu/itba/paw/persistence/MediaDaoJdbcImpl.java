@@ -146,7 +146,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
     @Override
     public Optional<Movie> getMovieById(int mediaId) {
-        return jdbcTemplate.query("SELECT * FROM movies WHERE movieId = ?",new Object[]{mediaId},MOVIE_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT * FROM media INNER JOIN movies ON media.mediaid = movies.mediaid WHERE  movies.mediaid = ?",new Object[]{mediaId},MOVIE_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
@@ -161,7 +161,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
     @Override
     public Optional<TVSerie> getTvById(int mediaId) {
-        return jdbcTemplate.query("SELECT * FROM tv WHERE tvId = ?",new Object[]{mediaId},TV_SERIE_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT * FROM media INNER JOIN tv ON media.mediaid = tv.mediaid WHERE  tv.mediaid = ?",new Object[]{mediaId},TV_SERIE_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
