@@ -17,7 +17,7 @@
 <div class="container d-flex flex-column">
     <c:import url="navBar.jsp"/>
     <div class="container d-flex flex-row"> <%-- dos columnas (flex-row) izquierda-filtros->luego peliculas     derecha-preview --%>
-        <%--        FILTROS y PELIS    --%>
+<%--        FILTROS y PELIS    --%>
 
         <div class="container d-flex flex-column flex-grow-1 scrollableDiv">
             <div class="mb-2 d-flex flex-row">
@@ -37,13 +37,13 @@
                 </select>
             </div>
             <div class="flex-wrap d-flex">
-                <c:forEach var="movie" items="${movieList}">
+                <c:forEach begin="1" end="50" step="1">
                     <div class="poster card text-bg-dark m-1">
                         <div class="card-img-container"> <!-- Add a container for the image -->
-                            <img class="height-full" src=${movie.posterPath}>
+                            <img class="height-full" src="https://image.tmdb.org/t/p/original/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg">
                             <div class="card-img-overlay">
-                                <h5 class="card-title">${movie.movieName}</h5>
-                                <p class="card-text">${movie.tmdbRating}</p>
+                                <h5 class="card-title">Barbie</h5>
+                                <p class="card-text">5/5</p>
                             </div>
                         </div>
                     </div>
@@ -51,9 +51,9 @@
             </div>
 
         </div>
-        <%--        PREVIEW      --%>
+<%--        PREVIEW      --%>
         <div style="position: relative" class="container d-flex p-0 container-gray-transp flex-grow-2 fullHeightDiv">
-            <img class="image-blur height-full background" src="https://image.tmdb.org/t/p/original/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg" alt="poster">
+            <img style="" class="image-blur height-full background" src="https://image.tmdb.org/t/p/original/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg" alt="poster">
             <div style="position: absolute;top: 0;left: 0" class="d-flex container flex-column">
                 <h2>Movie Title</h2>
                 <p>La Barbie Movie ha emergido como una verdadera obra maestra cultural que ha impactado profundamente a la sociedad en diversos niveles.

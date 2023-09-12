@@ -32,6 +32,14 @@ public class WebConfig extends WebMvcConfigurerAdapter {
                 .addResourceLocations("/resources/");
     }
 
+    /*FROM ORIGINA MASTER
+        public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        super.addResourceHandlers(registry);
+        registry.addResourceHandler("/images/**").addResourceLocations("/images/");
+        registry.addResourceHandler("/css/**").addResourceLocations("/css/");
+    }
+    */
+
     //Donde	 /paw 	al	final	de	la	url	indica	que	la	base	de	datos	se	llama	 paw y
     // el	username	y	la	password	son	aquellos	establecidos	en	la	creación	dela	base	de	datos	PostgreSQL
     /*IMPORTANTE: CAMBIAR ESTA PARTE DEPENDIENDO SI QUIERO SUBIRLO A PAMPERO O NO*/
