@@ -34,11 +34,12 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     //Donde	 /paw 	al	final	de	la	url	indica	que	la	base	de	datos	se	llama	 paw y
     // el	username	y	la	password	son	aquellos	establecidos	en	la	creación	dela	base	de	datos	PostgreSQL
+    /*IMPORTANTE: CAMBIAR ESTA PARTE DEPENDIENDO SI QUIERO SUBIRLO A PAMPERO O NO*/
     @Bean
     public DataSource dataSource(){
         final SimpleDriverDataSource ds = new SimpleDriverDataSource();
         ds.setDriverClass(org.postgresql.Driver.class);
-        ds.setUrl("jdbc:postgresql://localhost:5433/paw");
+        ds.setUrl("jdbc:postgresql://localhost:5432/paw");
         ds.setUsername("postgres");
         ds.setPassword("mypassword");
         return ds;

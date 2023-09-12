@@ -28,9 +28,9 @@ public class GenreDaoJdbcImpl implements GenreDao{
         genrejdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("genres").usingGeneratedKeyColumns("mediaId");
         jdbcTemplate.execute(
                 "CREATE TABLE IF NOT EXISTS genres(" +
-                        "mediaId                   INTEGER NOT NULL," +
-                        "genre                   VARCHAR(100) NOT NULL," +
-                        "PRIMARY KEY(mediaId,genre)," +
+                        "mediaId                    INTEGER NOT NULL," +
+                        "genre                      VARCHAR(100) NOT NULL," +
+                        "UNIQUE(mediaId,genre)," +
                         "FOREIGN KEY(mediaId)       REFERENCES media(mediaId) ON DELETE CASCADE)");
     }
 

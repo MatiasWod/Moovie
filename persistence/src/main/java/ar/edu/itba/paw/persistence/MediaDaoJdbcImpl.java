@@ -92,7 +92,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
         jdbcTemplate.execute(
                 "CREATE TABLE IF NOT EXISTS media(" +
-                        "mediaId                        INTEGER NOT NULL," +
+                        "mediaId                        SERIAL PRIMARY KEY," +
                         "type                           BOOLEAN NOT NULL," +
                         "name                           VARCHAR(255) NOT NULL," +
                         "originalLanguage               VARCHAR(2)," +
@@ -105,8 +105,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
                         "tmdbRating                     FLOAT NOT NULL," +
                         "totalRating                    INTEGER NOT NULL," +
                         "voteCount                      INTEGER NOT NULL," +
-                        "status                         VARCHAR(20) NOT NULL," +
-                        "PRIMARY KEY(mediaId))");
+                        "status                         VARCHAR(20) NOT NULL)");
 
         jdbcTemplate.execute(
                 "CREATE TABLE IF NOT EXISTS movies(" +
@@ -116,7 +115,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
                         "revenue                 INTEGER," +
                         "directorId              INTEGER," +
                         "director                VARCHAR(255)," +
-                        "PRIMARY KEY(mediaId)," +
+                        "UNIQUE(mediaId)," +
                         "FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE)");
 
         jdbcTemplate.execute(
@@ -126,7 +125,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
                         "nextEpisodeToAir               DATE," +
                         "numberOfEpisodes               INTEGER," +
                         "numberOfSeasons                INTEGER," +
-                        "PRIMARY KEY(mediaId)," +
+                        "UNIQUE(mediaId)," +
                         "FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE)");
     }
 

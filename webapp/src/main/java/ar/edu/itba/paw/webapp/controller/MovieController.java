@@ -25,7 +25,6 @@ public class MovieController {
     public ModelAndView home() {
         final ModelAndView mav = new ModelAndView("helloworld/testdatabase");
         final List<Media> mediaList = mediaService.getMediaList();
-
         mav.addObject("mediaList", mediaList);
         return mav;
     }

@@ -38,7 +38,7 @@ public class ActorDaoJdbcImpl implements ActorDao {
                         "actorName               VARCHAR(100) NOT NULL," +
                         "characterName           VARCHAR(100)," +
                         "profilePath             VARCHAR(255)," +
-                        "PRIMARY KEY(mediaId,actorId)," +
+                        "UNIQUE(mediaId,actorId)," +
                         "FOREIGN KEY(mediaId)       REFERENCES media(mediaId) ON DELETE CASCADE)");
     }
 
