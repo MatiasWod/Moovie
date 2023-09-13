@@ -18,8 +18,7 @@ public class TVCreatorsDaoJdbcImpl implements TVCreatorsDao{
     private static final RowMapper<TVCreators> TV_CREATORS_ROW_MAPPER = (rs, rowNum) -> new TVCreators(
             rs.getInt("mediaId"),
             rs.getInt("creatorId"),
-            rs.getString("creatorName"),
-            rs.getString("profilePath")
+            rs.getString("creatorName")
     );
 
     private static final RowMapper<Integer> COUNT_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("count"));
@@ -33,7 +32,6 @@ public class TVCreatorsDaoJdbcImpl implements TVCreatorsDao{
                         "mediaId                            INTEGER NOT NULL," +
                         "creatorId                          INTEGER NOT NULL," +
                         "creatorName                        VARCHAR(100) NOT NULL," +
-                        "profilePath                        VARCHAR(100)," +
                         "UNIQUE(mediaId,creatorId)," +
                         "FOREIGN KEY(mediaId)       REFERENCES media(mediaId) ON DELETE CASCADE)");
     }

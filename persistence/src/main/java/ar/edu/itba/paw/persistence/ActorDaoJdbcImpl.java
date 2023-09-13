@@ -46,4 +46,5 @@ public class ActorDaoJdbcImpl implements ActorDao {
     public List<Actor> getAllActorsForMedia(int mediaId) {
         return jdbcTemplate.query("SELECT * FROM actors WHERE mediaId = ?",new Object[]{mediaId},ACTOR_ROW_MAPPER);
     }
+
 }

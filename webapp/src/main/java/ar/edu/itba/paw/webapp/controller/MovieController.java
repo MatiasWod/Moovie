@@ -24,7 +24,7 @@ public class MovieController {
     @RequestMapping("/")
     public ModelAndView home() {
         final ModelAndView mav = new ModelAndView("helloworld/testdatabase");
-        final List<Media> mediaList = mediaService.getMediaList();
+        final List<Movie> mediaList = mediaService.getMovieList();
         mav.addObject("mediaList", mediaList);
         return mav;
     }

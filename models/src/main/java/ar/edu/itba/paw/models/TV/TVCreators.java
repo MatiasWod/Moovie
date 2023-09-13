@@ -4,13 +4,11 @@ public class TVCreators {
     private final int mediaId;
     private final int creatorId;
     private final String creatorName;
-    private final String profilePath;
 
-    public TVCreators(int mediaId, int creatorId, String creatorName, String profilePath) {
+    public TVCreators(int mediaId, int creatorId, String creatorName) {
         this.mediaId = mediaId;
         this.creatorId = creatorId;
         this.creatorName = creatorName;
-        this.profilePath = profilePath;
     }
 
     public int getMediaId() {
@@ -25,7 +23,4 @@ public class TVCreators {
         return creatorName;
     }
 
-    public String getProfilePath() {
-        return profilePath;
-    }
 }
