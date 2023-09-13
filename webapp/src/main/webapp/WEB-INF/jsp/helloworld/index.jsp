@@ -4,7 +4,7 @@
 <html>
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link href="${pageContext.request.contextPath}/css/main.css?version=55" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/main.css?version=55" rel="stylesheet"/>
     <title>Moovie</title>
 </head>
 <body class="bg-black">

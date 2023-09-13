@@ -1,4 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <%--
   Created by IntelliJ IDEA.
   User: juana
@@ -10,16 +12,26 @@
 <html>
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link href="${pageContext.request.contextPath}/css/main.css?version=56" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/main.css?version=57" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
     <title>Discover your next favorite experience</title>
+    <script>
+        function loadPreview(title, rating, posterPath, overview) {
+            document.getElementById("preview-title").innerText = title;
+            document.getElementById("preview-rating").innerText = rating;
+            document.getElementById("preview-img").src = posterPath;
+            document.getElementById("preview-synopsis").innerText = overview;
+        }
+    </script>
 </head>
 <body style="background: whitesmoke">
 <div class="container d-flex flex-column">
     <c:import url="navBar.jsp"/>
-    <div class="container d-flex flex-row"> <%-- dos columnas (flex-row) izquierda-filtros->luego peliculas     derecha-preview --%>
+    <div class="container d-flex flex-row "> <%-- dos columnas (flex-row) izquierda-filtros->luego peliculas     derecha-preview --%>
 <%--        FILTROS y PELIS    --%>
 
-        <div class="container d-flex flex-column flex-grow-1 scrollableDiv">
+        <div class="container d-flex flex-column seventy-width">
             <div class="mb-2 d-flex flex-row">
                 <select class="form-select filter-width" aria-label="Filter!">
                     <option selected>Movies</option>
@@ -36,14 +48,15 @@
                     <option>2022</option>
                 </select>
             </div>
-            <div class="flex-wrap d-flex">
-                <c:forEach begin="1" end="50" step="1">
-                    <div class="poster card text-bg-dark m-1">
-                        <div class="card-img-container"> <!-- Add a container for the image -->
-                            <img class="height-full" src="https://image.tmdb.org/t/p/original/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg">
+            <div class="scrollableDiv flex-wrap d-flex">
+                <c:forEach var="movie" items="${mediaList}" end="25">
+<%--                    <div class="poster card text-bg-dark m-1" onclick="loadPreview('${movie.name}', '${movie.tmdbRating}', '${movie.posterPath}', '${movie.overview}')">--%>
+                    <div class="poster card text-bg-dark m-1" onclick="loadPreview('${fn:replace(movie.name, "'", "\\'")}', '${movie.tmdbRating}', '${movie.posterPath}', '${fn:replace(movie.overview, "'", "\\'")}')">
+                    <div class="card-img-container"> <!-- Add a container for the image -->
+                            <img class="height-full" src="${movie.posterPath}">
                             <div class="card-img-overlay">
-                                <h5 class="card-title">Barbie</h5>
-                                <p class="card-text">5/5</p>
+                                <h5 class="card-title">${movie.name}</h5>
+                                <p class="card-text">${movie.tmdbRating}</p>
                             </div>
                         </div>
                     </div>
@@ -52,11 +65,19 @@
 
         </div>
 <%--        PREVIEW      --%>
-        <div style="position: relative" class="container d-flex p-0 container-gray-transp flex-grow-2 fullHeightDiv">
-            <img style="" class="image-blur height-full background" src="https://image.tmdb.org/t/p/original/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg" alt="poster">
+        <c:if test="true" >
+        <div style="position: relative" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
+            <img id="preview-img" style="" class="image-blur height-full background" src="https://image.tmdb.org/t/p/original/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg" alt="poster">
             <div style="position: absolute;top: 0;left: 0" class="d-flex container flex-column">
-                <h2>Movie Title</h2>
-                <p>La Barbie Movie ha emergido como una verdadera obra maestra cultural que ha impactado profundamente a la sociedad en diversos niveles.
+                <h2 id="preview-title">Movie Title</h2>
+                <div class="d-flex flex-row align-items-center">
+                    <h1>
+                        <i class="bi bi-star-fill"></i>
+                    </h1>
+                    <h1 id="preview-rating">10/10</h1>
+                </div>
+
+                <p id="preview-synopsis">La Barbie Movie ha emergido como una verdadera obra maestra cultural que ha impactado profundamente a la sociedad en diversos niveles.
                     En primer lugar, esta película representa un hito en la historia del cine al ofrecer una narrativa única y atractiva que se aleja de los estereotipos de género tradicionales.
                     A través de su trama, la Barbie Movie rompe con las limitaciones convencionales que han restringido durante mucho tiempo a las niñas y niños a roles predefinidos.
                     Al presentar a Barbie como una figura empoderada, inteligente y valiente, la película desafía los estereotipos de género y fomenta la idea de que las personas,
@@ -65,7 +86,10 @@
                 </p>
             </div>
         </div>
+        </c:if>
     </div>
 </div>
 </body>
+
+
 </html>

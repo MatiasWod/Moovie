@@ -5,8 +5,10 @@ import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.services.GenreService;
 import ar.edu.itba.paw.services.MediaService;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -26,6 +28,16 @@ public class MovieController {
         final ModelAndView mav = new ModelAndView("helloworld/testdatabase");
         final List<Movie> mediaList = mediaService.getMovieList();
         mav.addObject("mediaList", mediaList);
+        return mav;
+    }
+
+    @RequestMapping("/discovertest")
+    public ModelAndView test(){
+        final ModelAndView mav = new ModelAndView("helloworld/discover");
+        final List<Movie> mediaList = mediaService.getMovieList();
+        mav.addObject("mediaList", mediaList);
+        Boolean flag = false;
+        mav.addObject("flag",flag);
         return mav;
     }
 
