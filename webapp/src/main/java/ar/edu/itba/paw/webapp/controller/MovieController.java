@@ -5,7 +5,6 @@ import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.services.GenreService;
 import ar.edu.itba.paw.services.MediaService;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +25,7 @@ public class MovieController {
     @RequestMapping("/")
     public ModelAndView home() {
         final ModelAndView mav = new ModelAndView("helloworld/testdatabase");
-        final List<Movie> mediaList = mediaService.getMovieList();
+        final List<Movie> mediaList = mediaService.getMovieFilteredByGenre("Action");
         mav.addObject("mediaList", mediaList);
         return mav;
     }

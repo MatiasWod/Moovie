@@ -5,7 +5,7 @@ import ar.edu.itba.paw.persistence.GenreDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class GenreServiceImpl implements GenreService{
@@ -13,7 +13,7 @@ public class GenreServiceImpl implements GenreService{
     private GenreDao genreDao;
 
     @Override
-    public Optional<Genre> getGenreForMedia(int mediaId) {
+    public List<Genre> getGenreForMedia(int mediaId) {
         return genreDao.getGenreForMedia(mediaId);
     }
 

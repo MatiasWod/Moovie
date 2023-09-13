@@ -2,10 +2,11 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Genre.Genre;
 
-import java.util.Optional;
+import java.util.List;
+
 
 public interface GenreDao {
 
-    Optional<Genre> getGenreForMedia(int mediaId);
+    List<Genre> getGenreForMedia(int mediaId);
 
 }

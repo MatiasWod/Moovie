@@ -31,6 +31,21 @@ public class MediaServiceImpl implements MediaService{
     }
 
     @Override
+    public List<Media> getMediaOrderedByTmdbRatingDesc() {
+        return mediaDao.getMediaOrderedByTmdbRatingDesc();
+    }
+
+    @Override
+    public List<Media> getMediaOrderedByReleaseDateDesc() {
+        return mediaDao.getMediaOrderedByReleaseDateDesc();
+    }
+
+    @Override
+    public List<Media> getMediaFilteredByGenre(String genre) {
+        return mediaDao.getMediaFilteredByGenre(genre);
+    }
+
+    @Override
     public Optional<Movie> getMovieById(int mediaId) {
         return mediaDao.getMovieById(mediaId);
     }
@@ -46,6 +61,26 @@ public class MediaServiceImpl implements MediaService{
     }
 
     @Override
+    public List<Movie> getMovieOrderedByTmdbRatingDesc() {
+        return mediaDao.getMovieOrderedByTmdbRatingDesc();
+    }
+
+    @Override
+    public List<Movie> getMovieOrderedByReleaseDateDesc() {
+        return mediaDao.getMovieOrderedByReleaseDateDesc();
+    }
+
+    @Override
+    public List<Movie> getMovieFilteredByGenre(String genre) {
+        return mediaDao.getMovieFilteredByGenre(genre);
+    }
+
+    @Override
+    public List<Movie> getMovieOrderedByReleaseDuration() {
+        return mediaDao.getMovieOrderedByReleaseDuration();
+    }
+
+    @Override
     public Optional<TVSerie> getTvById(int mediaId) {
         return mediaDao.getTvById(mediaId);
     }
@@ -58,6 +93,21 @@ public class MediaServiceImpl implements MediaService{
     @Override
     public Optional<Integer> getTvCount() {
         return mediaDao.getTvCount();
+    }
+
+    @Override
+    public List<TVSerie> getTvOrderedByTmdbRatingDesc() {
+        return mediaDao.getTvOrderedByTmdbRatingDesc();
+    }
+
+    @Override
+    public List<TVSerie> getTvOrderedByReleaseDateDesc() {
+        return mediaDao.getTvOrderedByReleaseDateDesc();
+    }
+
+    @Override
+    public List<TVSerie> getTvFilteredByGenre(String genre) {
+        return mediaDao.getTvFilteredByGenre(genre);
     }
 }
 

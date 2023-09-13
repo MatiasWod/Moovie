@@ -11,12 +11,22 @@ public interface MediaDao {
     Optional<Media> getMediaById(int mediaId);
     List<Media> getMediaList();
     Optional<Integer> getMediaCount();
+    List<Media> getMediaOrderedByTmdbRatingDesc();
+    List<Media> getMediaOrderedByReleaseDateDesc();
+    List<Media> getMediaFilteredByGenre(String genre);
 
     Optional<Movie> getMovieById(int mediaId);
     List<Movie> getMovieList();
     Optional<Integer> getMovieCount();
+    public List<Movie> getMovieOrderedByTmdbRatingDesc();
+    public List<Movie> getMovieOrderedByReleaseDateDesc();
+    public List<Movie> getMovieFilteredByGenre(String genre);
+    public List<Movie> getMovieOrderedByReleaseDuration();
 
     Optional<TVSerie> getTvById(int mediaId);
     List<TVSerie> getTvList();
     Optional<Integer> getTvCount();
+    public List<TVSerie> getTvOrderedByTmdbRatingDesc();
+    public List<TVSerie> getTvOrderedByReleaseDateDesc();
+    public List<TVSerie> getTvFilteredByGenre(String genre);
 }
