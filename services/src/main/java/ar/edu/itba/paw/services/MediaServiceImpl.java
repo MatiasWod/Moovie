@@ -110,5 +110,3 @@ public class MediaServiceImpl implements MediaService{
         return mediaDao.getTvFilteredByGenre(genre);
     }
 }
-
-
