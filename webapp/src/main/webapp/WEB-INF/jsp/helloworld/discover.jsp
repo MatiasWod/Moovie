@@ -16,42 +16,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
     <title>Discover your next favorite experience</title>
-    <script>
-        window.onload = function() {
-            const filterTypesSelect = document.getElementById("filter-types");
-            const genreSelect = document.getElementById("genre-select");
-
-            if (filterTypesSelect.value === "Genre") {
-                genreSelect.style.display = "block";
-            }
-        };
-        function beforeSubmit() {
-            const filterTypesSelect = document.getElementById("filter-types");
-            const genreSelect = document.getElementById("genre-select");
-
-            if (filterTypesSelect.value === "Popular") {
-                genreSelect.removeAttribute("name");
-            }
-        }
-
-        function loadPreview(title, rating, posterPath, overview) {
-            document.getElementById("preview").style.display = 'block';
-            document.getElementById("preview-title").innerText = title;
-            document.getElementById("preview-rating").innerText = rating;
-            document.getElementById("preview-img").src = posterPath;
-            document.getElementById("preview-synopsis").innerText = overview;
-        }
-        function toggleGenreSelect() {
-            const filterTypesSelect = document.getElementById("filter-types");
-            const genreSelect = document.getElementById("genre-select");
-
-            if (filterTypesSelect.value === "Genre") {
-                genreSelect.style.display = "block";
-            } else {
-                genreSelect.style.display = "none";
-            }
-        }
-    </script>
+    <script src="${pageContext.request.contextPath}/resources/discoverFunctions.js"></script>
 </head>
 <body style="background: whitesmoke">
 <div class="container d-flex flex-column">
@@ -59,7 +24,7 @@
     <c class="container d-flex flex-row "> <%-- dos columnas (flex-row) izquierda-filtros->luego peliculas     derecha-preview --%>
 <%--        FILTROS y PELIS    --%>
 
-        <div class="container d-flex flex-column seventy-width">
+        <div class="container d-flex flex-column">
             <div >
                 <form class="mb-2 d-flex flex-row" action="${pageContext.request.contextPath}/discover" method="get" onsubmit="beforeSubmit()">
                 <select name="media" class="form-select filter-width" aria-label="Filter!">
@@ -82,7 +47,7 @@
             <div class="scrollableDiv flex-wrap d-flex">
                 <c:forEach var="movie" items="${mediaList}" end="25">
 <%--                    <div class="poster card text-bg-dark m-1" onclick="loadPreview('${movie.name}', '${movie.tmdbRating}', '${movie.posterPath}', '${movie.overview}')">--%>
-                    <div class="poster card text-bg-dark m-1" onclick="loadPreview('${fn:replace(movie.name, "'", "\\'")}', '${movie.tmdbRating}', '${movie.posterPath}', '${fn:replace(movie.overview, "'", "\\'")}')">
+                    <div class="poster card text-bg-dark m-1" onclick="loadPreview('${fn:replace(movie.name, "'", "\\'")}', '${movie.tmdbRating}', '${movie.posterPath}', '${fn:replace(movie.overview, "'", "\\'")}','${movie.adult}', '${movie.mediaId}')">
                     <div class="card-img-container"> <!-- Add a container for the image -->
                             <img class="height-full" src="${movie.posterPath}">
                             <div class="card-img-overlay">
@@ -97,27 +62,25 @@
         </div>
 <%--        PREVIEW      --%>
         <div id="preview" style="position: relative; display:none !important" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
-            <img id="preview-img" style="" class="image-blur height-full background" src="https://image.tmdb.org/t/p/original/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg" alt="poster">
+            <img id="preview-img" style="" class="image-blur height-full background" src="" alt="poster">
             <div style="position: absolute;top: 0;left: 0" class="d-flex container flex-column">
-                <h2 id="preview-title">Movie Title</h2>
+                <h1 id="preview-explicit" class="mt-2 mb-2 bi bi-explicit" style="display: none"></h1>
+                <h2 id="preview-title"></h2>
                 <div class="d-flex flex-row align-items-center">
                     <h1>
                         <i class="bi bi-star-fill"></i>
                     </h1>
-                    <h1 id="preview-rating">10/10</h1>
+                    <h1 id="preview-rating"></h1>
                 </div>
-
-                <p id="preview-synopsis">La Barbie Movie ha emergido como una verdadera obra maestra cultural que ha impactado profundamente a la sociedad en diversos niveles.
-                    En primer lugar, esta película representa un hito en la historia del cine al ofrecer una narrativa única y atractiva que se aleja de los estereotipos de género tradicionales.
-                    A través de su trama, la Barbie Movie rompe con las limitaciones convencionales que han restringido durante mucho tiempo a las niñas y niños a roles predefinidos.
-                    Al presentar a Barbie como una figura empoderada, inteligente y valiente, la película desafía los estereotipos de género y fomenta la idea de que las personas,
-                    independientemente de su género, pueden aspirar a cualquier cosa. Esto tiene un impacto positivo en la cultura al promover la igualdad de género y mostrar que todos merecen
-                    la oportunidad de perseguir sus sueños y pasiones sin restricciones.
+                <p id="preview-synopsis">
                 </p>
+                <h3 id="preview-director"></h3>
+                <h4 id="preview-"></h4>
+                <a id="preview-details" class="m-4 btn btn-outline-success align-bottom" type="submit">More details</a>
             </div>
         </div>
     </div>
-</div>
+
 </body>
 
 
