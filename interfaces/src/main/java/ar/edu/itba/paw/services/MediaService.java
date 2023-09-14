@@ -15,6 +15,7 @@ public interface MediaService {
     List<Media> getMediaOrderedByReleaseDateDesc();
     List<Media> getMediaFilteredByGenre(String genre);
     List<Media> getMediaBySearch(String searchString);
+    List<Media> getMediaByMediaListId(int mediaListId);
 
     Optional<Movie> getMovieById(int mediaId);
     List<Movie> getMovieList();

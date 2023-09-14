@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -61,8 +62,8 @@ public class MediaListJdbcImpl implements MediaListDao{
     }
 
     @Override
-    public Optional<MediaListContent> getMediaListContentById(int mediaListId) {
-        return jdbcTemplate.query("SELECT * FROM mediaListsContent WHERE mediaListId = ?",new Object[]{mediaListId},MEDIA_LIST_CONTENT_ROW_MAPPER).stream().findFirst();
+    public List<MediaListContent> getMediaListContentById(int mediaListId){
+        return jdbcTemplate.query("SELECT * FROM mediaListsContent WHERE mediaListId = ?",new Object[]{mediaListId},MEDIA_LIST_CONTENT_ROW_MAPPER);
     }
 }
 

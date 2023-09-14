@@ -6,6 +6,7 @@ import ar.edu.itba.paw.persistence.MediaListDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,7 +20,7 @@ public class MediaListServiceImpl implements MediaListService{
     }
 
     @Override
-    public Optional<MediaListContent> getMediaListContentById(int mediaListId) {
-        return Optional.empty();
+    public List<MediaListContent> getMediaListContentById(int mediaListId) {
+        return mediaListDao.getMediaListContentById(mediaListId);
     }
 }

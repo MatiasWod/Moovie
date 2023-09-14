@@ -174,6 +174,14 @@ public class MediaDaoJdbcImpl implements MediaDao {
         return jdbcTemplate.query("SELECT * FROM media WHERE media.name ILIKE ?", new Object[]{'%' + searchString + '%'}, MEDIA_ROW_MAPPER);
     }
 
+    @Override
+    public List<Media> getMediaByMediaListId(int mediaListId){
+        return jdbcTemplate.query("SELECT * FROM mediaListscontent INNER JOIN media ON media.mediaId = medialistscontent.mediaid WHERE medialistscontent.medialistid = ?",new Object[]{mediaListId},MEDIA_ROW_MAPPER)  ;
+    }
+
+
+
+
     /*** MOVIE QUERIES*/
 
     @Override
@@ -210,6 +218,8 @@ public class MediaDaoJdbcImpl implements MediaDao {
     public List<Movie> getMovieOrderedByReleaseDuration() {
         return jdbcTemplate.query("SELECT " +moviesQueryParams+ " FROM media INNER JOIN movies ON media.mediaid = movies.mediaid ORDER BY runtime DESC", MOVIE_ROW_MAPPER);
     }
+
+
 
 
 

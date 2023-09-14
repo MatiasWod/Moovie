@@ -4,9 +4,11 @@ import ar.edu.itba.paw.models.Genre.Genre;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
+import ar.edu.itba.paw.models.MediaList.MediaList;
+import ar.edu.itba.paw.models.MediaList.MediaListContent;
 import ar.edu.itba.paw.services.GenreService;
+import ar.edu.itba.paw.services.MediaListService;
 import ar.edu.itba.paw.services.MediaService;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class MovieController {
@@ -26,6 +30,9 @@ public class MovieController {
 
     @Autowired
     private GenreService genreService;
+
+    @Autowired
+    private MediaListService mediaListService;
 
 
     @RequestMapping("/")
@@ -92,6 +99,26 @@ public class MovieController {
         return mav;
     }
 
+
+    @RequestMapping("/list")
+    public ModelAndView list(){
+
+        final ModelAndView mav = new ModelAndView("helloworld/mediaList");
+
+        int mediaListId = 1;
+
+        Optional<MediaList> mediaListData = mediaListService.getMediaListById(mediaListId);
+        if(mediaListData.isPresent()){
+            mav.addObject("mediaListData", mediaListData.get());
+        }
+        List<Media> mediaList = mediaService.getMediaByMediaListId(mediaListId);
+        List<MediaListContent> mediaListContent = mediaListService.getMediaListContentById(mediaListId);
+
+        mav.addObject("mediaList", mediaList);
+        mav.addObject("mediaListContent", mediaListContent);
+
+        return mav;
+    }
 
 
 }
