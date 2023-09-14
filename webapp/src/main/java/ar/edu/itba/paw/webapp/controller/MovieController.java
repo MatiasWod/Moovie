@@ -49,7 +49,6 @@ public class MovieController {
         List<Movie> movieList;
         List<TVSerie> tvSerieList;
         List<Media> mediaList;
-        List<String> genres = genreService.getAllGenres();
 
         if (genre != null && !genre.isEmpty()) {
             if (media != null && media.equals("Movies")) {
@@ -73,7 +72,8 @@ public class MovieController {
             mav.addObject("mediaList", mediaList);
         }
 
-
+        List<String> genres = genreService.getAllGenres();
+        mav.addObject("genresList", genres);
 
         return mav;
     }
@@ -89,8 +89,7 @@ public class MovieController {
         List<Media> mediaList = mediaService.getMediaBySearch(query);
         mav.addObject("mediaList", mediaList);
 
-        List<String> genres = genreService.getAllGenres();
-        mav.addObject("genresList", genres);
+
         return mav;
     }
 
