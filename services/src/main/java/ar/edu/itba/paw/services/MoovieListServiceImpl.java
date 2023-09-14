@@ -15,8 +15,8 @@ public class MoovieListServiceImpl implements MoovieListService{
     private MoovieListDao mediaListDao;
 
     @Override
-    public Optional<MoovieList> getMoovieListById(int mediaListId) {
-        return mediaListDao.getMoovieListById(mediaListId);
+    public Optional<MoovieList> getMoovieListById(int moovieListId) {
+        return mediaListDao.getMoovieListById(moovieListId);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
     @Override
-    public List<MoovieListContent> getMoovieListContentById(int mediaListId) {
-        return mediaListDao.getMoovieListContentById(mediaListId);
+    public List<MoovieListContent> getMoovieListContentById(int moovieListId) {
+        return mediaListDao.getMoovieListContentById(moovieListId);
     }
 }

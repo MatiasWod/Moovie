@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MoovieListDao {
-    Optional<MoovieList> getMoovieListById(int mediaListId);
+    Optional<MoovieList> getMoovieListById(int moovieListId);
     List<MoovieList> geAllMoovieLists();
-    List<MoovieListContent> getMoovieListContentById(int mediaListId);
+    List<MoovieListContent> getMoovieListContentById(int moovieListId);
 }
