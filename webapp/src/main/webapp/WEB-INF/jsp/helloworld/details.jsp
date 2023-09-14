@@ -1,6 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -66,10 +68,10 @@
         <div class="row ">
             <h2>Cast</h2>
             <hr class="my-8">
-            <div class="flex-wrap d-flex align-items-center container">
+            <div class="flex-wrap d-flex align-items-center justify-content-center container" id="actors-container">
                 <c:forEach var="actor" items="${actorsList}">
                     <div class="card actor-card" id="actor-card"
-                         style="max-width: 300px;border-radius: 5px; margin: 5px; display:none !important">
+                         style="width: 300px;border-radius: 5px; margin: 5px; display:none !important; position: relative; overflow: hidden;">
                         <div class="row">
                             <div class="col-4">
                                 <img
@@ -98,62 +100,69 @@
         </div>
 
 
-        <!-- Reviews -->
-        <!--
+        <!-- Reviews
         <h2>Reviews</h2>
         <hr class="my-8">
-        <div class="scrollableDiv">
-            <forEach begin="1" end="10" step="1">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex align-items-center">
-                                <img src="https://m.media-amazon.com/images/M/MV5BNjE3NDQyOTYyMV5BMl5BanBnXkFtZTcwODcyODU2Mw@@._V1_FMjpg_UX1000_.jpg"
-                                     alt="Reviewer Profile" class="mr-3 rounded-circle" width="64" height="64">
-                                <div class="mt-0" style="margin-left: 15px">
-                                    <h5>Reviewer Username</h5>
-                                    <div class="text-body-secondary">
-                                        24 reviews
+        <if test="${fn:length(reviews)==0}">
+            <div class="scrollableDiv">
+                <c:forEach begin="1" end="10" step="1">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <img src="https://m.media-amazon.com/images/M/MV5BNjE3NDQyOTYyMV5BMl5BanBnXkFtZTcwODcyODU2Mw@@._V1_FMjpg_UX1000_.jpg"
+                                         alt="Reviewer Profile" class="mr-3 rounded-circle" width="64" height="64">
+                                    <div class="mt-0" style="margin-left: 15px">
+                                        <h5>Reviewer Username</h5>
+                                        <div class="text-body-secondary">
+                                            24 reviews
+                                        </div>
                                     </div>
                                 </div>
+                                <h5 class="align-items-left"><i class="bi bi-star-fill ml-2"></i> 8/10</h5>
                             </div>
-                            <h5 class="align-items-left"><i class="bi bi-star-fill ml-2"></i> 8/10</h5>
-                        </div>
 
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed id tincidunt libero, sed
-                            placerat
-                            dolor. Fusce vehicula turpis vitae odio facilisis, ut euismod orci varius. Nulla
-                            facilisi.
-                            Curabitur vel semper odio.
-                        </p>
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed id tincidunt libero, sed
+                                placerat
+                                dolor. Fusce vehicula turpis vitae odio facilisis, ut euismod orci varius. Nulla
+                                facilisi.
+                                Curabitur vel semper odio.
+                            </p>
+                        </div>
                     </div>
-                </div>
-            </forEach>
-        </div>
-        -->
+                </c:forEach>
+            </div>
+        </if>
+         -->
     </div>
 </div>
 </body>
 </html>
 
 <script>
-    window.onload = function() {
+    const initialCardsNumber = 4;
+    window.onload = function () {
         const actorCards = document.querySelectorAll(".actor-card");
 
         // Loop through all actor cards and toggle their display
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < initialCardsNumber; i++) {
             actorCards[i].style.display = "block";
         }
     };
+
     function showMoreActors() {
         const actorCards = document.querySelectorAll(".actor-card");
 
         // Loop through all actor cards and toggle their display
-        for (let i = 0; i < actorCards.length; i++) {
+        for (let i = initialCardsNumber; i < actorCards.length; i++) {
             actorCards[i].style.display = "block";
 
         }
+
+        // Scroll to the middle of the actors container
+        const actorsContainer = document.querySelector("#actors-container");
+        actorsContainer.scrollIntoView({behavior: "smooth", block: "center"});
 
 
         // Change "See More" button to "See Less"
@@ -166,7 +175,7 @@
         const actorCards = document.querySelectorAll(".actor-card");
 
         // Loop through all actor cards and toggle their display
-        for (let i = 4; i < actorCards.length; i++) {
+        for (let i = initialCardsNumber; i < actorCards.length; i++) {
             actorCards[i].style.display = "none";
         }
 
