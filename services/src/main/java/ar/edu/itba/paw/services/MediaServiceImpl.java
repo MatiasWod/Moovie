@@ -21,8 +21,8 @@ public class MediaServiceImpl implements MediaService{
     }
 
     @Override
-    public List<Media> getMediaList() {
-        return mediaDao.getMediaList();
+    public List<Media> getMoovieList() {
+        return mediaDao.getMoovieList();
     }
 
     @Override
@@ -56,8 +56,8 @@ public class MediaServiceImpl implements MediaService{
     }
 
     @Override
-    public List<Media> getMediaByMediaListId(int mediaListId){
-        return mediaDao.getMediaByMediaListId(mediaListId);
+    public List<Media> getMediaByMoovieListId(int mediaListId){
+        return mediaDao.getMediaByMoovieListId(mediaListId);
     }
 
     @Override

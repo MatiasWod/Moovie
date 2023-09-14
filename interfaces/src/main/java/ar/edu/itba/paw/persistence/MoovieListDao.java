@@ -1,0 +1,13 @@
+package ar.edu.itba.paw.persistence;
+
+import ar.edu.itba.paw.models.MoovieList.MoovieList;
+import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface MoovieListDao {
+    Optional<MoovieList> getMoovieListById(int mediaListId);
+    List<MoovieList> geAllMoovieLists();
+    List<MoovieListContent> getMoovieListContentById(int mediaListId);
+}
