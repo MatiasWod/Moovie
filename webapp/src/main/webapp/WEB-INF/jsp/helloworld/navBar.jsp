@@ -24,8 +24,8 @@
                     <a class="nav-link" aria-current="page" href="">Discover</a>
                 </li>
             </ul>
-            <form class="d-flex mb-0" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <form class="d-flex mb-0" role="search" action="${pageContext.request.contextPath}/search" method="get">
+                <input class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
         </div>

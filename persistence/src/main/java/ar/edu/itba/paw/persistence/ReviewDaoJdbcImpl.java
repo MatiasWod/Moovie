@@ -36,7 +36,7 @@ public class ReviewDaoJdbcImpl implements ReviewDao{
                         "mediaId                            INTEGER NOT NULL," +
                         "rating                             INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 10)," +
                         "reviewLikes                            INTEGER NOT NULL," +
-                        "reviewContent                            TEXT NOT NULL," +
+                        "reviewContent                            TEXT," +
                         "FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE," +
                         "FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE," +
                         "UNIQUE(userId,mediaId))");

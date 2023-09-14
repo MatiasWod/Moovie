@@ -26,6 +26,7 @@ public class MovieController {
     @Autowired
     private GenreService genreService;
 
+
     @RequestMapping("/")
     public ModelAndView home() {
         final ModelAndView mav = new ModelAndView("helloworld/testdatabase");
@@ -69,9 +70,24 @@ public class MovieController {
             mav.addObject("mediaList", mediaList);
         }
 
-        mav.addObject("genresList", genres);
+
 
         return mav;
     }
+
+    @RequestMapping("/search")
+    public ModelAndView search(@RequestParam(value="query", required = true) String query){
+        final ModelAndView mav = new ModelAndView("helloworld/discover");
+
+        List<Media> mediaList = mediaService.getMediaBySearch(query);
+        mav.addObject("mediaList", mediaList);
+
+
+        List<String> genres = genreService.getAllGenres();
+        mav.addObject("genresList", genres);
+        return mav;
+    }
+
+
 
 }
