@@ -12,41 +12,72 @@
 <html>
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link href="${pageContext.request.contextPath}/resources/main.css?version=57" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/main.css?version=58" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
     <title>Discover your next favorite experience</title>
     <script>
+        window.onload = function() {
+            const filterTypesSelect = document.getElementById("filter-types");
+            const genreSelect = document.getElementById("genre-select");
+
+            if (filterTypesSelect.value === "Genre") {
+                genreSelect.style.display = "block";
+            }
+        };
+        function beforeSubmit() {
+            const filterTypesSelect = document.getElementById("filter-types");
+            const genreSelect = document.getElementById("genre-select");
+
+            if (filterTypesSelect.value === "Popular") {
+                genreSelect.removeAttribute("name");
+            }
+        }
+
         function loadPreview(title, rating, posterPath, overview) {
+            document.getElementById("preview").style.display = 'block';
             document.getElementById("preview-title").innerText = title;
             document.getElementById("preview-rating").innerText = rating;
             document.getElementById("preview-img").src = posterPath;
             document.getElementById("preview-synopsis").innerText = overview;
+        }
+        function toggleGenreSelect() {
+            const filterTypesSelect = document.getElementById("filter-types");
+            const genreSelect = document.getElementById("genre-select");
+
+            if (filterTypesSelect.value === "Genre") {
+                genreSelect.style.display = "block";
+            } else {
+                genreSelect.style.display = "none";
+            }
         }
     </script>
 </head>
 <body style="background: whitesmoke">
 <div class="container d-flex flex-column">
     <c:import url="navBar.jsp"/>
-    <div class="container d-flex flex-row "> <%-- dos columnas (flex-row) izquierda-filtros->luego peliculas     derecha-preview --%>
+    <c class="container d-flex flex-row "> <%-- dos columnas (flex-row) izquierda-filtros->luego peliculas     derecha-preview --%>
 <%--        FILTROS y PELIS    --%>
 
         <div class="container d-flex flex-column seventy-width">
-            <div class="mb-2 d-flex flex-row">
-                <select class="form-select filter-width" aria-label="Filter!">
-                    <option selected>Movies</option>
-                    <option>Series</option>
-                </select>
-                <select class="form-select filter-width" aria-label="Filter!">
-                    <option selected>Popular</option>
-                    <option>By Year</option>
-                    <option>By Language</option>
-                    <option>Trending</option>
-                </select>
-                <select class="form-select filter-width" aria-label="Filter!">
-                    <option selected>2023</option>
-                    <option>2022</option>
-                </select>
+            <div >
+                <form class="mb-2 d-flex flex-row" action="${pageContext.request.contextPath}/discover" method="get" onsubmit="beforeSubmit()">
+                <select name="media" class="form-select filter-width" aria-label="Filter!">
+                        <option ${'Movies and Series' == param.media ? 'selected' : ''}>Movies and Series</option>
+                        <option  ${'Movies' == param.media ? 'selected' : ''}>Movies</option>
+                        <option  ${'Series' == param.media ? 'selected' : ''}>Series</option>
+                    </select>
+                    <select name="f" id="filter-types" class="form-select filter-width" aria-label="Filter!" onchange="toggleGenreSelect()">
+                        <option ${'Popular' == param.f ? 'selected' : ''}>Popular</option>
+                        <option ${'Genre' == param.f ? 'selected' : ''}>Genre</option>
+                    </select>
+                    <select name="g" id="genre-select" class="form-select filter-width" aria-label="Filter!" style="display:none">
+                        <c:forEach var="genre" items="${genresList}">
+                            <option value="${genre}" ${genre == param.g? 'selected' : ''}>${genre}</option>
+                        </c:forEach>
+                    </select>
+                    <button class="btn btn-outline-success" type="submit">Apply filters</button>
+                </form>
             </div>
             <div class="scrollableDiv flex-wrap d-flex">
                 <c:forEach var="movie" items="${mediaList}" end="25">
@@ -65,8 +96,7 @@
 
         </div>
 <%--        PREVIEW      --%>
-        <c:if test="true" >
-        <div style="position: relative" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
+        <div id="preview" style="position: relative; display:none !important" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
             <img id="preview-img" style="" class="image-blur height-full background" src="https://image.tmdb.org/t/p/original/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg" alt="poster">
             <div style="position: absolute;top: 0;left: 0" class="d-flex container flex-column">
                 <h2 id="preview-title">Movie Title</h2>
@@ -86,7 +116,6 @@
                 </p>
             </div>
         </div>
-        </c:if>
     </div>
 </div>
 </body>
