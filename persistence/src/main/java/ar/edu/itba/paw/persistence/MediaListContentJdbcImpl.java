@@ -27,14 +27,14 @@ public class MediaListContentJdbcImpl implements MediaListContentDao{
     public MediaListContentJdbcImpl(final DataSource dataSource){
         jdbcTemplate = new JdbcTemplate(dataSource);
         mediaListContentJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("mediaListsContent").usingGeneratedKeyColumns("mediaListId");
-        jdbcTemplate.execute(
+        /* jdbcTemplate.execute(
                 "CREATE TABLE IF NOT EXISTS mediaListsContent(" +
                         "mediaListId                        INTEGER NOT NULL," +
                         "mediaId                            INTEGER NOT NULL," +
                         "status                             VARCHAR(30)," +
                         "UNIQUE(mediaListId,mediaId)," +
                         "FOREIGN KEY(mediaListId) REFERENCES mediaLists(mediaListId) ON DELETE CASCADE," +
-                        "FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE)");
+                        "FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE)"); */
     }
 
     @Override

@@ -37,7 +37,7 @@ public class GenreDaoJdbcImpl implements GenreDao{
     @Override
     public List<Genre> getGenreForMedia(int mediaId) {
         //revisar el findFirst, creo que siempre devuelve el primer género que encuentre que matchea con el tvId
-        return jdbcTemplate.query("SELECT * FROM genres WHERE mediaid = ?",new Object[]{mediaId},GENRE_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT * FROM genres WHERE mediaId = ?",new Object[]{mediaId},GENRE_ROW_MAPPER);
     }
 
 

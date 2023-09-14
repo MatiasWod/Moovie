@@ -29,7 +29,7 @@ public class ReviewDaoJdbcImpl implements ReviewDao{
     public ReviewDaoJdbcImpl(final DataSource dataSource){
         jdbcTemplate = new JdbcTemplate(dataSource);
         reviewJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("reviews").usingGeneratedKeyColumns("reviewId");
-        jdbcTemplate.execute(
+        /* jdbcTemplate.execute(
                 "CREATE TABLE IF NOT EXISTS reviews(" +
                         "reviewId                           SERIAL PRIMARY KEY," +
                         "ratingId                           INTEGER NOT NULL," +
@@ -40,7 +40,7 @@ public class ReviewDaoJdbcImpl implements ReviewDao{
                         "FOREIGN KEY(ratingId) REFERENCES ratings(ratingId) ON DELETE CASCADE," +
                         "FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE," +
                         "FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE," +
-                        "UNIQUE(ratingId,userId,mediaId))");
+                        "UNIQUE(ratingId,userId,mediaId))"); */
     }
 
     @Override
