@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.services.GenreService;
 import ar.edu.itba.paw.services.MediaService;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -77,11 +78,14 @@ public class MovieController {
 
     @RequestMapping("/search")
     public ModelAndView search(@RequestParam(value="query", required = true) String query){
+
         final ModelAndView mav = new ModelAndView("helloworld/discover");
+
+        Boolean search = true;
+        mav.addObject("searchMode",search);
 
         List<Media> mediaList = mediaService.getMediaBySearch(query);
         mav.addObject("mediaList", mediaList);
-
 
         List<String> genres = genreService.getAllGenres();
         mav.addObject("genresList", genres);

@@ -25,29 +25,39 @@
 <%--        FILTROS y PELIS    --%>
 
         <div class="container d-flex flex-column">
-            <div >
-                <form class="mb-2 d-flex flex-row" action="${pageContext.request.contextPath}/discover" method="get" onsubmit="beforeSubmit()">
-                <select name="media" class="form-select filter-width" aria-label="Filter!">
-                        <option ${'Movies and Series' == param.media ? 'selected' : ''}>Movies and Series</option>
-                        <option  ${'Movies' == param.media ? 'selected' : ''}>Movies</option>
-                        <option  ${'Series' == param.media ? 'selected' : ''}>Series</option>
-                    </select>
-                    <select name="f" id="filter-types" class="form-select filter-width" aria-label="Filter!" onchange="toggleGenreSelect()">
-                        <option ${'Popular' == param.f ? 'selected' : ''}>Popular</option>
-                        <option ${'Genre' == param.f ? 'selected' : ''}>Genre</option>
-                    </select>
-                    <select name="g" id="genre-select" class="form-select filter-width" aria-label="Filter!" style="display:none">
-                        <c:forEach var="genre" items="${genresList}">
-                            <option value="${genre}" ${genre == param.g? 'selected' : ''}>${genre}</option>
-                        </c:forEach>
-                    </select>
-                    <button class="btn btn-outline-success" type="submit">Apply filters</button>
-                </form>
-            </div>
+            <c:if test="${searchMode}">
+                <div class="m-2">
+                    <h1>
+                        Results for: ${param.query}
+                    </h1>
+                </div>
+            </c:if>
+            <c:if test="${!searchMode}">
+                <div >
+                    <form class="mb-2 d-flex flex-row" action="${pageContext.request.contextPath}/discover" method="get" onsubmit="beforeSubmit()">
+                        <select name="media" class="form-select filter-width" aria-label="Filter!">
+                            <option ${'Movies and Series' == param.media ? 'selected' : ''}>Movies and Series</option>
+                            <option  ${'Movies' == param.media ? 'selected' : ''}>Movies</option>
+                            <option  ${'Series' == param.media ? 'selected' : ''}>Series</option>
+                        </select>
+                        <select name="f" id="filter-types" class="form-select filter-width" aria-label="Filter!" onchange="toggleGenreSelect()">
+                            <option ${'Popular' == param.f ? 'selected' : ''}>Popular</option>
+                            <option ${'Genre' == param.f ? 'selected' : ''}>Genre</option>
+                        </select>
+                        <select name="g" id="genre-select" class="form-select filter-width" aria-label="Filter!" style="display:none">
+                            <c:forEach var="genre" items="${genresList}">
+                                <option value="${genre}" ${genre == param.g? 'selected' : ''}>${genre}</option>
+                            </c:forEach>
+                        </select>
+                        <button class="btn btn-outline-success" type="submit">Apply filters</button>
+                    </form>
+                </div>
+            </c:if>
+
             <div class="scrollableDiv flex-wrap d-flex">
                 <c:forEach var="movie" items="${mediaList}" end="25">
 <%--                    <div class="poster card text-bg-dark m-1" onclick="loadPreview('${movie.name}', '${movie.tmdbRating}', '${movie.posterPath}', '${movie.overview}')">--%>
-                    <div class="poster card text-bg-dark m-1" onclick="loadPreview('${fn:replace(movie.name, "'", "\\'")}', '${movie.tmdbRating}', '${movie.posterPath}', '${fn:replace(movie.overview, "'", "\\'")}','${movie.adult}', '${movie.mediaId}')">
+                    <div class="poster card text-bg-dark m-1" onclick="loadPreview('${fn:replace(fn:replace(movie.name, "'", "\\'"), "\"", "&quot;")}', '${movie.tmdbRating}', '${movie.posterPath}', '${fn:replace(fn:replace(movie.overview, "'", "\\'"), "\"", "&quot;")}','${movie.adult}', '${movie.mediaId}')">
                     <div class="card-img-container"> <!-- Add a container for the image -->
                             <img class="height-full" src="${movie.posterPath}">
                             <div class="card-img-overlay">
