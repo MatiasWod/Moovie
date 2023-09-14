@@ -74,7 +74,7 @@ public class HelloWorldController {
         final ModelAndView mav = new ModelAndView("helloworld/details");
         final Optional<Movie> media = mediaService.getMovieById(mediaId);
         final List<Actor> actorsList = actorService.getAllActorsForMedia(mediaId);
-        final List<Genre> genresList =genreService.getGenreForMedia(mediaId);
+        final List<Genre> genresList = genreService.getGenreForMedia(mediaId);
         if (media.isPresent())
             mav.addObject("media", media.get());
         else

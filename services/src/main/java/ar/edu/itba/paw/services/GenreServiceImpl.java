@@ -17,4 +17,8 @@ public class GenreServiceImpl implements GenreService{
         return genreDao.getGenreForMedia(mediaId);
     }
 
+    @Override
+    public List<String> getAllGenres() {
+        return genreDao.getAllGenres();
+    }
 }

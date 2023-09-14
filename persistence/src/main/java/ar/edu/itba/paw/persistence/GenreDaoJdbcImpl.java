@@ -20,6 +20,10 @@ public class GenreDaoJdbcImpl implements GenreDao{
             rs.getString("genre")
     );
 
+    private static final RowMapper<String> ALL_GENRES_ROW_MAPPER = (rs, rowNum) -> new String(
+            rs.getString("genre")
+    );
+
     private static final RowMapper<Integer> COUNT_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("count"));
 
     @Autowired
@@ -44,13 +48,13 @@ public class GenreDaoJdbcImpl implements GenreDao{
     /***
      * Antes de implementar hay que hacer un ROW MAPPER DE STRINGS
      */
-    /*
+
     @Override
         public List<String> getAllGenres() {
         //revisar el findFirst, creo que siempre devuelve el primer género que encuentre que matchea con el tvId
 
-        return jdbcTemplate.query("SELECT DISTINCT genres.genre FROM genres ",new Object[]{mediaId},);
+        return jdbcTemplate.query("SELECT DISTINCT genres.genre FROM genres",ALL_GENRES_ROW_MAPPER);
     }
 
-     */
+
 }
