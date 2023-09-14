@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.models;
+package ar.edu.itba.paw.models.Provider;
 
 public class Provider {
     private final int mediaId;
