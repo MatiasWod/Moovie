@@ -51,6 +51,11 @@ public class MediaServiceImpl implements MediaService{
     }
 
     @Override
+    public List<Media> getMediaBySearch(String searchString) {
+        return mediaDao.getMediaBySearch(searchString);
+    }
+
+    @Override
     public List<Movie> getMovieList() {
         return mediaDao.getMovieList();
     }

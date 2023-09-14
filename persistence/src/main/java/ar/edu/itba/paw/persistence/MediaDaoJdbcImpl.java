@@ -169,6 +169,10 @@ public class MediaDaoJdbcImpl implements MediaDao {
         return jdbcTemplate.query("SELECT media.* FROM media INNER JOIN genres ON media.mediaid = genres.mediaid WHERE genres.genre = ? ", new Object[]{genre}, MEDIA_ROW_MAPPER);
     }
 
+    @Override
+    public List<Media> getMediaBySearch(String searchString) {
+        return jdbcTemplate.query("SELECT * FROM media WHERE media.name ILIKE ?", new Object[]{'%' + searchString + '%'}, MEDIA_ROW_MAPPER);
+    }
 
     /*** MOVIE QUERIES*/
 
