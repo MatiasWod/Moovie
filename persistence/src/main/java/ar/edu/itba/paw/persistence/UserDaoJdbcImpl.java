@@ -25,13 +25,11 @@ public class UserDaoJdbcImpl implements UserDao{
     public UserDaoJdbcImpl(final DataSource dataSource){
         jdbcTemplate = new JdbcTemplate(dataSource);
         userJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("users").usingGeneratedKeyColumns("userId");
-
         jdbcTemplate.execute(
                 "CREATE TABLE IF NOT EXISTS users (" +
-                        "id SERIAL PRIMARY KEY," +
+                        "userId SERIAL PRIMARY KEY," +
                         "email VARCHAR(255) UNIQUE NOT NULL," +
-                        "CONSTRAINT valid_email_address CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$') );"
-        );
+                        "CONSTRAINT valid_email_address CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$') )");
     }
 
     @Override
@@ -41,8 +39,8 @@ public class UserDaoJdbcImpl implements UserDao{
     }
 
     @Override
-    public User findUserById(int id) {
-        return jdbcTemplate.query("SELECT * FROM users WHERE ID = ?", new Object[]{id}, USER_ROW_MAPPER).get(0);
+    public User findUserById(int userId) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE userId = ?", new Object[]{userId}, USER_ROW_MAPPER).get(0);
     }
 
     @Override

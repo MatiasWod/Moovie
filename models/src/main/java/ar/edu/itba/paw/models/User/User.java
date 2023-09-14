@@ -1,16 +1,16 @@
 package ar.edu.itba.paw.models.User;
 
 public class User {
-    private final int id;
+    private final int userId;
     private final String email;
 
-    public User(int id, String email) {
-        this.id = id;
+    public User(int userId, String email) {
+        this.userId = userId;
         this.email = email;
     }
 
-    public int getId() {
-        return id;
+    public int getUserId() {
+        return userId;
     }
 
     public String getEmail() {
