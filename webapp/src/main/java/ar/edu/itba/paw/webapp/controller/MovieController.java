@@ -27,7 +27,7 @@ public class MovieController {
     private GenreService genreService;
 
     @Autowired
-    private MoovieListService mediaListService;
+    private MoovieListService moovieListService;
 
 
     @RequestMapping("/")
@@ -98,19 +98,19 @@ public class MovieController {
     @RequestMapping("/list")
     public ModelAndView list(){
 
-        final ModelAndView mav = new ModelAndView("helloworld/mediaList");
+        final ModelAndView mav = new ModelAndView("helloworld/moovieList");
 
-        int mediaListId = 1;
+        int moovieListId = 1;
 
-        Optional<MoovieList> mediaListData = mediaListService.getMoovieListById(mediaListId);
-        if(mediaListData.isPresent()){
-            mav.addObject("mediaListData", mediaListData.get());
+        Optional<MoovieList> moovieListData = moovieListService.getMoovieListById(moovieListId);
+        if(moovieListData.isPresent()){
+            mav.addObject("moovieList", moovieListData.get());
         }
-        List<Media> mediaList = mediaService.getMediaByMoovieListId(mediaListId);
-        List<MoovieListContent> mediaListContent = mediaListService.getMoovieListContentById(mediaListId);
+        List<Media> mediaList = mediaService.getMediaByMoovieListId(moovieListId);
+        List<MoovieListContent> moovieListContent = moovieListService.getMoovieListContentById(moovieListId);
 
         mav.addObject("mediaList", mediaList);
-        mav.addObject("mediaListContent", mediaListContent);
+        mav.addObject("moovieListContent", moovieListContent);
 
         return mav;
     }

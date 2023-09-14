@@ -15,7 +15,7 @@ public interface MediaDao {
     List<Media> getMediaOrderedByReleaseDateDesc();
     List<Media> getMediaFilteredByGenre(String genre);
     List<Media> getMediaBySearch(String searchString);
-    List<Media> getMediaByMoovieListId(int mediaListId);
+    List<Media> getMediaByMoovieListId(int moovieListId);
 
     Optional<Movie> getMovieById(int mediaId);
     List<Movie> getMovieList();

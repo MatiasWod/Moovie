@@ -1,20 +1,20 @@
 package ar.edu.itba.paw.models.MoovieList;
 
 public class MoovieList {
-    private final int mediaListId;
+    private final int moovieListId;
     private final int userId;
     private final String name;
     private final String description;
 
-    public MoovieList(int mediaListId, int userId, String name, String description) {
-        this.mediaListId = mediaListId;
+    public MoovieList(int moovieListId, int userId, String name, String description) {
+        this.moovieListId = moovieListId;
         this.userId = userId;
         this.name = name;
         this.description = description;
     }
 
     public int getMoovieListId() {
-        return mediaListId;
+        return moovieListId;
     }
 
     public int getUserId() {

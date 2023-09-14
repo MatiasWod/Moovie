@@ -176,7 +176,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
     @Override
     public List<Media> getMediaByMoovieListId(int moovieListId){
-        return jdbcTemplate.query("SELECT * FROM moovieListscontent INNER JOIN media ON media.mediaId = medialistscontent.mediaid WHERE medialistscontent.medialistid = ?",new Object[]{moovieListId},MEDIA_ROW_MAPPER)  ;
+        return jdbcTemplate.query("SELECT * FROM moovieListscontent INNER JOIN media ON media.mediaId = medialistscontent.mediaid WHERE medialistscontent.moovieListId = ?",new Object[]{moovieListId},MEDIA_ROW_MAPPER)  ;
     }
 
 
