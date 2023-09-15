@@ -44,7 +44,7 @@
             Community lists
         </h2>
         <c:forEach var="list" items="${moovieLists}">
-            <h4>${list.name} <-- aca hay una lista</h4>
+            <h4>${list} <-- aca hay una lista</h4>
         </c:forEach>
     </div>
 </div>
