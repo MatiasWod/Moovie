@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="${pageContext.request.contextPath}/resources/main.css" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/main.css?version=55" rel="stylesheet"/>
     <title>Moovie-${media.name}</title>
 </head>
 <body id="grad">
@@ -29,7 +29,8 @@
             <h5 style="display: flex; align-items: center">
                 <fmt:formatDate value="${media.releaseDate}" pattern="YYYY"/>
                 <fmt:formatNumber var="formattedHours" value="${hours}"/>
-                ${formattedHours}h ${minutes}m</h5>
+                ${formattedHours}h ${minutes}m
+            </h5>
 
             <!-- Ratings -->
             <h1>
@@ -56,12 +57,13 @@
                     <span class="badge text-bg-light border border-black">${media.director}</span>
                 </div>
             </div>
-            <!-- Description -->
+            <!-- Description and Buttons-->
             <p>${media.overview}</p>
 
             <button type="button" class="btn btn-dark"><i class="bi bi-plus-circle-fill"></i> Add to list
             </button>
-            <button type="button" class="btn btn-light border border-black"><i class="bi bi-star-fill"></i> Rate
+            <button type="button" class="btn btn-light border border-black" onclick="openReviewPopup()"><i
+                    class="bi bi-star-fill"></i> Rate
             </button>
         </div>
         <!-- Cast -->
@@ -71,9 +73,9 @@
             <div class="flex-wrap d-flex align-items-center justify-content-center container" id="actors-container">
                 <c:forEach var="actor" items="${actorsList}">
                     <div class="card actor-card" id="actor-card"
-                         style="width: 300px;border-radius: 5px; margin: 5px; display:none !important; position: relative; overflow: hidden;">
+                         style="width: 300px;height: 152px; border-radius: 5px; margin: 5px; display:none !important; position: relative; overflow: hidden;">
                         <div class="row">
-                            <div class="col-4">
+                            <div class="col-4 text-center">
                                 <img
                                         src="${actor.profilePath}"
                                         alt="${actor.actorName} picture not found"
@@ -91,15 +93,36 @@
             <div class="text-center" style="align-items: center">
                 <c:if test="${fn:length(actorsList) > 4}">
                     <div class="p-2 align-items-center">
-                        <button type="button" class="btn btn-dark show-more-button" onclick="showMoreActors()">See
-                            more
+                        <button type="button" class="btn btn-dark show-more-button" onclick="showMoreActors()">
+                            See more
                         </button>
                     </div>
                 </c:if>
             </div>
         </div>
 
+        <div class="popup-overlay" onclick=""></div>
+        <div class="popup">
+            <!-- Popup content goes here -->
+            <h2>Your rating of "${media.name}"</h2>
+            <hr class="my-8">
+            <div class="rating">
+                <c:forEach var="i" begin="1" end="10" varStatus="loopStatus">
+                    <c:set var="reverseIndex" value="${10 - loopStatus.count + 1}"/>
+                    <i class="bi bi-star" onclick="rate(${reverseIndex})"></i>
+                </c:forEach>
+            </div>
+            <h5>Your rating: <span id="selectedRating">Not selected</span></h5>
+            <h5>
+                <label for="review">Leave a review also!</label>
+            </h5>
 
+            <textarea class="review-textarea" id="review" rows="3"></textarea>
+            <div class="text-center" style="margin-top: 20px">
+                <button type="button" class="btn btn-danger" style="margin-inline: 10px" onclick="closeReviewPopup()">Cancel</button>
+                <button type="button" class="btn btn-dark" style="margin-inline: 10px">Submit</button>
+            </div>
+        </div>
         <!-- Reviews
         <h2>Reviews</h2>
         <hr class="my-8">
@@ -183,5 +206,43 @@
         const seeMoreButton = document.querySelector(".show-more-button");
         seeMoreButton.innerHTML = "See more";
         seeMoreButton.onclick = showMoreActors;
+    }
+
+    function openReviewPopup() {
+        const overlay = document.querySelector(".popup-overlay");
+        const popup = document.querySelector(".popup");
+
+        overlay.style.display = "block";
+        popup.style.display = "block";
+    }
+
+    function closeReviewPopup() {
+        const overlay = document.querySelector(".popup-overlay");
+        const popup = document.querySelector(".popup");
+
+        overlay.style.display = "none";
+        popup.style.display = "none";
+    }
+
+    var selectedRating = 0;
+    var stars = document.querySelectorAll('.rating > i');
+
+    function rate(starsClicked) {
+        selectedRating = starsClicked;
+
+        // Remove 'bi-star' class and add 'bi-star-fill' class for selected stars
+        stars.forEach(function (star, index) {
+            if (index >= (10 - starsClicked)) {
+                star.classList.remove('bi-star');
+                star.classList.add('bi-star-fill');
+                star.classList.add('selected')
+            } else {
+                star.classList.remove('bi-star-fill');
+                star.classList.remove('selected')
+                star.classList.add('bi-star');
+            }
+        });
+
+        document.getElementById("selectedRating").textContent = selectedRating;
     }
 </script>
