@@ -25,17 +25,26 @@
             con los datos necesarios desde una variable JSTL previousSelections
             for element in previousSelections: selectedMedia.push(element)     --%>
         let selectedMedia = [];
+        let selectedMediaId = [];
 
-        function displayMediaName(name) {
+
+        function displayMediaName(name, id) {
             selectedMedia.push(name);
+            selectedMediaId.push(id);
             const selectedMediaDiv = document.getElementById("selected-media-names");
             const newElement = document.createElement('div');
             newElement.id = "list-element-preview";
             newElement.className = "d-flex justify-content-between";
             newElement.innerHTML = '<a>' + name +
                 '</a>' +
-          '<i class="btn bi bi-trash" onclick="deleteMedia(this)"></i>';
+                '<i class="btn bi bi-trash" onclick="deleteMedia(this)"></i>';
             selectedMediaDiv.appendChild(newElement);
+            updateSelectedMediaInput();
+        }
+
+        function updateSelectedMediaInput() {
+            const selectedMediaInput = document.getElementById("selected-media-input");
+            selectedMediaInput.value = JSON.stringify(selectedMediaId);
         }
 
         function deleteMedia(element) {
@@ -43,19 +52,24 @@
             const index = selectedMedia.indexOf(name);
             if (index !== -1) {
                 selectedMedia.splice(index, 1);
+                selectedMediaId.splice(index, 1);
+
             }
             element.parentElement.remove();
+            updateSelectedMediaInput();
         }
 
         function resetSelectedMediaNames() {
             const selectedMediaDiv = document.getElementById("selected-media-names");
             selectedMediaDiv.innerHTML = '';
             selectedMedia = [];
+            selectedMediaId = [];
+            updateSelectedMediaInput();
         }
 
         function showSelectedMediaList() {
             const selectedMediaList = selectedMedia.join(', ');
-            if (selectedMediaList.trim() === '') return; // Check if the list is empty or only contains spaces
+            if (selectedMediaList.trim() === '') return;
 
             const existingList = document.getElementById('list-result');
 
@@ -69,11 +83,8 @@
             } else {
                 existingList.innerHTML = selectedMediaList;
             }
-
-            resetSelectedMediaNames(); // Call the function to clear selected-media-names
+            resetSelectedMediaNames();
         }
-
-
 
     </script>
 
@@ -86,6 +97,7 @@
         <div class="container d-flex flex-column">
             <div >
                 <form class="mb-2 d-flex flex-row justify-content-between" action="${pageContext.request.contextPath}/createList" method="get" onsubmit="beforeSubmit()">
+                    <input type="hidden" id="selected-media-input" name="s" />
                     <div class="d-flex flex-row">
                         <select name="m" class="form-select filter-width" aria-label="Filter!">
                             <option ${'Movies and Series' == param.m ? 'selected' : ''}>Movies and Series</option>
@@ -114,9 +126,9 @@
             </div>
             <div class="scrollableDiv flex-wrap d-flex">
                 <c:forEach var="movie" items="${mediaList}">
-                    <div class="poster card text-bg-dark m-1" onclick="displayMediaName('${movie.name}')">
+                    <div class="poster card text-bg-dark m-1" onclick="displayMediaName('${movie.name}','${movie.mediaId}')">
                     <div class="card-img-container"> <!-- Add a container for the image -->
-                            <img class="height-full" src="${movie.posterPath}">
+                            <img class="height-full" src="${movie.posterPath}" alt="poster image">
                             <div class="card-img-overlay">
                                 <h5 class="card-title">${movie.name}</h5>
                                 <p class="card-text">${movie.tmdbRating}</p>
@@ -139,7 +151,7 @@
                     <input class="form-control me-2">
                 </label>
                 <div class="scrollableMedia d-flex flex-column m-2 p-2" id="selected-media-names"></div>
-<%--                ACA van la Media seleccionada! --%>
+                <%-- ACA van la Media seleccionada! --%>
                 <a id="preview-details" class="m-4 btn btn-outline-success align-bottom" onclick="showSelectedMediaList()">Create List</a>
                 <div class="d-flex" id="preview-list"></div>
             </div>

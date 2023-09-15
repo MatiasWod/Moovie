@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Controller
@@ -37,11 +40,23 @@ public class ListController {
         return mav;
     }
 
+    private String extractNumericPart(String input) {
+        Pattern pattern = Pattern.compile("\\d+");
+        Matcher matcher = pattern.matcher(input);
+
+        if (matcher.find()) {
+            return matcher.group();
+        } else {
+            return null;
+        }
+    }
+
 // http://tuDominio.com/createList?s=A&s=B&s=C&s=D&s=E
     @RequestMapping("/createList")
     public ModelAndView createList(@RequestParam(value = "g", required = false) String genre,
                                    @RequestParam(value = "m", required = false) String media,
-                                   @RequestParam(value = "q", required = false) String query){
+                                   @RequestParam(value = "q", required = false) String query,
+                                   @RequestParam(value = "s", required = false) List<String> selected){
 
         List<Movie> movieList = null;
         List<TVSerie> tvSerieList = null;
@@ -103,6 +118,22 @@ public class ListController {
             } else if (mediaList != null) {
                 mav.addObject("mediaList",mediaList);
             }
+        }
+
+        if (selected != null && !selected.isEmpty()) {
+            List<String> selectedMediaNames = new ArrayList<>();
+            List<String> selectedMediaId = new ArrayList<>();
+            for (String id : selected) {
+                String numericPart = extractNumericPart(id);
+                if (numericPart != null) {
+                    int mediaId = Integer.parseInt(numericPart);
+                    Media aux = mediaService.getMediaById(mediaId).get();
+                    selectedMediaNames.add(aux.getName());
+                    selectedMediaId.add(numericPart);
+                }
+            }
+            mav.addObject("selectedName", selectedMediaNames);
+            mav.addObject("selectedId", selectedMediaId);
         }
 
         List<String> genres = genreService.getAllGenres();
