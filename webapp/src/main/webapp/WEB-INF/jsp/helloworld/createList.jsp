@@ -11,7 +11,7 @@
 <html>
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link href="${pageContext.request.contextPath}/resources/main.css?version=58" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/main.css?version=59" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
     <title>Share your favorite media</title>
@@ -30,15 +30,30 @@
             //  TODO chequear que no este en la lista antes de pushear
             selectedMedia.push(name);
             const selectedMediaDiv = document.getElementById("selected-media-names");
-            selectedMediaDiv.innerHTML += name + "<br>";
+            selectedMediaDiv.innerHTML += '<div id="list-element-preview" class="d-flex justify-content-between">' +
+                '<a>' + name + '</a>' +
+                '<i class="btn bi bi-trash"></i>' +
+                '</div>';
         }
 
         function showSelectedMediaList() {
             const selectedMediaList = selectedMedia.join(', ');
-            const listDiv = document.createElement('div');
-            listDiv.innerHTML = '<h4>Lista de Media Seleccionada: ' + selectedMediaList + '</h4>';
-            document.getElementById("preview-list").appendChild(listDiv);
+            if (selectedMediaList.trim() === '') return; // Check if the list is empty or only contains spaces
+
+            const existingList = document.getElementById('list-result');
+
+            if (!existingList) {
+                const listDiv = document.createElement('div');
+                listDiv.innerHTML = '<div class="d-flex flex-column">' +
+                    '<h4>Selected Media List: </h4>' +
+                    '<div style="max-height: 150px" id="list-result" class="container d-flex scrollableMedia">' + selectedMediaList + '</div>' +
+                    '</div>';
+                document.getElementById("preview-list").appendChild(listDiv);
+            } else {
+                existingList.innerHTML = selectedMediaList;
+            }
         }
+
 
     </script>
 
@@ -93,16 +108,20 @@
 
         </div>
         <div id="preview" style="position: relative" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
-            <img id="preview-img" style="" class="image-blur height-full background" src="https://image.tmdb.org/t/p/original/4m1Au3YkjqsxF8iwQy0fPYSxE0h.jpg">
-            <div style="position: absolute;top: 0;left: 0" class="d-flex container flex-column">
-                <h2 class="m-2" id="preview-title">Nombre:</h2>
-                <input class="form-control me-2">
-                <h2 class="m-2" id="preview-title">Email:</h2>
-                <input class="form-control me-2">
-                <div id="selected-media-names"></div>
+            <img id="preview-img" class="image-blur height-full background" src="https://image.tmdb.org/t/p/original/4m1Au3YkjqsxF8iwQy0fPYSxE0h.jpg">
+            <div style="position: absolute;top: 0;left: 0" class="d-flex p-4 container flex-column">
+                <h2 class="m-2" id="preview-title">List Name:</h2>
+                <label>
+                    <input class="form-control me-2">
+                </label>
+                <h3 class="m-2" id="preview-title">Email:</h3>
+                <label>
+                    <input class="form-control me-2">
+                </label>
+                <div class="scrollableMedia d-flex flex-column m-2 p-2" id="selected-media-names"></div>
 <%--                ACA van la Media seleccionada! --%>
                 <a id="preview-details" class="m-4 btn btn-outline-success align-bottom" onclick="showSelectedMediaList()">Crear lista</a>
-                <div id="preview-list"></div>
+                <div class="d-flex" id="preview-list"></div>
             </div>
         </div>
     </c>

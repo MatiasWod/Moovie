@@ -131,3 +131,8 @@
 .seventy-width{
     width: 60%;
 }
+
+.scrollableMedia {
+    overflow-y: auto;
+    max-height: 200px;
+}
