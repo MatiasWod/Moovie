@@ -27,6 +27,7 @@
         let selectedMedia = [];
 
         function displayMediaName(name) {
+            //  TODO chequear que no este en la lista antes de pushear
             selectedMedia.push(name);
             const selectedMediaDiv = document.getElementById("selected-media-names");
             selectedMediaDiv.innerHTML += name + "<br>";
