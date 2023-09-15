@@ -18,17 +18,9 @@ import java.util.Optional;
 
 @Controller
 public class HelloWorldController {
-    @Autowired
-    private MediaService mediaService;
-    @Autowired
-    private ActorService actorService;
-    @Autowired
-    private GenreService genreService;
+
     @Autowired
     private UserService userService;
-    @Autowired
-    private ReviewService reviewService;
-
     @Autowired
     public HelloWorldController(final UserService us) {
         this.userService = us;
@@ -54,19 +46,4 @@ public class HelloWorldController {
         return new ModelAndView("helloworld/register");
     }
 
-
-    @RequestMapping("/details/{id:\\d+}")
-    public ModelAndView details(@PathVariable("id") final int mediaId) {
-        final ModelAndView mav = new ModelAndView("helloworld/details");
-        final Optional<Movie> media = mediaService.getMovieById(mediaId);
-        final List<Actor> actorsList = actorService.getAllActorsForMedia(mediaId);
-        final List<Genre> genresList = genreService.getGenreForMedia(mediaId);
-        if (media.isPresent())
-            mav.addObject("media", media.get());
-        else
-            mav.addObject("media", null);
-        mav.addObject("actorsList", actorsList);
-        mav.addObject("genresList", genresList);
-        return mav;
-    }
 }

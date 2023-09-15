@@ -36,6 +36,9 @@ public class MovieController {
     private MoovieListService moovieListService;
 
     @Autowired
+    private ActorService actorService;
+
+    @Autowired
     private ReviewService reviewService;
 
 
@@ -102,6 +105,21 @@ public class MovieController {
         return mav;
     }
 
+
+    @RequestMapping("/details/{id:\\d+}")
+    public ModelAndView details(@PathVariable("id") final int mediaId) {
+        final ModelAndView mav = new ModelAndView("helloworld/details");
+        final Optional<Movie> media = mediaService.getMovieById(mediaId);
+        final List<Actor> actorsList = actorService.getAllActorsForMedia(mediaId);
+        final List<Genre> genresList = genreService.getGenreForMedia(mediaId);
+        if (media.isPresent())
+            mav.addObject("media", media.get());
+        else
+            mav.addObject("media", null);
+        mav.addObject("actorsList", actorsList);
+        mav.addObject("genresList", genresList);
+        return mav;
+    }
 
     @RequestMapping("/list/{id:\\d+}")
     public ModelAndView list(@PathVariable("id") final int moovieListId){

@@ -9,6 +9,7 @@
           integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/resources/main.css?version=55" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/details.css?version=55" rel="stylesheet"/>
     <title>Moovie-${media.name}</title>
 </head>
 <body id="grad">
@@ -101,9 +102,13 @@
             </div>
         </div>
 
-        <div class="popup-overlay" onclick=""></div>
+        <div class="popup-overlay" onclick="closeReviewPopup()"></div>
         <div class="popup">
             <!-- Popup content goes here -->
+            <h2 class="m-2">Email:</h2>
+            <input type="text" class="form-control" id="email" placeholder="Enter email">
+            <hr class="my-8">
+
             <h2>Your rating of "${media.name}"</h2>
             <hr class="my-8">
             <div class="rating">
@@ -113,14 +118,18 @@
                 </c:forEach>
             </div>
             <h5>Your rating: <span id="selectedRating">Not selected</span></h5>
-            <h5>
+            <h3>
                 <label for="review">Leave a review also!</label>
-            </h5>
-
-            <textarea class="review-textarea" id="review" rows="3"></textarea>
+            </h3>
+            <textarea class="review-textarea" id="review" rows="3" placeholder="Your review (Optional)"></textarea>
             <div class="text-center" style="margin-top: 20px">
-                <button type="button" class="btn btn-danger" style="margin-inline: 10px" onclick="closeReviewPopup()">Cancel</button>
-                <button type="button" class="btn btn-dark" style="margin-inline: 10px">Submit</button>
+                <button type="button" class="btn btn-danger" style="margin-inline: 10px" onclick="closeReviewPopup()">
+                    Cancel
+                </button>
+                <button type="button" class="btn btn-dark" style="margin-inline: 10px" id="submitButton" disabled
+                        onclick="submitReview()">
+                    Submit
+                </button>
             </div>
         </div>
         <!-- Reviews
@@ -244,5 +253,19 @@
         });
 
         document.getElementById("selectedRating").textContent = selectedRating;
+        document.getElementById("submitButton").disabled = false;
+    }
+
+    function submitReview() {
+        const rating = selectedRating;
+        const review = document.getElementById("review").value;
+        const email = document.getElementById("email").value;
+        if (email === "") {
+            alert("Please enter your email");
+            return;
+        }
+
+
+        closeReviewPopup();
     }
 </script>
