@@ -8,10 +8,8 @@ import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.Review.Review;
-import ar.edu.itba.paw.services.GenreService;
-import ar.edu.itba.paw.services.MoovieListService;
-import ar.edu.itba.paw.services.MediaService;
-import ar.edu.itba.paw.services.ReviewService;
+import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +22,9 @@ import java.util.Optional;
 
 @Controller
 public class MovieController {
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private MediaService mediaService;
@@ -112,8 +113,11 @@ public class MovieController {
 
             List<Media> mediaList = mediaService.getMediaByMoovieListId(moovieListId);
             List<MoovieListContent> moovieListContent = moovieListService.getMoovieListContentById(moovieListId);
+            String listOwner = userService.findUserById(moovieListData.get().getUserId()).getEmail();
+
             mav.addObject("mediaList", mediaList);
             mav.addObject("moovieListContent", moovieListContent);
+            mav.addObject("listOwner", listOwner);
         }
         else {
         }

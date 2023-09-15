@@ -12,24 +12,26 @@
 <body style="background: whitesmoke">
 <div class="container d-flex flex-column">
     <c:import url="navBar.jsp"/>
+    <h1>${moovieList.name} by ${listOwner}</h1>
+    <h2 style="font-size: large">${moovieList.description}</h2>
     <table class="table table-striped">
         <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Poster</th>
-            <th scope="col">Type</th>
-            <th scope="col">Title</th>
-            <th scope="col">Score</th>
+        <tr class="d-flex">
+            <th scope="col" class="col-1">#</th>
+            <th scope="col" class="col-2">Poster</th>
+            <th scope="col" class="col-3">Type</th>
+            <th scope="col" class="col-4">Title</th>
+            <th scope="col" class="col-2">Score</th>
         </tr>
         </thead>
         <tbody>
         <c:forEach var="index" begin="0" end="${moovieListContent.size()-1}" step="1">
-            <tr>
-                <th scope="row"> ${index + 1} </th>
-                <td><img src="${mediaList.get(index).posterPath}" class="img-fluid" width="100" height="100"></td>
-                <td><c:if test="${mediaList.get(index).type == true}"><p>TvSerie</p></c:if><c:if test="${mediaList.get(index).type != true}"><p>Movie</p></c:if></td>
-                <td>${mediaList.get(index).name}<br><p style="font-size: smaller; font-style: italic"> ${mediaList.get(index).releaseDate}</p></td>
-                <td>${mediaList.get(index).tmdbRating}<i class="bi bi-star-fill"></i></td>
+            <tr class="d-flex">
+                <th scope="row" class="col-1"> ${index + 1} </th>
+                <td class="col-2" ><a href="${pageContext.request.contextPath}/details/${mediaList.get(index).mediaId}"><img src="${mediaList.get(index).posterPath}" class="img-fluid" width="100" height="100"></a></td>
+                <td class="col-3"> <c:if test="${mediaList.get(index).type == true}"><p>TvSerie</p></c:if><c:if test="${mediaList.get(index).type != true}"><p>Movie</p></c:if></td>
+                <td class="col-4"><a href="${pageContext.request.contextPath}/details/${mediaList.get(index).mediaId}">${mediaList.get(index).name}</a><br><p style="font-size: smaller; font-style: italic"> ${mediaList.get(index).releaseDate}</p></td>
+                <td class="col-2">${mediaList.get(index).tmdbRating}<i class="bi bi-star-fill"></i></td>
             </tr>
         </c:forEach>
         </tbody>
