@@ -15,17 +15,25 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
     <title>Share your favorite media</title>
+    <script src="${pageContext.request.contextPath}/resources/discoverFunctions.js"></script>
     <script>
-        let selectedMediaNames = [];
+<%--        asumo que el parametro contiene los Ids de la Media seleccionada.
+            entonces --> el controller debe cargar esas peliculas desde los IDs (server-side)
+            porque la lista de media que devuelve la busqueda/filtros puede no contener la media seleccionada anteriormente
+            por lo tanto
+            onLoad (hay un ejemplo en discoverFunctions.js) cargo selectedMedia
+            con los datos necesarios desde una variable JSTL previousSelections
+            for element in previousSelections: selectedMedia.push(element)     --%>
+        let selectedMedia = [];
 
         function displayMediaName(name) {
-            selectedMediaNames.push(name);
+            selectedMedia.push(name);
             const selectedMediaDiv = document.getElementById("selected-media-names");
             selectedMediaDiv.innerHTML += name + "<br>";
         }
 
         function showSelectedMediaList() {
-            const selectedMediaList = selectedMediaNames.join(', ');
+            const selectedMediaList = selectedMedia.join(', ');
             const listDiv = document.createElement('div');
             listDiv.innerHTML = '<h4>Lista de Media Seleccionada: ' + selectedMediaList + '</h4>';
             document.getElementById("preview-list").appendChild(listDiv);
@@ -40,6 +48,34 @@
     <c:import url="navBar.jsp"/>
     <c class="container d-flex flex-row ">
         <div class="container d-flex flex-column">
+            <div >
+                <form class="mb-2 d-flex flex-row justify-content-between" action="${pageContext.request.contextPath}/createList" method="get" onsubmit="beforeSubmit()">
+                    <div class="d-flex flex-row">
+                        <select name="m" class="form-select filter-width" aria-label="Filter!">
+                            <option ${'Movies and Series' == param.m ? 'selected' : ''}>Movies and Series</option>
+                            <option  ${'Movies' == param.m ? 'selected' : ''}>Movies</option>
+                            <option  ${'Series' == param.m ? 'selected' : ''}>Series</option>
+                        </select>
+                        <select name="f" id="filter-types" class="form-select filter-width" aria-label="Filter!" onchange="toggleGenreSelect()">
+                            <option ${'Popular' == param.f ? 'selected' : ''}>Popular</option>
+                            <option ${'Genre' == param.f ? 'selected' : ''}>Genre</option>
+                        </select>
+                        <select name="g" id="genre-select" class="form-select filter-width" aria-label="Filter!" style="display:none">
+                            <c:forEach var="genre" items="${genresList}">
+                                <option value="${genre}" ${genre == param.g? 'selected' : ''}>${genre}</option>
+                            </c:forEach>
+                        </select>
+                        <button class="btn btn-outline-success" type="submit">Apply filters</button>
+                    </div>
+                    <div class="d-flex flex-row">
+                        <form class="d-flex mb-0" role="search" action="${pageContext.request.contextPath}/createList" method="get">
+                            <input class="form-control me-2" type="search" name="q" value="${param.q}" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-success" type="submit">Search</button>
+                        </form>
+                    </div>
+
+                </form>
+            </div>
             <div class="scrollableDiv flex-wrap d-flex">
                 <c:forEach var="movie" items="${mediaList}">
                     <div class="poster card text-bg-dark m-1" onclick="displayMediaName('${movie.name}')">
