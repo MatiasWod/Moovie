@@ -67,7 +67,7 @@ public class MoovieListJdbcImpl implements MoovieListDao{
 
     @Override
     public List<MoovieListContent> getMoovieListContentById(int moovieListId){
-        return jdbcTemplate.query("SELECT * FROM moovieListsContent WHERE moovieListId = ?",new Object[]{moovieListId},MEDIA_LIST_CONTENT_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT * FROM moovieListsContent WHERE moovieListId = ? ORDER BY moovieListsContent.mediaId",new Object[]{moovieListId},MEDIA_LIST_CONTENT_ROW_MAPPER);
     }
 }
 

@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -44,5 +45,10 @@ public class ReviewDaoJdbcImpl implements ReviewDao{
     @Override
     public Optional<Review> getReviewById(int reviewId) {
         return jdbcTemplate.query("SELECT * FROM reviews WHERE reviewId = ?",new Object[]{reviewId},REVIEW_ROW_MAPPER).stream().findFirst();
+    }
+
+    @Override
+    public List<Review> getReviewForMoovieListFromUser(int moovieListId, int userId) {
+        return jdbcTemplate.query("SELECT reviews.* FROM reviews INNER JOIN moovielistscontent ON moovielistscontent.mediaId = reviews.mediaId WHERE reviews.userId = ?", new Object[]{userId+" AND moovielistscontent.moovielistId = "+moovieListId} ,REVIEW_ROW_MAPPER);
     }
 }

@@ -16,19 +16,20 @@
         <thead>
         <tr>
             <th scope="col">#</th>
+            <th scope="col">Poster</th>
+            <th scope="col">Type</th>
             <th scope="col">Title</th>
             <th scope="col">Score</th>
-            <th scope="col">Your Score</th>
         </tr>
         </thead>
         <tbody>
-        <c:forEach var="listContent" items="${moovieListContent}">
+        <c:forEach var="index" begin="0" end="${moovieListContent.size()-1}" step="1">
             <tr>
-                <th scope="row">${loop.index + 1}</th>
-                <td></td>
-                <td>Otto</td>
-                <td>@mdo</td>
-
+                <th scope="row"> ${index + 1} </th>
+                <td><img src="${mediaList.get(index).posterPath}" class="img-fluid" width="100" height="100"></td>
+                <td><c:if test="${mediaList.get(index).type == true}"><p>TvSerie</p></c:if><c:if test="${mediaList.get(index).type != true}"><p>Movie</p></c:if></td>
+                <td>${mediaList.get(index).name}<br><p style="font-size: smaller; font-style: italic"> ${mediaList.get(index).releaseDate}</p></td>
+                <td>${mediaList.get(index).tmdbRating}<i class="bi bi-star-fill"></i></td>
             </tr>
         </c:forEach>
         </tbody>

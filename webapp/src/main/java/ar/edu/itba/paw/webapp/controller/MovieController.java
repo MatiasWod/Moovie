@@ -1,15 +1,20 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.models.Cast.Actor;
+import ar.edu.itba.paw.models.Genre.Genre;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
+import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.services.GenreService;
 import ar.edu.itba.paw.services.MoovieListService;
 import ar.edu.itba.paw.services.MediaService;
+import ar.edu.itba.paw.services.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -28,6 +33,9 @@ public class MovieController {
 
     @Autowired
     private MoovieListService moovieListService;
+
+    @Autowired
+    private ReviewService reviewService;
 
 
     @RequestMapping("/")
@@ -94,25 +102,21 @@ public class MovieController {
     }
 
 
-    @RequestMapping("/list")
-    public ModelAndView list(){
-
+    @RequestMapping("/list/{id:\\d+}")
+    public ModelAndView list(@PathVariable("id") final int moovieListId){
         final ModelAndView mav = new ModelAndView("helloworld/moovieList");
-
-        int moovieListId = 1;
 
         Optional<MoovieList> moovieListData = moovieListService.getMoovieListById(moovieListId);
         if(moovieListData.isPresent()){
             mav.addObject("moovieList", moovieListData.get());
+
+            List<Media> mediaList = mediaService.getMediaByMoovieListId(moovieListId);
+            List<MoovieListContent> moovieListContent = moovieListService.getMoovieListContentById(moovieListId);
+            mav.addObject("mediaList", mediaList);
+            mav.addObject("moovieListContent", moovieListContent);
         }
-        List<Media> mediaList = mediaService.getMediaByMoovieListId(moovieListId);
-        List<MoovieListContent> moovieListContent = moovieListService.getMoovieListContentById(moovieListId);
-
-        mav.addObject("mediaList", mediaList);
-        mav.addObject("moovieListContent", moovieListContent);
-
+        else {
+        }
         return mav;
     }
-
-
 }
