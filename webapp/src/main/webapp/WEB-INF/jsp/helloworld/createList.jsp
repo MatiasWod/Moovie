@@ -27,13 +27,30 @@
         let selectedMedia = [];
 
         function displayMediaName(name) {
-            //  TODO chequear que no este en la lista antes de pushear
             selectedMedia.push(name);
             const selectedMediaDiv = document.getElementById("selected-media-names");
-            selectedMediaDiv.innerHTML += '<div id="list-element-preview" class="d-flex justify-content-between">' +
-                '<a>' + name + '</a>' +
-                '<i class="btn bi bi-trash"></i>' +
-                '</div>';
+            const newElement = document.createElement('div');
+            newElement.id = "list-element-preview";
+            newElement.className = "d-flex justify-content-between";
+            newElement.innerHTML = '<a>' + name +
+                '</a>' +
+          '<i class="btn bi bi-trash" onclick="deleteMedia(this)"></i>';
+            selectedMediaDiv.appendChild(newElement);
+        }
+
+        function deleteMedia(element) {
+            const name = element.previousElementSibling.innerText;
+            const index = selectedMedia.indexOf(name);
+            if (index !== -1) {
+                selectedMedia.splice(index, 1);
+            }
+            element.parentElement.remove();
+        }
+
+        function resetSelectedMediaNames() {
+            const selectedMediaDiv = document.getElementById("selected-media-names");
+            selectedMediaDiv.innerHTML = '';
+            selectedMedia = [];
         }
 
         function showSelectedMediaList() {
@@ -45,14 +62,17 @@
             if (!existingList) {
                 const listDiv = document.createElement('div');
                 listDiv.innerHTML = '<div class="d-flex flex-column">' +
-                    '<h4>Selected Media List: </h4>' +
+                    '<h4 id="result-title">Created Media List: </h4>' +
                     '<div style="max-height: 150px" id="list-result" class="container d-flex scrollableMedia">' + selectedMediaList + '</div>' +
                     '</div>';
                 document.getElementById("preview-list").appendChild(listDiv);
             } else {
                 existingList.innerHTML = selectedMediaList;
             }
+
+            resetSelectedMediaNames(); // Call the function to clear selected-media-names
         }
+
 
 
     </script>
@@ -120,7 +140,7 @@
                 </label>
                 <div class="scrollableMedia d-flex flex-column m-2 p-2" id="selected-media-names"></div>
 <%--                ACA van la Media seleccionada! --%>
-                <a id="preview-details" class="m-4 btn btn-outline-success align-bottom" onclick="showSelectedMediaList()">Crear lista</a>
+                <a id="preview-details" class="m-4 btn btn-outline-success align-bottom" onclick="showSelectedMediaList()">Create List</a>
                 <div class="d-flex" id="preview-list"></div>
             </div>
         </div>
