@@ -130,8 +130,7 @@ public class ListController {
                     selectedMedia.add(aux);
                 }
             }
-            mav.addObject("selectedName", selectedMediaNames);
-            mav.addObject("selectedId", selectedMediaId);
+            mav.addObject("selected", selectedMedia);
         }
 
         List<String> genres = genreService.getAllGenres();
