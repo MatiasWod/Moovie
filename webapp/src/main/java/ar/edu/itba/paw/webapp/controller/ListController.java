@@ -121,15 +121,13 @@ public class ListController {
         }
 
         if (selected != null && !selected.isEmpty()) {
-            List<String> selectedMediaNames = new ArrayList<>();
-            List<String> selectedMediaId = new ArrayList<>();
+            List<Media> selectedMedia = new ArrayList<>();
             for (String id : selected) {
                 String numericPart = extractNumericPart(id);
                 if (numericPart != null) {
                     int mediaId = Integer.parseInt(numericPart);
                     Media aux = mediaService.getMediaById(mediaId).get();
-                    selectedMediaNames.add(aux.getName());
-                    selectedMediaId.add(numericPart);
+                    selectedMedia.add(aux);
                 }
             }
             mav.addObject("selectedName", selectedMediaNames);

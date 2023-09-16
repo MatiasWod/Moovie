@@ -15,78 +15,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
     <title>Share your favorite media</title>
-    <script src="${pageContext.request.contextPath}/resources/discoverFunctions.js"></script>
-    <script>
-<%--        asumo que el parametro contiene los Ids de la Media seleccionada.
-            entonces --> el controller debe cargar esas peliculas desde los IDs (server-side)
-            porque la lista de media que devuelve la busqueda/filtros puede no contener la media seleccionada anteriormente
-            por lo tanto
-            onLoad (hay un ejemplo en discoverFunctions.js) cargo selectedMedia
-            con los datos necesarios desde una variable JSTL previousSelections
-            for element in previousSelections: selectedMedia.push(element)     --%>
-        let selectedMedia = [];
-        let selectedMediaId = [];
-
-
-        function displayMediaName(name, id) {
-            selectedMedia.push(name);
-            selectedMediaId.push(id);
-            const selectedMediaDiv = document.getElementById("selected-media-names");
-            const newElement = document.createElement('div');
-            newElement.id = "list-element-preview";
-            newElement.className = "d-flex justify-content-between";
-            newElement.innerHTML = '<a>' + name +
-                '</a>' +
-                '<i class="btn bi bi-trash" onclick="deleteMedia(this)"></i>';
-            selectedMediaDiv.appendChild(newElement);
-            updateSelectedMediaInput();
-        }
-
-        function updateSelectedMediaInput() {
-            const selectedMediaInput = document.getElementById("selected-media-input");
-            selectedMediaInput.value = JSON.stringify(selectedMediaId);
-        }
-
-        function deleteMedia(element) {
-            const name = element.previousElementSibling.innerText;
-            const index = selectedMedia.indexOf(name);
-            if (index !== -1) {
-                selectedMedia.splice(index, 1);
-                selectedMediaId.splice(index, 1);
-
-            }
-            element.parentElement.remove();
-            updateSelectedMediaInput();
-        }
-
-        function resetSelectedMediaNames() {
-            const selectedMediaDiv = document.getElementById("selected-media-names");
-            selectedMediaDiv.innerHTML = '';
-            selectedMedia = [];
-            selectedMediaId = [];
-            updateSelectedMediaInput();
-        }
-
-        function showSelectedMediaList() {
-            const selectedMediaList = selectedMedia.join(', ');
-            if (selectedMediaList.trim() === '') return;
-
-            const existingList = document.getElementById('list-result');
-
-            if (!existingList) {
-                const listDiv = document.createElement('div');
-                listDiv.innerHTML = '<div class="d-flex flex-column">' +
-                    '<h4 id="result-title">Created Media List: </h4>' +
-                    '<div style="max-height: 150px" id="list-result" class="container d-flex scrollableMedia">' + selectedMediaList + '</div>' +
-                    '</div>';
-                document.getElementById("preview-list").appendChild(listDiv);
-            } else {
-                existingList.innerHTML = selectedMediaList;
-            }
-            resetSelectedMediaNames();
-        }
-
-    </script>
+    <script src="${pageContext.request.contextPath}/resources/createListFunctions.js"></script>
 
 </head>
 <body style="background: whitesmoke">
@@ -126,7 +55,7 @@
             </div>
             <div class="scrollableDiv flex-wrap d-flex">
                 <c:forEach var="movie" items="${mediaList}">
-                    <div class="poster card text-bg-dark m-1" onclick="displayMediaName('${movie.name}','${movie.mediaId}')">
+                    <div class="poster card text-bg-dark m-1" onclick="displayMediaName('${movie.name}',${movie.mediaId})">
                     <div class="card-img-container"> <!-- Add a container for the image -->
                             <img class="height-full" src="${movie.posterPath}" alt="poster image">
                             <div class="card-img-overlay">
@@ -150,7 +79,14 @@
                 <label>
                     <input class="form-control me-2">
                 </label>
-                <div class="scrollableMedia d-flex flex-column m-2 p-2" id="selected-media-names"></div>
+                <div class="scrollableMedia d-flex flex-column m-2 p-2" id="selected-media-names">
+                    <c:forEach var="sel" items="${selected}">
+                        <div class="d-flex justify-content-between ">
+                            <div id="${sel.mediaId}" class="distinct-class">${sel.name}</div>
+                            <i class="btn bi bi-trash" onclick="deleteMedia(this)"></i>
+                        </div>
+                    </c:forEach>
+                </div>
                 <%-- ACA van la Media seleccionada! --%>
                 <a id="preview-details" class="m-4 btn btn-outline-success align-bottom" onclick="showSelectedMediaList()">Create List</a>
                 <div class="d-flex" id="preview-list"></div>
