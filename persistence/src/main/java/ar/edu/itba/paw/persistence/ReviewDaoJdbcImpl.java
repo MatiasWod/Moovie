@@ -8,11 +8,13 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public class ReviewDaoJdbcImpl implements ReviewDao{
+public class ReviewDaoJdbcImpl implements ReviewDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert reviewJdbcInsert;
 
@@ -26,9 +28,9 @@ public class ReviewDaoJdbcImpl implements ReviewDao{
     );
 
     @Autowired
-    public ReviewDaoJdbcImpl(final DataSource dataSource){
+    public ReviewDaoJdbcImpl(final DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        reviewJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("reviews").usingGeneratedKeyColumns("reviewId");
+        reviewJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("reviews").usingGeneratedKeyColumns("reviewid");
         jdbcTemplate.execute(
                 "CREATE TABLE IF NOT EXISTS reviews(" +
                         "reviewId                           SERIAL PRIMARY KEY," +
@@ -44,11 +46,24 @@ public class ReviewDaoJdbcImpl implements ReviewDao{
 
     @Override
     public Optional<Review> getReviewById(int reviewId) {
-        return jdbcTemplate.query("SELECT * FROM reviews WHERE reviewId = ?",new Object[]{reviewId},REVIEW_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT * FROM reviews WHERE reviewId = ?", new Object[]{reviewId}, REVIEW_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
     public List<Review> getReviewForMoovieListFromUser(int moovieListId, int userId) {
-        return jdbcTemplate.query("SELECT reviews.* FROM reviews INNER JOIN moovielistscontent ON moovielistscontent.mediaId = reviews.mediaId WHERE reviews.userId = ?", new Object[]{userId+" AND moovielistscontent.moovielistId = "+moovieListId} ,REVIEW_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT reviews.* FROM reviews INNER JOIN moovielistscontent ON moovielistscontent.mediaId = reviews.mediaId WHERE reviews.userId = ?", new Object[]{userId + " AND moovielistscontent.moovielistId = " + moovieListId}, REVIEW_ROW_MAPPER);
+    }
+
+    @Override
+    public Review createReview(int userId, int mediaId, int rating, String reviewContent) {
+        final Map<String, Object> args = new HashMap<>();
+        args.put("userId", userId);
+        args.put("mediaId", mediaId);
+        args.put("rating", rating);
+        args.put("reviewLikes", 0);
+        args.put("reviewContent", reviewContent);
+
+        final Number reviewId = reviewJdbcInsert.executeAndReturnKey(args);
+        return new Review(reviewId.intValue(), userId, mediaId, rating, 0, reviewContent);
     }
 }

@@ -13,7 +13,6 @@ import java.util.List;
 @Repository
 public class GenreDaoJdbcImpl implements GenreDao{
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert genrejdbcInsert;
 
     private static final RowMapper<Genre> GENRE_ROW_MAPPER = (rs, rowNum) -> new Genre(
             rs.getInt("mediaId"),
@@ -29,7 +28,6 @@ public class GenreDaoJdbcImpl implements GenreDao{
     @Autowired
     public GenreDaoJdbcImpl(final DataSource dataSource){
         jdbcTemplate = new JdbcTemplate(dataSource);
-        genrejdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("genres").usingGeneratedKeyColumns("mediaId");
         jdbcTemplate.execute(
                 "CREATE TABLE IF NOT EXISTS genres(" +
                         "mediaId                    INTEGER NOT NULL," +

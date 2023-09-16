@@ -5,6 +5,8 @@ import ar.edu.itba.paw.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
@@ -16,12 +18,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserById(int userId) {
+    public Optional<User> findUserById(int userId) {
         return userDao.findUserById(userId);
     }
 
     @Override
-    public User findUserByEmail(String email) {
+    public Optional<User> findUserByEmail(String email) {
         return userDao.findUserByEmail(email);
+    }
+
+
+    @Override
+    public User getOrCreateUserViaMail(String mail){
+        Optional<User> user = findUserByEmail(mail);
+        if(user.isPresent()){
+            return user.get();
+        }
+        return createUser(mail);
     }
 }

@@ -13,7 +13,6 @@ import java.util.Optional;
 @Repository
 public class ProviderDaoJdbcImpl implements ProviderDao{
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert providerJdbcInsert;
 
     private static final RowMapper<Provider> PROVIDER_ROW_MAPPER = (rs, rowNum) -> new Provider(
             rs.getInt("mediaId"),
@@ -27,7 +26,6 @@ public class ProviderDaoJdbcImpl implements ProviderDao{
     @Autowired
     public ProviderDaoJdbcImpl(final DataSource dataSource){
         jdbcTemplate = new JdbcTemplate(dataSource);
-        providerJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("providers").usingGeneratedKeyColumns("mediaId");
         jdbcTemplate.execute(
                 "CREATE TABLE IF NOT EXISTS providers(" +
                         "mediaId                        INTEGER NOT NULL," +

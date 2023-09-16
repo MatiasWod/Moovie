@@ -104,33 +104,38 @@
 
         <div class="popup-overlay" onclick="closeReviewPopup()"></div>
         <div class="popup">
-            <!-- Popup content goes here -->
-            <h2 class="m-2">Email:</h2>
-            <input type="text" class="form-control" id="email" placeholder="Enter email">
-            <hr class="my-8">
+            <form id="reviewCreator" action="${pageContext.request.contextPath}/createreview" method="POST">
+                <input type="hidden" name="mediaId" value="${media.mediaId}" />
+                <!-- Popup content goes here -->
+                <h2>Your rating of "${media.name}"</h2>
+                <hr class="my-8">
+                <div class="rating">
+                    <c:forEach var="i" begin="1" end="10" varStatus="loopStatus">
+                        <c:set var="reverseIndex" value="${10 - loopStatus.count + 1}"/>
+                        <i class="bi bi-star" onclick="rate(${reverseIndex})"></i>
+                    </c:forEach>
+                    <input type="hidden" name="rating" id="rating" value="${reverseIndex}">
+                </div>
+                <h5>Your rating: <span id="selectedRating">Not selected</span></h5>
+                <h3>
+                    <label for="reviewContent">Leave a review also!</label>
+                </h3>
+                <textarea class="review-textarea" id="reviewContent" name="reviewContent" rows="3" placeholder="Your review (Optional)"></textarea>
 
-            <h2>Your rating of "${media.name}"</h2>
-            <hr class="my-8">
-            <div class="rating">
-                <c:forEach var="i" begin="1" end="10" varStatus="loopStatus">
-                    <c:set var="reverseIndex" value="${10 - loopStatus.count + 1}"/>
-                    <i class="bi bi-star" onclick="rate(${reverseIndex})"></i>
-                </c:forEach>
-            </div>
-            <h5>Your rating: <span id="selectedRating">Not selected</span></h5>
-            <h3>
-                <label for="review">Leave a review also!</label>
-            </h3>
-            <textarea class="review-textarea" id="review" rows="3" placeholder="Your review (Optional)"></textarea>
-            <div class="text-center" style="margin-top: 20px">
-                <button type="button" class="btn btn-danger" style="margin-inline: 10px" onclick="closeReviewPopup()">
-                    Cancel
-                </button>
-                <button type="button" class="btn btn-dark" style="margin-inline: 10px" id="submitButton" disabled
-                        onclick="submitReview()">
-                    Submit
-                </button>
-            </div>
+                <h2 class="m-2">Email:</h2>
+                <input type="text" class="form-control" id="userEmail" name="userEmail" required placeholder="Enter email">
+                <hr class="my-8">
+
+                <div class="text-center" style="margin-top: 20px">
+                    <button type="button" class="btn btn-danger" style="margin-inline: 10px" onclick="closeReviewPopup()">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-dark" style="margin-inline: 10px" id="submitButton"
+                            form="reviewCreator">
+                        Submit
+                    </button>
+                </div>
+            </form>
         </div>
         <!-- Reviews
         <h2>Reviews</h2>
@@ -257,15 +262,38 @@
     }
 
     function submitReview() {
-        const rating = selectedRating;
+        const rating = 1;
+        const review = "Malo malo el bicho siuuu";
+        const email = "jarnaude@itba.edu.ar";
+        mediaId = 2;
+       /* const rating = selectedRating;
         const review = document.getElementById("review").value;
         const email = document.getElementById("email").value;
+        const reviewContent = document.getElementById("review").value;
         if (email === "") {
             alert("Please enter your email");
             return;
-        }
+        }*/
+
+        $.ajax({
+            url:"/createreview",
+            type:"POST",
+            data: {
+                userEmail: email,
+                mediaId: media.mediaId,
+                rating: rating,
+                reviewContent: review
+            },
+            success: function(response){
+                alert("Review sumbitted!")
+            },
+            error: function(error){
+                alert("Error sumbitting review :c")
+            }
+
+        })
 
 
-        closeReviewPopup();
+
     }
 </script>

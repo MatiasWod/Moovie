@@ -14,7 +14,6 @@ import java.util.Optional;
 @Repository
 public class ActorDaoJdbcImpl implements ActorDao {
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert actorsJdbcInsert;
 
     private static final RowMapper<Actor> ACTOR_ROW_MAPPER = (rs, rowNum) -> new Actor(
             rs.getInt("mediaId"),
@@ -30,7 +29,6 @@ public class ActorDaoJdbcImpl implements ActorDao {
     @Autowired
     public ActorDaoJdbcImpl(final DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        actorsJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("actors").usingGeneratedKeyColumns("mediaId");
         jdbcTemplate.execute(
                 "CREATE TABLE IF NOT EXISTS actors(" +
                         "mediaId                 INTEGER NOT NULL," +

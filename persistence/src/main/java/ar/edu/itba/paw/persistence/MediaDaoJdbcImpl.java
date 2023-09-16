@@ -18,9 +18,7 @@ import java.util.Optional;
 @Repository
 public class MediaDaoJdbcImpl implements MediaDao {
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert mediaJdbcInsert;
-    private final SimpleJdbcInsert movieJdbcInsert;
-    private final SimpleJdbcInsert tvJdbcInsert;
+
 
     private static final RowMapper<Media> MEDIA_ROW_MAPPER = (rs, rowNum) -> new Media(
             rs.getInt("mediaId"),
@@ -92,9 +90,6 @@ public class MediaDaoJdbcImpl implements MediaDao {
     @Autowired
     public MediaDaoJdbcImpl(final DataSource dataSource){
         jdbcTemplate = new JdbcTemplate(dataSource);
-        mediaJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("media").usingGeneratedKeyColumns("mediaId");
-        movieJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("movies").usingGeneratedKeyColumns("mediaId");
-        tvJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("tv").usingGeneratedKeyColumns("mediaId");
 
         jdbcTemplate.execute(
                 "CREATE TABLE IF NOT EXISTS media(" +

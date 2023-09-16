@@ -22,4 +22,9 @@ public class ReviewServiceImpl implements ReviewService{
     public List<Review> getReviewForMoovieListFromUser(int moovieListId, int userId) {
         return reviewDao.getReviewForMoovieListFromUser(moovieListId,userId);
     }
+
+    @Override
+    public Review createReview(int userId, int mediaId, int rating, String reviewContent) {
+        return reviewDao.createReview(userId, mediaId, rating, reviewContent);
+    }
 }

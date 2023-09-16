@@ -12,11 +12,12 @@ import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -106,8 +107,8 @@ public class MovieController {
     }
 
 
-    @RequestMapping("/details/{id:\\d+}")
-    public ModelAndView details(@PathVariable("id") final int mediaId) {
+    @RequestMapping(value = "/details/{id:\\d+}")
+    public ModelAndView details(@PathVariable("id") final int mediaId ){
         final ModelAndView mav = new ModelAndView("helloworld/details");
         final Optional<Movie> media = mediaService.getMovieById(mediaId);
         final List<Actor> actorsList = actorService.getAllActorsForMedia(mediaId);
@@ -118,8 +119,22 @@ public class MovieController {
             mav.addObject("media", null);
         mav.addObject("actorsList", actorsList);
         mav.addObject("genresList", genresList);
+
         return mav;
     }
+
+    @RequestMapping(value="/createreview", method = RequestMethod.POST)
+    public String createReview(@RequestParam(value="userEmail", required = true) final String userEmail,
+                                     @RequestParam(value="mediaId", required = true) final int mediaId,
+                                     @RequestParam(value="rating", required = true) final int rating,
+                                     @RequestParam(value="reviewContent", required = true) final String reviewContent){
+
+        User user = userService.getOrCreateUserViaMail(userEmail);
+        final Review review = reviewService.createReview(user.getUserId(), mediaId, rating, reviewContent);
+
+        return ("redirect:/details/" + mediaId);
+    }
+
 
     @RequestMapping("/list/{id:\\d+}")
     public ModelAndView list(@PathVariable("id") final int moovieListId){
@@ -131,7 +146,7 @@ public class MovieController {
 
             List<Media> mediaList = mediaService.getMediaByMoovieListId(moovieListId);
             List<MoovieListContent> moovieListContent = moovieListService.getMoovieListContentById(moovieListId);
-            String listOwner = userService.findUserById(moovieListData.get().getUserId()).getEmail();
+            String listOwner = userService.findUserById(moovieListData.get().getUserId()).get().getEmail();
 
             mav.addObject("mediaList", mediaList);
             mav.addObject("moovieListContent", moovieListContent);
@@ -142,3 +157,4 @@ public class MovieController {
         return mav;
     }
 }
+

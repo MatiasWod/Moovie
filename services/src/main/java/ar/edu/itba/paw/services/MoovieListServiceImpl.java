@@ -28,4 +28,19 @@ public class MoovieListServiceImpl implements MoovieListService{
     public List<MoovieListContent> getMoovieListContentById(int moovieListId) {
         return mediaListDao.getMoovieListContentById(moovieListId);
     }
+
+    @Override
+    public MoovieList createMoovieList(int userId, String name, String description) {
+        return mediaListDao.createMoovieList(userId, name, description);
+    }
+
+    @Override
+    public MoovieList createMoovieListWithContent(int userId, String name, String description, List<Integer> mediaIdList) {
+        return mediaListDao.createMoovieListWithContent(userId, name, description, mediaIdList);
+    }
+
+    @Override
+    public MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList) {
+        return mediaListDao.insertMediaIntoMoovieList(moovieListid, mediaIdList);
+    }
 }

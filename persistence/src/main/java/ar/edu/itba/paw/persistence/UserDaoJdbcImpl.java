@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -9,6 +10,9 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class UserDaoJdbcImpl implements UserDao{
@@ -24,7 +28,7 @@ public class UserDaoJdbcImpl implements UserDao{
     @Autowired
     public UserDaoJdbcImpl(final DataSource dataSource){
         jdbcTemplate = new JdbcTemplate(dataSource);
-        userJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("users").usingGeneratedKeyColumns("userId");
+        userJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("users").usingGeneratedKeyColumns("userid");
         jdbcTemplate.execute(
                 "CREATE TABLE IF NOT EXISTS users (" +
                         "userId SERIAL PRIMARY KEY," +
@@ -34,18 +38,21 @@ public class UserDaoJdbcImpl implements UserDao{
 
     @Override
     public User createUser(String email) {
-        jdbcTemplate.query("INSERT INTO users(email) VALUES( ? )", new Object[]{email}, USER_ROW_MAPPER);
-        return jdbcTemplate.query("SELECT * FROM users WHERE email = ?", new Object[]{email}, USER_ROW_MAPPER).get(0);
+        final Map<String, Object> args = new HashMap<>();
+        args.put("email", email);
+
+        final Number reviewId = userJdbcInsert.executeAndReturnKey(args);
+        return new User(reviewId.intValue(), email);
     }
 
     @Override
-    public User findUserById(int userId) {
-        return jdbcTemplate.query("SELECT * FROM users WHERE userId = ?", new Object[]{userId}, USER_ROW_MAPPER).get(0);
+    public Optional<User> findUserById(int userId) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE userId = ?", new Object[]{userId}, USER_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
-    public User findUserByEmail(String email) {
-        return jdbcTemplate.query("SELECT * FROM users WHERE email = ?", new Object[]{email}, USER_ROW_MAPPER).get(0);
+    public Optional<User> findUserByEmail(String email) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE email = ?", new Object[]{email}, USER_ROW_MAPPER).stream().findFirst();
     }
 
 

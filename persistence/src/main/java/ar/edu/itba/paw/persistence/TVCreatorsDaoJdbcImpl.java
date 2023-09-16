@@ -13,7 +13,6 @@ import java.util.Optional;
 @Repository
 public class TVCreatorsDaoJdbcImpl implements TVCreatorsDao{
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert tvCreatorsJdbcInsert;
 
     private static final RowMapper<TVCreators> TV_CREATORS_ROW_MAPPER = (rs, rowNum) -> new TVCreators(
             rs.getInt("mediaId"),
@@ -26,7 +25,6 @@ public class TVCreatorsDaoJdbcImpl implements TVCreatorsDao{
     @Autowired
     public TVCreatorsDaoJdbcImpl(final DataSource dataSource){
         jdbcTemplate = new JdbcTemplate(dataSource);
-        tvCreatorsJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("creators").usingGeneratedKeyColumns("mediaId");
         jdbcTemplate.execute(
                 "CREATE TABLE IF NOT EXISTS creators(" +
                         "mediaId                            INTEGER NOT NULL," +
