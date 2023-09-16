@@ -12,11 +12,11 @@
 <html>
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link href="${pageContext.request.contextPath}/resources/main.css?version=58" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/main.css?version=59" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
     <title>Discover your next favorite experience</title>
-    <script src="${pageContext.request.contextPath}/resources/discoverFunctions.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/discoverFunctions.js?version=69"></script>
 </head>
 <body style="background: whitesmoke">
 <div class="container d-flex flex-column">
@@ -57,7 +57,7 @@
             <div class="scrollableDiv flex-wrap d-flex">
                 <c:forEach var="movie" items="${mediaList}" end="25">
 <%--                    <div class="poster card text-bg-dark m-1" onclick="loadPreview('${movie.name}', '${movie.tmdbRating}', '${movie.posterPath}', '${movie.overview}')">--%>
-                    <div class="poster card text-bg-dark m-1" onclick="loadPreview('${fn:replace(fn:replace(movie.name, "'", "\\'"), "\"", "&quot;")}', '${movie.tmdbRating}', '${movie.posterPath}', '${fn:replace(fn:replace(movie.overview, "'", "\\'"), "\"", "&quot;")}','${movie.adult}', '${movie.mediaId}')">
+                    <div class="poster card text-bg-dark m-1" onclick="loadPreview('${fn:replace(fn:replace(movie.name, "'", "\\'"), "\"", "&quot;")}', '${movie.tmdbRating}', '${movie.posterPath}', '${fn:replace(fn:replace(movie.overview, "'", "\\'"), "\"", "&quot;")}','${movie.adult}', '${movie.mediaId}',${movie.releaseDate})">
                     <div class="card-img-container"> <!-- Add a container for the image -->
                             <img class="height-full" src="${movie.posterPath}">
                             <div class="card-img-overlay">
@@ -73,19 +73,24 @@
 <%--        PREVIEW      --%>
         <div id="preview" style="position: relative; display:none !important" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
             <img id="preview-img" style="" class="image-blur height-full background" src="" alt="poster">
-            <div style="position: absolute;top: 0;left: 0" class="d-flex container flex-column">
+            <div style="height:100%; position: absolute;top: 0;left: 0" class="justify-content-between d-flex p-4 container flex-column">
                 <h1 id="preview-explicit" class="mt-2 mb-2 bi bi-explicit" style="display: none"></h1>
-                <h2 id="preview-title"></h2>
-                <div class="d-flex flex-row align-items-center">
-                    <h1>
-                        <i class="bi bi-star-fill"></i>
-                    </h1>
-                    <h1 id="preview-rating"></h1>
+                <div class="d-flex container flex-column">
+                    <h1 class="text-center" id="preview-title"></h1>
+                    <div class="m-1 d-flex justify-content-around align-items-center">
+                        <div class="d-flex align-items-center">
+                            <h3>
+                                <i class="bi bi-star-fill m-1"></i>
+                            </h3>
+                            <h3 id="preview-rating"></h3>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <h3 id="preview-year"></h3>
+                        </div>
+                    </div>
+                    <p id="preview-synopsis"></p>
+                    <h3 id="preview-director"></h3>
                 </div>
-                <p id="preview-synopsis">
-                </p>
-                <h3 id="preview-director"></h3>
-                <h4 id="preview-"></h4>
                 <a id="preview-details" class="m-4 btn btn-outline-success align-bottom" type="submit">More details</a>
             </div>
         </div>
