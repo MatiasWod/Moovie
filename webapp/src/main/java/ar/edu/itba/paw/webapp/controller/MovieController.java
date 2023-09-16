@@ -45,15 +45,14 @@ public class MovieController {
 
     @RequestMapping("/")
     public ModelAndView home() {
-        final ModelAndView mav = new ModelAndView("helloworld/testdatabase");
-        final List<Movie> mediaList = mediaService.getMovieFilteredByGenre("Action");
-        mav.addObject("mediaList", mediaList);
+        final ModelAndView mav = new ModelAndView("helloworld/index");
+        List<Movie> movieList = mediaService.getMovieList();
+        mav.addObject("movieList", movieList);
+        List<TVSerie> tvSerieList = mediaService.getTvList();
+        mav.addObject("tvList", tvSerieList);
+
         return mav;
     }
-
-
-    //    discover/
-    //    disover/?g={genre}
 
     @RequestMapping("/discover")
     public ModelAndView test(@RequestParam(value = "g", required = false) String genre, @RequestParam(value = "media", required = false) String media) {

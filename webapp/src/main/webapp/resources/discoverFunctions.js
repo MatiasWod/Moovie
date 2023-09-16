@@ -15,13 +15,14 @@ function beforeSubmit() {
     }
 };
 
-function loadPreview(title, rating, posterPath, overview, adult, id) {
+function loadPreview(title, rating, posterPath, overview, adult, id, year) {
     document.getElementById("preview").style.display = 'block';
     document.getElementById("preview-title").innerText = title;
     document.getElementById("preview-rating").innerText = rating;
     document.getElementById("preview-img").src = posterPath;
     document.getElementById("preview-synopsis").innerText = overview;
     document.getElementById("preview-details").href = 'details/' + String(id);
+    document.getElementById("preview-year").innerText = year;
     if (adult == 'true'){
         document.getElementById("preview-explicit").style.display = 'block';
     }

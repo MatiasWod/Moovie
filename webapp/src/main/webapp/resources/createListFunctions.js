@@ -61,7 +61,7 @@ function showSelectedMediaList() {
     if (!existingList) {
         const listDiv = document.createElement('div');
         listDiv.innerHTML = '<div class="d-flex flex-column">' +
-            '<h4 id="result-title">Created Media List: </h4>' +
+            '<h4 id="result-title">Created List: </h4>' +
             '<div style="max-height: 150px" id="list-result" class="container d-flex scrollableMedia">' + selectedMediaList + '</div>' +
             '</div>';
         document.getElementById("preview-list").appendChild(listDiv);
