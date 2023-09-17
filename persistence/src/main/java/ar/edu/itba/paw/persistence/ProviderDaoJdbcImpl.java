@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -29,7 +30,7 @@ public class ProviderDaoJdbcImpl implements ProviderDao{
     }
 
     @Override
-    public Optional<Provider> getProviderForMedia(int mediaId) {
-        return jdbcTemplate.query("SELECT * FROM providers WHERE mediaId = ?",new Object[]{mediaId},PROVIDER_ROW_MAPPER).stream().findFirst();
+    public List<Provider> getProviderForMedia(int mediaId) {
+        return jdbcTemplate.query("SELECT * FROM providers WHERE mediaId = ?",new Object[]{mediaId},PROVIDER_ROW_MAPPER);
     }
 }

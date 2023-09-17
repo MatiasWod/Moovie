@@ -5,6 +5,7 @@ import ar.edu.itba.paw.persistence.TVCreatorsDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -13,7 +14,7 @@ public class TVCreatorsServiceImpl implements TVCreatorsService{
     private TVCreatorsDao tvCreatorsDao;
 
     @Override
-    public Optional<TVCreators> getTvCreatorByMediaId(int mediaId) {
-        return tvCreatorsDao.getTvCreatorByMediaId(mediaId);
+    public List<TVCreators> getTvCreatorsByMediaId(int mediaId) {
+        return tvCreatorsDao.getTvCreatorsByMediaId(mediaId);
     }
 }

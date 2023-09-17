@@ -55,8 +55,9 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
         args.put("mediaId", mediaId);
         args.put("rating", rating);
         args.put("reviewLikes", 0);
+        if (reviewContent.isEmpty())
+            reviewContent=null;
         args.put("reviewContent", reviewContent);
-
         final Number reviewId = reviewJdbcInsert.executeAndReturnKey(args);
         return new Review(reviewId.intValue(), userId, mediaId, rating, 0, reviewContent);
     }

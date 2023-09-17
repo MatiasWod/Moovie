@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -28,7 +29,7 @@ public class TVCreatorsDaoJdbcImpl implements TVCreatorsDao{
     }
 
     @Override
-    public Optional<TVCreators> getTvCreatorByMediaId(int mediaId) {
-        return jdbcTemplate.query("SELECT * FROM creators WHERE mediaId = ?",new Object[]{mediaId},TV_CREATORS_ROW_MAPPER).stream().findFirst();
+    public List<TVCreators> getTvCreatorsByMediaId(int mediaId) {
+        return jdbcTemplate.query("SELECT * FROM creators WHERE mediaId = ?",new Object[]{mediaId},TV_CREATORS_ROW_MAPPER);
     }
 }

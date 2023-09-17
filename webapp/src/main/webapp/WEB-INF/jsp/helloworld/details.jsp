@@ -16,23 +16,24 @@
 <c:import url="navBar.jsp"/>
 <div class="container my-1">
     <div class="row align-items-center justify-content-center">
+
         <!-- Poster -->
         <div class="col text-center">
             <img src="${media.posterPath}"
                  alt="${media.name} poster image not found" class="img-fluid" width="300" height="300">
+
         </div>
         <div class="col">
+
             <!-- Title and Details -->
             <h1>${media.name} <sup class="badge text-bg-light border border-black"
                                    style="font-size: 14px;">${media.status}</sup>
                 <sup class="badge text-bg-light border border-black"
                      style="font-size: 14px;">${media.originalLanguage}</sup>
-
             </h1>
 
             <h5 style="display: flex; align-items: center">
                 <fmt:formatDate value="${media.releaseDate}" pattern="YYYY"/>
-
                 <!--Separator -->
                 <span style="margin: 0 5px;">•</span>
 
@@ -66,11 +67,22 @@
                     </c:otherwise>
                 </c:choose>
             </h5>
+
             <!-- Ratings -->
             <h1>
                 <i class="bi bi-star-fill"></i>
                 ${media.tmdbRating}
             </h1>
+            <!-- Watch it on -->
+            <div class="d-flex flex-row  align-items-center ">
+                <c:forEach var="provider" items="${providerList}">
+                        <span class="badge text-bg-light border border-black" style="margin: 3px">
+                        <img src="${provider.logoPath}" alt="${provider.providerName} logo not found"
+                             style="height: 1.6em; margin-right: 5px;">
+                        ${provider.providerName}
+                            </span>
+                </c:forEach>
+            </div>
             <!-- Genres -->
             <div class="d-flex flex-row  align-items-center ">
                 <div style="margin-right: 10px">
@@ -116,6 +128,25 @@
                     </c:if>
                 </c:when>
                 <c:otherwise>
+                    <c:if test="${creators!=null}">
+                        <div class="d-flex flex-row align-items-center">
+                            <div style="margin-right: 10px">
+                                <c:choose>
+                                    <c:when test="${creators.size()>1}">
+                                        <h5>Creators:</h5>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <h5>Creator:</h5>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                            <div>
+                                <c:forEach var="creator" items="${creators}">
+                                    <span class="badge text-bg-light border border-black">${creator.creatorName}</span>
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </c:if>
                     <c:if test="${media.lastAirDate != null}">
                         <div class="d-flex flex-row  align-items-center">
                             <div style="margin-right: 10px">
@@ -138,6 +169,7 @@
                     </c:if>
                 </c:otherwise>
             </c:choose>
+
             <!-- Description and Buttons-->
             <p>${media.overview}</p>
             <!--
@@ -146,6 +178,7 @@
             <button type="button" class="btn btn-light border border-black" onclick="openReviewPopup()"><i
                     class="bi bi-star-fill"></i> Rate
             </button>
+
         </div>
         <!-- Cast -->
         <div class="row ">
@@ -223,29 +256,28 @@
             <c:when test="${fn:length(reviewList)>0}">
                 <div class="scrollableDiv">
                     <c:forEach var="review" items="${reviewList}">
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                        <img src="https://m.media-amazon.com/images/M/MV5BNjE3NDQyOTYyMV5BMl5BanBnXkFtZTcwODcyODU2Mw@@._V1_FMjpg_UX1000_.jpg"
-                                             alt="${review.userId} Reviewer Profile" class="mr-3 rounded-circle"
-                                             width="64" height="64">
-                                        <div class="mt-0" style="margin-left: 15px">
-                                            <h5>${review.userId}</h5>
-                                            <!-- <div class="text-body-secondary">
-                                                24 reviews
+                        <c:if test="${review.reviewContent!=null}">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <img src="https://m.media-amazon.com/images/M/MV5BNjE3NDQyOTYyMV5BMl5BanBnXkFtZTcwODcyODU2Mw@@._V1_FMjpg_UX1000_.jpg"
+                                                 alt="${review.userId} Reviewer Profile" class="mr-3 rounded-circle"
+                                                 width="64" height="64">
+                                            <div class="mt-0" style="margin-left: 15px">
+                                                <h5>${userEmail[review.userId]}</h5>
                                             </div>
-                                            -->
                                         </div>
+                                        <h5 class="align-items-left"><i
+                                                class="bi bi-star-fill ml-2"></i> ${review.rating}/10
+                                        </h5>
                                     </div>
-                                    <h5 class="align-items-left"><i class="bi bi-star-fill ml-2"></i> ${review.rating}/10
-                                    </h5>
+                                    <p>
+                                            ${review.reviewContent}
+                                    </p>
                                 </div>
-                                <p>
-                                        ${review.reviewContent}
-                                </p>
                             </div>
-                        </div>
+                        </c:if>
                     </c:forEach>
                 </div>
             </c:when>

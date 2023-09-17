@@ -5,6 +5,7 @@ import ar.edu.itba.paw.persistence.ProviderDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -13,7 +14,7 @@ public class ProviderServiceImpl implements ProviderService{
     private ProviderDao providerDao;
 
     @Override
-    public Optional<Provider> getProviderForMedia(int mediaId) {
+    public List<Provider> getProviderForMedia(int mediaId) {
         return providerDao.getProviderForMedia(mediaId);
     }
 }
