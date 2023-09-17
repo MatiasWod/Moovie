@@ -73,10 +73,10 @@ public class MovieController {
                 mediaList = mediaService.getMediaFilteredByGenre(genre);
                 mav.addObject("mediaList", mediaList);
             }
-        } else if (media != null && media.equals("Movies")){
+        } else if (media != null && media.equals("Movies")) {
             movieList = mediaService.getMovieList();
             mav.addObject("mediaList", movieList);
-        } else if (media != null && media.equals("Series")){
+        } else if (media != null && media.equals("Series")) {
             tvSerieList = mediaService.getTvList();
             mav.addObject("mediaList", tvSerieList);
         } else {
@@ -91,12 +91,12 @@ public class MovieController {
     }
 
     @RequestMapping("/search")
-    public ModelAndView search(@RequestParam(value="query", required = true) String query){
+    public ModelAndView search(@RequestParam(value = "query", required = true) String query) {
 
         final ModelAndView mav = new ModelAndView("helloworld/discover");
 
         Boolean search = true;
-        mav.addObject("searchMode",search);
+        mav.addObject("searchMode", search);
 
         List<Media> mediaList = mediaService.getMediaBySearch(query);
         mav.addObject("mediaList", mediaList);
@@ -107,40 +107,52 @@ public class MovieController {
 
 
     @RequestMapping(value = "/details/{id:\\d+}")
-    public ModelAndView details(@PathVariable("id") final int mediaId ){
+    public ModelAndView details(@PathVariable("id") final int mediaId) {
         final ModelAndView mav = new ModelAndView("helloworld/details");
-        final Optional<Movie> media = mediaService.getMovieById(mediaId);
+        final Optional<Media> media = mediaService.getMediaById(mediaId);
         final List<Actor> actorsList = actorService.getAllActorsForMedia(mediaId);
         final List<Genre> genresList = genreService.getGenreForMedia(mediaId);
-        if (media.isPresent())
-            mav.addObject("media", media.get());
-        else
+        final List<Review> reviewList = reviewService.getReviewsByMediaId(mediaId);
+
+        if (media.isPresent()) {
+            if (!media.get().isType()) {
+                final Optional<Movie> movie = mediaService.getMovieById(mediaId);
+                mav.addObject("media", movie.orElse(null)); // Use orElse to handle empty Optional
+            } else {
+                final Optional<TVSerie> tvSerie = mediaService.getTvById(mediaId);
+                mav.addObject("media", tvSerie.orElse(null)); // Use orElse to handle empty Optional
+            }
+        } else {
             mav.addObject("media", null);
+        }
+
         mav.addObject("actorsList", actorsList);
         mav.addObject("genresList", genresList);
+        mav.addObject("reviewList", reviewList);
 
         return mav;
     }
 
-    @RequestMapping(value="/createreview", method = RequestMethod.POST)
-    public String createReview(@RequestParam(value="userEmail", required = true) final String userEmail,
-                                     @RequestParam(value="mediaId", required = true) final int mediaId,
-                                     @RequestParam(value="rating", required = true) final int rating,
-                                     @RequestParam(value="reviewContent", required = true) final String reviewContent){
-
+    @RequestMapping(value = "/createrating", method = RequestMethod.POST)
+    public String createReview(@RequestParam(value = "userEmail", required = true) final String userEmail,
+                               @RequestParam(value = "mediaId", required = true) final int mediaId,
+                               @RequestParam(value = "rating", required = true) final int rating,
+                               @RequestParam(value = "reviewContent", required = false) final String reviewContent) {
         User user = userService.getOrCreateUserViaMail(userEmail);
-        final Review review = reviewService.createReview(user.getUserId(), mediaId, rating, reviewContent);
-
+        if (reviewContent == null || reviewContent.isEmpty()) {
+            //ratingservice
+        } else
+            reviewService.createReview(user.getUserId(), mediaId, rating, reviewContent);
         return ("redirect:/details/" + mediaId);
     }
 
 
     @RequestMapping("/list/{id:\\d+}")
-    public ModelAndView list(@PathVariable("id") final int moovieListId){
+    public ModelAndView list(@PathVariable("id") final int moovieListId) {
         final ModelAndView mav = new ModelAndView("helloworld/moovieList");
 
         Optional<MoovieList> moovieListData = moovieListService.getMoovieListById(moovieListId);
-        if(moovieListData.isPresent()){
+        if (moovieListData.isPresent()) {
             mav.addObject("moovieList", moovieListData.get());
 
             List<Media> mediaList = mediaService.getMediaByMoovieListId(moovieListId);
@@ -150,8 +162,7 @@ public class MovieController {
             mav.addObject("mediaList", mediaList);
             mav.addObject("moovieListContent", moovieListContent);
             mav.addObject("listOwner", listOwner);
-        }
-        else {
+        } else {
         }
         return mav;
     }
