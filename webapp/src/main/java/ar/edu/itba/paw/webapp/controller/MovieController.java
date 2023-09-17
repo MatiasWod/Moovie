@@ -108,13 +108,13 @@ public class MovieController {
 
     @RequestMapping(value = "/details/{id:\\d+}")
     public ModelAndView details(@PathVariable("id") final int mediaId) {
-        final ModelAndView mav = new ModelAndView("helloworld/details");
         final Optional<Media> media = mediaService.getMediaById(mediaId);
-        final List<Actor> actorsList = actorService.getAllActorsForMedia(mediaId);
-        final List<Genre> genresList = genreService.getGenreForMedia(mediaId);
-        final List<Review> reviewList = reviewService.getReviewsByMediaId(mediaId);
 
         if (media.isPresent()) {
+            final ModelAndView mav = new ModelAndView("helloworld/details");
+            final List<Actor> actorsList = actorService.getAllActorsForMedia(mediaId);
+            final List<Genre> genresList = genreService.getGenreForMedia(mediaId);
+            final List<Review> reviewList = reviewService.getReviewsByMediaId(mediaId);
             if (!media.get().isType()) {
                 final Optional<Movie> movie = mediaService.getMovieById(mediaId);
                 mav.addObject("media", movie.orElse(null)); // Use orElse to handle empty Optional
@@ -122,15 +122,15 @@ public class MovieController {
                 final Optional<TVSerie> tvSerie = mediaService.getTvById(mediaId);
                 mav.addObject("media", tvSerie.orElse(null)); // Use orElse to handle empty Optional
             }
+            mav.addObject("actorsList", actorsList);
+            mav.addObject("genresList", genresList);
+            mav.addObject("reviewList", reviewList);
+
+            return mav;
+
         } else {
-            mav.addObject("media", null);
+            return error("Theres media with id: " + String.valueOf(mediaId) );
         }
-
-        mav.addObject("actorsList", actorsList);
-        mav.addObject("genresList", genresList);
-        mav.addObject("reviewList", reviewList);
-
-        return mav;
     }
 
     @RequestMapping(value = "/createrating", method = RequestMethod.POST)
@@ -149,10 +149,11 @@ public class MovieController {
 
     @RequestMapping("/list/{id:\\d+}")
     public ModelAndView list(@PathVariable("id") final int moovieListId) {
-        final ModelAndView mav = new ModelAndView("helloworld/moovieList");
 
         Optional<MoovieList> moovieListData = moovieListService.getMoovieListById(moovieListId);
+
         if (moovieListData.isPresent()) {
+            final ModelAndView mav = new ModelAndView("helloworld/moovieList");
             mav.addObject("moovieList", moovieListData.get());
 
             List<Media> mediaList = mediaService.getMediaByMoovieListId(moovieListId);
@@ -162,8 +163,21 @@ public class MovieController {
             mav.addObject("mediaList", mediaList);
             mav.addObject("moovieListContent", moovieListContent);
             mav.addObject("listOwner", listOwner);
+            return mav;
         } else {
+            return error("Theres lists with id: " + String.valueOf(moovieListId) );
         }
+
+    }
+
+    @RequestMapping("error/404")
+    public ModelAndView error(@RequestParam(value="extraInfo", required = false) final String extraInfo)
+    {
+        final ModelAndView mav = new ModelAndView("helloworld/404");
+        if(extraInfo != null){
+            mav.addObject("extraInfo", extraInfo);
+        }
+
         return mav;
     }
 }
