@@ -196,7 +196,7 @@
             </div>
             <h5>Your rating: <span id="selectedRating">Not selected</span></h5>
 
-            <form action="/createrating" method="POST">
+            <form action="${pageContext.request.contextPath}/createrating" method="POST">
                 <textarea class="review-textarea" id="reviewContent" rows="3" name="reviewContent"
                           placeholder="Your review (Optional)"></textarea>
                 <h2 class="m-2">Email:</h2>
