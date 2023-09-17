@@ -33,6 +33,9 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
             rs.getString("status")
     );
 
+    private static final RowMapper<Integer> COUNT_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("count"));
+
+
     @Autowired
     public MoovieListDaoJdbcImpl(final DataSource dataSource){
         jdbcTemplate = new JdbcTemplate(dataSource);
@@ -108,6 +111,11 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         }
 
         return getMoovieListById(moovieListid).get();
+    }
+
+    @Override
+    public Optional<Integer> getMoovieListCount() {
+        return jdbcTemplate.query("SELECT COUNT(*) AS count FROM moovieListsContent", COUNT_ROW_MAPPER).stream().findFirst();
     }
 }
 

@@ -23,7 +23,15 @@
 
     <div class="container d-flex flex-column ">
         <h1>
-            Browse Media Lists
+            Search list by Id:
+        </h1>
+        <form class="d-flex mb-0" role="search" action="${pageContext.request.contextPath}/list" method="get">
+            <input class="form-control me-2" type="search" name="moovieListId" placeholder="Moovie List id" aria-label="Moovie List id">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+
+        <h1>
+            Featured Lists!
         </h1>
         <h2>
             Editorial Picks by Moovie
