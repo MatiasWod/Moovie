@@ -31,17 +31,6 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
     public ReviewDaoJdbcImpl(final DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
         reviewJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("reviews").usingGeneratedKeyColumns("reviewid");
-        jdbcTemplate.execute(
-                "CREATE TABLE IF NOT EXISTS reviews(" +
-                        "reviewId                           SERIAL PRIMARY KEY," +
-                        "userId                             INTEGER NOT NULL," +
-                        "mediaId                            INTEGER NOT NULL," +
-                        "rating                             INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 10)," +
-                        "reviewLikes                            INTEGER NOT NULL," +
-                        "reviewContent                            TEXT," +
-                        "FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE," +
-                        "FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE," +
-                        "UNIQUE(userId,mediaId))");
     }
 
     @Override

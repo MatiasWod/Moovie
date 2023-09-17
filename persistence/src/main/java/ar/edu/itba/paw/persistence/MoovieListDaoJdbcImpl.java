@@ -41,23 +41,6 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         jdbcTemplate = new JdbcTemplate(dataSource);
         moovieListJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("moovieLists").usingGeneratedKeyColumns("moovielistid");
         moovieListContentJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("moovieListsContent");
-        jdbcTemplate.execute(
-                "CREATE TABLE IF NOT EXISTS moovieLists(" +
-                        "moovieListId                        SERIAL PRIMARY KEY," +
-                        "userId                             INTEGER NOT NULL," +
-                        "name                               VARCHAR(255) NOT NULL," +
-                        "description                        TEXT," +
-                        "FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE," +
-                        "UNIQUE(userId,name))");
-
-        jdbcTemplate.execute(
-                "CREATE TABLE IF NOT EXISTS moovieListsContent(" +
-                        "moovieListId                        INTEGER NOT NULL," +
-                        "mediaId                            INTEGER NOT NULL," +
-                        "status                             VARCHAR(30)," +
-                        "UNIQUE(moovieListId,mediaId)," +
-                        "FOREIGN KEY(moovieListId) REFERENCES moovieLists(moovieListId) ON DELETE CASCADE," +
-                        "FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE)");
     }
 
     @Override

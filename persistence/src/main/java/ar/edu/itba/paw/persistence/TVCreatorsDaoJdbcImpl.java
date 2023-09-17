@@ -25,13 +25,6 @@ public class TVCreatorsDaoJdbcImpl implements TVCreatorsDao{
     @Autowired
     public TVCreatorsDaoJdbcImpl(final DataSource dataSource){
         jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.execute(
-                "CREATE TABLE IF NOT EXISTS creators(" +
-                        "mediaId                            INTEGER NOT NULL," +
-                        "creatorId                          INTEGER NOT NULL," +
-                        "creatorName                        VARCHAR(100) NOT NULL," +
-                        "UNIQUE(mediaId,creatorId)," +
-                        "FOREIGN KEY(mediaId)       REFERENCES media(mediaId) ON DELETE CASCADE)");
     }
 
     @Override

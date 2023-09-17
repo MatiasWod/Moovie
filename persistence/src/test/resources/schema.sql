@@ -1,13 +1,13 @@
 --User
 CREATE TABLE IF NOT EXISTS users (
-    userId                          SERIAL PRIMARY KEY,
+    userId                          IDENTITY PRIMARY KEY,
     email                           VARCHAR(255) UNIQUE NOT NULL,
     CONSTRAINT valid_email_address  CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$')
 );
 
 --MoovieLists
 CREATE TABLE IF NOT EXISTS moovieLists(
-    moovieListId                        SERIAL PRIMARY KEY,
+    moovieListId                        IDENTITY PRIMARY KEY,
     userId                              INTEGER NOT NULL,
     name                                VARCHAR(255) NOT NULL,
     description                         TEXT,
@@ -15,9 +15,32 @@ CREATE TABLE IF NOT EXISTS moovieLists(
     UNIQUE(userId,name)
 );
 
+--MoovieListsContent
+CREATE TABLE IF NOT EXISTS moovieListsContent(
+    moovieListId                       INTEGER NOT NULL,
+    mediaId                            INTEGER NOT NULL,
+    status                             VARCHAR(30),
+    UNIQUE(moovieListId,mediaId),
+    FOREIGN KEY(moovieListId) REFERENCES moovieLists(moovieListId) ON DELETE CASCADE,
+    FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE
+);
+
+--Reviews
+CREATE TABLE IF NOT EXISTS reviews(
+    reviewId                                    IDENTITY PRIMARY KEY,
+    userId                                      INTEGER NOT NULL,
+    mediaId                                     INTEGER NOT NULL,
+    rating                                      INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 10),
+    reviewLikes                                 INTEGER NOT NULL,
+    reviewContent                               TEXT,
+    FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE,
+    FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE,
+    UNIQUE(userId,mediaId)
+);
+
 --Media
 CREATE TABLE IF NOT EXISTS media(
-    mediaId                        SERIAL PRIMARY KEY,
+    mediaId                        IDENTITY PRIMARY KEY,
     type                           BOOLEAN NOT NULL,
     name                           VARCHAR(255) NOT NULL,
     originalLanguage               VARCHAR(2),
@@ -31,29 +54,6 @@ CREATE TABLE IF NOT EXISTS media(
     totalRating                    INTEGER NOT NULL,
     voteCount                      INTEGER NOT NULL,
     status                         VARCHAR(20) NOT NULL
-);
-
---MoovieListsContent
-CREATE TABLE IF NOT EXISTS moovieListsContent(
-    moovieListId                        INTEGER NOT NULL,
-    mediaId                            INTEGER NOT NULL,
-    status                             VARCHAR(30),
-    UNIQUE(moovieListId,mediaId),
-    FOREIGN KEY(moovieListId) REFERENCES moovieLists(moovieListId) ON DELETE CASCADE,
-    FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE
-);
-
---Reviews
-CREATE TABLE IF NOT EXISTS reviews(
-    reviewId                                    SERIAL PRIMARY KEY,
-    userId                                      INTEGER NOT NULL,
-    mediaId                                     INTEGER NOT NULL,
-    rating                                      INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 10),
-    reviewLikes                                 INTEGER NOT NULL,
-    reviewContent                               TEXT,
-    FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE,
-    FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE,
-    UNIQUE(userId,mediaId)
 );
 
 --Movies
@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS creators(
     creatorId                          INTEGER NOT NULL,
     creatorName                        VARCHAR(100) NOT NULL,
     UNIQUE(mediaId,creatorId),
-    FOREIGN KEY(mediaId)       REFERENCES media(mediaId) ON DELETE CASCADE
+    FOREIGN KEY(mediaId)       REFERENCES media(mediaId) ON DELETE CASCADE)
 );
 
 --Providers
