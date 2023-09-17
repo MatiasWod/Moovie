@@ -5,12 +5,15 @@ import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
+import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.GenreService;
 import ar.edu.itba.paw.services.MediaService;
 import ar.edu.itba.paw.services.MoovieListService;
+import ar.edu.itba.paw.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -32,6 +35,12 @@ public class ListController {
     @Autowired
     private MediaService mediaService;
 
+    @Autowired
+    private MoovieListService moovieListService;
+
+    @Autowired
+    private UserService userService;
+
     @RequestMapping("/lists")
     public ModelAndView lists(){
         final ModelAndView mav = new ModelAndView("helloworld/viewLists");
@@ -51,6 +60,30 @@ public class ListController {
         }
     }
 
+    @RequestMapping(value = "/createListAction", method = RequestMethod.POST)
+    public String createListAction(@RequestParam(value = "userEmail", required = true) final String userEmail,
+                                   @RequestParam(value = "mediaIds", required = true) final List<String> mediaIds,
+                                   @RequestParam(value = "listName", required = true) final String name,
+                                   @RequestParam(value = "listDescription", required = true) final String description){
+
+        List<Integer> finalIds = new ArrayList<>();
+
+        for (String id : mediaIds) {
+            String numericPart = extractNumericPart(id);
+            if (numericPart != null) {
+                int mediaId = Integer.parseInt(numericPart);
+                finalIds.add(mediaId);
+            }
+        }
+
+        User user = userService.getOrCreateUserViaMail(userEmail);
+
+        MoovieList list = moovieListService.createMoovieListWithContent(user.getUserId(),name,description,finalIds);
+
+        int id = list.getMoovieListId();
+        return ("redirect:/list/" + id);
+    }
+
 // http://tuDominio.com/createList?s=A&s=B&s=C&s=D&s=E
     @RequestMapping("/createList")
     public ModelAndView createList(@RequestParam(value = "g", required = false) String genre,
@@ -68,23 +101,17 @@ public class ListController {
         if (genre != null && !genre.isEmpty()) {
             if (media != null && media.equals("Movies")) {
                 movieList = mediaService.getMovieFilteredByGenre(genre);
-//                mav.addObject("mediaList", movieList);
             } else if (media != null && media.equals("Series")) {
                 tvSerieList = mediaService.getTvFilteredByGenre(genre);
-//                mav.addObject("mediaList", tvSerieList);
             } else {
                 mediaList = mediaService.getMediaFilteredByGenre(genre);
-//                mav.addObject("mediaList", mediaList);
             }
         } else if (media != null && media.equals("Movies")){
             movieList = mediaService.getMovieList();
-//            mav.addObject("mediaList", movieList);
         } else if (media != null && media.equals("Series")){
             tvSerieList = mediaService.getTvList();
-//            mav.addObject("mediaList", tvSerieList);
         } else {
             mediaList = mediaService.getMoovieList();
-//            mav.addObject("mediaList", mediaList);
         }
 
         if( query != null && !query.isEmpty()){

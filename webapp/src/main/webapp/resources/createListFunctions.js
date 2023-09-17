@@ -30,6 +30,9 @@ function displayMediaName(name, id) {
 function updateSelectedMediaInput() {
     const selectedMediaInput = document.getElementById("selected-media-input");
     selectedMediaInput.value = JSON.stringify(selectedMediaId);
+
+    const selectedCreateInput = document.getElementById("selected-create-media");
+    selectedCreateInput.value = JSON.stringify(selectedMediaId);
 }
 
 function deleteMedia(element) {
@@ -79,6 +82,7 @@ window.onload = function() {
         selectedMediaId.push(parseInt(elems[j].id));
         selectedMedia.push(elems[j++].innerHTML);
     }
+    updateSelectedMediaInput();
 
     const filterTypesSelect = document.getElementById("filter-types");
     const genreSelect = document.getElementById("genre-select");
@@ -95,6 +99,8 @@ function beforeSubmit() {
     if (filterTypesSelect.value === "Popular") {
         genreSelect.removeAttribute("name");
     }
+    
+    // mandar todas la media de las lists al url
 };
 
 function toggleGenreSelect() {

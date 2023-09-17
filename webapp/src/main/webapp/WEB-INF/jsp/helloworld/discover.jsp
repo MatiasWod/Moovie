@@ -12,11 +12,11 @@
 <html>
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link href="${pageContext.request.contextPath}/resources/main.css?version=59" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/main.css?version=79" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
     <title>Discover your next favorite experience</title>
-    <script src="${pageContext.request.contextPath}/resources/discoverFunctions.js?version=69"></script>
+    <script src="${pageContext.request.contextPath}/resources/discoverFunctions.js?version=79"></script>
 </head>
 <body style="background: whitesmoke">
 <div class="container d-flex flex-column">
@@ -57,7 +57,7 @@
             <div class="scrollableDiv flex-wrap d-flex">
                 <c:forEach var="movie" items="${mediaList}" end="25">
 <%--                    <div class="poster card text-bg-dark m-1" onclick="loadPreview('${movie.name}', '${movie.tmdbRating}', '${movie.posterPath}', '${movie.overview}')">--%>
-                    <div class="poster card text-bg-dark m-1" onclick="loadPreview('${fn:replace(fn:replace(movie.name, "'", "\\'"), "\"", "&quot;")}', '${movie.tmdbRating}', '${movie.posterPath}', '${fn:replace(fn:replace(movie.overview, "'", "\\'"), "\"", "&quot;")}','${movie.adult}', '${movie.mediaId}',${movie.releaseDate})">
+                    <div class="poster card text-bg-dark m-1" onclick="loadPreview('${fn:replace(fn:replace(movie.name, "'", "\\'"), "\"", "&quot;")}', '${movie.tmdbRating}', '${movie.posterPath}', '${fn:replace(fn:replace(movie.overview, "'", "\\'"), "\"", "&quot;")}','${movie.adult}', '${movie.mediaId}',${movie.releaseDate.year})">
                     <div class="card-img-container"> <!-- Add a container for the image -->
                             <img class="height-full" src="${movie.posterPath}">
                             <div class="card-img-overlay">
