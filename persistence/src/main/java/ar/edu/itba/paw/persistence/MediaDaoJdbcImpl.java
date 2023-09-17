@@ -90,44 +90,6 @@ public class MediaDaoJdbcImpl implements MediaDao {
     @Autowired
     public MediaDaoJdbcImpl(final DataSource dataSource){
         jdbcTemplate = new JdbcTemplate(dataSource);
-
-        jdbcTemplate.execute(
-                "CREATE TABLE IF NOT EXISTS media(" +
-                        "mediaId                        SERIAL PRIMARY KEY," +
-                        "type                           BOOLEAN NOT NULL," +
-                        "name                           VARCHAR(255) NOT NULL," +
-                        "originalLanguage               VARCHAR(2)," +
-                        "adult                          BOOLEAN NOT NULL," +
-                        "releaseDate                    DATE NOT NULL," +
-                        "overview                       TEXT NOT NULL," +
-                        "backdropPath                   VARCHAR(255)," +
-                        "posterPath                     VARCHAR(255)," +
-                        "trailerLink                    VARCHAR(255)," +
-                        "tmdbRating                     FLOAT NOT NULL," +
-                        "totalRating                    INTEGER NOT NULL," +
-                        "voteCount                      INTEGER NOT NULL," +
-                        "status                         VARCHAR(20) NOT NULL)");
-
-        jdbcTemplate.execute(
-                "CREATE TABLE IF NOT EXISTS movies(" +
-                        "mediaId                 INTEGER NOT NULL," +
-                        "runtime                 INTEGER," +
-                        "budget                  BIGINT," +
-                        "revenue                 BIGINT," +
-                        "directorId              INTEGER," +
-                        "director                VARCHAR(255)," +
-                        "UNIQUE(mediaId)," +
-                        "FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE)");
-
-        jdbcTemplate.execute(
-                "CREATE TABLE IF NOT EXISTS tv(" +
-                        "mediaId                        INTEGER NOT NULL," +
-                        "lastAirDate                    DATE," +
-                        "nextEpisodeToAir               DATE," +
-                        "numberOfEpisodes               INTEGER," +
-                        "numberOfSeasons                INTEGER," +
-                        "UNIQUE(mediaId)," +
-                        "FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE)");
     }
 
 

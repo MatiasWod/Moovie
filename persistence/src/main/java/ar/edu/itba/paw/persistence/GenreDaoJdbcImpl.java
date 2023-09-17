@@ -28,12 +28,6 @@ public class GenreDaoJdbcImpl implements GenreDao{
     @Autowired
     public GenreDaoJdbcImpl(final DataSource dataSource){
         jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.execute(
-                "CREATE TABLE IF NOT EXISTS genres(" +
-                        "mediaId                    INTEGER NOT NULL," +
-                        "genre                      VARCHAR(100) NOT NULL," +
-                        "UNIQUE(mediaId,genre)," +
-                        "FOREIGN KEY(mediaId)       REFERENCES media(mediaId) ON DELETE CASCADE)");
     }
 
     @Override

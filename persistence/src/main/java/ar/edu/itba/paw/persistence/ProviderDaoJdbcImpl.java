@@ -26,14 +26,6 @@ public class ProviderDaoJdbcImpl implements ProviderDao{
     @Autowired
     public ProviderDaoJdbcImpl(final DataSource dataSource){
         jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.execute(
-                "CREATE TABLE IF NOT EXISTS providers(" +
-                        "mediaId                        INTEGER NOT NULL," +
-                        "providerId                     INTEGER NOT NULL," +
-                        "providerName                   VARCHAR(100) NOT NULL," +
-                        "logoPath                       VARCHAR(100) NOT NULL," +
-                        "UNIQUE(mediaId,providerId)," +
-                        "FOREIGN KEY(mediaId)       REFERENCES media(mediaId) ON DELETE CASCADE)");
     }
 
     @Override

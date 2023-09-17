@@ -29,15 +29,6 @@ public class ActorDaoJdbcImpl implements ActorDao {
     @Autowired
     public ActorDaoJdbcImpl(final DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.execute(
-                "CREATE TABLE IF NOT EXISTS actors(" +
-                        "mediaId                 INTEGER NOT NULL," +
-                        "actorId                 INTEGER NOT NULL," +
-                        "actorName               VARCHAR(100) NOT NULL," +
-                        "characterName           VARCHAR(100)," +
-                        "profilePath             VARCHAR(255)," +
-                        "UNIQUE(mediaId,actorId)," +
-                        "FOREIGN KEY(mediaId)       REFERENCES media(mediaId) ON DELETE CASCADE)");
     }
 
     @Override
