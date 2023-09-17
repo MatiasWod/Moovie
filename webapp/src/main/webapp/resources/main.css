@@ -14,6 +14,11 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     height: fit-content;
 }
+
+.poster.card {
+    max-width: 18%;
+}
+
 .button-fixed-width{
     width: 175px;
 }

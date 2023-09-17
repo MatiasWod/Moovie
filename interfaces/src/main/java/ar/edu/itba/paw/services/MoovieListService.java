@@ -10,6 +10,7 @@ public interface MoovieListService {
     Optional<MoovieList> getMoovieListById(int moovieListId);
     List<MoovieList> geAllMoovieLists();
     MoovieList createMoovieList(int userId, String name, String description);
+    Optional<Integer> getMoovieListCount();
 
     MoovieList createMoovieListWithContent(int userId, String name, String description, List<Integer> mediaIdList);
 

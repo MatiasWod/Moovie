@@ -4,7 +4,7 @@
 <html>
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link href="${pageContext.request.contextPath}/resources/main.css?version=70" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/main.css?version=73" rel="stylesheet"/>
     <title>Moovie</title>
 </head>
 <body style="background: whitesmoke;">
@@ -26,11 +26,11 @@
             <a href="${pageContext.request.contextPath}/discover?media=Movies">see more</a>
         </div>
         <hr class="my-1">
-        <div class="d-flex overflow-scroll">
-            <c:forEach var="movie" items="${movieList}" end="7">
+        <div class="container d-flex scrollableDiv">
+            <c:forEach var="movie" items="${movieList}" end="5">
                 <a href="${pageContext.request.contextPath}/details/${movie.mediaId}" class="poster card text-bg-dark m-1">
-                    <div class="card-img-container"> <!-- Add a container for the image -->
-                        <img class="height-full" src="${movie.posterPath}">
+                    <div  style="height: 40vh;" class="card-img-container"> <!-- Add a container for the image -->
+                        <img class="height-full" src="${movie.posterPath}" alt="${movie.name} poster">
                         <div class="card-img-overlay">
                             <h5 class="card-title">${movie.name}</h5>
                             <p class="card-text">${movie.tmdbRating}</p>
@@ -40,16 +40,16 @@
             </c:forEach>
         </div>
 
-        <div class="container d-flex justify-content-between p-2">
+        <div class="container d-flex justify-content-between mt-2 p-2">
             <h3>Discover Your Next Favorite Series</h3>
             <a href="${pageContext.request.contextPath}/discover?media=Series">see more</a>
         </div>
         <hr class="my-1">
-        <div class="d-flex overflow-scroll">
-            <c:forEach var="series" items="${tvList}" end="7">
+        <div class="container d-flex overflow-scroll">
+            <c:forEach var="series" items="${tvList}" end="5">
                 <a href="${pageContext.request.contextPath}/details/${series.mediaId}" class="poster card text-bg-dark m-1">
-                    <div class="card-img-container"> <!-- Add a container for the image -->
-                        <img class="height-full" src="${series.posterPath}">
+                    <div style="height: 40vh;" class="card-img-container"> <!-- Add a container for the image -->
+                        <img class="height-full" src="${series.posterPath}" alt="${series.name} poster">
                         <div class="card-img-overlay">
                             <h5 class="card-title">${series.name}</h5>
                             <p class="card-text">${series.tmdbRating}</p>
@@ -58,6 +58,7 @@
                 </a>
             </c:forEach>
         </div>
+
     </div>
 </div>
 </body>

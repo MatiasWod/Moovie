@@ -43,4 +43,9 @@ public class MoovieListServiceImpl implements MoovieListService{
     public MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList) {
         return mediaListDao.insertMediaIntoMoovieList(moovieListid, mediaIdList);
     }
+
+    @Override
+    public Optional<Integer> getMoovieListCount() {
+        return mediaListDao.getMoovieListCount();
+    }
 }
