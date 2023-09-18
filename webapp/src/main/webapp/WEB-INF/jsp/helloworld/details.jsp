@@ -6,14 +6,12 @@
 <html>
 <head>
     <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/resources/logo.png" />
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/resources/main.css?version=55" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/resources/details.css?version=55" rel="stylesheet"/>
     <title>Moovie-${media.name}</title>
-    <script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=79"></script>
 </head>
 <body id="grad">
 <c:import url="navBar.jsp"/>
@@ -298,3 +296,5 @@
 </div>
 </body>
 </html>
+
+<script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=79"></script>
