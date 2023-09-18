@@ -4,6 +4,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="java.lang.Math" %>
+
 <html>
 <head>
     <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/resources/logo.png" />
