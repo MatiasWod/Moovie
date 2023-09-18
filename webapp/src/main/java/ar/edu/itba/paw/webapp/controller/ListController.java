@@ -91,6 +91,7 @@ public class ListController {
                                    @RequestParam(value = "mediaIds", required = true) final List<String> mediaIds,
                                    @RequestParam(value = "listName", required = true) final String name,
                                    @RequestParam(value = "listDescription", required = true) final String description){
+
         if(! userEmail.matches("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[A-Za-z]{2,}")){
             return "redirect:/createList?error=invalidEmail";
         }
@@ -110,7 +111,7 @@ public class ListController {
         MoovieList list = moovieListService.createMoovieListWithContent(user.getUserId(),name,description,finalIds);
 
         int id = list.getMoovieListId();
-        return ("redirect:/createList/" + id);
+        return ("redirect:/list/" + id);
     }
 
 // http://tuDominio.com/createList?s=A&s=B&s=C&s=D&s=E
