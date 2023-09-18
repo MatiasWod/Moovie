@@ -1,9 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
-import ar.edu.itba.paw.services.MoovieListService;
 
 import java.util.List;
 import java.util.Optional;

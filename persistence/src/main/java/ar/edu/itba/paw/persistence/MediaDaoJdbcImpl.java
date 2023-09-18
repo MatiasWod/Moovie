@@ -3,11 +3,9 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
-import ar.edu.itba.paw.services.MediaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -88,17 +86,16 @@ public class MediaDaoJdbcImpl implements MediaDao {
     private static final RowMapper<Integer> COUNT_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("count"));
 
     @Autowired
-    public MediaDaoJdbcImpl(final DataSource dataSource){
+    public MediaDaoJdbcImpl(final DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
-
 
 
     /*** MEDIA QUERIES*/
 
     @Override
     public Optional<Media> getMediaById(int mediaId) {
-        return jdbcTemplate.query("SELECT * FROM media WHERE mediaId = ?",new Object[]{mediaId},MEDIA_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT * FROM media WHERE mediaId = ?", new Object[]{mediaId}, MEDIA_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
@@ -132,23 +129,21 @@ public class MediaDaoJdbcImpl implements MediaDao {
     }
 
     @Override
-    public List<Media> getMediaByMoovieListId(int moovieListId){
-        return jdbcTemplate.query("SELECT media.* FROM moovieListscontent INNER JOIN media ON media.mediaId = moovieListscontent.mediaid WHERE moovielistscontent.moovieListId = ? ORDER BY media.mediaId",new Object[]{moovieListId},MEDIA_ROW_MAPPER)  ;
+    public List<Media> getMediaByMoovieListId(int moovieListId) {
+        return jdbcTemplate.query("SELECT media.* FROM moovieListscontent INNER JOIN media ON media.mediaId = moovieListscontent.mediaid WHERE moovielistscontent.moovieListId = ? ORDER BY media.mediaId", new Object[]{moovieListId}, MEDIA_ROW_MAPPER);
     }
-
-
 
 
     /*** MOVIE QUERIES*/
 
     @Override
     public Optional<Movie> getMovieById(int mediaId) {
-        return jdbcTemplate.query("SELECT " +moviesQueryParams+ " FROM media INNER JOIN movies ON media.mediaid = movies.mediaid WHERE  movies.mediaid = ?",new Object[]{mediaId},MOVIE_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT " + moviesQueryParams + " FROM media INNER JOIN movies ON media.mediaid = movies.mediaid WHERE  movies.mediaid = ?", new Object[]{mediaId}, MOVIE_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
     public List<Movie> getMovieList() {
-        return jdbcTemplate.query("SELECT " +moviesQueryParams+ " FROM media INNER JOIN movies ON media.mediaid = movies.mediaid", MOVIE_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT " + moviesQueryParams + " FROM media INNER JOIN movies ON media.mediaid = movies.mediaid", MOVIE_ROW_MAPPER);
     }
 
     @Override
@@ -158,38 +153,35 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
     @Override
     public List<Movie> getMovieOrderedByTmdbRatingDesc() {
-        return jdbcTemplate.query("SELECT" +moviesQueryParams+ " FROM media INNER JOIN movies ON media.mediaid = movies.mediaid ORDER BY tmdbrating DESC", MOVIE_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT" + moviesQueryParams + " FROM media INNER JOIN movies ON media.mediaid = movies.mediaid ORDER BY tmdbrating DESC", MOVIE_ROW_MAPPER);
     }
 
     @Override
     public List<Movie> getMovieOrderedByReleaseDateDesc() {
-        return jdbcTemplate.query("SELECT " +moviesQueryParams+ " FROM media INNER JOIN movies ON media.mediaid = movies.mediaid ORDER BY releasedate DESC", MOVIE_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT " + moviesQueryParams + " FROM media INNER JOIN movies ON media.mediaid = movies.mediaid ORDER BY releasedate DESC", MOVIE_ROW_MAPPER);
     }
 
     @Override
     public List<Movie> getMovieFilteredByGenre(String genre) {
-        return jdbcTemplate.query("SELECT " +moviesQueryParams+ " FROM ((media INNER JOIN movies ON media.mediaid = movies.mediaid) INNER JOIN genres ON media.mediaid = genres.mediaid) WHERE genres.genre = ? ", new Object[]{genre}, MOVIE_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT " + moviesQueryParams + " FROM ((media INNER JOIN movies ON media.mediaid = movies.mediaid) INNER JOIN genres ON media.mediaid = genres.mediaid) WHERE genres.genre = ? ", new Object[]{genre}, MOVIE_ROW_MAPPER);
     }
 
     @Override
     public List<Movie> getMovieOrderedByReleaseDuration() {
-        return jdbcTemplate.query("SELECT " +moviesQueryParams+ " FROM media INNER JOIN movies ON media.mediaid = movies.mediaid ORDER BY runtime DESC", MOVIE_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT " + moviesQueryParams + " FROM media INNER JOIN movies ON media.mediaid = movies.mediaid ORDER BY runtime DESC", MOVIE_ROW_MAPPER);
     }
-
-
-
 
 
     /*** TV QUERIES*/
 
     @Override
     public Optional<TVSerie> getTvById(int mediaId) {
-        return jdbcTemplate.query("SELECT " +tvQueryParams+  " FROM media INNER JOIN tv ON media.mediaid = tv.mediaid WHERE  tv.mediaid = ?",new Object[]{mediaId},TV_SERIE_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT " + tvQueryParams + " FROM media INNER JOIN tv ON media.mediaid = tv.mediaid WHERE  tv.mediaid = ?", new Object[]{mediaId}, TV_SERIE_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
     public List<TVSerie> getTvList() {
-        return jdbcTemplate.query("SELECT " +tvQueryParams+ " FROM media INNER JOIN tv ON media.mediaid = tv.mediaid", TV_SERIE_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT " + tvQueryParams + " FROM media INNER JOIN tv ON media.mediaid = tv.mediaid", TV_SERIE_ROW_MAPPER);
     }
 
     @Override
@@ -199,16 +191,16 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
     @Override
     public List<TVSerie> getTvOrderedByTmdbRatingDesc() {
-        return jdbcTemplate.query("SELECT " +tvQueryParams+ " FROM media INNER JOIN tv ON media.mediaid = tv.mediaid ORDER BY tmdbrating DESC", TV_SERIE_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT " + tvQueryParams + " FROM media INNER JOIN tv ON media.mediaid = tv.mediaid ORDER BY tmdbrating DESC", TV_SERIE_ROW_MAPPER);
     }
 
     @Override
     public List<TVSerie> getTvOrderedByReleaseDateDesc() {
-        return jdbcTemplate.query("SELECT "+tvQueryParams+ " FROM media INNER JOIN tv ON media.mediaid = tv.mediaid ORDER BY releasedate DESC", TV_SERIE_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT " + tvQueryParams + " FROM media INNER JOIN tv ON media.mediaid = tv.mediaid ORDER BY releasedate DESC", TV_SERIE_ROW_MAPPER);
     }
 
     @Override
     public List<TVSerie> getTvFilteredByGenre(String genre) {
-        return jdbcTemplate.query("SELECT " +tvQueryParams+ " FROM ((media INNER JOIN tv ON media.mediaid = tv.mediaid) INNER JOIN genres ON media.mediaid = genres.mediaid) WHERE genres.genre = ? ", new Object[]{genre}, TV_SERIE_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT " + tvQueryParams + " FROM ((media INNER JOIN tv ON media.mediaid = tv.mediaid) INNER JOIN genres ON media.mediaid = genres.mediaid) WHERE genres.genre = ? ", new Object[]{genre}, TV_SERIE_ROW_MAPPER);
     }
 }

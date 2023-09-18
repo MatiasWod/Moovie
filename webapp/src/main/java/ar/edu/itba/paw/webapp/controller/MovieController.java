@@ -7,19 +7,20 @@ import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
+import ar.edu.itba.paw.models.Provider.Provider;
 import ar.edu.itba.paw.models.Review.Review;
+import ar.edu.itba.paw.models.TV.TVCreators;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class MovieController {
@@ -41,6 +42,12 @@ public class MovieController {
 
     @Autowired
     private ReviewService reviewService;
+
+    @Autowired
+    private ProviderService providerService;
+
+    @Autowired
+    private TVCreatorsService tvCreatorsService;
 
 
     @RequestMapping("/")
@@ -113,6 +120,12 @@ public class MovieController {
         final List<Actor> actorsList = actorService.getAllActorsForMedia(mediaId);
         final List<Genre> genresList = genreService.getGenreForMedia(mediaId);
         final List<Review> reviewList = reviewService.getReviewsByMediaId(mediaId);
+        final List<Provider> providerList=providerService.getProviderForMedia(mediaId);
+
+        Map<Integer, String> userEmail = new HashMap<>();
+        for (Review review : reviewList) {
+            userEmail.put(review.getUserId(), Objects.requireNonNull(userService.findUserById(review.getUserId()).orElse(null)).getEmail());
+        }
 
         if (media.isPresent()) {
             if (!media.get().isType()) {
@@ -120,15 +133,20 @@ public class MovieController {
                 mav.addObject("media", movie.orElse(null)); // Use orElse to handle empty Optional
             } else {
                 final Optional<TVSerie> tvSerie = mediaService.getTvById(mediaId);
+                final List<TVCreators> creators=tvCreatorsService.getTvCreatorsByMediaId(mediaId);
+                if (!creators.isEmpty())
+                    mav.addObject("creators", creators);
                 mav.addObject("media", tvSerie.orElse(null)); // Use orElse to handle empty Optional
             }
         } else {
             mav.addObject("media", null);
         }
 
+        mav.addObject("providerList", providerList);
         mav.addObject("actorsList", actorsList);
         mav.addObject("genresList", genresList);
         mav.addObject("reviewList", reviewList);
+        mav.addObject("userEmail", userEmail);
 
         return mav;
     }
@@ -139,10 +157,7 @@ public class MovieController {
                                @RequestParam(value = "rating", required = true) final int rating,
                                @RequestParam(value = "reviewContent", required = false) final String reviewContent) {
         User user = userService.getOrCreateUserViaMail(userEmail);
-        if (reviewContent == null || reviewContent.isEmpty()) {
-            //ratingservice
-        } else
-            reviewService.createReview(user.getUserId(), mediaId, rating, reviewContent);
+        reviewService.createReview(user.getUserId(), mediaId, rating, reviewContent);
         return ("redirect:/details/" + mediaId);
     }
 

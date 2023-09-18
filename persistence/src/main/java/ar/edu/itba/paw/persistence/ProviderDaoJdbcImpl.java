@@ -4,11 +4,10 @@ import ar.edu.itba.paw.models.Provider.Provider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.Optional;
+import java.util.List;
 
 @Repository
 public class ProviderDaoJdbcImpl implements ProviderDao{
@@ -29,7 +28,7 @@ public class ProviderDaoJdbcImpl implements ProviderDao{
     }
 
     @Override
-    public Optional<Provider> getProviderForMedia(int mediaId) {
-        return jdbcTemplate.query("SELECT * FROM providers WHERE mediaId = ?",new Object[]{mediaId},PROVIDER_ROW_MAPPER).stream().findFirst();
+    public List<Provider> getProviderForMedia(int mediaId) {
+        return jdbcTemplate.query("SELECT * FROM providers WHERE mediaId = ?",new Object[]{mediaId},PROVIDER_ROW_MAPPER);
     }
 }

@@ -2,9 +2,9 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Provider.Provider;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface ProviderDao {
 
-    Optional<Provider> getProviderForMedia(int mediaId);
+    List<Provider> getProviderForMedia(int mediaId);
 }
