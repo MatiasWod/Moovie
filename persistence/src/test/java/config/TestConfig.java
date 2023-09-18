@@ -36,7 +36,7 @@ public class TestConfig {
     private DatabasePopulator databasePopulator() {
         final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.addScript(hsqldb);
-        populator.addScript(media);
+        //populator.addScript(media);
         return populator;
     }
 
