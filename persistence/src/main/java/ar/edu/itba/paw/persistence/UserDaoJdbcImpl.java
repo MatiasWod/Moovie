@@ -1,7 +1,5 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Media.Media;
-import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
