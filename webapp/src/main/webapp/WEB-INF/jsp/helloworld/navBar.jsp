@@ -20,9 +20,6 @@
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page" href="${pageContext.request.contextPath}/createList">Create a list</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="">Discover</a>
-                </li>
             </ul>
             <form class="d-flex mb-0" role="search" action="${pageContext.request.contextPath}/search" method="get">
                 <input class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search">

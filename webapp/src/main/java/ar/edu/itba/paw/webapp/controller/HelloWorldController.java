@@ -1,20 +1,12 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.Cast.Actor;
-import ar.edu.itba.paw.models.Genre.Genre;
-import ar.edu.itba.paw.models.Media.Movie;
-import ar.edu.itba.paw.models.User.User;
-import ar.edu.itba.paw.services.*;
+import ar.edu.itba.paw.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class HelloWorldController {

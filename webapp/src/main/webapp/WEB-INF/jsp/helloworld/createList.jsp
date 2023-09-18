@@ -10,9 +10,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+    <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/resources/logo.png" />
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link href="${pageContext.request.contextPath}/resources/main.css?version=79" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/details.css?version=55" rel="stylesheet"/>
 
     <title>Share your favorite media</title>
     <script src="${pageContext.request.contextPath}/resources/createListFunctions.js?version=79"></script>
@@ -67,16 +70,21 @@
 
         </div>
         <div id="preview" style="position: relative" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
-            <img id="preview-img" class="image-blur height-full background" src="https://image.tmdb.org/t/p/original/4m1Au3YkjqsxF8iwQy0fPYSxE0h.jpg">
+<%--            <img id="preview-img"
+                        class="image-blur height-full background"
+                        src="https://image.tmdb.org/t/p/original/4m1Au3YkjqsxF8iwQy0fPYSxE0h.jpg">--%>
+            <div class="image-blur height-full background" style="background: dimgray"></div>
             <form action="${pageContext.request.contextPath}/createListAction" method="POST">
             <div style="position: absolute;top: 0;left: 0" class="d-flex p-4 container flex-column">
 
                     <h2 class="m-2">List Name:</h2>
-                        <input name="listName" id="list-name" required class="form-control me-2">
+                        <input name="listName" id="list-name" required class="form-control me-2 createListInput">
                     <h3 class="m-2" >Description:</h3>
-                        <input name="listDescription" required id="list-description" class="form-control me-2">
+<%--                        <input type="" name="listDescription" --%>
+<%--                               required id="list-description" class="form-control me-2">--%>
+                        <textarea class="review-textarea" rows="3" name="listDescription" placeholder="Your description..."></textarea>
                     <h3 class="m-2" >Email:</h3>
-                        <input required name="userEmail" id="list-email" class="form-control me-2">
+                        <input required name="userEmail" id="list-email" class="form-control me-2 createListInput">
                     <input type="hidden" name="mediaIds" id="selected-create-media">
 
                 <div class="scrollableMedia d-flex flex-column m-2 p-2" id="selected-media-names">

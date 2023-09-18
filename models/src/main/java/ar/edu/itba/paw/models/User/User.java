@@ -16,4 +16,13 @@ public class User {
     public String getEmail() {
         return email;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass() == User.class){
+            return this.userId == ((User) obj).getUserId();
+        }
+
+        return super.equals(obj);
+    }
 }

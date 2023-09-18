@@ -22,7 +22,8 @@ function loadPreview(title, rating, posterPath, overview, adult, id, year) {
     document.getElementById("preview-img").src = posterPath;
     document.getElementById("preview-synopsis").innerText = overview;
     document.getElementById("preview-details").href = 'details/' + String(id);
-    document.getElementById("preview-year").innerText = year;
+    var yearSubstring = year.split('-')[0];
+    document.getElementById("preview-year").innerText = yearSubstring;
     if (adult == 'true'){
         document.getElementById("preview-explicit").style.display = 'block';
     }

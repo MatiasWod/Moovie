@@ -3,6 +3,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/resources/logo.png" />
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link href="${pageContext.request.contextPath}/resources/main.css?version=79" rel="stylesheet"/>
     <title>Moovie</title>
@@ -29,8 +31,8 @@
         <div class="container d-flex scrollableDiv">
             <c:forEach var="movie" items="${movieList}" end="5">
                 <a href="${pageContext.request.contextPath}/details/${movie.mediaId}" class="poster card text-bg-dark m-1">
-                    <div  style="height: 40vh;" class="card-img-container"> <!-- Add a container for the image -->
-                        <img class="height-full" src="${movie.posterPath}" alt="${movie.name} poster">
+                    <div   class="card-img-container"> <!-- Add a container for the image -->
+                        <img class="height-full cropCenterLanding" src="${movie.posterPath}" alt="${movie.name} poster">
                         <div class="card-img-overlay">
                             <h5 class="card-title">${movie.name}</h5>
                             <p class="card-text">${movie.tmdbRating}</p>
@@ -48,8 +50,8 @@
         <div class="container d-flex overflow-scroll">
             <c:forEach var="series" items="${tvList}" end="5">
                 <a href="${pageContext.request.contextPath}/details/${series.mediaId}" class="poster card text-bg-dark m-1">
-                    <div style="height: 40vh;" class="card-img-container"> <!-- Add a container for the image -->
-                        <img class="height-full" src="${series.posterPath}" alt="${series.name} poster">
+                    <div  class="card-img-container"> <!-- Add a container for the image -->
+                        <img class="height-full cropCenterLanding" src="${series.posterPath}" alt="${series.name} poster">
                         <div class="card-img-overlay">
                             <h5 class="card-title">${series.name}</h5>
                             <p class="card-text">${series.tmdbRating}</p>
