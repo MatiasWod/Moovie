@@ -26,6 +26,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Value("classpath:schema.sql")
     private Resource schemaSql;
 
+    @Value("classpath:media.sql")
+    private Resource mediaSql;
+
     @Bean
     public ViewResolver viewResolver() {
         final InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
@@ -60,6 +63,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     private DatabasePopulator databasePopulator(){
         final ResourceDatabasePopulator dbp =  new ResourceDatabasePopulator();
         dbp.addScript(schemaSql);
+        dbp.addScript(mediaSql);
         return dbp;
     }
 
