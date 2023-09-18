@@ -43,8 +43,12 @@
                         <c:set var="minutes" value="${media.runtime % 60}"/>
                         <fmt:formatNumber var="formattedHours" value="${hours}"/>
                         ${formattedHours}h ${minutes}m
+                        <span style="margin: 0 5px;">•</span>
+                        Movie
                     </c:when>
                     <c:otherwise>
+                        TV Series
+                        <span style="margin: 0 5px;">•</span>
                         ${media.numberOfSeasons}
                         <c:choose>
                             <c:when test="${media.numberOfSeasons == 1}">
