@@ -115,8 +115,16 @@ public class MovieController {
 
     @RequestMapping(value = "/details/{id:\\d+}")
     public ModelAndView details(@PathVariable("id") final int mediaId,@ModelAttribute("CreateReviewForm") final CreateReviewForm createReviewForm){
-        final ModelAndView mav = new ModelAndView("helloworld/details");
+
         final Optional<Media> media = mediaService.getMediaById(mediaId);
+
+        if(! media.isPresent()){
+            final ModelAndView mav = new ModelAndView("helloworld/404.jsp");
+            mav.addObject("extraInfo", "The media with id: " +mediaId+ " doesn't exists");
+            return mav;
+        }
+
+        final ModelAndView mav = new ModelAndView("helloworld/details");
         final List<Actor> actorsList = actorService.getAllActorsForMedia(mediaId);
         final List<Genre> genresList = genreService.getGenreForMedia(mediaId);
         final List<Review> reviewList = reviewService.getReviewsByMediaId(mediaId);
@@ -169,25 +177,5 @@ public class MovieController {
         return ("redirect:/details/" + createReviewForm.getMediaId());
     }
 
-
-    @RequestMapping("/list/{id:\\d+}")
-    public ModelAndView list(@PathVariable("id") final int moovieListId) {
-        final ModelAndView mav = new ModelAndView("helloworld/moovieList");
-
-        Optional<MoovieList> moovieListData = moovieListService.getMoovieListById(moovieListId);
-        if (moovieListData.isPresent()) {
-            mav.addObject("moovieList", moovieListData.get());
-
-            List<Media> mediaList = mediaService.getMediaByMoovieListId(moovieListId);
-            List<MoovieListContent> moovieListContent = moovieListService.getMoovieListContentById(moovieListId);
-            String listOwner = userService.findUserById(moovieListData.get().getUserId()).get().getEmail();
-
-            mav.addObject("mediaList", mediaList);
-            mav.addObject("moovieListContent", moovieListContent);
-            mav.addObject("listOwner", listOwner);
-        } else {
-        }
-        return mav;
-    }
 }
 
