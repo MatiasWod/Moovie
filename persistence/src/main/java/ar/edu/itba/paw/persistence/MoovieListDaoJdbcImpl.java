@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
+import ar.edu.itba.paw.models.Review.Review;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -58,8 +59,24 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         return jdbcTemplate.query("SELECT * FROM moovieListsContent WHERE moovieListId = ? ORDER BY moovieListsContent.mediaId",new Object[]{moovieListId},MEDIA_LIST_CONTENT_ROW_MAPPER);
     }
 
+    public int userHasListWithName(int userId, String name){
+        Optional<MoovieList> r = jdbcTemplate.query("SELECT * FROM moovieLists WHERE name = ? AND userId= ? ",new Object[]{name,userId},  MEDIA_LIST_ROW_MAPPER).stream().findFirst();
+        if(r.isPresent()){
+            return r.get().getMoovieListId();
+        }
+        return -1;
+    }
+
     @Override
     public MoovieList createMoovieList(int userId, String name, String description) {
+        int auxId = userHasListWithName(userId,name);
+        if(auxId>0){
+            String sqlDelContent = "DELETE FROM moovieListsContent WHERE moovieListId = " +auxId ;
+            String sqlDel = "DELETE FROM moovieLists WHERE moovieListId = " +auxId ;
+
+            jdbcTemplate.execute(sqlDel);
+        }
+
         final Map<String, Object> args = new HashMap<>();
         args.put("userId", userId);
         args.put("name", name);
