@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
+import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.Utils.Tuple;
 import ar.edu.itba.paw.services.GenreService;
@@ -13,6 +14,7 @@ import ar.edu.itba.paw.services.MoovieListService;
 import ar.edu.itba.paw.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -89,14 +91,11 @@ public class ListController {
                                    @RequestParam(value = "mediaIds", required = true) final List<String> mediaIds,
                                    @RequestParam(value = "listName", required = true) final String name,
                                    @RequestParam(value = "listDescription", required = true) final String description){
-        if(!userEmail.contains("@")){
+
+        if(! userEmail.matches("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[A-Za-z]{2,}")){
             return "redirect:/createList?error=invalidEmail";
         }
 
-        Matcher m = (Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[A-Za-z]{2,}")).matcher(userEmail);
-        if(m.matches()){
-            return ("redirect:/createList");
-        }
 
         List<Integer> finalIds = new ArrayList<>();
         for (String id : mediaIds) {
@@ -112,7 +111,7 @@ public class ListController {
         MoovieList list = moovieListService.createMoovieListWithContent(user.getUserId(),name,description,finalIds);
 
         int id = list.getMoovieListId();
-        return ("redirect:/createList/" + id);
+        return ("redirect:/list/" + id);
     }
 
 // http://tuDominio.com/createList?s=A&s=B&s=C&s=D&s=E
@@ -194,5 +193,27 @@ public class ListController {
         List<String> genres = genreService.getAllGenres();
         mav.addObject("genresList", genres);
         return mav;
+    }
+
+    @RequestMapping("/list/{id:\\d+}")
+    public ModelAndView list(@PathVariable("id") final int moovieListId) {
+        Optional<MoovieList> moovieListData = moovieListService.getMoovieListById(moovieListId);
+        if (moovieListData.isPresent()) {
+            final ModelAndView mav = new ModelAndView("helloworld/moovieList");
+            mav.addObject("moovieList", moovieListData.get());
+
+            List<Media> mediaList = mediaService.getMediaByMoovieListId(moovieListId);
+            List<MoovieListContent> moovieListContent = moovieListService.getMoovieListContentById(moovieListId);
+            String listOwner = userService.findUserById(moovieListData.get().getUserId()).get().getEmail();
+
+            mav.addObject("mediaList", mediaList);
+            mav.addObject("moovieListContent", moovieListContent);
+            mav.addObject("listOwner", listOwner);
+            return mav;
+        } else {
+            final ModelAndView mav = new ModelAndView("helloworld/404.jsp");
+            mav.addObject("extraInfo", "The list with id: " +moovieListId+ " doesn't exists");
+            return mav;
+        }
     }
 }

@@ -5,8 +5,6 @@ import ar.edu.itba.paw.models.Genre.Genre;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
-import ar.edu.itba.paw.models.MoovieList.MoovieList;
-import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.Provider.Provider;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.TV.TVCreators;
@@ -152,8 +150,16 @@ public class MovieController {
 
     @RequestMapping(value = "/details/{id:\\d+}")
     public ModelAndView details(@PathVariable("id") final int mediaId,@ModelAttribute("CreateReviewForm") final CreateReviewForm createReviewForm){
-        final ModelAndView mav = new ModelAndView("helloworld/details");
+
         final Optional<Media> media = mediaService.getMediaById(mediaId);
+
+        if(! media.isPresent()){
+            final ModelAndView mav = new ModelAndView("helloworld/404.jsp");
+            mav.addObject("extraInfo", "The media with id: " +mediaId+ " doesn't exists");
+            return mav;
+        }
+
+        final ModelAndView mav = new ModelAndView("helloworld/details");
         final List<Actor> actorsList = actorService.getAllActorsForMedia(mediaId);
         final List<Genre> genresList = genreService.getGenreForMedia(mediaId);
         final List<Review> reviewList = reviewService.getReviewsByMediaId(mediaId);
@@ -172,19 +178,15 @@ public class MovieController {
             userEmail.put(review.getUserId(), Objects.requireNonNull(userService.findUserById(review.getUserId()).orElse(null)).getEmail());
         }
 
-        if (media.isPresent()) {
-            if (!media.get().isType()) {
-                final Optional<Movie> movie = mediaService.getMovieById(mediaId);
-                mav.addObject("media", movie.orElse(null)); // Use orElse to handle empty Optional
-            } else {
-                final Optional<TVSerie> tvSerie = mediaService.getTvById(mediaId);
-                final List<TVCreators> creators=tvCreatorsService.getTvCreatorsByMediaId(mediaId);
-                if (!creators.isEmpty())
-                    mav.addObject("creators", creators);
-                mav.addObject("media", tvSerie.orElse(null)); // Use orElse to handle empty Optional
-            }
+        if (!media.get().isType()) {
+            final Optional<Movie> movie = mediaService.getMovieById(mediaId);
+            mav.addObject("media", movie.orElse(null)); // Use orElse to handle empty Optional
         } else {
-            mav.addObject("media", null);
+            final Optional<TVSerie> tvSerie = mediaService.getTvById(mediaId);
+            final List<TVCreators> creators = tvCreatorsService.getTvCreatorsByMediaId(mediaId);
+            if (!creators.isEmpty())
+                mav.addObject("creators", creators);
+            mav.addObject("media", tvSerie.orElse(null)); // Use orElse to handle empty Optional
         }
 
         mav.addObject("providerList", providerList);
@@ -199,32 +201,12 @@ public class MovieController {
     @RequestMapping(value = "/createrating", method = RequestMethod.POST)
     public String createReview( @Valid @ModelAttribute("CreateReviewForm") final CreateReviewForm createReviewForm, final BindingResult errors) {
         if (errors.hasErrors()) {
-            return "redirect:/asdad/";
+            return "redirect:/errorpage/";
         }
         User user = userService.getOrCreateUserViaMail(createReviewForm.getUserEmail());
         reviewService.createReview(user.getUserId(), createReviewForm.getMediaId(), createReviewForm.getRating(), createReviewForm.getReviewContent());
         return ("redirect:/details/" + createReviewForm.getMediaId());
     }
 
-
-    @RequestMapping("/list/{id:\\d+}")
-    public ModelAndView list(@PathVariable("id") final int moovieListId) {
-        final ModelAndView mav = new ModelAndView("helloworld/moovieList");
-
-        Optional<MoovieList> moovieListData = moovieListService.getMoovieListById(moovieListId);
-        if (moovieListData.isPresent()) {
-            mav.addObject("moovieList", moovieListData.get());
-
-            List<Media> mediaList = mediaService.getMediaByMoovieListId(moovieListId);
-            List<MoovieListContent> moovieListContent = moovieListService.getMoovieListContentById(moovieListId);
-            String listOwner = userService.findUserById(moovieListData.get().getUserId()).get().getEmail();
-
-            mav.addObject("mediaList", mediaList);
-            mav.addObject("moovieListContent", moovieListContent);
-            mav.addObject("listOwner", listOwner);
-        } else {
-        }
-        return mav;
-    }
 }
 
