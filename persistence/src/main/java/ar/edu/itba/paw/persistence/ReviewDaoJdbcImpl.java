@@ -48,15 +48,29 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
         return jdbcTemplate.query("SELECT reviews.* FROM reviews INNER JOIN moovielistscontent ON moovielistscontent.mediaId = reviews.mediaId WHERE reviews.userId = ?", new Object[]{userId + " AND moovielistscontent.moovielistId = " + moovieListId}, REVIEW_ROW_MAPPER);
     }
 
+    public boolean userInMediaHasReview(int userId, int mediaId){
+        Optional<Review> r = jdbcTemplate.query("SELECT * FROM reviews WHERE mediaId = 2 AND userId= 12 ",  REVIEW_ROW_MAPPER).stream().findFirst();
+        if(r.isPresent()){
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public Review createReview(int userId, int mediaId, int rating, String reviewContent) {
+        if(userInMediaHasReview(userId, mediaId)){
+            String sqlDel = "DELETE FROM reviews WHERE userid = " + userId + " AND mediaid = " + mediaId;
+            jdbcTemplate.execute(sqlDel);
+        }
+        if (reviewContent.isEmpty()) {
+            reviewContent = null;
+        }
         final Map<String, Object> args = new HashMap<>();
         args.put("userId", userId);
         args.put("mediaId", mediaId);
         args.put("rating", rating);
         args.put("reviewLikes", 0);
-        if (reviewContent.isEmpty())
-            reviewContent=null;
+
         args.put("reviewContent", reviewContent);
         final Number reviewId = reviewJdbcInsert.executeAndReturnKey(args);
         return new Review(reviewId.intValue(), userId, mediaId, rating, 0, reviewContent);
