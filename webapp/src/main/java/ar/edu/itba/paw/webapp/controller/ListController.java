@@ -5,7 +5,9 @@ import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
+import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.models.Utils.Tuple;
 import ar.edu.itba.paw.services.GenreService;
 import ar.edu.itba.paw.services.MediaService;
 import ar.edu.itba.paw.services.MoovieListService;
@@ -17,8 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -42,10 +43,34 @@ public class ListController {
     private UserService userService;
 
     @RequestMapping("/lists")
-    public ModelAndView lists(){
+    public ModelAndView lists(
+            @RequestParam(value = "search", required = false) final String searchQ){
+
         final ModelAndView mav = new ModelAndView("helloworld/viewLists");
         List<MoovieList> moovieLists = mediaListService.geAllMoovieLists();
-        mav.addObject("moovieLists", moovieLists);
+
+        Map<User, Tuple<MoovieList,List<String>>> tupleHashMap = new HashMap<>();
+
+
+        moovieLists.forEach(list -> {
+            if (( searchQ == null || searchQ.isEmpty() ) || (list.getName().toLowerCase().contains(searchQ.toLowerCase()))){
+                Optional<User> optionalUser = userService.findUserById(list.getUserId());
+                if (optionalUser.isPresent()) {
+                    User user = optionalUser.get();
+                    List<String> innerList = new ArrayList<>();
+
+                    moovieListService.getMoovieListContentById(list.getMoovieListId())
+                            .subList(0,Math.min(4,moovieListService.getMoovieListContentById(list.getMoovieListId()).size())).forEach(moovieListContent -> {
+                                innerList.add(mediaService.getMediaById(moovieListContent.getMediaId()).get().getPosterPath());
+                            });
+
+                    Tuple<MoovieList,List<String>> innerTuple = new Tuple<>(list,innerList);
+                    tupleHashMap.put(user,innerTuple);
+                }
+            }
+        });
+
+        mav.addObject("mapTuple", tupleHashMap);
         return mav;
     }
 

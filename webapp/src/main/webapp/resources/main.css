@@ -107,14 +107,6 @@
     height: 100%;
 }
 
-.flex-grow-2{
-    flex-grow: 4;
-}
-
-.flex-grow-1{
-    flex-grow: 1;
-}
-
 .scrollableDiv {
     overflow-y: auto;
     max-height: 88vh;  /* Ajustar según necesidades */
@@ -142,3 +134,18 @@
     overflow-y: auto;
     max-height: 200px;
 }
+
+.cropCenterImage {
+    object-fit: cover;
+    object-position: center;
+    width: 8rem;
+    height: 9rem;
+}
+
+.cardBodyFlex {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
