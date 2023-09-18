@@ -82,7 +82,7 @@
                     <h3 class="m-2" >Description:</h3>
                         <textarea class="review-textarea" rows="3" name="listDescription" placeholder="Your description..."></textarea>
                     <h3 class="m-2" >Email:</h3>
-                        <input required name="userEmail" id="list-email" class="form-control me-2 createListInput">
+                        <input required name="userEmail" type="email" id="list-email" class="form-control me-2 createListInput">
                     <input type="hidden" name="mediaIds" id="selected-create-media">
 
                 <div class="scrollableMedia d-flex flex-column m-2 p-2" id="selected-media-names">

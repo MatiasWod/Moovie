@@ -239,7 +239,7 @@
                 <form:textarea path="reviewContent" class="review-textarea" id="reviewContent" rows="3"
                           placeholder="Your review (Optional)"></form:textarea>
                 <h2 class="m-2">Email:</h2>
-                <form:input path="userEmail" type="text" class="form-control" id="userEmail" placeholder="Enter email"/>
+                <form:input path="userEmail" type="email" class="form-control" id="userEmail" placeholder="Enter email"/>
                 <form:input path="mediaId" type="hidden" id="mediaId" value="${media.mediaId}"/>
                 <form:input path="rating" type="hidden" id="rating" />
                 <!-- Submit Button -->
