@@ -142,10 +142,25 @@
     height: 9rem;
 }
 
+.cropCenterLanding {
+    object-fit: cover;
+    object-position: center;
+    max-width: 12rem;
+    height: 32vh;
+}
+
 .cardBodyFlex {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
+}
+
+.createListInput{
+    border-radius: 5px;
+    border: 1px solid black;
+    resize: none;
+    padding: 10px;
+    font-size: 1em;
 }
 
