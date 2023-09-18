@@ -24,17 +24,23 @@
             <th scope="col" class="col-2">Score</th>
         </tr>
         </thead>
-        <tbody>
-        <c:forEach var="index" begin="0" end="${moovieListContent.size()-1}" step="1">
-            <tr class="d-flex">
-                <th scope="row" class="col-1"> ${index + 1} </th>
-                <td class="col-2" ><a href="${pageContext.request.contextPath}/details/${mediaList.get(index).mediaId}"><img src="${mediaList.get(index).posterPath}" class="img-fluid" width="100" height="100"></a></td>
-                <td class="col-3"> <c:if test="${mediaList.get(index).type == true}"><p>TvSerie</p></c:if><c:if test="${mediaList.get(index).type != true}"><p>Movie</p></c:if></td>
-                <td class="col-4"><a href="${pageContext.request.contextPath}/details/${mediaList.get(index).mediaId}">${mediaList.get(index).name}</a><br><p style="font-size: smaller; font-style: italic"> ${mediaList.get(index).releaseDate}</p></td>
-                <td class="col-2">${mediaList.get(index).tmdbRating}<i class="bi bi-star-fill"></i></td>
-            </tr>
-        </c:forEach>
-        </tbody>
+
+        <c:if test="${moovieListContent.size()}!=0">
+            <tbody>
+            <c:forEach var="index" begin="0" end="${moovieListContent.size()-1}" step="1">
+                <tr class="d-flex">
+                    <th scope="row" class="col-1"> ${index + 1} </th>
+                    <td class="col-2" ><a href="${pageContext.request.contextPath}/details/${mediaList.get(index).mediaId}"><img src="${mediaList.get(index).posterPath}" class="img-fluid" width="100" height="100"></a></td>
+                    <td class="col-3"> <c:if test="${mediaList.get(index).type == true}"><p>TvSerie</p></c:if><c:if test="${mediaList.get(index).type != true}"><p>Movie</p></c:if></td>
+                    <td class="col-4"><a href="${pageContext.request.contextPath}/details/${mediaList.get(index).mediaId}">${mediaList.get(index).name}</a><br><p style="font-size: smaller; font-style: italic"> ${mediaList.get(index).releaseDate}</p></td>
+                    <td class="col-2">${mediaList.get(index).tmdbRating}<i class="bi bi-star-fill"></i></td>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </c:if>
+        <c:if test="${moovieListContent.size()}==0">
+            List is empty
+        </c:if>
     </table>
 
 </div>
