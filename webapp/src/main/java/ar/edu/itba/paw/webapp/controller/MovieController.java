@@ -5,8 +5,6 @@ import ar.edu.itba.paw.models.Genre.Genre;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
-import ar.edu.itba.paw.models.MoovieList.MoovieList;
-import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.Provider.Provider;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.TV.TVCreators;
@@ -143,19 +141,15 @@ public class MovieController {
             userEmail.put(review.getUserId(), Objects.requireNonNull(userService.findUserById(review.getUserId()).orElse(null)).getEmail());
         }
 
-        if (media.isPresent()) {
-            if (!media.get().isType()) {
-                final Optional<Movie> movie = mediaService.getMovieById(mediaId);
-                mav.addObject("media", movie.orElse(null)); // Use orElse to handle empty Optional
-            } else {
-                final Optional<TVSerie> tvSerie = mediaService.getTvById(mediaId);
-                final List<TVCreators> creators=tvCreatorsService.getTvCreatorsByMediaId(mediaId);
-                if (!creators.isEmpty())
-                    mav.addObject("creators", creators);
-                mav.addObject("media", tvSerie.orElse(null)); // Use orElse to handle empty Optional
-            }
+        if (!media.get().isType()) {
+            final Optional<Movie> movie = mediaService.getMovieById(mediaId);
+            mav.addObject("media", movie.orElse(null)); // Use orElse to handle empty Optional
         } else {
-            mav.addObject("media", null);
+            final Optional<TVSerie> tvSerie = mediaService.getTvById(mediaId);
+            final List<TVCreators> creators = tvCreatorsService.getTvCreatorsByMediaId(mediaId);
+            if (!creators.isEmpty())
+                mav.addObject("creators", creators);
+            mav.addObject("media", tvSerie.orElse(null)); // Use orElse to handle empty Optional
         }
 
         mav.addObject("providerList", providerList);
@@ -170,7 +164,7 @@ public class MovieController {
     @RequestMapping(value = "/createrating", method = RequestMethod.POST)
     public String createReview( @Valid @ModelAttribute("CreateReviewForm") final CreateReviewForm createReviewForm, final BindingResult errors) {
         if (errors.hasErrors()) {
-            return "redirect:/asdad/";
+            return "redirect:/errorpage/";
         }
         User user = userService.getOrCreateUserViaMail(createReviewForm.getUserEmail());
         reviewService.createReview(user.getUserId(), createReviewForm.getMediaId(), createReviewForm.getRating(), createReviewForm.getReviewContent());
