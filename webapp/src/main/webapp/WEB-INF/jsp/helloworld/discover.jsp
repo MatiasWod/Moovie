@@ -18,7 +18,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
     <title>Discover your next favorite experience</title>
-    <script src="${pageContext.request.contextPath}/resources/discoverFunctions.js?version=78"></script>
+    <script src="${pageContext.request.contextPath}/resources/discoverFunctions.js?version=79"></script>
 </head>
 <body style="background: whitesmoke">
 <div class="container d-flex flex-column">
@@ -97,7 +97,7 @@
                             <h3 id="preview-year"></h3>
                         </div>
                     </div>
-                    <p style="overflow: auto; height: 32rem" id="preview-synopsis"></p>
+                    <p style="overflow: auto; max-height: 30vh" id="preview-synopsis"></p>
                     <h3 id="preview-director"></h3>
                 </div>
                 <a id="preview-details" class="m-4 btn btn-outline-success align-bottom" type="submit">More details</a>
