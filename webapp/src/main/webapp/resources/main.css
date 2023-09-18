@@ -8,11 +8,13 @@
 }
 .poster {
     opacity: 0.9;
-    max-width: 18%;
+
+    width: 18%;
+
     margin-left: 2px;
     margin-right: 2px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    height: fit-content;
+
 }
 
 .poster.card {
@@ -133,6 +135,13 @@
 .scrollableMedia {
     overflow-y: auto;
     max-height: 200px;
+}
+
+.cropCenter{
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
+    height: 100%;
 }
 
 .cropCenterImage {

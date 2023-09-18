@@ -72,22 +72,52 @@ public class MovieController {
         if (genre != null && !genre.isEmpty()) {
             if (media != null && media.equals("Movies")) {
                 movieList = mediaService.getMovieFilteredByGenre(genre);
+                movieList.forEach(movie -> {
+                    if (movie.getOverview().contains("\n")){
+                        movie.setOverview(movie.getOverview().replace("\n",""));
+                    }
+                });
                 mav.addObject("mediaList", movieList);
             } else if (media != null && media.equals("Series")) {
                 tvSerieList = mediaService.getTvFilteredByGenre(genre);
+                tvSerieList.forEach(mediaAux -> {
+                    if (mediaAux.getOverview().contains("\n")){
+                        mediaAux.setOverview(mediaAux.getOverview().replace("\n",""));
+                    }
+                });
                 mav.addObject("mediaList", tvSerieList);
             } else {
                 mediaList = mediaService.getMediaFilteredByGenre(genre);
+                mediaList.forEach(mediaAux -> {
+                    if (mediaAux.getOverview().contains("\n")){
+                        mediaAux.setOverview(mediaAux.getOverview().replace("\n",""));
+                    }
+                });
                 mav.addObject("mediaList", mediaList);
             }
         } else if (media != null && media.equals("Movies")) {
             movieList = mediaService.getMovieList();
+            movieList.forEach(movie -> {
+                if (movie.getOverview().contains("\n")){
+                    movie.setOverview(movie.getOverview().replace("\n",""));
+                }
+            });
             mav.addObject("mediaList", movieList);
         } else if (media != null && media.equals("Series")) {
             tvSerieList = mediaService.getTvList();
+            tvSerieList.forEach(mediaAux -> {
+                if (mediaAux.getOverview().contains("\n")){
+                    mediaAux.setOverview(mediaAux.getOverview().replace("\n",""));
+                }
+            });
             mav.addObject("mediaList", tvSerieList);
         } else {
             mediaList = mediaService.getMoovieList();
+            mediaList.forEach(mediaAux -> {
+                if (mediaAux.getOverview().contains("\n")){
+                    mediaAux.setOverview(mediaAux.getOverview().replace("\n",""));
+                }
+            });
             mav.addObject("mediaList", mediaList);
         }
 
@@ -106,6 +136,13 @@ public class MovieController {
         mav.addObject("searchMode", search);
 
         List<Media> mediaList = mediaService.getMediaBySearch(query);
+
+        mediaList.forEach(media -> {
+            if (media.getOverview().contains("\n")){
+                media.setOverview(media.getOverview().replace("\n",""));
+            }
+        });
+
         mav.addObject("mediaList", mediaList);
 
 

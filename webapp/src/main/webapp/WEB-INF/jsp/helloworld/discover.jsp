@@ -14,7 +14,7 @@
     <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/resources/logo.png" />
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link href="${pageContext.request.contextPath}/resources/main.css?version=78" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/main.css?version=1" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
     <title>Discover your next favorite experience</title>
@@ -23,7 +23,7 @@
 <body style="background: whitesmoke">
 <div class="container d-flex flex-column">
     <c:import url="navBar.jsp"/>
-    <c class="container d-flex flex-row "> <%-- dos columnas (flex-row) izquierda-filtros->luego peliculas     derecha-preview --%>
+    <c class="container d-flex flex-row ">
 <%--        FILTROS y PELIS    --%>
 
         <div class="container d-flex flex-column">
@@ -57,19 +57,18 @@
             </c:if>
 
             <div class="scrollableDiv flex-wrap d-flex">
-                <c:forEach var="movie" items="${mediaList}" end="25">
-<%--                    <div class="poster card text-bg-dark m-1" onclick="loadPreview('${movie.name}', '${movie.tmdbRating}', '${movie.posterPath}', '${movie.overview}')">--%>
+                <c:forEach var="movie" items="${mediaList}" end="24">
                     <div class="poster card text-bg-dark m-1"
-                         onclick="loadPreview('${fn:replace(fn:replace(movie.name,
-                          "'", "\\'"), "\"", "&quot;")}',
+                         onclick="loadPreview(
+                                 '${(fn:replace(fn:replace(movie.name,"'", "\\'"), "\"", "&quot;"))}',
                                  '${movie.tmdbRating}',
                                  '${movie.posterPath}',
-                                 '${fn:replace(fn:replace(movie.overview, "'", "\\'"), "\"", "&quot;")}',
+                                 '${(fn:replace(fn:replace(movie.overview, "'", "\\'"), "\"", "&quot;"))}',
                                  '${movie.adult}',
                                  '${movie.mediaId}',
                                  '${movie.releaseDate}')">
                     <div class="card-img-container"> <!-- Add a container for the image -->
-                            <img class="height-full" src="${movie.posterPath}">
+                            <img class="cropCenter" src="${movie.posterPath}">
                             <div class="card-img-overlay">
                                 <h5 class="card-title">${movie.name}</h5>
                                 <p class="card-text">${movie.tmdbRating}</p>
@@ -98,7 +97,7 @@
                             <h3 id="preview-year"></h3>
                         </div>
                     </div>
-                    <p id="preview-synopsis"></p>
+                    <p style="overflow: auto; height: 32rem" id="preview-synopsis"></p>
                     <h3 id="preview-director"></h3>
                 </div>
                 <a id="preview-details" class="m-4 btn btn-outline-success align-bottom" type="submit">More details</a>

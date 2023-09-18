@@ -9,7 +9,7 @@ public class Media {
     private final String originalLanguage;
     private final boolean adult;
     private final Date releaseDate;
-    private final String overview;
+    private String overview;
     private final String backdropPath;
     private final String posterPath;
     private final String trailerLink;
@@ -90,5 +90,9 @@ public class Media {
 
     public String getStatus() {
         return status;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
     }
 }

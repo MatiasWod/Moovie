@@ -55,8 +55,11 @@
                 </form>
             </div>
             <div class="scrollableDiv flex-wrap d-flex">
-                <c:forEach var="movie" items="${mediaList}">
-                    <div class="poster card text-bg-dark m-1" onclick="displayMediaName('${movie.name}',${movie.mediaId})">
+                <c:forEach var="movie" items="${mediaList}" end="24">
+                    <div class="poster card text-bg-dark m-1"
+                         onclick="displayMediaName(
+                             '${(fn:replace(fn:replace(movie.name,"'", "\\'"), "\"", "&quot;"))}',
+                             ${movie.mediaId})">
                     <div class="card-img-container"> <!-- Add a container for the image -->
                             <img class="height-full" src="${movie.posterPath}" alt="poster image">
                             <div class="card-img-overlay">
@@ -70,9 +73,6 @@
 
         </div>
         <div id="preview" style="position: relative" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
-<%--            <img id="preview-img"
-                        class="image-blur height-full background"
-                        src="https://image.tmdb.org/t/p/original/4m1Au3YkjqsxF8iwQy0fPYSxE0h.jpg">--%>
             <div class="image-blur height-full background" style="background: dimgray"></div>
             <form action="${pageContext.request.contextPath}/createListAction" method="POST">
             <div style="position: absolute;top: 0;left: 0" class="d-flex p-4 container flex-column">
@@ -80,8 +80,6 @@
                     <h2 class="m-2">List Name:</h2>
                         <input name="listName" id="list-name" required class="form-control me-2 createListInput">
                     <h3 class="m-2" >Description:</h3>
-<%--                        <input type="" name="listDescription" --%>
-<%--                               required id="list-description" class="form-control me-2">--%>
                         <textarea class="review-textarea" rows="3" name="listDescription" placeholder="Your description..."></textarea>
                     <h3 class="m-2" >Email:</h3>
                         <input required name="userEmail" id="list-email" class="form-control me-2 createListInput">
