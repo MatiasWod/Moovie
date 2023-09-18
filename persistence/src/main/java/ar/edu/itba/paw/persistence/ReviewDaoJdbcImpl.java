@@ -49,7 +49,7 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
     }
 
     public boolean userInMediaHasReview(int userId, int mediaId){
-        Optional<Review> r = jdbcTemplate.query("SELECT * FROM reviews WHERE mediaId = 2 AND userId= 12 ",  REVIEW_ROW_MAPPER).stream().findFirst();
+        Optional<Review> r = jdbcTemplate.query("SELECT * FROM reviews WHERE mediaId = ? AND userId= ? ",new Object[]{mediaId,userId},  REVIEW_ROW_MAPPER).stream().findFirst();
         if(r.isPresent()){
             return true;
         }

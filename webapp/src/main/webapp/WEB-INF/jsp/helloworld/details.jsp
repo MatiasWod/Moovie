@@ -4,7 +4,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="java.lang.Math" %>
 
 <html>
 <head>
@@ -43,10 +42,7 @@
 
                 <c:choose>
                     <c:when test="${media.type==false}">
-                        <c:set var="hours" value="${Math.floor(media.runtime / 60)}"/>
-                        <c:set var="minutes" value="${media.runtime % 60}"/>
-                        <fmt:formatNumber var="formattedHours" value="${hours}"/>
-                        ${formattedHours}h ${minutes}m
+                        ${media.runtime}m
                         <span style="margin: 0 5px;">•</span>
                         Movie
                     </c:when>
