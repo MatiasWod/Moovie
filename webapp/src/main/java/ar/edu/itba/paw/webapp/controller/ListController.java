@@ -93,6 +93,11 @@ public class ListController {
             return "redirect:/createList?error=invalidEmail";
         }
 
+        Matcher m = (Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[A-Za-z]{2,}")).matcher(userEmail);
+        if(m.matches()){
+            return ("redirect:/createList");
+        }
+
         List<Integer> finalIds = new ArrayList<>();
         for (String id : mediaIds) {
             String numericPart = extractNumericPart(id);
@@ -107,7 +112,7 @@ public class ListController {
         MoovieList list = moovieListService.createMoovieListWithContent(user.getUserId(),name,description,finalIds);
 
         int id = list.getMoovieListId();
-        return ("redirect:/list/" + id);
+        return ("redirect:/createList/" + id);
     }
 
 // http://tuDominio.com/createList?s=A&s=B&s=C&s=D&s=E
