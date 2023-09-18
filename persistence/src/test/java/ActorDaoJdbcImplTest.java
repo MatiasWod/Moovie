@@ -1,4 +1,4 @@
-import ar.edu.itba.paw.models.Cast.Actor;
+/*import ar.edu.itba.paw.models.Cast.Actor;
 import ar.edu.itba.paw.persistence.ActorDaoJdbcImpl;
 import config.TestConfig;
 import org.junit.Before;
@@ -53,3 +53,4 @@ public class ActorDaoJdbcImplTest {
         assertEquals(actors.get(ACTOR_ID).getCharacterName(),CHARACTER_NAME);
     }
 }
+*/

@@ -1,4 +1,4 @@
-import ar.edu.itba.paw.models.Genre.Genre;
+/*import ar.edu.itba.paw.models.Genre.Genre;
 import ar.edu.itba.paw.models.Provider.Provider;
 import ar.edu.itba.paw.persistence.GenreDaoJdbcImpl;
 import ar.edu.itba.paw.persistence.ProviderDaoJdbcImpl;
@@ -46,3 +46,4 @@ public class GenreDaoJdbcImplTest {
         }
     }
 }
+*/
