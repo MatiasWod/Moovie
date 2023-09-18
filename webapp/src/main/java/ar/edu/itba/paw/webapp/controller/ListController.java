@@ -5,7 +5,6 @@ import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
-import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.Utils.Tuple;
 import ar.edu.itba.paw.services.GenreService;
@@ -90,9 +89,11 @@ public class ListController {
                                    @RequestParam(value = "mediaIds", required = true) final List<String> mediaIds,
                                    @RequestParam(value = "listName", required = true) final String name,
                                    @RequestParam(value = "listDescription", required = true) final String description){
+        if(!userEmail.contains("@")){
+            return "redirect:/createList?error=invalidEmail";
+        }
 
         List<Integer> finalIds = new ArrayList<>();
-
         for (String id : mediaIds) {
             String numericPart = extractNumericPart(id);
             if (numericPart != null) {

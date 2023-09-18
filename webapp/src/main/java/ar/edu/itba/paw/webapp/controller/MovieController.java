@@ -12,14 +12,14 @@ import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.TV.TVCreators;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
+import ar.edu.itba.paw.webapp.form.CreateReviewForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.util.*;
 
 @Controller
@@ -114,12 +114,20 @@ public class MovieController {
 
 
     @RequestMapping(value = "/details/{id:\\d+}")
-    public ModelAndView details(@PathVariable("id") final int mediaId) {
+    public ModelAndView details(@PathVariable("id") final int mediaId,@ModelAttribute("CreateReviewForm") final CreateReviewForm createReviewForm){
         final ModelAndView mav = new ModelAndView("helloworld/details");
         final Optional<Media> media = mediaService.getMediaById(mediaId);
         final List<Actor> actorsList = actorService.getAllActorsForMedia(mediaId);
         final List<Genre> genresList = genreService.getGenreForMedia(mediaId);
         final List<Review> reviewList = reviewService.getReviewsByMediaId(mediaId);
+        final List<Review> notEmptyContentReviewList = new ArrayList<>();
+        for (Review review : reviewList) {
+            if (review.getReviewContent() != null && !review.getReviewContent().isEmpty()) {
+                notEmptyContentReviewList.add(review);
+            }
+        }
+
+
         final List<Provider> providerList=providerService.getProviderForMedia(mediaId);
 
         Map<Integer, String> userEmail = new HashMap<>();
@@ -145,20 +153,20 @@ public class MovieController {
         mav.addObject("providerList", providerList);
         mav.addObject("actorsList", actorsList);
         mav.addObject("genresList", genresList);
-        mav.addObject("reviewList", reviewList);
+        mav.addObject("notEmptyContentReviewList", notEmptyContentReviewList);
         mav.addObject("userEmail", userEmail);
 
         return mav;
     }
 
     @RequestMapping(value = "/createrating", method = RequestMethod.POST)
-    public String createReview(@RequestParam(value = "userEmail", required = true) final String userEmail,
-                               @RequestParam(value = "mediaId", required = true) final int mediaId,
-                               @RequestParam(value = "rating", required = true) final int rating,
-                               @RequestParam(value = "reviewContent", required = false) final String reviewContent) {
-        User user = userService.getOrCreateUserViaMail(userEmail);
-        reviewService.createReview(user.getUserId(), mediaId, rating, reviewContent);
-        return ("redirect:/details/" + mediaId);
+    public String createReview( @Valid @ModelAttribute("CreateReviewForm") final CreateReviewForm createReviewForm, final BindingResult errors) {
+        if (errors.hasErrors()) {
+            return "redirect:/asdad/";
+        }
+        User user = userService.getOrCreateUserViaMail(createReviewForm.getUserEmail());
+        reviewService.createReview(user.getUserId(), createReviewForm.getMediaId(), createReviewForm.getRating(), createReviewForm.getReviewContent());
+        return ("redirect:/details/" + createReviewForm.getMediaId());
     }
 
 

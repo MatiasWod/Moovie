@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
@@ -234,14 +235,13 @@
             </div>
             <h5>Your rating: <span id="selectedRating">Not selected</span></h5>
 
-            <form action="${pageContext.request.contextPath}/createrating" method="POST">
-                <textarea class="review-textarea" id="reviewContent" rows="3" name="reviewContent"
-                          placeholder="Your review (Optional)"></textarea>
+            <form:form modelAttribute="CreateReviewForm" action="${pageContext.request.contextPath}/createrating" method="POST">
+                <form:textarea path="reviewContent" class="review-textarea" id="reviewContent" rows="3"
+                          placeholder="Your review (Optional)"></form:textarea>
                 <h2 class="m-2">Email:</h2>
-                <input type="text" class="form-control" id="userEmail" name="userEmail" required
-                       placeholder="Enter email">
-                <input type="hidden" id="mediaId" name="mediaId" value="${media.mediaId}">
-                <input type="hidden" id="rating" name="rating">
+                <form:input path="userEmail" type="text" class="form-control" id="userEmail" placeholder="Enter email"/>
+                <form:input path="mediaId" type="hidden" id="mediaId" value="${media.mediaId}"/>
+                <form:input path="rating" type="hidden" id="rating" />
                 <!-- Submit Button -->
                 <div class="text-center" style="margin-top: 20px">
                     <button type="button" class="btn btn-danger" style="margin-inline: 10px"
@@ -252,16 +252,15 @@
                         Submit
                     </button>
                 </div>
-            </form>
+            </form:form>
         </div>
         <!-- Reviews -->
         <h2>Reviews</h2>
         <hr class="my-8">
         <c:choose>
-            <c:when test="${fn:length(reviewList)>0}">
+            <c:when test="${fn:length(notEmptyContentReviewList)>0}">
                 <div class="scrollableDiv">
-                    <c:forEach var="review" items="${reviewList}">
-                        <c:if test="${review.reviewContent!=null}">
+                    <c:forEach var="review" items="${notEmptyContentReviewList}">
                             <div class="card mb-3">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center justify-content-between">
@@ -282,7 +281,6 @@
                                     </p>
                                 </div>
                             </div>
-                        </c:if>
                     </c:forEach>
                 </div>
             </c:when>

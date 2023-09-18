@@ -27,7 +27,7 @@
         </tr>
         </thead>
 
-        <c:if test="${moovieListContent.size()}!=0">
+        <c:if test="${moovieListContent.size()!=0}">
             <tbody>
             <c:forEach var="index" begin="0" end="${moovieListContent.size()-1}" step="1">
                 <tr class="d-flex">
@@ -40,7 +40,7 @@
             </c:forEach>
             </tbody>
         </c:if>
-        <c:if test="${moovieListContent.size()}==0">
+        <c:if test="${moovieListContent.size()==0}">
             List is empty
         </c:if>
     </table>
