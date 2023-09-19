@@ -50,8 +50,8 @@
                     </div>
                     <div class="card-body cardBodyFlex">
                         <div>
-                            <h5 class="card-title">${map.value.first.name}</h5>
-                            <p style="max-height: 4.5rem" class="card-text overflow-hidden">${map.value.first.description}</p>
+                            <h5 class="card-title"><c:out value="${map.value.first.name}"/></h5>
+                            <p style="max-height: 4.5rem" class="card-text overflow-hidden"><c:out value="${map.value.first.description}"/></p>
                         </div>
                         <a href="${pageContext.request.contextPath}/list/${map.value.first.moovieListId}" class="btn btn-success">Show More</a>
                     </div>

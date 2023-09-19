@@ -2,7 +2,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-
 <%@ page contentType="text/html;charset=UTF-8" %>
 
 <html>
@@ -267,7 +266,7 @@
                                                  alt="${review.userId} Reviewer Profile" class="mr-3 rounded-circle"
                                                  width="64" height="64">
                                             <div class="mt-0" style="margin-left: 15px">
-                                                <h5>${userEmail[review.userId]}</h5>
+                                                <h5><c:out value="${userEmail[review.userId]}"/></h5>
                                             </div>
                                         </div>
                                         <h5 class="align-items-left"><i
@@ -275,7 +274,7 @@
                                         </h5>
                                     </div>
                                     <p>
-                                            ${review.reviewContent}
+                                            <c:out value="${review.reviewContent}"/>
                                     </p>
                                 </div>
                             </div>
