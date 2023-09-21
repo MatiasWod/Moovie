@@ -11,6 +11,8 @@ import ar.edu.itba.paw.models.TV.TVCreators;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.CreateReviewForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -47,7 +49,7 @@ public class MovieController {
     @Autowired
     private TVCreatorsService tvCreatorsService;
 
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(MovieController.class);
     @RequestMapping("/")
     public ModelAndView home() {
         final ModelAndView mav = new ModelAndView("helloworld/index");
