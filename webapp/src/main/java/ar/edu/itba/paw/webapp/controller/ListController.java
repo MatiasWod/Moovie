@@ -98,7 +98,7 @@ public class ListController {
         }
         User user = userService.getOrCreateUserViaMail(form.getUserEmail());
 
-        MoovieList list = moovieListService.createMoovieListWithContent(user.getUserId(),form.getListName(),form.getListName(),form.getMediaIdsList());
+        MoovieList list = moovieListService.createMoovieListWithContent(user.getUserId(),form.getListName(),form.getListDescription(),form.getMediaIdsList());
 
         int id = list.getMoovieListId();
         return list(id);

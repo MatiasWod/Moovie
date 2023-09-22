@@ -16,7 +16,7 @@ public class CreateListForm {
     @Size(max = 50, message = "List name must be less than 50 characters")
     private String listName;
 
-    @Pattern(regexp = "\\S+", message = "Description content must not be empty or contain only spaces")
+    @Pattern(regexp = "^(?!\\\\s*$).*$", message = "Description content must not be empty or contain only spaces")
     @Size(max = 255, message = "List description must be less than 255 characters")
     private String listDescription;
 
