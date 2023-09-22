@@ -203,8 +203,10 @@ public class MovieController {
     @RequestMapping(value = "/createrating", method = RequestMethod.POST)
     public String createReview( @Valid @ModelAttribute("CreateReviewForm") final CreateReviewForm createReviewForm, final BindingResult errors) {
         if (errors.hasErrors()) {
-            return "redirect:/errorpage/";
+            LOGGER.debug("Errors: {}", errors.getAllErrors());
+            return ("redirect:/details/" + createReviewForm.getMediaId());
         }
+
         User user = userService.getOrCreateUserViaMail(createReviewForm.getUserEmail());
         reviewService.createReview(user.getUserId(), createReviewForm.getMediaId(), createReviewForm.getRating(), createReviewForm.getReviewContent());
         return ("redirect:/details/" + createReviewForm.getMediaId());

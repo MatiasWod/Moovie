@@ -12,14 +12,16 @@ import ar.edu.itba.paw.services.GenreService;
 import ar.edu.itba.paw.services.MediaService;
 import ar.edu.itba.paw.services.MoovieListService;
 import ar.edu.itba.paw.services.UserService;
+import ar.edu.itba.paw.webapp.form.CreateListForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,6 +44,8 @@ public class ListController {
 
     @Autowired
     private UserService userService;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
 
     @RequestMapping("/lists")
     public ModelAndView lists(
@@ -87,39 +91,29 @@ public class ListController {
     }
 
     @RequestMapping(value = "/createListAction", method = RequestMethod.POST)
-    public String createListAction(@RequestParam(value = "userEmail", required = true) final String userEmail,
-                                   @RequestParam(value = "mediaIds", required = true) final List<String> mediaIds,
-                                   @RequestParam(value = "listName", required = true) final String name,
-                                   @RequestParam(value = "listDescription", required = true) final String description){
+    public String createListAction(@Valid @ModelAttribute("CreateListForm") final CreateListForm CreateListForm, final BindingResult errors){
 
-        if(! userEmail.matches("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[A-Za-z]{2,}")){
-            return "redirect:/createList?error=invalidEmail";
+        if(errors.hasErrors()){
+            LOGGER.debug("Errors: {}", errors.getAllErrors());
+            return ("redirect:/createList");
         }
+        LOGGER.debug("Form: {}", CreateListForm.getMediaIdsList());
+        User user = userService.getOrCreateUserViaMail(CreateListForm.getUserEmail());
 
-
-        List<Integer> finalIds = new ArrayList<>();
-        for (String id : mediaIds) {
-            String numericPart = extractNumericPart(id);
-            if (numericPart != null) {
-                int mediaId = Integer.parseInt(numericPart);
-                finalIds.add(mediaId);
-            }
-        }
-
-        User user = userService.getOrCreateUserViaMail(userEmail);
-
-        MoovieList list = moovieListService.createMoovieListWithContent(user.getUserId(),name,description,finalIds);
+        MoovieList list = moovieListService.createMoovieListWithContent(user.getUserId(),CreateListForm.getListName(),CreateListForm.getListName(),CreateListForm.getMediaIdsList());
 
         int id = list.getMoovieListId();
         return ("redirect:/list/" + id);
     }
 
 // http://tuDominio.com/createList?s=A&s=B&s=C&s=D&s=E
+
     @RequestMapping("/createList")
     public ModelAndView createList(@RequestParam(value = "g", required = false) String genre,
                                    @RequestParam(value = "m", required = false) String media,
                                    @RequestParam(value = "q", required = false) String query,
-                                   @RequestParam(value = "s", required = false) List<String> selected){
+                                   @RequestParam(value = "s", required = false) List<String> selected,
+                                   @ModelAttribute("CreateListForm") final CreateListForm CreateListForm){
 
         List<Movie> movieList = null;
         List<TVSerie> tvSerieList = null;

@@ -32,7 +32,7 @@ function updateSelectedMediaInput() {
     selectedMediaInput.value = JSON.stringify(selectedMediaId);
 
     const selectedCreateInput = document.getElementById("selected-create-media");
-    selectedCreateInput.value = JSON.stringify(selectedMediaId);
+    selectedCreateInput.value =selectedMediaId.map(Number);
 }
 
 function deleteMedia(element) {

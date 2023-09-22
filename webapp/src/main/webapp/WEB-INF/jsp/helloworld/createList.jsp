@@ -7,6 +7,7 @@
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -74,16 +75,20 @@
         </div>
         <div id="preview" style="position: relative" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
             <div class="image-blur height-full background" style="background: dimgray"></div>
-            <form action="${pageContext.request.contextPath}/createListAction" method="POST">
+            <form:form modelAttribute="CreateListForm" action="${pageContext.request.contextPath}/createListAction"
+                       method="POST">
             <div style="position: absolute;top: 0;left: 0" class="d-flex p-4 container flex-column">
-
                     <h2 class="m-2">List Name:</h2>
-                        <input name="listName" id="list-name" required class="form-control me-2 createListInput">
+                <form:input path="listName" name="listName" id="list-name" required="required"
+                            class="form-control me-2 createListInput"/>
                     <h3 class="m-2" >Description:</h3>
-                        <textarea class="review-textarea" rows="3" name="listDescription" placeholder="Your description..."></textarea>
+                <form:textarea path="listDescription" class="review-textarea" rows="3" name="listDescription"
+                               placeholder="Your description..."/>
                     <h3 class="m-2" >Email:</h3>
-                        <input required name="userEmail" type="email" id="list-email" class="form-control me-2 createListInput">
-                    <input type="hidden" name="mediaIds" id="selected-create-media">
+                <form:input path="userEmail" required="required" name="userEmail" type="email" id="list-email"
+                            class="form-control me-2 createListInput"/>
+                <form:input path="mediaIdsList" type="hidden" name="mediaIds" id="selected-create-media"/>
+                </form:form>
 
                 <div class="scrollableMedia d-flex flex-column m-2 p-2" id="selected-media-names">
                     <c:forEach var="sel" items="${selected}">
@@ -96,7 +101,6 @@
                 <button id="preview-details" type="submit" class="m-4 btn btn-outline-success align-bottom">Create List</button>
                 <div class="d-flex" id="preview-list"></div>
             </div>
-            </form>
         </div>
     </c>
 
