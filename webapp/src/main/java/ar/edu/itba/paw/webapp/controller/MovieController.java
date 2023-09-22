@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import javax.xml.bind.annotation.XmlType;
 import java.util.*;
 
 @Controller
@@ -87,7 +88,7 @@ public class MovieController {
                 });
                 mav.addObject("mediaList", tvSerieList);
             } else {
-                mediaList = mediaService.getMediaFilteredByGenre(genre);
+                mediaList = mediaService.getMediaFilteredByGenre(genre, mediaService.DEFAULT_PAGE_SIZE, 0);
                 mediaList.forEach(mediaAux -> {
                     if (mediaAux.getOverview().contains("\n")){
                         mediaAux.setOverview(mediaAux.getOverview().replace("\n",""));
@@ -112,7 +113,7 @@ public class MovieController {
             });
             mav.addObject("mediaList", tvSerieList);
         } else {
-            mediaList = mediaService.getMoovieList();
+            mediaList = mediaService.getMoovieList(mediaService.DEFAULT_PAGE_SIZE, 0);
             mediaList.forEach(mediaAux -> {
                 if (mediaAux.getOverview().contains("\n")){
                     mediaAux.setOverview(mediaAux.getOverview().replace("\n",""));
@@ -135,7 +136,7 @@ public class MovieController {
         Boolean search = true;
         mav.addObject("searchMode", search);
 
-        List<Media> mediaList = mediaService.getMediaBySearch(query);
+        List<Media> mediaList = mediaService.getMediaBySearch(query, mediaService.DEFAULT_PAGE_SIZE, 0);
 
         mediaList.forEach(media -> {
             if (media.getOverview().contains("\n")){

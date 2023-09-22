@@ -95,12 +95,12 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
     @Override
     public Optional<Media> getMediaById(int mediaId) {
-        return jdbcTemplate.query("SELECT * FROM media WHERE mediaId = ?", new Object[]{mediaId}, MEDIA_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT * FROM media WHERE mediaId", new Object[]{mediaId}, MEDIA_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
-    public List<Media> getMoovieList() {
-        return jdbcTemplate.query("SELECT * FROM media", MEDIA_ROW_MAPPER);
+    public List<Media> getMoovieList(int size, int pageNumber) {
+        return jdbcTemplate.query("SELECT * FROM media LIMIT ? OFFSET ?", new Object[]{size, pageNumber * size}, MEDIA_ROW_MAPPER);
     }
 
     @Override
@@ -109,28 +109,28 @@ public class MediaDaoJdbcImpl implements MediaDao {
     }
 
     @Override
-    public List<Media> getMediaOrderedByTmdbRatingDesc() {
-        return jdbcTemplate.query("SELECT * FROM media ORDER BY tmdbrating DESC", MEDIA_ROW_MAPPER);
+    public List<Media> getMediaOrderedByTmdbRatingDesc(int size, int pageNumber) {
+        return jdbcTemplate.query("SELECT * FROM media ORDER BY tmdbrating DESC LIMIT ? OFFSET ?", new Object[]{size, pageNumber * size}, MEDIA_ROW_MAPPER);
     }
 
     @Override
-    public List<Media> getMediaOrderedByReleaseDateDesc() {
-        return jdbcTemplate.query("SELECT * FROM media ORDER BY releasedate DESC", MEDIA_ROW_MAPPER);
+    public List<Media> getMediaOrderedByReleaseDateDesc(int size, int pageNumber) {
+        return jdbcTemplate.query("SELECT * FROM media ORDER BY releasedate DESC LIMIT ? OFFSET ?", new Object[]{size, pageNumber * size}, MEDIA_ROW_MAPPER);
     }
 
     @Override
-    public List<Media> getMediaFilteredByGenre(String genre) {
-        return jdbcTemplate.query("SELECT media.* FROM media INNER JOIN genres ON media.mediaid = genres.mediaid WHERE genres.genre = ? ", new Object[]{genre}, MEDIA_ROW_MAPPER);
+    public List<Media> getMediaFilteredByGenre(String genre, int size, int pageNumber) {
+        return jdbcTemplate.query("SELECT media.* FROM media INNER JOIN genres ON media.mediaid = genres.mediaid WHERE genres.genre = ? LIMIT ? OFFSET ?", new Object[]{genre, size, pageNumber * size}, MEDIA_ROW_MAPPER);
     }
 
     @Override
-    public List<Media> getMediaBySearch(String searchString) {
-        return jdbcTemplate.query("SELECT * FROM media WHERE media.name ILIKE ?", new Object[]{'%' + searchString + '%'}, MEDIA_ROW_MAPPER);
+    public List<Media> getMediaBySearch(String searchString, int size, int pageNumber) {
+        return jdbcTemplate.query("SELECT * FROM media WHERE media.name ILIKE ? LIMIT ? OFFSET ?", new Object[]{'%' + searchString + '%', size, pageNumber * size}, MEDIA_ROW_MAPPER);
     }
 
     @Override
-    public List<Media> getMediaByMoovieListId(int moovieListId) {
-        return jdbcTemplate.query("SELECT media.* FROM moovieListscontent INNER JOIN media ON media.mediaId = moovieListscontent.mediaid WHERE moovielistscontent.moovieListId = ? ORDER BY media.mediaId", new Object[]{moovieListId}, MEDIA_ROW_MAPPER);
+    public List<Media> getMediaByMoovieListId(int moovieListId, int size, int pageNumber) {
+        return jdbcTemplate.query("SELECT media.* FROM moovieListscontent INNER JOIN media ON media.mediaId = moovieListscontent.mediaid WHERE moovielistscontent.moovieListId = ? ORDER BY media.mediaId LIMIT ? OFFSET ?", new Object[]{moovieListId, size, pageNumber * size}, MEDIA_ROW_MAPPER);
     }
 
 

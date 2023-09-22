@@ -9,13 +9,13 @@ import java.util.Optional;
 
 public interface MediaDao {
     Optional<Media> getMediaById(int mediaId);
-    List<Media> getMoovieList();
+    List<Media> getMoovieList(int size, int pageNumber);
     Optional<Integer> getMediaCount();
-    List<Media> getMediaOrderedByTmdbRatingDesc();
-    List<Media> getMediaOrderedByReleaseDateDesc();
-    List<Media> getMediaFilteredByGenre(String genre);
-    List<Media> getMediaBySearch(String searchString);
-    List<Media> getMediaByMoovieListId(int moovieListId);
+    List<Media> getMediaOrderedByTmdbRatingDesc(int size, int pageNumber);
+    List<Media> getMediaOrderedByReleaseDateDesc(int size, int pageNumber);
+    List<Media> getMediaFilteredByGenre(String genre, int size, int pageNumber);
+    List<Media> getMediaBySearch(String searchString, int size, int pageNumber);
+    List<Media> getMediaByMoovieListId(int moovieListId, int size, int pageNumber);
 
     Optional<Movie> getMovieById(int mediaId);
     List<Movie> getMovieList();

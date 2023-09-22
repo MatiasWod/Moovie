@@ -10,10 +10,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+
+
 @Service
 public class MediaServiceImpl implements MediaService{
     @Autowired
     private MediaDao mediaDao;
+
 
     @Override
     public Optional<Media> getMediaById(int mediaId) {
@@ -21,8 +24,8 @@ public class MediaServiceImpl implements MediaService{
     }
 
     @Override
-    public List<Media> getMoovieList() {
-        return mediaDao.getMoovieList();
+    public List<Media> getMoovieList(int size, int pageNumber){
+        return mediaDao.getMoovieList(size, pageNumber);
     }
 
     @Override
@@ -31,18 +34,18 @@ public class MediaServiceImpl implements MediaService{
     }
 
     @Override
-    public List<Media> getMediaOrderedByTmdbRatingDesc() {
-        return mediaDao.getMediaOrderedByTmdbRatingDesc();
+    public List<Media> getMediaOrderedByTmdbRatingDesc(int size, int pageNumber) {
+        return mediaDao.getMediaOrderedByTmdbRatingDesc(size, pageNumber);
     }
 
     @Override
-    public List<Media> getMediaOrderedByReleaseDateDesc() {
-        return mediaDao.getMediaOrderedByReleaseDateDesc();
+    public List<Media> getMediaOrderedByReleaseDateDesc(int size, int pageNumber) {
+        return mediaDao.getMediaOrderedByReleaseDateDesc(size, pageNumber);
     }
 
     @Override
-    public List<Media> getMediaFilteredByGenre(String genre) {
-        return mediaDao.getMediaFilteredByGenre(genre);
+    public List<Media> getMediaFilteredByGenre(String genre, int size, int pageNumber) {
+        return mediaDao.getMediaFilteredByGenre(genre, size, pageNumber);
     }
 
     @Override
@@ -51,13 +54,13 @@ public class MediaServiceImpl implements MediaService{
     }
 
     @Override
-    public List<Media> getMediaBySearch(String searchString) {
-        return mediaDao.getMediaBySearch(searchString);
+    public List<Media> getMediaBySearch(String searchString, int size, int pageNumber) {
+        return mediaDao.getMediaBySearch(searchString, size, pageNumber);
     }
 
     @Override
-    public List<Media> getMediaByMoovieListId(int moovieListId){
-        return mediaDao.getMediaByMoovieListId(moovieListId);
+    public List<Media> getMediaByMoovieListId(int moovieListId, int size, int pageNumber){
+        return mediaDao.getMediaByMoovieListId(moovieListId, size, pageNumber);
     }
 
     @Override

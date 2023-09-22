@@ -128,18 +128,18 @@ public class ListController {
             } else if (media != null && media.equals("Series")) {
                 tvSerieList = mediaService.getTvFilteredByGenre(genre);
             } else {
-                mediaList = mediaService.getMediaFilteredByGenre(genre);
+                mediaList = mediaService.getMediaFilteredByGenre(genre, mediaService.DEFAULT_PAGE_SIZE, 0);
             }
         } else if (media != null && media.equals("Movies")){
             movieList = mediaService.getMovieList();
         } else if (media != null && media.equals("Series")){
             tvSerieList = mediaService.getTvList();
         } else {
-            mediaList = mediaService.getMoovieList();
+            mediaList = mediaService.getMoovieList(mediaService.DEFAULT_PAGE_SIZE, 0);
         }
 
         if( query != null && !query.isEmpty()){
-            searchList = mediaService.getMediaBySearch(query);
+            searchList = mediaService.getMediaBySearch(query, mediaService.DEFAULT_PAGE_SIZE, 0);
             if (movieList != null){
                 List<Integer> mediaIdList = movieList.stream()
                         .map(Media::getMediaId)
@@ -196,7 +196,7 @@ public class ListController {
             final ModelAndView mav = new ModelAndView("helloworld/moovieList");
             mav.addObject("moovieList", moovieListData.get());
 
-            List<Media> mediaList = mediaService.getMediaByMoovieListId(moovieListId);
+            List<Media> mediaList = mediaService.getMediaByMoovieListId(moovieListId, mediaService.DEFAULT_PAGE_SIZE, 0);
             List<MoovieListContent> moovieListContent = moovieListService.getMoovieListContentById(moovieListId);
             String listOwner = userService.findUserById(moovieListData.get().getUserId()).get().getEmail();
 
