@@ -11,7 +11,7 @@
 </head>
 <body style="background: whitesmoke;">
 <c:import url="navBar.jsp"/>
-<div class="container d-flex flex-column">
+<div class="container d-flex flex-column" style="margin-bottom: 50px">
     <div style="position: page;" class="d-flex flex-column align-items-center justify-content-center">
         <c:import url="imageBackdrop.jsp"/>
     <div style="margin-top: calc(100vh - 250px);" class="container d-flex flex-column justify-content-end">
