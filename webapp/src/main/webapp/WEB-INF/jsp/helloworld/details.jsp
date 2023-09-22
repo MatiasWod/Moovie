@@ -193,10 +193,20 @@
                          style="width: 300px;height: 152px; border-radius: 5px; margin: 5px; display:none !important; position: relative; overflow: hidden;">
                         <div class="row">
                             <div class="col-4 text-center">
-                                <img
-                                        src="${actor.profilePath}"
-                                        alt="${actor.actorName} picture not found"
+                                <c:choose>
+                                    <c:when test="${actor.profilePath=='None'}">
+                                        <img
+                                                src="${pageContext.request.contextPath}/resources/defaultProfile.jpg"
+                                                alt="${actor.actorName} picture not found"
+                                                style="max-width: 100px; height: 150px; border-radius: 5px;">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img
+                                                src="${actor.profilePath}"
+                                        alt="${actor.actorName} picture"
                                         style="max-width: 150px; max-height: 150px; border-radius: 5px;">
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                             <div class="col-8" style="min-width: 160px">
                                 <div class="card-body" style="min-width: 120px">
