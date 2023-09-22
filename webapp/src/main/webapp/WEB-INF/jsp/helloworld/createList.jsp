@@ -75,21 +75,23 @@
         </div>
         <div id="preview" style="position: relative" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
             <div class="image-blur height-full background" style="background: dimgray"></div>
-            <form:form modelAttribute="CreateListForm" action="${pageContext.request.contextPath}/createListAction"
+            <form:form modelAttribute="ListForm" action="${pageContext.request.contextPath}/createListAction"
                        method="POST">
             <div style="position: absolute;top: 0;left: 0" class="d-flex p-4 container flex-column">
                     <h2 class="m-2">List Name:</h2>
                 <form:input path="listName" name="listName" id="list-name" required="required"
                             class="form-control me-2 createListInput"/>
+                <form:errors path="listName" cssClass="error"/>
                     <h3 class="m-2" >Description:</h3>
                 <form:textarea path="listDescription" class="review-textarea" rows="3" name="listDescription"
                                placeholder="Your description..."/>
+                <form:errors path="listDescription" cssClass="error"/>
                     <h3 class="m-2" >Email:</h3>
                 <form:input path="userEmail" required="required" name="userEmail" type="email" id="list-email"
                             class="form-control me-2 createListInput"/>
+                <form:errors path="userEmail" cssClass="error"/>
                 <form:input path="mediaIdsList" type="hidden" name="mediaIds" id="selected-create-media"/>
                 </form:form>
-
                 <div class="scrollableMedia d-flex flex-column m-2 p-2" id="selected-media-names">
                     <c:forEach var="sel" items="${selected}">
                         <div class="d-flex justify-content-between ">

@@ -232,13 +232,20 @@
             </div>
             <h5>Your rating: <span id="selectedRating">Not selected</span></h5>
 
-            <form:form modelAttribute="CreateReviewForm" action="${pageContext.request.contextPath}/createrating" method="POST">
+            <form:form modelAttribute="detailsForm" action="${pageContext.request.contextPath}/createrating"
+                       method="POST">
                 <form:textarea path="reviewContent" class="review-textarea" id="reviewContent" rows="3"
                           placeholder="Your review (Optional)"></form:textarea>
                 <h2 class="m-2">Email:</h2>
                 <form:input path="userEmail" type="email" class="form-control" id="userEmail" placeholder="Enter email"/>
                 <form:input path="mediaId" type="hidden" id="mediaId" value="${media.mediaId}"/>
                 <form:input path="rating" type="hidden" id="rating" />
+
+                <form:errors path="userEmail" cssClass="error"/>
+                <form:errors path="reviewContent" cssClass="error"/>
+                <form:errors path="rating" cssClass="error"/>
+                <form:errors path="mediaId" cssClass="error"/>
+
                 <!-- Submit Button -->
                 <div class="text-center" style="margin-top: 20px">
                     <button type="button" class="btn btn-danger" style="margin-inline: 10px"
@@ -250,6 +257,7 @@
                     </button>
                 </div>
             </form:form>
+
         </div>
         <!-- Reviews -->
         <h2>Reviews</h2>

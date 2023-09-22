@@ -91,19 +91,17 @@ public class ListController {
     }
 
     @RequestMapping(value = "/createListAction", method = RequestMethod.POST)
-    public String createListAction(@Valid @ModelAttribute("CreateListForm") final CreateListForm CreateListForm, final BindingResult errors){
+    public ModelAndView createListAction(@Valid @ModelAttribute("ListForm") final CreateListForm form, final BindingResult errors){
 
         if(errors.hasErrors()){
-            LOGGER.debug("Errors: {}", errors.getAllErrors());
-            return ("redirect:/createList");
+            return  createList(null,null,null,null,form);
         }
-        LOGGER.debug("Form: {}", CreateListForm.getMediaIdsList());
-        User user = userService.getOrCreateUserViaMail(CreateListForm.getUserEmail());
+        User user = userService.getOrCreateUserViaMail(form.getUserEmail());
 
-        MoovieList list = moovieListService.createMoovieListWithContent(user.getUserId(),CreateListForm.getListName(),CreateListForm.getListName(),CreateListForm.getMediaIdsList());
+        MoovieList list = moovieListService.createMoovieListWithContent(user.getUserId(),form.getListName(),form.getListName(),form.getMediaIdsList());
 
         int id = list.getMoovieListId();
-        return ("redirect:/list/" + id);
+        return list(id);
     }
 
 // http://tuDominio.com/createList?s=A&s=B&s=C&s=D&s=E
@@ -113,7 +111,7 @@ public class ListController {
                                    @RequestParam(value = "m", required = false) String media,
                                    @RequestParam(value = "q", required = false) String query,
                                    @RequestParam(value = "s", required = false) List<String> selected,
-                                   @ModelAttribute("CreateListForm") final CreateListForm CreateListForm){
+                                   @ModelAttribute("ListForm") final CreateListForm form){
 
         List<Movie> movieList = null;
         List<TVSerie> tvSerieList = null;

@@ -3,15 +3,21 @@ package ar.edu.itba.paw.webapp.form;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 public class CreateListForm {
-    @Pattern(regexp = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[A-Za-z]{2,}")
+    @Pattern(regexp = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[A-Za-z]{2,}", message = "Please enter a valid email")
     @NotEmpty(message = "Please enter an email")
     private String userEmail;
+
     private List<Integer> mediaIdsList;
     @NotEmpty(message = "Please enter a list name")
+    @Size(max = 50, message = "List name must be less than 50 characters")
     private String listName;
+
+    @Pattern(regexp = "\\S+", message = "Description content must not be empty or contain only spaces")
+    @Size(max = 255, message = "List description must be less than 255 characters")
     private String listDescription;
 
     public void setListName(String listName) {

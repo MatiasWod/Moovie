@@ -151,7 +151,7 @@ public class MovieController {
 
 
     @RequestMapping(value = "/details/{id:\\d+}")
-    public ModelAndView details(@PathVariable("id") final int mediaId,@ModelAttribute("CreateReviewForm") final CreateReviewForm createReviewForm){
+    public ModelAndView details(@PathVariable("id") final int mediaId, @ModelAttribute("detailsForm") final CreateReviewForm form) {
 
         final Optional<Media> media = mediaService.getMediaById(mediaId);
 
@@ -201,15 +201,13 @@ public class MovieController {
     }
 
     @RequestMapping(value = "/createrating", method = RequestMethod.POST)
-    public String createReview( @Valid @ModelAttribute("CreateReviewForm") final CreateReviewForm createReviewForm, final BindingResult errors) {
+    public ModelAndView createReview(@Valid @ModelAttribute("detailsForm") final CreateReviewForm form, final BindingResult errors) {
         if (errors.hasErrors()) {
-            LOGGER.debug("Errors: {}", errors.getAllErrors());
-            return ("redirect:/details/" + createReviewForm.getMediaId());
+            return details(form.getMediaId(), form);
         }
-
-        User user = userService.getOrCreateUserViaMail(createReviewForm.getUserEmail());
-        reviewService.createReview(user.getUserId(), createReviewForm.getMediaId(), createReviewForm.getRating(), createReviewForm.getReviewContent());
-        return ("redirect:/details/" + createReviewForm.getMediaId());
+        User user = userService.getOrCreateUserViaMail(form.getUserEmail());
+        reviewService.createReview(user.getUserId(), form.getMediaId(), form.getRating(), form.getReviewContent());
+        return details(form.getMediaId(), form);
     }
 
 }

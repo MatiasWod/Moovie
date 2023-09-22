@@ -1,11 +1,20 @@
 package ar.edu.itba.paw.webapp.form;
 
+import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.Range;
+
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 public class CreateReviewForm {
-    @Pattern(regexp="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[A-Za-z]{2,}")
+    @Pattern(regexp = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[A-Za-z]{2,}", message = "Please enter a valid email address")
+    @NotEmpty(message = "Please enter an email")
     private String userEmail;
     private int mediaId;
+    @Range(min = 1, max = 10, message = "Please enter a rating between 1 and 10")
     private int rating;
+    @Pattern(regexp = "\\S+", message = "Review content must not be empty or contain only spaces")
+    @Size(max = 500, message = "Review content must not exceed 500 characters")
     private String reviewContent;
 
     public void setReviewContent(String reviewContent) {
