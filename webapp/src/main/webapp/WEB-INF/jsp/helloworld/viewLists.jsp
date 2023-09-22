@@ -19,9 +19,8 @@
     <title>Discover your next passion</title>
 </head>
 <body style="background: whitesmoke">
-
+<c:import url="navBar.jsp"/>
 <div class="container d-flex flex-column">
-    <c:import url="navBar.jsp"/>
 
     <div class="container d-flex flex-column ">
         <c:if test="${fn:length(param.search) > 0}">

@@ -14,8 +14,8 @@
     <h:outputLabel value="Hello, world"/>
 </f:view>
 
-<div class="container d-flex flex-column">
 <c:import url="navBar.jsp"/>
+<div class="container d-flex flex-column">
 
     <div class="col"><img src="${pageContext.request.contextPath}/resources/logo.png"  alt="Moovie logo" height="100px" width="100px"/> </div>
 

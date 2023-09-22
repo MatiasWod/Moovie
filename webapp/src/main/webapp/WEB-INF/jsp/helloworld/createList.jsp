@@ -24,8 +24,8 @@
 </head>
 <body style="background: whitesmoke">
 
+<c:import url="navBar.jsp"/>
 <div class="container d-flex flex-column">
-    <c:import url="navBar.jsp"/>
     <c class="container d-flex flex-row ">
         <div class="container d-flex flex-column">
             <div >

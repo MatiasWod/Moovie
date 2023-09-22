@@ -12,8 +12,8 @@
     <title>Moovie List</title>
 </head>
 <body style="background: whitesmoke">
+<c:import url="navBar.jsp"/>
 <div class="container d-flex flex-column">
-    <c:import url="navBar.jsp"/>
     <h1><c:out value="${moovieList.name}"/> by <c:out value="${listOwner}"/></h1>
     <h2 style="font-size: large"><c:out value="${moovieList.description}"/></h2>
     <table class="table table-striped">

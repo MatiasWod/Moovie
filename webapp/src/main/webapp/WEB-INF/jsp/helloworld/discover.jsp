@@ -21,8 +21,8 @@
     <script src="${pageContext.request.contextPath}/resources/discoverFunctions.js?version=79"></script>
 </head>
 <body style="background: whitesmoke">
+<c:import url="navBar.jsp"/>
 <div class="container d-flex flex-column">
-    <c:import url="navBar.jsp"/>
     <c class="container d-flex flex-row ">
 <%--        FILTROS y PELIS    --%>
 

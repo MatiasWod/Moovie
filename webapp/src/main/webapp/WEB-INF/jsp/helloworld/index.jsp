@@ -10,12 +10,10 @@
     <title>Moovie</title>
 </head>
 <body style="background: whitesmoke;">
+<c:import url="navBar.jsp"/>
 <div class="container d-flex flex-column">
-    <div style="position: relative;" class="container d-flex flex-column">
+    <div style="position: page;" class="d-flex flex-column align-items-center justify-content-center">
         <c:import url="imageBackdrop.jsp"/>
-    </div>
-    <c:import url="navBar.jsp"/>
-
     <div style="margin-top: calc(100vh - 250px);" class="container d-flex flex-column justify-content-end">
         <div class="container d-flex justify-content-center p-4">
             <h1 class="text-center">Immerse Yourself in Movies and Series, <br> Discover Your Next Favorite Experience.</h1>
