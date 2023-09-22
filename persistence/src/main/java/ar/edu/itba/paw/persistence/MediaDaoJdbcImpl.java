@@ -95,7 +95,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
     @Override
     public Optional<Media> getMediaById(int mediaId) {
-        return jdbcTemplate.query("SELECT * FROM media WHERE mediaId", new Object[]{mediaId}, MEDIA_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT * FROM media WHERE mediaId = ?", new Object[]{mediaId}, MEDIA_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
