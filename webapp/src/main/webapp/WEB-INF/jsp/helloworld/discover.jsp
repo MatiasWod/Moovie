@@ -57,6 +57,9 @@
             </c:if>
 
             <div class="scrollableDiv flex-wrap d-flex">
+                <c:if test="${mediaList.size() == 0 }">
+                    No media was found.
+                </c:if>
                 <c:forEach var="movie" items="${mediaList}" end="24">
                     <div class="poster card text-bg-dark m-1"
                          onclick="loadPreview(

@@ -38,6 +38,9 @@
         </form>
 
         <div class="mt-2 container d-flex flex-wrap justify-content-center">
+            <c:if test="${mapTuple.size()==0}">
+                <h3>No results were found</h3>
+            </c:if>
             <c:forEach var="map" items="${mapTuple}">
                 <div class="m-1 card" style="width: 20rem; height: 30rem">
                     <div class=" d-flex flex-row flex-wrap card-img-top justify-content-center mt-2">
