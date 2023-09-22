@@ -124,16 +124,16 @@ public class ListController {
 
         if (genre != null && !genre.isEmpty()) {
             if (media != null && media.equals("Movies")) {
-                movieList = mediaService.getMovieFilteredByGenre(genre);
+                movieList = mediaService.getMovieFilteredByGenre(genre, mediaService.DEFAULT_PAGE_SIZE, 0);
             } else if (media != null && media.equals("Series")) {
-                tvSerieList = mediaService.getTvFilteredByGenre(genre);
+                tvSerieList = mediaService.getTvFilteredByGenre(genre, mediaService.DEFAULT_PAGE_SIZE, 0);
             } else {
                 mediaList = mediaService.getMediaFilteredByGenre(genre, mediaService.DEFAULT_PAGE_SIZE, 0);
             }
         } else if (media != null && media.equals("Movies")){
-            movieList = mediaService.getMovieList();
+            movieList = mediaService.getMovieList(mediaService.DEFAULT_PAGE_SIZE, 0);
         } else if (media != null && media.equals("Series")){
-            tvSerieList = mediaService.getTvList();
+            tvSerieList = mediaService.getTvList(mediaService.DEFAULT_PAGE_SIZE, 0);
         } else {
             mediaList = mediaService.getMoovieList(mediaService.DEFAULT_PAGE_SIZE, 0);
         }

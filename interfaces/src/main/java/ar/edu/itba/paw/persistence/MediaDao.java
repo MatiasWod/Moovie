@@ -18,17 +18,17 @@ public interface MediaDao {
     List<Media> getMediaByMoovieListId(int moovieListId, int size, int pageNumber);
 
     Optional<Movie> getMovieById(int mediaId);
-    List<Movie> getMovieList();
+    List<Movie> getMovieList(int size, int pageNumber);
     Optional<Integer> getMovieCount();
-    public List<Movie> getMovieOrderedByTmdbRatingDesc();
-    public List<Movie> getMovieOrderedByReleaseDateDesc();
-    public List<Movie> getMovieFilteredByGenre(String genre);
-    public List<Movie> getMovieOrderedByReleaseDuration();
+    public List<Movie> getMovieOrderedByTmdbRatingDesc(int size, int pageNumber);
+    public List<Movie> getMovieOrderedByReleaseDateDesc(int size, int pageNumber);
+    public List<Movie> getMovieFilteredByGenre(String genre, int size, int pageNumber);
+    public List<Movie> getMovieOrderedByReleaseDuration(int size, int pageNumber);
 
     Optional<TVSerie> getTvById(int mediaId);
-    List<TVSerie> getTvList();
+    List<TVSerie> getTvList(int size, int pageNumber);
     Optional<Integer> getTvCount();
-    public List<TVSerie> getTvOrderedByTmdbRatingDesc();
-    public List<TVSerie> getTvOrderedByReleaseDateDesc();
-    public List<TVSerie> getTvFilteredByGenre(String genre);
+    public List<TVSerie> getTvOrderedByTmdbRatingDesc(int size, int pageNumber);
+    public List<TVSerie> getTvOrderedByReleaseDateDesc(int size, int pageNumber);
+    public List<TVSerie> getTvFilteredByGenre(String genre, int size, int pageNumber);
 }

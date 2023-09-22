@@ -54,9 +54,9 @@ public class MovieController {
     @RequestMapping("/")
     public ModelAndView home() {
         final ModelAndView mav = new ModelAndView("helloworld/index");
-        List<Movie> movieList = mediaService.getMovieList();
+        List<Movie> movieList = mediaService.getMovieList(mediaService.DEFAULT_PAGE_SIZE, 0);
         mav.addObject("movieList", movieList);
-        List<TVSerie> tvSerieList = mediaService.getTvList();
+        List<TVSerie> tvSerieList = mediaService.getTvList(mediaService.DEFAULT_PAGE_SIZE, 0);
         mav.addObject("tvList", tvSerieList);
 
         return mav;
@@ -72,7 +72,7 @@ public class MovieController {
 
         if (genre != null && !genre.isEmpty()) {
             if (media != null && media.equals("Movies")) {
-                movieList = mediaService.getMovieFilteredByGenre(genre);
+                movieList = mediaService.getMovieFilteredByGenre(genre, mediaService.DEFAULT_PAGE_SIZE, 0);
                 movieList.forEach(movie -> {
                     if (movie.getOverview().contains("\n")){
                         movie.setOverview(movie.getOverview().replace("\n",""));
@@ -80,7 +80,7 @@ public class MovieController {
                 });
                 mav.addObject("mediaList", movieList);
             } else if (media != null && media.equals("Series")) {
-                tvSerieList = mediaService.getTvFilteredByGenre(genre);
+                tvSerieList = mediaService.getTvFilteredByGenre(genre, mediaService.DEFAULT_PAGE_SIZE, 0);
                 tvSerieList.forEach(mediaAux -> {
                     if (mediaAux.getOverview().contains("\n")){
                         mediaAux.setOverview(mediaAux.getOverview().replace("\n",""));
@@ -97,7 +97,7 @@ public class MovieController {
                 mav.addObject("mediaList", mediaList);
             }
         } else if (media != null && media.equals("Movies")) {
-            movieList = mediaService.getMovieList();
+            movieList = mediaService.getMovieList(mediaService.DEFAULT_PAGE_SIZE, 0);
             movieList.forEach(movie -> {
                 if (movie.getOverview().contains("\n")){
                     movie.setOverview(movie.getOverview().replace("\n",""));
@@ -105,7 +105,7 @@ public class MovieController {
             });
             mav.addObject("mediaList", movieList);
         } else if (media != null && media.equals("Series")) {
-            tvSerieList = mediaService.getTvList();
+            tvSerieList = mediaService.getTvList(mediaService.DEFAULT_PAGE_SIZE, 0);
             tvSerieList.forEach(mediaAux -> {
                 if (mediaAux.getOverview().contains("\n")){
                     mediaAux.setOverview(mediaAux.getOverview().replace("\n",""));
