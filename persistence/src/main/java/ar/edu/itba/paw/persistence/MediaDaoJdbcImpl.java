@@ -9,6 +9,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -122,6 +124,26 @@ public class MediaDaoJdbcImpl implements MediaDao {
     public List<Media> getMediaFilteredByGenre(String genre, int size, int pageNumber) {
         return jdbcTemplate.query("SELECT media.* FROM media INNER JOIN genres ON media.mediaid = genres.mediaid WHERE genres.genre = ? LIMIT ? OFFSET ?", new Object[]{genre, size, pageNumber * size}, MEDIA_ROW_MAPPER);
     }
+
+    @Override
+    public List<Media> getMediaFilteredByGenreList(List<String> genres, int size, int pageNumber){
+        String inClause = String.join(",", Collections.nCopies(genres.size(), "?"));
+        String sql = "SELECT media.* FROM media " +
+                "INNER JOIN genres ON media.mediaId = genres.mediaId " +
+                "WHERE genres.genre IN (" + inClause + ") " +
+                "GROUP BY media.mediaId " +
+                "HAVING COUNT(DISTINCT genres.genre) = ? " +
+                "LIMIT ? OFFSET ?";
+
+        List<Object> params = new ArrayList<>(genres);
+        params.add(genres.size()); // Agregar la cantidad de géneros para la cláusula HAVING
+        params.add(size);
+        params.add(pageNumber * size);
+
+        return jdbcTemplate.query(sql, params.toArray(), MEDIA_ROW_MAPPER);
+    }
+
+
 
     @Override
     public List<Media> getMediaBySearch(String searchString, int size, int pageNumber) {

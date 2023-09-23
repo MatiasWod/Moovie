@@ -1,18 +1,27 @@
-window.onload = function() {
-    const filterTypesSelect = document.getElementById("filter-types");
-    const genreSelect = document.getElementById("genre-select");
-
-    if (filterTypesSelect.value === "Genre") {
-        genreSelect.style.display = "block";
-    }
-};
+// window.onload = function() {
+//     // const filterTypesSelect = document.getElementById("filter-types");
+//     // const genreSelect = document.getElementById("genre-select");
+//     //
+//     // if (filterTypesSelect.value === "Genre") {
+//     //     genreSelect.style.display = "block";
+//     // }
+// };
 function beforeSubmit() {
-    const filterTypesSelect = document.getElementById("filter-types");
-    const genreSelect = document.getElementById("genre-select");
+    // const filterTypesSelect = document.getElementById("filter-types");
+    // const genreSelect = document.getElementById("genre-select");
+    //
+    // if (filterTypesSelect.value === "Popular") {
+    //     genreSelect.removeAttribute("name");
+    // }
+    const selectedOptions = [];
+    document.querySelectorAll('.form-check-input:checked').forEach(function(checkbox) {
+        selectedOptions.push(checkbox.nextElementSibling.innerText);
+        console.log(checkbox)
+    });
 
-    if (filterTypesSelect.value === "Popular") {
-        genreSelect.removeAttribute("name");
-    }
+    console.log(selectedOptions)
+
+    document.getElementById('hiddenGenreInput').value = selectedOptions.join(",");
 };
 
 function loadPreview(title, rating, posterPath, overview, adult, id, year) {

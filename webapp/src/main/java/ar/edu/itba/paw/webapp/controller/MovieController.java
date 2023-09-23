@@ -63,16 +63,16 @@ public class MovieController {
     }
 
     @RequestMapping("/discover")
-    public ModelAndView test(@RequestParam(value = "g", required = false) String genre, @RequestParam(value = "media", required = false) String media) {
+    public ModelAndView test(@RequestParam(value = "g", required = false) List<String> genres, @RequestParam(value = "media", required = false) String media) {
         final ModelAndView mav = new ModelAndView("helloworld/discover");
 
         List<Movie> movieList;
         List<TVSerie> tvSerieList;
         List<Media> mediaList;
 
-        if (genre != null && !genre.isEmpty()) {
+        if (genres != null && !genres.isEmpty()) {
             if (media != null && media.equals("Movies")) {
-                movieList = mediaService.getMovieFilteredByGenre(genre, mediaService.DEFAULT_PAGE_SIZE, 0);
+                movieList = mediaService.getMovieFilteredByGenre(genres.get(0), mediaService.DEFAULT_PAGE_SIZE, 0);
                 movieList.forEach(movie -> {
                     if (movie.getOverview().contains("\n")){
                         movie.setOverview(movie.getOverview().replace("\n",""));
@@ -80,7 +80,7 @@ public class MovieController {
                 });
                 mav.addObject("mediaList", movieList);
             } else if (media != null && media.equals("Series")) {
-                tvSerieList = mediaService.getTvFilteredByGenre(genre, mediaService.DEFAULT_PAGE_SIZE, 0);
+                tvSerieList = mediaService.getTvFilteredByGenre(genres.get(0), mediaService.DEFAULT_PAGE_SIZE, 0);
                 tvSerieList.forEach(mediaAux -> {
                     if (mediaAux.getOverview().contains("\n")){
                         mediaAux.setOverview(mediaAux.getOverview().replace("\n",""));
@@ -88,7 +88,7 @@ public class MovieController {
                 });
                 mav.addObject("mediaList", tvSerieList);
             } else {
-                mediaList = mediaService.getMediaFilteredByGenre(genre, mediaService.DEFAULT_PAGE_SIZE, 0);
+                mediaList = mediaService.getMediaFilteredByGenreList(genres, mediaService.DEFAULT_PAGE_SIZE, 0);
                 mediaList.forEach(mediaAux -> {
                     if (mediaAux.getOverview().contains("\n")){
                         mediaAux.setOverview(mediaAux.getOverview().replace("\n",""));
@@ -122,8 +122,8 @@ public class MovieController {
             mav.addObject("mediaList", mediaList);
         }
 
-        List<String> genres = genreService.getAllGenres();
-        mav.addObject("genresList", genres);
+        List<String> genresList = genreService.getAllGenres();
+        mav.addObject("genresList", genresList);
 
         return mav;
     }

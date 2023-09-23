@@ -49,6 +49,11 @@ public class MediaServiceImpl implements MediaService{
     }
 
     @Override
+    public List<Media> getMediaFilteredByGenreList(List<String> genres, int size, int pageNumber){
+        return mediaDao.getMediaFilteredByGenreList(genres,size,pageNumber);
+    }
+
+    @Override
     public Optional<Movie> getMovieById(int mediaId) {
         return mediaDao.getMovieById(mediaId);
     }
