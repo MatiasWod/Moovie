@@ -38,7 +38,7 @@
             </c:if>
             <c:if test="${!searchMode}">
                 <div >
-                    <form class="mb-2 d-flex flex-row" action="${pageContext.request.contextPath}/discover" method="get" onsubmit="beforeSubmit()">
+                    <form id="filter-form" class="mb-2 d-flex flex-row" action="${pageContext.request.contextPath}/discover" method="get" onsubmit="beforeSubmit()">
                         <select name="media" class="form-select filter-width" aria-label="Filter!">
                             <option ${'Movies and Series' == param.media ? 'selected' : ''}>Movies and Series</option>
                             <option  ${'Movies' == param.media ? 'selected' : ''}>Movies</option>
@@ -61,7 +61,7 @@
                             <div class="dropdown-menu scrollableDiv flex-wrap p-4">
                                     <c:forEach var="genre" items="${genresList}">
                                         <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" id="dropdownCheck${genresList.indexOf(genre)}">
+                                            <input ${fn:contains(param.g,genre)? 'checked':''} type="checkbox" class="form-check-input" id="dropdownCheck${genre}">
                                             <label class="form-check-label" for="dropdownCheck${genresList.indexOf(genre)}">${genre}</label>
                                         </div>
                                     </c:forEach>
@@ -71,7 +71,15 @@
                     </form>
                 </div>
             </c:if>
-
+            <div id="genre-chips">
+                <c:forEach var="gen" items="${param.g}">
+                    <div class="badge text-bg-dark">
+                        <span class="text-bg-dark"> ${gen} </span>
+                        <i class="btn bi bi-trash-fill" onclick="deleteGenre(this)"></i>
+                    </div>
+                </c:forEach>
+<%--                <span class="badge text-bg-dark"></span>--%>
+            </div>
             <div class="scrollableDiv flex-wrap d-flex justify-space-between">
                 <c:if test="${fn:length(mediaList) == 0 }">
                     <div class="d-flex flex-column">

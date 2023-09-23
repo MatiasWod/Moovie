@@ -1,11 +1,22 @@
-// window.onload = function() {
-//     // const filterTypesSelect = document.getElementById("filter-types");
-//     // const genreSelect = document.getElementById("genre-select");
-//     //
-//     // if (filterTypesSelect.value === "Genre") {
-//     //     genreSelect.style.display = "block";
-//     // }
-// };
+window.onload = function() {
+    // const filterTypesSelect = document.getElementById("filter-types");
+    // const genreSelect = document.getElementById("genre-select");
+    //
+    // if (filterTypesSelect.value === "Genre") {
+    //     genreSelect.style.display = "block";
+    // }
+
+
+};
+
+function deleteGenre(element) {
+    let aux = document.getElementById("dropdownCheck" + element.previousElementSibling.innerText.trim());
+    aux.checked = false;
+    element.parentElement.remove();
+    beforeSubmit();
+    document.getElementById("filter-form").submit();
+}
+
 function beforeSubmit() {
     // const filterTypesSelect = document.getElementById("filter-types");
     // const genreSelect = document.getElementById("genre-select");
