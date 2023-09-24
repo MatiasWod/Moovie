@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <%--
   Created by IntelliJ IDEA.
@@ -18,7 +19,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
     <title>Discover your next favorite experience</title>
-    <script src="${pageContext.request.contextPath}/resources/discoverFunctions.js?version=79"></script>
+    <script src="${pageContext.request.contextPath}/resources/discoverFunctions.js?version=80"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </head>
 <body style="background: whitesmoke">
 <c:import url="navBar.jsp"/>
@@ -36,29 +38,55 @@
             </c:if>
             <c:if test="${!searchMode}">
                 <div >
-                    <form class="mb-2 d-flex flex-row" action="${pageContext.request.contextPath}/discover" method="get" onsubmit="beforeSubmit()">
+                    <form id="filter-form" class="mb-2 d-flex flex-row" action="${pageContext.request.contextPath}/discover" method="get" onsubmit="beforeSubmit()">
                         <select name="media" class="form-select filter-width" aria-label="Filter!">
                             <option ${'Movies and Series' == param.media ? 'selected' : ''}>Movies and Series</option>
                             <option  ${'Movies' == param.media ? 'selected' : ''}>Movies</option>
                             <option  ${'Series' == param.media ? 'selected' : ''}>Series</option>
                         </select>
-                        <select name="f" id="filter-types" class="form-select filter-width" aria-label="Filter!" onchange="toggleGenreSelect()">
-                            <option ${'Popular' == param.f ? 'selected' : ''}>Popular</option>
-                            <option ${'Genre' == param.f ? 'selected' : ''}>Genre</option>
-                        </select>
-                        <select name="g" id="genre-select" class="form-select filter-width" aria-label="Filter!" style="display:none">
-                            <c:forEach var="genre" items="${genresList}">
-                                <option value="${genre}" ${genre == param.g? 'selected' : ''}>${genre}</option>
-                            </c:forEach>
-                        </select>
+<%--                        <select name="f" id="filter-types" class="form-select filter-width" aria-label="Filter!" onchange="toggleGenreSelect()">--%>
+<%--                            <option ${'Popular' == param.f ? 'selected' : ''}>Popular</option>--%>
+<%--                            <option ${'Genre' == param.f ? 'selected' : ''}>Genre</option>--%>
+<%--                        </select>--%>
+<%--                        <select id="genre-select" class="form-select filter-width" aria-label="Filter!" style="display:none">--%>
+<%--                            <c:forEach var="genre" items="${genresList}">--%>
+<%--                                <option value="${genre}" ${genre == param.g? 'selected' : ''}>${genre}</option>--%>
+<%--                            </c:forEach>--%>
+<%--                        </select>--%>
+                        <input type="hidden" name="g" id="hiddenGenreInput">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                Genres
+                            </button>
+                            <div class="dropdown-menu scrollableDiv flex-wrap p-4">
+                                    <c:forEach var="genre" items="${genresList}">
+                                        <div class="form-check">
+                                            <input ${fn:contains(param.g,genre)? 'checked':''} type="checkbox" class="form-check-input" id="dropdownCheck${genre}">
+                                            <label class="form-check-label" for="dropdownCheck${genresList.indexOf(genre)}">${genre}</label>
+                                        </div>
+                                    </c:forEach>
+                            </div>
+                        </div>
                         <button class="btn btn-outline-success" type="submit">Apply filters</button>
                     </form>
                 </div>
             </c:if>
+            <div id="genre-chips">
+                <c:forEach var="gen" items="${param.g}">
+                    <div class="badge text-bg-dark">
+                        <span class="text-bg-dark"> ${gen} </span>
+                        <i class="btn bi bi-trash-fill" onclick="deleteGenre(this)"></i>
+                    </div>
+                </c:forEach>
+<%--                <span class="badge text-bg-dark"></span>--%>
+            </div>
+            <div class="scrollableDiv flex-wrap d-flex justify-space-between">
+                <c:if test="${fn:length(mediaList) == 0 }">
+                    <div class="d-flex flex-column">
+                        No media was found.
+                        <a class="m-4 btn btn-outline-success align-bottom" href="${pageContext.request.contextPath}/discover">Return to Discover</a>
+                    </div>
 
-            <div class="scrollableDiv flex-wrap d-flex">
-                <c:if test="${mediaList.size() == 0 }">
-                    No media was found.
                 </c:if>
                 <c:forEach var="movie" items="${mediaList}" end="24">
                     <div class="poster card text-bg-dark m-1"
