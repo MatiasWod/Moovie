@@ -13,7 +13,7 @@ public class CreateReviewForm {
     private int mediaId;
     @Range(min = 1, max = 10, message = "Please enter a rating between 1 and 10")
     private int rating;
-    @Pattern(regexp = "\\S+", message = "Review content must not be empty or contain only spaces")
+    @Pattern(regexp = "^(?!\\\\s*$).*$", message = "Review content must not contain enters or only spaces")
     @Size(max = 500, message = "Review content must not exceed 500 characters")
     private String reviewContent;
 
