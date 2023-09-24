@@ -21,8 +21,18 @@
 
         <!-- Poster -->
         <div class="col text-center">
-            <img src="${media.posterPath}"
-                 alt="${media.name} poster image not found" class="img-fluid" width="300" height="300">
+            <c:choose>
+                <c:when test="${empty media.posterPath}">
+                    <img
+                            src="${pageContext.request.contextPath}/resources/defaultPoster.png"
+                            alt="${media.name} picture not found"
+                            style="max-width: 100%; height: 400px; border-radius: 5px;">
+                </c:when>
+                <c:otherwise>
+                    <img src="${media.posterPath}"
+                         alt="${media.name} poster" class="img-fluid" width="300" height="300">
+                </c:otherwise>
+            </c:choose>
 
         </div>
         <div class="col">
