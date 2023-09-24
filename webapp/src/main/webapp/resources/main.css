@@ -65,6 +65,7 @@
     overflow: hidden;
 }
 .card-img-overlay {
+    cursor: pointer;
     position: absolute;
     top: 0;
     left: 0;
