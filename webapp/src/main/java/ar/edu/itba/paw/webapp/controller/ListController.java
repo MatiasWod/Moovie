@@ -101,7 +101,7 @@ public class ListController {
         MoovieList list = moovieListService.createMoovieListWithContent(user.getUserId(),form.getListName(),form.getListName(),form.getMediaIdsList());
 
         int id = list.getMoovieListId();
-        return list(id);
+        return new ModelAndView("redirect:/list/"+id);
     }
 
 // http://tuDominio.com/createList?s=A&s=B&s=C&s=D&s=E

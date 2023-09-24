@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import javax.xml.bind.annotation.XmlType;
 import java.util.*;
 
 @Controller
@@ -208,7 +207,7 @@ public class MovieController {
         }
         User user = userService.getOrCreateUserViaMail(form.getUserEmail());
         reviewService.createReview(user.getUserId(), form.getMediaId(), form.getRating(), form.getReviewContent());
-        return details(form.getMediaId(), form);
+        return new ModelAndView("redirect:/details/" + form.getMediaId());
     }
 
 }
