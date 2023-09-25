@@ -108,3 +108,22 @@ function formatElementValue(element) {
 
 // Call the function to format revenue and budget when the page loads
 window.addEventListener("load", formatRevenueAndBudget);
+
+const textarea = document.getElementById("reviewContent");
+const charCount = document.getElementById("charCount");
+
+textarea.addEventListener("input", function () {
+    const remainingChars = 500 - textarea.value.length;
+    charCount.textContent = `Characters left: ${remainingChars}`;
+
+    if (remainingChars < 0) {
+        charCount.style.color = "red";
+        document.getElementById("submitButton").disabled = true;
+    } else {
+        charCount.style.color = "inherit";
+        document.getElementById("submitButton").disabled = false;
+    }
+
+    // Remove line breaks from the textarea
+    textarea.value = textarea.value.replace(/\n/g, "");
+});
