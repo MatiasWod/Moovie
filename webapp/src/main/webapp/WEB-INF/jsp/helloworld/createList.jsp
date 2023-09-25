@@ -81,12 +81,12 @@
                     <h2 class="m-2">List Name:</h2>
                 <form:input path="listName" name="listName" id="list-name" required="required"
                             class="form-control me-2 createListInput" maxlength="50"/>
-                <span id="listNameCharCount" class="text-muted">Characters left: <span id="listNameRemainingChars">50</span></span>
+                <span id="listNameCharCount" class="text-muted"><span id="listNameRemainingChars">0</span>/50</span>
                 <form:errors path="listName" cssClass="error"/>
                     <h3 class="m-2" >Description:</h3>
                 <form:textarea path="listDescription" class="review-textarea" rows="3" name="listDescription"
                                placeholder="Your description..." maxlength="255" />
-                <span id="listDescriptionCharCount" class="text-muted">Characters left: <span id="listDescriptionRemainingChars">255</span></span>
+                <span id="listDescriptionCharCount" class="text-muted"><span id="listDescriptionRemainingChars">0</span>/255</span>
                 <form:errors path="listDescription" cssClass="error"/>
                     <h3 class="m-2" >Email:</h3>
                 <form:input path="userEmail" required="required" name="userEmail" type="email" id="list-email"

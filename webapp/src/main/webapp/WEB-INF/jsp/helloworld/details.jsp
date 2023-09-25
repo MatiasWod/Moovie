@@ -256,7 +256,7 @@
                        method="POST">
                 <form:textarea path="reviewContent" class="review-textarea" id="reviewContent" rows="3"
                           placeholder="Your review (Optional)" maxlength="500" />
-                <div id="charCount" class="text-muted">Characters left: 500</div>
+                <span><span id="charCount" class="text-muted">0</span>/500</span>
                 <h2 class="m-2">Email:</h2>
                 <form:input path="userEmail" type="email" class="form-control" id="userEmail" placeholder="Enter email"/>
                 <form:input path="mediaId" type="hidden" id="mediaId" value="${media.mediaId}"/>
@@ -321,4 +321,4 @@
 </body>
 </html>
 
-<script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=79"></script>
+<script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=80"></script>
