@@ -55,7 +55,7 @@
 <%--                        </select>--%>
                         <input type="hidden" name="g" id="hiddenGenreInput">
                         <div class="dropdown">
-                            <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                            <button style="width: 150px;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                                 Genres
                             </button>
                             <div class="dropdown-menu scrollableDiv flex-wrap p-4">
@@ -71,9 +71,9 @@
                     </form>
                 </div>
             </c:if>
-            <div id="genre-chips">
+            <div class="container d-flex justify-content-left p-0" id="genre-chips">
                 <c:forEach var="gen" items="${param.g}">
-                    <div class="badge text-bg-dark">
+                    <div class="m-1 badge text-bg-dark">
                         <span class="text-bg-dark"> ${gen} </span>
                         <i class="btn bi bi-trash-fill" onclick="deleteGenre(this)"></i>
                     </div>
@@ -128,7 +128,7 @@
                         <h3 id="preview-year"></h3>
                     </div>
                 </div>
-                <p style="max-height: 30vh; white-space: break-spaces; overflow: hidden; text-overflow: ellipsis;" id="preview-synopsis"></p>
+                    <p style="max-height: 30vh; white-space: break-spaces; overflow: scroll; text-overflow: ellipsis;" id="preview-synopsis"></p>
                 <h3 id="preview-director"></h3>
             </div>
             <a id="preview-details" class="m-4 btn btn-outline-success align-bottom" type="submit">More details</a>
