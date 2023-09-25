@@ -16,9 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.concurrent.TimeUnit;
 
+@ComponentScan("ar.edu.itba.paw.webapp.auth")
 @EnableWebSecurity
 @Configuration
-@ComponentScan("ar.edu.itba.paw.webapp.auth")
 public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private MoovieUserDetailsService userDetailsService;
@@ -31,31 +31,30 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         //COMPLETAR
-        http.sessionManagement().invalidSessionUrl("/login")
-                .and().authorizeRequests()
-                .antMatchers("/login").anonymous()
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/**").authenticated()
+        http.sessionManagement()
+                .invalidSessionUrl("/")
                 .and().formLogin()
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .defaultSuccessUrl("/",	false)
+                .defaultSuccessUrl("/", false)
                 .loginPage("/login")
-                .and().rememberMe()
-                .rememberMeParameter("rememberme")
+                .usernameParameter("username")
+                .passwordParameter("password").
+                and().rememberMe()
+                .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
                 .userDetailsService(userDetailsService)
-                .key("mysupersecretkeythatnobodyknowsabout")	//	no	hacer	esto,	crear	una	aleatoria	segura	suficientemente	grande	y	colocarla	bajo	src/main/resources
-                .tokenValiditySeconds((int)TimeUnit.DAYS.toSeconds(30))
+                .rememberMeParameter("rememberme")
+                .key("ultrasecretkey")
+                .and().authorizeRequests()
+                .antMatchers("/**").permitAll()
                 .and().exceptionHandling()
-                .accessDeniedPage("/404")	//deberia ser 403
+                .accessDeniedPage("/404")//deberia ser 403
                 .and().csrf().disable();
     }
 
-    @Override
+    /*@Override
     public void configure(final WebSecurity web) throws Exception {
         web.ignoring()
                 .antMatchers("/css/**",	"/js/**",	"/img/**");
-    }
+    }*/
 
     @Bean
     public PasswordEncoder passwordEncoder(){

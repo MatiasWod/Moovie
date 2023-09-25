@@ -21,12 +21,7 @@ import java.util.Optional;
 public class HelloWorldController {
 
     @Autowired
-    private UserService userService;
-    @Autowired
-    public HelloWorldController(final UserService us) {
-        this.userService = us;
-    }
-
+    UserService userService;
 
     @RequestMapping("/{id:\\d+}")
     public ModelAndView profile(@PathVariable("id") final long userId) {
@@ -50,7 +45,7 @@ public class HelloWorldController {
     }
 
     @RequestMapping("/login")
-    public ModelAndView login(@ModelAttribute("loginForm") final LoginForm form) {
+    public ModelAndView login() {
         return new ModelAndView("helloworld/login");
     }
 

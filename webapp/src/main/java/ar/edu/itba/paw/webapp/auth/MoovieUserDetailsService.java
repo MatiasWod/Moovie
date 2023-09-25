@@ -10,24 +10,24 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class MoovieUserDetailsService implements UserDetailsService {
-    @Autowired
+
     private UserService us;
+
+    @Autowired
+    public MoovieUserDetailsService(final UserService us) {
+        this.us = us;
+    }
 
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-        final Optional<User> user = us.findUserByUsername(username);
-        if(!user.isPresent()){
-            throw new UsernameNotFoundException("No user by the name " + username);
-        }
-        final Collection<? extends GrantedAuthority> authorities = Arrays.asList(
-                new SimpleGrantedAuthority("ROLE_USER")
-        );
-        return new org.springframework.security.core.userdetails.User(username,user.get().getPassword(),authorities);
+        final User user = us.findUserByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("No user" + username));
+        final Set<GrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        return new MoovieAuthUser(user.getUsername(),user.getPassword(),authorities);
     }
 }
