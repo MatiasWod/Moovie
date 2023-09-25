@@ -111,30 +111,32 @@
 
         </div>
 <%--        PREVIEW      --%>
-        <div id="preview" style="position: relative; display:none !important" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
-            <img id="preview-img" style="" class="image-blur height-full background" src="" alt="poster">
-            <div style="height:100%; position: absolute;top: 0;left: 0" class="justify-content-between d-flex p-4 container flex-column">
-                <h1 id="preview-explicit" class="mt-2 mb-2 bi bi-explicit" style="display: none"></h1>
-                <div class="d-flex container flex-column">
-                    <h1 class="text-center" id="preview-title"></h1>
-                    <div class="m-1 d-flex justify-content-around align-items-center">
-                        <div class="d-flex align-items-center">
-                            <h3>
-                                <i class="bi bi-star-fill m-1"></i>
-                            </h3>
-                            <h3 id="preview-rating"></h3>
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <h3 id="preview-year"></h3>
-                        </div>
+    <div id="preview" style="position: relative; display: none !important" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
+        <img id="preview-img" style="" class="image-blur height-full background" src="" alt="poster">
+        <div style="height: 100%; position: absolute; top: 0; left: 0; overflow: hidden;" class="justify-content-between d-flex p-4 container flex-column">
+            <h1 id="preview-explicit" class="mt-2 mb-2 bi bi-explicit" style="display: none"></h1>
+            <div class="d-flex container flex-column">
+                <h1 class="text-center" id="preview-title"></h1>
+                <div class="m-1 d-flex justify-content-around align-items-center">
+                    <div class="d-flex align-items-center">
+                        <h3>
+                            <i class="bi bi-star-fill m-1"></i>
+                        </h3>
+                        <h3 id="preview-rating"></h3>
                     </div>
-                    <p style="overflow: auto; max-height: 30vh" id="preview-synopsis"></p>
-                    <h3 id="preview-director"></h3>
+                    <div class="d-flex align-items-center">
+                        <h3 id="preview-year"></h3>
+                    </div>
                 </div>
-                <a id="preview-details" class="m-4 btn btn-outline-success align-bottom" type="submit">More details</a>
+                <p style="max-height: 30vh; white-space: break-spaces; overflow: hidden; text-overflow: ellipsis;" id="preview-synopsis"></p>
+                <h3 id="preview-director"></h3>
             </div>
+            <a id="preview-details" class="m-4 btn btn-outline-success align-bottom" type="submit">More details</a>
         </div>
     </div>
+
+
+</div>
 
 </body>
 
