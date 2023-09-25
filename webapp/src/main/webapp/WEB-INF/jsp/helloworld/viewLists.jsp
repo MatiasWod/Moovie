@@ -57,7 +57,7 @@
                     <div class="card-body cardBodyFlex">
                         <div>
                             <h5 class="card-title"><strong><c:out value="${map.value.first.name}"/></strong></h5>
-                            <p style="max-height: 4.5rem" class="card-text overflow-hidden">by <c:out
+                            <p style="max-height: 4.5rem" class="card-text overflow-hidden text-muted">by <c:out
                                     value="${map.value.first.userId}"/></p>
                             <p style="max-height: 3.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" class="card-text">
                                 <c:out value="${map.value.first.description}"/>
