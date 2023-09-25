@@ -113,8 +113,8 @@ const textarea = document.getElementById("reviewContent");
 const charCount = document.getElementById("charCount");
 
 textarea.addEventListener("input", function () {
-    const remainingChars = 500 - textarea.value.length;
-    charCount.textContent = `Characters left: ${remainingChars}`;
+    const remainingChars = textarea.value.length;
+    charCount.textContent = `${remainingChars}`;
 
     if (remainingChars < 0) {
         charCount.style.color = "red";

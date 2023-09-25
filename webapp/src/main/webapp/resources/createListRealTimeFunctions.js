@@ -4,7 +4,7 @@ const listDescriptionTextarea = document.querySelector("textarea[name='listDescr
 const listDescriptionCharCount = document.getElementById("listDescriptionRemainingChars");
 
 listNameTextarea.addEventListener("input", function () {
-    const remainingChars = 50 - listNameTextarea.value.length;
+    const remainingChars = listNameTextarea.value.length;
     listNameCharCount.textContent = remainingChars;
 
     if (remainingChars < 0) {
@@ -15,7 +15,7 @@ listNameTextarea.addEventListener("input", function () {
 });
 
 listDescriptionTextarea.addEventListener("input", function () {
-    const remainingChars = 255 - listDescriptionTextarea.value.length;
+    const remainingChars = listDescriptionTextarea.value.length;
     listDescriptionCharCount.textContent = remainingChars;
 
     if (remainingChars < 0) {
