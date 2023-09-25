@@ -56,6 +56,12 @@
                 </form>
             </div>
             <div class="scrollableDiv flex-wrap d-flex">
+                <c:if test="${fn:length(mediaList) == 0 }">
+                    <div class="d-flex m-2 flex-column">
+                        No media was found.
+                        <a class="btn mt-2 btn-outline-success align-bottom" href="${pageContext.request.contextPath}/createList">Go Back</a>
+                    </div>
+                </c:if>
                 <c:forEach var="movie" items="${mediaList}" end="24">
                     <div class="poster card text-bg-dark m-1"
                          onclick="displayMediaName(
