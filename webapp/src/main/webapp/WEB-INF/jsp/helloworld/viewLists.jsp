@@ -15,7 +15,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link href="${pageContext.request.contextPath}/resources/main.css?version=59" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="${pageContext.request.contextPath}/resources/lists.css?version=55" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/lists.css?version=58" rel="stylesheet"/>
     <title>Discover your next passion</title>
 </head>
 <body style="background: whitesmoke">
@@ -59,6 +59,10 @@
                             <h5 class="card-title"><strong><c:out value="${map.value.first.name}"/></strong></h5>
                             <p style="max-height: 4.5rem" class="card-text overflow-hidden">by <c:out
                                     value="${map.value.first.userId}"/></p>
+                            <p style="max-height: 3.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" class="card-text">
+                                <c:out value="${map.value.first.description}"/>
+                            </p>
+
                         </div>
                     </div>
 
