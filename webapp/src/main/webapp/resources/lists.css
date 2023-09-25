@@ -1,0 +1,28 @@
+.lists-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 5px auto;
+    width: 80%;
+}
+
+.list-card {
+    margin: 10px;
+    width: 20rem;
+    cursor: pointer;
+    background-color: white;
+    transition: background-color 0.3s ease;
+}
+
+.list-card:hover {
+    background-color: lightgray; /* Darker grey on hover */
+}
+.list-img-container {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%; /* Make the container occupy the full width of the card */
+    height: auto; /* Maintain aspect ratio */
+}
