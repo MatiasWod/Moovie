@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @Controller
 public class HelloWorldController {
@@ -48,17 +49,23 @@ public class HelloWorldController {
         return new ModelAndView("redirect:/");
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public ModelAndView login() {
+    @RequestMapping("/login")
+    public ModelAndView login(@ModelAttribute("loginForm") final LoginForm form) {
         return new ModelAndView("helloworld/login");
     }
 
-    @RequestMapping(value = "/loginpost", method = RequestMethod.POST)
+  /*  @RequestMapping(value = "/loginpost", method = RequestMethod.POST)
     public ModelAndView loginForm(@Valid @ModelAttribute("loginForm") final LoginForm form, final BindingResult errors) {
         if (errors.hasErrors()) {
-            return login();
+            return login(form);
         }
-        return new ModelAndView("redirect:/");
-    }
+        Optional<User> user = userService.findUserByUsername(form.getUsername());
+        if(user.isPresent()){
+            if(user.get().getPassword().equals(form.getPassword())) {
+                return new ModelAndView("redirect:/");
+            }
+        }
+        return new ModelAndView("helloworld/login");
+    }*/
 
 }

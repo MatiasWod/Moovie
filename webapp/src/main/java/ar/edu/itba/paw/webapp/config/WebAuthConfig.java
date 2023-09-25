@@ -14,6 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.concurrent.TimeUnit;
+
 @EnableWebSecurity
 @Configuration
 @ComponentScan("ar.edu.itba.paw.webapp.auth")
@@ -29,6 +31,24 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         //COMPLETAR
+        http.sessionManagement().invalidSessionUrl("/login")
+                .and().authorizeRequests()
+                .antMatchers("/login").anonymous()
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/**").authenticated()
+                .and().formLogin()
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .defaultSuccessUrl("/",	false)
+                .loginPage("/login")
+                .and().rememberMe()
+                .rememberMeParameter("rememberme")
+                .userDetailsService(userDetailsService)
+                .key("mysupersecretkeythatnobodyknowsabout")	//	no	hacer	esto,	crear	una	aleatoria	segura	suficientemente	grande	y	colocarla	bajo	src/main/resources
+                .tokenValiditySeconds((int)TimeUnit.DAYS.toSeconds(30))
+                .and().exceptionHandling()
+                .accessDeniedPage("/404")	//deberia ser 403
+                .and().csrf().disable();
     }
 
     @Override
