@@ -21,7 +21,10 @@ public class UserDaoJdbcImpl implements UserDao{
 
     private static final RowMapper<User> USER_ROW_MAPPER = (rs, rowNum) -> new User(
             rs.getInt("userId"),
-            rs.getString("email")
+            rs.getString("username"),
+            rs.getString("email"),
+            rs.getString("password"),
+            rs.getString("profilePhoto")
     );
 
 
@@ -32,12 +35,16 @@ public class UserDaoJdbcImpl implements UserDao{
     }
 
     @Override
-    public User createUser(String email) {
+    public User createUser(String username, String email, String password) {
         final Map<String, Object> args = new HashMap<>();
+        args.put("username",username);
         args.put("email", email);
+        args.put("password",password);
+        args.put("profilePhoto",null);
+        args.put("role",1);
 
         final Number reviewId = userJdbcInsert.executeAndReturnKey(args);
-        return new User(reviewId.intValue(), email);
+        return new User(reviewId.intValue(), username,email,password,null);
     }
 
     @Override
@@ -50,5 +57,8 @@ public class UserDaoJdbcImpl implements UserDao{
         return jdbcTemplate.query("SELECT * FROM users WHERE email = ?", new Object[]{email}, USER_ROW_MAPPER).stream().findFirst();
     }
 
-
+    @Override
+    public Optional<User> findUserByUsername(String username) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE username = ?", new Object[]{username}, USER_ROW_MAPPER).stream().findFirst();
+    }
 }
