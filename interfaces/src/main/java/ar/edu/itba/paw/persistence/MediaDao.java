@@ -24,6 +24,7 @@ public interface MediaDao {
     public List<Movie> getMovieOrderedByTmdbRatingDesc(int size, int pageNumber);
     public List<Movie> getMovieOrderedByReleaseDateDesc(int size, int pageNumber);
     public List<Movie> getMovieFilteredByGenre(String genre, int size, int pageNumber);
+    public List<Movie> getMovieFilteredByGenreList(List<String> genres, int size, int pageNumber);
     public List<Movie> getMovieOrderedByReleaseDuration(int size, int pageNumber);
 
     Optional<TVSerie> getTvById(int mediaId);

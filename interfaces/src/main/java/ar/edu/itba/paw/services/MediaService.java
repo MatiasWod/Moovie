@@ -27,6 +27,8 @@ public interface MediaService {
     public List<Movie> getMovieOrderedByTmdbRatingDesc(int size, int pageNumber);
     public List<Movie> getMovieOrderedByReleaseDateDesc(int size, int pageNumber);
     public List<Movie> getMovieFilteredByGenre(String genre, int size, int pageNumber);
+    public List<Movie> getMovieFilteredByGenreList(List<String> genre, int size, int pageNumber);
+
     public List<Movie> getMovieOrderedByReleaseDuration(int size, int pageNumber);
 
     Optional<TVSerie> getTvById(int mediaId);

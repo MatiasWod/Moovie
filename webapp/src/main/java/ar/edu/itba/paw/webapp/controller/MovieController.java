@@ -71,7 +71,7 @@ public class MovieController {
 
         if (genres != null && !genres.isEmpty()) {
             if (media != null && media.equals("Movies")) {
-                movieList = mediaService.getMovieFilteredByGenre(genres.get(0), mediaService.DEFAULT_PAGE_SIZE, 0);
+                movieList = mediaService.getMovieFilteredByGenreList(genres, mediaService.DEFAULT_PAGE_SIZE, 0);
                 movieList.forEach(movie -> {
                     if (movie.getOverview().contains("\n")){
                         movie.setOverview(movie.getOverview().replace("\n",""));

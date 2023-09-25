@@ -189,6 +189,24 @@ public class MediaDaoJdbcImpl implements MediaDao {
     }
 
     @Override
+    public List<Movie> getMovieFilteredByGenreList(List<String> genres, int size, int pageNumber){
+        String inClause = String.join(",", Collections.nCopies(genres.size(), "?"));
+        String sql = "SELECT "+ moviesQueryParams +" FROM " +
+                "((media INNER JOIN movies ON media.mediaid = movies.mediaid) INNER JOIN genres ON media.mediaId = genres.mediaId) " +
+                "WHERE genres.genre IN (" + inClause + ") " +
+                "GROUP BY media.mediaId, movies.runtime, movies.budget, movies.revenue, movies.directorid, movies.director " +
+                "HAVING COUNT(DISTINCT genres.genre) = ? " +
+                "LIMIT ? OFFSET ?";
+
+        List<Object> params = new ArrayList<>(genres);
+        params.add(genres.size()); // Agregar la cantidad de géneros para la cláusula HAVING
+        params.add(size);
+        params.add(pageNumber * size);
+
+        return jdbcTemplate.query(sql, params.toArray(), MOVIE_ROW_MAPPER);
+    }
+
+    @Override
     public List<Movie> getMovieOrderedByReleaseDuration(int size, int pageNumber) {
         return jdbcTemplate.query("SELECT " + moviesQueryParams + " FROM media INNER JOIN movies ON media.mediaid = movies.mediaid ORDER BY runtime DESC LIMIT ? OFFSET ?", new Object[]{ size, pageNumber * size}, MOVIE_ROW_MAPPER);
     }
