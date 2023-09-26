@@ -31,7 +31,7 @@
 <div class="container d-flex flex-column">
     <div class="container d-flex flex-row ">
         <div class="container d-flex flex-column">
-            <div >
+            <div>
                 <form id="filter-form" class="mb-2 d-flex flex-row justify-content-between" action="${pageContext.request.contextPath}/createList" method="get" onsubmit="beforeSubmit()">
                     <input type="hidden"  id="selected-media-input" name="s" />
                     <div class="d-flex flex-row">
@@ -63,7 +63,7 @@
                                 </c:forEach>
                             </div>
                         </div>
-                        <button class="btn btn-outline-success" type="submit">Apply filters</button>
+                        <button class="btn btn-outline-success" type="submit" >Apply filters</button>
                     </div>
                     <div class="d-flex flex-row">
                         <input class="form-control me-2" type="search" name="q" value="${param.q}" placeholder="Search" aria-label="Search">
