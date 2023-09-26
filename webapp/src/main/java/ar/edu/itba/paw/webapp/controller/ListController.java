@@ -107,7 +107,7 @@ public class ListController {
 // http://tuDominio.com/createList?s=A&s=B&s=C&s=D&s=E
 
     @RequestMapping("/createList")
-    public ModelAndView createList(@RequestParam(value = "g", required = false) String genre,
+    public ModelAndView createList(@RequestParam(value = "g", required = false) List<String> genre,
                                    @RequestParam(value = "m", required = false) String media,
                                    @RequestParam(value = "q", required = false) String query,
                                    @RequestParam(value = "s", required = false) List<String> selected,
@@ -122,11 +122,11 @@ public class ListController {
 
         if (genre != null && !genre.isEmpty()) {
             if (media != null && media.equals("Movies")) {
-                movieList = mediaService.getMovieFilteredByGenre(genre, mediaService.DEFAULT_PAGE_SIZE, 0);
+                movieList = mediaService.getMovieFilteredByGenreList(genre, mediaService.DEFAULT_PAGE_SIZE, 0);
             } else if (media != null && media.equals("Series")) {
-                tvSerieList = mediaService.getTvFilteredByGenre(genre, mediaService.DEFAULT_PAGE_SIZE, 0);
+                tvSerieList = mediaService.getTvFilteredByGenreList(genre, mediaService.DEFAULT_PAGE_SIZE, 0);
             } else {
-                mediaList = mediaService.getMediaFilteredByGenre(genre, mediaService.DEFAULT_PAGE_SIZE, 0);
+                mediaList = mediaService.getMediaFilteredByGenreList(genre, mediaService.DEFAULT_PAGE_SIZE, 0);
             }
         } else if (media != null && media.equals("Movies")){
             movieList = mediaService.getMovieList(mediaService.DEFAULT_PAGE_SIZE, 0);

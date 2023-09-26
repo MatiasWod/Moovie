@@ -27,10 +27,8 @@ function beforeSubmit() {
     const selectedOptions = [];
     document.querySelectorAll('.form-check-input:checked').forEach(function(checkbox) {
         selectedOptions.push(checkbox.nextElementSibling.innerText);
-        console.log(checkbox)
     });
 
-    console.log(selectedOptions)
 
     document.getElementById('hiddenGenreInput').value = selectedOptions.join(",");
 };

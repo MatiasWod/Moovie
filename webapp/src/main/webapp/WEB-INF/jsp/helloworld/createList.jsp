@@ -18,8 +18,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/resources/details.css?version=55" rel="stylesheet"/>
 
+
     <title>Share your favorite media</title>
-    <script src="${pageContext.request.contextPath}/resources/createListFunctions.js?version=79"></script>
+    <script src="${pageContext.request.contextPath}/resources/createListFunctions.js?version=82"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
 </head>
 <body style="background: whitesmoke">
@@ -29,7 +32,7 @@
     <c class="container d-flex flex-row ">
         <div class="container d-flex flex-column">
             <div >
-                <form class="mb-2 d-flex flex-row justify-content-between" action="${pageContext.request.contextPath}/createList" method="get" onsubmit="beforeSubmit()">
+                <form id="filter-form" class="mb-2 d-flex flex-row justify-content-between" action="${pageContext.request.contextPath}/createList" method="get" onsubmit="beforeSubmit()">
                     <input type="hidden"  id="selected-media-input" name="s" />
                     <div class="d-flex flex-row">
                         <select name="m" class="form-select filter-width" aria-label="Filter!">
@@ -37,7 +40,7 @@
                             <option  ${'Movies' == param.m ? 'selected' : ''}>Movies</option>
                             <option  ${'Series' == param.m ? 'selected' : ''}>Series</option>
                         </select>
-                        <select name="f" id="filter-types" class="form-select filter-width" aria-label="Filter!" onchange="toggleGenreSelect()">
+                       <%-- <select name="f" id="filter-types" class="form-select filter-width" aria-label="Filter!" onchange="toggleGenreSelect()">
                             <option ${'Popular' == param.f ? 'selected' : ''}>Popular</option>
                             <option ${'Genre' == param.f ? 'selected' : ''}>Genre</option>
                         </select>
@@ -45,15 +48,36 @@
                             <c:forEach var="genre" items="${genresList}">
                                 <option value="${genre}" ${genre == param.g? 'selected' : ''}>${genre}</option>
                             </c:forEach>
-                        </select>
+                        </select>--%>
+                        <input type="hidden" name="g" id="hiddenGenreInput">
+                        <div class="dropdown">
+                            <button style="width: 150px;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                Genres
+                            </button>
+                            <div class="dropdown-menu scrollableDiv flex-wrap p-4">
+                                <c:forEach var="genre" items="${genresList}">
+                                    <div class="form-check">
+                                        <input ${fn:contains(param.g,genre)? 'checked':''} type="checkbox" class="form-check-input" id="dropdownCheck${genre}">
+                                        <label class="form-check-label" for="dropdownCheck${genresList.indexOf(genre)}">${genre}</label>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </div>
                         <button class="btn btn-outline-success" type="submit">Apply filters</button>
                     </div>
                     <div class="d-flex flex-row">
                             <input class="form-control me-2" type="search" name="q" value="${param.q}" placeholder="Search" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Search</button>
                     </div>
-
                 </form>
+                <div class="container d-flex justify-content-left p-0" id="genre-chips">
+                    <c:forEach var="gen" items="${param.g}">
+                        <div class="m-1 badge text-bg-dark">
+                            <span class="text-bg-dark"> ${gen} </span>
+                            <i class="btn bi bi-trash-fill" onclick="deleteGenre(this)"></i>
+                        </div>
+                    </c:forEach>
+                </div>
             </div>
             <div class="scrollableDiv flex-wrap d-flex">
                 <c:if test="${fn:length(mediaList) == 0 }">
