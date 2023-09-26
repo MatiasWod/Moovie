@@ -22,15 +22,13 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
     private final MessageSource messageSource;
 
+    @Autowired
     public UserServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder, EmailService emailService, MessageSource messageSource) {
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.messageSource = messageSource;
     }
-
-    @Autowired
-
 
     @Override
     public User createUser(String username, String email, String password){
@@ -46,6 +44,7 @@ public class UserServiceImpl implements UserService {
                 throw new UnableToCreateUserException("Email already in use");
             }
         }
+        sendVerificationEmail(email,username);
         return userDao.createUser(username, email, passwordEncoder.encode(password));
     }
 

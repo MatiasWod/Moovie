@@ -14,18 +14,14 @@ import java.util.Map;
 
 @Service
 public class EmailServiceImpl implements EmailService{
-    private final JavaMailSender javaMailSender;
-    private final SpringTemplateEngine springTemplateEngine;
+    @Autowired
+    private JavaMailSender javaMailSender;
+    @Autowired
+    private SpringTemplateEngine springTemplateEngine;
 
     private static final int MULTIPART_MODE = MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED;
     private static final String ENCODING = StandardCharsets.UTF_8.name();
-    private static final String FROM = "pawmoovie@gmail.com";
-
-    @Autowired
-    public EmailServiceImpl(JavaMailSender javaMailSender, SpringTemplateEngine springTemplateEngine) {
-        this.javaMailSender = javaMailSender;
-        this.springTemplateEngine = springTemplateEngine;
-    }
+    private static final String FROM = "no-reply@moovie.com";
 
     @Override
     public void sendEmail(String to, String subject, String template, Map<String, Object> variables) {

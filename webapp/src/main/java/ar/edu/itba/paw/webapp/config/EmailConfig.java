@@ -28,13 +28,13 @@ public class EmailConfig {
         javaMailSender.setPort(587);//ver qué puerto usamos
 
         javaMailSender.setUsername("pawmoovie@gmail.com");
-        javaMailSender.setPassword("CarlitosPaw");//TODO cambiar
+        javaMailSender.setPassword("vkzg wmga omhq gead");//TODO cambiar
 
         Properties properties = javaMailSender.getJavaMailProperties();
-        properties.put("mail.transport.protocol","smtp");
-        properties.put("mail.smtp.auth","true");
-        properties.put("mail.smtp.starttls.enable","true");
-        properties.put("mail.debug","true");
+        properties.put("mail.transport.protocol", "smtp");
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.debug", "true");
 
         return javaMailSender;
     }
