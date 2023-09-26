@@ -8,7 +8,6 @@ window.onload = function() {
 
 
 };
-
 function deleteGenre(element) {
     let aux = document.getElementById("dropdownCheck" + element.previousElementSibling.innerText.trim());
     aux.checked = false;

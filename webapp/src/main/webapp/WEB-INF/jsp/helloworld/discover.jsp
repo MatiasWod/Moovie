@@ -71,8 +71,8 @@
                             <button class="btn btn-outline-success" type="submit">Apply filters</button>
                         </div>
                         <div >
-                            <a href="${pageContext.request.contextPath}/discover">
-                                <button style="height: 100%;" class="btn btn-outline-success align-bottom" >Reset Filters</button>
+                            <a style="height: 100%;" class="btn btn-outline-success align-bottom" href="${pageContext.request.contextPath}/discover">
+                                Reset Filters
                             </a>
                         </div>
                     </form>

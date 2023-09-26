@@ -51,7 +51,7 @@
                         </select>--%>
                         <input type="hidden" name="g" id="hiddenGenreInput">
                         <div class="dropdown">
-                            <button style="width: 150px;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                            <button style="height:100%;width: 150px;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                                 Genres
                             </button>
                             <div class="dropdown-menu scrollableDiv flex-wrap p-4">
@@ -66,8 +66,11 @@
                         <button class="btn btn-outline-success" type="submit">Apply filters</button>
                     </div>
                     <div class="d-flex flex-row">
-                            <input class="form-control me-2" type="search" name="q" value="${param.q}" placeholder="Search" aria-label="Search">
-                            <button class="btn btn-outline-success" type="submit">Search</button>
+                        <input class="form-control me-2" type="search" name="q" value="${param.q}" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                        <a style="height: 100%;" class="btn btn-outline-success align-bottom" href="${pageContext.request.contextPath}/createList">
+                            Reset Filters
+                        </a>
                     </div>
                 </form>
                 <div class="container d-flex justify-content-left p-0" id="genre-chips">
