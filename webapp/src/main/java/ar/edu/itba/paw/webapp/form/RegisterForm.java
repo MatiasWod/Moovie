@@ -1,16 +1,35 @@
 package ar.edu.itba.paw.webapp.form;
 
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.Constraint;
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 public class RegisterForm {
-
+    @NotEmpty(message = "Please enter an username")
+    @Size(min = 4, max = 20, message = "Must be between 4-20 characters")
+    @Pattern(regexp = "[a-zA-Z0-9]+", message = "Username should only contain alphanumerical characters")
     private String username;
-    @Pattern(regexp = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[A-Za-z]{2,}", message = "Please enter a valid email address")
+
+    @Email(message = "Please enter a valid email")
     @NotEmpty(message = "Please enter an email")
     private String email;
+
+    @NotEmpty(message = "Please enter a password")
+    @Size(min = 6, max = 25, message = "Must be between 6-25 characters")
     private String password;
+
+    @NotEmpty(message = "Please re-enter the password")
+    @Size(min = 6, max = 100, message = "Must be between 6-25 characters")
+    private String repeatPassword;
+
+    @AssertTrue(message = "Passwords do not match")
+    public boolean isPasswordMatch() {
+        return password != null && password.equals(repeatPassword);
+    }
 
     public String getUsername() {
         return username;
@@ -34,5 +53,13 @@ public class RegisterForm {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRepeatPassword() {
+        return repeatPassword;
+    }
+
+    public void setRepeatPassword(String repeatPassword) {
+        this.repeatPassword = repeatPassword;
     }
 }

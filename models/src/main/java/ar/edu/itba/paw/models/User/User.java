@@ -5,12 +5,14 @@ public class User {
     private final String username;
     private final String email;
     private final String password;
+    private final int role;
 
-    public User(int userId, String username, String email, String password) {
+    public User(int userId, String username, String email, String password, int role) {
         this.userId = userId;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
     public int getUserId() {
@@ -29,13 +31,7 @@ public class User {
         return password;
     }
 
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj.getClass() == User.class){
-            return this.userId == ((User) obj).getUserId();
-        }
-
-        return super.equals(obj);
+    public int getRole() {
+        return role;
     }
 }

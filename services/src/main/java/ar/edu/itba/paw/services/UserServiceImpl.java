@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.exceptions.UnableToCreateUserException;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(String username, String email, String password) {
-        return userDao.createUser(username,email,passwordEncoder.encode(password));
+    public User createUser(String username, String email, String password){
+        if(userDao.findUserByUsername(username).isPresent()){
+            throw new UnableToCreateUserException("Username already in use");
+        }
+        Optional<User> aux = userDao.findUserByEmail(email);
+        if(aux.isPresent()){
+            if(aux.get().getRole() == ROLE_UNREGISTERED){
+                return createUserFromUnregistered(username, email, password);
+            } else{
+                throw new UnableToCreateUserException("Email already in use");
+            }
+        }
+        return userDao.createUser(username, email, passwordEncoder.encode(password));
+    }
+
+    @Override
+    public User createUserFromUnregistered(String username, String email, String password) {
+        return userDao.createUserFromUnregistered(username, email, passwordEncoder.encode(password));
     }
 
     @Override

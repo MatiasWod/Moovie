@@ -41,7 +41,7 @@ public class HelloWorldController {
             return register(form);
         }
         User user = userService.createUser(form.getUsername(), form.getEmail(), form.getPassword());
-        return new ModelAndView("redirect:/");
+        return new ModelAndView("redirect:/login");
     }
 
     @RequestMapping("/login")

@@ -23,7 +23,8 @@ public class UserDaoJdbcImpl implements UserDao{
             rs.getInt("userId"),
             rs.getString("username"),
             rs.getString("email"),
-            rs.getString("password")
+            rs.getString("password"),
+            rs.getInt("role")
     );
 
 
@@ -39,10 +40,17 @@ public class UserDaoJdbcImpl implements UserDao{
         args.put("username",username);
         args.put("email", email);
         args.put("password",password);
-        args.put("role",1);
+        args.put("role", ROLE_USER);
 
         final Number reviewId = userJdbcInsert.executeAndReturnKey(args);
-        return new User(reviewId.intValue(), username,email,password);
+        return new User(reviewId.intValue(), username,email,password, 1);
+    }
+
+    @Override
+    public User createUserFromUnregistered(String username, String email, String password) {
+        String sql = "UPDATE users SET username = ?, password = ?, role = ? WHERE email = ?";
+        jdbcTemplate.update(sql, username, password, ROLE_USER, email);
+        return findUserByEmail(email).get();
     }
 
     @Override
