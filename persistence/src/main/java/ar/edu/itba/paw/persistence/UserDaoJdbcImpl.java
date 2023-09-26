@@ -23,8 +23,7 @@ public class UserDaoJdbcImpl implements UserDao{
             rs.getInt("userId"),
             rs.getString("username"),
             rs.getString("email"),
-            rs.getString("password"),
-            rs.getString("profilePhoto")
+            rs.getString("password")
     );
 
 
@@ -40,11 +39,10 @@ public class UserDaoJdbcImpl implements UserDao{
         args.put("username",username);
         args.put("email", email);
         args.put("password",password);
-        args.put("profilePhoto",null);
         args.put("role",1);
 
         final Number reviewId = userJdbcInsert.executeAndReturnKey(args);
-        return new User(reviewId.intValue(), username,email,password,null);
+        return new User(reviewId.intValue(), username,email,password);
     }
 
     @Override
@@ -59,6 +57,6 @@ public class UserDaoJdbcImpl implements UserDao{
 
     @Override
     public Optional<User> findUserByUsername(String username) {
-        return jdbcTemplate.query("SELECT * FROM users WHERE username = ?", new Object[]{'%' + username +'%' }, USER_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT * FROM users WHERE username = ?", new Object[]{username}, USER_ROW_MAPPER).stream().findFirst();
     }
 }

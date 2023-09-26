@@ -6,14 +6,11 @@ public class User {
     private final String email;
     private final String password;
 
-    private final String profilePhoto;
-
-    public User(int userId, String username, String email, String password, String profilePhoto) {
+    public User(int userId, String username, String email, String password) {
         this.userId = userId;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.profilePhoto = profilePhoto;
     }
 
     public int getUserId() {
@@ -32,9 +29,6 @@ public class User {
         return password;
     }
 
-    public String getProfilePhoto() {
-        return profilePhoto;
-    }
 
     @Override
     public boolean equals(Object obj) {

@@ -31,7 +31,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         //COMPLETAR
-        http.sessionManagement()
+       /* http.sessionManagement()
                 .invalidSessionUrl("/")
                 .and().formLogin()
                 .defaultSuccessUrl("/", false)
@@ -47,14 +47,34 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/**").permitAll()
                 .and().exceptionHandling()
                 .accessDeniedPage("/404")//deberia ser 403
+                .and().csrf().disable();*/
+        http.sessionManagement()
+                .invalidSessionUrl("/")
+                .and().formLogin()
+                .defaultSuccessUrl("/", false)
+                .loginPage("/login")
+                .usernameParameter("username")
+                .passwordParameter("password").
+                and().rememberMe()
+                .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
+                .userDetailsService(userDetailsService)
+                .rememberMeParameter("rememberme")
+                .key("ultrasecretkey")
+                .and().logout()
+                .deleteCookies("JSESSIONID")
+                .deleteCookies("remember-me")
+                .and().authorizeRequests()
+                .antMatchers("/**").permitAll()
+                .and().exceptionHandling()
+                .accessDeniedPage("/404")//deberia ser 403
                 .and().csrf().disable();
     }
 
-    /*@Override
+    @Override
     public void configure(final WebSecurity web) throws Exception {
         web.ignoring()
                 .antMatchers("/css/**",	"/js/**",	"/img/**");
-    }*/
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder(){
