@@ -1,22 +1,33 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
 <body>
-<h2>Register!</h2>
-<c:url var="registerUrl" value="/register"/>
-<form action="${registerUrl}" method="post">
+<form:form modelAttribute="registerForm" action="${pageContext.request.contextPath}/register" method="post">
     <div>
-        <label>Email:
-            <input type="text" name="email"/>
-        </label>
+        <form:label path="username">Username: </form:label>
+        <form:input type="text" path="username"/>
+        <form:errors path="username" cssClass="formError" element="p"/>
     </div>
     <div>
-        <label>Password:
-            <input type="password" name="password"/>
-        </label>
+        <form:label path="email">Email: </form:label>
+        <form:input type="email" path="email"/>
+        <form:errors path="email" cssClass="formError" element="p"/>
     </div>
     <div>
-        <input type="submit" value="Let's go!"/>
+        <form:label path="password">Password: </form:label>
+        <form:input type="password" path="password" />
+        <form:errors path="password" cssClass="formError" element="p"/>
     </div>
-</form>
+    <div>
+        <form:label path="repeatPassword">Repeat password: </form:label>
+        <form:input type="password" path="repeatPassword"/>
+        <form:errors path="repeatPassword" cssClass="formError" element="p"/>
+
+    </div>
+    <div>
+        <input type="submit" value="Register!"/>
+    </div>
+</form:form>
 </body>
 </html>

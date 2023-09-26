@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <%--
   Created by IntelliJ IDEA.
@@ -26,9 +27,18 @@
 <c:import url="navBar.jsp"/>
 <div class="container d-flex flex-column">
     <c class="container d-flex flex-row ">
-<%--        FILTROS y PELIS    --%>
+        <%--        FILTROS y PELIS    --%>
 
         <div class="container d-flex flex-column">
+          <%--  <div
+            <sec:authorize access="!isAuthenticated()">
+                <div>No estas autenticado</div>
+            </sec:authorize>
+            <sec:authorize access="isAuthenticated()">
+                <div>Estas autenticado</div>
+            </sec:authorize>
+            </div>--%>
+
             <c:if test="${searchMode}">
                 <div class="m-2">
                     <h1>

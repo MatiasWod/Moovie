@@ -2,7 +2,9 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
+import ar.edu.itba.paw.models.MoovieList.MoovieListFollowers;
 import ar.edu.itba.paw.models.Review.Review;
+import ar.edu.itba.paw.models.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,28 +12,33 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class MoovieListDaoJdbcImpl implements MoovieListDao{
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert moovieListJdbcInsert;
     private final SimpleJdbcInsert moovieListContentJdbcInsert;
+    private final SimpleJdbcInsert moovieListFollowersJdbcInsert;
+    private static final int INITIAL_LIKE_COUNT = 0;
 
     private static final RowMapper<MoovieList> MEDIA_LIST_ROW_MAPPER = (rs, rowNum) -> new MoovieList(
             rs.getInt("moovieListId"),
             rs.getInt("userId"),
             rs.getString("name"),
             rs.getString("description")
+            //rs.getInt("likes")
     );
 
     private static final RowMapper<MoovieListContent> MEDIA_LIST_CONTENT_ROW_MAPPER = (rs, rowNum) -> new MoovieListContent(
             rs.getInt("moovieListId"),
             rs.getInt("mediaId"),
             rs.getString("status")
+    );
+
+    private static final RowMapper<MoovieListFollowers> MOOVIE_LIST_FOLLOWERS_ROW_MAPPER = (rs, rowNum) -> new MoovieListFollowers(
+            rs.getInt("moovieListId"),
+            rs.getInt("userId")
     );
 
     private static final RowMapper<Integer> COUNT_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("count"));
@@ -42,6 +49,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         jdbcTemplate = new JdbcTemplate(dataSource);
         moovieListJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("moovieLists").usingGeneratedKeyColumns("moovielistid");
         moovieListContentJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("moovieListsContent");
+        moovieListFollowersJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("moovieListsFollowers");
     }
 
     @Override
@@ -117,6 +125,16 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     public Optional<Integer> getMoovieListCount() {
         return jdbcTemplate.query("SELECT COUNT(*) AS count FROM moovieListsContent", COUNT_ROW_MAPPER).stream().findFirst();
     }
+
+    /*@Override
+    public Optional<Integer> getFollowersCount(int moovieListId) {
+        return jdbcTemplate.query("SELECT COUNT(*) AS count FROM moovieListsFollowers WHERE moovieListId = ?",new Object[]{moovieListId}, COUNT_ROW_MAPPER).stream().findFirst();
+    }
+
+    @Override
+    public List<MoovieListFollowers> getAllFollowers(int moovieListId) {
+        return jdbcTemplate.query("SELECT * FROM moovieListsFollowers WHERE moovieListId = ?",new Object[]{moovieListId},MOOVIE_LIST_FOLLOWERS_ROW_MAPPER);
+    }*/
 }
 
 
