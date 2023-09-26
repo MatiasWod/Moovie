@@ -2,12 +2,15 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
+import ar.edu.itba.paw.models.MoovieList.MoovieListFollowers;
+import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.MoovieListDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 @Service
 public class MoovieListServiceImpl implements MoovieListService{
@@ -47,5 +50,15 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public Optional<Integer> getMoovieListCount() {
         return mediaListDao.getMoovieListCount();
+    }
+
+    @Override
+    public Optional<Integer> getFollowersCount(int moovieListId) {
+        return mediaListDao.getFollowersCount(moovieListId);
+    }
+
+    @Override
+    public List<MoovieListFollowers> getAllFollowers(int moovieListId) {
+        return mediaListDao.getAllFollowers(moovieListId);
     }
 }
