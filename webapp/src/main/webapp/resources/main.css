@@ -117,6 +117,7 @@
 
 .fullHeightDiv {
     height: 88vh;
+    min-height:600px ;
 }
 
 .filter-width{

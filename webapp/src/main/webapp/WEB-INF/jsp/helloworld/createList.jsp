@@ -14,7 +14,7 @@
     <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/resources/logo.png" />
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link href="${pageContext.request.contextPath}/resources/main.css?version=79" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/main.css?version=83" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/resources/details.css?version=55" rel="stylesheet"/>
 
@@ -29,7 +29,7 @@
 
 <c:import url="navBar.jsp"/>
 <div class="container d-flex flex-column">
-    <c class="container d-flex flex-row ">
+    <div class="container d-flex flex-row ">
         <div class="container d-flex flex-column">
             <div >
                 <form id="filter-form" class="mb-2 d-flex flex-row justify-content-between" action="${pageContext.request.contextPath}/createList" method="get" onsubmit="beforeSubmit()">
@@ -110,7 +110,7 @@
             <div class="image-blur height-full background" style="background: dimgray"></div>
             <form:form modelAttribute="ListForm" action="${pageContext.request.contextPath}/createListAction"
                        method="POST">
-            <div style="position: absolute;top: 0;left: 0" class="d-flex p-4 container flex-column">
+            <div style="position: absolute;top: 0;left: 0;height: 100%;overflow: hidden" class="d-flex p-4 container flex-column">
                     <h2 class="m-2">List Name:</h2>
                 <form:input path="listName" name="listName" id="list-name" required="required"
                             class="form-control me-2 createListInput" maxlength="50"/>
@@ -139,7 +139,7 @@
                 <div class="d-flex" id="preview-list"></div>
             </div>
         </div>
-    </c>
+    </div>
 
 </div>
 
