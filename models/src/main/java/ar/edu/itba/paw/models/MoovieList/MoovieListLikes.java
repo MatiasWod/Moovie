@@ -1,10 +1,10 @@
 package ar.edu.itba.paw.models.MoovieList;
 
-public class MoovieListFollowers {
+public class MoovieListLikes {
     private final int moovieListId;
     private final int userId;
 
-    public MoovieListFollowers(int moovieListId, int userId) {
+    public MoovieListLikes(int moovieListId, int userId) {
         this.moovieListId = moovieListId;
         this.userId = userId;
     }

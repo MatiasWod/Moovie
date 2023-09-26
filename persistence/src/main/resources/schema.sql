@@ -2,6 +2,10 @@
 CREATE TABLE IF NOT EXISTS users (
     userId                          SERIAL PRIMARY KEY,
     email                           VARCHAR(255) UNIQUE NOT NULL,
+    username                        VARCHAR(20) UNIQUE NOT NULL,
+    password                        TEXT NOT NULL,
+    role                            INTEGER NOT NULL,
+
     CONSTRAINT valid_email_address  CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[A-Za-z]{2,}$')
 );
 
@@ -116,3 +120,48 @@ CREATE TABLE IF NOT EXISTS providers(
     UNIQUE(mediaId,providerId),
     FOREIGN KEY(mediaId)       REFERENCES media(mediaId) ON DELETE CASCADE
 );
+
+--MODIFICATIONS FOR SPRINT 2
+
+--MoovieListsLikes
+CREATE TABLE IF NOT EXISTS moovieListsLikes(
+    moovieListId                        INTEGER NOT NULL,
+    userId                              INTEGER NOT NULL,
+    UNIQUE(moovieListId,userId),
+    FOREIGN KEY(moovieListId) REFERENCES moovieLists(moovieListId) ON DELETE CASCADE,
+    FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE
+);
+
+--UserImages
+CREATE TABLE IF NOT EXISTS userImages(
+    image                               BYTEA NOT NULL,
+    userId                              INTEGER NOT NULL,
+    UNIQUE(userId),
+    FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE
+);
+
+
+/*
+--Modifications in table Users post primer sprint
+--1
+ALTER TABLE users
+    ADD username VARCHAR(20),
+    ADD password TEXT,
+    ADD role INTEGER;
+--2
+UPDATE users
+SET username = users.email,
+    password = 'default_password',
+    role = 0
+WHERE username IS NULL;
+--3
+ALTER TABLE users
+    ALTER COLUMN username SET NOT NULL,
+    ADD CONSTRAINT unique_username UNIQUE (username);
+--4
+ALTER TABLE users
+    ALTER COLUMN username SET NOT NULL,
+    ALTER COLUMN password SET NOT NULL,
+    ALTER COLUMN role SET NOT NULL;
+
+ */
