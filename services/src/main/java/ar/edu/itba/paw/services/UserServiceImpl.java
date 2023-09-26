@@ -4,10 +4,14 @@ import ar.edu.itba.paw.exceptions.UnableToCreateUserException;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sun.security.util.Password;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -15,12 +19,18 @@ public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
+    private final MessageSource messageSource;
 
-    @Autowired
-    public UserServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder, EmailService emailService, MessageSource messageSource) {
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
+        this.messageSource = messageSource;
     }
+
+    @Autowired
+
 
     @Override
     public User createUser(String username, String email, String password){
@@ -30,6 +40,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> aux = userDao.findUserByEmail(email);
         if(aux.isPresent()){
             if(aux.get().getRole() == ROLE_UNREGISTERED){
+                sendVerificationEmail(email,username);
                 return createUserFromUnregistered(username, email, password);
             } else{
                 throw new UnableToCreateUserException("Email already in use");
@@ -65,5 +76,13 @@ public class UserServiceImpl implements UserService {
             return user.get();
         }
         return createUser(null,mail,null);
+    }
+
+    @Override
+    public void sendVerificationEmail(String email, String username) {
+        final Map<String,Object> mailMap = new HashMap<>();
+        mailMap.put("username",username);
+        final String subject = messageSource.getMessage("email.confirmation.subject",null, Locale.getDefault());
+        emailService.sendEmail(email,subject,"confirmationMail.html",mailMap);
     }
 }

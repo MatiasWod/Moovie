@@ -21,4 +21,6 @@ public interface UserService {
     Optional<User> findUserByUsername(String username);
 
     User getOrCreateUserViaMail(String mail);
+
+    void sendVerificationEmail(String email, String username);
 }
