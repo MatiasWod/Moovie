@@ -15,7 +15,7 @@
     <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/resources/logo.png" />
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link href="${pageContext.request.contextPath}/resources/main.css?version=81" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/main.css?version=82" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
     <title>Discover your next favorite experience</title>
@@ -118,11 +118,11 @@
 <%--        PREVIEW      --%>
     <div id="preview" style="position: relative; display: none !important" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
         <img id="preview-img" style="" class="image-blur height-full background" src="" alt="poster">
-        <div style="height: 100%; position: absolute; top: 0; left: 0; overflow: hidden;" class="justify-content-between d-flex p-4 container flex-column">
+        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: auto;" class="p-4 container">
             <h1 id="preview-explicit" class="mt-2 mb-2 bi bi-explicit" style="display: none"></h1>
             <div class="d-flex container flex-column">
                 <h1 class="text-center" id="preview-title"></h1>
-                <div class="m-1 d-flex justify-content-around align-items-center">
+                <div class="m-1 d-flex justify-content-between align-items-center">
                     <div class="d-flex align-items-center">
                         <h3>
                             <i class="bi bi-star-fill m-1"></i>
@@ -133,10 +133,12 @@
                         <h3 id="preview-year"></h3>
                     </div>
                 </div>
-                    <p style="max-height: 30vh; white-space: break-spaces; overflow: scroll; text-overflow: ellipsis;" id="preview-synopsis"></p>
+                <p id="preview-synopsis"></p>
                 <h3 id="preview-director"></h3>
             </div>
-            <a id="preview-details" class="m-4 btn btn-outline-success align-bottom" type="submit">More details</a>
+            <div class="text-center">
+                <a id="preview-details" class="mt-4 btn btn-outline-success" type="submit">More details</a>
+            </div>
         </div>
     </div>
 

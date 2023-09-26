@@ -127,6 +127,7 @@
 
 .thirty-width{
     width: 40%;
+    min-width: 300px;
 }
 
 .seventy-width{
