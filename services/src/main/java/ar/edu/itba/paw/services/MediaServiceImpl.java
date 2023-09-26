@@ -132,4 +132,9 @@ public class MediaServiceImpl implements MediaService{
     public List<TVSerie> getTvFilteredByGenre(String genre, int size, int pageNumber) {
         return mediaDao.getTvFilteredByGenre(genre, size, pageNumber);
     }
+
+    @Override
+    public List<TVSerie> getTvFilteredByGenreList(List<String> genres, int size, int pageNumber) {
+        return mediaDao.getTvFilteredByGenreList(genres, size, pageNumber);
+    }
 }

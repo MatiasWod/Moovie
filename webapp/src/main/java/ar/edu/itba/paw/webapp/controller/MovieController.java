@@ -79,7 +79,7 @@ public class MovieController {
                 });
                 mav.addObject("mediaList", movieList);
             } else if (media != null && media.equals("Series")) {
-                tvSerieList = mediaService.getTvFilteredByGenre(genres.get(0), mediaService.DEFAULT_PAGE_SIZE, 0);
+                tvSerieList = mediaService.getTvFilteredByGenreList(genres, mediaService.DEFAULT_PAGE_SIZE, 0);
                 tvSerieList.forEach(mediaAux -> {
                     if (mediaAux.getOverview().contains("\n")){
                         mediaAux.setOverview(mediaAux.getOverview().replace("\n",""));

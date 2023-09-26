@@ -33,4 +33,5 @@ public interface MediaDao {
     public List<TVSerie> getTvOrderedByTmdbRatingDesc(int size, int pageNumber);
     public List<TVSerie> getTvOrderedByReleaseDateDesc(int size, int pageNumber);
     public List<TVSerie> getTvFilteredByGenre(String genre, int size, int pageNumber);
+    public List<TVSerie> getTvFilteredByGenreList(List<String> genres, int size, int pageNumber);
 }

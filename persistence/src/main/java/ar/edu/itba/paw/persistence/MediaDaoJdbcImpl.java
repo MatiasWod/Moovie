@@ -243,4 +243,23 @@ public class MediaDaoJdbcImpl implements MediaDao {
     public List<TVSerie> getTvFilteredByGenre(String genre, int size, int pageNumber) {
         return jdbcTemplate.query("SELECT " + tvQueryParams + " FROM ((media INNER JOIN tv ON media.mediaid = tv.mediaid) INNER JOIN genres ON media.mediaid = genres.mediaid) WHERE genres.genre = ? LIMIT ? OFFSET ?", new Object[]{genre, size, pageNumber * size}, TV_SERIE_ROW_MAPPER);
     }
+
+    @Override
+    public List<TVSerie> getTvFilteredByGenreList(List<String> genres, int size, int pageNumber){
+        String inClause = String.join(",", Collections.nCopies(genres.size(), "?"));
+        String sql = "SELECT "+ tvQueryParams +" FROM " +
+                "((media INNER JOIN tv ON media.mediaid = tv.mediaid) INNER JOIN genres ON media.mediaId = genres.mediaId) " +
+                "WHERE genres.genre IN (" + inClause + ") " +
+                "GROUP BY media.mediaId, tv.lastAirDate, tv.nextEpisodeToAir, tv.numberOfEpisodes, tv.numberOfSeasons " +
+                "HAVING COUNT(DISTINCT genres.genre) = ? " +
+                "LIMIT ? OFFSET ?";
+
+        List<Object> params = new ArrayList<>(genres);
+        params.add(genres.size()); // Agregar la cantidad de géneros para la cláusula HAVING
+        params.add(size);
+        params.add(pageNumber * size);
+
+        return jdbcTemplate.query(sql, params.toArray(), TV_SERIE_ROW_MAPPER);
+    }
+
 }
