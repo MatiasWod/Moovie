@@ -3,7 +3,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
 <body>
-<form:form modelAttribute="registerForm" action="${pageContext.request.contextPath}/registerpost" method="post">
+<form:form modelAttribute="registerForm" action="${pageContext.request.contextPath}/register" method="post">
     <div>
         <form:label path="username">Username: </form:label>
         <form:input type="text" path="username"/>
@@ -23,7 +23,6 @@
         <form:label path="repeatPassword">Repeat password: </form:label>
         <form:input type="password" path="repeatPassword"/>
         <form:errors path="repeatPassword" cssClass="formError" element="p"/>
-        <form:errors path="" cssClass="formError" element="p"/>
 
     </div>
     <div>

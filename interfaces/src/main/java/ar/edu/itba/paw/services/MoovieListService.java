@@ -19,6 +19,7 @@ public interface MoovieListService {
 
     List<MoovieListContent> getMoovieListContentById(int moovieListId);
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
-    Optional<Integer> getFollowersCount(int moovieListId);
-    List<MoovieListFollowers> getAllFollowers(int moovieListId);
+
+    /*Optional<Integer> getFollowersCount(int moovieListId);
+    List<MoovieListFollowers> getAllFollowers(int moovieListId);*/
 }

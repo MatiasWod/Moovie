@@ -35,7 +35,7 @@ public class HelloWorldController {
         return new ModelAndView("helloworld/register");
     }
 
-    @RequestMapping(value = "/registerpost", method = RequestMethod.POST)
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ModelAndView registerForm(@Valid @ModelAttribute("registerForm") final RegisterForm form,final BindingResult errors) {
         if (errors.hasErrors()) {
             return register(form);

@@ -49,24 +49,28 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedPage("/404")//deberia ser 403
                 .and().csrf().disable();*/
         http.sessionManagement()
-                .invalidSessionUrl("/")
+                    .invalidSessionUrl("/")
                 .and().formLogin()
-                .defaultSuccessUrl("/", false)
-                .loginPage("/login")
-                .usernameParameter("username")
-                .passwordParameter("password").
+                    .defaultSuccessUrl("/", false)
+                    .loginPage("/login")
+                    .usernameParameter("username")
+                    .passwordParameter("password").
                 and().rememberMe()
-                .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
-                .userDetailsService(userDetailsService)
-                .rememberMeParameter("rememberme")
-                .key("ultrasecretkey")
+                    .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
+                    .userDetailsService(userDetailsService)
+                    .rememberMeParameter("rememberme")
+                    .key("ultrasecretkey")
                 .and().logout()
-                .deleteCookies("JSESSIONID")
-                .deleteCookies("remember-me")
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/login")
+                    .deleteCookies("JSESSIONID")
+                    .deleteCookies("remember-me")
                 .and().authorizeRequests()
-                .antMatchers("/**").permitAll()
+                    .antMatchers("/login", "/register").anonymous()
+                    .antMatchers("/createList", "/createreview").hasRole("USER")
+                    .antMatchers("/**").permitAll()
                 .and().exceptionHandling()
-                .accessDeniedPage("/404")//deberia ser 403
+                    .accessDeniedPage("/404")//deberia ser 403
                 .and().csrf().disable();
     }
 

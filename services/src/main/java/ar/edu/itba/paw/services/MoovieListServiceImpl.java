@@ -52,7 +52,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         return mediaListDao.getMoovieListCount();
     }
 
-    @Override
+    /*@Override
     public Optional<Integer> getFollowersCount(int moovieListId) {
         return mediaListDao.getFollowersCount(moovieListId);
     }
@@ -60,5 +60,5 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public List<MoovieListFollowers> getAllFollowers(int moovieListId) {
         return mediaListDao.getAllFollowers(moovieListId);
-    }
+    }*/
 }

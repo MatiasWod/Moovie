@@ -26,8 +26,8 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
             rs.getInt("moovieListId"),
             rs.getInt("userId"),
             rs.getString("name"),
-            rs.getString("description"),
-            rs.getInt("likes")
+            rs.getString("description")
+            //rs.getInt("likes")
     );
 
     private static final RowMapper<MoovieListContent> MEDIA_LIST_CONTENT_ROW_MAPPER = (rs, rowNum) -> new MoovieListContent(
@@ -91,7 +91,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         args.put("description", description);
 
         final Number moovieListId = moovieListJdbcInsert.executeAndReturnKey(args);
-        return new MoovieList(moovieListId.intValue(), userId, name, description, INITIAL_LIKE_COUNT);
+        return new MoovieList(moovieListId.intValue(), userId, name, description);
     }
 
 
@@ -126,7 +126,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         return jdbcTemplate.query("SELECT COUNT(*) AS count FROM moovieListsContent", COUNT_ROW_MAPPER).stream().findFirst();
     }
 
-    @Override
+    /*@Override
     public Optional<Integer> getFollowersCount(int moovieListId) {
         return jdbcTemplate.query("SELECT COUNT(*) AS count FROM moovieListsFollowers WHERE moovieListId = ?",new Object[]{moovieListId}, COUNT_ROW_MAPPER).stream().findFirst();
     }
@@ -134,7 +134,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     @Override
     public List<MoovieListFollowers> getAllFollowers(int moovieListId) {
         return jdbcTemplate.query("SELECT * FROM moovieListsFollowers WHERE moovieListId = ?",new Object[]{moovieListId},MOOVIE_LIST_FOLLOWERS_ROW_MAPPER);
-    }
+    }*/
 }
 
 

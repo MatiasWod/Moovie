@@ -8,14 +8,14 @@ public class MoovieList {
     private final int userId;
     private final String name;
     private final String description;
-    private final int likes;
+    //private final int likes;
 
-    public MoovieList(int moovieListId, int userId, String name, String description, int likes) {
+    public MoovieList(int moovieListId, int userId, String name, String description) {
         this.moovieListId = moovieListId;
         this.userId = userId;
         this.name = name;
         this.description = description;
-        this.likes = likes;
+       // this.likes = likes;
     }
 
     public int getMoovieListId() {
@@ -34,7 +34,7 @@ public class MoovieList {
         return description;
     }
 
-    public int getLikes() {
+    /*public int getLikes() {
         return likes;
-    }
+    }*/
 }
