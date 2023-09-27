@@ -110,6 +110,7 @@ public class HelloWorldController {
         }
         return new ModelAndView("redirect:/profile/" + user.getUsername() + "?error=noFileSelected");
     }
+
     private boolean isImage(String contentType) {
         return contentType != null && contentType.startsWith("image/");
     }

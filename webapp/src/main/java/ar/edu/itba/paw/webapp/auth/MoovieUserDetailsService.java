@@ -27,6 +27,7 @@ public class MoovieUserDetailsService implements UserDetailsService {
         final User user = us.findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("No user" + username));
         final Set<GrantedAuthority> authorities = new HashSet<>();
+        
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         return new MoovieAuthUser(user.getUsername(),user.getPassword(),authorities);
     }

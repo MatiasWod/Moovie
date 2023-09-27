@@ -140,6 +140,13 @@ CREATE TABLE IF NOT EXISTS userImages(
     FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE
 );
 
+--Verification Tokens
+CREATE TABLE IF NOT EXISTS verificationTokens(
+   userId INT NOT NULL,
+   token TEXT NOT NULL,
+   expirationDate DATE NOT NULL,
+   FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE
+);
 
 /*
 --Modifications in table Users post primer sprint

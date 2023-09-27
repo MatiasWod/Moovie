@@ -14,7 +14,7 @@ import java.util.UUID;
 @Service
 public class VerificationTokenServiceImpl implements VerificationTokenService{
     private final VerificationTokenDao verificationTokenDao;
-    private static final int EXPIRATION = 7 * 24;
+    private static final int EXPIRATION = 60 * 24;
 
     @Autowired
     public VerificationTokenServiceImpl(VerificationTokenDao verificationTokenDao) {
@@ -48,7 +48,9 @@ public class VerificationTokenServiceImpl implements VerificationTokenService{
     @Override
     public boolean isValidToken(Token token) {
         Calendar calendar = Calendar.getInstance();
-        return token.getExpirationDate().getTime() > calendar.getTime().getTime();
+        long aux1 = token.getExpirationDate().getTime() ;
+        long aux2 = calendar.getTime().getTime();
+        return aux1 > aux2;
     }
 
     @Override

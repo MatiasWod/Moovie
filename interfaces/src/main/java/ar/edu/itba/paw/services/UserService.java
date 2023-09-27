@@ -9,6 +9,11 @@ import java.util.Optional;
 
 public interface UserService {
 
+    public static final  int ROLE_NOT_AUTHENTICATED = -1;
+    public static final int ROLE_UNREGISTERED = 0;
+    public static final int ROLE_USER = 1;
+    public static final int ROLE_MODERATOR = 2;
+
     User createUser(String username, String email, String password);
     User createUserFromUnregistered(String username, String email, String password);
     boolean confirmRegister(Token token);
