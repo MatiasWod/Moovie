@@ -26,3 +26,9 @@
     width: 100%; /* Make the container occupy the full width of the card */
     height: auto; /* Maintain aspect ratio */
 }
+
+.btn-style.liked {
+    background-color: white;
+    color: #198754;
+    border: 1px solid #198754; /* Add a 3px thick solid border with the color you want */
+}

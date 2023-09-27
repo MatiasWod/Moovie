@@ -14,6 +14,7 @@
     <title>Moovie List</title>
     <link href="${pageContext.request.contextPath}/resources/moovieList.css?version=58" rel="stylesheet"/>
 </head>
+
 <body style="background: whitesmoke">
 <c:import url="navBar.jsp">
     <c:param name="userName" value="${user.username}"/>
@@ -29,7 +30,17 @@
     <div class="buttons">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <div>
-                <button type="button" class="btn btn-style" ><i class="bi bi-hand-thumbs-up"></i> Like</button>
+                <form action="${pageContext.request.contextPath}/like" method="POST">
+                    <input type="hidden" name="listId" value="${moovieList.moovieListId}"/>
+                    <c:choose>
+                        <c:when test="${isLiked}">
+                            <button type="submit" class="btn btn-style"><i class="bi bi-hand-thumbs-up-fill"></i> Liked</button>
+                        </c:when>
+                        <c:otherwise>
+                            <button type="submit" class="btn btn-style"><i class="bi bi-hand-thumbs-up"></i> Like</button>
+                        </c:otherwise>
+                    </c:choose>
+                </form>
             </div>
             <div style="display: flex; align-items: center;">
                 <h2 style="padding-right: 4px">Sort by</h2>

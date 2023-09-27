@@ -97,3 +97,14 @@ function changeSortOrder() {
     // Call the sortTable function with the selected column
     sortTable(selectedColumn);
 }
+
+function liked() {
+    let button = document.getElementById("likeButton");
+    if (!button.classList.contains("liked")) {
+        button.classList.add("liked");
+        button.innerHTML = "<i class=\"bi bi-hand-thumbs-up-fill\"></i> Liked";
+    } else {
+        button.classList.remove("liked");
+        button.innerHTML = "<i class=\"bi bi-hand-thumbs-up\"></i> Like";
+    }
+}

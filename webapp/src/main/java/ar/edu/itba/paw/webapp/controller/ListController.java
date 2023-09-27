@@ -202,6 +202,8 @@ public class ListController {
                 mav.addObject("user",null);
             }
 
+            boolean isLiked = moovieListService.likeMoovieListStatusForUser(userService.getInfoOfMyUser().getUserId(), moovieListId);
+            mav.addObject("isLiked", isLiked);
             mav.addObject("moovieList", moovieListData.get());
 
             List<Media> mediaList = mediaService.getMediaByMoovieListId(moovieListId, mediaService.DEFAULT_PAGE_SIZE, 0);
@@ -224,5 +226,17 @@ public class ListController {
             mav.addObject("extraInfo", "The list with id: " +moovieListId+ " doesn't exists");
             return mav;
         }
+    }
+
+    @RequestMapping(value = "/like", method = RequestMethod.POST)
+    public ModelAndView createReview(@RequestParam("listId") int listId) {
+        int userId;
+        try {
+            userId = userService.getInfoOfMyUser().getUserId();
+        } catch (UnableToFindUserException e) {
+            return new ModelAndView("redirect:/login");
+        }
+        moovieListService.likeMoovieList(userId, listId);
+        return new ModelAndView("redirect:/list/" + listId);
     }
 }
