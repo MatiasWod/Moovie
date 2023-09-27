@@ -8,60 +8,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link href="${pageContext.request.contextPath}/resources/main.css?version=55" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="${pageContext.request.contextPath}/resources/discoverFunctions.js?version=81"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
     <title>Moovie List</title>
+    <link href="${pageContext.request.contextPath}/resources/moovieList.css?version=58" rel="stylesheet"/>
 </head>
-<style>
-    .header {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        color: white;
-        background-color: #333;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        margin-bottom: 10px;
-    }
-
-
-    .table td {
-        padding: 0; /* Reduce padding for the second column */
-        vertical-align: middle; /* Center the content vertically */
-        font-size: x-large;
-        text-align: center;
-    }
-
-    .table td:nth-child(2) {
-        text-align: left; /* Left-align the second column Title */
-    }
-
-    .table thead {
-        font-size: x-large;
-        text-align: center;
-    }
-
-    .buttons {
-        flex-direction: row;
-        margin-bottom: 10px;
-        margin-top: 10px;
-    }
-
-    .btn-style {
-        color: white;
-        background-color: #198754;
-    }
-
-    .btn-style:hover {
-        color: white;
-        background-color: #333333;
-        border-style: solid;
-    }
-
-</style>
 <body style="background: whitesmoke">
 <c:import url="navBar.jsp"/>
 <div class="container d-flex flex-column">
@@ -85,6 +37,7 @@
                     <option value="score">Score</option>
                     <option value="release date">Release Date</option>
                 </select>
+                <button class="btn btn-style" id="sortButton" onclick="changeSortOrder()"><i id="sortIcon" class="bi bi-arrow-down-circle-fill"></i></button>
             </div>
         </div>
     </div>
@@ -157,97 +110,4 @@
 </body>
 </html>
 
-<script>
-    document.getElementById('sortSelect').addEventListener('change', function () {
-        sortTable(this.value);
-    });
-
-    function sortTable(sortBy) {
-        var table, rows, switching, i, shouldSwitch;
-        table = document.getElementById("movieTable");
-        switching = true;
-        while (switching) {
-            switching = false;
-            rows = table.rows;
-            for (i = 1; i < (rows.length - 1); i++) {
-                shouldSwitch = false;
-
-                // Get the data to compare based on the selected column name (sortBy)
-                var dataIndex = getIndex(sortBy);
-                var cellX = rows[i].cells[dataIndex];
-                var cellY = rows[i + 1].cells[dataIndex];
-
-                // Get the values from the cells
-                var x = getCellValue(cellX);
-                var y = getCellValue(cellY);
-
-                // Convert values to numbers for numeric columns
-                if (sortBy === 'score') {
-                    x = parseFloat(x);
-                    y = parseFloat(y);
-                }
-
-                // Compare dates for the "releaseDate" column
-                if (sortBy === 'releaseDate') {
-                    var dateX = new Date(x);
-                    var dateY = new Date(y);
-                    if (dateX && dateY) {
-                        if (dateX.getFullYear() < dateY.getFullYear()) { // Compare using getTime() method
-                            shouldSwitch = true;
-                            break;
-                        }
-                    }
-                }
-
-                // Compare in descending order (highest value first)
-                if (sortBy === 'title' || sortBy === 'type') {
-                    if (x > y) {
-                        shouldSwitch = true;
-                        break;
-                    }
-                } else {
-                    // For other columns, compare in ascending order (lowest value first)
-                    if (x < y) {
-                        shouldSwitch = true;
-                        break;
-                    }
-                }
-            }
-            if (shouldSwitch) {
-                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                switching = true;
-            } else {
-                // If no switching has been done, the table is sorted
-                break;
-            }
-        }
-        updateRowNumbers(table);
-    }
-    function updateRowNumbers(table) {
-        var rows = table.rows;
-        for (var i = 1; i < rows.length; i++) {
-            rows[i].cells[0].textContent = i; // Update the first cell (row number)
-        }
-    }
-
-    function getIndex(headerText) {
-        var headers = document.querySelectorAll("#movieTable th");
-        for (var i = 0; i < headers.length; i++) {
-            if (headers[i].textContent.trim().toLowerCase() === headerText) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    function getCellValue(cell) {
-        if (cell) {
-            var cellText = cell.textContent || cell.innerText;
-            return cellText.trim();
-        } else {
-            return "";
-        }
-    }
-
-
-</script>
+<script src="${pageContext.request.contextPath}/resources/moovieListFunctions.js?version=81"></script>
