@@ -8,6 +8,7 @@ import ar.edu.itba.paw.models.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -61,7 +62,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     @Override
-    public List<MoovieList> geAllMoovieLists() {
+    public List<MoovieList> getAllMoovieLists() {
         return jdbcTemplate.query("SELECT * FROM moovieLists", MOOVIE_LIST_ROW_MAPPER);
     }
 
@@ -166,6 +167,13 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     @Override
+    public MoovieListLikes removeLikeMoovieList(int userId, int moovieListId) {
+        String sql = "DELETE FROM moovielistslikes WHERE userid=? AND moovieListId = ?";
+        jdbcTemplate.update( sql , new Object[]{userId, moovieListId} );
+        return null;
+    }
+
+    @Override
     public boolean likeMoovieListStatusForUser(int userId, int moovieListId) {
         Optional<MoovieListLikes> aux = getMoovieListLikes(userId, moovieListId);
         if(aux.isPresent()){
@@ -176,7 +184,9 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     @Override
     public List<MoovieList> likedMoovieListsForUser(int userId, int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT moovieLists.moovieListId, moovieLists.name, moovieLists.name, moovieLists.description FROM moovieLists WHERE moovieLists.moovieListId IN (SELECT moovieListsLikes.moovieListId FROM moovieListsLikes WHERE userId = ?) LIMIT ? OFFSET ?", new Object[]{userId, size, pageNumber*size } , MOOVIE_LIST_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT moovieLists.moovieListId, moovieLists.name, moovieLists.name, moovieLists.description FROM moovieLists " +
+                "WHERE moovieLists.moovieListId IN (SELECT moovieListsLikes.moovieListId FROM moovieListsLikes WHERE userId = ?) LIMIT ? OFFSET ?",
+                new Object[]{userId, size, pageNumber*size } , MOOVIE_LIST_ROW_MAPPER);
     }
 }
 

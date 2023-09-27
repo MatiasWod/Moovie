@@ -81,12 +81,12 @@ public class UserDaoJdbcImpl implements UserDao{
 
     @Override
     public Optional<User> findUserByEmail(String email) {
-        return jdbcTemplate.query("SELECT * FROM users WHERE email = ?", new Object[]{email}, USER_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT * FROM users WHERE email ILIKE ?", new Object[]{email}, USER_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
     public Optional<User> findUserByUsername(String username) {
-        return jdbcTemplate.query("SELECT * FROM users WHERE username = ?", new Object[]{username}, USER_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT * FROM users WHERE username ILIKE ?", new Object[]{username}, USER_ROW_MAPPER).stream().findFirst();
     }
 
 

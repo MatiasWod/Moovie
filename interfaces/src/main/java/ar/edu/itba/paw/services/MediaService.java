@@ -20,6 +20,7 @@ public interface MediaService {
     List<Media> getMediaFilteredByGenreList(List<String> genres, int size, int pageNumber);
     List<Media> getMediaBySearch(String searchString, int size, int pageNumber);
     List<Media> getMediaByMoovieListId(int moovieListId, int size, int pageNumber);
+    List<Media> getMoovieListContentByIdMediaBUpTo(int moovieListId, int to);
 
     Optional<Movie> getMovieById(int mediaId);
     List<Movie> getMovieList(int size, int pageNumber);

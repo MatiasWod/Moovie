@@ -23,8 +23,8 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
     @Override
-    public List<MoovieList> geAllMoovieLists() {
-        return moovieListDao.geAllMoovieLists();
+    public List<MoovieList> getAllMoovieLists() {
+        return moovieListDao.getAllMoovieLists();
     }
 
     @Override
@@ -52,7 +52,6 @@ public class MoovieListServiceImpl implements MoovieListService{
         return moovieListDao.getMoovieListCount();
     }
 
-
     @Override
     public Optional<Integer> getLikesCount(int moovieListId) {
         return moovieListDao.getLikesCount(moovieListId);
@@ -65,6 +64,9 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Override
     public MoovieListLikes likeMoovieList(int userId, int moovieListId) {
+        if(likeMoovieListStatusForUser(userId, moovieListId)){
+            return moovieListDao.removeLikeMoovieList(userId, moovieListId);
+        }
         return moovieListDao.likeMoovieList(userId, moovieListId);
     }
 
@@ -76,5 +78,10 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public List<MoovieList> likedMoovieListsForUser(int userId, int size, int pageNumber) {
         return moovieListDao.likedMoovieListsForUser(userId, size, pageNumber);
+    }
+
+    @Override
+    public MoovieListLikes removeLikeMoovieList(int userId, int moovieListId) {
+        return moovieListDao.removeLikeMoovieList(userId,moovieListId);
     }
 }

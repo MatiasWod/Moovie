@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.webapp.auth;
 
+import ar.edu.itba.paw.exceptions.UserIsBannedException;
+import ar.edu.itba.paw.exceptions.UserNotVerifiedException;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +25,29 @@ public class MoovieUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException, UserNotVerifiedException{
         final User user = us.findUserByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("No user" + username));
+                .orElseThrow(() -> new UsernameNotFoundException("No user " + username));
+
         final Set<GrantedAuthority> authorities = new HashSet<>();
 
-        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        return new MoovieAuthUser(user.getUsername(),user.getPassword(),authorities);
+        // Check if the user has the required role
+        if (user.getRole() == 1 || user.getRole()==2 ) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+            if(user.getRole() == 2 ){
+                authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            }
+        } else {
+            if(user.getRole() == -2 ){
+                throw new UserIsBannedException("User " + username + " is banned");
+            }
+            if(user.getRole() == -1 ){
+                throw new UserNotVerifiedException("User " + username + " does not have the required role");
+
+            }
+            // If the user doesn't have the required role, you can handle it here.
+        }
+
+        return new MoovieAuthUser(user.getUsername(), user.getPassword(), authorities);
     }
 }

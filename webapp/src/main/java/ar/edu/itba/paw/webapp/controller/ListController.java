@@ -53,23 +53,19 @@ public class ListController {
             @RequestParam(value = "search", required = false) final String searchQ){
 
         final ModelAndView mav = new ModelAndView("helloworld/viewLists");
-        List<MoovieList> moovieLists = mediaListService.geAllMoovieLists();
+        List<MoovieList> moovieLists = mediaListService.getAllMoovieLists();
 
         Map<User, Tuple<MoovieList,List<String>>> tupleHashMap = new HashMap<>();
-
-
         moovieLists.forEach(list -> {
             if (( searchQ == null || searchQ.isEmpty() ) || (list.getName().toLowerCase().contains(searchQ.toLowerCase()))){
                 Optional<User> optionalUser = userService.findUserById(list.getUserId());
                 if (optionalUser.isPresent()) {
                     User user = optionalUser.get();
                     List<String> innerList = new ArrayList<>();
-
-                    moovieListService.getMoovieListContentById(list.getMoovieListId())
-                            .subList(0,Math.min(4,moovieListService.getMoovieListContentById(list.getMoovieListId()).size())).forEach(moovieListContent -> {
-                                innerList.add(mediaService.getMediaById(moovieListContent.getMediaId()).get().getPosterPath());
-                            });
-
+                    List<Media> mediaList = mediaService.getMoovieListContentByIdMediaBUpTo(list.getMoovieListId(),4);
+                    for(int i = 0 ; i < mediaList.size() ; i++){
+                        innerList.add(mediaList.get(i).getPosterPath());
+                    }
                     Tuple<MoovieList,List<String>> innerTuple = new Tuple<>(list,innerList);
                     tupleHashMap.put(user,innerTuple);
                 }
