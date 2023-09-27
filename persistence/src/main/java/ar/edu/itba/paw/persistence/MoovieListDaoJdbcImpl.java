@@ -8,6 +8,7 @@ import ar.edu.itba.paw.models.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -163,6 +164,13 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         moovieListLikesJdbcInsert.execute(args);
 
         return getMoovieListLikes(userId, moovieListId).get();
+    }
+
+    @Override
+    public MoovieListLikes removeLikeMoovieList(int userId, int moovieListId) {
+        String sql = "DELETE FROM moovielistslikes WHERE userid=? AND moovieListId = ?";
+        jdbcTemplate.update( sql , new Object[]{userId, moovieListId} );
+        return null;
     }
 
     @Override

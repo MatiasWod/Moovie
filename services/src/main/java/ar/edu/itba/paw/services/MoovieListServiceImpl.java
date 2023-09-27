@@ -52,7 +52,6 @@ public class MoovieListServiceImpl implements MoovieListService{
         return moovieListDao.getMoovieListCount();
     }
 
-
     @Override
     public Optional<Integer> getLikesCount(int moovieListId) {
         return moovieListDao.getLikesCount(moovieListId);
@@ -65,6 +64,9 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Override
     public MoovieListLikes likeMoovieList(int userId, int moovieListId) {
+        if(likeMoovieListStatusForUser(userId, moovieListId)){
+            return moovieListDao.removeLikeMoovieList(userId, moovieListId);
+        }
         return moovieListDao.likeMoovieList(userId, moovieListId);
     }
 
