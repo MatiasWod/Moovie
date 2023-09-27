@@ -1,0 +1,58 @@
+package ar.edu.itba.paw.services;
+
+import ar.edu.itba.paw.models.User.Token;
+import ar.edu.itba.paw.persistence.VerificationTokenDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Optional;
+import java.util.UUID;
+
+@Service
+public class VerificationTokenServiceImpl implements VerificationTokenService{
+    private final VerificationTokenDao verificationTokenDao;
+    private static final int EXPIRATION = 7 * 24;
+
+    @Autowired
+    public VerificationTokenServiceImpl(VerificationTokenDao verificationTokenDao) {
+        this.verificationTokenDao = verificationTokenDao;
+    }
+
+    @Override
+    public String createVerificationToken(int userId) {
+        String token = UUID.randomUUID().toString();
+        verificationTokenDao.createVerificationToken(userId,token,calculateExpirationDate(EXPIRATION));
+        return token;
+    }
+
+    private Date calculateExpirationDate(int expirationTimeInMinutes){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Timestamp(calendar.getTime().getTime()));
+        calendar.add(Calendar.MINUTE,expirationTimeInMinutes);
+        return new Date(calendar.getTime().getTime());
+    }
+
+    @Override
+    public Optional<Token> getToken(String token) {
+        return verificationTokenDao.getToken(token);
+    }
+
+    @Override
+    public void deleteToken(Token token) {
+        verificationTokenDao.deleteToken(token);
+    }
+
+    @Override
+    public boolean isValidToken(Token token) {
+        Calendar calendar = Calendar.getInstance();
+        return token.getExpirationDate().getTime() > calendar.getTime().getTime();
+    }
+
+    @Override
+    public void renewToken(String token) {
+        verificationTokenDao.renewToken(token,calculateExpirationDate(EXPIRATION));
+    }
+}
