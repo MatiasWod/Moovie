@@ -15,7 +15,9 @@
     <link href="${pageContext.request.contextPath}/resources/moovieList.css?version=58" rel="stylesheet"/>
 </head>
 <body style="background: whitesmoke">
-<c:import url="navBar.jsp"/>
+<c:import url="navBar.jsp">
+    <c:param name="userName" value="${user.username}"/>
+</c:import>
 <div class="container d-flex flex-column">
     <div class="container header ">
         <div class="text-center ">

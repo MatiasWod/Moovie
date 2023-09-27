@@ -1,10 +1,9 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
-import ar.edu.itba.paw.exceptions.UnableToCreateUserException;
-import ar.edu.itba.paw.exceptions.UnableToFindUserException;
+import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.UserDao;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import ar.edu.itba.paw.models.User.Token;
@@ -14,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import sun.security.util.Password;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -48,7 +49,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(String username, String email, String password){
         if(userDao.findUserByUsername(username).isPresent()){
-            throw new UnableToCreateUserException("Username already in use");
+            throw new UnableToCreateUserException("username_taken");
         }
         Optional<User> aux = userDao.findUserByEmail(email);
 
@@ -59,7 +60,7 @@ public class UserServiceImpl implements UserService {
                 sendVerificationEmail(email,username,token);
                 return user;
             } else{
-                throw new UnableToCreateUserException("Email already in use");
+                throw new UnableToCreateUserException("email_taken");
             }
         }
         User user = userDao.createUser(username, email, passwordEncoder.encode(password));
@@ -126,16 +127,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setProfilePicture(byte[] image, User user) {
+    public void setProfilePicture(MultipartFile picture) {
         int uid = getInfoOfMyUser().getUserId();
-        if(uid != user.getUserId()){
-            throw new InvalidAccessToResourceException("You dont have the role nescesary to perform this action");
+        if(!picture.isEmpty()){
+            if (!(picture.getContentType() != null && picture.getContentType().startsWith("image/"))) {
+                throw new InvalidTypeException("File is not of type image");
+            }
+            try {
+                byte[] image = IOUtils.toByteArray(picture.getInputStream());
+                if(userDao.hasProfilePicture(uid)){
+                    userDao.updateProfilePicture( getInfoOfMyUser().getUserId() , image);
+                    return;
+                }
+                userDao.setProfilePicture( getInfoOfMyUser().getUserId() , image);
+            }
+            catch (IOException e){
+                throw new FailedToSetProfilePictureException("The upload of the profile picture failed");
+            }
+        }else{
+            throw new NoFileException("No file was selected");
         }
-        if(userDao.hasProfilePicture(uid)){
-            userDao.updateProfilePicture( getInfoOfMyUser().getUserId() , image);
-            return;
-        }
-        userDao.setProfilePicture( getInfoOfMyUser().getUserId() , image);
     }
 
     @Override

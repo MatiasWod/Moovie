@@ -15,7 +15,9 @@
     <title>Moovie-${media.name}</title>
 </head>
 <body id="grad">
-<c:import url="navBar.jsp"/>
+<c:import url="navBar.jsp">
+    <c:param name="userName" value="${user.username}"/>
+</c:import>
 
 <h2>Username: <c:out value="${user.username}"/>!</h2>
 <h2>Email: <c:out value="${user.email}"/>!</h2>

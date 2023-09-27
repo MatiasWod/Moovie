@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 
+import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
@@ -116,6 +117,12 @@ public class ListController {
 
         final ModelAndView mav = new ModelAndView("helloworld/createList");
 
+        try{
+            mav.addObject("user",userService.getInfoOfMyUser());
+        }catch(UnableToFindUserException exception){
+            mav.addObject("user",null);
+        }
+
         if (genre != null && !genre.isEmpty()) {
             if (media != null && media.equals("Movies")) {
                 movieList = mediaService.getMovieFilteredByGenreList(genre, mediaService.DEFAULT_PAGE_SIZE, 0);
@@ -188,6 +195,13 @@ public class ListController {
         Optional<MoovieList> moovieListData = moovieListService.getMoovieListById(moovieListId);
         if (moovieListData.isPresent()) {
             final ModelAndView mav = new ModelAndView("helloworld/moovieList");
+
+            try{
+                mav.addObject("user",userService.getInfoOfMyUser());
+            }catch(UnableToFindUserException exception){
+                mav.addObject("user",null);
+            }
+
             mav.addObject("moovieList", moovieListData.get());
 
             List<Media> mediaList = mediaService.getMediaByMoovieListId(moovieListId, mediaService.DEFAULT_PAGE_SIZE, 0);
@@ -200,6 +214,13 @@ public class ListController {
             return mav;
         } else {
             final ModelAndView mav = new ModelAndView("helloworld/404.jsp");
+
+            try{
+                mav.addObject("user",userService.getInfoOfMyUser());
+            }catch(UnableToFindUserException exception){
+                mav.addObject("user",null);
+            }
+
             mav.addObject("extraInfo", "The list with id: " +moovieListId+ " doesn't exists");
             return mav;
         }
