@@ -4,6 +4,7 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.exceptions.UnableToCreateUserException;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -28,7 +29,7 @@ public interface UserService {
 
     boolean isUsernameMe(String username);
 
-    void setProfilePicture(byte[] image, User user);
+    void setProfilePicture(MultipartFile image);
     byte[] getProfilePicture(String username);
 
     void sendVerificationEmail(String email, String username, String token);

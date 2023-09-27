@@ -1,6 +1,9 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
+import ar.edu.itba.paw.exceptions.FailedToSetProfilePictureException;
+import ar.edu.itba.paw.exceptions.InvalidTypeException;
+import ar.edu.itba.paw.exceptions.NoFileException;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.UserService;
@@ -19,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;;
 import org.springframework.web.servlet.ModelAndView;
 
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Optional;
@@ -99,28 +103,19 @@ public class HelloWorldController {
     }
 
     @RequestMapping(value = "/uploadProfilePicture", method = {RequestMethod.POST})
-    public ModelAndView uploadProfilePicture(@RequestParam("file") MultipartFile picture) throws IOException {
-        User user = userService.getInfoOfMyUser();
+    public String uploadProfilePicture(@RequestParam("file") MultipartFile picture, HttpServletRequest request) {
+        String referer = request.getHeader("referer");
         try {
-            if (!picture.isEmpty()) {
-                if (!isImage(picture.getContentType())) {
-                    return new ModelAndView("redirect:/user/" + user.getUsername() + "?error=invalidFileType");
-                }
-                byte[] image = IOUtils.toByteArray(picture.getInputStream());
-                userService.setProfilePicture(image, user);
-
-                return new ModelAndView("redirect:/profile/" + user.getUsername());
-            }
-        } catch (Exception e) {
-            return new ModelAndView("redirect:/profile/" + user.getUsername() + "?error=uploadFailed");
+            userService.setProfilePicture(picture);
+        }catch (InvalidTypeException e) {
+            return "redirect:" + referer + "?error:invalidType";
+        } catch (NoFileException e) {
+            return "redirect:" + referer + "?error:noFile";
+        } catch (FailedToSetProfilePictureException e) {
+            return "redirect:" + referer + "?error:failedSetProfilePicture";
         }
-        return new ModelAndView("redirect:/profile/" + user.getUsername() + "?error=noFileSelected");
+        return "redirect:" + referer;
     }
-
-    private boolean isImage(String contentType) {
-        return contentType != null && contentType.startsWith("image/");
-    }
-
 
     @RequestMapping(value = "/profile/image/{username}", produces = "image/**")
     public @ResponseBody
