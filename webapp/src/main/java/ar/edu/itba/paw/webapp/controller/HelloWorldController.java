@@ -60,16 +60,23 @@ public class HelloWorldController {
 
         }
        //TODO return new ModelAndView("redirect:/register/tokentimedout?token=" + token);
-        return new ModelAndView("redirect:/discover");
+        return new ModelAndView("redirect:/register/tokentimedout?token=" + token);
     }
 
     //TODO
-    /*@RequestMapping(value = "/register/tokentimedout")
+    @RequestMapping(value = "/register/tokentimedout")
     public ModelAndView tokenTimedOut(@RequestParam("token") final String token) {
-        ModelAndView mav = new ModelAndView("tokenTimedOut");
+        ModelAndView mav = new ModelAndView("helloworld/tokenTimedOut");
         mav.addObject("token", token);
         return mav;
-    }*/
+    }
+
+    @RequestMapping(value = "/register/resendemail")
+    public ModelAndView resendEmail(@RequestParam("token") final String token) {
+        ModelAndView mav = new ModelAndView("helloworld/sentEmail");
+        userService.resendVerificationEmail(token);
+        return mav;
+    }
 
     @RequestMapping("/login")
     public ModelAndView login() {

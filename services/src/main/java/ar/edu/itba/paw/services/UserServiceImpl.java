@@ -151,4 +151,16 @@ public class UserServiceImpl implements UserService {
         final String subject = messageSource.getMessage("email.confirmation.subject",null, Locale.getDefault());
         emailService.sendEmail(email,subject,"confirmationMail.html",mailMap);
     }
+
+    @Override
+    public void resendVerificationEmail(String token) {
+        verificationTokenService.renewToken(token);
+        verificationTokenService.getToken(token).ifPresent(token1 -> {
+            userDao.findUserById(token1.getUserId()).ifPresent(user -> {
+                sendVerificationEmail(user.getEmail(), user.getUsername(), token1.getToken());
+                    }
+            );
+        });
+    }
 }
+
