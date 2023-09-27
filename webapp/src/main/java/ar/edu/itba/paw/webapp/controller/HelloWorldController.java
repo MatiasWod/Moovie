@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.exceptions.UnableToFindUserException;
-import ar.edu.itba.paw.exceptions.FailedToSetProfilePictureException;
-import ar.edu.itba.paw.exceptions.InvalidTypeException;
-import ar.edu.itba.paw.exceptions.NoFileException;
+import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.UserService;
@@ -58,7 +55,12 @@ public class HelloWorldController {
         if (errors.hasErrors()) {
             return register(form);
         }
-        User user = userService.createUser(form.getUsername(), form.getEmail(), form.getPassword());
+        try{
+            User user = userService.createUser(form.getUsername(), form.getEmail(), form.getPassword());
+        } catch (UnableToCreateUserException e){
+            return new ModelAndView("redirect:/register?error:" + e.getMessage());
+        }
+
         return new ModelAndView("redirect:/login");
     }
 

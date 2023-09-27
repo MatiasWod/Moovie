@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(String username, String email, String password){
         if(userDao.findUserByUsername(username).isPresent()){
-            throw new UnableToCreateUserException("Username already in use");
+            throw new UnableToCreateUserException("username_taken");
         }
         Optional<User> aux = userDao.findUserByEmail(email);
 
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
                 sendVerificationEmail(email,username,token);
                 return user;
             } else{
-                throw new UnableToCreateUserException("Email already in use");
+                throw new UnableToCreateUserException("email_taken");
             }
         }
         User user = userDao.createUser(username, email, passwordEncoder.encode(password));
