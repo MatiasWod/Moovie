@@ -196,7 +196,7 @@ public class ListController {
 
             List<Media> mediaList = mediaService.getMediaByMoovieListId(moovieListId, mediaService.DEFAULT_PAGE_SIZE, 0);
             List<MoovieListContent> moovieListContent = moovieListService.getMoovieListContentById(moovieListId);
-            String listOwner = userService.findUserById(moovieListData.get().getUserId()).get().getEmail();
+            String listOwner = userService.findUserById(moovieListData.get().getUserId()).get().getUsername();
 
             mav.addObject("mediaList", mediaList);
             mav.addObject("moovieListContent", moovieListContent);
