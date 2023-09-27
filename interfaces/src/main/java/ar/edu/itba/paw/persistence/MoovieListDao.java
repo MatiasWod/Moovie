@@ -24,4 +24,5 @@ public interface MoovieListDao {
     MoovieListLikes likeMoovieList(int userId, int moovieListId);
     boolean likeMoovieListStatusForUser(int userId, int moovieListId);  //Return true if user liked the MoovieList
     List<MoovieList> likedMoovieListsForUser(int userId, int size, int pageNumber);   //Returns all moovieLists liked by user
+    MoovieListLikes removeLikeMoovieList(int userId, int moovieListId);
 }

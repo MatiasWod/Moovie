@@ -79,4 +79,9 @@ public class MoovieListServiceImpl implements MoovieListService{
     public List<MoovieList> likedMoovieListsForUser(int userId, int size, int pageNumber) {
         return moovieListDao.likedMoovieListsForUser(userId, size, pageNumber);
     }
+
+    @Override
+    public MoovieListLikes removeLikeMoovieList(int userId, int moovieListId) {
+        return moovieListDao.removeLikeMoovieList(userId,moovieListId);
+    }
 }
