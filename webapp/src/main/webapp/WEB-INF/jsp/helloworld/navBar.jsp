@@ -39,9 +39,19 @@
                 <input class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
-            <li class="nav-item">
-                <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/profile">My Profile</a>
-            </li>
+            <div style="margin-left: 10px; margin-right:5px" class="d-flex nav-item justify-content-center">
+                <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/profile/${param.userName}">
+                    <c:choose>
+                        <c:when test="${!empty param.userName}">
+                            <img style="height: 50px; width: 50px; border:solid black; border-radius: 50%" class="cropCenter" src="${pageContext.request.contextPath}/profile/image/${param.userName}"/>
+                            ${param.userName}
+                        </c:when>
+                        <c:otherwise>
+                            <a href="${pageContext.request.contextPath}/login">Log In</a>
+                        </c:otherwise>
+                    </c:choose>
+                </a>
+            </div>
         </div>
     </div>
 </nav>

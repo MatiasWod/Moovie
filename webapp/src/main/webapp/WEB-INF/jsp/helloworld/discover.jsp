@@ -24,7 +24,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </head>
 <body style="background: whitesmoke">
-<c:import url="navBar.jsp"/>
+<c:import url="navBar.jsp">
+    <c:param name="userName" value="${user.username}"/>
+</c:import>
 <div class="container d-flex flex-column">
     <c class="container d-flex flex-row ">
         <%--        FILTROS y PELIS    --%>

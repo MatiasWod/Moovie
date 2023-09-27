@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.UserService;
@@ -34,6 +35,11 @@ public class HelloWorldController {
     @RequestMapping("/{id:\\d+}")
     public ModelAndView profile(@PathVariable("id") final long userId) {
         final ModelAndView mav = new ModelAndView("helloworld/profile");
+        try{
+            mav.addObject("user",userService.getInfoOfMyUser());
+        }catch(UnableToFindUserException exception){
+            mav.addObject("user",null);
+        }
         mav.addObject("userid", userId);
         return mav;
     }
