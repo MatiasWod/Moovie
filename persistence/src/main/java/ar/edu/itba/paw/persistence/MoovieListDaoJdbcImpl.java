@@ -31,13 +31,13 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     );
 
     private static final RowMapper<MoovieListContent> MOOVIE_LIST_CONTENT_ROW_MAPPER = (rs, rowNum) -> new MoovieListContent(
-            rs.getInt("moovieListId"),
+            rs.getInt("moovielistid"),
             rs.getInt("mediaId"),
             rs.getString("status")
     );
 
     private static final RowMapper<MoovieListLikes> MOOVIE_LIST_LIKES_ROW_MAPPER = (rs, rowNum) -> new MoovieListLikes(
-            rs.getInt("moovieListId"),
+            rs.getInt("moovielistid"),
             rs.getInt("userId")
     );
 
@@ -151,7 +151,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     private Optional<MoovieListLikes> getMoovieListLikes(int userId, int moovieListId){
-        return jdbcTemplate.query("SELECT moovieListsLikes FROM moovieListsLikes WHERE moovieListId = ? AND userId = ?", new Object[]{moovieListId, userId} , MOOVIE_LIST_LIKES_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT * FROM moovieListsLikes WHERE moovieListId = ? AND userId = ?", new Object[]{moovieListId, userId} , MOOVIE_LIST_LIKES_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
