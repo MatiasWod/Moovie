@@ -12,10 +12,9 @@ import java.util.OptionalInt;
 
 public interface MoovieListDao {
     Optional<MoovieList> getMoovieListById(int moovieListId);
-    List<MoovieList> geAllMoovieLists();
+    List<MoovieList> getAllMoovieLists();
     Optional<Integer> getMoovieListCount();
     List<MoovieListContent> getMoovieListContentById(int moovieListId);
-
     MoovieList createMoovieList(int userId, String name, String description);
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
     MoovieList createMoovieListWithContent(int userId, String name, String description, List<Integer> mediaIdList);
@@ -23,7 +22,6 @@ public interface MoovieListDao {
     Optional<Integer> getLikesCount(int moovieListId);
     List<User> getAllUsersWhoLikedMoovieList(int moovieListId);
     MoovieListLikes likeMoovieList(int userId, int moovieListId);
-    MoovieListLikes removeLikeMoovieList(int userId, int moovieListId);
     boolean likeMoovieListStatusForUser(int userId, int moovieListId);  //Return true if user liked the MoovieList
     List<MoovieList> likedMoovieListsForUser(int userId, int size, int pageNumber);   //Returns all moovieLists liked by user
 }

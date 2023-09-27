@@ -12,10 +12,9 @@ import java.util.OptionalInt;
 
 public interface MoovieListService {
     Optional<MoovieList> getMoovieListById(int moovieListId);
-    List<MoovieList> geAllMoovieLists();
+    List<MoovieList> getAllMoovieLists();
     Optional<Integer> getMoovieListCount();
     List<MoovieListContent> getMoovieListContentById(int moovieListId);
-
     MoovieList createMoovieList(int userId, String name, String description);
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
     MoovieList createMoovieListWithContent(int userId, String name, String description, List<Integer> mediaIdList);

@@ -23,8 +23,8 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
     @Override
-    public List<MoovieList> geAllMoovieLists() {
-        return moovieListDao.geAllMoovieLists();
+    public List<MoovieList> getAllMoovieLists() {
+        return moovieListDao.getAllMoovieLists();
     }
 
     @Override

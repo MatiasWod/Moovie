@@ -62,7 +62,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     @Override
-    public List<MoovieList> geAllMoovieLists() {
+    public List<MoovieList> getAllMoovieLists() {
         return jdbcTemplate.query("SELECT * FROM moovieLists", MOOVIE_LIST_ROW_MAPPER);
     }
 
@@ -184,7 +184,9 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     @Override
     public List<MoovieList> likedMoovieListsForUser(int userId, int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT moovieLists.moovieListId, moovieLists.name, moovieLists.name, moovieLists.description FROM moovieLists WHERE moovieLists.moovieListId IN (SELECT moovieListsLikes.moovieListId FROM moovieListsLikes WHERE userId = ?) LIMIT ? OFFSET ?", new Object[]{userId, size, pageNumber*size } , MOOVIE_LIST_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT moovieLists.moovieListId, moovieLists.name, moovieLists.name, moovieLists.description FROM moovieLists " +
+                "WHERE moovieLists.moovieListId IN (SELECT moovieListsLikes.moovieListId FROM moovieListsLikes WHERE userId = ?) LIMIT ? OFFSET ?",
+                new Object[]{userId, size, pageNumber*size } , MOOVIE_LIST_ROW_MAPPER);
     }
 }
 

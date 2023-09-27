@@ -155,6 +155,12 @@ public class MediaDaoJdbcImpl implements MediaDao {
         return jdbcTemplate.query("SELECT media.* FROM moovieListscontent INNER JOIN media ON media.mediaId = moovieListscontent.mediaid WHERE moovielistscontent.moovieListId = ? ORDER BY media.mediaId LIMIT ? OFFSET ?", new Object[]{moovieListId, size, pageNumber * size}, MEDIA_ROW_MAPPER);
     }
 
+    public List<Media> getMoovieListContentByIdMediaBUpTo(int moovieListId, int to) {
+        return jdbcTemplate.query("SELECT * FROM media" +
+                        " WHERE media.mediaId IN (SELECT moovieListsContent.mediaId FROM moovieListsContent" +
+                        " WHERE moovieListsContent.moovieListId = ? LIMIT ?)",
+                new Object[]{moovieListId, to } ,MEDIA_ROW_MAPPER);
+    }
 
     /*** MOVIE QUERIES*/
 
