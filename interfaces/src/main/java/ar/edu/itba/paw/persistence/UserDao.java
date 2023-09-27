@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.User.Image;
 import ar.edu.itba.paw.models.User.User;
 
 import java.util.Optional;
@@ -17,4 +18,9 @@ public interface UserDao {
     Optional<User> findUserByEmail(String email);
 
     Optional<User> findUserByUsername(String username);
+
+    void setProfilePicture(int userId, byte[] image);
+    void updateProfilePicture(int userId, byte[] image);
+    Optional<Image> getProfilePicture(int id);
+    boolean hasProfilePicture(int userId);
 }

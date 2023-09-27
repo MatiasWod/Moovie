@@ -1,7 +1,5 @@
 package ar.edu.itba.paw.services;
 
-
-import ar.edu.itba.paw.exceptions.UnableToCreateUserException;
 import ar.edu.itba.paw.models.User.User;
 
 import java.util.Optional;
@@ -21,4 +19,12 @@ public interface UserService {
     Optional<User> findUserByUsername(String username);
 
     User getOrCreateUserViaMail(String mail);
+
+    User getInfoOfMyUser();
+
+    boolean isUsernameMe(String username);
+
+    void setProfilePicture(byte[] image, User user);
+    byte[] getProfilePicture(String username);
+
 }

@@ -88,8 +88,6 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
     </dependency>
-
-
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -110,7 +108,12 @@
       <groupId>org.logback-extensions</groupId>
       <artifactId>logback-ext-spring</artifactId>
     </dependency>
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+    </dependency>
   </dependencies>
+
   <build>
     <finalName>webapp</finalName>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->

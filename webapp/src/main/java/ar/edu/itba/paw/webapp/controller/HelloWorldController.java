@@ -2,19 +2,19 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.UserService;
-import ar.edu.itba.paw.webapp.form.CreateReviewForm;
-import ar.edu.itba.paw.webapp.form.LoginForm;
+
 import ar.edu.itba.paw.webapp.form.RegisterForm;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;;
 import org.springframework.web.servlet.ModelAndView;
 
+
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Optional;
 
 @Controller
@@ -49,18 +49,49 @@ public class HelloWorldController {
         return new ModelAndView("helloworld/login");
     }
 
-  /*  @RequestMapping(value = "/loginpost", method = RequestMethod.POST)
-    public ModelAndView loginForm(@Valid @ModelAttribute("loginForm") final LoginForm form, final BindingResult errors) {
-        if (errors.hasErrors()) {
-            return login(form);
+
+    @RequestMapping("/profile/{username}")
+    public ModelAndView profilePage(@PathVariable String username){
+        Optional<User> aux = userService.findUserByUsername(username);
+        if(aux.isPresent()){
+            ModelAndView mav = new ModelAndView("helloworld/profile");
+            mav.addObject("user", aux.get() );
+            mav.addObject("isMe", userService.isUsernameMe(username));
+
+            return mav;
         }
-        Optional<User> user = userService.findUserByUsername(form.getUsername());
-        if(user.isPresent()){
-            if(user.get().getPassword().equals(form.getPassword())) {
-                return new ModelAndView("redirect:/");
+        ModelAndView mav = new ModelAndView("helloworld/404");
+        mav.addObject("extraInfo", "User " + username + " not found");
+        return mav;
+    }
+
+    @RequestMapping(value = "/uploadProfilePicture", method = {RequestMethod.POST})
+    public ModelAndView uploadProfilePicture(@RequestParam("file") MultipartFile picture) throws IOException {
+        User user = userService.getInfoOfMyUser();
+        try {
+            if (!picture.isEmpty()) {
+                if (!isImage(picture.getContentType())) {
+                    return new ModelAndView("redirect:/user/" + user.getUsername() + "?error=invalidFileType");
+                }
+                byte[] image = IOUtils.toByteArray(picture.getInputStream());
+                userService.setProfilePicture(image, user);
+
+                return new ModelAndView("redirect:/profile/" + user.getUsername());
             }
+        } catch (Exception e) {
+            return new ModelAndView("redirect:/profile/" + user.getUsername() + "?error=uploadFailed");
         }
-        return new ModelAndView("helloworld/login");
-    }*/
+        return new ModelAndView("redirect:/profile/" + user.getUsername() + "?error=noFileSelected");
+    }
+    private boolean isImage(String contentType) {
+        return contentType != null && contentType.startsWith("image/");
+    }
+
+
+    @RequestMapping(value = "/profile/image/{username}", produces = "image/**")
+    public @ResponseBody
+    byte[] getProfilePicture(@PathVariable("username") final String username){
+        return userService.getProfilePicture(username);
+    }
 
 }
