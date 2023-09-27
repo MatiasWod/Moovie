@@ -23,6 +23,11 @@ public class UserDaoJdbcImpl implements UserDao{
     private final SimpleJdbcInsert userJdbcInsert;
     private final SimpleJdbcInsert imageJdbcInsert;
 
+    private static final int ROLE_NOT_AUTHENTICATED = -1;
+    private static final int ROLE_UNREGISTERED = 0;
+    private static final int ROLE_USER = 1;
+    private static final int ROLE_MODERATOR = 2;
+
     private static final RowMapper<User> USER_ROW_MAPPER = (rs, rowNum) -> new User(
             rs.getInt("userId"),
             rs.getString("username"),
@@ -51,17 +56,22 @@ public class UserDaoJdbcImpl implements UserDao{
         args.put("username",username);
         args.put("email", email);
         args.put("password",password);
-        args.put("role", ROLE_USER);
+        args.put("role", ROLE_NOT_AUTHENTICATED);
 
         final Number reviewId = userJdbcInsert.executeAndReturnKey(args);
-        return new User(reviewId.intValue(), username,email,password, 1);
+        return new User(reviewId.intValue(), username,email,password, ROLE_NOT_AUTHENTICATED);
     }
 
     @Override
     public User createUserFromUnregistered(String username, String email, String password) {
         String sql = "UPDATE users SET username = ?, password = ?, role = ? WHERE email = ?";
-        jdbcTemplate.update(sql, username, password, ROLE_USER, email);
+        jdbcTemplate.update(sql, username, password, ROLE_NOT_AUTHENTICATED, email);
         return findUserByEmail(email).get();
+    }
+
+    @Override
+    public void confirmRegister(int userId, int authenticated) {
+        jdbcTemplate.update("UPDATE users SET role = ? WHERE userId = ?", authenticated, userId);
     }
 
     @Override

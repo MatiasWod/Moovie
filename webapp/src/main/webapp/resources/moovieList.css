@@ -1,0 +1,45 @@
+.header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: white;
+    background-color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    margin-bottom: 10px;
+}
+
+
+.table td {
+    padding: 0; /* Reduce padding for the second column */
+    vertical-align: middle; /* Center the content vertically */
+    font-size: x-large;
+    text-align: center;
+}
+
+.table td:nth-child(2) {
+    text-align: left; /* Left-align the second column Title */
+}
+
+.table thead {
+    font-size: x-large;
+    text-align: center;
+}
+
+.buttons {
+    flex-direction: row;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.btn-style {
+    color: white;
+    background-color: #198754;
+}
+
+.btn-style:hover {
+    color: white;
+    background-color: #333333;
+    border-style: solid;
+}
