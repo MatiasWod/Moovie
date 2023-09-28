@@ -1,16 +1,11 @@
 package ar.edu.itba.paw.webapp.form;
 
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 public class CreateReviewForm {
-    @Email(message = "Please enter a valid email address")
-    @NotEmpty(message = "Please enter an email")
-    private String userEmail;
 
     @Range(min = 1, message = "Please enter a valid media id")
     private int mediaId;
@@ -28,9 +23,6 @@ public class CreateReviewForm {
         this.mediaId = mediaId;
     }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
 
     public void setRating(int rating) {
         this.rating = rating;
@@ -42,10 +34,6 @@ public class CreateReviewForm {
 
     public int getMediaId() {
         return mediaId;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
     }
 
     public int getRating() {

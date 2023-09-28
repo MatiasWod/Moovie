@@ -259,12 +259,9 @@
                 <form:textarea path="reviewContent" class="review-textarea" id="reviewContent" rows="3"
                           placeholder="Your review (Optional)" maxlength="500" />
                 <span><span id="charCount" class="text-muted">0</span>/500</span>
-                <h2 class="m-2">Email:</h2>
-                <form:input path="userEmail" type="email" class="form-control" id="userEmail" placeholder="Enter email"/>
                 <form:input path="mediaId" type="hidden" id="mediaId" value="${media.mediaId}"/>
                 <form:input path="rating" type="hidden" id="rating" />
 
-                <form:errors path="userEmail" cssClass="error"/>
                 <form:errors path="reviewContent" cssClass="error"/>
                 <form:errors path="rating" cssClass="error"/>
                 <form:errors path="mediaId" cssClass="error"/>
@@ -293,11 +290,17 @@
                                 <div class="card-body">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <div class="d-flex align-items-center">
+                                            <a href="${pageContext.request.contextPath}/profile/${username[review.userId]}"
+                                               style="text-decoration: none; color: inherit;">
                                             <img src="https://m.media-amazon.com/images/M/MV5BNjE3NDQyOTYyMV5BMl5BanBnXkFtZTcwODcyODU2Mw@@._V1_FMjpg_UX1000_.jpg"
                                                  alt="${review.userId} Reviewer Profile" class="mr-3 rounded-circle"
                                                  width="64" height="64">
+                                            </a>
                                             <div class="mt-0" style="margin-left: 15px">
-                                                <h5><c:out value="${userEmail[review.userId]}"/></h5>
+                                                <a href="${pageContext.request.contextPath}/profile/${username[review.userId]}"
+                                                   style="text-decoration: none; color: inherit;">
+                                                    <h5><c:out value="${username[review.userId]}"/></h5>
+                                                </a>
                                             </div>
                                         </div>
                                         <h5 class="align-items-left"><i
