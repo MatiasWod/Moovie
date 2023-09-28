@@ -9,7 +9,6 @@ import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.models.Provider.Provider;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.TV.TVCreators;
-import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.CreateReviewForm;
 import org.slf4j.Logger;
@@ -204,9 +203,9 @@ public class MovieController {
 
         final List<Provider> providerList=providerService.getProviderForMedia(mediaId);
 
-        Map<Integer, String> userEmail = new HashMap<>();
+        Map<Integer, String> username = new HashMap<>();
         for (Review review : reviewList) {
-            userEmail.put(review.getUserId(), Objects.requireNonNull(userService.findUserById(review.getUserId()).orElse(null)).getEmail());
+            username.put(review.getUserId(), Objects.requireNonNull(userService.findUserById(review.getUserId()).orElse(null)).getUsername());
         }
 
         if (!media.get().isType()) {
@@ -224,7 +223,7 @@ public class MovieController {
         mav.addObject("actorsList", actorsList);
         mav.addObject("genresList", genresList);
         mav.addObject("notEmptyContentReviewList", notEmptyContentReviewList);
-        mav.addObject("userEmail", userEmail);
+        mav.addObject("username", username);
 
         return mav;
     }
@@ -234,8 +233,8 @@ public class MovieController {
         if (errors.hasErrors()) {
             return details(form.getMediaId(), form);
         }
-        User user = userService.getOrCreateUserViaMail(form.getUserEmail());
-        reviewService.createReview(user.getUserId(), form.getMediaId(), form.getRating(), form.getReviewContent());
+        final int userId = userService.getInfoOfMyUser().getUserId();
+        reviewService.createReview(userId, form.getMediaId(), form.getRating(), form.getReviewContent());
         return new ModelAndView("redirect:/details/" + form.getMediaId());
     }
 
