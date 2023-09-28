@@ -116,12 +116,6 @@ public class ListController {
 
         final ModelAndView mav = new ModelAndView("helloworld/createList");
 
-        try{
-            mav.addObject("user",userService.getInfoOfMyUser());
-        }catch(UnableToFindUserException exception){
-            mav.addObject("user",null);
-        }
-
         if (genre != null && !genre.isEmpty()) {
             if (media != null && media.equals("Movies")) {
                 movieList = mediaService.getMovieFilteredByGenreList(genre, mediaService.DEFAULT_PAGE_SIZE, 0);
@@ -195,12 +189,6 @@ public class ListController {
         if (moovieListData.isPresent()) {
             final ModelAndView mav = new ModelAndView("helloworld/moovieList");
 
-            try{
-                mav.addObject("user",userService.getInfoOfMyUser());
-            }catch(UnableToFindUserException exception){
-                mav.addObject("user",null);
-            }
-
             boolean isLiked = moovieListService.likeMoovieListStatusForUser(moovieListId);
             mav.addObject("isLiked", isLiked);
             mav.addObject("moovieList", moovieListData.get());
@@ -215,13 +203,6 @@ public class ListController {
             return mav;
         } else {
             final ModelAndView mav = new ModelAndView("helloworld/404.jsp");
-
-            try{
-                mav.addObject("user",userService.getInfoOfMyUser());
-            }catch(UnableToFindUserException exception){
-                mav.addObject("user",null);
-            }
-
             mav.addObject("extraInfo", "The list with id: " +moovieListId+ " doesn't exists");
             return mav;
         }
@@ -229,13 +210,18 @@ public class ListController {
 
     @RequestMapping(value = "/like", method = RequestMethod.POST)
     public ModelAndView createReview(@RequestParam("listId") int listId) {
-        int userId;
-        try {
-            userId = userService.getInfoOfMyUser().getUserId();
-        } catch (UnableToFindUserException e) {
-            return new ModelAndView("redirect:/login");
-        }
         moovieListService.likeMoovieList( listId);
         return new ModelAndView("redirect:/list/" + listId);
+    }
+
+    @ModelAttribute("user")
+    public User getLoggedUser(){
+        try{
+            userService.getInfoOfMyUser();
+        }
+        catch (UnableToFindUserException exception){
+            return null;
+        }
+        return userService.getInfoOfMyUser();
     }
 }

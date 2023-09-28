@@ -9,6 +9,7 @@ import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.models.Provider.Provider;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.TV.TVCreators;
+import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.CreateReviewForm;
 import org.slf4j.Logger;
@@ -53,11 +54,6 @@ public class MovieController {
     @RequestMapping("/")
     public ModelAndView home() {
         final ModelAndView mav = new ModelAndView("helloworld/index");
-        try{
-            mav.addObject("user",userService.getInfoOfMyUser());
-        }catch(UnableToFindUserException exception){
-            mav.addObject("user",null);
-        }
         List<Movie> movieList = mediaService.getMovieList(mediaService.DEFAULT_PAGE_SIZE, 0);
         mav.addObject("movieList", movieList);
         List<TVSerie> tvSerieList = mediaService.getTvList(mediaService.DEFAULT_PAGE_SIZE, 0);
@@ -71,11 +67,7 @@ public class MovieController {
         final ModelAndView mav = new ModelAndView("helloworld/discover");
 
 
-        try{
-            mav.addObject("user",userService.getInfoOfMyUser());
-        }catch(UnableToFindUserException exception){
-            mav.addObject("user",null);
-        }
+
 
         List<Movie> movieList;
         List<TVSerie> tvSerieList;
@@ -144,12 +136,6 @@ public class MovieController {
 
         final ModelAndView mav = new ModelAndView("helloworld/discover");
 
-        try{
-            mav.addObject("user",userService.getInfoOfMyUser());
-        }catch(UnableToFindUserException exception){
-            mav.addObject("user",null);
-        }
-
         Boolean search = true;
         mav.addObject("searchMode", search);
 
@@ -176,20 +162,10 @@ public class MovieController {
         if(! media.isPresent()){
             final ModelAndView mav = new ModelAndView("helloworld/404.jsp");
             mav.addObject("extraInfo", "The media with id: " +mediaId+ " doesn't exists");
-            try{
-                mav.addObject("userName",userService.getInfoOfMyUser());
-            }catch(UnableToFindUserException exception){
-                mav.addObject("userName",null);
-            }
             return mav;
         }
 
         final ModelAndView mav = new ModelAndView("helloworld/details");
-        try{
-            mav.addObject("user",userService.getInfoOfMyUser());
-        }catch(UnableToFindUserException exception){
-            mav.addObject("user",null);
-        }
         final List<Actor> actorsList = actorService.getAllActorsForMedia(mediaId);
         final List<Genre> genresList = genreService.getGenreForMedia(mediaId);
         final List<Review> reviewList = reviewService.getReviewsByMediaId(mediaId);
@@ -236,6 +212,17 @@ public class MovieController {
         final int userId = userService.getInfoOfMyUser().getUserId();
         reviewService.createReview(form.getMediaId(), form.getRating(), form.getReviewContent());
         return new ModelAndView("redirect:/details/" + form.getMediaId());
+    }
+
+    @ModelAttribute("user")
+    public User getLoggedUser(){
+        try{
+            userService.getInfoOfMyUser();
+        }
+        catch (UnableToFindUserException exception){
+            return null;
+        }
+        return userService.getInfoOfMyUser();
     }
 
 }

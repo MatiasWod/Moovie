@@ -52,7 +52,7 @@ public class HelloWorldController {
             return register(form);
         }
         try{
-            User user = userService.createUser(form.getUsername(), form.getEmail(), form.getPassword());
+            userService.createUser(form.getUsername(), form.getEmail(), form.getPassword());
         } catch (UnableToCreateUserException e){
             return new ModelAndView("redirect:/register?error:" + e.getMessage());
         }
