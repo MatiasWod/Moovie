@@ -18,6 +18,7 @@ public interface MoovieListService {
     MoovieList createMoovieList(int userId, String name, String description);
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
     MoovieList createMoovieListWithContent(int userId, String name, String description, List<Integer> mediaIdList);
+    void deleteMoovieList(int moovieIdList);
 
     Optional<Integer> getLikesCount(int moovieListId);
     List<User> getAllUsersWhoLikedMoovieList(int moovieListId);

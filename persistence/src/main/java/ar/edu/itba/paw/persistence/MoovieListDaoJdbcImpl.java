@@ -109,6 +109,10 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         return new MoovieList(moovieListId.intValue(), userId, name, description);
     }
 
+    @Override
+    public void deleteMoovieList(int userId, int mediIdList) {
+
+    }
 
     @Override
     public MoovieList createMoovieListWithContent(int userId, String name, String description, List<Integer> mediaIdList) {
