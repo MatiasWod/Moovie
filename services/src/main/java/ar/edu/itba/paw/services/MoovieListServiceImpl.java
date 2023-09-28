@@ -30,8 +30,8 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
     @Override
-    public List<MoovieList> getAllMoovieLists() {
-        return moovieListDao.getAllMoovieLists();
+    public List<MoovieList> getAllMoovieLists(int size, int pageNumber) {
+        return moovieListDao.getAllMoovieLists(size, pageNumber);
     }
 
     @Override
@@ -40,14 +40,17 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
     @Override
-    public MoovieList createMoovieList(int userId, String name, String description) {
-        return moovieListDao.createMoovieList(userId, name, description);
+    public MoovieList createStandardPublicMoovieList(String name,  String description) {
+        User u = userService.getInfoOfMyUser();
+        return moovieListDao.createMoovieList(u.getUserId(), name, moovieListDao.MOOVIE_LIST_TYPE_STANDARD_PUBLIC, description);
     }
 
     @Override
-    public MoovieList createMoovieListWithContent(int userId, String name, String description, List<Integer> mediaIdList) {
-        return moovieListDao.createMoovieListWithContent(userId, name, description, mediaIdList);
+    public MoovieList createStandardPublicMoovieListWithContent( String name,  String description, List<Integer> mediaIdList) {
+        User u = userService.getInfoOfMyUser();
+        return moovieListDao.createMoovieListWithContent(u.getUserId(), name, moovieListDao.MOOVIE_LIST_TYPE_STANDARD_PUBLIC, description, mediaIdList);
     }
+
 
     @Override
     public void deleteMoovieList(int moovieListId) {

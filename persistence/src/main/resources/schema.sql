@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS moovieLists(
     userId                              INTEGER NOT NULL,
     name                                VARCHAR(255) NOT NULL,
     description                         TEXT,
+    type                                INTEGER NOT NULL,
     FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE,
     UNIQUE(userId,name)
 );
@@ -171,4 +172,10 @@ ALTER TABLE users
     ALTER COLUMN password SET NOT NULL,
     ALTER COLUMN role SET NOT NULL;
 
+
+--Modificaciones a las MoovieLists
+
+ALTER TABLE moovieLists ADD COLUMN type INTEGER;
+UPDATE moovieLists SET type = 1;
+ALTER TABLE moovieLists ALTER COLUMN type SET NOT NULL;
  */

@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.persistence.MoovieListDao;
 import ar.edu.itba.paw.persistence.UserDao;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
+    private final MoovieListDao moovieListDao;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final MessageSource messageSource;
@@ -37,12 +39,13 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     public UserServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder, EmailService emailService,
-                           MessageSource messageSource, VerificationTokenService verificationTokenService) {
+                           MessageSource messageSource, VerificationTokenService verificationTokenService, MoovieListDao moovieListDao) {
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.messageSource = messageSource;
         this.verificationTokenService = verificationTokenService;
+        this.moovieListDao = moovieListDao;
     }
 
 
@@ -81,6 +84,8 @@ public class UserServiceImpl implements UserService {
             userDao.confirmRegister(token.getUserId(), ROLE_USER);
             verificationTokenService.deleteToken(token);
         }
+        moovieListDao.createMoovieList(token.getUserId(), "Watched" , moovieListDao.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE, "" );
+        moovieListDao.createMoovieList(token.getUserId(), "Watchlist", moovieListDao.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE,  "" );
         return isValidToken;
     }
 
@@ -99,14 +104,6 @@ public class UserServiceImpl implements UserService {
         return userDao.findUserByUsername(username);
     }
 
-    @Override
-    public User getOrCreateUserViaMail(String mail){
-        Optional<User> user = findUserByEmail(mail);
-        if(user.isPresent()){
-            return user.get();
-        }
-        return createUser(null,mail,null);
-    }
 
     @Override
     public User getInfoOfMyUser() {

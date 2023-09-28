@@ -11,13 +11,16 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 public interface MoovieListService {
+
+    public static final int DEFAULT_PAGE_SIZE = 25;
+
     Optional<MoovieList> getMoovieListById(int moovieListId);
-    List<MoovieList> getAllMoovieLists();
+    List<MoovieList> getAllMoovieLists(int size, int pageNumber);
     Optional<Integer> getMoovieListCount();
     List<MoovieListContent> getMoovieListContentById(int moovieListId);
-    MoovieList createMoovieList(int userId, String name, String description);
+    MoovieList createStandardPublicMoovieList( String name, String description);
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
-    MoovieList createMoovieListWithContent(int userId, String name, String description, List<Integer> mediaIdList);
+    MoovieList createStandardPublicMoovieListWithContent( String name, String description, List<Integer> mediaIdList);
     void deleteMoovieList(int moovieIdList);
 
     Optional<Integer> getLikesCount(int moovieListId);

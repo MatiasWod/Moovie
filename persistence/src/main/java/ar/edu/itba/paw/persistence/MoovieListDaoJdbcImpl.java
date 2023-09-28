@@ -27,8 +27,8 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
             rs.getInt("moovieListId"),
             rs.getInt("userId"),
             rs.getString("name"),
-            rs.getString("description")
-            //rs.getInt("likes")
+            rs.getString("description"),
+            rs.getInt("type")
     );
 
     private static final RowMapper<MoovieListContent> MOOVIE_LIST_CONTENT_ROW_MAPPER = (rs, rowNum) -> new MoovieListContent(
@@ -62,8 +62,8 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     @Override
-    public List<MoovieList> getAllMoovieLists() {
-        return jdbcTemplate.query("SELECT * FROM moovieLists", MOOVIE_LIST_ROW_MAPPER);
+    public List<MoovieList> getAllMoovieLists(int size, int pageNumber) {
+        return jdbcTemplate.query("SELECT * FROM moovieLists WHERE type = ?  LIMIT ? OFFSET ?",new Object[]{MOOVIE_LIST_TYPE_STANDARD_PUBLIC, size, pageNumber*size} , MOOVIE_LIST_ROW_MAPPER);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
      */
 
     @Override
-    public MoovieList createMoovieList(int userId, String name, String description) {
+    public MoovieList createMoovieList(int userId, String name, int type, String description) {
         int auxId = userHasListWithName(userId,name);
         if(auxId>0){
             String sqlDelContent = "DELETE FROM moovieListsContent WHERE moovieListId = " +auxId ;
@@ -104,9 +104,10 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         args.put("userId", userId);
         args.put("name", name);
         args.put("description", description);
+        args.put("type", type);
 
         final Number moovieListId = moovieListJdbcInsert.executeAndReturnKey(args);
-        return new MoovieList(moovieListId.intValue(), userId, name, description);
+        return new MoovieList(moovieListId.intValue(), userId, name, description, type);
     }
 
     @Override
@@ -115,8 +116,8 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     @Override
-    public MoovieList createMoovieListWithContent(int userId, String name, String description, List<Integer> mediaIdList) {
-        final MoovieList mL = createMoovieList(userId,name,description);
+    public MoovieList createMoovieListWithContent(int userId, String name, int type, String description, List<Integer> mediaIdList) {
+        final MoovieList mL = createMoovieList(userId,name,type,description);
 
         return insertMediaIntoMoovieList(mL.getMoovieListId(), mediaIdList);
     }
@@ -125,6 +126,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     public MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList) {
         boolean repeatedElements = ( mediaIdList.stream().distinct().count() != mediaIdList.size() );
         if(repeatedElements){
+            //TODO
             //Throw exception
         }
 

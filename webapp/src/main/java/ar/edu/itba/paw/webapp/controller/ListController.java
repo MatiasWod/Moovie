@@ -53,7 +53,7 @@ public class ListController {
             @RequestParam(value = "search", required = false) final String searchQ){
 
         final ModelAndView mav = new ModelAndView("helloworld/viewLists");
-        List<MoovieList> moovieLists = mediaListService.getAllMoovieLists();
+        List<MoovieList> moovieLists = mediaListService.getAllMoovieLists(moovieListService.DEFAULT_PAGE_SIZE,0);
 
         Map<User, Tuple<MoovieList,List<String>>> tupleHashMap = new HashMap<>();
         moovieLists.forEach(list -> {
@@ -93,9 +93,8 @@ public class ListController {
         if(errors.hasErrors()){
             return  createList(null,null,null,null,form);
         }
-        User user = userService.getOrCreateUserViaMail(form.getUserEmail());
 
-        MoovieList list = moovieListService.createMoovieListWithContent(user.getUserId(),form.getListName(),form.getListDescription(),form.getMediaIdsList());
+        MoovieList list = moovieListService.createStandardPublicMoovieListWithContent( form.getListName(),form.getListDescription(),form.getMediaIdsList());
 
         int id = list.getMoovieListId();
         return new ModelAndView("redirect:/list/"+id);
