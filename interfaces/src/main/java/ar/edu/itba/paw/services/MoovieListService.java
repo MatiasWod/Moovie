@@ -26,8 +26,9 @@ public interface MoovieListService {
     Optional<Integer> getLikesCount(int moovieListId);
     List<User> getAllUsersWhoLikedMoovieList(int moovieListId);
 
-    MoovieListLikes likeMoovieList(int userId, int moovieListId); //Will like and take like if its liked
-    boolean likeMoovieListStatusForUser(int userId, int moovieListId);  //Return true if user liked the MoovieList
+    MoovieListLikes likeMoovieList( int moovieListId); //Will like and take like if its liked
+    boolean likeMoovieListStatusForUser( int moovieListId);  //Return true if user liked the MoovieList
+    MoovieListLikes removeLikeMoovieList( int moovieListId);
+
     List<MoovieList> likedMoovieListsForUser(int userId, int size, int pageNumber);   //Returns all moovieLists liked by user
-    MoovieListLikes removeLikeMoovieList(int userId, int moovieListId);
 }

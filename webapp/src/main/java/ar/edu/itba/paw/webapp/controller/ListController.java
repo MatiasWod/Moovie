@@ -201,7 +201,7 @@ public class ListController {
                 mav.addObject("user",null);
             }
 
-            boolean isLiked = moovieListService.likeMoovieListStatusForUser(userService.getInfoOfMyUser().getUserId(), moovieListId);
+            boolean isLiked = moovieListService.likeMoovieListStatusForUser(moovieListId);
             mav.addObject("isLiked", isLiked);
             mav.addObject("moovieList", moovieListData.get());
 
@@ -235,7 +235,7 @@ public class ListController {
         } catch (UnableToFindUserException e) {
             return new ModelAndView("redirect:/login");
         }
-        moovieListService.likeMoovieList(userId, listId);
+        moovieListService.likeMoovieList( listId);
         return new ModelAndView("redirect:/list/" + listId);
     }
 }

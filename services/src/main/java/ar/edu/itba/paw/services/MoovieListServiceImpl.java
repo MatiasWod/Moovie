@@ -84,16 +84,24 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
     @Override
-    public MoovieListLikes likeMoovieList(int userId, int moovieListId) {
-        if(likeMoovieListStatusForUser(userId, moovieListId)){
+    public MoovieListLikes likeMoovieList( int moovieListId) {
+        int userId = userService.getInfoOfMyUser().getUserId();
+        if(likeMoovieListStatusForUser(moovieListId)){
             return moovieListDao.removeLikeMoovieList(userId, moovieListId);
         }
         return moovieListDao.likeMoovieList(userId, moovieListId);
     }
 
     @Override
-    public boolean likeMoovieListStatusForUser(int userId, int moovieListId) {
+    public boolean likeMoovieListStatusForUser(int moovieListId) {
+        int userId = userService.getInfoOfMyUser().getUserId();
         return moovieListDao.likeMoovieListStatusForUser(userId, moovieListId);
+    }
+
+    @Override
+    public MoovieListLikes removeLikeMoovieList(int moovieListId) {
+        int userId = userService.getInfoOfMyUser().getUserId();
+        return moovieListDao.removeLikeMoovieList(userId,moovieListId);
     }
 
     @Override
@@ -101,8 +109,5 @@ public class MoovieListServiceImpl implements MoovieListService{
         return moovieListDao.likedMoovieListsForUser(userId, size, pageNumber);
     }
 
-    @Override
-    public MoovieListLikes removeLikeMoovieList(int userId, int moovieListId) {
-        return moovieListDao.removeLikeMoovieList(userId,moovieListId);
-    }
+
 }
