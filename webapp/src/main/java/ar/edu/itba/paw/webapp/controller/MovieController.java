@@ -234,7 +234,7 @@ public class MovieController {
             return details(form.getMediaId(), form);
         }
         final int userId = userService.getInfoOfMyUser().getUserId();
-        reviewService.createReview(userId, form.getMediaId(), form.getRating(), form.getReviewContent());
+        reviewService.createReview(form.getMediaId(), form.getRating(), form.getReviewContent());
         return new ModelAndView("redirect:/details/" + form.getMediaId());
     }
 

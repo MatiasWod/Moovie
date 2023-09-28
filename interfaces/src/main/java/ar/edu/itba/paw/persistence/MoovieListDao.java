@@ -11,14 +11,21 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 public interface MoovieListDao {
+
+    public static final int MOOVIE_LIST_TYPE_STANDARD_PUBLIC = 1;   //Listas que crea un usuario y son publicas
+    public static final int MOOVIE_LIST_TYPE_STANDARD_PRIVATE = 2;  //Listas que crea un usuario y puso privada
+    public static final int MOOVIE_LIST_TYPE_DEFAULT_PUBLIC = 3;   //Listas creadas automaticamente por ej: "Top 50"
+    public static final int MOOVIE_LIST_TYPE_DEFAULT_PRIVATE = 4;   //Listas creadas automaticamente por ej: "Watchlist"
+
     Optional<MoovieList> getMoovieListById(int moovieListId);
-    List<MoovieList> getAllMoovieLists();
+    List<MoovieList> getAllMoovieLists(int size, int pageNumber);
     Optional<Integer> getMoovieListCount();
     List<MoovieListContent> getMoovieListContentById(int moovieListId);
-    MoovieList createMoovieList(int userId, String name, String description);
+    MoovieList createMoovieList(int userId, String name, int type, String description);
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
-    MoovieList createMoovieListWithContent(int userId, String name, String description, List<Integer> mediaIdList);
-    void deleteMoovieList(int userId, int moovieIdList);
+    MoovieList createMoovieListWithContent(int userId, String name, int type, String description, List<Integer> mediaIdList);
+
+    void deleteMoovieList(int userId, int moovieIdList);        //TODO NOT IMPLEMENTED YET
 
     Optional<Integer> getLikesCount(int moovieListId);
     List<User> getAllUsersWhoLikedMoovieList(int moovieListId);

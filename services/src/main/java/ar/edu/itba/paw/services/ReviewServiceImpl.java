@@ -12,6 +12,8 @@ import java.util.Optional;
 public class ReviewServiceImpl implements ReviewService{
     @Autowired
     private ReviewDao reviewDao;
+    @Autowired
+    private UserService userService;
 
     @Override
     public Optional<Review> getReviewById(int reviewId) {
@@ -29,7 +31,8 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
-    public Review createReview(int userId, int mediaId, int rating, String reviewContent) {
+    public Review createReview(int mediaId, int rating, String reviewContent) {
+        int userId = userService.getInfoOfMyUser().getUserId();
         return reviewDao.createReview(userId, mediaId, rating, reviewContent);
     }
 }
