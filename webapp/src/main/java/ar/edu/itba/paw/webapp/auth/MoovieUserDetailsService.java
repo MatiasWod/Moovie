@@ -25,13 +25,12 @@ public class MoovieUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException, UserNotVerifiedException{
+    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException, UserNotVerifiedException, UserIsBannedException{
         final User user = us.findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("No user " + username));
 
         final Set<GrantedAuthority> authorities = new HashSet<>();
 
-        // Check if the user has the required role
         if (user.getRole() == 1 || user.getRole()==2 ) {
             authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
             if(user.getRole() == 2 ){
@@ -39,10 +38,10 @@ public class MoovieUserDetailsService implements UserDetailsService {
             }
         } else {
             if(user.getRole() == -2 ){
-                throw new UserIsBannedException("User " + username + " is banned");
+                throw new UserIsBannedException("User:" + username + "is banned indefinitely");
             }
             if(user.getRole() == -1 ){
-                throw new UserNotVerifiedException("User " + username + " does not have the required role");
+                throw new UserNotVerifiedException("User:" + username + "hasn't verified its email");
 
             }
             // If the user doesn't have the required role, you can handle it here.

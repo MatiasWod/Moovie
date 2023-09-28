@@ -1,11 +1,15 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
+import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.MoovieListDao;
+import ar.edu.itba.paw.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +20,9 @@ import java.util.OptionalInt;
 public class MoovieListServiceImpl implements MoovieListService{
     @Autowired
     private MoovieListDao moovieListDao;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public Optional<MoovieList> getMoovieListById(int moovieListId) {
@@ -40,6 +47,17 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public MoovieList createMoovieListWithContent(int userId, String name, String description, List<Integer> mediaIdList) {
         return moovieListDao.createMoovieListWithContent(userId, name, description, mediaIdList);
+    }
+
+    @Override
+    public void deleteMoovieList(int moovieListId) {
+        int uid = userService.getInfoOfMyUser().getUserId();
+        MoovieList ml = getMoovieListById(moovieListId).orElseThrow(() -> new MoovieListNotFoundException("No moovie list found for id " + moovieListId) );
+        if(ml.getUserId() == uid ){
+            moovieListDao.deleteMoovieList( uid , moovieListId);
+            return;
+        }
+        throw new InvalidAccessToResourceException("This list doesnt belong to user logged, so cant be deleted");
     }
 
     @Override

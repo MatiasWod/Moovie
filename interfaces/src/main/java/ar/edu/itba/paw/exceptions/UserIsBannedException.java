@@ -1,22 +1,13 @@
 package ar.edu.itba.paw.exceptions;
 
-public class UserIsBannedException extends RuntimeException{
-    public UserIsBannedException() {
+import org.springframework.security.core.AuthenticationException;
+
+public class UserIsBannedException extends AuthenticationException {
+    public UserIsBannedException(String msg, Throwable t) {
+        super(msg, t);
     }
 
-    public UserIsBannedException(String message) {
-        super(message);
-    }
-
-    public UserIsBannedException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public UserIsBannedException(Throwable cause) {
-        super(cause);
-    }
-
-    public UserIsBannedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public UserIsBannedException(String msg) {
+        super(msg);
     }
 }
