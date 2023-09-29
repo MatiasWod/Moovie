@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
 import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
+import ar.edu.itba.paw.exceptions.NoObjectForIDEXception;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
@@ -25,6 +26,19 @@ public class MoovieListServiceImpl implements MoovieListService{
     public Optional<MoovieList> getMoovieListById(int moovieListId) {
         return moovieListDao.getMoovieListById(moovieListId);
     }
+
+    /*
+    @Override
+    public MoovieList getMoovieListById(int moovieListId) {
+        User user = userService.getInfoOfMyUser();
+        MoovieList ml = moovieListDao.getMoovieListById(moovieListId).orElseThrow( () -> new NoObjectForIDEXception());
+        if(ml.getType() == 2 || ml.getType() == 4){
+            if(ml.getUserId() != user.getUserId()){
+             throw new InvalidAccessToResourceException("User " + user.getUsername() + " doesnt have acces to this list because its private");
+            }
+        }
+        return ml;
+    }*/
 
     @Override
     public List<MoovieList> getAllMoovieLists(int size, int pageNumber) {
@@ -58,6 +72,17 @@ public class MoovieListServiceImpl implements MoovieListService{
             return;
         }
         throw new InvalidAccessToResourceException("This list doesnt belong to user logged, so cant be deleted");
+    }
+
+    @Override
+    public List<MoovieList> getAllStandardPublicMoovieListFromUser(int userId, int size, int pageNumber) {
+        return moovieListDao.likedMoovieListsForUser(userId,size,pageNumber);
+    }
+
+    @Override
+    public List<MoovieList> getMoovieListDefaultPrivateFromCurrentUser() {
+        int uid = userService.getInfoOfMyUser().getUserId();
+        return moovieListDao.getMoovieListDefaultPrivateFromUser(uid);
     }
 
     @Override

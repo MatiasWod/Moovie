@@ -19,6 +19,8 @@ public interface MoovieListDao {
     List<MoovieList> getAllMoovieLists(int size, int pageNumber);
     Optional<Integer> getMoovieListCount();
     List<MoovieListContent> getMoovieListContentById(int moovieListId);
+    List<MoovieList> getAllStandardPublicMoovieListFromUser(int userId, int size, int pageNumber);
+    List<MoovieList> getMoovieListDefaultPrivateFromUser(int userId);
 
     MoovieList createMoovieList(int userId, String name, int type, String description);
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
