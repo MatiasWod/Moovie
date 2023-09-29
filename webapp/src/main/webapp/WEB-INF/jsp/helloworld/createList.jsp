@@ -44,15 +44,6 @@
                                 <option  ${'Movies' == param.m ? 'selected' : ''}>Movies</option>
                                 <option  ${'Series' == param.m ? 'selected' : ''}>Series</option>
                             </select>
-                                <%-- <select name="f" id="filter-types" class="form-select filter-width" aria-label="Filter!" onchange="toggleGenreSelect()">
-                                     <option ${'Popular' == param.f ? 'selected' : ''}>Popular</option>
-                                     <option ${'Genre' == param.f ? 'selected' : ''}>Genre</option>
-                                 </select>
-                                 <select name="g" id="genre-select" class="form-select filter-width" aria-label="Filter!" style="display:none">
-                                     <c:forEach var="genre" items="${genresList}">
-                                         <option value="${genre}" ${genre == param.g? 'selected' : ''}>${genre}</option>
-                                     </c:forEach>
-                                 </select>--%>
                             <input type="hidden" name="g" id="hiddenGenreInput">
                             <div class="dropdown">
                                 <button style="height:100%;width: 150px;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
@@ -73,7 +64,7 @@
                             <input class="form-control me-2" type="search" name="q" value="${param.q}" placeholder="Search" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Search</button>
                             <a style="height: 100%;" class="btn btn-outline-success align-bottom" href="${pageContext.request.contextPath}/createList">
-                                Reset Filters
+                                Reset
                             </a>
                         </div>
                     </form>

@@ -21,7 +21,6 @@
 
     <title>Discover your next favorite experience</title>
     <script src="${pageContext.request.contextPath}/resources/discoverFunctions.js?version=81"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </head>
 <body style="background: whitesmoke">
 <c:import url="navBar.jsp">
@@ -102,7 +101,7 @@
                 <c:if test="${fn:length(mediaList) == 0 }">
                     <div class="d-flex m-2 flex-column">
                         No media was found.
-                        <a class="btn mt-2 btn-outline-success align-bottom" href="${pageContext.request.contextPath}/discover">Return to Discover</a>
+                        <a class="btn mt-2 btn-outline-success align-bottom" href="${pageContext.request.contextPath}/discover">Discover other content</a>
                     </div>
                 </c:if>
                 <c:forEach var="movie" items="${mediaList}" end="24">

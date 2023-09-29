@@ -20,18 +20,29 @@
     <c:param name="userName" value="${user.username}"/>
 </c:import>
 <sec:authorize access="isAuthenticated()">
-    <h2>Username: <c:out value="${user.username}"/>!</h2>
-    <h2>Email: <c:out value="${user.email}"/>!</h2>
-    <h2> <c:if test="${isMe}">ITS YOU!</c:if></h2>
-    <img style="height: 20vh" src="${pageContext.request.contextPath}/profile/image/${user.username}">
+    <div style="align-items: center" class="d-flex flex-column">
+        <div class="d-flex container">
+            <img class="cropCenter" style="height:100px;width:100px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/profile/image/${user.username}">
+            <div>
+                <h1>${user.username}</h1>
+                <c:if test="${isMe}"><h5><c:out value="${user.email}"/></h5></c:if>
+            </div>
 
-    <h2>Here Insert a couple of reviews</h2>
-    <h2>Here insert a couple of lists</h2>
+        </div>
+        <h2><c:if test="${isMe}">Hello </c:if><c:out value="${user.username}"/>!</h2>
+        <h2>Email: <c:out value="${user.email}"/>!</h2>${pageContext.request.contextPath}/profile/image/${user.username}
+        <h2> </h2>
+        <img style="height: 20vh" src="">
 
-    <form action="${pageContext.request.contextPath}/uploadProfilePicture" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" accept="image/*" />
-        <input type="submit" value="Submit" />
-    </form>
+        <h2>Here Insert a couple of reviews</h2>
+        <h2>Here insert a couple of lists</h2>
+
+        <form action="${pageContext.request.contextPath}/uploadProfilePicture" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*" />
+            <input type="submit" value="Submit" />
+        </form>
+    </div>
+
 </sec:authorize>
 <sec:authorize access="!isAuthenticated()">
     <c:import url="signUpAlert.jsp"/>
