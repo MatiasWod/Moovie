@@ -20,7 +20,10 @@ public interface MoovieListService {
     MoovieList createStandardPublicMoovieList( String name, String description);
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
     MoovieList createStandardPublicMoovieListWithContent( String name, String description, List<Integer> mediaIdList);
-    void deleteMoovieList(int moovieIdList);
+    //void deleteMoovieList(int moovieIdList);
+
+    //Returns the media id of the moovies watched in certain list;
+    List<MoovieListContent> getMediaWatchedInMoovieList(int moovieListId);
 
 
     List<MoovieList> getAllStandardPublicMoovieListFromUser(int userId, int size, int pageNumber);

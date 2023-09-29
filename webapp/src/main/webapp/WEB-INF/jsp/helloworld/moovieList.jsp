@@ -12,32 +12,40 @@
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
     <title>Moovie List</title>
-    <link href="${pageContext.request.contextPath}/resources/moovieList.css?version=58" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/moovieList.css?version=62" rel="stylesheet"/>
 </head>
-
+<style>
+    .progress {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+</style>
 <body style="background: whitesmoke">
 <c:import url="navBar.jsp">
     <c:param name="userName" value="${user.username}"/>
 </c:import>
 <div class="container d-flex flex-column">
-    <div class="container header ">
-        <div class="text-center ">
+    <div class="header">
             <h1 style="font-size: 60px; font-weight: bold;"><c:out value="${moovieList.name}"/></h1>
             <h3><c:out value="${moovieList.description}"/></h3>
             <h4 style="color: lightgray;">by <c:out value="${listOwner}"/></h4>
-        </div>
     </div>
     <div class="buttons">
+
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <div>
                 <form action="${pageContext.request.contextPath}/like" method="POST">
                     <input type="hidden" name="listId" value="${moovieList.moovieListId}"/>
                     <c:choose>
                         <c:when test="${isLiked}">
-                            <button type="submit" class="btn btn-style"><i class="bi bi-hand-thumbs-up-fill"></i> Liked</button>
+                            <button type="submit" class="btn btn-style"><i
+                                    class="bi bi-hand-thumbs-up-fill"></i>${likeCount} Liked
+                            </button>
                         </c:when>
                         <c:otherwise>
-                            <button type="submit" class="btn btn-style"><i class="bi bi-hand-thumbs-up"></i> Like</button>
+                            <button type="submit" class="btn btn-style"><i class="bi bi-hand-thumbs-up"></i>${likeCount}
+                                Like
+                            </button>
                         </c:otherwise>
                     </c:choose>
                 </form>
@@ -53,6 +61,26 @@
                 <button class="btn btn-style" id="sortButton" onclick="changeSortOrder()"><i id="sortIcon" class="bi bi-arrow-down-circle-fill"></i></button>
             </div>
         </div>
+    </div>
+    <div>
+        <h4>List progress</h4>
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: ${watchedPercentage}%;"
+             aria-valuenow="${watchedMoviesSize}" aria-valuemin="0" aria-valuemax="100">
+            ${watchedMoviesSize}%
+        </div>
+    </div>
+    </div>
+    <div style="display: flex; align-items: center;justify-content: center">
+        <c:if test="${moviesCount > 0}">
+            <h4>${moviesCount} Movies</h4>
+        </c:if>
+        <c:if test="${moviesCount > 0 && tvSeriesCount > 0}">
+            <h4 style="margin-right: 5px;margin-left: 5px">and</h4>
+        </c:if>
+        <c:if test="${tvSeriesCount > 0}">
+            <h4>${tvSeriesCount} Series</h4>
+        </c:if>
     </div>
     <table class="table table-striped" id="movieTable">
         <thead>
@@ -87,6 +115,11 @@
                                         <strong>${mediaList[loop.index].name}</strong>
                                     </a>
                                 </div>
+                                <c:if test="${watchedMovies.contains(mediaList[loop.index].mediaId)}">
+                                    <div class="col-auto">
+                                        <i class="bi bi-check-circle-fill" style="color: green"></i>
+                                    </div>
+                                </c:if>
                             </div>
                         </td>
                         <!-- Type -->

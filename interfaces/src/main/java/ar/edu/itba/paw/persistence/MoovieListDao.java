@@ -28,6 +28,8 @@ public interface MoovieListDao {
 
     void deleteMoovieList(int userId, int moovieIdList);        //TODO NOT IMPLEMENTED YET
 
+    List<MoovieListContent> getMediaWatchedInMoovieList(int userId, int moovieListId);
+
     Optional<Integer> getLikesCount(int moovieListId);
     List<User> getAllUsersWhoLikedMoovieList(int moovieListId);
     MoovieListLikes likeMoovieList(int userId, int moovieListId);
