@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
     document.addEventListener("DOMContentLoaded", function() {
         const currentPath = window.location.pathname;
         const links = document.querySelectorAll(".nav-item-link");
@@ -47,8 +47,22 @@
                     <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/profile/${param.userName}">
                         <c:choose>
                             <c:when test="${!empty param.userName}">
-                                <img style="height: 50px; width: 50px; border:solid black; border-radius: 50%" class="cropCenter" src="${pageContext.request.contextPath}/profile/image/${param.userName}"/>
-                                ${param.userName}
+                                <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+                                    <ul class="navbar-nav">
+                                        <li class="nav-item dropdown">
+                                            <button class="btn bg-transparent dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <img style="height: 50px; width: 50px; border:solid black; border-radius: 50%" class="cropCenter" src="${pageContext.request.contextPath}/profile/image/${param.userName}"/>
+                                                    ${param.userName}
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/profile/${param.userName}">Profile</a></li>
+                                                <li><a class="dropdown-item" href="#">My upcoming list</a></li>
+                                                <li><a class="dropdown-item" href="#">My watched list</a></li>
+                                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/logout">Logout</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
                             </c:when>
                             <c:otherwise>
                                 <a href="${pageContext.request.contextPath}/login">Log In</a>
@@ -56,6 +70,7 @@
                         </c:choose>
                     </a>
                 </div>
+
             </div>
         </div>
     </nav>
