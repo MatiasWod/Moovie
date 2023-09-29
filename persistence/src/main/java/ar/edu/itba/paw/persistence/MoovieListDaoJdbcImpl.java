@@ -3,17 +3,18 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
-import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class MoovieListDaoJdbcImpl implements MoovieListDao{
@@ -75,6 +76,23 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     public Optional<Integer> getMoovieListCount() {
         return jdbcTemplate.query("SELECT COUNT(*) AS count FROM moovieListsContent", COUNT_ROW_MAPPER).stream().findFirst();
     }
+
+    @Override
+    public Optional<Integer> getMoovieListSize(int moovieListId, Boolean type) {
+        String sql = "SELECT COUNT(*) AS count FROM moovieListsContent WHERE moovieListId = ?";
+        Object[] params;
+
+        if (type != null) {
+            sql += " AND moovieListsContent.mediaId IN (SELECT mediaId FROM media WHERE type = ?)";
+            params = new Object[]{moovieListId, type};
+        } else {
+            params = new Object[]{moovieListId};
+        }
+
+        return jdbcTemplate.query(sql, params, COUNT_ROW_MAPPER).stream().findFirst();
+    }
+
+
 
     public int userHasListWithName(int userId, String name){
         Optional<MoovieList> r = jdbcTemplate.query("SELECT * FROM moovieLists WHERE name = ? AND userId= ? ",new Object[]{name,userId},  MOOVIE_LIST_ROW_MAPPER).stream().findFirst();

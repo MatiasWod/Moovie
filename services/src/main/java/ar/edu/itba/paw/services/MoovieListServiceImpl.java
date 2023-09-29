@@ -8,14 +8,11 @@ import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.MoovieListDao;
-import ar.edu.itba.paw.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 @Service
 public class MoovieListServiceImpl implements MoovieListService{
@@ -139,5 +136,9 @@ public class MoovieListServiceImpl implements MoovieListService{
         return moovieListDao.likedMoovieListsForUser(userId, size, pageNumber);
     }
 
+    @Override
+    public Optional<Integer> getMoovieListSize(int moovieListId,Boolean type) {
+        return moovieListDao.getMoovieListSize(moovieListId,type);
+    }
 
 }

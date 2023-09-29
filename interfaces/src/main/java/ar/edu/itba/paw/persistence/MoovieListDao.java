@@ -2,13 +2,11 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
-
 import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
 import ar.edu.itba.paw.models.User.User;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 public interface MoovieListDao {
 
@@ -39,4 +37,5 @@ public interface MoovieListDao {
 
     List<MoovieList> getMoovieListBySearch(String searchString, int size, int pageNumber);
 
+    Optional<Integer> getMoovieListSize(int moovieListId, Boolean type);
 }

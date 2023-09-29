@@ -15,7 +15,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link href="${pageContext.request.contextPath}/resources/main.css?version=59" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="${pageContext.request.contextPath}/resources/lists.css?version=58" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/lists.css?version=60" rel="stylesheet"/>
     <title>Discover your next passion</title>
 </head>
 <body style="background: whitesmoke">
@@ -41,30 +41,53 @@
     </div>
 
     <div class="lists-container" style="margin-top: 30px">
-            <c:if test="${mapTuple.size()==0}">
+        <c:if test="${showLists.size()==0}">
                 <h3>No results were found</h3>
             </c:if>
-            <c:forEach var="map" items="${mapTuple}">
+        <c:forEach var="showList" items="${showLists}">
                 <div class="list-card card"
-                     onclick="location.href='${pageContext.request.contextPath}/list/${map.value.first.moovieListId}'">
+                     onclick="location.href='${pageContext.request.contextPath}/list/${showList.moovieListId}'">
                     <div class="list-img-container card-img-top">
-                        <c:forEach var="image" items="${map.value.second}">
+                        <c:forEach var="image" items="${showList.posters}">
                             <img class="cropCenterImage" src="${image}" alt="...">
                         </c:forEach>
-                        <c:forEach begin="${fn:length(map.value.second)}" end="3">
+                        <c:forEach begin="${fn:length(showList.posters)}" end="3">
                             <img class="cropCenterImage"
                                  src=${pageContext.request.contextPath}/resources/defaultPoster.png alt="...">
                         </c:forEach>
                     </div>
                     <div class="card-body cardBodyFlex">
                         <div>
-                            <h5 class="card-title"><strong><c:out value="${map.value.first.name}"/></strong></h5>
-                            <p style="max-height: 4.5rem" class="card-text overflow-hidden text-muted">by <c:out
-                                    value="${map.value.first.userId}"/></p>
-                            <p style="max-height: 3.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" class="card-text">
-                                <c:out value="${map.value.first.description}"/>
-                            </p>
+                            <div class="card-name-likes">
+                                <div class="card-content overflow-hidden">
+                                    <h5 class="card-title"><strong><c:out value="${showList.name}"/></strong></h5>
+                                </div>
+                                <div class="card-likes">
+                                    <h5><i class="bi bi-hand-thumbs-up"></i>${showList.likes}</h5>
+                                </div>
+                            </div>
+                            <div style="display: flex;">
+                                <c:if test="${showList.mooviesCount > 0}">
+                                    <p>${showList.mooviesCount} Movies</p>
+                                </c:if>
 
+                                <c:if test="${showList.mooviesCount > 0 && showList.tvseriesCount > 0}">
+                                    <style>
+                                        p {
+                                            margin-right: 10px; /* Add a space between "Movies" and "Series" */
+                                        }
+                                    </style>
+                                </c:if>
+                                <c:if test="${showList.tvseriesCount > 0}">
+                                    <p>${showList.tvseriesCount} Series</p>
+                                </c:if>
+                            </div>
+                            <p style="max-height: 4.5rem" class="card-text overflow-hidden text-muted">by <c:out
+                                    value="${showList.owner}"/>
+                            </p>
+                            <p style="max-height: 3.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" class="card-text">
+                                <c:out value="${showList.description}"/>
+                            </p>
                         </div>
                     </div>
 
@@ -74,3 +97,18 @@
 </div>
 </body>
 </html>
+
+<style>
+    .card-name-likes {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .card-likes {
+        text-align: right;
+        margin-right: 10px;
+        min-width: 50px;
+    }
+</style>
