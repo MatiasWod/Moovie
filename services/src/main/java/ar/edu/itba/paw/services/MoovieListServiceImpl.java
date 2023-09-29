@@ -63,7 +63,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
 
-    @Override
+    /*@Override
     public void deleteMoovieList(int moovieListId) {
         int uid = userService.getInfoOfMyUser().getUserId();
         MoovieList ml = getMoovieListById(moovieListId).orElseThrow(() -> new MoovieListNotFoundException("No moovie list found for id " + moovieListId) );
@@ -72,6 +72,12 @@ public class MoovieListServiceImpl implements MoovieListService{
             return;
         }
         throw new InvalidAccessToResourceException("This list doesnt belong to user logged, so cant be deleted");
+    }*/
+
+    @Override
+    public List<MoovieListContent> getMediaWatchedInMoovieList(int moovieListId) {
+        int uid = userService.getInfoOfMyUser().getUserId();
+        return moovieListDao.getMediaWatchedInMoovieList( uid , moovieListId);
     }
 
     @Override
