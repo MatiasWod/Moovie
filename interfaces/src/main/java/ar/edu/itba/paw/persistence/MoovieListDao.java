@@ -21,6 +21,9 @@ public interface MoovieListDao {
     List<MoovieList> getAllMoovieLists(int size, int pageNumber);
     Optional<Integer> getMoovieListCount();
     List<MoovieListContent> getMoovieListContentById(int moovieListId);
+    List<MoovieList> getAllStandardPublicMoovieListFromUser(int userId, int size, int pageNumber);
+    List<MoovieList> getMoovieListDefaultPrivateFromUser(int userId);
+
     MoovieList createMoovieList(int userId, String name, int type, String description);
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
     MoovieList createMoovieListWithContent(int userId, String name, int type, String description, List<Integer> mediaIdList);
@@ -33,4 +36,6 @@ public interface MoovieListDao {
     boolean likeMoovieListStatusForUser(int userId, int moovieListId);  //Return true if user liked the MoovieList
     List<MoovieList> likedMoovieListsForUser(int userId, int size, int pageNumber);   //Returns all moovieLists liked by user
     MoovieListLikes removeLikeMoovieList(int userId, int moovieListId);
+
+
 }

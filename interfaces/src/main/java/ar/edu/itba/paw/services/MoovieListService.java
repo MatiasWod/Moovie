@@ -15,6 +15,7 @@ public interface MoovieListService {
     public static final int DEFAULT_PAGE_SIZE = 25;
 
     Optional<MoovieList> getMoovieListById(int moovieListId);
+    //MoovieList getMoovieListById(int moovieListId);
     List<MoovieList> getAllMoovieLists(int size, int pageNumber);
     Optional<Integer> getMoovieListCount();
     List<MoovieListContent> getMoovieListContentById(int moovieListId);
@@ -22,6 +23,10 @@ public interface MoovieListService {
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
     MoovieList createStandardPublicMoovieListWithContent( String name, String description, List<Integer> mediaIdList);
     void deleteMoovieList(int moovieIdList);
+
+
+    List<MoovieList> getAllStandardPublicMoovieListFromUser(int userId, int size, int pageNumber);
+    List<MoovieList> getMoovieListDefaultPrivateFromCurrentUser();
 
     Optional<Integer> getLikesCount(int moovieListId);
     List<User> getAllUsersWhoLikedMoovieList(int moovieListId);
