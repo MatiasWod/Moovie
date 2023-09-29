@@ -43,8 +43,7 @@
                     <input class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
-                <div style="margin-left: 10px; margin-right:5px" class="d-flex nav-item justify-content-center">
-                    <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/profile/${param.userName}">
+                <div style="margin-left: 15px; margin-right:10px" class="d-flex nav-item justify-content-center">
                         <c:choose>
                             <c:when test="${!empty param.userName}">
                                 <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
@@ -68,7 +67,6 @@
                                 <a href="${pageContext.request.contextPath}/login">Log In</a>
                             </c:otherwise>
                         </c:choose>
-                    </a>
                 </div>
 
             </div>
