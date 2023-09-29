@@ -52,23 +52,26 @@ public class ListController {
 
     @RequestMapping("/lists")
     public ModelAndView lists(
-            @RequestParam(value = "search", required = false) final String searchQ){
+            @RequestParam(value = "search", required = false) final String searchQ) {
 
         final ModelAndView mav = new ModelAndView("helloworld/viewLists");
-        List<MoovieList> moovieLists = mediaListService.getAllMoovieLists(36,0);
+        List<MoovieList> moovieLists = null;
+        if (searchQ != null && !searchQ.isEmpty()) {
+            moovieLists = mediaListService.getMoovieListBySearch(searchQ, 24, 0);
+        } else {
+            moovieLists = mediaListService.getAllMoovieLists(24, 0);
+        }
         ArrayList<extendedMoovieList> showLists = new ArrayList<extendedMoovieList>();
         for (MoovieList movieList : moovieLists) {
-            if ((searchQ == null || searchQ.isEmpty()) || (movieList.getName().toLowerCase().contains(searchQ.toLowerCase()))) {
-
-                List<Media> mediaList = mediaService.getMoovieListContentByIdMediaBUpTo(movieList.getMoovieListId(), 4);
-                String[] posters = new String[mediaList.size()];
-                for (int i = 0; i < mediaList.size(); i++) {
-                    posters[i] = mediaList.get(i).getPosterPath();
-                }
-                showLists.add(new extendedMoovieList(movieList, userService.findUserById(movieList.getUserId()).get().getUsername(),
-                        moovieListService.getLikesCount(movieList.getMoovieListId()).get()
-                        , mediaListService.getMoovieListSize(movieList.getMoovieListId(), false).get(),mediaListService.getMoovieListSize(movieList.getMoovieListId(), true).get(),posters));
+            List<Media> mediaList = mediaService.getMoovieListContentByIdMediaBUpTo(movieList.getMoovieListId(), 4);
+            String[] posters = new String[mediaList.size()];
+            for (int i = 0; i < mediaList.size(); i++) {
+                posters[i] = mediaList.get(i).getPosterPath();
             }
+            showLists.add(new extendedMoovieList(movieList, userService.findUserById(movieList.getUserId()).get().getUsername(),
+                    moovieListService.getLikesCount(movieList.getMoovieListId()).get()
+                    , mediaListService.getMoovieListSize(movieList.getMoovieListId(), false).get(), mediaListService.getMoovieListSize(movieList.getMoovieListId(), true).get(), posters));
+
         }
         mav.addObject("showLists", showLists);
 
@@ -87,16 +90,16 @@ public class ListController {
     }
 
     @RequestMapping(value = "/createListAction", method = RequestMethod.POST)
-    public ModelAndView createListAction(@Valid @ModelAttribute("ListForm") final CreateListForm form, final BindingResult errors){
+    public ModelAndView createListAction(@Valid @ModelAttribute("ListForm") final CreateListForm form, final BindingResult errors) {
 
-        if(errors.hasErrors()){
-            return  createList(null,null,null,null,form);
+        if (errors.hasErrors()) {
+            return createList(null, null, null, null, form);
         }
 
-        MoovieList list = moovieListService.createStandardPublicMoovieListWithContent( form.getListName(),form.getListDescription(),form.getMediaIdsList());
+        MoovieList list = moovieListService.createStandardPublicMoovieListWithContent(form.getListName(), form.getListDescription(), form.getMediaIdsList());
 
         int id = list.getMoovieListId();
-        return new ModelAndView("redirect:/list/"+id);
+        return new ModelAndView("redirect:/list/" + id);
     }
 
 // http://tuDominio.com/createList?s=A&s=B&s=C&s=D&s=E
@@ -106,7 +109,7 @@ public class ListController {
                                    @RequestParam(value = "m", required = false) String media,
                                    @RequestParam(value = "q", required = false) String query,
                                    @RequestParam(value = "s", required = false) List<String> selected,
-                                   @ModelAttribute("ListForm") final CreateListForm form){
+                                   @ModelAttribute("ListForm") final CreateListForm form) {
 
         List<Movie> movieList = null;
         List<TVSerie> tvSerieList = null;
@@ -123,17 +126,17 @@ public class ListController {
             } else {
                 mediaList = mediaService.getMediaFilteredByGenreList(genre, mediaService.DEFAULT_PAGE_SIZE, 0);
             }
-        } else if (media != null && media.equals("Movies")){
+        } else if (media != null && media.equals("Movies")) {
             movieList = mediaService.getMovieList(mediaService.DEFAULT_PAGE_SIZE, 0);
-        } else if (media != null && media.equals("Series")){
+        } else if (media != null && media.equals("Series")) {
             tvSerieList = mediaService.getTvList(mediaService.DEFAULT_PAGE_SIZE, 0);
         } else {
             mediaList = mediaService.getMoovieList(mediaService.DEFAULT_PAGE_SIZE, 0);
         }
 
-        if( query != null && !query.isEmpty()){
+        if (query != null && !query.isEmpty()) {
             searchList = mediaService.getMediaBySearch(query, mediaService.DEFAULT_PAGE_SIZE, 0);
-            if (movieList != null){
+            if (movieList != null) {
                 List<Integer> mediaIdList = movieList.stream()
                         .map(Media::getMediaId)
                         .collect(Collectors.toList());
@@ -153,14 +156,14 @@ public class ListController {
                 searchList.removeIf(aux -> !mediaIdList.contains(aux.getMediaId()));
 
             }
-            mav.addObject("mediaList",searchList);
-        }else{
-            if (movieList != null){
-                mav.addObject("mediaList",movieList);
+            mav.addObject("mediaList", searchList);
+        } else {
+            if (movieList != null) {
+                mav.addObject("mediaList", movieList);
             } else if (tvSerieList != null) {
-                mav.addObject("mediaList",tvSerieList);
+                mav.addObject("mediaList", tvSerieList);
             } else if (mediaList != null) {
-                mav.addObject("mediaList",mediaList);
+                mav.addObject("mediaList", mediaList);
             }
         }
 
@@ -196,9 +199,9 @@ public class ListController {
             List<MoovieListContent> moovieListContent = moovieListService.getMoovieListContentById(moovieListId);
             String listOwner = userService.findUserById(moovieListData.get().getUserId()).get().getUsername();
             int likeCount = moovieListService.getLikesCount(moovieListId).get();
-            int moviesCount= moovieListService.getMoovieListSize(moovieListId, false).get();
-            int tvSeriesCount= moovieListService.getMoovieListSize(moovieListId, true).get();
-            List<MoovieListContent> watchedMovies=mediaListService.getMediaWatchedInMoovieList(moovieListId);
+            int moviesCount = moovieListService.getMoovieListSize(moovieListId, false).get();
+            int tvSeriesCount = moovieListService.getMoovieListSize(moovieListId, true).get();
+            List<MoovieListContent> watchedMovies = mediaListService.getMediaWatchedInMoovieList(moovieListId);
             mav.addObject("mediaList", mediaList);
             mav.addObject("moovieListContent", moovieListContent);
             mav.addObject("listOwner", listOwner);
@@ -210,23 +213,22 @@ public class ListController {
             return mav;
         } else {
             final ModelAndView mav = new ModelAndView("helloworld/404.jsp");
-            mav.addObject("extraInfo", "The list with id: " +moovieListId+ " doesn't exists");
+            mav.addObject("extraInfo", "The list with id: " + moovieListId + " doesn't exists");
             return mav;
         }
     }
 
     @RequestMapping(value = "/like", method = RequestMethod.POST)
     public ModelAndView createReview(@RequestParam("listId") int listId) {
-        moovieListService.likeMoovieList( listId);
+        moovieListService.likeMoovieList(listId);
         return new ModelAndView("redirect:/list/" + listId);
     }
 
     @ModelAttribute("user")
-    public User getLoggedUser(){
-        try{
+    public User getLoggedUser() {
+        try {
             userService.getInfoOfMyUser();
-        }
-        catch (UnableToFindUserException exception){
+        } catch (UnableToFindUserException exception) {
             return null;
         }
         return userService.getInfoOfMyUser();
