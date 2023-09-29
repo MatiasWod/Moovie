@@ -7,8 +7,8 @@ import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
+import ar.edu.itba.paw.models.MoovieList.extendedMoovieList;
 import ar.edu.itba.paw.models.User.User;
-import ar.edu.itba.paw.models.Utils.Tuple;
 import ar.edu.itba.paw.services.GenreService;
 import ar.edu.itba.paw.services.MediaService;
 import ar.edu.itba.paw.services.MoovieListService;
@@ -23,7 +23,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -53,26 +55,23 @@ public class ListController {
             @RequestParam(value = "search", required = false) final String searchQ){
 
         final ModelAndView mav = new ModelAndView("helloworld/viewLists");
-        List<MoovieList> moovieLists = mediaListService.getAllMoovieLists(moovieListService.DEFAULT_PAGE_SIZE,0);
+        List<MoovieList> moovieLists = mediaListService.getAllMoovieLists(36,0);
+        ArrayList<extendedMoovieList> showLists = new ArrayList<extendedMoovieList>();
+        for (MoovieList movieList : moovieLists) {
+            if ((searchQ == null || searchQ.isEmpty()) || (movieList.getName().toLowerCase().contains(searchQ.toLowerCase()))) {
 
-        Map<User, Tuple<MoovieList,List<String>>> tupleHashMap = new HashMap<>();
-        moovieLists.forEach(list -> {
-            if (( searchQ == null || searchQ.isEmpty() ) || (list.getName().toLowerCase().contains(searchQ.toLowerCase()))){
-                Optional<User> optionalUser = userService.findUserById(list.getUserId());
-                if (optionalUser.isPresent()) {
-                    User user = optionalUser.get();
-                    List<String> innerList = new ArrayList<>();
-                    List<Media> mediaList = mediaService.getMoovieListContentByIdMediaBUpTo(list.getMoovieListId(),4);
-                    for(int i = 0 ; i < mediaList.size() ; i++){
-                        innerList.add(mediaList.get(i).getPosterPath());
-                    }
-                    Tuple<MoovieList,List<String>> innerTuple = new Tuple<>(list,innerList);
-                    tupleHashMap.put(user,innerTuple);
+                List<Media> mediaList = mediaService.getMoovieListContentByIdMediaBUpTo(movieList.getMoovieListId(), 4);
+                String[] posters = new String[mediaList.size()];
+                for (int i = 0; i < mediaList.size(); i++) {
+                    posters[i] = mediaList.get(i).getPosterPath();
                 }
+                showLists.add(new extendedMoovieList(movieList, userService.findUserById(movieList.getUserId()).get().getUsername(),
+                        moovieListService.getLikesCount(movieList.getMoovieListId()).get()
+                        , mediaListService.getMoovieListSize(movieList.getMoovieListId(), false).get(),mediaListService.getMoovieListSize(movieList.getMoovieListId(), true).get(),posters));
             }
-        });
+        }
+        mav.addObject("showLists", showLists);
 
-        mav.addObject("mapTuple", tupleHashMap);
         return mav;
     }
 

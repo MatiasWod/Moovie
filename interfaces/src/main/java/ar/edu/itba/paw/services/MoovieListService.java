@@ -2,13 +2,11 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
-
 import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
 import ar.edu.itba.paw.models.User.User;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 public interface MoovieListService {
 
@@ -31,4 +29,6 @@ public interface MoovieListService {
     MoovieListLikes removeLikeMoovieList( int moovieListId);
 
     List<MoovieList> likedMoovieListsForUser(int userId, int size, int pageNumber);   //Returns all moovieLists liked by user
+
+    Optional<Integer> getMoovieListSize(int moovieListId, Boolean type);
 }

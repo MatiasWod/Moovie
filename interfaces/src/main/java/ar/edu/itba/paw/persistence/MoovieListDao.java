@@ -2,13 +2,11 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
-
 import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
 import ar.edu.itba.paw.models.User.User;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 public interface MoovieListDao {
 
@@ -21,6 +19,7 @@ public interface MoovieListDao {
     List<MoovieList> getAllMoovieLists(int size, int pageNumber);
     Optional<Integer> getMoovieListCount();
     List<MoovieListContent> getMoovieListContentById(int moovieListId);
+
     MoovieList createMoovieList(int userId, String name, int type, String description);
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
     MoovieList createMoovieListWithContent(int userId, String name, int type, String description, List<Integer> mediaIdList);
@@ -33,4 +32,6 @@ public interface MoovieListDao {
     boolean likeMoovieListStatusForUser(int userId, int moovieListId);  //Return true if user liked the MoovieList
     List<MoovieList> likedMoovieListsForUser(int userId, int size, int pageNumber);   //Returns all moovieLists liked by user
     MoovieListLikes removeLikeMoovieList(int userId, int moovieListId);
+
+    Optional<Integer> getMoovieListSize(int moovieListId, Boolean type);
 }
