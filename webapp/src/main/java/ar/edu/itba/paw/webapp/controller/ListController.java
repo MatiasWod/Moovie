@@ -195,10 +195,18 @@ public class ListController {
             List<Media> mediaList = mediaService.getMediaByMoovieListId(moovieListId, mediaService.DEFAULT_PAGE_SIZE, 0);
             List<MoovieListContent> moovieListContent = moovieListService.getMoovieListContentById(moovieListId);
             String listOwner = userService.findUserById(moovieListData.get().getUserId()).get().getUsername();
-
+            int likeCount = moovieListService.getLikesCount(moovieListId).get();
+            int moviesCount= moovieListService.getMoovieListSize(moovieListId, false).get();
+            int tvSeriesCount= moovieListService.getMoovieListSize(moovieListId, true).get();
+            List<MoovieListContent> watchedMovies=mediaListService.getMediaWatchedInMoovieList(moovieListId);
             mav.addObject("mediaList", mediaList);
             mav.addObject("moovieListContent", moovieListContent);
             mav.addObject("listOwner", listOwner);
+            mav.addObject("likeCount", likeCount);
+            mav.addObject("moviesCount", moviesCount);
+            mav.addObject("tvSeriesCount", tvSeriesCount);
+            mav.addObject("watchedMovies", watchedMovies);
+            mav.addObject("watchedMoviesSize", watchedMovies.size());
             return mav;
         } else {
             final ModelAndView mav = new ModelAndView("helloworld/404.jsp");
