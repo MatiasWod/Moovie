@@ -223,6 +223,36 @@
     }
 }
 
+@keyframes moveGrass {
+    0% { transform: translateX(-10%); }
+    100% { transform: translateX(
+            10%); }
+}
+
+@keyframes moveGrassAlt {
+    0% { transform: translateX(-15%); }
+    50% {transform: translateX(25%);}
+    100% { transform: translateX(-15%); }
+}
+
+.grassImage {
+    position: relative;
+    bottom: -33%;
+    /*width: 700%;*/
+    overflow: hidden;
+    z-index: -1;
+    animation: moveGrass 10s linear infinite;
+}
+.grassImageAlt {
+    position: relative;
+    bottom: -33%;
+    /*width: 700%;*/
+    overflow: hidden;
+    z-index: -2;
+    /*animation: moveGrass 4s linear infinite;*/
+}
+
+
 @keyframes background {
     0% {
         transform: rotate(0deg);

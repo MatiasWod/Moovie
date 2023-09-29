@@ -53,7 +53,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .deleteCookies("remember-me")
                 .and().authorizeRequests()
                 .antMatchers("/login", "/register").anonymous()
-                .antMatchers("/createList", "/createreview", "/profile/**", "/uploadProfilePicture" ).hasRole("USER")
+                .antMatchers( "/createreview", "/profile/**", "/uploadProfilePicture" ).hasRole("USER")
                 .antMatchers("/**").permitAll()
                 .and().exceptionHandling()
                 .accessDeniedPage("/404")//deberia ser 403

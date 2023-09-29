@@ -1,20 +1,63 @@
 <%@    taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@    taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
-<body>
+<head>
+    <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/resources/logo.png" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link href="${pageContext.request.contextPath}/resources/main.css?version=55" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+    <title>Moovie - Login!</title>
+</head>
+<body style="background: linear-gradient(to bottom, lightskyblue, darkseagreen)">
+<div style="position: absolute;bottom: 0;height: 250%;width: 100%;overflow: hidden" class="d-flex">
+    <img class="grassImage" src="${pageContext.request.contextPath}/resources/grassLand.png"/>
+</div>
+<div style="position: absolute;bottom: 0;height: 250%;width: 100%;overflow: hidden" class="d-flex">
+    <img class="grassImage" style="animation-direction: reverse" src="${pageContext.request.contextPath}/resources/grassLand.png"/>
+</div>
+<div style="position: absolute;bottom: 0;height: 250%;width: 100%;overflow: hidden" class="d-flex">
+    <img class="grassImageAlt" style="left: -20%" src="${pageContext.request.contextPath}/resources/grassLand.png"/>
+</div>
+<div style="position: absolute;bottom: 0;height: 250%;width: 100%;overflow: hidden" class="d-flex">
+    <img class="grassImageAlt" style="right: -20%" src="${pageContext.request.contextPath}/resources/grassLand.png"/>
+</div>
+
+
 <c:url value="/login" var="loginUrl"/>
 <c:url value="/register" var="registerUrl"/>
 <c:url value="/" var="homeUrl"/>
-<form action="${loginUrl}" method="post" enctype="application/x-www-form-urlencoded">
-    <div>
-        <label for="username">Username: </label>
-        <input id="username" name="username" type="text"/></div>
-    <div><label for="password">Password: </label> <input id="password" name="password" type="password"/></div>
-    <div><label><input name="rememberme" type="checkbox"/>Remember Me</label></div>
-    <div><input type="submit" value="Login!"/></div>
-</form>
-<a class="m-4 btn btn-outline-success align-bottom" href="${registerUrl}">Register</a>
-<a class="m-4 btn btn-outline-success align-bottom" href="${homeUrl}">Continue as guest</a>
+
+<div style="border:solid black;width: 25%; height: 50%; position: absolute; left: 37.5%; padding: 5%; margin-top: 5%" class="container-gray align-items-center justify-content-center d-flex flex-column">
+
+    <form action="${loginUrl}" method="post" enctype="application/x-www-form-urlencoded">
+        <h1>Login</h1>
+        <div class="alignt-items-left text-left">
+            <div style="margin: 5px; width: 35%">
+                <label for="username">Username: </label>
+                <input id="username" name="username" type="text"/></div>
+            <div style="margin: 5px; width: 35%">
+                <label for="password">Password: </label>
+                <input id="password" name="password" type="password"/>
+            </div>
+            <div>
+                <label class="m-1">
+                    <input name="rememberme" type="checkbox"/> Remember Me
+                </label>
+            </div>
+        </div>
+
+        <div style="margin: 5px; width: 35%">
+            <input class="btn btn-outline-success align-bottom" type="submit" value="Login!"/>
+        </div>
+    </form>
+    <a style="width: 30%" class="mt-4 mb-1 btn btn-sm btn-outline-success align-bottom" href="${registerUrl}">Sign Up!</a>
+    <a class="align-bottom" href="${homeUrl}">Continue as guest</a>
+
+</div>
 
 </body>
 </html>

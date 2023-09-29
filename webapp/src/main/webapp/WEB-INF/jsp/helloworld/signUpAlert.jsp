@@ -1,0 +1,20 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: juana
+  Date: 9/29/2023
+  Time: 3:46 PM
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+
+<div style="border:solid black;width: 40%; height: 50%; position: absolute; left: 30%; padding: 5%; margin-top: 5%" class="container-gray justify-content-center d-flex flex-column">
+
+    <div class="text-center m-3">
+        <img style="height: 15vh"  src="resources/logo.png" alt="logo">
+        <h1>Lost?</h1>
+    </div>
+    <h5 class="text-center m-2">Sign up to Moovie to interact with the rest of the community</h5>
+    <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/register">Sign Up</a>
+</div>
+</html>

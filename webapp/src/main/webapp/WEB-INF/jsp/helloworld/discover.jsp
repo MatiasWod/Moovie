@@ -32,14 +32,14 @@
         <%--        FILTROS y PELIS    --%>
 
         <div class="container d-flex flex-column">
-          <%--  <div
-            <sec:authorize access="!isAuthenticated()">
-                <div>No estas autenticado</div>
-            </sec:authorize>
-            <sec:authorize access="isAuthenticated()">
-                <div>Estas autenticado</div>
-            </sec:authorize>
-            </div>--%>
+<%--            <div--%>
+<%--            <sec:authorize access="!isAuthenticated()">--%>
+<%--                <div>No estas autenticado</div>--%>
+<%--            </sec:authorize>--%>
+<%--            <sec:authorize access="isAuthenticated()">--%>
+<%--                <div>Estas autenticado</div>--%>
+<%--            </sec:authorize>--%>
+<%--            </div>--%>
 
             <c:if test="${searchMode}">
                 <div class="m-2">

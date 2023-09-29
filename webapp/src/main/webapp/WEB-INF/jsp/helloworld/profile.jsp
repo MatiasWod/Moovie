@@ -3,6 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <html>
 <head>
@@ -18,17 +19,22 @@
 <c:import url="navBar.jsp">
     <c:param name="userName" value="${user.username}"/>
 </c:import>
+<sec:authorize access="isAuthenticated()">
+    <h2>Username: <c:out value="${user.username}"/>!</h2>
+    <h2>Email: <c:out value="${user.email}"/>!</h2>
+    <h2> <c:if test="${isMe}">ITS YOU!</c:if></h2>
+    <img style="height: 20vh" src="${pageContext.request.contextPath}/profile/image/${user.username}">
 
-<h2>Username: <c:out value="${user.username}"/>!</h2>
-<h2>Email: <c:out value="${user.email}"/>!</h2>
-<h2> <c:if test="${isMe}">ITS YOU!</c:if></h2>
-<img src="${pageContext.request.contextPath}/profile/image/${user.username}">
+    <h2>Here Insert a couple of reviews</h2>
+    <h2>Here insert a couple of lists</h2>
 
-<h2>Here Insert a couple of reviews</h2>
-<h2>Here insert a couple of lists</h2>
+    <form action="${pageContext.request.contextPath}/uploadProfilePicture" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" />
+        <input type="submit" value="Submit" />
+    </form>
+</sec:authorize>
+<sec:authorize access="!isAuthenticated()">
+    <c:import url="signUpAlert.jsp"/>
+</sec:authorize>
 
-<form action="${pageContext.request.contextPath}/uploadProfilePicture" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" accept="image/*" />
-    <input type="submit" value="Submit" />
-</form>
 </body>
