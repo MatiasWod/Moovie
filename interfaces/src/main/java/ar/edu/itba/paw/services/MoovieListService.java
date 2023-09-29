@@ -36,4 +36,6 @@ public interface MoovieListService {
     MoovieListLikes removeLikeMoovieList( int moovieListId);
 
     List<MoovieList> likedMoovieListsForUser(int userId, int size, int pageNumber);   //Returns all moovieLists liked by user
+
+    List<MoovieList> getMoovieListBySearch(String searchString, int size, int pageNumber);
 }

@@ -37,5 +37,6 @@ public interface MoovieListDao {
     List<MoovieList> likedMoovieListsForUser(int userId, int size, int pageNumber);   //Returns all moovieLists liked by user
     MoovieListLikes removeLikeMoovieList(int userId, int moovieListId);
 
+    List<MoovieList> getMoovieListBySearch(String searchString, int size, int pageNumber);
 
 }

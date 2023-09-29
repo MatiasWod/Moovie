@@ -89,6 +89,11 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
     @Override
+    public List<MoovieList> getMoovieListBySearch(String searchString, int size, int pageNumber) {
+        return moovieListDao.getMoovieListBySearch(searchString, size, pageNumber);
+    }
+
+    @Override
     public MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList) {
         return moovieListDao.insertMediaIntoMoovieList(moovieListid, mediaIdList);
     }

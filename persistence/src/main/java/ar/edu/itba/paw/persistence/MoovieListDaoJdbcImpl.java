@@ -90,9 +90,15 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     @Override
+    public List<MoovieList> getMoovieListBySearch(String searchString, int size, int pageNumber){
+        return jdbcTemplate.query("SELECT * FROM moovieLists WHERE moovieLists.name ILIKE ? LIMIT ? OFFSET ?", new Object[]{'%' + searchString + '%', size, pageNumber * size}, MOOVIE_LIST_ROW_MAPPER);
+    }
+
+    @Override
     public List<MoovieList> getMoovieListDefaultPrivateFromUser(int userId) {
         return jdbcTemplate.query("SELECT * FROM moovieLists WHERE userId = ? AND type = ?",new Object[]{userId, MOOVIE_LIST_TYPE_DEFAULT_PRIVATE} , MOOVIE_LIST_ROW_MAPPER);
     }
+
 
     /**
      * INSERTS INTO MOOVIE LISTS
@@ -119,7 +125,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     @Override
-    public void deleteMoovieList(int userId, int mediIdList) {
+    public void deleteMoovieList(int userId, int mediaIdList) {
 
     }
 
