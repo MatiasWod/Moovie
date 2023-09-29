@@ -31,22 +31,22 @@
         <form:form modelAttribute="registerForm" action="${pageContext.request.contextPath}/register" method="post" class="">
             <h1>Sign Up</h1>
             <div class="">
-                <div style="margin: 5px; width: 40%">
+                <div style="margin: 5px; width: 50%">
                     <form:label path="username">Username: </form:label>
                     <form:input type="text" path="username"/>
                     <form:errors path="username" cssClass="formError" element="p"/>
                 </div>
-                <div style="margin: 5px; width: 40%">
+                <div style="margin: 5px; width: 50%">
                     <form:label path="email">Email: </form:label>
                     <form:input type="email" path="email"/>
                     <form:errors path="email" cssClass="formError" element="p"/>
                 </div>
-                <div style="margin: 5px; width: 40%">
+                <div style="margin: 5px; width: 50%">
                     <form:label path="password">Password: </form:label>
                     <form:input type="password" path="password" />
                     <form:errors path="password" cssClass="formError" element="p"/>
                 </div>
-                <div style="margin: 5px; width: 40%">
+                <div style="margin: 5px; width: 50%">
                     <form:label path="repeatPassword">Repeat password: </form:label>
                     <form:input type="password" path="repeatPassword"/>
                     <form:errors path="repeatPassword" cssClass="formError" element="p"/>
@@ -55,6 +55,11 @@
                     <input class="btn btn-outline-success align-bottom" type="submit" value="Register!"/>
 
                 </div>
+                <div style="margin: 5px;">
+                    Already have an account?
+                    <a href="${pageContext.request.contextPath}/login"> Log In!</a>
+                </div>
+
             </div>
         </form:form>
     </div>

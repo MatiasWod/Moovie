@@ -53,9 +53,16 @@
         <div style="margin: 5px; width: 35%">
             <input class="btn btn-outline-success align-bottom" type="submit" value="Login!"/>
         </div>
+        <div style="margin-top: 20px; margin-bottom: 2px">
+            Don't have an account?
+            <a href="${pageContext.request.contextPath}/login"> Sign Up!</a>
+
+        </div>
+        <div>
+            Continue
+            <a href="${homeUrl}"> without logging in</a>
+        </div>
     </form>
-    <a style="width: 30%" class="mt-4 mb-1 btn btn-sm btn-outline-success align-bottom" href="${registerUrl}">Sign Up!</a>
-    <a class="align-bottom" href="${homeUrl}">Continue as guest</a>
 
 </div>
 
