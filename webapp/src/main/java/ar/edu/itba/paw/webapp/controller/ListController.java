@@ -185,6 +185,27 @@ public class ListController {
         return mav;
     }
 
+    @RequestMapping("/profile/{username}/watchedList")
+    public ModelAndView watchedlist(@PathVariable("username") final String username) {
+        return getPrivateListMav("Watched");
+    }
+
+    @RequestMapping("/profile/{username}/watchList")
+    public ModelAndView watchlist(@PathVariable("username") final String username) {
+        return getPrivateListMav("Watchlist");
+    }
+
+    private ModelAndView getPrivateListMav(String name) {
+        final List<MoovieList> moovieListList = moovieListService.getMoovieListDefaultPrivateFromCurrentUser();
+        MoovieList toReturnList = null;
+        for (int i = 0 ; i < moovieListList.size() ; i++){
+            if(moovieListList.get(i).getName().equals(name)){
+                toReturnList = moovieListList.get(i);
+            }
+        }
+        return list(toReturnList.getMoovieListId());
+    }
+
     @RequestMapping("/list/{id:\\d+}")
     public ModelAndView list(@PathVariable("id") final int moovieListId) {
         Optional<MoovieList> moovieListData = moovieListService.getMoovieListById(moovieListId);
@@ -233,4 +254,5 @@ public class ListController {
         }
         return userService.getInfoOfMyUser();
     }
+
 }

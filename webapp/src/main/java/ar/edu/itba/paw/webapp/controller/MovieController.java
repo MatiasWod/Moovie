@@ -153,7 +153,6 @@ public class MovieController {
         return mav;
     }
 
-
     @RequestMapping(value = "/details/{id:\\d+}")
     public ModelAndView details(@PathVariable("id") final int mediaId, @ModelAttribute("detailsForm") final CreateReviewForm form) {
 

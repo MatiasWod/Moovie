@@ -55,7 +55,7 @@
         </div>
         <div style="margin-top: 20px; margin-bottom: 2px">
             Don't have an account?
-            <a href="${pageContext.request.contextPath}/login"> Sign Up!</a>
+            <a href="${pageContext.request.contextPath}/register"> Sign Up!</a>
 
         </div>
         <div>

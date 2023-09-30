@@ -22,7 +22,7 @@
 <sec:authorize access="isAuthenticated()">
     <div style="align-items: center" class="d-flex flex-column">
         <div class="d-flex container">
-            <img class="cropCenter" style="height:100px;width:100px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/profile/image/${user.username}">
+            <img class="cropCenter" style="height:100px;width:100px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/profile/image/${user.username}" onerror="this.src='../resources/defaultProfile.jpg'">
             <div>
                 <h1>${user.username}</h1>
                 <c:if test="${isMe}"><h5><c:out value="${user.email}"/></h5></c:if>
@@ -30,9 +30,7 @@
 
         </div>
         <h2><c:if test="${isMe}">Hello </c:if><c:out value="${user.username}"/>!</h2>
-        <h2>Email: <c:out value="${user.email}"/>!</h2>${pageContext.request.contextPath}/profile/image/${user.username}
-        <h2> </h2>
-        <img style="height: 20vh" src="">
+        <h2>Email: <c:out value="${user.email}"/>!</h2>
 
         <h2>Here Insert a couple of reviews</h2>
         <h2>Here insert a couple of lists</h2>

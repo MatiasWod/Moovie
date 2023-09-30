@@ -50,13 +50,14 @@
                                     <ul class="navbar-nav">
                                         <li class="nav-item dropdown">
                                             <button class="btn bg-transparent dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <img style="height: 50px; width: 50px; border:solid black; border-radius: 50%" class="cropCenter" src="${pageContext.request.contextPath}/profile/image/${param.userName}"/>
+                                                <img style="height: 50px; width: 50px; border:solid black; border-radius: 50%" class="cropCenter" src="${pageContext.request.contextPath}/profile/image/${param.userName}"
+                                                     onerror="this.src='../resources/defaultProfile.jpg'"/>
                                                     ${param.userName}
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end">
                                                 <li><a class="dropdown-item" href="${pageContext.request.contextPath}/profile/${param.userName}">Profile</a></li>
-                                                <li><a class="dropdown-item" href="#">My upcoming list</a></li>
-                                                <li><a class="dropdown-item" href="#">My watched list</a></li>
+                                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/profile/${param.userName}/watchList">My watch list</a></li>
+                                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/profile/${param.userName}/watchedList">My watched list</a></li>
                                                 <li><a class="dropdown-item" href="${pageContext.request.contextPath}/logout">Logout</a></li>
                                             </ul>
                                         </li>
