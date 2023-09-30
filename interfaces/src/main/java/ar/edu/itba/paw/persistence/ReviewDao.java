@@ -12,4 +12,5 @@ public interface ReviewDao {
     List<Review> getMovieReviewsFromUser(int userId);
     Review createReview(int userId, int mediaId, int rating, String reviewContent);
 
+    void deleteReview(int reviewId);
 }

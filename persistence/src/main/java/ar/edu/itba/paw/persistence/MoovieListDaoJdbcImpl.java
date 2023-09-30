@@ -143,8 +143,9 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     @Override
-    public void deleteMoovieList(int userId, int mediaIdList) {
-
+    public void deleteMoovieList(int moovieListId) {
+        String sqlDel = "DELETE FROM moovieLists WHERE moovieListId = " + moovieListId;
+        jdbcTemplate.execute(sqlDel);
     }
 
     @Override
