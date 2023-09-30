@@ -13,7 +13,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/resources/main.css?version=79" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/resources/details.css?version=79" rel="stylesheet"/>
-    <title>Moovie${media.name}</title>
+    <link href="${pageContext.request.contextPath}/resources/lists.css?version=60" rel="stylesheet"/>
+    <title>Moovie ${user.username}</title>
 </head>
 <script>
     document.addEventListener('DOMContentLoaded', (event) => {
@@ -114,7 +115,7 @@
         </div>
 
         <c:if test="${isMe}">
-            <div id="watched-list" style="display:none; margin-top: 30px">
+            <div class="container" id="watched-list" style="display:none; margin-top: 30px">
                 <div class="buttons">
 
                     <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -222,7 +223,7 @@
                 </table>
 
             </div>
-            <div id="watchlist" style="display:none; margin-top: 30px">
+            <div class="container" id="watchlist" style="display:none; margin-top: 30px">
 
                 <div class="buttons">
 
@@ -335,113 +336,125 @@
 
         </c:if>
 
-        <div id="liked-lists" class="lists-container" style="display:none; margin-top: 30px">
+        <div id="liked-lists" class="container lists-container" style="display:none; margin-top: 30px">
             <c:if test="${likedLists.size()==0}">
                 <h3><c:out value="${user.username}"/> has no liked lists</h3>
             </c:if>
-            <c:forEach var="list" items="${likedLists}">
-                <div class="list-card card"
-                     onclick="location.href='${pageContext.request.contextPath}/list/${list.moovieListId}'">
-                    <div class="list-img-container card-img-top">
-                        <c:forEach var="image" items="${list.posters}">
-                            <img class="cropCenterImage" src="${image}" alt="...">
-                        </c:forEach>
-                        <c:forEach begin="${fn:length(list.posters)}" end="3">
-                            <img class="cropCenterImage"
-                                 src=${pageContext.request.contextPath}/resources/defaultPoster.png alt="...">
-                        </c:forEach>
-                    </div>
-                    <div class="card-body cardBodyFlex">
-                        <div>
-                            <div class="card-name-likes">
-                                <div class="card-content overflow-hidden">
-                                    <h5 class="card-title"><strong><c:out value="${list.name}"/></strong></h5>
-                                </div>
-                                <div class="card-likes">
-                                    <h5><i class="bi bi-hand-thumbs-up"></i>${list.likes}</h5>
-                                </div>
-                            </div>
-                            <div style="display: flex;">
-                                <c:if test="${list.mooviesCount > 0}">
-                                    <p>${list.mooviesCount} Movies</p>
-                                </c:if>
-
-                                <c:if test="${list.mooviesCount > 0 && list.tvseriesCount > 0}">
-                                    <style>
-                                        p {
-                                            margin-right: 10px; /* Add a space between "Movies" and "Series" */
-                                        }
-                                    </style>
-                                </c:if>
-                                <c:if test="${list.tvseriesCount > 0}">
-                                    <p>${list.tvseriesCount} Series</p>
-                                </c:if>
-                            </div>
-                            <p style="max-height: 4.5rem" class="card-text overflow-hidden text-muted">by <c:out
-                                    value="${list.owner}"/>
-                            </p>
-                            <p style="max-height: 3.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" class="card-text">
-                                <c:out value="${list.description}"/>
-                            </p>
+            <div class="lists-container">
+                <c:forEach var="list" items="${likedLists}">
+                    <div class="list-card card"
+                         onclick="location.href='${pageContext.request.contextPath}/list/${list.moovieListId}'">
+                        <div class="list-img-container card-img-top">
+                            <c:forEach var="image" items="${list.posters}">
+                                <img class="cropCenterImage" src="${image}" alt="...">
+                            </c:forEach>
+                            <c:forEach begin="${fn:length(list.posters)}" end="3">
+                                <img class="cropCenterImage"
+                                     src=${pageContext.request.contextPath}/resources/defaultPoster.png alt="...">
+                            </c:forEach>
                         </div>
-                    </div>
+                        <div class="card-body cardBodyFlex">
+                            <div>
+                                <div class="card-name-likes">
+                                    <div class="card-content overflow-hidden">
+                                        <h5 class="card-title"><strong><c:out value="${list.name}"/></strong></h5>
+                                    </div>
+                                    <div class="card-likes">
+                                        <h5><i class="bi bi-hand-thumbs-up"></i>${list.likes}</h5>
+                                    </div>
+                                </div>
+                                <div style="display: flex;">
+                                    <c:if test="${list.mooviesCount > 0}">
+                                        <p>${list.mooviesCount} Movies</p>
+                                    </c:if>
 
-                </div>
-            </c:forEach>
+                                    <c:if test="${list.mooviesCount > 0 && list.tvseriesCount > 0}">
+                                        <style>
+                                            p {
+                                                margin-right: 10px; /* Add a space between "Movies" and "Series" */
+                                            }
+                                        </style>
+                                    </c:if>
+                                    <c:if test="${list.tvseriesCount > 0}">
+                                        <p>${list.tvseriesCount} Series</p>
+                                    </c:if>
+                                </div>
+                                <p style="max-height: 4.5rem" class="card-text overflow-hidden text-muted">by <c:out
+                                        value="${list.owner}"/>
+                                </p>
+                                <p style="max-height: 3.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" class="card-text">
+                                    <c:out value="${list.description}"/>
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </c:forEach>
+            </div>
+
+
         </div>
 
-        <div id="user-lists" class="lists-container" style="display:block; margin-top: 30px">
+        <div id="user-lists" class="container lists-container" style="display:block; margin-top: 30px">
             <c:if test="${userLists.size()==0}">
-                <h3><c:out value="${user.username}"/> has no lists</h3>
+                <div class="d-flex justify-content-center">
+                    <h3 class="m-1"><c:if test="${isMe}">You have</c:if><c:if test="${!isMe}"><c:out value="${user.username}"/> has</c:if> no lists</h3>
+                    <c:if test="${isMe}">
+                        <a class="m-1 btn btn-outline-success" href="${pageContext.request.contextPath}/createList">Create your first list!</a>
+                    </c:if>
+                </div>
             </c:if>
-            <c:forEach var="list" items="${userLists}">
-                <div class="list-card card"
-                     onclick="location.href='${pageContext.request.contextPath}/list/${list.moovieListId}'">
-                    <div class="list-img-container card-img-top">
-                        <c:forEach var="image" items="${list.posters}">
-                            <img class="cropCenterImage" src="${image}" alt="...">
-                        </c:forEach>
-                        <c:forEach begin="${fn:length(list.posters)}" end="3">
-                            <img class="cropCenterImage"
-                                 src=${pageContext.request.contextPath}/resources/defaultPoster.png alt="...">
-                        </c:forEach>
-                    </div>
-                    <div class="card-body cardBodyFlex">
-                        <div>
-                            <div class="card-name-likes">
-                                <div class="card-content overflow-hidden">
-                                    <h5 class="card-title"><strong><c:out value="${list.name}"/></strong></h5>
+            <div class="lists-container">
+                <c:forEach var="list" items="${userLists}">
+                    <div class="list-card card"
+                         onclick="location.href='${pageContext.request.contextPath}/list/${list.moovieListId}'">
+                        <div class="list-img-container card-img-top">
+                            <c:forEach var="image" items="${list.posters}">
+                                <img class="cropCenterImage" src="${image}" alt="...">
+                            </c:forEach>
+                            <c:forEach begin="${fn:length(list.posters)}" end="3">
+                                <img class="cropCenterImage"
+                                     src=${pageContext.request.contextPath}/resources/defaultPoster.png alt="...">
+                            </c:forEach>
+                        </div>
+                        <div class="card-body cardBodyFlex">
+                            <div>
+                                <div class="card-name-likes">
+                                    <div class="card-content overflow-hidden">
+                                        <h5 class="card-title"><strong><c:out value="${list.name}"/></strong></h5>
+                                    </div>
+                                    <div class="card-likes">
+                                        <h5><i class="bi bi-hand-thumbs-up"></i>${list.likes}</h5>
+                                    </div>
                                 </div>
-                                <div class="card-likes">
-                                    <h5><i class="bi bi-hand-thumbs-up"></i>${list.likes}</h5>
-                                </div>
-                            </div>
-                            <div style="display: flex;">
-                                <c:if test="${list.mooviesCount > 0}">
-                                    <p>${list.mooviesCount} Movies</p>
-                                </c:if>
+                                <div style="display: flex;">
+                                    <c:if test="${list.mooviesCount > 0}">
+                                        <p>${list.mooviesCount} Movies</p>
+                                    </c:if>
 
-                                <c:if test="${list.mooviesCount > 0 && list.tvseriesCount > 0}">
-                                    <style>
-                                        p {
-                                            margin-right: 10px; /* Add a space between "Movies" and "Series" */
-                                        }
-                                    </style>
-                                </c:if>
-                                <c:if test="${list.tvseriesCount > 0}">
-                                    <p>${list.tvseriesCount} Series</p>
-                                </c:if>
+                                    <c:if test="${list.mooviesCount > 0 && list.tvseriesCount > 0}">
+                                        <style>
+                                            p {
+                                                margin-right: 10px; /* Add a space between "Movies" and "Series" */
+                                            }
+                                        </style>
+                                    </c:if>
+                                    <c:if test="${list.tvseriesCount > 0}">
+                                        <p>${list.tvseriesCount} Series</p>
+                                    </c:if>
+                                </div>
+                                <p style="max-height: 4.5rem" class="card-text overflow-hidden text-muted">by <c:out
+                                        value="${list.owner}"/>
+                                </p>
+                                <p style="max-height: 3.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" class="card-text">
+                                    <c:out value="${list.description}"/>
+                                </p>
                             </div>
-                            <p style="max-height: 4.5rem" class="card-text overflow-hidden text-muted">by <c:out
-                                    value="${list.owner}"/>
-                            </p>
-                            <p style="max-height: 3.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" class="card-text">
-                                <c:out value="${list.description}"/>
-                            </p>
                         </div>
                     </div>
-                </div>
-            </c:forEach>
+                </c:forEach>
+            </div>
+
         </div>
 
         <div id="reviews" class="container lists-container" style="display:none; margin-top: 30px">

@@ -26,7 +26,7 @@ public interface MoovieListDao {
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
     MoovieList createMoovieListWithContent(int userId, String name, int type, String description, List<Integer> mediaIdList);
 
-    void deleteMoovieList(int userId, int moovieIdList);        //TODO NOT IMPLEMENTED YET
+    void deleteMoovieList(int moovieListId);
 
     List<MoovieListContent> getMediaWatchedInMoovieList(int userId, int moovieListId);
 

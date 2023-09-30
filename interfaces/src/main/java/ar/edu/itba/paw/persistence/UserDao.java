@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface UserDao {
 
+    public static final  int ROLE_BANNED = -2;
     public static final  int ROLE_NOT_AUTHENTICATED = -1;
     public static final int ROLE_UNREGISTERED = 0;
     public static final int ROLE_USER = 1;
@@ -20,11 +21,12 @@ public interface UserDao {
 
     Optional<User> findUserById(int userId);
     Optional<User> findUserByEmail(String email);
-
     Optional<User> findUserByUsername(String username);
 
     void setProfilePicture(int userId, byte[] image);
     void updateProfilePicture(int userId, byte[] image);
     Optional<Image> getProfilePicture(int id);
     boolean hasProfilePicture(int userId);
+
+    void changeUserRole(int userId, int role);
 }

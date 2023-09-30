@@ -83,4 +83,10 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
         final Number reviewId = reviewJdbcInsert.executeAndReturnKey(args);
         return new Review(reviewId.intValue(), userId, mediaId, rating, 0, reviewContent);
     }
+
+    @Override
+    public void deleteReview(int reviewId) {
+        String sqlDel = "DELETE FROM reviews WHERE reviewId = " + reviewId;
+        jdbcTemplate.execute(sqlDel);
+    }
 }
