@@ -11,14 +11,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="${pageContext.request.contextPath}/resources/main.css?version=55" rel="stylesheet"/>
-    <link href="${pageContext.request.contextPath}/resources/details.css?version=55" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/main.css?version=79" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/details.css?version=79" rel="stylesheet"/>
     <title>Moovie${media.name}</title>
 </head>
 <script>
     document.addEventListener('DOMContentLoaded', (event) => {
         const radioButtons = document.querySelectorAll('[name="btnradio"]');
-        const divs = document.querySelectorAll('#user-lists, #liked-lists, #reviews');
+        const divs = document.querySelectorAll('#user-lists, #liked-lists, #reviews, #watched-list, #watchlist');
 
         console.log(divs)
 
@@ -51,7 +51,7 @@
             </div>
         </div>
         <c:if test="${isMe}">
-            <div class="container d-flex justify-content-center">
+            <div class="p-1 container d-flex justify-content-center">
                 <h4 class="m-1">Edit Profile Picture:</h4>
                 <div class="m-1">
                     <form action="${pageContext.request.contextPath}/uploadProfilePicture" method="post" enctype="multipart/form-data">
@@ -61,51 +61,62 @@
                 </div>
             </div>
         </c:if>
-        <hr class="my-1">
-        <div>
-            Private lists:
-            <c:forEach items="${privateLists}" var="list">
-                <div>
-                        ${list}
-                        ${list.name}
-                        ${list.description}
-                        ${list.moovieListId}
-                        ${list.type}
-
-                </div>
-            </c:forEach>
+        <hr class="my-8">
+        <div class="d-flex container justify-content-center">
+            <div class="d-flex m-1 align-items-center">
+                <img height="30" width="30" src="${pageContext.request.contextPath}/resources/logo.png">
+                <h5>
+                        ${userLists.size()}
+                </h5>
+            </div>
+            <div class="m-1">
+                <h5>
+                    <i class="bi-hand-thumbs-up"></i>
+                        ${likedLists.size()}
+                </h5>
+            </div>
+            <div class="m-1">
+                <h5>
+                    <i class="bi-star"></i>
+                        ${notEmptyContentReviewList.size()}
+                </h5>
+            </div>
         </div>
-
-
-        <c:forEach items="${userLists}" var="list">
-            userLists:
-            <div>
-                    ${list}
-            </div>
-
-        </c:forEach>
-
-        <c:forEach items="${likedLists}" var="list">
-            likedLists:
-            <div>
-                    ${list}
-            </div>
-        </c:forEach>
+        <hr class="my-8">
 
         <div class="btn-group m-2" role="group" aria-label="Basic radio toggle button group">
+            <c:if test="${isMe}">
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio-watched-list" autocomplete="off">
+                <label class="btn btn-outline-success" for="btnradio-watched-list">Watched</label>
+            </c:if>
+
             <input type="radio" class="btn-check" name="btnradio" id="btnradio-user-lists" autocomplete="off" checked>
-            <label class="btn btn-outline-primary" for="btnradio-user-lists">User Lists</label>
+            <label class="btn btn-outline-success" for="btnradio-user-lists">User Lists</label>
 
             <input type="radio" class="btn-check" name="btnradio" id="btnradio-liked-lists" autocomplete="off">
-            <label class="btn btn-outline-primary" for="btnradio-liked-lists">Liked Lists</label>
+            <label class="btn btn-outline-success" for="btnradio-liked-lists">Liked Lists</label>
 
             <input type="radio" class="btn-check" name="btnradio" id="btnradio-reviews" autocomplete="off">
-            <label class="btn btn-outline-primary" for="btnradio-reviews">Reviews</label>
+            <label class="btn btn-outline-success" for="btnradio-reviews">Reviews</label>
+            <c:if test="${isMe}">
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio-watchlist" autocomplete="off">
+                <label class="btn btn-outline-success" for="btnradio-watchlist">Watchlist</label>
+            </c:if>
         </div>
+
+        <c:if test="${isMe}">
+            <div id="watched-list" style="display:none; margin-top: 30px">
+                HERE GOES WATCHED
+            </div>
+
+            <div id="watchlist" style="display:none; margin-top: 30px">
+                HERE GOES WATCHLIST
+            </div>
+        </c:if>
 
         <div id="liked-lists" class="lists-container" style="display:none; margin-top: 30px">
             <c:if test="${likedLists.size()==0}">
-                <h3><c:out value="${user.username}"/> has no liked movies</h3>
+                <h3><c:out value="${user.username}"/> has no liked lists</h3>
             </c:if>
             <c:forEach var="list" items="${likedLists}">
                 <div class="list-card card"
@@ -160,7 +171,7 @@
 
         <div id="user-lists" class="lists-container" style="display:block; margin-top: 30px">
             <c:if test="${userLists.size()==0}">
-                <h3><c:out value="${user.username}"/> has no liked movies</h3>
+                <h3><c:out value="${user.username}"/> has no lists</h3>
             </c:if>
             <c:forEach var="list" items="${userLists}">
                 <div class="list-card card"
@@ -208,7 +219,6 @@
                             </p>
                         </div>
                     </div>
-
                 </div>
             </c:forEach>
         </div>
@@ -224,15 +234,15 @@
                                 <div class="card-body">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <div class="d-flex align-items-center">
-                                            <a href="${pageContext.request.contextPath}/profile/${user.userId}" style="text-decoration: none; color: inherit;">
-                                                <img src="https://m.media-amazon.com/images/M/MV5BNjE3NDQyOTYyMV5BMl5BanBnXkFtZTcwODcyODU2Mw@@._V1_FMjpg_UX1000_.jpg"
+                                            <a href="${pageContext.request.contextPath}/details/${review.mediaId}" style="text-decoration: none; color: inherit;">
+                                                <img src="${review.mediaPosterPath}"
                                                      alt="${review.userId} Reviewer Profile" class="mr-3 rounded-circle"
                                                      width="64" height="64">
                                             </a>
                                             <div class="mt-0" style="margin-left: 15px">
-                                                <a href="${pageContext.request.contextPath}/profile/${user.userId}"
+                                                <a href="${pageContext.request.contextPath}/details/${review.mediaId}"
                                                    style="text-decoration: none; color: inherit;">
-                                                    <h5><c:out value="${user.username}"/></h5>
+                                                    <h5><c:out value="${review.mediaTitle}"/></h5>
                                                 </a>
                                             </div>
                                         </div>

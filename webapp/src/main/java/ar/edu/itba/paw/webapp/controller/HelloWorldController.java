@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.extendedMoovieList;
 import ar.edu.itba.paw.models.Review.Review;
+import ar.edu.itba.paw.models.Review.extendedReview;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
@@ -152,10 +153,15 @@ public class HelloWorldController {
             mav.addObject("userLists",finalUserLists);
 
             final List<Review> reviewList = reviewService.getMovieReviewsFromUser(aux.get().getUserId());
-            final List<Review> notEmptyContentReviewList = new ArrayList<>();
+            final List<extendedReview> notEmptyContentReviewList = new ArrayList<>();
             for (Review review : reviewList) {
                 if (review.getReviewContent() != null && !review.getReviewContent().isEmpty()) {
-                    notEmptyContentReviewList.add(review);
+//                    notEmptyContentReviewList.add(review);
+                    Media auxMedia = mediaService.getMediaById(review.getMediaId()).get();
+                    notEmptyContentReviewList.add(new extendedReview(review.getReviewId(),
+                            review.getUserId(),review.getMediaId(),review.getRating(),
+                            review.getReviewLikes(), review.getReviewContent(),
+                            auxMedia.getPosterPath(), auxMedia.getName()));
                 }
             }
             mav.addObject("notEmptyContentReviewList", notEmptyContentReviewList);
