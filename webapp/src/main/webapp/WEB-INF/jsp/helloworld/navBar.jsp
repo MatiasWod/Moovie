@@ -63,7 +63,6 @@
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end">
                                                 <li><a class="dropdown-item" href="${pageContext.request.contextPath}/profile/${param.userName}">Profile</a></li>
-                                                <li><a class="dropdown-item" href="#">My Watchlist</a></li>
                                                 <li><a class="dropdown-item" href="${pageContext.request.contextPath}/logout">Logout</a></li>
                                             </ul>
                                         </li>
