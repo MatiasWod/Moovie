@@ -10,5 +10,6 @@ public interface ReviewService {
     List<Review> getReviewsByMediaId(int mediaId);
 
     List<Review> getReviewForMoovieListFromUser(int moovieListId, int userId);
+    List<Review> getMovieReviewsFromUser(int userId);
     Review createReview( int mediaId, int rating, String reviewContent);
 }

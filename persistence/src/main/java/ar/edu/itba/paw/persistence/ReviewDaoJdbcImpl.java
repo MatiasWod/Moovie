@@ -48,6 +48,14 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
         return jdbcTemplate.query("SELECT reviews.* FROM reviews INNER JOIN moovielistscontent ON moovielistscontent.mediaId = reviews.mediaId WHERE reviews.userId = ?", new Object[]{userId + " AND moovielistscontent.moovielistId = " + moovieListId}, REVIEW_ROW_MAPPER);
     }
 
+    @Override
+    public List<Review> getMovieReviewsFromUser(int userId) {
+        String sql = "SELECT reviews.* FROM reviews " +
+                "JOIN media ON reviews.mediaId = media.mediaId " +
+                "WHERE reviews.userId = ?";
+        return jdbcTemplate.query(sql, new Object[]{userId}, REVIEW_ROW_MAPPER);
+    }
+
     public boolean userInMediaHasReview(int userId, int mediaId){
         Optional<Review> r = jdbcTemplate.query("SELECT * FROM reviews WHERE mediaId = ? AND userId= ? ",new Object[]{mediaId,userId},  REVIEW_ROW_MAPPER).stream().findFirst();
         if(r.isPresent()){
