@@ -8,14 +8,10 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import ar.edu.itba.paw.models.User.Token;
-import ar.edu.itba.paw.models.User.User;
-import ar.edu.itba.paw.persistence.UserDao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import sun.security.util.Password;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -50,7 +46,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User createUser(String username, String email, String password){
+    public void createUser(String username, String email, String password){
         if(userDao.findUserByUsername(username).isPresent()){
             throw new UnableToCreateUserException("username_taken");
         }
@@ -61,7 +57,7 @@ public class UserServiceImpl implements UserService {
                 User user = createUserFromUnregistered(username, email, password);
                 String token = verificationTokenService.createVerificationToken(user.getUserId());
                 sendVerificationEmail(email,username,token);
-                return user;
+                return;
             } else{
                 throw new UnableToCreateUserException("email_taken");
             }
@@ -69,7 +65,6 @@ public class UserServiceImpl implements UserService {
         User user = userDao.createUser(username, email, passwordEncoder.encode(password));
         String token = verificationTokenService.createVerificationToken(user.getUserId());
         sendVerificationEmail(email,username,token);
-        return user;
     }
 
     @Override

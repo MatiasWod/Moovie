@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
+import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.MoovieList.extendedMoovieList;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.Review.extendedReview;
@@ -11,7 +12,8 @@ import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
 import ar.edu.itba.paw.webapp.form.RegisterForm;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -44,7 +46,7 @@ public class HelloWorldController {
 
     @Autowired
     ReviewService reviewService;
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
 
     @RequestMapping("/{id:\\d+}")
     public ModelAndView profile(@PathVariable("id") final long userId) {
@@ -80,6 +82,7 @@ public class HelloWorldController {
     @RequestMapping(value = "/register/confirm")
     public ModelAndView confirmRegistration(@RequestParam("token") final String token) {
         Token verificationToken = verificationTokenService.getToken(token).orElseThrow(VerificationTokenNotFoundException::new);
+        LOGGER.debug("Verification token: " + verificationToken.getToken());
         if(userService.confirmRegister(verificationToken)) {
             return new ModelAndView("redirect:/login");
 
@@ -113,14 +116,45 @@ public class HelloWorldController {
     public ModelAndView profilePage(@PathVariable String username){
         Optional<User> aux = userService.findUserByUsername(username);
         if(aux.isPresent()){
+
             ModelAndView mav = new ModelAndView("helloworld/profile");
             mav.addObject("user", aux.get() );
+            User myUser = userService.getInfoOfMyUser();
+            mav.addObject("myUser", myUser);
+
             Boolean owner = userService.isUsernameMe(username);
             mav.addObject("isMe", owner);
             if (owner){
-                mav.addObject("privateLists", moovieListService.getMoovieListDefaultPrivateFromCurrentUser());
+                List<MoovieList> privateLists = moovieListService.getMoovieListDefaultPrivateFromCurrentUser();
+                mav.addObject("privateLists", privateLists);
+                privateLists.forEach(list -> {
+
+                    int moovieListId = list.getMoovieListId();
+                    String listName = list.getName();
+
+                    boolean isLiked = moovieListService.likeMoovieListStatusForUser(moovieListId);
+                    mav.addObject("isLiked" + listName, isLiked);
+                    mav.addObject("moovieList" + listName, list);
+
+                    List<Media> mediaList = mediaService.getMediaByMoovieListId(moovieListId, mediaService.DEFAULT_PAGE_SIZE, 0);
+                    List<MoovieListContent> moovieListContent = moovieListService.getMoovieListContentById(moovieListId);
+                    String listOwner = myUser.getUsername();
+                    int likeCount = moovieListService.getLikesCount(moovieListId).get();
+                    int moviesCount = moovieListService.getMoovieListSize(moovieListId, false).get();
+                    int tvSeriesCount = moovieListService.getMoovieListSize(moovieListId, true).get();
+                    List<MoovieListContent> watchedMovies = moovieListService.getMediaWatchedInMoovieList(moovieListId);
+                    mav.addObject("mediaList" + listName, mediaList);
+                    mav.addObject("moovieListContent" + listName, moovieListContent);
+                    mav.addObject("listOwner" + listName, listOwner);
+                    mav.addObject("likeCount" + listName, likeCount);
+                    mav.addObject("moviesCount" + listName, moviesCount);
+                    mav.addObject("tvSeriesCount" + listName, tvSeriesCount);
+                    mav.addObject("watchedMovies" + listName, watchedMovies);
+                    mav.addObject("watchedMoviesSize" + listName, watchedMovies.size());
+
+                });
             }
-            mav.addObject("myUser",userService.getInfoOfMyUser());
+
 
             List<MoovieList> likedLists = moovieListService.likedMoovieListsForUser(aux.get().getUserId(),MoovieListService.DEFAULT_PAGE_SIZE,0);
             ArrayList<extendedMoovieList> finalLikedLists = new ArrayList<extendedMoovieList>();
@@ -165,6 +199,9 @@ public class HelloWorldController {
                 }
             }
             mav.addObject("notEmptyContentReviewList", notEmptyContentReviewList);
+
+
+
 
             return mav;
         }

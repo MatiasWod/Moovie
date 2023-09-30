@@ -10,7 +10,7 @@
         <h2 th:text="#{email.greeting}"></h2>
         <p th:text="#{email.welcome (${username})}"></p>
         <p th:text="#{email.confirmation}"></p>
-        <a th:href="@{http://localhost:8080/register/confirm(token=${token})}">
+        <a th:href="@{${#httpServletRequest.contextPath}/register/confirm(token=${token})}">
             <button th:text="#{email.verify}"></button>
         </a>
     </div>
