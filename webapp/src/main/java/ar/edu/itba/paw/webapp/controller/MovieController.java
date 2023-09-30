@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Genre.Genre;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
+import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.Provider.Provider;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.TV.TVCreators;
@@ -51,6 +52,7 @@ public class MovieController {
     private TVCreatorsService tvCreatorsService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MovieController.class);
+
     @RequestMapping("/")
     public ModelAndView home() {
         final ModelAndView mav = new ModelAndView("helloworld/index");
@@ -67,8 +69,6 @@ public class MovieController {
         final ModelAndView mav = new ModelAndView("helloworld/discover");
 
 
-
-
         List<Movie> movieList;
         List<TVSerie> tvSerieList;
         List<Media> mediaList;
@@ -77,24 +77,24 @@ public class MovieController {
             if (media != null && media.equals("Movies")) {
                 movieList = mediaService.getMovieFilteredByGenreList(genres, mediaService.DEFAULT_PAGE_SIZE, 0);
                 movieList.forEach(movie -> {
-                    if (movie.getOverview().contains("\n")){
-                        movie.setOverview(movie.getOverview().replace("\n",""));
+                    if (movie.getOverview().contains("\n")) {
+                        movie.setOverview(movie.getOverview().replace("\n", ""));
                     }
                 });
                 mav.addObject("mediaList", movieList);
             } else if (media != null && media.equals("Series")) {
                 tvSerieList = mediaService.getTvFilteredByGenreList(genres, mediaService.DEFAULT_PAGE_SIZE, 0);
                 tvSerieList.forEach(mediaAux -> {
-                    if (mediaAux.getOverview().contains("\n")){
-                        mediaAux.setOverview(mediaAux.getOverview().replace("\n",""));
+                    if (mediaAux.getOverview().contains("\n")) {
+                        mediaAux.setOverview(mediaAux.getOverview().replace("\n", ""));
                     }
                 });
                 mav.addObject("mediaList", tvSerieList);
             } else {
                 mediaList = mediaService.getMediaFilteredByGenreList(genres, mediaService.DEFAULT_PAGE_SIZE, 0);
                 mediaList.forEach(mediaAux -> {
-                    if (mediaAux.getOverview().contains("\n")){
-                        mediaAux.setOverview(mediaAux.getOverview().replace("\n",""));
+                    if (mediaAux.getOverview().contains("\n")) {
+                        mediaAux.setOverview(mediaAux.getOverview().replace("\n", ""));
                     }
                 });
                 mav.addObject("mediaList", mediaList);
@@ -102,24 +102,24 @@ public class MovieController {
         } else if (media != null && media.equals("Movies")) {
             movieList = mediaService.getMovieList(mediaService.DEFAULT_PAGE_SIZE, 0);
             movieList.forEach(movie -> {
-                if (movie.getOverview().contains("\n")){
-                    movie.setOverview(movie.getOverview().replace("\n",""));
+                if (movie.getOverview().contains("\n")) {
+                    movie.setOverview(movie.getOverview().replace("\n", ""));
                 }
             });
             mav.addObject("mediaList", movieList);
         } else if (media != null && media.equals("Series")) {
             tvSerieList = mediaService.getTvList(mediaService.DEFAULT_PAGE_SIZE, 0);
             tvSerieList.forEach(mediaAux -> {
-                if (mediaAux.getOverview().contains("\n")){
-                    mediaAux.setOverview(mediaAux.getOverview().replace("\n",""));
+                if (mediaAux.getOverview().contains("\n")) {
+                    mediaAux.setOverview(mediaAux.getOverview().replace("\n", ""));
                 }
             });
             mav.addObject("mediaList", tvSerieList);
         } else {
             mediaList = mediaService.getMoovieList(mediaService.DEFAULT_PAGE_SIZE, 0);
             mediaList.forEach(mediaAux -> {
-                if (mediaAux.getOverview().contains("\n")){
-                    mediaAux.setOverview(mediaAux.getOverview().replace("\n",""));
+                if (mediaAux.getOverview().contains("\n")) {
+                    mediaAux.setOverview(mediaAux.getOverview().replace("\n", ""));
                 }
             });
             mav.addObject("mediaList", mediaList);
@@ -142,8 +142,8 @@ public class MovieController {
         List<Media> mediaList = mediaService.getMediaBySearch(query, mediaService.DEFAULT_PAGE_SIZE, 0);
 
         mediaList.forEach(media -> {
-            if (media.getOverview().contains("\n")){
-                media.setOverview(media.getOverview().replace("\n",""));
+            if (media.getOverview().contains("\n")) {
+                media.setOverview(media.getOverview().replace("\n", ""));
             }
         });
 
@@ -159,9 +159,9 @@ public class MovieController {
 
         final Optional<Media> media = mediaService.getMediaById(mediaId);
 
-        if(! media.isPresent()){
+        if (!media.isPresent()) {
             final ModelAndView mav = new ModelAndView("helloworld/404.jsp");
-            mav.addObject("extraInfo", "The media with id: " +mediaId+ " doesn't exists");
+            mav.addObject("extraInfo", "The media with id: " + mediaId + " doesn't exists");
             return mav;
         }
 
@@ -176,8 +176,12 @@ public class MovieController {
             }
         }
 
+        if (getLoggedUser() != null) {
+            final List<MoovieList> privateLists = moovieListService.getMoovieListDefaultPrivateFromCurrentUser();
+            mav.addObject("privateLists", privateLists);
+        }
 
-        final List<Provider> providerList=providerService.getProviderForMedia(mediaId);
+        final List<Provider> providerList = providerService.getProviderForMedia(mediaId);
 
         Map<Integer, String> username = new HashMap<>();
         for (Review review : reviewList) {
@@ -214,12 +218,17 @@ public class MovieController {
         return new ModelAndView("redirect:/details/" + form.getMediaId());
     }
 
+    @RequestMapping(value = "/insertMediaToList", method = RequestMethod.POST)
+    public ModelAndView insertMediaToList(@RequestParam("listId") int listId, @RequestParam("mediaId") int mediaId) {
+        moovieListService.insertMediaIntoMoovieList(mediaId, Collections.singletonList(listId));
+        return new ModelAndView("redirect:/details/" + mediaId);
+    }
+
     @ModelAttribute("user")
-    public User getLoggedUser(){
-        try{
+    public User getLoggedUser() {
+        try {
             userService.getInfoOfMyUser();
-        }
-        catch (UnableToFindUserException exception){
+        } catch (UnableToFindUserException exception) {
             return null;
         }
         return userService.getInfoOfMyUser();

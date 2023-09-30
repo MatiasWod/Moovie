@@ -6,7 +6,7 @@
 
 <html>
 <head>
-    <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/resources/logo.png" />
+    <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/resources/logo.png"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
@@ -187,12 +187,25 @@
 
             <!-- Description and Buttons-->
             <p>${media.overview}</p>
-            <!--
-            <button type="button" class="btn btn-dark"><i class="bi bi-plus-circle-fill"></i> Add to list
-            </button> -->
-            <button type="button" class="btn btn-light border border-black" onclick="openReviewPopup()"><i
-                    class="bi bi-star-fill"></i> Rate
-            </button>
+            <div class="flex-row d-flex">
+                <div class="dropdown">
+                    <div class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i
+                            class="bi bi-plus-circle-fill"></i> Add to list
+                    </div>
+                    <ul class="dropdown-menu">
+                        <c:forEach var="privateList" items="${privateLists}">
+                            <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
+                                <input type="hidden" name="listId" value="${privateList.moovieListId}"/>
+                                <input type="hidden" name="mediaId" value="${media.mediaId}"/>
+                                <li><button class="dropdown-item" type="submit"> ${privateList.name}</button></li>
+                            </form>
+                        </c:forEach>
+                    </ul>
+                </div>
+                <button type="button" class="btn btn-light border border-black" onclick="openReviewPopup()"><i
+                        class="bi bi-star-fill"></i> Rate
+                </button>
+            </div>
 
         </div>
         <!-- Cast -->
@@ -215,8 +228,8 @@
                                     <c:otherwise>
                                         <img
                                                 src="${actor.profilePath}"
-                                        alt="${actor.actorName} picture"
-                                        style="max-width: 150px; max-height: 150px; border-radius: 5px;">
+                                                alt="${actor.actorName} picture"
+                                                style="max-width: 150px; max-height: 150px; border-radius: 5px;">
                                     </c:otherwise>
                                 </c:choose>
                             </div>
@@ -257,10 +270,10 @@
             <form:form modelAttribute="detailsForm" action="${pageContext.request.contextPath}/createrating"
                        method="POST">
                 <form:textarea path="reviewContent" class="review-textarea" id="reviewContent" rows="3"
-                          placeholder="Your review (Optional)" maxlength="500" />
+                               placeholder="Your review (Optional)" maxlength="500"/>
                 <span><span id="charCount" class="text-muted">0</span>/500</span>
                 <form:input path="mediaId" type="hidden" id="mediaId" value="${media.mediaId}"/>
-                <form:input path="rating" type="hidden" id="rating" />
+                <form:input path="rating" type="hidden" id="rating"/>
 
                 <form:errors path="reviewContent" cssClass="error"/>
                 <form:errors path="rating" cssClass="error"/>
@@ -286,32 +299,32 @@
             <c:when test="${fn:length(notEmptyContentReviewList)>0}">
                 <div class="scrollableDiv">
                     <c:forEach var="review" items="${notEmptyContentReviewList}">
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <div class="d-flex align-items-center">
-                                            <a href="${pageContext.request.contextPath}/profile/${username[review.userId]}"
-                                               style="text-decoration: none; color: inherit;">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <a href="${pageContext.request.contextPath}/profile/${username[review.userId]}"
+                                           style="text-decoration: none; color: inherit;">
                                             <img src="https://m.media-amazon.com/images/M/MV5BNjE3NDQyOTYyMV5BMl5BanBnXkFtZTcwODcyODU2Mw@@._V1_FMjpg_UX1000_.jpg"
                                                  alt="${review.userId} Reviewer Profile" class="mr-3 rounded-circle"
                                                  width="64" height="64">
+                                        </a>
+                                        <div class="mt-0" style="margin-left: 15px">
+                                            <a href="${pageContext.request.contextPath}/profile/${username[review.userId]}"
+                                               style="text-decoration: none; color: inherit;">
+                                                <h5><c:out value="${username[review.userId]}"/></h5>
                                             </a>
-                                            <div class="mt-0" style="margin-left: 15px">
-                                                <a href="${pageContext.request.contextPath}/profile/${username[review.userId]}"
-                                                   style="text-decoration: none; color: inherit;">
-                                                    <h5><c:out value="${username[review.userId]}"/></h5>
-                                                </a>
-                                            </div>
                                         </div>
-                                        <h5 class="align-items-left"><i
-                                                class="bi bi-star-fill ml-2"></i> ${review.rating}/10
-                                        </h5>
                                     </div>
-                                    <p>
-                                            <c:out value="${review.reviewContent}"/>
-                                    </p>
+                                    <h5 class="align-items-left"><i
+                                            class="bi bi-star-fill ml-2"></i> ${review.rating}/10
+                                    </h5>
                                 </div>
+                                <p>
+                                    <c:out value="${review.reviewContent}"/>
+                                </p>
                             </div>
+                        </div>
                     </c:forEach>
                 </div>
             </c:when>
