@@ -73,8 +73,8 @@ public class HelloWorldController {
         try{
             userService.createUser(form.getUsername(), form.getEmail(), form.getPassword());
         } catch (UnableToCreateUserException e){
-            return new ModelAndView("redirect:/register?error:" + e.getMessage());
-        }
+            return new ModelAndView("redirect:/register?error=" + e.getMessage());
+        } 
 
         return new ModelAndView("redirect:/login");
     }
@@ -216,11 +216,11 @@ public class HelloWorldController {
         try {
             userService.setProfilePicture(picture);
         }catch (InvalidTypeException e) {
-            return "redirect:" + referer + "?error:invalidType";
+            return "redirect:" + referer + "?error=invalidType";
         } catch (NoFileException e) {
-            return "redirect:" + referer + "?error:noFile";
+            return "redirect:" + referer + "?error=noFile";
         } catch (FailedToSetProfilePictureException e) {
-            return "redirect:" + referer + "?error:failedSetProfilePicture";
+            return "redirect:" + referer + "?error=failedSetProfilePicture";
         }
         return "redirect:" + referer;
     }
