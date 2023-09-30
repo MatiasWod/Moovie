@@ -152,7 +152,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     @Override
     public List<Integer> getMediaWatchedInMoovieList(int userId, int moovieListId) {
-        return jdbcTemplate.query("SELECT mediaId FROM moovieListsContent WHERE moovieListId = ? AND mediaId IN ( SELECT  mediaId FROM moovieListsContent WHERE moovielistid IN (SELECT moovieListId FROM moovieLists WHERE userId = ? AND name = 'Watchlist'))", new Object[]{moovieListId,userId} , MEDIAID_LIST_ROWMAPPER);
+        return jdbcTemplate.query("SELECT mediaId FROM moovieListsContent WHERE moovieListId = ? AND mediaId IN ( SELECT  mediaId FROM moovieListsContent WHERE moovielistid IN (SELECT moovieListId FROM moovieLists WHERE userId = ? AND name = 'Watched'))", new Object[]{moovieListId,userId} , MEDIAID_LIST_ROWMAPPER);
     }
 
     @Override
