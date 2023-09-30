@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.webapp.form;
 
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Pattern;
@@ -8,9 +7,6 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 public class CreateListForm {
-    @Email(message = "Please enter a valid email")
-    @NotEmpty(message = "Please enter an email")
-    private String userEmail;
 
     private List<Integer> mediaIdsList;
     @NotEmpty(message = "Please enter a list name")
@@ -34,13 +30,6 @@ public class CreateListForm {
         this.mediaIdsList = mediaIdsList;
     }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
-    }
 
     public String getListName() {
         return listName;
