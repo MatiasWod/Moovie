@@ -1,8 +1,5 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
-import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
-import ar.edu.itba.paw.exceptions.NoObjectForIDEXception;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
@@ -75,7 +72,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     }*/
 
     @Override
-    public List<MoovieListContent> getMediaWatchedInMoovieList(int moovieListId) {
+    public List<Integer> getMediaIdsWatchedInMoovieList(int moovieListId) {
         int uid = userService.getInfoOfMyUser().getUserId();
         return moovieListDao.getMediaWatchedInMoovieList( uid , moovieListId);
     }

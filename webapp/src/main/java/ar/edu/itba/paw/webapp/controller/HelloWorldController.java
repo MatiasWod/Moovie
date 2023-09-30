@@ -142,7 +142,7 @@ public class HelloWorldController {
                     int likeCount = moovieListService.getLikesCount(moovieListId).get();
                     int moviesCount = moovieListService.getMoovieListSize(moovieListId, false).get();
                     int tvSeriesCount = moovieListService.getMoovieListSize(moovieListId, true).get();
-                    List<MoovieListContent> watchedMovies = moovieListService.getMediaWatchedInMoovieList(moovieListId);
+                    List<Integer> watchedMovies = moovieListService.getMediaIdsWatchedInMoovieList(moovieListId);
                     mav.addObject("mediaList" + listName, mediaList);
                     mav.addObject("moovieListContent" + listName, moovieListContent);
                     mav.addObject("listOwner" + listName, listOwner);

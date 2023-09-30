@@ -45,6 +45,8 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     private static final RowMapper<Integer> COUNT_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("count"));
 
+    private static final RowMapper<Integer> MEDIAID_LIST_ROWMAPPER = ((resultSet, i) -> resultSet.getInt("mediaId"));
+
     @Autowired
     public MoovieListDaoJdbcImpl(final DataSource dataSource){
         jdbcTemplate = new JdbcTemplate(dataSource);
@@ -149,8 +151,8 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     @Override
-    public List<MoovieListContent> getMediaWatchedInMoovieList(int userId, int moovieListId) {
-        return jdbcTemplate.query("SELECT * FROM moovieListsContent WHERE moovieListId = ? AND mediaId IN ( SELECT  mediaId FROM moovieListsContent WHERE moovielistid IN (SELECT moovieListId FROM moovieLists WHERE userId = ? AND name = 'Watchlist'))", new Object[]{moovieListId, userId} , MOOVIE_LIST_CONTENT_ROW_MAPPER);
+    public List<Integer> getMediaWatchedInMoovieList(int userId, int moovieListId) {
+        return jdbcTemplate.query("SELECT mediaId FROM moovieListsContent WHERE moovieListId = ? AND mediaId IN ( SELECT  mediaId FROM moovieListsContent WHERE moovielistid IN (SELECT moovieListId FROM moovieLists WHERE userId = ? AND name = 'Watched'))", new Object[]{moovieListId,userId} , MEDIAID_LIST_ROWMAPPER);
     }
 
     @Override
