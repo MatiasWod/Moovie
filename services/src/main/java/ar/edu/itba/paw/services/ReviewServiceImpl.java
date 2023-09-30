@@ -31,6 +31,11 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
+    public List<Review> getMovieReviewsFromUser(int userId) {
+        return reviewDao.getMovieReviewsFromUser(userId);
+    }
+
+    @Override
     public Review createReview(int mediaId, int rating, String reviewContent) {
         int userId = userService.getInfoOfMyUser().getUserId();
         return reviewDao.createReview(userId, mediaId, rating, reviewContent);

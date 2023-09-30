@@ -12,26 +12,14 @@
             crossorigin="anonymous"></script>
     <title>Moovie - Login!</title>
 </head>
-<body style="background: linear-gradient(to bottom, lightskyblue, darkseagreen)">
-<div style="position: absolute;bottom: 0;height: 250%;width: 100%;overflow: hidden" class="d-flex">
-    <img class="grassImage" src="${pageContext.request.contextPath}/resources/grassLand.png"/>
-</div>
-<div style="position: absolute;bottom: 0;height: 250%;width: 100%;overflow: hidden" class="d-flex">
-    <img class="grassImage" style="animation-direction: reverse" src="${pageContext.request.contextPath}/resources/grassLand.png"/>
-</div>
-<div style="position: absolute;bottom: 0;height: 250%;width: 100%;overflow: hidden" class="d-flex">
-    <img class="grassImageAlt" style="left: -20%" src="${pageContext.request.contextPath}/resources/grassLand.png"/>
-</div>
-<div style="position: absolute;bottom: 0;height: 250%;width: 100%;overflow: hidden" class="d-flex">
-    <img class="grassImageAlt" style="right: -20%" src="${pageContext.request.contextPath}/resources/grassLand.png"/>
-</div>
+<body style="background:whitesmoke">
 
 
 <c:url value="/login" var="loginUrl"/>
 <c:url value="/register" var="registerUrl"/>
 <c:url value="/" var="homeUrl"/>
 
-<div style="border:solid black;width: 25%; height: 50%; position: absolute; left: 37.5%; padding: 5%; margin-top: 5%" class="container-gray align-items-center justify-content-center d-flex flex-column">
+<div style="border:solid black;width: 25%; height: 60%; position: absolute; left: 37.5%; padding: 5%; margin-top: 5%" class="container-gray align-items-center justify-content-center d-flex flex-column">
 
     <form action="${loginUrl}" method="post" enctype="application/x-www-form-urlencoded">
         <h1>Login</h1>
