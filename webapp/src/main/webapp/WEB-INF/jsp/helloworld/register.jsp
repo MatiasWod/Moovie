@@ -13,57 +13,45 @@
             crossorigin="anonymous"></script>
     <title>Moovie - Sign Up!</title>
 </head>
-<body style="background: linear-gradient(to bottom, lightskyblue, darkseagreen)">
-<div style="position: absolute;bottom: 0;height: 250%;width: 100%;overflow: hidden" class="d-flex">
-    <img class="grassImage" src="${pageContext.request.contextPath}/resources/grassLand.png"/>
-</div>
-<div style="position: absolute;bottom: 0;height: 250%;width: 100%;overflow: hidden" class="d-flex">
-    <img class="grassImage" style="animation-direction: reverse" src="${pageContext.request.contextPath}/resources/grassLand.png"/>
-</div>
-<div style="position: absolute;bottom: 0;height: 250%;width: 100%;overflow: hidden" class="d-flex">
-    <img class="grassImageAlt" style="left: -20%" src="${pageContext.request.contextPath}/resources/grassLand.png"/>
-</div>
-<div style="position: absolute;bottom: 0;height: 250%;width: 100%;overflow: hidden" class="d-flex">
-    <img class="grassImageAlt" style="right: -20%" src="${pageContext.request.contextPath}/resources/grassLand.png"/>
-</div>
-<div style="border:solid black;width: 25%; height: 50%; position: absolute; left: 37.5%; padding: 5%; margin-top: 5%" class="container-gray align-items-center justify-content-center d-flex flex-column">
-    <div style="align-content: center; align-items: center">
+<body style="background: whitesmoke">
+    <div style="border: solid black; width: fit-content" class="container-gray container d-flex flex-column p-3 mt-5">
+        <h1>Sign Up</h1>
         <form:form modelAttribute="registerForm" action="${pageContext.request.contextPath}/register" method="post" class="">
-            <h1>Sign Up</h1>
-            <div class="">
-                <div style="margin: 5px; width: 50%">
-                    <form:label path="username">Username: </form:label>
+            <div class="me-5 d-flex flex-column">
+                <form:label path="username">Username: </form:label>
+                <div>
                     <form:input type="text" path="username"/>
-                    <form:errors path="username" cssClass="formError" element="p"/>
                 </div>
-                <div style="margin: 5px; width: 50%">
-                    <form:label path="email">Email: </form:label>
-                    <form:input type="email" path="email"/>
-                    <form:errors path="email" cssClass="formError" element="p"/>
-                </div>
-                <div style="margin: 5px; width: 50%">
-                    <form:label path="password">Password: </form:label>
-                    <form:input type="password" path="password" />
-                    <form:errors path="password" cssClass="formError" element="p"/>
-                </div>
-                <div style="margin: 5px; width: 50%">
-                    <form:label path="repeatPassword">Repeat password: </form:label>
-                    <form:input type="password" path="repeatPassword"/>
-                    <form:errors path="repeatPassword" cssClass="formError" element="p"/>
-                </div>
-                <div style="margin: 5px; width: 35%">
-                    <input class="btn btn-outline-success align-bottom" type="submit" value="Register!"/>
+                <form:errors path="username" cssClass="formError" element="p"/>
 
+                <form:label path="email">Email: </form:label>
+                <div>
+                    <form:input type="email" path="email"/>
                 </div>
-                <div style="margin: 5px;">
+                <form:errors path="email" cssClass="formError" element="p"/>
+
+                <form:label path="password">Password: </form:label>
+                <div>
+                    <form:input type="password" path="password" />
+                </div>
+                <form:errors path="password" cssClass="formError" element="p"/>
+
+                <form:label path="repeatPassword">Repeat password: </form:label>
+                <div>
+                    <form:input type="password" path="repeatPassword"/>
+                </div>
+                <form:errors path="repeatPassword" cssClass="formError" element="p"/>
+
+                <div >
+                    <input class="mt-2 btn btn-outline-success" type="submit" value="Register!"/>
+                </div>
+
+                <div>
                     Already have an account?
                     <a href="${pageContext.request.contextPath}/login"> Log In!</a>
                 </div>
-
             </div>
         </form:form>
     </div>
-
-</div>
 </body>
 </html>

@@ -23,8 +23,6 @@
     <title>Share your favorite media</title>
     <script src="${pageContext.request.contextPath}/resources/createListFunctions.js?version=82"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-
 </head>
 <body style="background: whitesmoke">
 
@@ -116,10 +114,6 @@
                                    placeholder="Your description..." maxlength="255" />
                     <span id="listDescriptionCharCount" class="text-muted"><span id="listDescriptionRemainingChars">0</span>/255</span>
                     <form:errors path="listDescription" cssClass="error"/>
-                    <h3 class="m-2" >Email:</h3>
-                    <form:input path="userEmail" required="required" name="userEmail" type="email" id="list-email"
-                                class="form-control me-2 createListInput"/>
-                    <form:errors path="userEmail" cssClass="error"/>
                     <form:input path="mediaIdsList" type="hidden" name="mediaIds" id="selected-create-media"/>
                     </form:form>
                     <div class="scrollableMedia d-flex flex-column m-2 p-2" id="selected-media-names">

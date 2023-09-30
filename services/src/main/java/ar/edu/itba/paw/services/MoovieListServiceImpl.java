@@ -82,7 +82,7 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Override
     public List<MoovieList> getAllStandardPublicMoovieListFromUser(int userId, int size, int pageNumber) {
-        return moovieListDao.likedMoovieListsForUser(userId,size,pageNumber);
+        return moovieListDao.getAllStandardPublicMoovieListFromUser(userId,size,pageNumber);
     }
 
     @Override
