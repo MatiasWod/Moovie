@@ -121,4 +121,14 @@ public class UserDaoJdbcImpl implements UserDao{
     public Optional<Image> getProfilePicture(int userId) {
         return jdbcTemplate.query("SELECT * FROM userImages WHERE userid = ?", new Object[]{userId}, IMAGE_ROW_MAPPER).stream().findFirst();
     }
+
+
+    /**
+     * USER STATUS
+     */
+
+    @Override
+    public void changeUserRole(int userId, int role) {
+        jdbcTemplate.update("UPDATE Users SET role = ? WHERE userId = ?", new Object[]{role, userId});
+    }
 }

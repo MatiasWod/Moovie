@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.services;
 
 
-import ar.edu.itba.paw.exceptions.UnableToCreateUserException;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,7 +14,7 @@ public interface UserService {
     public static final int ROLE_USER = 1;
     public static final int ROLE_MODERATOR = 2;
 
-    User createUser(String username, String email, String password);
+    void createUser(String username, String email, String password);
     User createUserFromUnregistered(String username, String email, String password);
     boolean confirmRegister(Token token);
     Optional<User> findUserById(int userId);
