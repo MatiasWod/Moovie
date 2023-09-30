@@ -219,7 +219,7 @@ public class ListController {
     }
 
     @RequestMapping(value = "/like", method = RequestMethod.POST)
-    public ModelAndView createReview(@RequestParam("listId") int listId) {
+    public ModelAndView putLike(@RequestParam("listId") int listId) {
         moovieListService.likeMoovieList(listId);
         return new ModelAndView("redirect:/list/" + listId);
     }
