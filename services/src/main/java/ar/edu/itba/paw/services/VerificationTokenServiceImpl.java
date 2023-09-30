@@ -24,14 +24,14 @@ public class VerificationTokenServiceImpl implements VerificationTokenService{
     @Override
     public String createVerificationToken(int userId) {
         String token = UUID.randomUUID().toString();
-        verificationTokenDao.createVerificationToken(userId,token,calculateExpirationDate(EXPIRATION));
+        verificationTokenDao.createVerificationToken(userId,token,calculateExpirationDate());
         return token;
     }
 
-    private Date calculateExpirationDate(int expirationTimeInMinutes){
+    private Date calculateExpirationDate(){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Timestamp(calendar.getTime().getTime()));
-        calendar.add(Calendar.MINUTE,expirationTimeInMinutes);
+        calendar.add(Calendar.MINUTE, VerificationTokenServiceImpl.EXPIRATION);
         return new Date(calendar.getTime().getTime());
     }
 
@@ -55,6 +55,6 @@ public class VerificationTokenServiceImpl implements VerificationTokenService{
 
     @Override
     public void renewToken(String token) {
-        verificationTokenDao.renewToken(token,calculateExpirationDate(EXPIRATION));
+        verificationTokenDao.renewToken(token,calculateExpirationDate());
     }
 }

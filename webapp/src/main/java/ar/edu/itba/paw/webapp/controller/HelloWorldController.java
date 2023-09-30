@@ -11,7 +11,8 @@ import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
 import ar.edu.itba.paw.webapp.form.RegisterForm;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -44,7 +45,7 @@ public class HelloWorldController {
 
     @Autowired
     ReviewService reviewService;
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
 
     @RequestMapping("/{id:\\d+}")
     public ModelAndView profile(@PathVariable("id") final long userId) {
@@ -80,6 +81,7 @@ public class HelloWorldController {
     @RequestMapping(value = "/register/confirm")
     public ModelAndView confirmRegistration(@RequestParam("token") final String token) {
         Token verificationToken = verificationTokenService.getToken(token).orElseThrow(VerificationTokenNotFoundException::new);
+        LOGGER.debug("Verification token: " + verificationToken.getToken());
         if(userService.confirmRegister(verificationToken)) {
             return new ModelAndView("redirect:/login");
 
