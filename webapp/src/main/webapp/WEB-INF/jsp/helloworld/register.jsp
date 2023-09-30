@@ -13,9 +13,14 @@
             crossorigin="anonymous"></script>
     <title>Moovie - Sign Up!</title>
 </head>
+
 <body style="background: whitesmoke">
     <div style="border: solid black; width: fit-content" class="container-gray container d-flex flex-column p-3 mt-5">
         <h1>Sign Up</h1>
+        <div class="alert alert-danger" id="errorAlert" style="display: none;">
+            <c:if test="${param.error == 'email_taken'}">Email is already registered </c:if>
+            <c:if test="${param.error == 'username_taken'}">Username is already registered </c:if>
+        </div>
         <form:form modelAttribute="registerForm" action="${pageContext.request.contextPath}/register" method="post" class="">
             <div class="me-5 d-flex flex-column">
                 <form:label path="username">Username: </form:label>
@@ -53,5 +58,15 @@
             </div>
         </form:form>
     </div>
+    <script>
+        // Get the error message from the alert div
+        var errorAlert = document.getElementById("errorAlert");
+
+        // Check if the error message is not empty
+        if (errorAlert.textContent.trim() !== "") {
+            // Show the error alert
+            errorAlert.style.display = "block";
+        }
+    </script>
 </body>
 </html>
