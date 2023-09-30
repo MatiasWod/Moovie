@@ -43,20 +43,25 @@
 </c:import>
 <sec:authorize access="isAuthenticated()">
     <div style="align-items: center" class="d-flex flex-column">
-        <div class="d-flex container">
+        <div class="d-flex container justify-content-center">
             <img class="cropCenter" style="height:100px;width:100px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/profile/image/${user.username}">
-            <div class="m-1">
+            <div class="m-2">
                 <h1><c:out value="${user.username}"/></h1>
                 <c:if test="${isMe}"><h5><c:out value="${user.email}"/></h5></c:if>
             </div>
-
         </div>
-
-        <form action="${pageContext.request.contextPath}/uploadProfilePicture" method="post" enctype="multipart/form-data">
-            <input type="file" name="file" accept="image/*" />
-            <input type="submit" value="Submit" />
-        </form>
-
+        <c:if test="${isMe}">
+            <div class="container d-flex justify-content-center">
+                <h4 class="m-1">Edit Profile Picture:</h4>
+                <div class="m-1">
+                    <form action="${pageContext.request.contextPath}/uploadProfilePicture" method="post" enctype="multipart/form-data">
+                        <input type="file" name="file" accept="image/*" />
+                        <input type="submit" value="Submit" />
+                    </form>
+                </div>
+            </div>
+        </c:if>
+        <hr class="my-1">
         <div>
             Private lists:
             <c:forEach items="${privateLists}" var="list">
@@ -219,8 +224,7 @@
                                 <div class="card-body">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <div class="d-flex align-items-center">
-                                            <a href="${pageContext.request.contextPath}/profile/${user.userId}>
-                                               style="text-decoration: none; color: inherit;">
+                                            <a href="${pageContext.request.contextPath}/profile/${user.userId}" style="text-decoration: none; color: inherit;">
                                                 <img src="https://m.media-amazon.com/images/M/MV5BNjE3NDQyOTYyMV5BMl5BanBnXkFtZTcwODcyODU2Mw@@._V1_FMjpg_UX1000_.jpg"
                                                      alt="${review.userId} Reviewer Profile" class="mr-3 rounded-circle"
                                                      width="64" height="64">

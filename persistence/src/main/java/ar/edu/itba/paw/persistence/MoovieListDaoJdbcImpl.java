@@ -104,7 +104,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     @Override
     public List<MoovieList> getAllStandardPublicMoovieListFromUser(int userId, int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT * FROM moovieLists as m WHERE m.userId = ?  LIMIT ? OFFSET ?",new Object[]{userId, size, pageNumber * size} , MOOVIE_LIST_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT * FROM moovieLists as m WHERE m.userId = ? AND m.type = ?  LIMIT ? OFFSET ?",new Object[]{userId, MOOVIE_LIST_TYPE_STANDARD_PUBLIC, size, pageNumber * size} , MOOVIE_LIST_ROW_MAPPER);
     }
 
     @Override
@@ -234,7 +234,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     @Override
     public List<MoovieList> likedMoovieListsForUser(int userId, int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT moovieLists.moovieListId, moovieLists.userId, moovieLists.name, moovieLists.description, moovieLists.type FROM moovieLists " +
+        return jdbcTemplate.query("SELECT moovieLists.* FROM moovieLists " +
                         "WHERE moovieLists.moovieListId IN (SELECT moovieListsLikes.moovieListId FROM moovieListsLikes WHERE moovieListsLikes.userId = ?) LIMIT ? OFFSET ?",
                 new Object[]{userId, size, pageNumber*size } , MOOVIE_LIST_ROW_MAPPER);
     }
