@@ -220,7 +220,7 @@ public class MovieController {
 
     @RequestMapping(value = "/insertMediaToList", method = RequestMethod.POST)
     public ModelAndView insertMediaToList(@RequestParam("listId") int listId, @RequestParam("mediaId") int mediaId) {
-        moovieListService.insertMediaIntoMoovieList(mediaId, Collections.singletonList(listId));
+        moovieListService.insertMediaIntoMoovieList(listId, Collections.singletonList(mediaId));
         return new ModelAndView("redirect:/details/" + mediaId);
     }
 

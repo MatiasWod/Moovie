@@ -9,6 +9,13 @@
         const currentPath = window.location.pathname;
         const links = document.querySelectorAll(".nav-item-link");
 
+        const profileImage = document.getElementById("profile-image");
+        if (profileImage) {
+            profileImage.onerror = function() {
+                profileImage.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
+            }
+        }
+
         links.forEach(link => {
             const href = link.getAttribute("href");
             if (currentPath.includes(href)) {
@@ -51,7 +58,7 @@
                                     <ul class="navbar-nav">
                                         <li class="nav-item dropdown">
                                             <button class="btn bg-transparent dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <img style="height: 50px; width: 50px; border:solid black; border-radius: 50%" class="cropCenter" src="${pageContext.request.contextPath}/profile/image/${param.userName}"/>
+                                                <img id="profile-image" style="height: 50px; width: 50px; border:solid black; border-radius: 50%" class="cropCenter" src="${pageContext.request.contextPath}/profile/image/${param.userName}" alt="profile picture"/>
                                                     ${param.userName}
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end">
