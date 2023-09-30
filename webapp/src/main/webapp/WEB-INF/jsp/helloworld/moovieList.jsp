@@ -2,6 +2,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
 <head>
     <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/resources/logo.png" />
 
@@ -65,9 +66,9 @@
     <div>
         <h4>List progress</h4>
     <div class="progress">
-        <div class="progress-bar" role="progressbar" style="width: ${watchedPercentage}%;"
-             aria-valuenow="${watchedMoviesSize}" aria-valuemin="0" aria-valuemax="100">
-            ${watchedMoviesSize}%
+        <div class="progress-bar" role="progressbar" style="width: ${(watchedMovies.size()*100)/mediaList.size()}%;"
+             aria-valuenow="${(watchedMovies.size()*100)/mediaList.size()}" aria-valuemin="0" aria-valuemax="100">
+            ${(watchedMovies.size()*100)/mediaList.size()}%
         </div>
     </div>
     </div>
@@ -93,9 +94,9 @@
         </tr>
         </thead>
         <c:choose>
-            <c:when test="${not empty moovieListContent}">
+            <c:when test="${not empty mediaList}">
                 <tbody>
-                <c:forEach var="index" items="${moovieListContent}" varStatus="loop">
+                <c:forEach var="index" items="${mediaList}" varStatus="loop">
                     <tr>
                         <!-- Index -->
                         <td style="text-align: center">${loop.index + 1}</td>

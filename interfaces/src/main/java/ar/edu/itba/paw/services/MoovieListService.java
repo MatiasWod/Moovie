@@ -23,7 +23,7 @@ public interface MoovieListService {
     //void deleteMoovieList(int moovieIdList);
 
     //Returns the media id of the moovies watched in certain list;
-    List<MoovieListContent> getMediaWatchedInMoovieList(int moovieListId);
+    List<Integer> getMediaIdsWatchedInMoovieList(int moovieListId);
 
 
     List<MoovieList> getAllStandardPublicMoovieListFromUser(int userId, int size, int pageNumber);
