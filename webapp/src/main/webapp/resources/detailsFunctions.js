@@ -128,11 +128,3 @@ textarea.addEventListener("input", function () {
     textarea.value = textarea.value.replace(/\n/g, "");
 });
 
-document.addEventListener("DOMContentLoaded", function() {
-    const profileImage = document.getElementsByClassName("review-profile-image");
-    if (profileImage) {
-        profileImage.onerror = function() {
-            profileImage.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
-        }
-    }
-});

@@ -22,6 +22,14 @@
                 link.classList.add("active");
             }
         });
+
+        const profileImages = document.querySelectorAll(".review-profile-image");
+
+        profileImages.forEach(profileImage => {
+            profileImage.onerror = function() {
+                profileImage.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
+            }
+        });
     });
 </script>
 

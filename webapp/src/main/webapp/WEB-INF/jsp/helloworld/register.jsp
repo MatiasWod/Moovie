@@ -55,6 +55,10 @@
                     Already have an account?
                     <a href="${pageContext.request.contextPath}/login"> Log In!</a>
                 </div>
+                <div>
+                    Continue
+                    <a href="${pageContext.request.contextPath}/"> without logging in</a>
+                </div>
             </div>
         </form:form>
     </div>

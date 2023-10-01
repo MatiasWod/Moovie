@@ -32,7 +32,7 @@
             <c:forEach var="movie" items="${movieList}" end="5">
                 <a href="${pageContext.request.contextPath}/details/${movie.mediaId}" class="poster card text-bg-dark m-1">
                     <div   class="card-img-container"> <!-- Add a container for the image -->
-                        <img class="height-full cropCenterLanding" src="${movie.posterPath}" alt="${movie.name} poster">
+                        <img class="cropCenter" src="${movie.posterPath}" alt="${movie.name} poster">
                         <div class="card-img-overlay">
                             <h5 class="card-title">${movie.name}</h5>
                             <p class="card-text">${movie.tmdbRating}</p>
@@ -51,7 +51,7 @@
             <c:forEach var="series" items="${tvList}" end="5">
                 <a href="${pageContext.request.contextPath}/details/${series.mediaId}" class="poster card text-bg-dark m-1">
                     <div  class="card-img-container"> <!-- Add a container for the image -->
-                        <img class="height-full cropCenterLanding" src="${series.posterPath}" alt="${series.name} poster">
+                        <img class="cropCenter " src="${series.posterPath}" alt="${series.name} poster">
                         <div class="card-img-overlay">
                             <h5 class="card-title">${series.name}</h5>
                             <p class="card-text">${series.tmdbRating}</p>
