@@ -29,10 +29,10 @@
         <div class="alignt-items-left text-left">
             <div style="margin: 5px; width: 35%">
                 <label for="username">Username: </label>
-                <input id="username" name="username" type="text"/></div>
+                <input required id="username" name="username" type="text"/></div>
             <div style="margin: 5px; width: 35%">
                 <label for="password">Password: </label>
-                <input id="password" name="password" type="password"/>
+                <input required id="password" name="password" type="password"/>
             </div>
             <div>
                 <label class="m-1">
