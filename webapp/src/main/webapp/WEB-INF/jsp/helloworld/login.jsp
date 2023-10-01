@@ -16,7 +16,7 @@
 <c:url value="/login" var="loginUrl"/>
 <c:url value="/register" var="registerUrl"/>
 <c:url value="/" var="homeUrl"/>
-<div style="border:solid black;min-width: 25%; min-height: 60%; position: absolute; left: 37.5%; padding: 5%; margin-top: 5%" class="container-gray align-items-center justify-content-center d-flex flex-column">
+<div style="border:solid black;width: fit-content; min-height: 60%; padding: 5%; margin-top: 5%" class="container container-gray align-items-center justify-content-center d-flex flex-column">
     <form action="${loginUrl}" method="post" enctype="application/x-www-form-urlencoded">
         <h1>Login</h1>
         <div class="alert alert-danger" id="errorAlert" style="display: none;">
