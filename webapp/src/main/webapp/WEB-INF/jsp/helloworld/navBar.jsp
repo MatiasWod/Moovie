@@ -29,7 +29,7 @@
     <nav class="sticky-top navbar navbar-expand-lg navbar-light container-gray mb-4">
         <div class="container-fluid">
             <a class="navbar-brand" href="${pageContext.request.contextPath}/">
-                <img src="${pageContext.request.contextPath}/resources/logo.png" height="30" alt="Moovie logo">
+                <img src="${pageContext.request.contextPath}/resources/logo.png" height="50" alt="Moovie logo">
                 Moovie
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,6 +57,7 @@
                                 <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
                                     <ul class="navbar-nav">
                                         <li class="nav-item dropdown">
+                                            <c:if test="${param.role == 2}"><img src="${pageContext.request.contextPath}/resources/moderator_logo.png" height="50" alt="Moderator logo"></c:if>
                                             <button class="btn bg-transparent dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                                 <img id="profile-image" style="height: 50px; width: 50px; border:solid black; border-radius: 50%" class="cropCenter" src="${pageContext.request.contextPath}/profile/image/${param.userName}" alt="profile picture"/>
                                                     ${param.userName}
