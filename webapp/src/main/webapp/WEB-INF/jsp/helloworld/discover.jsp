@@ -31,19 +31,10 @@
         <%--        FILTROS y PELIS    --%>
 
         <div class="container d-flex flex-column">
-<%--            <div--%>
-<%--            <sec:authorize access="!isAuthenticated()">--%>
-<%--                <div>No estas autenticado</div>--%>
-<%--            </sec:authorize>--%>
-<%--            <sec:authorize access="isAuthenticated()">--%>
-<%--                <div>Estas autenticado</div>--%>
-<%--            </sec:authorize>--%>
-<%--            </div>--%>
-
             <c:if test="${searchMode}">
                 <div class="m-2">
                     <h1>
-                        Results for: ${param.query}
+                        Results for: <c:out value="${param.query}"/>
                     </h1>
                 </div>
             </c:if>
@@ -124,7 +115,13 @@
                     </div>
                 </c:forEach>
             </div>
-
+            <div class="m-1">
+                <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+                    <c:param name="mediaPages" value="${numberOfPages}"/>
+                    <c:param name="currentPage" value="${currentPage + 1}"/>
+                    <c:param name="url" value="/discover?media=${param.media}&g=${param.g}"/>
+                </c:import>
+            </div>
         </div>
 <%--        PREVIEW      --%>
     <div id="preview" style="position: relative; display: none !important" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
@@ -154,12 +151,6 @@
     </div>
 
 </div>
-
-<c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
-    <c:param name="mediaPages" value="${numberOfPages}"/>
-    <c:param name="currentPage" value="${currentPage + 1}"/>
-    <c:param name="url" value="/discover?media=${param.media}&g=${param.g}"/>
-</c:import>
 
 </body>
 
