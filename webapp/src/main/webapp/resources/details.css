@@ -52,3 +52,14 @@
     padding: 10px;
     font-size: 1em;
 }
+
+.scrollable-menu {
+    max-height: 200px; /* Adjust the max height as needed */
+    overflow-y: auto;
+}
+
+.dropdown-item {
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis; /* Add an ellipsis (...) for long text */
+}

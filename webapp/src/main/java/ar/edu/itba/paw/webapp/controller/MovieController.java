@@ -175,6 +175,12 @@ public class MovieController {
             mav.addObject("errorMessage", errorMessage);
         }
 
+        String successMessage = (String) redirectAttributes.getFlashAttributes().get("successMessage");
+        if (successMessage != null) {
+            // Add the error message to the ModelAndView
+            mav.addObject("successMessage", successMessage);
+        }
+
         final List<Actor> actorsList = actorService.getAllActorsForMedia(mediaId);
         final List<Genre> genresList = genreService.getGenreForMedia(mediaId);
         final List<Review> reviewList = reviewService.getReviewsByMediaId(mediaId);
@@ -220,10 +226,11 @@ public class MovieController {
     }
 
     @RequestMapping(value = "/createrating", method = RequestMethod.POST)
-    public ModelAndView createReview(@Valid @ModelAttribute("detailsForm") final CreateReviewForm form, final BindingResult errors) {
+    public ModelAndView createReview(@Valid @ModelAttribute("detailsForm") final CreateReviewForm form, final BindingResult errors, RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
             return details(form.getMediaId(), form,null);
         }
+        redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully created.");
         final int userId = userService.getInfoOfMyUser().getUserId();
         reviewService.createReview(form.getMediaId(), form.getRating(), form.getReviewContent());
         return new ModelAndView("redirect:/details/" + form.getMediaId());
@@ -233,6 +240,7 @@ public class MovieController {
     public ModelAndView insertMediaToList(@RequestParam("listId") int listId, @RequestParam("mediaId") int mediaId, RedirectAttributes redirectAttributes) {
         try {
             moovieListService.insertMediaIntoMoovieList(listId, Collections.singletonList(mediaId));
+            redirectAttributes.addFlashAttribute("successMessage", "Media has been successfully added to your list.");
         } catch (FailedToInsertToListException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to insert media into the list. Already in the list.");
         }

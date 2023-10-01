@@ -13,6 +13,8 @@
     <link href="${pageContext.request.contextPath}/resources/main.css?version=55" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/resources/details.css?version=55" rel="stylesheet"/>
     <title>Moovie-${media.name}</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body id="grad">
 <c:import url="navBar.jsp">
@@ -189,15 +191,19 @@
             <p>${media.overview}</p>
             <div class="flex-row d-flex">
                 <div class="dropdown">
-                    <div class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i
+                    <div class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
+                         style="margin-right: 10px"><i
                             class="bi bi-plus-circle-fill"></i> Add to list
                     </div>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu scrollable-menu">
                         <c:forEach var="privateList" items="${privateLists}">
                             <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
                                 <input type="hidden" name="listId" value="${privateList.moovieListId}"/>
                                 <input type="hidden" name="mediaId" value="${media.mediaId}"/>
-                                <li><button class="dropdown-item" type="submit"> ${privateList.name}</button></li>
+                                <li>
+                                    <button class="dropdown-item" type="submit"><c:out
+                                            value="${privateList.name}"/></button>
+                                </li>
                             </form>
                         </c:forEach>
                         <c:forEach var="publicList" items="${publicLists}">
@@ -205,11 +211,13 @@
                                 <input type="hidden" name="listId" value="${publicList.moovieListId}"/>
                                 <input type="hidden" name="mediaId" value="${media.mediaId}"/>
                                 <li>
-                                    <button class="dropdown-item" type="submit"> ${publicList.name}</button>
+                                    <button class="dropdown-item" type="submit"><c:out
+                                            value="${publicList.name}"/></button>
                                 </li>
                             </form>
                         </c:forEach>
-                        <li><a href="${pageContext.request.contextPath}/createList"><i class="bi bi-plus-circle-fill"></i> Create new List</a></li>
+                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/createList?s=${media.mediaId}"><i
+                                class="bi bi-plus-circle-fill"></i> Create new List</a></li>
                     </ul>
                 </div>
                 <button type="button" class="btn btn-light border border-black" onclick="openReviewPopup()"><i
@@ -219,11 +227,23 @@
 
         </div>
         <c:if test="${not empty errorMessage}">
-            <div class="alert alert-danger alert-dismissible fade show" style="margin: 10px" role="alert">
-                    ${errorMessage}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+            <div class="alert alert-danger alert-dismissible" style="margin: 10px" role="alert">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>${errorMessage}</div>
+                    <button type="button" class="close btn btn-danger" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        </c:if>
+        <c:if test="${not empty successMessage}">
+            <div class="alert alert-success alert-dismissible" style="margin: 10px" role="alert">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>${successMessage}</div>
+                    <button type="button" class="close btn btn-success" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
             </div>
         </c:if>
         <!-- Cast -->
