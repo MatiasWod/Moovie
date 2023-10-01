@@ -19,6 +19,11 @@ public class MoovieUserDetailsService implements UserDetailsService {
 
     private UserService us;
 
+    private boolean ACCOUNT_ENABLED = true;
+    private static final boolean ACCOUNT_NON_EXPIRED = true;
+    private static final boolean CREDENTIALS_NON_EXPIRED = true;
+    private boolean ACCOUNT_NON_BANNED = true;
+
     @Autowired
     public MoovieUserDetailsService(final UserService us) {
         this.us = us;
@@ -37,16 +42,15 @@ public class MoovieUserDetailsService implements UserDetailsService {
                 authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
             }
         } else {
-            if(user.getRole() == -2 ){
-                throw new UserIsBannedException("User:" + username + "is banned indefinitely");
+            if(user.getRole() == -2  ){
+                ACCOUNT_NON_BANNED = false;
             }
             if(user.getRole() == -1 ){
-                throw new UserNotVerifiedException("User:" + username + "hasn't verified its email");
-
+                ACCOUNT_ENABLED = false;
             }
             // If the user doesn't have the required role, you can handle it here.
         }
 
-        return new MoovieAuthUser(user.getUsername(), user.getPassword(), authorities);
+        return new MoovieAuthUser(user.getUsername(), user.getPassword(), ACCOUNT_ENABLED, ACCOUNT_NON_EXPIRED, CREDENTIALS_NON_EXPIRED, ACCOUNT_NON_BANNED, authorities);
     }
 }
