@@ -23,6 +23,10 @@
 
     <form action="${loginUrl}" method="post" enctype="application/x-www-form-urlencoded">
         <h1>Login</h1>
+        <div class="alert alert-danger" id="errorAlert" style="display: none;">
+            <c:if test="${param.error == 'locked'}">Account was banned</c:if>
+            <c:if test="${param.error == 'disabled'}">Email verification pending</c:if>
+        </div>
         <div class="alignt-items-left text-left">
             <div style="margin: 5px; width: 35%">
                 <label for="username">Username: </label>
@@ -53,6 +57,15 @@
     </form>
 
 </div>
+<script>
+    // Get the error message from the alert div
+    var errorAlert = document.getElementById("errorAlert");
 
+    // Check if the error message is not empty
+    if (errorAlert.textContent.trim() !== "") {
+        // Show the error alert
+        errorAlert.style.display = "block";
+    }
+</script>
 </body>
 </html>
