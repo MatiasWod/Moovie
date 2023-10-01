@@ -19,6 +19,13 @@
 <div style="border:solid black;min-width: 25%; min-height: 60%; position: absolute; left: 37.5%; padding: 5%; margin-top: 5%" class="container-gray align-items-center justify-content-center d-flex flex-column">
     <form action="${loginUrl}" method="post" enctype="application/x-www-form-urlencoded">
         <h1>Login</h1>
+        <div class="alert alert-danger" id="errorAlert" style="display: none;">
+            <c:if test="${param.error == 'locked'}">Account was banned</c:if>
+            <c:if test="${param.error == 'disabled'}">Email verification pending</c:if>
+            <c:if test="${param.error == 'bad_credentials'}">Password doesn't match username</c:if>
+            <c:if test="${param.error == 'unknown_user'}">Username not verified</c:if>
+            <c:if test="${param.error == 'unknown_error'}">Login Failed</c:if>
+        </div>
         <div class="alignt-items-left text-left">
             <div style="margin: 5px; width: 35%">
                 <label for="username">Username: </label>
@@ -47,6 +54,17 @@
             <a href="${homeUrl}"> without logging in</a>
         </div>
     </form>
+
 </div>
+<script>
+    // Get the error message from the alert div
+    var errorAlert = document.getElementById("errorAlert");
+
+    // Check if the error message is not empty
+    if (errorAlert.textContent.trim() !== "") {
+        // Show the error alert
+        errorAlert.style.display = "block";
+    }
+</script>
 </body>
 </html>
