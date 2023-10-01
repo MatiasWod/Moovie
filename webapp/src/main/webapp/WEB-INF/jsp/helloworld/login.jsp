@@ -26,6 +26,9 @@
         <div class="alert alert-danger" id="errorAlert" style="display: none;">
             <c:if test="${param.error == 'locked'}">Account was banned</c:if>
             <c:if test="${param.error == 'disabled'}">Email verification pending</c:if>
+            <c:if test="${param.error == 'bad_credentials'}">Password doesn't match username</c:if>
+            <c:if test="${param.error == 'unknown_user'}">Username not verified</c:if>
+            <c:if test="${param.error == 'unknown_error'}">Login Failed</c:if>
         </div>
         <div class="alignt-items-left text-left">
             <div style="margin: 5px; width: 35%">

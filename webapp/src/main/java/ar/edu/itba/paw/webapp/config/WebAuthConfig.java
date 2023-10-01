@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -37,11 +38,19 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         @Override
         public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
             if (exception instanceof DisabledException) {
-                // Handle disabled user account
+                // Account wasnt verified
                 response.sendRedirect("/login?error=disabled");
             } else if (exception instanceof LockedException) {
-                // Handle locked user account
+                // Account was banned
                 response.sendRedirect("/login?error=locked");
+            } else if (exception instanceof BadCredentialsException) {
+                // Wrong password
+                response.sendRedirect("/login?error=bad_credentials");
+            } else if(exception instanceof UsernameNotFoundException) {
+                // User not found
+                response.sendRedirect("/login?error=unknown_user");
+            } else {
+                response.sendRedirect("/login?error=unknown_error");
             }
         }
     };
