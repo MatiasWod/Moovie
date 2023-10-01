@@ -15,6 +15,7 @@
     <title>Moovie-${media.name}</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=81"></script>
 </head>
 <body id="grad">
 <c:import url="navBar.jsp">
@@ -344,7 +345,7 @@
                                         <a href="${pageContext.request.contextPath}/profile/${review.userName}"
                                            style="text-decoration: none; color: inherit;">
                                             <img src="${pageContext.request.contextPath}/profile/image/${review.userName}"
-                                                 alt="${review.userId} Reviewer Profile" class="mr-3 rounded-circle"
+                                                 alt="${review.userId} Reviewer Profile" class="mr-3 review-profile-image rounded-circle"
                                                  width="64" height="64">
                                         </a>
                                         <div class="mt-0" style="margin-left: 15px">
@@ -377,4 +378,3 @@
 </body>
 </html>
 
-<script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=80"></script>
