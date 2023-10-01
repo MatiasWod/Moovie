@@ -1,13 +1,14 @@
 package ar.edu.itba.paw.webapp.form;
 
+import ar.edu.itba.paw.webapp.form.annotations.FieldsPasswordMustMatch;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.Constraint;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+@FieldsPasswordMustMatch(message = "Passwords must match")
 public class RegisterForm {
     @NotEmpty(message = "Please enter an username")
     @Size(min = 4, max = 20, message = "Must be between 4-20 characters")

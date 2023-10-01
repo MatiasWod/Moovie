@@ -40,4 +40,6 @@ public interface MoovieListDao {
     List<MoovieList> getMoovieListBySearch(String searchString, int size, int pageNumber);
 
     Optional<Integer> getMoovieListSize(int moovieListId, Boolean type);
+
+    boolean mediaIdInList(int mediaId, int moovieListId);
 }

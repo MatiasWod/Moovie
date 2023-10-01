@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.FailedToInsertToListException;
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.Cast.Actor;
 import ar.edu.itba.paw.models.Genre.Genre;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -154,7 +156,7 @@ public class MovieController {
     }
 
     @RequestMapping(value = "/details/{id:\\d+}")
-    public ModelAndView details(@PathVariable("id") final int mediaId, @ModelAttribute("detailsForm") final CreateReviewForm form) {
+    public ModelAndView details(@PathVariable("id") final int mediaId, @ModelAttribute("detailsForm") final CreateReviewForm form, RedirectAttributes redirectAttributes) {
 
         final Optional<Media> media = mediaService.getMediaById(mediaId);
 
@@ -165,6 +167,13 @@ public class MovieController {
         }
 
         final ModelAndView mav = new ModelAndView("helloworld/details");
+
+        String errorMessage = (String) redirectAttributes.getFlashAttributes().get("errorMessage");
+        if (errorMessage != null) {
+            // Add the error message to the ModelAndView
+            mav.addObject("errorMessage", errorMessage);
+        }
+
         final List<Actor> actorsList = actorService.getAllActorsForMedia(mediaId);
         final List<Genre> genresList = genreService.getGenreForMedia(mediaId);
         final List<Review> reviewList = reviewService.getReviewsByMediaId(mediaId);
@@ -174,10 +183,12 @@ public class MovieController {
                 notEmptyContentReviewList.add(review);
             }
         }
-
-        if (getLoggedUser() != null) {
+        User currentUser=getLoggedUser();
+        if (currentUser != null) {
             final List<MoovieList> privateLists = moovieListService.getMoovieListDefaultPrivateFromCurrentUser();
             mav.addObject("privateLists", privateLists);
+            final List<MoovieList> publicLists=moovieListService.getAllStandardPublicMoovieListFromUser(currentUser.getUserId(), MoovieListService.DEFAULT_PAGE_SIZE, 0);
+            mav.addObject("publicLists", publicLists);
         }
 
         final List<Provider> providerList = providerService.getProviderForMedia(mediaId);
@@ -210,7 +221,7 @@ public class MovieController {
     @RequestMapping(value = "/createrating", method = RequestMethod.POST)
     public ModelAndView createReview(@Valid @ModelAttribute("detailsForm") final CreateReviewForm form, final BindingResult errors) {
         if (errors.hasErrors()) {
-            return details(form.getMediaId(), form);
+            return details(form.getMediaId(), form,null);
         }
         final int userId = userService.getInfoOfMyUser().getUserId();
         reviewService.createReview(form.getMediaId(), form.getRating(), form.getReviewContent());
@@ -218,8 +229,12 @@ public class MovieController {
     }
 
     @RequestMapping(value = "/insertMediaToList", method = RequestMethod.POST)
-    public ModelAndView insertMediaToList(@RequestParam("listId") int listId, @RequestParam("mediaId") int mediaId) {
-        moovieListService.insertMediaIntoMoovieList(listId, Collections.singletonList(mediaId));
+    public ModelAndView insertMediaToList(@RequestParam("listId") int listId, @RequestParam("mediaId") int mediaId, RedirectAttributes redirectAttributes) {
+        try {
+            moovieListService.insertMediaIntoMoovieList(listId, Collections.singletonList(mediaId));
+        } catch (FailedToInsertToListException exception) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to insert media into the list. Already in the list.");
+        }
         return new ModelAndView("redirect:/details/" + mediaId);
     }
 
