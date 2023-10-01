@@ -2,22 +2,14 @@ package ar.edu.itba.paw.models.Review;
 
 public class extendedReview extends Review{
 
-    private final String mediaPosterPath;
+    private final String userName;
 
-    private final String mediaTitle;
-
-    public extendedReview(int reviewId, int userId, int mediaId, int rating, int reviewLikes, String reviewContent, String mediaPosterPath, String mediaTitle) {
+    public extendedReview(int reviewId, int userId, int mediaId, int rating, int reviewLikes, String reviewContent, String userName) {
         super(reviewId, userId, mediaId, rating, reviewLikes, reviewContent);
-        this.mediaPosterPath = mediaPosterPath;
-        this.mediaTitle = mediaTitle;
+        this.userName = userName;
+    }
+    public String getUserName() {
+        return userName;
     }
 
-
-    public String getMediaPosterPath() {
-        return mediaPosterPath;
-    }
-
-    public String getMediaTitle() {
-        return mediaTitle;
-    }
 }

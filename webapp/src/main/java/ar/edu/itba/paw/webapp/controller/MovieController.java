@@ -10,6 +10,7 @@ import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.Provider.Provider;
 import ar.edu.itba.paw.models.Review.Review;
+import ar.edu.itba.paw.models.Review.extendedReview;
 import ar.edu.itba.paw.models.TV.TVCreators;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
@@ -24,7 +25,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class MovieController {
@@ -160,6 +164,10 @@ public class MovieController {
     public ModelAndView details(@PathVariable("id") final int mediaId, @ModelAttribute("detailsForm") final CreateReviewForm form, RedirectAttributes redirectAttributes) {
 
         final Optional<Media> media = mediaService.getMediaById(mediaId);
+        final List<Actor> actorsList = actorService.getAllActorsForMedia(mediaId);
+        final List<Genre> genresList = genreService.getGenreForMedia(mediaId);
+        final List<Review> reviewList = reviewService.getReviewsByMediaId(mediaId);
+        final List<Provider> providerList = providerService.getProviderForMedia(mediaId);
 
         if (!media.isPresent()) {
             final ModelAndView mav = new ModelAndView("helloworld/404.jsp");
@@ -181,15 +189,7 @@ public class MovieController {
             mav.addObject("successMessage", successMessage);
         }
 
-        final List<Actor> actorsList = actorService.getAllActorsForMedia(mediaId);
-        final List<Genre> genresList = genreService.getGenreForMedia(mediaId);
-        final List<Review> reviewList = reviewService.getReviewsByMediaId(mediaId);
-        final List<Review> notEmptyContentReviewList = new ArrayList<>();
-        for (Review review : reviewList) {
-            if (review.getReviewContent() != null && !review.getReviewContent().isEmpty()) {
-                notEmptyContentReviewList.add(review);
-            }
-        }
+
         User currentUser=getLoggedUser();
         if (currentUser != null) {
             final List<MoovieList> privateLists = moovieListService.getMoovieListDefaultPrivateFromCurrentUser();
@@ -198,11 +198,13 @@ public class MovieController {
             mav.addObject("publicLists", publicLists);
         }
 
-        final List<Provider> providerList = providerService.getProviderForMedia(mediaId);
-
-        Map<Integer, String> username = new HashMap<>();
+        final List<extendedReview> reviewsExtended=new ArrayList<>();
         for (Review review : reviewList) {
-            username.put(review.getUserId(), Objects.requireNonNull(userService.findUserById(review.getUserId()).orElse(null)).getUsername());
+            if(review.getReviewContent()!=null){
+                final String username=userService.findUserById(review.getUserId()).get().getUsername();
+                reviewsExtended.add(new extendedReview(review.getReviewId(), review.getUserId(), review.getMediaId(), review.getRating(), review.getReviewLikes(),
+                        review.getReviewContent(),username));
+            }
         }
 
         if (!media.get().isType()) {
@@ -215,12 +217,10 @@ public class MovieController {
                 mav.addObject("creators", creators);
             mav.addObject("media", tvSerie.orElse(null)); // Use orElse to handle empty Optional
         }
-
         mav.addObject("providerList", providerList);
         mav.addObject("actorsList", actorsList);
         mav.addObject("genresList", genresList);
-        mav.addObject("notEmptyContentReviewList", notEmptyContentReviewList);
-        mav.addObject("username", username);
+        mav.addObject("reviewsList", reviewsExtended);
 
         return mav;
     }

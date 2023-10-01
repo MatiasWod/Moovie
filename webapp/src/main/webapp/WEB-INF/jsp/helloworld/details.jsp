@@ -21,7 +21,7 @@
     <c:param name="userName" value="${user.username}"/>
 </c:import>
 <div class="container my-1">
-    <div class="row align-items-center justify-content-center">
+    <div class="row align-items-center justify-content-center" style="margin-bottom: 20px">
 
         <!-- Poster -->
         <div class="col text-center">
@@ -334,23 +334,23 @@
         <h2>Reviews</h2>
         <hr class="my-8">
         <c:choose>
-            <c:when test="${fn:length(notEmptyContentReviewList)>0}">
+            <c:when test="${fn:length(reviewsList)>0}">
                 <div class="scrollableDiv">
-                    <c:forEach var="review" items="${notEmptyContentReviewList}">
+                    <c:forEach var="review" items="${reviewsList}">
                         <div class="card mb-3">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div class="d-flex align-items-center">
-                                        <a href="${pageContext.request.contextPath}/profile/${username[review.userId]}"
+                                        <a href="${pageContext.request.contextPath}/profile/${review.userName}"
                                            style="text-decoration: none; color: inherit;">
-                                            <img src="https://m.media-amazon.com/images/M/MV5BNjE3NDQyOTYyMV5BMl5BanBnXkFtZTcwODcyODU2Mw@@._V1_FMjpg_UX1000_.jpg"
+                                            <img src="${pageContext.request.contextPath}/profile/image/${review.userName}"
                                                  alt="${review.userId} Reviewer Profile" class="mr-3 rounded-circle"
                                                  width="64" height="64">
                                         </a>
                                         <div class="mt-0" style="margin-left: 15px">
-                                            <a href="${pageContext.request.contextPath}/profile/${username[review.userId]}"
+                                            <a href="${pageContext.request.contextPath}/profile/${review.userName}"
                                                style="text-decoration: none; color: inherit;">
-                                                <h5><c:out value="${username[review.userId]}"/></h5>
+                                                <h5><c:out value="${review.userName}"/></h5>
                                             </a>
                                         </div>
                                     </div>
