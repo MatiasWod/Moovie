@@ -200,6 +200,16 @@
                                 <li><button class="dropdown-item" type="submit"> ${privateList.name}</button></li>
                             </form>
                         </c:forEach>
+                        <c:forEach var="publicList" items="${publicLists}">
+                            <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
+                                <input type="hidden" name="listId" value="${publicList.moovieListId}"/>
+                                <input type="hidden" name="mediaId" value="${media.mediaId}"/>
+                                <li>
+                                    <button class="dropdown-item" type="submit"> ${publicList.name}</button>
+                                </li>
+                            </form>
+                        </c:forEach>
+                        <li><a href="${pageContext.request.contextPath}/createList"><i class="bi bi-plus-circle-fill"></i> Create new List</a></li>
                     </ul>
                 </div>
                 <button type="button" class="btn btn-light border border-black" onclick="openReviewPopup()"><i
@@ -208,6 +218,14 @@
             </div>
 
         </div>
+        <c:if test="${not empty errorMessage}">
+            <div class="alert alert-danger alert-dismissible fade show" style="margin: 10px" role="alert">
+                    ${errorMessage}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </c:if>
         <!-- Cast -->
         <div class="row ">
             <h2>Cast</h2>

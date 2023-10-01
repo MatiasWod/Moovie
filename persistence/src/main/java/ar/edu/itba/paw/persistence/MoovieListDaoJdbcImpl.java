@@ -75,6 +75,13 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     @Override
+    public boolean mediaIdInList(int mediaId, int moovieListId) {
+        String sql = "SELECT COUNT(*) FROM moovieListsContent WHERE moovieListId = ? AND mediaId = ?";
+        int count = jdbcTemplate.queryForObject(sql, Integer.class, moovieListId, mediaId);
+        return count > 0;
+    }
+
+    @Override
     public Optional<Integer> getMoovieListCount() {
         return jdbcTemplate.query("SELECT COUNT(*) AS count FROM moovieListsContent", COUNT_ROW_MAPPER).stream().findFirst();
     }

@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.exceptions.FailedToInsertToListException;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
@@ -95,6 +96,12 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Override
     public MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList) {
+        for (Integer mediaId: mediaIdList) {
+            if(moovieListDao.mediaIdInList(mediaId, moovieListid)){
+                throw new FailedToInsertToListException("Media id " + mediaId + " already belongs to list " + moovieListid);
+            }
+
+        }
         return moovieListDao.insertMediaIntoMoovieList(moovieListid, mediaIdList);
     }
 
