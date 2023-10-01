@@ -153,8 +153,13 @@
         </div>
     </div>
 
-
 </div>
+
+<c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+    <c:param name="mediaPages" value="${numberOfPages}"/>
+    <c:param name="currentPage" value="${currentPage + 1}"/>
+    <c:param name="url" value="/discover?media=${param.media}&g=${param.g}"/>
+</c:import>
 
 </body>
 

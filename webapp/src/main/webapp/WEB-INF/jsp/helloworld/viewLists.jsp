@@ -46,7 +46,7 @@
             </c:if>
         <c:forEach var="showList" items="${showLists}">
                 <div class="list-card card"
-                     onclick="location.href='${pageContext.request.contextPath}/list/${showList.moovieListId}'">
+                     onclick="location.href='${pageContext.request.contextPath}/list/${showList.moovieListId}?page=1'">
                     <div class="list-img-container card-img-top">
                         <c:forEach var="image" items="${showList.posters}">
                             <img class="cropCenterImage" src="${image}" alt="...">

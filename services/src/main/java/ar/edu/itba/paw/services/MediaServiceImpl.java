@@ -34,8 +34,8 @@ public class MediaServiceImpl implements MediaService{
     }
 
     @Override
-    public List<Media> getMediaOrderedByTmdbRatingDesc(int size, int pageNumber) {
-        return mediaDao.getMediaOrderedByTmdbRatingDesc(size, pageNumber);
+    public List<Integer> getMediaIdOrderedByTmdbRatingDesc(int size, int pageNumber) {
+        return mediaDao.getMediaIdOrderedByTmdbRatingDesc(size, pageNumber);
     }
 
     @Override
@@ -51,6 +51,11 @@ public class MediaServiceImpl implements MediaService{
     @Override
     public List<Media> getMediaFilteredByGenreList(List<String> genres, int size, int pageNumber){
         return mediaDao.getMediaFilteredByGenreList(genres,size,pageNumber);
+    }
+
+    @Override
+    public Optional<Integer> getMediaFilteredByGenreListCount(List<String> genres){
+        return mediaDao.getMediaFilteredByGenreListCount(genres);
     }
 
     @Override
@@ -103,6 +108,10 @@ public class MediaServiceImpl implements MediaService{
         return mediaDao.getMovieFilteredByGenreList(genre, size, pageNumber);
     }
 
+    public Optional<Integer> getMovieFilteredByGenreListCount(List<String> genres){
+        return mediaDao.getMovieFilteredByGenreListCount(genres);
+    }
+
     @Override
     public List<Movie> getMovieOrderedByReleaseDuration(int size, int pageNumber) {
         return mediaDao.getMovieOrderedByReleaseDuration(size, pageNumber);
@@ -141,5 +150,10 @@ public class MediaServiceImpl implements MediaService{
     @Override
     public List<TVSerie> getTvFilteredByGenreList(List<String> genres, int size, int pageNumber) {
         return mediaDao.getTvFilteredByGenreList(genres, size, pageNumber);
+    }
+
+    @Override
+    public Optional<Integer> getTvFilteredByGenreListCount(List<String> genres){
+        return mediaDao.getTvFilteredByGenreListCount(genres);
     }
 }

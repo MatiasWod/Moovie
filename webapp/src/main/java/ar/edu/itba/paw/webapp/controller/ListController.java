@@ -202,20 +202,25 @@ public class ListController {
                 toReturnList = moovieListList.get(i);
             }
         }
-        return list(toReturnList.getMoovieListId());
+        return list(toReturnList.getMoovieListId(),1);
     }
 
     @RequestMapping("/list/{id:\\d+}")
-    public ModelAndView list(@PathVariable("id") final int moovieListId) {
+    public ModelAndView list(@PathVariable("id") final int moovieListId, @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
         Optional<MoovieList> moovieListData = moovieListService.getMoovieListById(moovieListId);
         if (moovieListData.isPresent()) {
             final ModelAndView mav = new ModelAndView("helloworld/moovieList");
+
+            Optional<Integer> totalNumberOfMedia = moovieListService.getMoovieListSize(moovieListData.get().getMoovieListId(),null);
+            int numberOfPages = (int) Math.ceil(totalNumberOfMedia.get().intValue() * 1.0 / mediaService.DEFAULT_PAGE_SIZE);
+            mav.addObject("currentPage",pageNumber - 1);
+            mav.addObject("numberOfPages",numberOfPages);
 
             boolean isLiked = moovieListService.likeMoovieListStatusForUser(moovieListId);
             mav.addObject("isLiked", isLiked);
             mav.addObject("moovieList", moovieListData.get());
 
-            List<Media> mediaList = mediaService.getMediaByMoovieListId(moovieListId, mediaService.DEFAULT_PAGE_SIZE, 0);
+            List<Media> mediaList = mediaService.getMediaByMoovieListId(moovieListId, mediaService.DEFAULT_PAGE_SIZE, pageNumber - 1);
             String listOwner = userService.findUserById(moovieListData.get().getUserId()).get().getUsername();
             int likeCount = moovieListService.getLikesCount(moovieListId).get();
             int moviesCount = moovieListService.getMoovieListSize(moovieListId, false).get();
@@ -234,6 +239,18 @@ public class ListController {
             return mav;
         }
     }
+
+    /*@RequestMapping(value = "/featuredList/topRated")
+    public ModelAndView topRatedList(){
+        List<Integer> mediaIdList = mediaService.getMediaIdOrderedByTmdbRatingDesc(25,0);
+        MoovieList moovieList = moovieListService.createStandardPublicMoovieListWithContent("Top Rated","These are the best movies and series according to our users' rating",mediaIdList);
+        return list(moovieList.getMoovieListId());
+    }
+
+    @RequestMapping(value = "/featuredList/mostPopular")
+    public ModelAndView mostPopularList(){
+        MoovieList moovieList = moovieListService.
+    }*/
 
     @RequestMapping(value = "/like", method = RequestMethod.POST)
     public ModelAndView putLike(@RequestParam("listId") int listId) {

@@ -71,9 +71,9 @@ public class MovieController {
     }
 
     @RequestMapping("/discover")
-    public ModelAndView test(@RequestParam(value = "g", required = false) List<String> genres, @RequestParam(value = "media", required = false) String media) {
+    public ModelAndView discover(@RequestParam(value = "media", required = false) String media, @RequestParam(value = "g", required = false) List<String> genres,
+                             @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
         final ModelAndView mav = new ModelAndView("helloworld/discover");
-
 
         List<Movie> movieList;
         List<TVSerie> tvSerieList;
@@ -81,53 +81,77 @@ public class MovieController {
 
         if (genres != null && !genres.isEmpty()) {
             if (media != null && media.equals("Movies")) {
-                movieList = mediaService.getMovieFilteredByGenreList(genres, mediaService.DEFAULT_PAGE_SIZE, 0);
+                movieList = mediaService.getMovieFilteredByGenreList(genres, mediaService.DEFAULT_PAGE_SIZE, pageNumber - 1);
                 movieList.forEach(movie -> {
                     if (movie.getOverview().contains("\n")) {
                         movie.setOverview(movie.getOverview().replace("\n", ""));
                     }
                 });
+                Optional<Integer> totalNumberOfMovies = mediaService.getMovieFilteredByGenreListCount(genres);
+                int numberOfPages = (int) Math.ceil(totalNumberOfMovies.get().intValue() * 1.0 / mediaService.DEFAULT_PAGE_SIZE);
+                mav.addObject("currentPage",pageNumber - 1);
+                mav.addObject("numberOfPages",numberOfPages);
                 mav.addObject("mediaList", movieList);
             } else if (media != null && media.equals("Series")) {
-                tvSerieList = mediaService.getTvFilteredByGenreList(genres, mediaService.DEFAULT_PAGE_SIZE, 0);
+                tvSerieList = mediaService.getTvFilteredByGenreList(genres, mediaService.DEFAULT_PAGE_SIZE, pageNumber - 1);
                 tvSerieList.forEach(mediaAux -> {
                     if (mediaAux.getOverview().contains("\n")) {
                         mediaAux.setOverview(mediaAux.getOverview().replace("\n", ""));
                     }
                 });
+                Optional<Integer> totalNumberOfTv = mediaService.getTvFilteredByGenreListCount(genres);
+                int numberOfPages = (int) Math.ceil(totalNumberOfTv.get().intValue() * 1.0 / mediaService.DEFAULT_PAGE_SIZE);
+                mav.addObject("currentPage",pageNumber - 1);
+                mav.addObject("numberOfPages",numberOfPages);
                 mav.addObject("mediaList", tvSerieList);
             } else {
-                mediaList = mediaService.getMediaFilteredByGenreList(genres, mediaService.DEFAULT_PAGE_SIZE, 0);
+                mediaList = mediaService.getMediaFilteredByGenreList(genres, mediaService.DEFAULT_PAGE_SIZE, pageNumber - 1);
                 mediaList.forEach(mediaAux -> {
                     if (mediaAux.getOverview().contains("\n")) {
                         mediaAux.setOverview(mediaAux.getOverview().replace("\n", ""));
                     }
                 });
+                Optional<Integer> totalNumberOfMedia = mediaService.getMediaFilteredByGenreListCount(genres);
+                int numberOfPages = (int) Math.ceil(totalNumberOfMedia.get().intValue() * 1.0 / mediaService.DEFAULT_PAGE_SIZE);
+                mav.addObject("currentPage",pageNumber - 1);
+                mav.addObject("numberOfPages",numberOfPages);
                 mav.addObject("mediaList", mediaList);
             }
         } else if (media != null && media.equals("Movies")) {
-            movieList = mediaService.getMovieList(mediaService.DEFAULT_PAGE_SIZE, 0);
+            movieList = mediaService.getMovieList(mediaService.DEFAULT_PAGE_SIZE, pageNumber - 1);
             movieList.forEach(movie -> {
                 if (movie.getOverview().contains("\n")) {
                     movie.setOverview(movie.getOverview().replace("\n", ""));
                 }
             });
+            Optional<Integer> totalNumberOfMovies = mediaService.getMovieCount();
+            int numberOfPages = (int) Math.ceil(totalNumberOfMovies.get().intValue() * 1.0 / mediaService.DEFAULT_PAGE_SIZE);
+            mav.addObject("currentPage",pageNumber - 1);
+            mav.addObject("numberOfPages",numberOfPages);
             mav.addObject("mediaList", movieList);
         } else if (media != null && media.equals("Series")) {
-            tvSerieList = mediaService.getTvList(mediaService.DEFAULT_PAGE_SIZE, 0);
+            tvSerieList = mediaService.getTvList(mediaService.DEFAULT_PAGE_SIZE, pageNumber - 1);
             tvSerieList.forEach(mediaAux -> {
                 if (mediaAux.getOverview().contains("\n")) {
                     mediaAux.setOverview(mediaAux.getOverview().replace("\n", ""));
                 }
             });
+            Optional<Integer> totalNumberOfTv = mediaService.getTvCount();
+            int numberOfPages = (int) Math.ceil(totalNumberOfTv.get().intValue() * 1.0 / mediaService.DEFAULT_PAGE_SIZE);
+            mav.addObject("currentPage",pageNumber - 1);
+            mav.addObject("numberOfPages",numberOfPages);
             mav.addObject("mediaList", tvSerieList);
         } else {
-            mediaList = mediaService.getMoovieList(mediaService.DEFAULT_PAGE_SIZE, 0);
+            mediaList = mediaService.getMoovieList(mediaService.DEFAULT_PAGE_SIZE, pageNumber - 1);
             mediaList.forEach(mediaAux -> {
                 if (mediaAux.getOverview().contains("\n")) {
                     mediaAux.setOverview(mediaAux.getOverview().replace("\n", ""));
                 }
             });
+            Optional<Integer> totalNumberOfMedia = mediaService.getMediaCount();
+            int numberOfPages = (int) Math.ceil(totalNumberOfMedia.get().intValue() * 1.0 / mediaService.DEFAULT_PAGE_SIZE);
+            mav.addObject("currentPage",pageNumber - 1);
+            mav.addObject("numberOfPages",numberOfPages);
             mav.addObject("mediaList", mediaList);
         }
 

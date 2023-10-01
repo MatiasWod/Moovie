@@ -87,6 +87,8 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
     private static final RowMapper<Integer> COUNT_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("count"));
 
+    private static final RowMapper<Integer> MEDIA_ID_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("mediaId"));
+
     @Autowired
     public MediaDaoJdbcImpl(final DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
@@ -111,8 +113,8 @@ public class MediaDaoJdbcImpl implements MediaDao {
     }
 
     @Override
-    public List<Media> getMediaOrderedByTmdbRatingDesc(int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT * FROM media ORDER BY tmdbrating DESC LIMIT ? OFFSET ?", new Object[]{size, pageNumber * size}, MEDIA_ROW_MAPPER);
+    public List<Integer> getMediaIdOrderedByTmdbRatingDesc(int size, int pageNumber) {
+        return jdbcTemplate.query("SELECT mediaId FROM media ORDER BY tmdbrating DESC LIMIT ? OFFSET ?", new Object[]{size, pageNumber * size}, MEDIA_ID_ROW_MAPPER);
     }
 
     @Override
@@ -143,7 +145,18 @@ public class MediaDaoJdbcImpl implements MediaDao {
         return jdbcTemplate.query(sql, params.toArray(), MEDIA_ROW_MAPPER);
     }
 
+    public Optional<Integer> getMediaFilteredByGenreListCount(List<String> genres){
+        String inClause = String.join(",", Collections.nCopies(genres.size(), "?"));
+        String sql = "SELECT COUNT(*) AS count FROM media " +
+                "INNER JOIN genres ON media.mediaId = genres.mediaId " +
+                "WHERE genres.genre IN (" + inClause + ") " +
+                "HAVING COUNT(DISTINCT genres.genre) = ? ";
 
+        List<Object> params = new ArrayList<>(genres);
+        params.add(genres.size()); // Agregar la cantidad de géneros para la cláusula HAVING
+
+        return jdbcTemplate.query(sql, params.toArray(), COUNT_ROW_MAPPER).stream().findFirst();
+    }
 
     @Override
     public List<Media> getMediaBySearch(String searchString, int size, int pageNumber) {
@@ -192,6 +205,20 @@ public class MediaDaoJdbcImpl implements MediaDao {
     @Override
     public List<Movie> getMovieFilteredByGenre(String genre, int size, int pageNumber) {
         return jdbcTemplate.query("SELECT " + moviesQueryParams + " FROM ((media INNER JOIN movies ON media.mediaid = movies.mediaid) INNER JOIN genres ON media.mediaid = genres.mediaid) WHERE genres.genre = ? LIMIT ? OFFSET ?", new Object[]{genre,  size, pageNumber * size}, MOVIE_ROW_MAPPER);
+    }
+
+    @Override
+    public Optional<Integer> getMovieFilteredByGenreListCount(List<String> genres){
+        String inClause = String.join(",", Collections.nCopies(genres.size(), "?"));
+        String sql = "SELECT COUNT(*) AS count FROM " +
+                "((media INNER JOIN movies ON media.mediaid = movies.mediaid) INNER JOIN genres ON media.mediaId = genres.mediaId) " +
+                "WHERE genres.genre IN (" + inClause + ") " +
+                "HAVING COUNT(DISTINCT genres.genre) = ? " ;
+
+        List<Object> params = new ArrayList<>(genres);
+        params.add(genres.size()); // Agregar la cantidad de géneros para la cláusula HAVING
+
+        return jdbcTemplate.query(sql, params.toArray(), COUNT_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
@@ -268,4 +295,17 @@ public class MediaDaoJdbcImpl implements MediaDao {
         return jdbcTemplate.query(sql, params.toArray(), TV_SERIE_ROW_MAPPER);
     }
 
+    @Override
+    public Optional<Integer> getTvFilteredByGenreListCount(List<String> genres) {
+        String inClause = String.join(",", Collections.nCopies(genres.size(), "?"));
+        String sql = "SELECT COUNT(*) AS count FROM " +
+                "((media INNER JOIN tv ON media.mediaid = tv.mediaid) INNER JOIN genres ON media.mediaId = genres.mediaId) " +
+                "WHERE genres.genre IN (" + inClause + ") " +
+                "HAVING COUNT(DISTINCT genres.genre) = ? ";
+
+        List<Object> params = new ArrayList<>(genres);
+        params.add(genres.size()); // Agregar la cantidad de géneros para la cláusula HAVING
+
+        return jdbcTemplate.query(sql, params.toArray(), COUNT_ROW_MAPPER).stream().findFirst();
+    }
 }
