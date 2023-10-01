@@ -15,12 +15,6 @@
     <title>Moovie List</title>
     <link href="${pageContext.request.contextPath}/resources/moovieList.css?version=62" rel="stylesheet"/>
 </head>
-<style>
-    .progress {
-        margin-top: 10px;
-        margin-bottom: 10px;
-    }
-</style>
 <body style="background: whitesmoke">
 <c:import url="navBar.jsp">
     <c:param name="userName" value="${user.username}"/>
@@ -29,7 +23,9 @@
     <div class="header">
             <h1 style="font-size: 60px; font-weight: bold;"><c:out value="${moovieList.name}"/></h1>
             <h3><c:out value="${moovieList.description}"/></h3>
-            <h4 style="color: lightgray;">by <c:out value="${listOwner}"/></h4>
+        <h4 style="color: lightgray;">by <a style="text-decoration: none; color: inherit;"
+                                            href="${pageContext.request.contextPath}/profile/${listOwner}"><c:out
+                value="${listOwner}"/></a></h4>
     </div>
     <div class="buttons">
 
@@ -65,12 +61,12 @@
     </div>
     <div>
         <h4>List progress</h4>
-    <div class="progress">
-        <div class="progress-bar" role="progressbar" style="width: ${(watchedMovies.size()*100)/mediaList.size()}%;"
-             aria-valuenow="${(watchedMovies.size()*100)/mediaList.size()}" aria-valuemin="0" aria-valuemax="100">
-            ${(watchedMovies.size()*100)/mediaList.size()}%
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: ${(watchedMovies.size()*100)/mediaList.size()}%;" id="progressBar"
+                 aria-valuenow="${(watchedMovies.size()*100)/mediaList.size()}" aria-valuemin="0" aria-valuemax="100">
+                ${(watchedMovies.size()*100)/mediaList.size()}%
+            </div>
         </div>
-    </div>
     </div>
     <div style="display: flex; align-items: center;justify-content: center">
         <c:if test="${moviesCount > 0}">
@@ -163,3 +159,4 @@
 </html>
 
 <script src="${pageContext.request.contextPath}/resources/moovieListFunctions.js?version=81"></script>
+
