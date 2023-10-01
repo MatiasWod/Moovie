@@ -46,6 +46,15 @@
         }
     });
 
+    // Get the error message from the alert div
+    var errorAlert = document.getElementById("errorAlert");
+
+    // Check if the error message is not empty
+    if (errorAlert.textContent.trim() !== "") {
+        // Show the error alert
+        errorAlert.style.display = "block";
+    }
+
 </script>
 <body id="grad">
 <c:import url="navBar.jsp">
@@ -69,6 +78,10 @@
                         <input type="submit" value="Submit" />
                     </form>
                 </div>
+            </div>
+            <div class="alert alert-danger" id="errorAlert" style="display: none;">
+                <c:if test="${param.error == 'email_taken'}">Email is already registered </c:if>
+                <c:if test="${param.error == 'username_taken'}">Username is already registered </c:if>
             </div>
         </c:if>
         <hr class="my-8">
