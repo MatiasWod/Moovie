@@ -28,7 +28,7 @@
 
         <c:if test="${fn:length(param.search) > 0}">
             <h2>
-                Results for: "${param.search}"
+                Results for: "<c:out value="${param.search}"/>"
             </h2>
         </c:if>
         <h1>
