@@ -299,8 +299,8 @@
             <h2>Your rating of "${media.name}"</h2>
             <hr class="my-8">
             <div class="rating">
-                <c:forEach var="i" begin="1" end="10" varStatus="loopStatus">
-                    <c:set var="reverseIndex" value="${10 - loopStatus.count + 1}"/>
+                <c:forEach var="i" begin="1" end="5" varStatus="loopStatus">
+                    <c:set var="reverseIndex" value="${5 - loopStatus.count + 1}"/>
                     <i class="bi bi-star" onclick="rate(${reverseIndex})"></i>
                 </c:forEach>
             </div>
@@ -357,7 +357,7 @@
                                     </div>
                                     <div class="d-flex align-items-center justify-content-between">
                                         <h5>
-                                            <i class="bi bi-star-fill ml-2"></i> ${review.rating}/10
+                                            <i class="bi bi-star-fill ml-2"></i> ${review.rating}/5
                                         </h5>
                                         <sec:authorize access="hasRole('ROLE_MODERATOR')">
                                             <div class="text-center" style="margin: 10px">
@@ -389,4 +389,4 @@
 </body>
 </html>
 
-<script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=83"></script>
+<script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=84"></script>
