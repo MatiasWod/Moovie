@@ -118,7 +118,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     @Override
     public List<MoovieList> getMoovieListBySearch(String searchString, int size, int pageNumber){
-        return jdbcTemplate.query("SELECT * FROM moovieLists WHERE moovieLists.name ILIKE ? LIMIT ? OFFSET ?", new Object[]{'%' + searchString + '%', size, pageNumber * size}, MOOVIE_LIST_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT * FROM moovieLists WHERE moovieLists.name AND moovieLists.type = ? ILIKE ? LIMIT ? OFFSET ?", new Object[]{'%' + searchString + '%', MOOVIE_LIST_TYPE_STANDARD_PUBLIC, size, pageNumber * size}, MOOVIE_LIST_ROW_MAPPER);
     }
 
     @Override

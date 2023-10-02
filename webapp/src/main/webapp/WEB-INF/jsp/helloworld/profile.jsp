@@ -101,8 +101,10 @@
                 </div>
             </div>
             <div class="alert alert-danger" id="errorAlert" style="display: none;">
-                <c:if test="${param.error == 'email_taken'}">Email is already registered </c:if>
-                <c:if test="${param.error == 'username_taken'}">Username is already registered </c:if>
+                <c:if test="${param.error == 'invalidType'}">File is of invalid type</c:if>
+                <c:if test="${param.error == 'noFile'}">No file was provided</c:if>
+                <c:if test="${param.error == 'failedSetProfilePicture' || param.error == 'error'}">Error uploading file </c:if>
+                <c:if test="${param.error == 'fileTooBig'}">File is too big </c:if>
             </div>
         </c:if>
         <hr class="my-8">

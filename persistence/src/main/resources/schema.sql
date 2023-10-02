@@ -178,4 +178,10 @@ ALTER TABLE users
 ALTER TABLE moovieLists ADD COLUMN type INTEGER;
 UPDATE moovieLists SET type = 1;
 ALTER TABLE moovieLists ALTER COLUMN type SET NOT NULL;
+
+
+--Modifications a Reviews (ratings)
+UPDATE reviews SET rating=rating/2
+ALTER TABLE reviews DROP CONSTRAINT reviews_rating_check;
+ALTER TABLE reviews ADD CONSTRAINT check_rating_range CHECK (rating BETWEEN 1 AND 5);
  */

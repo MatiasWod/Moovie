@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -211,6 +212,13 @@ public class HelloWorldController {
             return "redirect:" + referer + "?error=noFile";
         } catch (FailedToSetProfilePictureException e) {
             return "redirect:" + referer + "?error=failedSetProfilePicture";
+        } catch (MaxUploadSizeExceededException e) {
+            // Handle the MaxUploadSizeExceededException
+            // You can return an error message or redirect to an error page
+            return "redirect:" + referer + "?error=fileTooBig";
+        } catch (Exception e) {
+            // Handle other exceptions if needed
+            return "redirect:" + referer + "?error=error";
         }
         return "redirect:" + referer;
     }
