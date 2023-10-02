@@ -86,7 +86,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers( "/deleteReview/**", "/deleteList/**","/banUser/**" ).hasRole("MODERATOR")
                 .antMatchers("/**").permitAll()
                 .and().exceptionHandling()
-                .accessDeniedPage("/404")//deberia ser 403
+                .accessDeniedPage("/403")//deberia ser 403
                 .and().csrf().disable();
     }
 
