@@ -31,6 +31,8 @@ public class MoovieUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException, UserNotVerifiedException, UserIsBannedException{
+        ACCOUNT_ENABLED = true;
+        ACCOUNT_NON_BANNED = true;
         final User user = us.findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("No user " + username));
 
