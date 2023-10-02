@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.FailedToInsertToListException;
+import ar.edu.itba.paw.exceptions.InvalidMoovieListIdExcepetion;
+import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
@@ -9,7 +11,10 @@ import ar.edu.itba.paw.persistence.MoovieListDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -19,6 +24,9 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public Optional<MoovieList> getMoovieListById(int moovieListId) {
@@ -126,6 +134,15 @@ public class MoovieListServiceImpl implements MoovieListService{
         if(likeMoovieListStatusForUser(moovieListId)){
             return moovieListDao.removeLikeMoovieList(userId, moovieListId);
         }
+        Optional<MoovieList> mvlAux =  moovieListDao.getMoovieListById(moovieListId);
+        if(mvlAux.isPresent()){
+            User aux = userService.findUserById( mvlAux.get().getUserId()).orElseThrow(()-> new UnableToFindUserException("NO USER"));
+            final Map<String,Object> mailMap = new HashMap<>();
+            mailMap.put("username",aux.getUsername());
+            mailMap.put("moovieListName",mvlAux.get().getName());
+            emailService.sendEmail(aux.getEmail(), "Someone liked your list: " + mvlAux.get().getName() + "!!!" , "notificationLikeMoovieList.html", mailMap );
+        }
+
         return moovieListDao.likeMoovieList(userId, moovieListId);
     }
 
