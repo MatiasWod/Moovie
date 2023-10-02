@@ -1,7 +1,5 @@
 package ar.edu.itba.paw.webapp.config;
 
-import ar.edu.itba.paw.exceptions.UserIsBannedException;
-import ar.edu.itba.paw.exceptions.UserNotVerifiedException;
 import ar.edu.itba.paw.webapp.auth.MoovieUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -84,6 +82,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests()
                 .antMatchers("/login", "/register").anonymous()
                 .antMatchers( "/createreview", "/profile/**", "/uploadProfilePicture","/createrating","/list/**","/insertMediaToList","/like" ).hasRole("USER")
+                .antMatchers( "/deleteReview/**", "/deleteList/**","/banUser/**" ).hasRole("MODERATOR")
                 .antMatchers("/**").permitAll()
                 .and().exceptionHandling()
                 .accessDeniedPage("/404")//deberia ser 403

@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -23,6 +24,13 @@
         <h4 style="color: lightgray;">by <a style="text-decoration: none; color: inherit;"
                                             href="${pageContext.request.contextPath}/profile/${listOwner}"><c:out
                 value="${listOwner}"/></a></h4>
+        <sec:authorize access="hasRole('ROLE_ADMIN')">
+            <div class="text-center" style="margin: 10px">
+                <form action="${pageContext.request.contextPath}/deleteList/${moovieList.moovieListId}" method="post">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete List</button>
+                </form>
+            </div>
+        </sec:authorize>
     </div>
     <div class="buttons">
 
@@ -44,6 +52,7 @@
                     </c:choose>
                 </form>
             </div>
+
             <div style="display: flex; align-items: center;">
                 <h2 style="padding-right: 4px">Sort by</h2>
                 <select name="media" class="form-select filter-width" aria-label="Filter!" id="sortSelect">

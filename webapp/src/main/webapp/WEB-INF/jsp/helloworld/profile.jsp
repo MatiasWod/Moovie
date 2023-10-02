@@ -65,7 +65,16 @@
         <div class="d-flex container justify-content-center">
             <img id="profile-image-big" class="cropCenter" style="height:100px;width:100px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/profile/image/${user.username}" alt="profile pic">
             <div class="m-2">
-                <h1><c:out value="${user.username}"/></h1>
+                <div class="d-flex align-items-center justify-content-between">
+                    <h1><c:out value="${user.username}"/></h1>
+                    <sec:authorize access="hasRole('ROLE_ADMIN')">
+                        <div class="text-center" style="margin-top: 20px">
+                            <form action="${pageContext.request.contextPath}/banUser/${user.userId}" method="post">
+                                <button type="submit" class="btn btn-danger btn-sm">Ban User</button>
+                            </form>
+                        </div>
+                    </sec:authorize>
+                </div>
                 <c:if test="${isMe}"><h5><c:out value="${user.email}"/></h5></c:if>
             </div>
         </div>

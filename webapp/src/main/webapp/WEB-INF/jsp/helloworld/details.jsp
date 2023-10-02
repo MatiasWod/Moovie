@@ -2,6 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 
 <html>
@@ -355,9 +356,20 @@
                                             </a>
                                         </div>
                                     </div>
-                                    <h5 class="align-items-left"><i
-                                            class="bi bi-star-fill ml-2"></i> ${review.rating}/10
-                                    </h5>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <h5>
+                                            <i class="bi bi-star-fill ml-2"></i> ${review.rating}/10
+                                        </h5>
+                                        <sec:authorize access="hasRole('ROLE_ADMIN')">
+                                            <div class="text-center" style="margin: 10px">
+                                                <form action="${pageContext.request.contextPath}/deleteReview/${media.mediaId}" method="post">
+                                                    <input type="hidden" name="reviewId" value="${review.reviewId}"/>
+                                                    <button type="submit" class="btn btn-danger btn-sm">Delete Review</button>
+                                                </form>
+                                            </div>
+                                        </sec:authorize>
+                                    </div>
+
                                 </div>
                                 <p>
                                     <c:out value="${review.reviewContent}"/>

@@ -56,7 +56,7 @@ public class ModeratorServiceImpl implements ModeratorService{
     }
 
     private void amIModerator(){
-        if(userService.getInfoOfMyUser().getRole() == 2){
+        if(userService.getInfoOfMyUser().getRole() != 2){
             throw new InvalidAuthenticationLevelRequiredToPerformActionException("To perform this action you must have role: moderator");
         }
     }
