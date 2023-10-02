@@ -14,6 +14,7 @@
     <link href="${pageContext.request.contextPath}/resources/main.css?version=79" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/resources/details.css?version=79" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/resources/lists.css?version=60" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/moovieList.css?version=62" rel="stylesheet"/>
     <title>Moovie ${user.username}</title>
 </head>
 <script>
@@ -149,16 +150,7 @@
                                 <option value="score">Score</option>
                                 <option value="release date">Release Date</option>
                             </select>
-                            <button class="btn btn-style" id="sortButtonWatched" onclick="changeSortOrder()"><i id="sortIconWatched" class="bi bi-arrow-down-circle-fill"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <h4>List progress</h4>
-                    <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: ${watchedPercentage}%;"
-                             aria-valuenow="${watchedMoviesSizeWatched}" aria-valuemin="0" aria-valuemax="100">
-                                ${watchedMoviesSizeWatched}%
+                            <button class="btn btn-style" id="sortButtonWatched" onclick="changeSortOrder('sortSelectWatched','sortIconWatched','movieTableWatched')"><i id="sortIconWatched" class="bi bi-arrow-down-circle-fill"></i></button>
                         </div>
                     </div>
                 </div>
@@ -522,7 +514,6 @@
             </c:choose>
         </div>
         </div>
-    </div>
 
 
 </sec:authorize>
@@ -531,3 +522,10 @@
 </sec:authorize>
 
 </body>
+</html>
+<script>
+    document.getElementById('sortSelectWatched').addEventListener('change', function () {
+        sortTable(this.value,"movieTableWatched");
+    });
+</script>
+<script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=85"></script>
