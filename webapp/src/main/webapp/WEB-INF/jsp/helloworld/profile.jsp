@@ -17,46 +17,6 @@
     <link href="${pageContext.request.contextPath}/resources/moovieList.css?version=62" rel="stylesheet"/>
     <title>Moovie ${user.username}</title>
 </head>
-<script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-        const radioButtons = document.querySelectorAll('[name="btnradio"]');
-        const divs = document.querySelectorAll('#user-lists, #liked-lists, #reviews, #watched-list, #watchlist');
-
-        console.log(divs)
-
-        radioButtons.forEach(radio => {
-            radio.addEventListener('change', (event) => {
-                divs.forEach(div => {
-                    console.log(div.id)
-                    if (div.id === radio.id.replace('btnradio-', '')) {
-                        div.style.display = 'block';
-                    } else {
-                        div.style.display = 'none';
-                    }
-                });
-            });
-        });
-    });
-
-    document.addEventListener("DOMContentLoaded", function() {
-        const profileImage = document.getElementById("profile-image-big");
-        if (profileImage) {
-            profileImage.onerror = function() {
-                profileImage.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
-            }
-        }
-    });
-
-    // Get the error message from the alert div
-    var errorAlert = document.getElementById("errorAlert");
-
-    // Check if the error message is not empty
-    if (errorAlert.textContent.trim() !== "") {
-        // Show the error alert
-        errorAlert.style.display = "block";
-    }
-
-</script>
 <body id="grad">
 <c:import url="navBar.jsp">
     <c:param name="userName" value="${myUser.username}"/>
@@ -100,7 +60,7 @@
                     </form>
                 </div>
             </div>
-            <div class="alert alert-danger" id="errorAlert" >
+            <div class="alert alert-danger" id="errorAlert" style="display: none">
                 <c:if test="${param.error == 'invalidType'}">File is of invalid type</c:if>
                 <c:if test="${param.error == 'noFile'}">No file was provided</c:if>
                 <c:if test="${param.error == 'failedSetProfilePicture' || param.error == 'error'}">Error uploading file </c:if>
@@ -534,5 +494,45 @@
     document.getElementById('sortSelectWatchlist').addEventListener('change', function () {
         sortTable(this.value,"movieTableWatchlist");
     });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const radioButtons = document.querySelectorAll('[name="btnradio"]');
+        const divs = document.querySelectorAll('#user-lists, #liked-lists, #reviews, #watched-list, #watchlist');
+
+        console.log(divs)
+
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', (event) => {
+                divs.forEach(div => {
+                    console.log(div.id)
+                    if (div.id === radio.id.replace('btnradio-', '')) {
+                        div.style.display = 'block';
+                    } else {
+                        div.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const profileImage = document.getElementById("profile-image-big");
+        if (profileImage) {
+            profileImage.onerror = function() {
+                profileImage.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
+            }
+        }
+    });
+
+    // Get the error message from the alert div
+    var errorAlert = document.getElementById("errorAlert");
+
+    // Check if the error message is not empty
+    if (errorAlert.textContent.trim() !== "") {
+        // Show the error alert
+        errorAlert.style.display = "block";
+    }
+
 </script>
 <script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=85"></script>
