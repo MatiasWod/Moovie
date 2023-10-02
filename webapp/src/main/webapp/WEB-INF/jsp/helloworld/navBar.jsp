@@ -68,9 +68,15 @@
                     </li>
                 </ul>
                 <form class="d-flex mb-0" role="search" action="${pageContext.request.contextPath}/search" method="get">
+                <div class="input-group">
                     <input id="searchInput" class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
+                    <button class="btn btn-outline-success" type="submit">
+                        <i class="bi bi-search"></i> <!-- Bootstrap search icon -->
+                        Search
+                    </button>
+                </div>
+            </form>
+
                 <div style="margin-left: 15px; margin-right:10px" class="d-flex nav-item justify-content-center">
                         <sec:authorize access="hasRole('ROLE_USER')">
                             <sec:authentication property="name" var="username"></sec:authentication>
@@ -93,7 +99,6 @@
                         <sec:authorize access="!isAuthenticated()">
                             <a href="${pageContext.request.contextPath}/login">Log In</a>
                         </sec:authorize>
-                        </>
                 </div>
 
             </div>
