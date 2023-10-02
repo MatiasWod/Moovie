@@ -61,7 +61,7 @@
                     <option value="score">Score</option>
                     <option value="release date">Release Date</option>
                 </select>
-                <button class="btn btn-style" id="sortButton" onclick="changeSortOrder()"><i id="sortIcon" class="bi bi-arrow-down-circle-fill"></i></button>
+                <button class="btn btn-style" id="sortButton" onclick="changeSortOrder('sortSelect','sortIcon','movieTable')"><i id="sortIcon" class="bi bi-arrow-down-circle-fill"></i></button>
             </div>
         </div>
     </div>
@@ -165,4 +165,6 @@
 </html>
 
 <script src="${pageContext.request.contextPath}/resources/moovieListFunctions.js?version=81"></script>
+<script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=85"></script>
+
 
