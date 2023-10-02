@@ -16,7 +16,6 @@
     <title>Moovie-${media.name}</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=83"></script>
 </head>
 <body id="grad">
 <c:import url="navBar.jsp">
@@ -390,3 +389,4 @@
 </body>
 </html>
 
+<script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=83"></script>

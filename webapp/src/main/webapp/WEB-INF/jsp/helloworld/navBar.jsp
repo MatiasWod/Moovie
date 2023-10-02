@@ -32,6 +32,17 @@
             }
         });
 
+        const profileImages = document.querySelectorAll(".review-profile-image");
+
+        profileImages.forEach(profileImage => {
+
+            profileImage.onerror = function() {
+
+                profileImage.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
+
+            }
+
+        });
     });
 </script>
 
@@ -61,7 +72,7 @@
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
                 <div style="margin-left: 15px; margin-right:10px" class="d-flex nav-item justify-content-center">
-                        <sec:authorize access="isAuthenticated()">
+                        <sec:authorize access="hasRole('ROLE_USER')">
                             <sec:authentication property="name" var="username"></sec:authentication>
                             <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
                                 <ul class="navbar-nav">
