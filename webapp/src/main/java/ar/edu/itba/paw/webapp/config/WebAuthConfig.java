@@ -35,20 +35,21 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     private AuthenticationFailureHandler authenticationFailureHandler = new AuthenticationFailureHandler() {
         @Override
         public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+            String contextPath = request.getContextPath();
             if (exception instanceof DisabledException) {
                 // Account wasnt verified
-                response.sendRedirect("/login?error=disabled");
+                response.sendRedirect(contextPath + "/login?error=disabled");
             } else if (exception instanceof LockedException) {
                 // Account was banned
-                response.sendRedirect("/login?error=locked");
+                response.sendRedirect(contextPath + "/login?error=locked");
             } else if(exception instanceof UsernameNotFoundException) {
                 // User not found
-                response.sendRedirect("/login?error=unknown_user");
+                response.sendRedirect(contextPath + "/login?error=unknown_user");
             } else if (exception instanceof BadCredentialsException) {
                 // Wrong password
-                response.sendRedirect("/login?error=bad_credentials");
+                response.sendRedirect(contextPath + "/login?error=bad_credentials");
             }else {
-                response.sendRedirect("/login?error=unknown_error");
+                response.sendRedirect(contextPath + "/login?error=unknown_error");
             }
         }
     };

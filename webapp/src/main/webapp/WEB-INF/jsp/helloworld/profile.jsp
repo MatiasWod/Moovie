@@ -255,22 +255,13 @@
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div style="display: flex; align-items: center;">
                             <h2 style="padding-right: 4px">Sort by</h2>
-                            <select name="media" class="form-select filter-width" aria-label="Filter!" id="sortSelect">
+                            <select name="media" class="form-select filter-width" aria-label="Filter!" id="sortSelectWatchlist">
                                 <option value="title">Title</option>
                                 <option value="type">Type</option>
                                 <option value="score">Score</option>
                                 <option value="release date">Release Date</option>
                             </select>
-                            <button class="btn btn-style" id="sortButtonWatchlist" onclick="changeSortOrder()"><i id="sortIcon" class="bi bi-arrow-down-circle-fill"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <h4>List progress</h4>
-                    <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: ${watchedPercentage}%;"
-                             aria-valuenow="${watchedMoviesSizeWatchlist}" aria-valuemin="0" aria-valuemax="100">
-                                ${watchedMoviesSizeWatchlist}%
+                            <button class="btn btn-style" id="sortButtonWatchlist" onclick="changeSortOrder('sortSelectWatchlist','sortIconWatchlist','movieTableWatchlist')"><i id="sortIconWatchlist" class="bi bi-arrow-down-circle-fill"></i></button>
                         </div>
                     </div>
                 </div>
@@ -537,6 +528,9 @@
 <script>
     document.getElementById('sortSelectWatched').addEventListener('change', function () {
         sortTable(this.value,"movieTableWatched");
+    });
+    document.getElementById('sortSelectWatchlist').addEventListener('change', function () {
+        sortTable(this.value,"movieTableWatchlist");
     });
 </script>
 <script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=85"></script>
