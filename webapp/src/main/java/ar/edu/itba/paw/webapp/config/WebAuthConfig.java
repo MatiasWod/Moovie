@@ -41,13 +41,13 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
             } else if (exception instanceof LockedException) {
                 // Account was banned
                 response.sendRedirect("/login?error=locked");
-            } else if (exception instanceof BadCredentialsException) {
-                // Wrong password
-                response.sendRedirect("/login?error=bad_credentials");
             } else if(exception instanceof UsernameNotFoundException) {
                 // User not found
                 response.sendRedirect("/login?error=unknown_user");
-            } else {
+            } else if (exception instanceof BadCredentialsException) {
+                // Wrong password
+                response.sendRedirect("/login?error=bad_credentials");
+            }else {
                 response.sendRedirect("/login?error=unknown_error");
             }
         }

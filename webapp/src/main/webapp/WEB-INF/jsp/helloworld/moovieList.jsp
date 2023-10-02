@@ -24,7 +24,7 @@
         <h4 style="color: lightgray;">by <a style="text-decoration: none; color: inherit;"
                                             href="${pageContext.request.contextPath}/profile/${listOwner}"><c:out
                 value="${listOwner}"/></a></h4>
-        <sec:authorize access="hasRole('ROLE_ADMIN')">
+            <sec:authorize access="hasRole('ROLE_MODERATOR')">
             <div class="text-center" style="margin: 10px">
                 <form action="${pageContext.request.contextPath}/deleteList/${moovieList.moovieListId}" method="post">
                     <button type="submit" class="btn btn-danger btn-sm">Delete List</button>

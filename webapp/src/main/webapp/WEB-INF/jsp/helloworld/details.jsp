@@ -360,7 +360,7 @@
                                         <h5>
                                             <i class="bi bi-star-fill ml-2"></i> ${review.rating}/10
                                         </h5>
-                                        <sec:authorize access="hasRole('ROLE_ADMIN')">
+                                        <sec:authorize access="hasRole('ROLE_MODERATOR')">
                                             <div class="text-center" style="margin: 10px">
                                                 <form action="${pageContext.request.contextPath}/deleteReview/${media.mediaId}" method="post">
                                                     <input type="hidden" name="reviewId" value="${review.reviewId}"/>

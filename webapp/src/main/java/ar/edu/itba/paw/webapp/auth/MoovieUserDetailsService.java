@@ -39,7 +39,7 @@ public class MoovieUserDetailsService implements UserDetailsService {
         if (user.getRole() == 1 || user.getRole()==2 ) {
             authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
             if(user.getRole() == 2 ){
-                authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+                authorities.add(new SimpleGrantedAuthority("ROLE_MODERATOR"));
             }
         } else {
             if(user.getRole() == -2  ){

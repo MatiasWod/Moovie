@@ -48,17 +48,7 @@ public class HelloWorldController {
     ReviewService reviewService;
     private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
 
-    @RequestMapping("/{id:\\d+}")
-    public ModelAndView profile(@PathVariable("id") final long userId) {
-        final ModelAndView mav = new ModelAndView("helloworld/profile");
-        try{
-            mav.addObject("user",userService.getInfoOfMyUser());
-        }catch(UnableToFindUserException exception){
-            mav.addObject("user",null);
-        }
-        mav.addObject("userid", userId);
-        return mav;
-    }
+
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public ModelAndView register(@ModelAttribute("registerForm") final RegisterForm form) {

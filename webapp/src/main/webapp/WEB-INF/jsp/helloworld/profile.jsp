@@ -67,7 +67,7 @@
             <div class="m-2">
                 <div class="d-flex align-items-center justify-content-between">
                     <h1><c:out value="${user.username}"/></h1>
-                    <sec:authorize access="hasRole('ROLE_ADMIN')">
+                    <sec:authorize access="hasRole('ROLE_MODERATOR')">
                         <div class="text-center" style="margin-top: 20px">
                             <form action="${pageContext.request.contextPath}/banUser/${user.userId}" method="post">
                                 <button type="submit" class="btn btn-danger btn-sm">Ban User</button>

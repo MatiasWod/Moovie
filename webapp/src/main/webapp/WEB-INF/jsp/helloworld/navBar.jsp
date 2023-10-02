@@ -32,16 +32,8 @@
             }
         });
 
-        const profileImages = document.querySelectorAll(".review-profile-image");
-
-        profileImages.forEach(profileImage => {
-            profileImage.onerror = function() {
-                profileImage.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
-            }
-        });
     });
 </script>
-
 
     <nav class="sticky-top navbar navbar-expand-lg navbar-light container-gray mb-4">
         <div class="container-fluid">
@@ -69,28 +61,28 @@
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
                 <div style="margin-left: 15px; margin-right:10px" class="d-flex nav-item justify-content-center">
-                        <c:choose>
-                            <c:when test="${!empty param.userName}">
-                                <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
-                                    <ul class="navbar-nav">
-                                        <li class="nav-item dropdown">
-                                            <c:if test="${param.role == 2}"><img src="${pageContext.request.contextPath}/resources/moderator_logo.png" height="50" alt="Moderator logo"></c:if>
-                                            <button class="btn bg-transparent dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <img id="profile-image" style="height: 50px; width: 50px; border:solid black; border-radius: 50%" class="cropCenter" src="${pageContext.request.contextPath}/profile/image/${param.userName}" alt="profile picture"/>
-                                                    ${param.userName}
-                                            </button>
-                                            <ul class="dropdown-menu dropdown-menu-end">
-                                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/profile/${param.userName}">Profile</a></li>
-                                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/logout">Logout</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </c:when>
-                            <c:otherwise>
-                                <a href="${pageContext.request.contextPath}/login">Log In</a>
-                            </c:otherwise>
-                        </c:choose>
+                        <sec:authorize access="isAuthenticated()">
+                            <sec:authentication property="name" var="username"></sec:authentication>
+                            <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+                                <ul class="navbar-nav">
+                                    <li class="nav-item dropdown">
+                                        <sec:authorize access="hasRole('ROLE_MODERATOR')"><img src="${pageContext.request.contextPath}/resources/moderator_logo.png" height="50" alt="Moderator logo"></sec:authorize>
+                                        <button class="btn bg-transparent dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <img id="profile-image" style="height: 50px; width: 50px; border:solid black; border-radius: 50%" class="cropCenter" src="${pageContext.request.contextPath}/profile/image/${username}" alt="profile picture"/>
+                                                ${username}
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/profile/${username}">Profile</a></li>
+                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/logout">Logout</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </sec:authorize>
+                        <sec:authorize access="!isAuthenticated()">
+                            <a href="${pageContext.request.contextPath}/login">Log In</a>
+                        </sec:authorize>
+                        </>
                 </div>
 
             </div>

@@ -29,7 +29,7 @@
 <c:import url="navBar.jsp">
     <c:param name="userName" value="${user.username}"/>
 </c:import>
-<sec:authorize access="isAuthenticated()">
+
     <div class="container d-flex flex-column">
         <div class="container d-flex flex-row ">
             <div class="container d-flex flex-column">

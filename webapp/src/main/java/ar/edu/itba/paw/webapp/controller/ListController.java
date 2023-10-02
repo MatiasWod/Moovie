@@ -258,14 +258,5 @@ public class ListController {
         return new ModelAndView("redirect:/list/" + listId);
     }
 
-    @ModelAttribute("user")
-    public User getLoggedUser() {
-        try {
-            userService.getInfoOfMyUser();
-        } catch (UnableToFindUserException exception) {
-            return null;
-        }
-        return userService.getInfoOfMyUser();
-    }
 
 }

@@ -213,12 +213,14 @@ public class MovieController {
         }
 
 
-        User currentUser=getLoggedUser();
-        if (currentUser != null) {
+        try{
+            User currentUser= userService.getInfoOfMyUser();
             final List<MoovieList> privateLists = moovieListService.getMoovieListDefaultPrivateFromCurrentUser();
             mav.addObject("privateLists", privateLists);
             final List<MoovieList> publicLists=moovieListService.getAllStandardPublicMoovieListFromUser(currentUser.getUserId(), MoovieListService.DEFAULT_PAGE_SIZE, 0);
             mav.addObject("publicLists", publicLists);
+        }catch(Exception e){
+
         }
 
         final List<extendedReview> reviewsExtended=new ArrayList<>();
@@ -270,15 +272,6 @@ public class MovieController {
         return new ModelAndView("redirect:/details/" + mediaId);
     }
 
-    @ModelAttribute("user")
-    public User getLoggedUser() {
-        try {
-            userService.getInfoOfMyUser();
-        } catch (UnableToFindUserException exception) {
-            return null;
-        }
-        return userService.getInfoOfMyUser();
-    }
 
 }
 
