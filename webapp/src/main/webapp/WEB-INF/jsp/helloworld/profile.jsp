@@ -100,7 +100,7 @@
                     </form>
                 </div>
             </div>
-            <div class="alert alert-danger" id="errorAlert" style="display: none;">
+            <div class="alert alert-danger" id="errorAlert" >
                 <c:if test="${param.error == 'invalidType'}">File is of invalid type</c:if>
                 <c:if test="${param.error == 'noFile'}">No file was provided</c:if>
                 <c:if test="${param.error == 'failedSetProfilePicture' || param.error == 'error'}">Error uploading file </c:if>
