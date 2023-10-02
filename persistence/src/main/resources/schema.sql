@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS users (
     userId                          SERIAL PRIMARY KEY,
     email                           VARCHAR(255) UNIQUE NOT NULL,
-    username                        VARCHAR(20) UNIQUE NOT NULL,
+    username                        VARCHAR(30) UNIQUE NOT NULL,
     password                        TEXT NOT NULL,
     role                            INTEGER NOT NULL,
 
@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS verificationTokens(
 --Modifications in table Users post primer sprint
 --1
 ALTER TABLE users
-    ADD username VARCHAR(20),
+    ADD username VARCHAR(30),
     ADD password TEXT,
     ADD role INTEGER;
 --2
