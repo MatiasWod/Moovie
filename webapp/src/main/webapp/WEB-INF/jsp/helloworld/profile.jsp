@@ -68,16 +68,27 @@
             <div class="m-2">
                 <div class="d-flex align-items-center justify-content-between">
                     <h1><c:out value="${user.username}"/></h1>
+                    <c:if test="${user.role == 2}"><img class="cropCenter" style="height:100px;width:100px" src="${pageContext.request.contextPath}/resources/moderator_logo.png"></c:if>
                     <sec:authorize access="hasRole('ROLE_MODERATOR')">
-                        <div class="text-center" style="margin-top: 20px">
-                            <form action="${pageContext.request.contextPath}/banUser/${user.userId}" method="post">
-                                <button type="submit" class="btn btn-danger btn-sm">Ban User</button>
-                            </form>
-                        </div>
+                        <c:if test="${user.role != 2 && !isMe}">
+                            <div class="text-center" style="margin-top: 20px">
+                                <form action="${pageContext.request.contextPath}/banUser/${user.userId}" method="post">
+                                    <button type="submit" class="btn btn-danger btn-sm">Ban User</button>
+                                </form>
+                            </div>
+                            <div class="text-center" style="margin-top: 20px">
+                                <form action="${pageContext.request.contextPath}/makeUserMod/${user.userId}" method="post">
+                                    <button type="submit" class="btn btn-success btn-sm">Make User Mod</button>
+                                </form>
+                            </div>
+                        </c:if>
                     </sec:authorize>
                 </div>
                 <c:if test="${isMe}"><h5><c:out value="${user.email}"/></h5></c:if>
             </div>
+        </div>
+        <div class="d-flex container justify-content-center">
+            <c:if test="${user.role == -2}"><h2 style="color: red">User is banned undefinetly</h2></c:if>
         </div>
         <c:if test="${isMe}">
             <div class="p-1 container d-flex justify-content-center">

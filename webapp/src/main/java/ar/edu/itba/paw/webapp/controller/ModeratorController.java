@@ -1,5 +1,8 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.UnableToFindUserException;
+import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.persistence.UserDao;
 import ar.edu.itba.paw.services.ModeratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,11 +12,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.w3c.dom.UserDataHandler;
 
 @Controller
 public class ModeratorController {
     @Autowired
     private ModeratorService moderatorService;
+    @Autowired
+    private UserDao userDao;
 
     @RequestMapping(value = "/deleteReview/{mediaId:\\d+}", method = RequestMethod.POST)
     public ModelAndView deleteReview(@RequestParam("reviewId") int reviewId, RedirectAttributes redirectAttributes, @PathVariable int mediaId) {
@@ -43,5 +49,20 @@ public class ModeratorController {
         }catch (Exception e){
         }
         return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping(value = "/makeUserMod/{userId:\\d+}", method = RequestMethod.POST)
+    public ModelAndView makeUserMod(@PathVariable int userId, RedirectAttributes redirectAttributes) {
+        try {
+            moderatorService.makeUserModerator(userId);
+        }catch (Exception e){
+        }
+        try{
+            String username = userDao.findUserById(userId).get().getUsername();
+            return new ModelAndView("redirect:/profile/" + username );
+        } catch ( UnableToFindUserException e ){
+            return new ModelAndView().addObject("extraInfo", "Error while retrieving the user after making a moderator");
+        }
+
     }
 }

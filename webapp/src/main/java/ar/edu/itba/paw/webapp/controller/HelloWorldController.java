@@ -102,7 +102,7 @@ public class HelloWorldController {
     }
 
 
-    @RequestMapping("/profile/{username}")
+    @RequestMapping("/profile/{username:.+}")
     public ModelAndView profilePage(@PathVariable String username){
         Optional<User> aux = userService.findUserByUsername(username);
         if(aux.isPresent()){
