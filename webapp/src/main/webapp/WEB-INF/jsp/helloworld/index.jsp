@@ -47,21 +47,21 @@
             <a href="${pageContext.request.contextPath}/discover?media=Series">see more</a>
         </div>
         <hr class="my-1">
-        <div class="container d-flex overflow-scroll">
-            <c:forEach var="series" items="${tvList}" end="5">
-                <a href="${pageContext.request.contextPath}/details/${series.mediaId}" class="poster card text-bg-dark m-1">
-                    <div  class="card-img-container"> <!-- Add a container for the image -->
-                        <img class="cropCenter " src="${series.posterPath}" alt="${series.name} poster">
-                        <div class="card-img-overlay">
-                            <h5 class="card-title">${series.name}</h5>
-                            <p class="card-text">${series.tmdbRating}</p>
-                        </div>
-                    </div>
-                </a>
-            </c:forEach>
+        <div class="container d-flex overflow-hidden" style="max-height: 300px;"> <!-- Set a fixed maximum height for the container -->
+                <c:forEach var="series" items="${tvList}" end="5">
+                        <a href="${pageContext.request.contextPath}/details/${series.mediaId}" class="poster card text-bg-dark m-1">
+                            <div class="card-img-container" style="max-height: 100%; overflow: hidden;"> <!-- Set a maximum height for the image container -->
+                                <img class="img-fluid" src="${series.posterPath}" alt="${series.name} poster" style="max-height: 100%; object-fit: cover;"> <!-- Use 'img-fluid' class for responsive images -->
+                                <div class="card-img-overlay">
+                                    <h5 class="card-title">${series.name}</h5>
+                                    <p class="card-text">${series.tmdbRating}</p>
+                                </div>
+                            </div>
+                        </a>
+                </c:forEach>
         </div>
 
+
     </div>
-</div>
 </body>
 </html>
