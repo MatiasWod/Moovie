@@ -499,7 +499,7 @@
                                             </div>
                                         </div>
                                         <h5 class="align-items-left"><i
-                                                class="bi bi-star-fill ml-2"></i> ${review.rating}/10
+                                                class="bi bi-star-fill ml-2"></i> ${review.rating}/5
                                         </h5>
                                     </div>
                                     <p>

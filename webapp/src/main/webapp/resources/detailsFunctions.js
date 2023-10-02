@@ -66,7 +66,7 @@ function rate(starsClicked) {
 
     // Remove 'bi-star' class and add 'bi-star-fill' class for selected stars
     stars.forEach(function (star, index) {
-        if (index >= (10 - starsClicked)) {
+        if (index >= (5 - starsClicked)) {
             star.classList.remove('bi-star');
             star.classList.add('bi-star-fill');
             star.classList.add('selected')
