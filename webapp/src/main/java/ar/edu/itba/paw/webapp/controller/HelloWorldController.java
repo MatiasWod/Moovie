@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -212,15 +213,23 @@ public class HelloWorldController {
             return "redirect:" + referer + "?error=noFile";
         } catch (FailedToSetProfilePictureException e) {
             return "redirect:" + referer + "?error=failedSetProfilePicture";
-        } catch (MaxUploadSizeExceededException e) {
-            // Handle the MaxUploadSizeExceededException
-            // You can return an error message or redirect to an error page
-            return "redirect:" + referer + "?error=fileTooBig";
         } catch (Exception e) {
             // Handle other exceptions if needed
             return "redirect:" + referer + "?error=error";
         }
         return "redirect:" + referer;
+    }
+
+    @ControllerAdvice
+    public class FileUploadExceptionAdvice {
+        @ExceptionHandler(MaxUploadSizeExceededException.class)
+        public String handleMaxSizeException(
+                MaxUploadSizeExceededException exc,
+                HttpServletRequest request,
+                HttpServletResponse response) {
+            String referer = request.getHeader("referer");
+            return "redirect:" + referer + "?error=fileTooBig";
+        }
     }
 
     @RequestMapping(value = "/profile/image/{username}", produces = "image/**")
