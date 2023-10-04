@@ -6,8 +6,5 @@ import java.util.List;
 
 
 public interface GenreDao {
-
-    List<Genre> getGenreForMedia(int mediaId);
-
     List<String> getAllGenres();
 }

@@ -11,12 +11,7 @@ import java.util.List;
 public class GenreServiceImpl implements GenreService{
     @Autowired
     private GenreDao genreDao;
-
-    @Override
-    public List<Genre> getGenreForMedia(int mediaId) {
-        return genreDao.getGenreForMedia(mediaId);
-    }
-
+    
     @Override
     public List<String> getAllGenres() {
         return genreDao.getAllGenres();
