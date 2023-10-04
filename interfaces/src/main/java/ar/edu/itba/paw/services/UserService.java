@@ -14,21 +14,25 @@ public interface UserService {
     public static final int ROLE_USER = 1;
     public static final int ROLE_MODERATOR = 2;
 
+    //Registration actions
     void createUser(String username, String email, String password);
     User createUserFromUnregistered(String username, String email, String password);
     boolean confirmRegister(Token token);
-    Optional<User> findUserById(int userId);
-    Optional<User> findUserByEmail(String mail);
 
-    Optional<User> findUserByUsername(String username);
+    //User finders
+    User findUserById(int userId);
+    User findUserByEmail(String mail);
+    User findUserByUsername(String username);
 
+    //Auth info of users
     User getInfoOfMyUser();
-
     boolean isUsernameMe(String username);
 
+    //Profile picture functions
     void setProfilePicture(MultipartFile image);
     byte[] getProfilePicture(String username);
 
+    //Verification mail methods
     void sendVerificationEmail(String email, String username, String token);
     void resendVerificationEmail(String token);
 }

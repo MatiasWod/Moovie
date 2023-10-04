@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import ar.edu.itba.paw.models.User.Token;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,8 +25,9 @@ public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
     private final MoovieListDao moovieListDao;
-    private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+
+    private final PasswordEncoder passwordEncoder;
     private final MessageSource messageSource;
     private final VerificationTokenService verificationTokenService;
     private static final int ROLE_NOT_AUTHENTICATED = -1;
@@ -43,6 +45,10 @@ public class UserServiceImpl implements UserService {
         this.verificationTokenService = verificationTokenService;
         this.moovieListDao = moovieListDao;
     }
+
+
+
+    //REGSITRATION
 
 
     @Override
@@ -84,29 +90,37 @@ public class UserServiceImpl implements UserService {
         return isValidToken;
     }
 
+
+
+    //FIND USERS
+
+
     @Override
-    public Optional<User> findUserById(int userId) {
-        return userDao.findUserById(userId);
+    public User findUserById(int userId) {
+        return userDao.findUserById(userId).orElseThrow(() -> new UnableToFindUserException("User with id: " + userId + " not found"));
     }
 
     @Override
-    public Optional<User> findUserByEmail(String email) {
-        return userDao.findUserByEmail(email);
+    public User findUserByEmail(String email) {
+        return userDao.findUserByEmail(email).orElseThrow(() -> new UnableToFindUserException("User with email: " + email + " not found"));
     }
 
     @Override
-    public Optional<User> findUserByUsername(String username) {
-        return userDao.findUserByUsername(username);
+    public User findUserByUsername(String username) {
+        return userDao.findUserByUsername(username).orElseThrow(() -> new UnableToFindUserException("User with username: " + username + " not found"));
     }
+
+
+    //AUTHENTICATION INFO
 
 
     @Override
     public User getInfoOfMyUser() {
         if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
             org.springframework.security.core.userdetails.User userDetails = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            return findUserByUsername(userDetails.getUsername()).get();
+            return findUserByUsername(userDetails.getUsername());
         } else {
-            throw new UnableToFindUserException("User is not logged when its supposed");
+            throw new UserNotLoggedException("User is not logged when its supposed");
         }
     }
 
@@ -117,6 +131,10 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+
+
+    //PROFILE PICTURES
+
 
     @Override
     public void setProfilePicture(MultipartFile picture) {
@@ -143,8 +161,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public byte[] getProfilePicture(String username) {
-        return userDao.getProfilePicture(findUserByUsername(username).get().getUserId()).get().getImage();
+        return userDao.getProfilePicture(findUserByUsername(username).getUserId()).get().getImage();
     }
+
+
+    //EMAIL VERIFICATION
 
 
     public void sendVerificationEmail(String email, String username, String token) {

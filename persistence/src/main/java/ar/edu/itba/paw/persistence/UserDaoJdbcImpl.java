@@ -90,10 +90,6 @@ public class UserDaoJdbcImpl implements UserDao{
     }
 
 
-    /**
-     * PICTURE QUERYS / INSERTS
-     */
-
     @Override
     public void setProfilePicture(int userId, byte[] image) {
         final Map<String, Object> args = new HashMap<>();
