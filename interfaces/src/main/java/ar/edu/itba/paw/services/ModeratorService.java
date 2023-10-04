@@ -8,6 +8,8 @@ public interface ModeratorService {
 
     //Bans an user
     void banUser(int userId);
+    //Bans an user
+    void unbanUser(int userId);
     //Chane the tole of an user to Moderator
     void makeUserModerator(int userId);
 }

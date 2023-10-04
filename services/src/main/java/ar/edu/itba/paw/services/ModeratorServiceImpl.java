@@ -42,8 +42,26 @@ public class ModeratorServiceImpl implements ModeratorService{
         if(u.getRole() == userDao.ROLE_MODERATOR){
             throw new UnableToBanUserException("Cannot ban another moderator");
         }
+        if(u.getRole() == userDao.ROLE_UNREGISTERED){
+            throw new UnableToBanUserException("Cannot ban an unregisted user");
+        }
         userDao.changeUserRole(userId, userDao.ROLE_BANNED);
     }
+
+    @Override
+    public void unbanUser(int userId) {
+        amIModerator();
+        User u = userDao.findUserById(userId).orElseThrow(() -> new UnableToFindUserException("No user for the id = " + userId ));
+        if(u.getRole() == userDao.ROLE_MODERATOR){
+            throw new UnableToBanUserException("Cannot unban another moderator");
+        }
+        if(u.getRole() == userDao.ROLE_UNREGISTERED){
+            throw new UnableToBanUserException("Cannot ban an unregisted user");
+        }
+        userDao.changeUserRole(userId, userDao.ROLE_USER);
+    }
+
+
 
     @Override
     public void makeUserModerator(int userId) {
@@ -56,7 +74,7 @@ public class ModeratorServiceImpl implements ModeratorService{
     }
 
     private void amIModerator(){
-        if(userService.getInfoOfMyUser().getRole() != 2){
+        if(userService.getInfoOfMyUser().getRole() != userService.ROLE_MODERATOR){
             throw new InvalidAuthenticationLevelRequiredToPerformActionException("To perform this action you must have role: moderator");
         }
     }
