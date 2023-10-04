@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.exceptions.ReviewNotFoundException;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.persistence.ReviewDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,8 @@ public class ReviewServiceImpl implements ReviewService{
     private UserService userService;
 
     @Override
-    public Optional<Review> getReviewById(int reviewId) {
-        return reviewDao.getReviewById(reviewId);
+    public Review getReviewById(int reviewId) {
+        return reviewDao.getReviewById(reviewId).orElseThrow( ()-> new ReviewNotFoundException("Review not found for id: " + reviewId));
     }
 
     @Override

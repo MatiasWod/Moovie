@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ReviewService {
-    Optional<Review> getReviewById(int reviewId);
+    Review getReviewById(int reviewId);
     List<Review> getReviewsByMediaId(int mediaId);
 
     List<Review> getReviewForMoovieListFromUser(int moovieListId, int userId);
