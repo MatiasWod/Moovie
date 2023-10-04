@@ -19,7 +19,6 @@ import java.util.Optional;
 public class MediaDaoJdbcImpl implements MediaDao {
     private final JdbcTemplate jdbcTemplate;
 
-
     private static final RowMapper<Media> MEDIA_ROW_MAPPER = (rs, rowNum) -> new Media(
             rs.getInt("mediaId"),
             rs.getBoolean("type"),
@@ -95,217 +94,71 @@ public class MediaDaoJdbcImpl implements MediaDao {
     }
 
 
-    /*** MEDIA QUERIES*/
-
     @Override
-    public Optional<Media> getMediaById(int mediaId) {
-        return jdbcTemplate.query("SELECT * FROM media WHERE mediaId = ?", new Object[]{mediaId}, MEDIA_ROW_MAPPER).stream().findFirst();
+    public List<Media> getMedia(int type, String search, List<String> genres,
+                                String orderBy, int size, int pageNumber) {
+        // Initialize the SQL query and arguments list
+        StringBuilder sql = new StringBuilder("SELECT * FROM media ");
+        ArrayList<Object> args = new ArrayList<>();
+
+        // If type is 0 or 1 it's specifically movies or TVs, else it's not restricted
+        if (type == 0 || type == 1) {
+            sql.append(" WHERE type = ? ");
+            args.add(type == 1);
+        } else {
+            sql.append(" WHERE type NOT NULL ");
+        }
+
+        // Input the search
+        if (!search.isEmpty()) {
+            sql.append(" AND name ILIKE ? ");
+            args.add('%' + search + '%');
+        }
+
+        // Add the genres filter
+        if (!genres.isEmpty()) {
+            sql.append(" AND mediaId IN ( SELECT mediaId FROM genres WHERE "); // Start the OR conditions for genres
+            for (String genre : genres) {
+                sql.append(" genre_column = ? OR "); // Replace 'genre_column' with your actual genre column name
+                args.add(genre);
+            }
+            sql.deleteCharAt(sql.length());
+            sql.deleteCharAt(sql.length());
+            sql.deleteCharAt(sql.length());
+            sql.append(" GROUP BY mediaId HAVING COUNT(*) >= 2) ");
+        }
+
+        // Order by
+        if (!orderBy.isEmpty()) {
+            sql.append(" ORDER BY ? ");
+            args.add(orderBy);
+        }
+
+        // Pagination
+        sql.append(" LIMIT ? OFFSET ? "); // Add LIMIT and OFFSET clauses
+        args.add(size);
+        args.add(pageNumber * size);
+
+        // Execute the query
+        return jdbcTemplate.query(sql.toString(), args.toArray(), MEDIA_ROW_MAPPER);
     }
 
-    @Override
-    public List<Media> getMoovieList(int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT * FROM media LIMIT ? OFFSET ?", new Object[]{size, pageNumber * size}, MEDIA_ROW_MAPPER);
-    }
-
-    @Override
-    public Optional<Integer> getMediaCount() {
-        return jdbcTemplate.query("SELECT COUNT(*) AS count FROM media", COUNT_ROW_MAPPER).stream().findFirst();
-    }
-
-    @Override
-    public List<Integer> getMediaIdOrderedByTmdbRatingDesc(int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT mediaId FROM media ORDER BY tmdbrating DESC LIMIT ? OFFSET ?", new Object[]{size, pageNumber * size}, MEDIA_ID_ROW_MAPPER);
-    }
-
-    @Override
-    public List<Media> getMediaOrderedByReleaseDateDesc(int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT * FROM media ORDER BY releasedate DESC LIMIT ? OFFSET ?", new Object[]{size, pageNumber * size}, MEDIA_ROW_MAPPER);
-    }
-
-    @Override
-    public List<Media> getMediaFilteredByGenre(String genre, int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT media.* FROM media INNER JOIN genres ON media.mediaid = genres.mediaid WHERE genres.genre = ? LIMIT ? OFFSET ?", new Object[]{genre, size, pageNumber * size}, MEDIA_ROW_MAPPER);
-    }
-
-    @Override
-    public List<Media> getMediaFilteredByGenreList(List<String> genres, int size, int pageNumber){
-        String inClause = String.join(",", Collections.nCopies(genres.size(), "?"));
-        String sql = "SELECT media.* FROM media " +
-                "INNER JOIN genres ON media.mediaId = genres.mediaId " +
-                "WHERE genres.genre IN (" + inClause + ") " +
-                "GROUP BY media.mediaId " +
-                "HAVING COUNT(DISTINCT genres.genre) = ? " +
-                "LIMIT ? OFFSET ?";
-
-        List<Object> params = new ArrayList<>(genres);
-        params.add(genres.size()); // Agregar la cantidad de géneros para la cláusula HAVING
-        params.add(size);
-        params.add(pageNumber * size);
-
-        return jdbcTemplate.query(sql, params.toArray(), MEDIA_ROW_MAPPER);
-    }
-
-    public Optional<Integer> getMediaFilteredByGenreListCount(List<String> genres){
-        String inClause = String.join(",", Collections.nCopies(genres.size(), "?"));
-        String sql = "SELECT COUNT(*) AS count FROM media " +
-                "INNER JOIN genres ON media.mediaId = genres.mediaId " +
-                "WHERE genres.genre IN (" + inClause + ") " +
-                "HAVING COUNT(DISTINCT genres.genre) = ? ";
-
-        List<Object> params = new ArrayList<>(genres);
-        params.add(genres.size()); // Agregar la cantidad de géneros para la cláusula HAVING
-
-        return jdbcTemplate.query(sql, params.toArray(), COUNT_ROW_MAPPER).stream().findFirst();
-    }
-
-    @Override
-    public List<Media> getMediaBySearch(String searchString, int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT * FROM media WHERE media.name ILIKE ? LIMIT ? OFFSET ?", new Object[]{'%' + searchString + '%', size, pageNumber * size}, MEDIA_ROW_MAPPER);
-    }
-
-    @Override
-    public List<Media> getMediaByMoovieListId(int moovieListId, int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT media.* FROM moovieListscontent INNER JOIN media ON media.mediaId = moovieListscontent.mediaid WHERE moovielistscontent.moovieListId = ? ORDER BY media.mediaId LIMIT ? OFFSET ?", new Object[]{moovieListId, size, pageNumber * size}, MEDIA_ROW_MAPPER);
-    }
-
-    public List<Media> getMoovieListContentByIdMediaBUpTo(int moovieListId, int to) {
-        return jdbcTemplate.query("SELECT * FROM media" +
-                        " WHERE media.mediaId IN (SELECT moovieListsContent.mediaId FROM moovieListsContent" +
-                        " WHERE moovieListsContent.moovieListId = ? LIMIT ?)",
-                new Object[]{moovieListId, to } ,MEDIA_ROW_MAPPER);
-    }
-
-    /*** MOVIE QUERIES*/
 
     @Override
     public Optional<Movie> getMovieById(int mediaId) {
         return jdbcTemplate.query("SELECT " + moviesQueryParams + " FROM media INNER JOIN movies ON media.mediaid = movies.mediaid WHERE  movies.mediaid = ?", new Object[]{mediaId}, MOVIE_ROW_MAPPER).stream().findFirst();
     }
 
-    @Override
-    public List<Movie> getMovieList(int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT " + moviesQueryParams + " FROM media INNER JOIN movies ON media.mediaid = movies.mediaid LIMIT ? OFFSET ?", new Object[]{ size, pageNumber * size}, MOVIE_ROW_MAPPER);
-    }
-
-    @Override
-    public Optional<Integer> getMovieCount() {
-        return jdbcTemplate.query("SELECT COUNT(*) AS count FROM movies ", COUNT_ROW_MAPPER).stream().findFirst();
-    }
-
-    @Override
-    public List<Movie> getMovieOrderedByTmdbRatingDesc(int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT" + moviesQueryParams + " FROM media INNER JOIN movies ON media.mediaid = movies.mediaid ORDER BY tmdbrating LIMIT ? OFFSET ?", new Object[]{ size, pageNumber * size}, MOVIE_ROW_MAPPER);
-    }
-
-    @Override
-    public List<Movie> getMovieOrderedByReleaseDateDesc(int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT " + moviesQueryParams + " FROM media INNER JOIN movies ON media.mediaid = movies.mediaid ORDER BY releasedate DESC LIMIT ? OFFSET ?", new Object[]{ size, pageNumber * size}, MOVIE_ROW_MAPPER);
-    }
-
-    @Override
-    public List<Movie> getMovieFilteredByGenre(String genre, int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT " + moviesQueryParams + " FROM ((media INNER JOIN movies ON media.mediaid = movies.mediaid) INNER JOIN genres ON media.mediaid = genres.mediaid) WHERE genres.genre = ? LIMIT ? OFFSET ?", new Object[]{genre,  size, pageNumber * size}, MOVIE_ROW_MAPPER);
-    }
-
-    @Override
-    public Optional<Integer> getMovieFilteredByGenreListCount(List<String> genres){
-        String inClause = String.join(",", Collections.nCopies(genres.size(), "?"));
-        String sql = "SELECT COUNT(*) AS count FROM " +
-                "((media INNER JOIN movies ON media.mediaid = movies.mediaid) INNER JOIN genres ON media.mediaId = genres.mediaId) " +
-                "WHERE genres.genre IN (" + inClause + ") " +
-                "HAVING COUNT(DISTINCT genres.genre) = ? " ;
-
-        List<Object> params = new ArrayList<>(genres);
-        params.add(genres.size()); // Agregar la cantidad de géneros para la cláusula HAVING
-
-        return jdbcTemplate.query(sql, params.toArray(), COUNT_ROW_MAPPER).stream().findFirst();
-    }
-
-    @Override
-    public List<Movie> getMovieFilteredByGenreList(List<String> genres, int size, int pageNumber){
-        String inClause = String.join(",", Collections.nCopies(genres.size(), "?"));
-        String sql = "SELECT "+ moviesQueryParams +" FROM " +
-                "((media INNER JOIN movies ON media.mediaid = movies.mediaid) INNER JOIN genres ON media.mediaId = genres.mediaId) " +
-                "WHERE genres.genre IN (" + inClause + ") " +
-                "GROUP BY media.mediaId, movies.runtime, movies.budget, movies.revenue, movies.directorid, movies.director " +
-                "HAVING COUNT(DISTINCT genres.genre) = ? " +
-                "LIMIT ? OFFSET ?";
-
-        List<Object> params = new ArrayList<>(genres);
-        params.add(genres.size()); // Agregar la cantidad de géneros para la cláusula HAVING
-        params.add(size);
-        params.add(pageNumber * size);
-
-        return jdbcTemplate.query(sql, params.toArray(), MOVIE_ROW_MAPPER);
-    }
-
-    @Override
-    public List<Movie> getMovieOrderedByReleaseDuration(int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT " + moviesQueryParams + " FROM media INNER JOIN movies ON media.mediaid = movies.mediaid ORDER BY runtime DESC LIMIT ? OFFSET ?", new Object[]{ size, pageNumber * size}, MOVIE_ROW_MAPPER);
-    }
-
-
-    /*** TV QUERIES*/
 
     @Override
     public Optional<TVSerie> getTvById(int mediaId) {
         return jdbcTemplate.query("SELECT " + tvQueryParams + " FROM media INNER JOIN tv ON media.mediaid = tv.mediaid WHERE  tv.mediaid = ?", new Object[]{mediaId}, TV_SERIE_ROW_MAPPER).stream().findFirst();
     }
 
-    @Override
-    public List<TVSerie> getTvList(int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT " + tvQueryParams + " FROM media INNER JOIN tv ON media.mediaid = tv.mediaid LIMIT ? OFFSET ?", new Object[]{ size, pageNumber * size}, TV_SERIE_ROW_MAPPER);
-    }
 
     @Override
-    public Optional<Integer> getTvCount() {
-        return jdbcTemplate.query("SELECT COUNT(*) AS count FROM tv", COUNT_ROW_MAPPER).stream().findFirst();
+    public List<Media> getMediaInMoovieList(int moovieListId, int size, int pageNumber) {
+        return jdbcTemplate.query("SELECT media.* FROM moovieListscontent INNER JOIN media ON media.mediaId = moovieListscontent.mediaid WHERE moovielistscontent.moovieListId = ? ORDER BY media.mediaId LIMIT ? OFFSET ?", new Object[]{moovieListId, size, pageNumber * size}, MEDIA_ROW_MAPPER);
     }
 
-    @Override
-    public List<TVSerie> getTvOrderedByTmdbRatingDesc(int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT " + tvQueryParams + " FROM media INNER JOIN tv ON media.mediaid = tv.mediaid ORDER BY tmdbrating DESC LIMIT ? OFFSET ?", new Object[]{ size, pageNumber * size}, TV_SERIE_ROW_MAPPER);
-    }
-
-    @Override
-    public List<TVSerie> getTvOrderedByReleaseDateDesc(int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT " + tvQueryParams + " FROM media INNER JOIN tv ON media.mediaid = tv.mediaid ORDER BY releasedate DESC LIMIT ? OFFSET ?", new Object[]{ size, pageNumber * size} , TV_SERIE_ROW_MAPPER);
-    }
-
-    @Override
-    public List<TVSerie> getTvFilteredByGenre(String genre, int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT " + tvQueryParams + " FROM ((media INNER JOIN tv ON media.mediaid = tv.mediaid) INNER JOIN genres ON media.mediaid = genres.mediaid) WHERE genres.genre = ? LIMIT ? OFFSET ?", new Object[]{genre, size, pageNumber * size}, TV_SERIE_ROW_MAPPER);
-    }
-
-    @Override
-    public List<TVSerie> getTvFilteredByGenreList(List<String> genres, int size, int pageNumber){
-        String inClause = String.join(",", Collections.nCopies(genres.size(), "?"));
-        String sql = "SELECT "+ tvQueryParams +" FROM " +
-                "((media INNER JOIN tv ON media.mediaid = tv.mediaid) INNER JOIN genres ON media.mediaId = genres.mediaId) " +
-                "WHERE genres.genre IN (" + inClause + ") " +
-                "GROUP BY media.mediaId, tv.lastAirDate, tv.nextEpisodeToAir, tv.numberOfEpisodes, tv.numberOfSeasons " +
-                "HAVING COUNT(DISTINCT genres.genre) = ? " +
-                "LIMIT ? OFFSET ?";
-
-        List<Object> params = new ArrayList<>(genres);
-        params.add(genres.size()); // Agregar la cantidad de géneros para la cláusula HAVING
-        params.add(size);
-        params.add(pageNumber * size);
-
-        return jdbcTemplate.query(sql, params.toArray(), TV_SERIE_ROW_MAPPER);
-    }
-
-    @Override
-    public Optional<Integer> getTvFilteredByGenreListCount(List<String> genres) {
-        String inClause = String.join(",", Collections.nCopies(genres.size(), "?"));
-        String sql = "SELECT COUNT(*) AS count FROM " +
-                "((media INNER JOIN tv ON media.mediaid = tv.mediaid) INNER JOIN genres ON media.mediaId = genres.mediaId) " +
-                "WHERE genres.genre IN (" + inClause + ") " +
-                "HAVING COUNT(DISTINCT genres.genre) = ? ";
-
-        List<Object> params = new ArrayList<>(genres);
-        params.add(genres.size()); // Agregar la cantidad de géneros para la cláusula HAVING
-
-        return jdbcTemplate.query(sql, params.toArray(), COUNT_ROW_MAPPER).stream().findFirst();
-    }
 }

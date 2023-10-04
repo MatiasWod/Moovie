@@ -8,39 +8,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MediaService {
-
     public static final int DEFAULT_PAGE_SIZE = 25;
 
-    Optional<Media> getMediaById(int mediaId);
-    List<Media> getMoovieList(int size, int pageNumber);
-    Optional<Integer> getMediaCount();
-    List<Integer> getMediaIdOrderedByTmdbRatingDesc(int size, int pageNumber);
-    List<Media> getMediaOrderedByReleaseDateDesc(int size, int pageNumber);
-    List<Media> getMediaFilteredByGenre(String genre, int size, int pageNumber);
-    List<Media> getMediaFilteredByGenreList(List<String> genres, int size, int pageNumber);
-    Optional<Integer> getMediaFilteredByGenreListCount(List<String> genres);
-    List<Media> getMediaBySearch(String searchString, int size, int pageNumber);
-    List<Media> getMediaByMoovieListId(int moovieListId, int size, int pageNumber);
-    List<Media> getMoovieListContentByIdMediaBUpTo(int moovieListId, int to);
+    // Returns a list of media that satisfy the conditions
+    List<Media> getMedia(int type, String search, List<String> genres, String orderBy, int size, int pagNumber);
 
-    Optional<Movie> getMovieById(int mediaId);
-    List<Movie> getMovieList(int size, int pageNumber);
-    Optional<Integer> getMovieCount();
-    public List<Movie> getMovieOrderedByTmdbRatingDesc(int size, int pageNumber);
-    public List<Movie> getMovieOrderedByReleaseDateDesc(int size, int pageNumber);
-    public List<Movie> getMovieFilteredByGenre(String genre, int size, int pageNumber);
-    public List<Movie> getMovieFilteredByGenreList(List<String> genre, int size, int pageNumber);
-    Optional<Integer> getMovieFilteredByGenreListCount(List<String> genres);
+    //Return a list of media that are in a moovie list
+    List<Media> getMediaInMoovieList(int moovieListId, int size, int pageNumber);
 
-    public List<Movie> getMovieOrderedByReleaseDuration(int size, int pageNumber);
-
-    Optional<TVSerie> getTvById(int mediaId);
-    List<TVSerie> getTvList(int size, int pageNumber);
-    Optional<Integer> getTvCount();
-    public List<TVSerie> getTvOrderedByTmdbRatingDesc(int size, int pageNumber);
-    public List<TVSerie> getTvOrderedByReleaseDateDesc(int size, int pageNumber);
-    public List<TVSerie> getTvFilteredByGenre(String genre, int size, int pageNumber);
-    public List<TVSerie> getTvFilteredByGenreList(List<String> genres, int size, int pageNumber);
-    Optional<Integer> getTvFilteredByGenreListCount(List<String> genres);
-
+    //Get the Tv or Movie details data
+    Movie getMovieById(int mediaId);
+    TVSerie getTvById(int mediaId);
 }
