@@ -1,20 +1,20 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.MoovieList.MoovieList;
-import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
-import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
+import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
+import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.sql.SQLException;
+import java.util.*;
 
 @Repository
 public class MoovieListDaoJdbcImpl implements MoovieListDao{
@@ -32,22 +32,43 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
             rs.getInt("type")
     );
 
-    private static final RowMapper<MoovieListContent> MOOVIE_LIST_CONTENT_ROW_MAPPER = (rs, rowNum) -> new MoovieListContent(
-            rs.getInt("moovielistid"),
-            rs.getInt("mediaId"),
-            rs.getString("status")
-    );
 
     private static final RowMapper<MoovieListLikes> MOOVIE_LIST_LIKES_ROW_MAPPER = (rs, rowNum) -> new MoovieListLikes(
             rs.getInt("moovielistid"),
             rs.getInt("userId")
     );
 
+    private static final RowMapper<MoovieListCard> MOOVIE_LIST_CARD_ROW_MAPPER = (rs, rowNum) -> new MoovieListCard(
+        rs.getInt("moovieListId"),
+        rs.getString("username"),
+        rs.getString("description"),
+        rs.getInt("likeCount"),
+        rs.getArray("images")
+    );
+
+    private static final RowMapper<MoovieListContent> MOOVIE_LIST_ITEM_ROW_MAPPER = (rs, rowNum) -> new MoovieListContent(
+            rs.getInt("mediaId"),
+            rs.getBoolean("type"),
+            rs.getString("name"),
+            rs.getString("originalLanguage"),
+            rs.getBoolean("adult"),
+            rs.getDate("releaseDate"),
+            rs.getString("overview"),
+            rs.getString("backdropPath"),
+            rs.getString("posterPath"),
+            rs.getString("trailerLink"),
+            rs.getFloat("tmdbRating"),
+            rs.getInt("totalRating"),
+            rs.getInt("voteCount"),
+            rs.getString("status"),
+            false   //TODO IMPLEMENT THE WATCHED
+    );
+
     private static final RowMapper<Integer> COUNT_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("count"));
 
     private static final RowMapper<Integer> MEDIAID_LIST_ROWMAPPER = ((resultSet, i) -> resultSet.getInt("mediaId"));
 
-    @Autowired
+
     public MoovieListDaoJdbcImpl(final DataSource dataSource){
         jdbcTemplate = new JdbcTemplate(dataSource);
         moovieListJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("moovieLists").usingGeneratedKeyColumns("moovielistid");
@@ -55,111 +76,75 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         moovieListLikesJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("moovieListsLikes");
     }
 
-    /***
-     * GENERAL QUERYS FORM MOOVIE LISTS
-     */
 
     @Override
     public Optional<MoovieList> getMoovieListById(int moovieListId) {
         return jdbcTemplate.query("SELECT * FROM moovieLists WHERE moovieListId = ?",new Object[]{moovieListId},MOOVIE_LIST_ROW_MAPPER).stream().findFirst();
     }
 
-    @Override
-    public List<MoovieList> getAllMoovieLists(int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT * FROM moovieLists WHERE type = ?  LIMIT ? OFFSET ?",new Object[]{MOOVIE_LIST_TYPE_STANDARD_PUBLIC, size, pageNumber*size} , MOOVIE_LIST_ROW_MAPPER);
-    }
 
     @Override
-    public List<MoovieListContent> getMoovieListContentById(int moovieListId){
-        return jdbcTemplate.query("SELECT * FROM moovieListsContent WHERE moovieListId = ? ORDER BY moovieListsContent.mediaId",new Object[]{moovieListId},MOOVIE_LIST_CONTENT_ROW_MAPPER);
-    }
+    public List<MoovieListCard> getMoovieListsCards( String search, String ownerUsername , int type , int size, int pageNumber){
+        StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(l.userid) AS likeCount ");
+        ArrayList<Object> args = new ArrayList<>();
 
-    @Override
-    public boolean mediaIdInList(int mediaId, int moovieListId) {
-        String sql = "SELECT COUNT(*) FROM moovieListsContent WHERE moovieListId = ? AND mediaId = ?";
-        int count = jdbcTemplate.queryForObject(sql, Integer.class, moovieListId, mediaId);
-        return count > 0;
-    }
+        sql.append(" ( SELECT ARRAY_ARG(posterPath) FROM ( SELECT posterPath FROM moovielistscontent mlc INNER JOIN media ");
+        sql.append(" ON mlc.mediaId = media.mediaid WHERE mlc.moovielistId = ml.moovielistid LIMIT 4 ) AS subquery ) AS images ");
+        sql.append(" FROM moovieLists ml LEFT JOIN users u ON ml.userid = u.userid LEFT JOIN moovieListsLikes l ON ml.moovielistid = l.moovielistid ");
 
-    @Override
-    public Optional<Integer> getMoovieListCount() {
-        return jdbcTemplate.query("SELECT COUNT(*) AS count FROM moovieListsContent", COUNT_ROW_MAPPER).stream().findFirst();
-    }
+        sql.append(" WHERE type = ? ");
+        args.add(type);
 
-    @Override
-    public Optional<Integer> getMoovieListSize(int moovieListId, Boolean type) {
-        String sql = "SELECT COUNT(*) AS count FROM moovieListsContent WHERE moovieListId = ?";
-        Object[] params;
-
-        if (type != null) {
-            sql += " AND moovieListsContent.mediaId IN (SELECT mediaId FROM media WHERE type = ?)";
-            params = new Object[]{moovieListId, type};
-        } else {
-            params = new Object[]{moovieListId};
+        if(ownerUsername.length() > 0){
+            sql.append(" AND u.username = ? ");
+            args.add(ownerUsername);
+        }
+        if(search.length() > 0){
+            sql.append(" AND name ILIKE ? ");
+            args.add('%' + search + '%');
         }
 
-        return jdbcTemplate.query(sql, params, COUNT_ROW_MAPPER).stream().findFirst();
-    }
+        sql.append(" GROUP BY ml.moovielistid, u.userid LIMIT ? OFFSET ? ; ");
+        args.add(size);
+        args.add(size*pageNumber);
 
-
-
-    public int userHasListWithName(int userId, String name){
-        Optional<MoovieList> r = jdbcTemplate.query("SELECT * FROM moovieLists WHERE name = ? AND userId= ? ",new Object[]{name,userId},  MOOVIE_LIST_ROW_MAPPER).stream().findFirst();
-        if(r.isPresent()){
-            return r.get().getMoovieListId();
-        }
-        return -1;
+        // Execute the query
+        return jdbcTemplate.query(sql.toString(), args.toArray(), MOOVIE_LIST_CARD_ROW_MAPPER);
     }
 
     @Override
-    public List<MoovieList> getAllStandardPublicMoovieListFromUser(int userId, int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT * FROM moovieLists as m WHERE m.userId = ? AND m.type = ?  LIMIT ? OFFSET ?",new Object[]{userId, MOOVIE_LIST_TYPE_STANDARD_PUBLIC, size, pageNumber * size} , MOOVIE_LIST_ROW_MAPPER);
+    public List<MoovieListContent> getMoovieListContent(int moovieListId, int userId, String orderBy, int size, int pageNumber){
+        StringBuilder sql = new StringBuilder("SELECT * FROM moovieListsContent mlc INNER JOIN media m ON mlc.mediaId = m.mediaId ");
+        ArrayList<Object> args = new ArrayList<>();
+
+        sql.append(" WHERE mlc.moovielistid = ? ");
+        args.add(moovieListId);
+        sql.append(" ORDER BY ? ");
+        args.add(orderBy);
+
+        sql.append(" LIMIT ? OFFSET ? ;");
+        args.add(size);
+        args.add(pageNumber*size);
+
+        // Execute the query
+        return jdbcTemplate.query(sql.toString(), args.toArray(), MOOVIE_LIST_ITEM_ROW_MAPPER);
     }
 
-    @Override
-    public List<MoovieList> getMoovieListBySearch(String searchString, int size, int pageNumber){
-        return jdbcTemplate.query("SELECT * FROM moovieLists WHERE moovieLists.type = ? AND moovieLists.name ILIKE ? LIMIT ? OFFSET ?", new Object[]{MOOVIE_LIST_TYPE_STANDARD_PUBLIC,'%' + searchString + '%', size, pageNumber * size}, MOOVIE_LIST_ROW_MAPPER);
-    }
-
-    @Override
-    public List<MoovieList> getMoovieListDefaultPrivateFromUser(int userId) {
-        return jdbcTemplate.query("SELECT * FROM moovieLists WHERE userId = ? AND type = ?",new Object[]{userId, MOOVIE_LIST_TYPE_DEFAULT_PRIVATE} , MOOVIE_LIST_ROW_MAPPER);
-    }
-
-
-    /**
-     * INSERTS INTO MOOVIE LISTS
-     */
 
     @Override
     public MoovieList createMoovieList(int userId, String name, int type, String description) {
-        int auxId = userHasListWithName(userId,name);
-        if(auxId>0){
-            String sqlDelContent = "DELETE FROM moovieListsContent WHERE moovieListId = " +auxId ;
-            String sqlDel = "DELETE FROM moovieLists WHERE moovieListId = " +auxId ;
-
-            jdbcTemplate.execute(sqlDel);
-        }
-
         final Map<String, Object> args = new HashMap<>();
         args.put("userId", userId);
         args.put("name", name);
         args.put("description", description);
         args.put("type", type);
 
-        final Number moovieListId = moovieListJdbcInsert.executeAndReturnKey(args);
-        return new MoovieList(moovieListId.intValue(), userId, name, description, type);
-    }
-
-    @Override
-    public void deleteMoovieList(int moovieListId) {
-        String sqlDel = "DELETE FROM moovieLists WHERE moovieListId = " + moovieListId;
-        jdbcTemplate.execute(sqlDel);
-    }
-
-    @Override
-    public List<Integer> getMediaWatchedInMoovieList(int userId, int moovieListId) {
-        return jdbcTemplate.query("SELECT mediaId FROM moovieListsContent WHERE moovieListId = ? AND mediaId IN ( SELECT  mediaId FROM moovieListsContent WHERE moovielistid IN (SELECT moovieListId FROM moovieLists WHERE userId = ? AND name = 'Watched'))", new Object[]{moovieListId,userId} , MEDIAID_LIST_ROWMAPPER);
+        try{
+            final Number moovieListId = moovieListJdbcInsert.executeAndReturnKey(args);
+            return new MoovieList(moovieListId.intValue(), userId, name, description, type);
+        } catch(DuplicateKeyException e){
+            throw new UnableToInsertIntoDatabase("Create MoovieList failed, already have a table with the given name");
+        }
     }
 
     @Override
@@ -171,85 +156,34 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     @Override
     public MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList) {
-        boolean repeatedElements = ( mediaIdList.stream().distinct().count() != mediaIdList.size() );
-        if(repeatedElements){
-            //TODO
-            //Throw exception
+        // Check for repeated elements
+        boolean repeatedElements = mediaIdList.size() != mediaIdList.stream().distinct().count();
+        if (repeatedElements) {
+            throw new UnableToInsertIntoDatabase("Unable to insert into the MoovieList since there are repeated elements");
         }
 
-        final Map<String,Object> args = new HashMap<>();
-        args.put("moovieListId", moovieListid);
-
-        for(Integer mediaId : mediaIdList){
+        // Iterate through the mediaIdList and insert each mediaId
+        for (Integer mediaId : mediaIdList) {
+            final Map<String, Object> args = new HashMap<>();
+            args.put("moovieListId", moovieListid);
             args.put("mediaId", mediaId);
-            moovieListContentJdbcInsert.execute(args);
+
+            try {
+                moovieListContentJdbcInsert.execute(args);
+            } catch (DataIntegrityViolationException e) {
+                throw new UnableToInsertIntoDatabase("Unable to insert into the MoovieList, would result in repeated elements");
+            }
         }
 
-        return getMoovieListById(moovieListid).get();
-    }
-
-
-
-    /***
-     * QUERYS RELATED TO LIKES
-     * */
-
-    @Override
-    public Optional<Integer> getLikesCount(int moovieListId) {
-        return jdbcTemplate.query("SELECT COUNT(*) AS count FROM moovieListsLikes WHERE moovieListId = ?", new Object[]{moovieListId} , COUNT_ROW_MAPPER).stream().findFirst();
+        // Return the MoovieList (assuming it exists)
+        return getMoovieListById(moovieListid).orElse(null);
     }
 
     @Override
-    public List<User> getAllUsersWhoLikedMoovieList(int moovieListId) {
-        return null;
+    public void deleteMoovieList(int moovieListId) {
+        String sqlDel = "DELETE FROM moovieLists WHERE moovieListId = " + moovieListId;
+        jdbcTemplate.execute(sqlDel);
     }
-
-    private Optional<MoovieListLikes> getMoovieListLikes(int userId, int moovieListId){
-        return jdbcTemplate.query("SELECT * FROM moovieListsLikes WHERE moovieListId = ? AND userId = ?", new Object[]{moovieListId, userId} , MOOVIE_LIST_LIKES_ROW_MAPPER).stream().findFirst();
-    }
-
-    @Override
-    public MoovieListLikes likeMoovieList(int userId, int moovieListId) {
-        final Map<String,Object> args = new HashMap<>();
-        args.put("moovieListId", moovieListId);
-        args.put("userId", userId);
-
-        moovieListLikesJdbcInsert.execute(args);
-
-        return getMoovieListLikes(userId, moovieListId).get();
-    }
-
-    @Override
-    public MoovieListLikes removeLikeMoovieList(int userId, int moovieListId) {
-        String sql = "DELETE FROM moovielistslikes WHERE userid=? AND moovieListId = ?";
-        jdbcTemplate.update( sql , new Object[]{userId, moovieListId} );
-        return null;
-    }
-
-    @Override
-    public boolean likeMoovieListStatusForUser(int userId, int moovieListId) {
-        Optional<MoovieListLikes> aux = getMoovieListLikes(userId, moovieListId);
-        if(aux.isPresent()){
-            return true;
-        }
-        return false;
-    }
-
-//    @Override
-//    public List<MoovieList> likedMoovieListsForUser(int userId, int size, int pageNumber) {
-//        return jdbcTemplate.query("SELECT moovieLists.moovieListId, moovieLists.name, moovieLists.name, moovieLists.description FROM moovieLists " +
-//                "WHERE moovieLists.moovieListId IN (SELECT moovieListsLikes.moovieListId FROM moovieListsLikes WHERE userId = ?) LIMIT ? OFFSET ?",
-//                new Object[]{userId, size, pageNumber*size } , MOOVIE_LIST_ROW_MAPPER);
-//    }
-
-    @Override
-    public List<MoovieList> likedMoovieListsForUser(int userId, int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT moovieLists.* FROM moovieLists " +
-                        "WHERE moovieLists.moovieListId IN (SELECT moovieListsLikes.moovieListId FROM moovieListsLikes WHERE moovieListsLikes.userId = ?) LIMIT ? OFFSET ?",
-                new Object[]{userId, size, pageNumber*size } , MOOVIE_LIST_ROW_MAPPER);
-    }
-
-
 
 }
 

@@ -97,7 +97,6 @@ public class MediaDaoJdbcImpl implements MediaDao {
     @Override
     public List<Media> getMedia(int type, String search, List<String> genres,
                                 String orderBy, int size, int pageNumber) {
-        // Initialize the SQL query and arguments list
         StringBuilder sql = new StringBuilder("SELECT * FROM media ");
         ArrayList<Object> args = new ArrayList<>();
 

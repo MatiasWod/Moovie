@@ -1,17 +1,14 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.FailedToInsertToListException;
-import ar.edu.itba.paw.exceptions.InvalidMoovieListIdExcepetion;
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
-import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.MoovieListDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

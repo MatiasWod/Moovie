@@ -1,25 +1,18 @@
 package ar.edu.itba.paw.models.MoovieList;
 
-public class MoovieListContent{
-    private final int moovieListId;
-    private final int mediaId;
-    private final String status;
+import ar.edu.itba.paw.models.Media.Media;
 
-    public MoovieListContent(int moovieListId, int mediaId, String status) {
-        this.moovieListId = moovieListId;
-        this.mediaId = mediaId;
-        this.status = status;
+import java.util.Date;
+
+public class MoovieListContent extends Media {
+    private final boolean watched;
+
+    public MoovieListContent(int mediaId, boolean type, String name, String originalLanguage, boolean adult, Date releaseDate, String overview, String backdropPath, String posterPath, String trailerLink, float tmdbRating, int totalRating, int voteCount, String status, boolean watched) {
+        super(mediaId, type, name, originalLanguage, adult, releaseDate, overview, backdropPath, posterPath, trailerLink, tmdbRating, totalRating, voteCount, status);
+        this.watched = watched;
     }
 
-    public int getMoovieListId() {
-        return moovieListId;
-    }
-
-    public int getMediaId() {
-        return mediaId;
-    }
-
-    public String getStatus() {
-        return status;
+    public boolean isWatched() {
+        return watched;
     }
 }

@@ -1,12 +1,12 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.MoovieList.MoovieList;
-import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
-import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
-import ar.edu.itba.paw.models.User.User;
 
+import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
+
+
+import javax.swing.tree.RowMapper;
 import java.util.List;
-import java.util.Optional;
+
 
 public interface MoovieListDao {
 
@@ -15,31 +15,6 @@ public interface MoovieListDao {
     public static final int MOOVIE_LIST_TYPE_DEFAULT_PUBLIC = 3;   //Listas creadas automaticamente por ej: "Top 50"
     public static final int MOOVIE_LIST_TYPE_DEFAULT_PRIVATE = 4;   //Listas creadas automaticamente por ej: "Watchlist"
 
-    Optional<MoovieList> getMoovieListById(int moovieListId);
-    List<MoovieList> getAllMoovieLists(int size, int pageNumber);
-    Optional<Integer> getMoovieListCount();
-    List<MoovieListContent> getMoovieListContentById(int moovieListId);
-    List<MoovieList> getAllStandardPublicMoovieListFromUser(int userId, int size, int pageNumber);
-    List<MoovieList> getMoovieListDefaultPrivateFromUser(int userId);
+    List<MoovieListCard> getMoovieListsCards(String search, String ownerUsername , int type , int size, int pageNumber);
 
-    MoovieList createMoovieList(int userId, String name, int type, String description);
-    MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
-    MoovieList createMoovieListWithContent(int userId, String name, int type, String description, List<Integer> mediaIdList);
-
-    void deleteMoovieList(int moovieListId);
-
-    List<Integer> getMediaWatchedInMoovieList(int userId, int moovieListId);
-
-    Optional<Integer> getLikesCount(int moovieListId);
-    List<User> getAllUsersWhoLikedMoovieList(int moovieListId);
-    MoovieListLikes likeMoovieList(int userId, int moovieListId);
-    boolean likeMoovieListStatusForUser(int userId, int moovieListId);  //Return true if user liked the MoovieList
-    List<MoovieList> likedMoovieListsForUser(int userId, int size, int pageNumber);   //Returns all moovieLists liked by user
-    MoovieListLikes removeLikeMoovieList(int userId, int moovieListId);
-
-    List<MoovieList> getMoovieListBySearch(String searchString, int size, int pageNumber);
-
-    Optional<Integer> getMoovieListSize(int moovieListId, Boolean type);
-
-    boolean mediaIdInList(int mediaId, int moovieListId);
 }
