@@ -72,8 +72,11 @@ public class MediaController {
 
     @RequestMapping("/search")
     public ModelAndView search(@RequestParam(value = "query", required = true) String query) {
+        final ModelAndView mav = new ModelAndView("helloworld/discover");
+        mav.addObject("searchMode", true);
+        mav.addObject("mediaList", mediaService.getMedia(mediaService.TYPE_ALL, null, null, null, mediaService.DEFAULT_PAGE_SIZE, 0));
+        return mav;
 
-        return new ModelAndView();
     }
 
     @RequestMapping(value = "/details/{id:\\d+}")

@@ -105,7 +105,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
             sql.append(" WHERE type = ? ");
             args.add(type == 1);
         } else {
-            sql.append(" WHERE type NOT NULL ");
+            sql.append(" WHERE type IS NOT NULL ");
         }
 
         // Input the search
