@@ -9,7 +9,7 @@ public interface ReviewService {
     Review getReviewById(int reviewId);
     List<Review> getReviewsByMediaId(int mediaId);
 
-    List<Review> getReviewForMoovieListFromUser(int moovieListId, int userId);
+
     List<Review> getMovieReviewsFromUser(int userId);
-    Review createReview( int mediaId, int rating, String reviewContent);
+    void createReview( int mediaId, int rating, String reviewContent);
 }

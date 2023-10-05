@@ -61,13 +61,13 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
     @Override
-    public List<MoovieListCard> getMoovieListsCards(String search, String ownerUsername, int type, int size, int pageNumber) {
+    public List<MoovieListCard> getMoovieListCards(String search, String ownerUsername, int type, int size, int pageNumber) {
         if(type == MOOVIE_LIST_TYPE_STANDARD_PRIVATE || type == MOOVIE_LIST_TYPE_DEFAULT_PRIVATE){
             if(userService.getInfoOfMyUser().getUsername() != ownerUsername){
                 throw new InvalidAccessToResourceException("Need to be owner to acces thr private list of this user");
             }
         }
-        return moovieListDao.getMoovieListsCards(search, ownerUsername, type, size, pageNumber);
+        return moovieListDao.getMoovieListCards(search, ownerUsername, type, size, pageNumber);
     }
 
     @Override

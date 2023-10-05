@@ -1,7 +1,10 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
+import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.Review.Review;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -21,9 +24,12 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
     private static final RowMapper<Review> REVIEW_ROW_MAPPER = (rs, rowNum) -> new Review(
             rs.getInt("reviewId"),
             rs.getInt("userId"),
+            rs.getString("username"),
             rs.getInt("mediaId"),
             rs.getInt("rating"),
             rs.getInt("reviewLikes"),
+            rs.getString("name"),
+            rs.getString("posterpath"),
             rs.getString("reviewContent")
     );
 
@@ -35,18 +41,14 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
 
     @Override
     public Optional<Review> getReviewById(int reviewId) {
-        return jdbcTemplate.query("SELECT * FROM reviews WHERE reviewId = ?", new Object[]{reviewId}, REVIEW_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT * FROM reviews INNER JOIN users ON users.userid = reviews.userid INNER JOIN media ON media.mediaId = reviews.mediaId WHERE reviewId = ?", new Object[]{reviewId}, REVIEW_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
     public List<Review> getReviewsByMediaId(int mediaId) {
-        return jdbcTemplate.query("SELECT * FROM reviews WHERE mediaId = ?", new Object[]{mediaId}, REVIEW_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT * FROM reviews INNER JOIN users ON users.userid = reviews.userid INNER JOIN media ON media.mediaId = reviews.mediaId WHERE mediaId = ?", new Object[]{mediaId}, REVIEW_ROW_MAPPER);
     }
 
-    @Override
-    public List<Review> getReviewForMoovieListFromUser(int moovieListId, int userId) {
-        return jdbcTemplate.query("SELECT reviews.* FROM reviews INNER JOIN moovielistscontent ON moovielistscontent.mediaId = reviews.mediaId WHERE reviews.userId = ?", new Object[]{userId + " AND moovielistscontent.moovielistId = " + moovieListId}, REVIEW_ROW_MAPPER);
-    }
 
     @Override
     public List<Review> getMovieReviewsFromUser(int userId) {
@@ -56,20 +58,9 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
         return jdbcTemplate.query(sql, new Object[]{userId}, REVIEW_ROW_MAPPER);
     }
 
-    public boolean userInMediaHasReview(int userId, int mediaId){
-        Optional<Review> r = jdbcTemplate.query("SELECT * FROM reviews WHERE mediaId = ? AND userId= ? ",new Object[]{mediaId,userId},  REVIEW_ROW_MAPPER).stream().findFirst();
-        if(r.isPresent()){
-            return true;
-        }
-        return false;
-    }
 
     @Override
-    public Review createReview(int userId, int mediaId, int rating, String reviewContent) {
-        if(userInMediaHasReview(userId, mediaId)){
-            String sqlDel = "DELETE FROM reviews WHERE userid = " + userId + " AND mediaid = " + mediaId;
-            jdbcTemplate.execute(sqlDel);
-        }
+    public void createReview(int userId, int mediaId, int rating, String reviewContent) {
         if (reviewContent.isEmpty()) {
             reviewContent = null;
         }
@@ -80,8 +71,12 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
         args.put("reviewLikes", 0);
 
         args.put("reviewContent", reviewContent);
-        final Number reviewId = reviewJdbcInsert.executeAndReturnKey(args);
-        return new Review(reviewId.intValue(), userId, mediaId, rating, 0, reviewContent);
+        try{
+            reviewJdbcInsert.executeAndReturnKey(args);
+        } catch(DuplicateKeyException e){
+            throw new UnableToInsertIntoDatabase("Create review failed, already have a review in this movie");
+        }
+
     }
 
     @Override

@@ -44,6 +44,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         rs.getString("description"),
         rs.getInt("likeCount"),
         rs.getInt("type"),
+        rs.getInt("size"),
         rs.getArray("images")
     );
 
@@ -89,7 +90,8 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         ArrayList<Object> args = new ArrayList<>();
 
         sql.append(" ( SELECT ARRAY_ARG(posterPath) FROM ( SELECT m.posterPath FROM moovielistscontent mlc INNER JOIN media m ");
-        sql.append(" ON mlc.mediaId = media.mediaId WHERE mlc.moovielistId = ml.moovielistid LIMIT 4 ) AS subquery ) AS images ");
+        sql.append(" ON mlc.mediaId = media.mediaId WHERE mlc.moovielistId = ml.moovielistid LIMIT 4 ) AS subquery ) AS images, ");
+        sql.append(" (SELECT COUNT(*) FROM moovieListsContent mlc WHERE mlc.moovieListId = ml.moovieListId) AS size ");
         sql.append(" FROM moovieLists ml LEFT JOIN users u ON ml.userid = u.userid LEFT JOIN moovieListsLikes l ON ml.moovielistid = l.moovielistid ");
         sql.append(" WHERE ml.moovieListId = ? GROUP BY ml.moovielistid, u.userid;");
 
@@ -99,12 +101,13 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     @Override
-    public List<MoovieListCard> getMoovieListsCards( String search, String ownerUsername , int type , int size, int pageNumber){
+    public List<MoovieListCard> getMoovieListCards( String search, String ownerUsername , int type , int size, int pageNumber){
         StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(l.userid) AS likeCount, ");
         ArrayList<Object> args = new ArrayList<>();
 
         sql.append(" ( SELECT ARRAY_ARG(posterPath) FROM ( SELECT posterPath FROM moovielistscontent mlc INNER JOIN media ");
-        sql.append(" ON mlc.mediaId = media.mediaid WHERE mlc.moovielistId = ml.moovielistid LIMIT 4 ) AS subquery ) AS images ");
+        sql.append(" ON mlc.mediaId = media.mediaid WHERE mlc.moovielistId = ml.moovielistid LIMIT 4 ) AS subquery ) AS images, ");
+        sql.append(" (SELECT COUNT(*) FROM moovieListsContent mlc WHERE mlc.moovieListId = ml.moovieListId) AS size ");
         sql.append(" FROM moovieLists ml LEFT JOIN users u ON ml.userid = u.userid LEFT JOIN moovieListsLikes l ON ml.moovielistid = l.moovielistid ");
 
         sql.append(" WHERE type = ? ");

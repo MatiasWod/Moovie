@@ -12,14 +12,16 @@ public class MoovieListCard {
     private final String description;
     private final int likeCount;
     private final int type;
+    private final int size;
     private List<String> images;
 
-    public MoovieListCard(int moovieListId, String username, String description, int likeCount, int type, Array images) {
+    public MoovieListCard(int moovieListId, String username, String description, int likeCount, int type, int size, Array images) {
         this.moovieListId = moovieListId;
         this.username = username;
         this.description = description;
         this.likeCount = likeCount;
         this.type = type;
+        this.size = size;
         try{
             this.images = Arrays.asList((String[]) images.getArray());
         }
@@ -46,6 +48,10 @@ public class MoovieListCard {
 
     public int getType() {
         return type;
+    }
+
+    public int getSize() {
+        return size;
     }
 
     public List<String> getImages() {

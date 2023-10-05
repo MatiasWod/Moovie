@@ -26,10 +26,6 @@ public class ReviewServiceImpl implements ReviewService{
         return reviewDao.getReviewsByMediaId(mediaId);
     }
 
-    @Override
-    public List<Review> getReviewForMoovieListFromUser(int moovieListId, int userId) {
-        return reviewDao.getReviewForMoovieListFromUser(moovieListId,userId);
-    }
 
     @Override
     public List<Review> getMovieReviewsFromUser(int userId) {
@@ -37,8 +33,8 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
-    public Review createReview(int mediaId, int rating, String reviewContent) {
+    public void createReview(int mediaId, int rating, String reviewContent) {
         int userId = userService.getInfoOfMyUser().getUserId();
-        return reviewDao.createReview(userId, mediaId, rating, reviewContent);
+        reviewDao.createReview(userId, mediaId, rating, reviewContent);
     }
 }

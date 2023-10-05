@@ -23,7 +23,7 @@ public interface MoovieListDao {
     Optional<MoovieList> getMoovieListById(int moovieListId);
     Optional<MoovieListCard> getMoovieListCardById(int moovieListId);
     List<MoovieListContent> getMoovieListContent(int moovieListId, int userId, String orderBy, int size, int pageNumber);
-    List<MoovieListCard> getMoovieListsCards(String search, String ownerUsername , int type , int size, int pageNumber);
+    List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , int size, int pageNumber);
 
     MoovieList createMoovieList(int userId, String name, int type, String description);
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
