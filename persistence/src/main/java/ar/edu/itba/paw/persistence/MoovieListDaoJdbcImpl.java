@@ -194,6 +194,31 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         jdbcTemplate.execute(sqlDel);
     }
 
+    @Override
+    public void likeMoovieList(int userId, int moovieListId) {
+        final Map<String,Object> args = new HashMap<>();
+        args.put("moovieListId", moovieListId);
+        args.put("userId", userId);
+
+        moovieListLikesJdbcInsert.execute(args);
+    }
+
+    @Override
+    public void removeLikeMoovieList(int userId, int moovieListId) {
+        String sql = "DELETE FROM moovielistslikes WHERE userid=? AND moovieListId = ?";
+        jdbcTemplate.update( sql , new Object[]{userId, moovieListId} );
+    }
+
+    @Override
+    public boolean likeMoovieListStatusForUser(int userId, int moovieListId) {
+        Optional<MoovieListLikes> mll = jdbcTemplate.query("SELECT * FROM moovieListsLikes WHERE moovieListId = ? AND userId = ?", new Object[]{moovieListId, userId} , MOOVIE_LIST_LIKES_ROW_MAPPER)
+                .stream().findFirst();
+        if(mll.isPresent()){
+            return true;
+        }
+        return false;
+
+    }
 }
 
 

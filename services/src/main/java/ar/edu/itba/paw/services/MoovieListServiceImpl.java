@@ -62,6 +62,11 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Override
     public List<MoovieListCard> getMoovieListsCards(String search, String ownerUsername, int type, int size, int pageNumber) {
+        if(type == MOOVIE_LIST_TYPE_STANDARD_PRIVATE || type == MOOVIE_LIST_TYPE_DEFAULT_PRIVATE){
+            if(userService.getInfoOfMyUser().getUserId() != userId){
+                throw new InvalidAccessToResourceException("Need to be owner to acces thr private list of this user");
+            }
+        }
         return moovieListDao.getMoovieListsCards(search, ownerUsername, type, size, pageNumber);
     }
 
@@ -97,6 +102,35 @@ public class MoovieListServiceImpl implements MoovieListService{
         }else{
             throw new InvalidAccessToResourceException("You are not the user of this list, so you can't delete it");
         }
+    }
 
+
+    @Override
+    public void likeMoovieList(int moovieListId) {
+        int userId = userService.getInfoOfMyUser().getUserId();
+        if(likeMoovieListStatusForUser(moovieListId)){
+            moovieListDao.removeLikeMoovieList(userId, moovieListId);
+        }
+        MoovieList mvlAux =  getMoovieListById(moovieListId);
+
+        //Send mail
+        User aux = userService.findUserById( mvlAux.getUserId());
+        final Map<String,Object> mailMap = new HashMap<>();
+        mailMap.put("username",aux.getUsername());
+        mailMap.put("moovieListName",mvlAux.getName());
+        emailService.sendEmail(aux.getEmail(), "Someone liked your list: " + mvlAux.getName() + "!!!" , "notificationLikeMoovieList.html", mailMap );
+
+
+        moovieListDao.likeMoovieList(userId, moovieListId);
+    }
+
+    @Override
+    public void removeLikeMoovieList(int moovieListId) {
+        moovieListDao.removeLikeMoovieList(userService.getInfoOfMyUser().getUserId(), moovieListId);
+    }
+
+    @Override
+    public boolean likeMoovieListStatusForUser(int moovieListId) {
+        return moovieListDao.likeMoovieListStatusForUser(userService.getInfoOfMyUser().getUserId(), moovieListId);
     }
 }

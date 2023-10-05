@@ -3,6 +3,7 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
+import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,9 +26,19 @@ public interface MoovieListService {
     //Get the MoovieListCard, which contains the element presented in searchs, has a lot of arguments for searchs/querys
     List<MoovieListCard> getMoovieListsCards(String search, String ownerUsername , int type , int size, int pageNumber);
 
+
+    //Gets all the Moovie
+    List<MoovieListCard> getAllMoovieListCardFromUser(int userId, int type, int size, int pageNumber);
+
+
     //Create or insert into moovieList
     MoovieList createMoovieList(String name, int type, String description);
     MoovieList createMoovieListWithContent(String name, int type, String description, List<Integer> mediaIdList);
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
     void deleteMoovieList(int moovieListId);
+
+    //Likes functions
+    void likeMoovieList( int moovieListId);
+    void removeLikeMoovieList(int moovieListId);
+    boolean likeMoovieListStatusForUser( int moovieListId);
 }
