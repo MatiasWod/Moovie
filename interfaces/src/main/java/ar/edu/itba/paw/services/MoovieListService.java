@@ -17,12 +17,16 @@ public interface MoovieListService {
     public static final int MOOVIE_LIST_TYPE_DEFAULT_PUBLIC = 3;   //Listas creadas automaticamente por ej: "Top 50"
     public static final int MOOVIE_LIST_TYPE_DEFAULT_PRIVATE = 4;   //Listas creadas automaticamente por ej: "Watchlist"
 
+
     //Get the moovieList object, doesnt contain  much info
     MoovieList getMoovieListById(int moovieListId);
+
     //Gets the moovieListCard (recomended for querys and contains useful info for the visualization of a MoovieList
     MoovieListCard getMoovieListCardById(int moovieListId);
+
     //Get the content of media of some moovieList by its id TODO MISSING THE BOOLEAN ISWATCHED FUNTIONALITY
     List<MoovieListContent> getMoovieListContent(int moovieListId, int userId, String orderBy, int size, int pageNumber);
+
     //Get the MoovieListCard, which contains the element presented in searchs, has a lot of arguments for searchs/querys
     List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , int size, int pageNumber);
 
