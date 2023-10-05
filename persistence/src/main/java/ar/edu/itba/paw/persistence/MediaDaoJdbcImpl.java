@@ -142,12 +142,15 @@ public class MediaDaoJdbcImpl implements MediaDao {
         return jdbcTemplate.query(sql.toString(), args.toArray(), MEDIA_ROW_MAPPER);
     }
 
+    @Override
+    public Optional<Media> getMediaById(int mediaId) {
+        return jdbcTemplate.query("SELECT * FROM media  WHERE mediaid = ?", new Object[]{mediaId}, MEDIA_ROW_MAPPER).stream().findFirst();
+    }
 
     @Override
     public Optional<Movie> getMovieById(int mediaId) {
         return jdbcTemplate.query("SELECT " + moviesQueryParams + " FROM media INNER JOIN movies ON media.mediaid = movies.mediaid WHERE  movies.mediaid = ?", new Object[]{mediaId}, MOVIE_ROW_MAPPER).stream().findFirst();
     }
-
 
     @Override
     public Optional<TVSerie> getTvById(int mediaId) {

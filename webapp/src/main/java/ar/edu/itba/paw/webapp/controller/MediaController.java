@@ -1,0 +1,143 @@
+package ar.edu.itba.paw.webapp.controller;
+
+import ar.edu.itba.paw.exceptions.FailedToInsertToListException;
+import ar.edu.itba.paw.exceptions.MediaNotFoundException;
+import ar.edu.itba.paw.models.Cast.Actor;
+import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.Media.Movie;
+import ar.edu.itba.paw.models.Media.TVSerie;
+import ar.edu.itba.paw.models.MoovieList.MoovieList;
+import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.persistence.TVCreatorsDao;
+import ar.edu.itba.paw.services.*;
+import ar.edu.itba.paw.webapp.form.CreateReviewForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
+import java.util.Collections;
+import java.util.List;
+
+@Controller
+public class MediaController {
+
+    @Autowired
+    private MediaService mediaService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ReviewService reviewService;
+
+    @Autowired
+    private MoovieListService moovieListService;
+
+    @Autowired
+    private ActorService actorService;
+
+    @Autowired
+    private TVCreatorsService tvCreatorsService;
+
+    @Autowired
+    private ProviderService providerService;
+
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MediaController.class);
+
+
+
+    @RequestMapping("/")
+    public ModelAndView home() {
+        final ModelAndView mav = new ModelAndView("helloworld/index");
+        List<Media> movieList = mediaService.getMedia(mediaService.TYPE_MOVIE, null, null, null, mediaService.DEFAULT_PAGE_SIZE, 0);
+        mav.addObject("movieList", movieList);
+        List<Media> tvSerieList = mediaService.getMedia(mediaService.TYPE_TVSERIE, null, null, null, mediaService.DEFAULT_PAGE_SIZE, 0);
+        mav.addObject("tvList", tvSerieList);
+
+        return mav;
+    }
+
+    @RequestMapping("/discover")
+    public ModelAndView discover(@RequestParam(value = "media", required = false) String media, @RequestParam(value = "g", required = false) List<String> genres,
+                             @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
+        return new ModelAndView();
+    }
+
+    @RequestMapping("/search")
+    public ModelAndView search(@RequestParam(value = "query", required = true) String query) {
+
+        return new ModelAndView();
+    }
+
+    @RequestMapping(value = "/details/{id:\\d+}")
+    public ModelAndView details(@PathVariable("id") final int mediaId, @ModelAttribute("detailsForm") final CreateReviewForm form, RedirectAttributes redirectAttributes) {
+        boolean type;
+        try{
+            type = mediaService.getMediaById(mediaId).isType();
+        } catch (MediaNotFoundException e){
+            final ModelAndView mav = new ModelAndView("helloworld/404.jsp");
+            mav.addObject("extraInfo", "The media with id: " + mediaId + " doesn't exists");
+            return mav;
+        }
+        
+        final ModelAndView mav = new ModelAndView("helloworld/details");
+        String errorMessage = (String) redirectAttributes.getFlashAttributes().get("errorMessage");
+        if (errorMessage != null) {
+            // Add the error message to the ModelAndView
+            mav.addObject("errorMessage", errorMessage);
+        }
+
+        String successMessage = (String) redirectAttributes.getFlashAttributes().get("successMessage");
+        if (successMessage != null) {
+            // Add the error message to the ModelAndView
+            mav.addObject("successMessage", successMessage);
+        }
+        try{
+            String username =  userService.getInfoOfMyUser().getUsername();
+            mav.addObject("privateLists", moovieListService.getMoovieListCards(null, username, moovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE, moovieListService.DEFAULT_PAGE_SIZE, 0));
+            mav.addObject("publicLists", moovieListService.getMoovieListCards(null, username, moovieListService.MOOVIE_LIST_TYPE_STANDARD_PRIVATE, moovieListService.DEFAULT_PAGE_SIZE, 0));
+        }catch(Exception e){
+        }
+        if(!type){
+            mav.addObject("media", mediaService.getMovieById(mediaId));
+        } else{
+            mav.addObject("media", mediaService.getTvById(mediaId));
+            mav.addObject("creators", tvCreatorsService.getTvCreatorsByMediaId(mediaId));
+        }
+        mav.addObject("actorsList", actorService.getAllActorsForMedia(mediaId));
+        mav.addObject("reviewList", reviewService.getReviewsByMediaId(mediaId));
+        mav.addObject("providerList", providerService.getProviderForMedia(mediaId));
+        return mav;
+    }
+
+    @RequestMapping(value = "/createrating", method = RequestMethod.POST)
+    public ModelAndView createReview(@Valid @ModelAttribute("detailsForm") final CreateReviewForm form, final BindingResult errors, RedirectAttributes redirectAttributes) {
+        if (errors.hasErrors()) {
+            return details(form.getMediaId(), form,null);
+        }
+        redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully created.");
+        final int userId = userService.getInfoOfMyUser().getUserId();
+        reviewService.createReview(form.getMediaId(), form.getRating(), form.getReviewContent());
+        return new ModelAndView("redirect:/details/" + form.getMediaId());
+    }
+
+    @RequestMapping(value = "/insertMediaToList", method = RequestMethod.POST)
+    public ModelAndView insertMediaToList(@RequestParam("listId") int listId, @RequestParam("mediaId") int mediaId, RedirectAttributes redirectAttributes) {
+        try {
+            moovieListService.insertMediaIntoMoovieList(listId, Collections.singletonList(mediaId));
+            redirectAttributes.addFlashAttribute("successMessage", "Media has been successfully added to your list.");
+        } catch (FailedToInsertToListException exception) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to insert media into the list. Already in the list.");
+        }
+        return new ModelAndView("redirect:/details/" + mediaId);
+    }
+
+}
+

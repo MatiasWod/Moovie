@@ -29,6 +29,11 @@ public class MediaServiceImpl implements MediaService{
     }
 
     @Override
+    public Media getMediaById(int mediaId) {
+        return mediaDao.getMediaById(mediaId).orElseThrow(() -> new MediaNotFoundException("Media was not found for the id:" + mediaId));
+    }
+
+    @Override
     public Movie getMovieById(int mediaId) {
         return mediaDao.getMovieById(mediaId).orElseThrow(() -> new MediaNotFoundException("Movie was not found for the id:" + mediaId));
     }

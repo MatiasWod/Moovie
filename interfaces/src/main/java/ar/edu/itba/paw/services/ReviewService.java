@@ -7,9 +7,10 @@ import java.util.Optional;
 
 public interface ReviewService {
     Review getReviewById(int reviewId);
+    //Get all the reviews for a media, contains all nescesary  data to display
     List<Review> getReviewsByMediaId(int mediaId);
-
-
+    //Returns all the reviews a user has made, contains all nescesary data to display
     List<Review> getMovieReviewsFromUser(int userId);
+    //Creates review
     void createReview( int mediaId, int rating, String reviewContent);
 }

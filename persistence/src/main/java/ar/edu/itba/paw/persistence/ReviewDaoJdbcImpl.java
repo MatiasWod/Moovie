@@ -41,12 +41,12 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
 
     @Override
     public Optional<Review> getReviewById(int reviewId) {
-        return jdbcTemplate.query("SELECT * FROM reviews INNER JOIN users ON users.userid = reviews.userid INNER JOIN media ON media.mediaId = reviews.mediaId WHERE reviewId = ?", new Object[]{reviewId}, REVIEW_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT * FROM reviews INNER JOIN users ON users.userid = reviews.userid INNER JOIN media ON media.mediaId = reviews.mediaId WHERE reviews.reviewId = ?", new Object[]{reviewId}, REVIEW_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
     public List<Review> getReviewsByMediaId(int mediaId) {
-        return jdbcTemplate.query("SELECT * FROM reviews INNER JOIN users ON users.userid = reviews.userid INNER JOIN media ON media.mediaId = reviews.mediaId WHERE mediaId = ?", new Object[]{mediaId}, REVIEW_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT * FROM reviews INNER JOIN users ON users.userid = reviews.userid INNER JOIN media ON media.mediaId = reviews.mediaId WHERE reviews.mediaId = ?", new Object[]{mediaId}, REVIEW_ROW_MAPPER);
     }
 
 
