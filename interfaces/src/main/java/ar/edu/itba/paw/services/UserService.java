@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
 
+import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +24,9 @@ public interface UserService {
     User findUserById(int userId);
     User findUserByEmail(String mail);
     User findUserByUsername(String username);
+
+    //Return the parameters needed to show in the profile page
+    Profile getProfileByUsername(String username);
 
     //Auth info of users
     User getInfoOfMyUser();

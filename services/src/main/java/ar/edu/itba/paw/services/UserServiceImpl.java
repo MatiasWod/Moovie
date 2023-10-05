@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.*;
+import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.MoovieListDao;
 import ar.edu.itba.paw.persistence.UserDao;
@@ -110,6 +111,10 @@ public class UserServiceImpl implements UserService {
         return userDao.findUserByUsername(username).orElseThrow(() -> new UnableToFindUserException("User with username: " + username + " not found"));
     }
 
+    @Override
+    public Profile getProfileByUsername(String username) {
+        return userDao.getProfileByUsername(username).orElseThrow(() -> new UnableToFindUserException("No user with username: " + username));
+    }
 
     //AUTHENTICATION INFO
 

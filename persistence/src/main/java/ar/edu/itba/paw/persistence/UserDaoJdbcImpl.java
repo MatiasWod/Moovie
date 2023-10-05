@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.User.Image;
+import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,10 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +32,16 @@ public class UserDaoJdbcImpl implements UserDao{
             rs.getString("email"),
             rs.getString("password"),
             rs.getInt("role")
+    );
+
+    private static final RowMapper<Profile> PROFILE_ROW_MAPPER = (rs, rowNum) -> new Profile(
+            rs.getInt("userId"),
+            rs.getString("username"),
+            rs.getString("email"),
+            rs.getInt("role"),
+            rs.getInt("moovieListCount"),
+            rs.getInt("likedMoovieListCount"),
+            rs.getInt("reviewCount")
     );
 
     private static final RowMapper<Image> IMAGE_ROW_MAPPER = (rs, column) -> new Image(
@@ -82,6 +90,19 @@ public class UserDaoJdbcImpl implements UserDao{
     @Override
     public Optional<User> findUserByEmail(String email) {
         return jdbcTemplate.query("SELECT * FROM users WHERE email ILIKE ?", new Object[]{email}, USER_ROW_MAPPER).stream().findFirst();
+    }
+
+    @Override
+    public Optional<Profile> getProfileByUsername(String username) {
+        StringBuilder sql = new StringBuilder("SELECT * , ");
+        ArrayList<Object> args = new ArrayList<>();
+
+        sql.append(" (SELECT COUNT(*) FROM moovieLists ml WHERE ml.userId = u.userId) AS moovieListCount, ");
+        sql.append(" (SELECT COUNT(*) FROM moovieListsLikes l WHERE l.userId = u.userId) AS likedMoovieListCount, ");
+        sql.append(" (SELECT COUNT(*) FROM reviews r WHERE r.userId = u.userId) AS reviewCount ");
+        sql.append(" FROM users u WHERE username = 'Pepe'; ");
+
+        return jdbcTemplate.query(sql.toString(), args.toArray(), PROFILE_ROW_MAPPER);
     }
 
     @Override
