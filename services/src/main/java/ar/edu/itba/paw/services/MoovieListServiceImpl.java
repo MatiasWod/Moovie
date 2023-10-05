@@ -1,8 +1,12 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.FailedToInsertToListException;
+import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
+import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
+import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
+import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.MoovieListDao;
@@ -26,143 +30,73 @@ public class MoovieListServiceImpl implements MoovieListService{
     private EmailService emailService;
 
     @Override
-    public Optional<MoovieList> getMoovieListById(int moovieListId) {
-        return moovieListDao.getMoovieListById(moovieListId);
-    }
-
-    /*
-    @Override
-    public MoovieList getMoovieListById(int moovieListId) {
-        User user = userService.getInfoOfMyUser();
-        MoovieList ml = moovieListDao.getMoovieListById(moovieListId).orElseThrow( () -> new NoObjectForIDEXception());
-        if(ml.getType() == 2 || ml.getType() == 4){
-            if(ml.getUserId() != user.getUserId()){
-             throw new InvalidAccessToResourceException("User " + user.getUsername() + " doesnt have acces to this list because its private");
+    public MoovieList getMoovieListById(int moovieListId) { //Check permissions
+        MoovieList ml = moovieListDao.getMoovieListById(moovieListId).orElseThrow( () -> new MoovieListNotFoundException("Moovie list by id: " + moovieListId + " not found"));
+        User currentUser = userService.getInfoOfMyUser();
+        if( ml.getType() == MOOVIE_LIST_TYPE_STANDARD_PRIVATE || ml.getType() == MOOVIE_LIST_TYPE_STANDARD_PRIVATE ){
+            if(ml.getUserId() != currentUser.getUserId()){
+                throw new InvalidAccessToResourceException("User is not owner of the list and its private");
             }
         }
         return ml;
-    }*/
-
-    @Override
-    public List<MoovieList> getAllMoovieLists(int size, int pageNumber) {
-        return moovieListDao.getAllMoovieLists(size, pageNumber);
     }
 
     @Override
-    public List<MoovieListContent> getMoovieListContentById(int moovieListId) {
-        return moovieListDao.getMoovieListContentById(moovieListId);
-    }
-
-    @Override
-    public MoovieList createStandardPublicMoovieList(String name,  String description) {
-        User u = userService.getInfoOfMyUser();
-        return moovieListDao.createMoovieList(u.getUserId(), name, moovieListDao.MOOVIE_LIST_TYPE_STANDARD_PUBLIC, description);
-    }
-
-    @Override
-    public MoovieList createStandardPublicMoovieListWithContent( String name,  String description, List<Integer> mediaIdList) {
-        User u = userService.getInfoOfMyUser();
-        return moovieListDao.createMoovieListWithContent(u.getUserId(), name, moovieListDao.MOOVIE_LIST_TYPE_STANDARD_PUBLIC, description, mediaIdList);
-    }
-
-
-    /*@Override
-    public void deleteMoovieList(int moovieListId) {
-        int uid = userService.getInfoOfMyUser().getUserId();
-        MoovieList ml = getMoovieListById(moovieListId).orElseThrow(() -> new MoovieListNotFoundException("No moovie list found for id " + moovieListId) );
-        if(ml.getUserId() == uid ){
-            moovieListDao.deleteMoovieList( uid , moovieListId);
-            return;
-        }
-        throw new InvalidAccessToResourceException("This list doesnt belong to user logged, so cant be deleted");
-    }*/
-
-    @Override
-    public List<Integer> getMediaIdsWatchedInMoovieList(int moovieListId) {
-        int uid = userService.getInfoOfMyUser().getUserId();
-        return moovieListDao.getMediaWatchedInMoovieList( uid , moovieListId);
-    }
-
-    @Override
-    public List<MoovieList> getAllStandardPublicMoovieListFromUser(int userId, int size, int pageNumber) {
-        return moovieListDao.getAllStandardPublicMoovieListFromUser(userId,size,pageNumber);
-    }
-
-    @Override
-    public List<MoovieList> getMoovieListDefaultPrivateFromCurrentUser() {
-        int uid = userService.getInfoOfMyUser().getUserId();
-        return moovieListDao.getMoovieListDefaultPrivateFromUser(uid);
-    }
-
-    @Override
-    public List<MoovieList> getMoovieListBySearch(String searchString, int size, int pageNumber) {
-        return moovieListDao.getMoovieListBySearch(searchString, size, pageNumber);
-    }
-
-    @Override
-    public MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList) {
-        for (Integer mediaId: mediaIdList) {
-            if(moovieListDao.mediaIdInList(mediaId, moovieListid)){
-                throw new FailedToInsertToListException("Media id " + mediaId + " already belongs to list " + moovieListid);
+    public MoovieListCard getMoovieListCardById(int moovieListId) {
+        MoovieListCard mlc = moovieListDao.getMoovieListCardById(moovieListId).orElseThrow( () -> new MoovieListNotFoundException("Moovie list by id: " + moovieListId + " not found"));
+        User currentUser = userService.getInfoOfMyUser();
+        if( mlc.getType() == MOOVIE_LIST_TYPE_STANDARD_PRIVATE || mlc.getType() == MOOVIE_LIST_TYPE_STANDARD_PRIVATE ){
+            if(mlc.getUsername() != currentUser.getUsername()){
+                throw new InvalidAccessToResourceException("User is not owner of the list and its private");
             }
-
         }
-        return moovieListDao.insertMediaIntoMoovieList(moovieListid, mediaIdList);
+        return mlc;
     }
 
     @Override
-    public Optional<Integer> getMoovieListCount() {
-        return moovieListDao.getMoovieListCount();
+    public List<MoovieListContent> getMoovieListContent(int moovieListId, int userId, String orderBy, int size, int pageNumber) {
+        getMoovieListById(moovieListId);
+        //If the previous didnt fail we are good to go
+        return moovieListDao.getMoovieListContent(moovieListId, userId, orderBy, size, pageNumber);
     }
 
     @Override
-    public Optional<Integer> getLikesCount(int moovieListId) {
-        return moovieListDao.getLikesCount(moovieListId);
+    public List<MoovieListCard> getMoovieListsCards(String search, String ownerUsername, int type, int size, int pageNumber) {
+        return moovieListDao.getMoovieListsCards(search, ownerUsername, type, size, pageNumber);
     }
 
     @Override
-    public List<User> getAllUsersWhoLikedMoovieList(int moovieListId) {
-        return moovieListDao.getAllUsersWhoLikedMoovieList(moovieListId);
+    public MoovieList createMoovieList(String name, int type, String description) {
+        return moovieListDao.createMoovieList(userService.getInfoOfMyUser().getUserId(), name, type, description);
     }
 
     @Override
-    public MoovieListLikes likeMoovieList( int moovieListId) {
-        int userId = userService.getInfoOfMyUser().getUserId();
-        if(likeMoovieListStatusForUser(moovieListId)){
-            return moovieListDao.removeLikeMoovieList(userId, moovieListId);
+    public MoovieList createMoovieListWithContent(String name, int type, String description, List<Integer> mediaIdList) {
+        MoovieList ml =  moovieListDao.createMoovieList(userService.getInfoOfMyUser().getUserId(), name, type, description);
+        return insertMediaIntoMoovieList(ml.getMoovieListId(), mediaIdList);
+    }
+
+    @Override
+    public MoovieList insertMediaIntoMoovieList(int moovieListId, List<Integer> mediaIdList) {
+        MoovieList ml = getMoovieListById(moovieListId);
+        User currentUser = userService.getInfoOfMyUser();
+        if(ml.getUserId() == currentUser.getUserId()){
+            return moovieListDao.insertMediaIntoMoovieList(moovieListId, mediaIdList);
         }
-        Optional<MoovieList> mvlAux =  moovieListDao.getMoovieListById(moovieListId);
-        if(mvlAux.isPresent()){
-            User aux = userService.findUserById( mvlAux.get().getUserId()).orElseThrow(()-> new UnableToFindUserException("NO USER"));
-            final Map<String,Object> mailMap = new HashMap<>();
-            mailMap.put("username",aux.getUsername());
-            mailMap.put("moovieListName",mvlAux.get().getName());
-            emailService.sendEmail(aux.getEmail(), "Someone liked your list: " + mvlAux.get().getName() + "!!!" , "notificationLikeMoovieList.html", mailMap );
+        else{
+            throw new InvalidAccessToResourceException("User is not owner of the list");
+        }
+    }
+
+    @Override
+    public void deleteMoovieList(int moovieListId) {
+        MoovieList ml = getMoovieListById(moovieListId);
+        User currentUser = userService.getInfoOfMyUser();
+        if(currentUser.getRole() == userService.ROLE_MODERATOR || currentUser.getUserId() == ml.getUserId()){
+            deleteMoovieList(moovieListId);
+        }else{
+            throw new InvalidAccessToResourceException("You are not the user of this list, so you can't delete it");
         }
 
-        return moovieListDao.likeMoovieList(userId, moovieListId);
     }
-
-    @Override
-    public boolean likeMoovieListStatusForUser(int moovieListId) {
-        int userId = userService.getInfoOfMyUser().getUserId();
-        return moovieListDao.likeMoovieListStatusForUser(userId, moovieListId);
-    }
-
-    @Override
-    public MoovieListLikes removeLikeMoovieList(int moovieListId) {
-        int userId = userService.getInfoOfMyUser().getUserId();
-        return moovieListDao.removeLikeMoovieList(userId,moovieListId);
-    }
-
-    @Override
-    public List<MoovieList> likedMoovieListsForUser(int userId, int size, int pageNumber) {
-        return moovieListDao.likedMoovieListsForUser(userId, size, pageNumber);
-    }
-
-    @Override
-    public Optional<Integer> getMoovieListSize(int moovieListId,Boolean type) {
-        return moovieListDao.getMoovieListSize(moovieListId,type);
-    }
-
 }

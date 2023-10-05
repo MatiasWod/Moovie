@@ -11,13 +11,15 @@ public class MoovieListCard {
     private final String username;
     private final String description;
     private final int likeCount;
+    private final int type;
     private List<String> images;
 
-    public MoovieListCard(int moovieListId, String username, String description, int likeCount, Array images) {
+    public MoovieListCard(int moovieListId, String username, String description, int likeCount, int type, Array images) {
         this.moovieListId = moovieListId;
         this.username = username;
         this.description = description;
         this.likeCount = likeCount;
+        this.type = type;
         try{
             this.images = Arrays.asList((String[]) images.getArray());
         }
@@ -40,6 +42,10 @@ public class MoovieListCard {
 
     public int getLikeCount() {
         return likeCount;
+    }
+
+    public int getType() {
+        return type;
     }
 
     public List<String> getImages() {

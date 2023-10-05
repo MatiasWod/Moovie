@@ -43,6 +43,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         rs.getString("username"),
         rs.getString("description"),
         rs.getInt("likeCount"),
+        rs.getInt("type"),
         rs.getArray("images")
     );
 
@@ -82,10 +83,24 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         return jdbcTemplate.query("SELECT * FROM moovieLists WHERE moovieListId = ?",new Object[]{moovieListId},MOOVIE_LIST_ROW_MAPPER).stream().findFirst();
     }
 
+    @Override
+    public Optional<MoovieListCard> getMoovieListCardById(int moovieListId) {
+        StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(l.userid) AS likeCount ");
+        ArrayList<Object> args = new ArrayList<>();
+
+        sql.append(" ( SELECT ARRAY_ARG(posterPath) FROM ( SELECT m.posterPath FROM moovielistscontent mlc INNER JOIN media m ");
+        sql.append(" ON mlc.mediaId = media.mediaId WHERE mlc.moovielistId = ml.moovielistid LIMIT 4 ) AS subquery ) AS images ");
+        sql.append(" FROM moovieLists ml LEFT JOIN users u ON ml.userid = u.userid LEFT JOIN moovieListsLikes l ON ml.moovielistid = l.moovielistid ");
+        sql.append(" WHERE ml.moovieListId = ? GROUP BY ml.moovielistid, u.userid;");
+
+        args.add(moovieListId);
+
+        return jdbcTemplate.query(sql.toString(), args.toArray(), MOOVIE_LIST_CARD_ROW_MAPPER).stream().findFirst();
+    }
 
     @Override
     public List<MoovieListCard> getMoovieListsCards( String search, String ownerUsername , int type , int size, int pageNumber){
-        StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(l.userid) AS likeCount ");
+        StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(l.userid) AS likeCount, ");
         ArrayList<Object> args = new ArrayList<>();
 
         sql.append(" ( SELECT ARRAY_ARG(posterPath) FROM ( SELECT posterPath FROM moovielistscontent mlc INNER JOIN media ");
@@ -147,12 +162,6 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         }
     }
 
-    @Override
-    public MoovieList createMoovieListWithContent(int userId, String name, int type, String description, List<Integer> mediaIdList) {
-        final MoovieList mL = createMoovieList(userId,name,type,description);
-
-        return insertMediaIntoMoovieList(mL.getMoovieListId(), mediaIdList);
-    }
 
     @Override
     public MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList) {
