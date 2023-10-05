@@ -113,11 +113,11 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         sql.append(" WHERE type = ? ");
         args.add(type);
 
-        if(ownerUsername.length() > 0){
+        if(ownerUsername!=null && ownerUsername.length() > 0){
             sql.append(" AND u.username = ? ");
             args.add(ownerUsername);
         }
-        if(search.length() > 0){
+        if(search != null && search.length() > 0){
             sql.append(" AND name ILIKE ? ");
             args.add('%' + search + '%');
         }

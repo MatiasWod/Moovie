@@ -109,13 +109,13 @@ public class MediaDaoJdbcImpl implements MediaDao {
         }
 
         // Input the search
-        if (!search.isEmpty()) {
+        if (search!=null && search.length()>0) {
             sql.append(" AND name ILIKE ? ");
             args.add('%' + search + '%');
         }
 
         // Add the genres filter
-        if (!genres.isEmpty()) {
+        if (genres!=null && !genres.isEmpty()) {
             sql.append(" AND mediaId IN ( SELECT mediaId FROM genres WHERE "); // Start the OR conditions for genres
             for (String genre : genres) {
                 sql.append(" genre_column = ? OR "); // Replace 'genre_column' with your actual genre column name
@@ -128,7 +128,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
         }
 
         // Order by
-        if (!orderBy.isEmpty()) {
+        if (orderBy!=null && orderBy.length()>0) {
             sql.append(" ORDER BY ? ");
             args.add(orderBy);
         }
