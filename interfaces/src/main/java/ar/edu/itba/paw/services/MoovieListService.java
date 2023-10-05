@@ -27,10 +27,6 @@ public interface MoovieListService {
     List<MoovieListCard> getMoovieListsCards(String search, String ownerUsername , int type , int size, int pageNumber);
 
 
-    //Gets all the Moovie
-    List<MoovieListCard> getAllMoovieListCardFromUser(int userId, int type, int size, int pageNumber);
-
-
     //Create or insert into moovieList
     MoovieList createMoovieList(String name, int type, String description);
     MoovieList createMoovieListWithContent(String name, int type, String description, List<Integer> mediaIdList);
