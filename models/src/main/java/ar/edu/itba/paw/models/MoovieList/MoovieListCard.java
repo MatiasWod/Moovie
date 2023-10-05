@@ -16,7 +16,7 @@ public class MoovieListCard {
     private final int size;
     private List<String> images;
 
-    public MoovieListCard(int moovieListId, String name,  String username, String description, int likeCount, int type, int size, Array images) {
+    public MoovieListCard(int moovieListId, String name,  String username, String description, int likeCount, int type, int size, String images) {
         this.moovieListId = moovieListId;
         this.name = name;
         this.username = username;
@@ -24,10 +24,10 @@ public class MoovieListCard {
         this.likeCount = likeCount;
         this.type = type;
         this.size = size;
-        try{
-            this.images = Arrays.asList((String[]) images.getArray());
-        }
-        catch (SQLException e){
+        if(images!=null){
+            String[] aux = images.replaceAll("[{}]","").split(",");
+            this.images = new ArrayList<>(Arrays.asList(aux));
+        }else{
             this.images = new ArrayList<>();
         }
     }

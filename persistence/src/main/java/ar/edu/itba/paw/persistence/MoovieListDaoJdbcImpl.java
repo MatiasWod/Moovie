@@ -46,7 +46,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         rs.getInt("likeCount"),
         rs.getInt("type"),
         rs.getInt("size"),
-        rs.getArray("images")
+        rs.getString("images")
     );
 
     private static final RowMapper<MoovieListContent> MOOVIE_LIST_ITEM_ROW_MAPPER = (rs, rowNum) -> new MoovieListContent(

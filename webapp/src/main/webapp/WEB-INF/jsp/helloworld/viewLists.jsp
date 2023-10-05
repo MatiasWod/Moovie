@@ -66,7 +66,7 @@
                                     <h5><i class="bi bi-hand-thumbs-up"></i>${showList.likeCount}</h5>
                                 </div>
                             </div>
-                            <!--
+                            <%--
                             <div style="display: flex;">
                                 <c:if test="${showList.mooviesCount > 0}">
                                     <p>${showList.mooviesCount} Movies</p>
@@ -82,9 +82,10 @@
                                 <c:if test="${showList.tvseriesCount > 0}">
                                     <p>${showList.tvseriesCount} Series</p>
                                 </c:if>
-                            </div><!-->
+                            </div>
+                               --%>
                             <p style="max-height: 4.5rem" class="card-text overflow-hidden text-muted">by <c:out
-                                    value="${showList.owner}"/>
+                                    value="${showList.username}"/>
                             </p>
                             <p style="max-height: 3.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" class="card-text">
                                 <c:out value="${showList.description}"/>
