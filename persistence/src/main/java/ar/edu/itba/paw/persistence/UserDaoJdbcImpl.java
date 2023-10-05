@@ -102,7 +102,7 @@ public class UserDaoJdbcImpl implements UserDao{
         sql.append(" (SELECT COUNT(*) FROM reviews r WHERE r.userId = u.userId) AS reviewCount ");
         sql.append(" FROM users u WHERE username = 'Pepe'; ");
 
-        return jdbcTemplate.query(sql.toString(), args.toArray(), PROFILE_ROW_MAPPER);
+        return jdbcTemplate.query(sql.toString(), args.toArray(), PROFILE_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
@@ -146,6 +146,6 @@ public class UserDaoJdbcImpl implements UserDao{
 
     @Override
     public void changeUserRole(int userId, int role) {
-        jdbcTemplate.update("UPDATE Users SET role = ? WHERE userId = ?", new Object[]{role, userId});
+        jdbcTemplate.update("UPDATE users SET role = ? WHERE userId = ?", new Object[]{role, userId});
     }
 }

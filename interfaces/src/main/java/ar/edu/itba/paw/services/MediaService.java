@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MediaService {
+    static final int TYPE_MOVIE = 0;
+    static final int TYPE_TVSERIE = 1;
+    static final int TYPE_ALL = 2;
+
     public static final int DEFAULT_PAGE_SIZE = 25;
 
     // Returns a list of media that satisfy the conditions
