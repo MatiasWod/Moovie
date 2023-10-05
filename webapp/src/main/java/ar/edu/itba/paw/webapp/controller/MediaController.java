@@ -96,7 +96,6 @@ public class MediaController {
             // Add the error message to the ModelAndView
             mav.addObject("errorMessage", errorMessage);
         }
-
         String successMessage = (String) redirectAttributes.getFlashAttributes().get("successMessage");
         if (successMessage != null) {
             // Add the error message to the ModelAndView

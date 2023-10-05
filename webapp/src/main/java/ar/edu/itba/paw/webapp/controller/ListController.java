@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
+import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.extendedMoovieList;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.GenreService;
@@ -38,10 +39,10 @@ public class ListController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
 
     @RequestMapping("/lists")
-    public ModelAndView lists(
-            @RequestParam(value = "search", required = false) final String searchQ) {
-
-        return new ModelAndView();
+    public ModelAndView lists(@RequestParam(value = "search", required = false) final String searchQ) {
+        final ModelAndView mav = new ModelAndView("helloworld/viewLists");
+        mav.addObject("showLists", moovieListService.getMoovieListCards(null, null, moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC, moovieListService.DEFAULT_PAGE_SIZE, 0));
+        return mav;
     }
 
     private String extractNumericPart(String input) {
@@ -55,18 +56,7 @@ public class ListController {
         }
     }
 
-    @RequestMapping(value = "/createListAction", method = RequestMethod.POST)
-    public ModelAndView createListAction(@Valid @ModelAttribute("ListForm") final CreateListForm form, final BindingResult errors) {
 
-        if (errors.hasErrors()) {
-            return createList(null, null, null, null, form);
-        }
-
-        MoovieList list = moovieListService.createMoovieListWithContent(form.getListName(), moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC , form.getListDescription(), form.getMediaIdsList());
-
-        int id = list.getMoovieListId();
-        return new ModelAndView("redirect:/list/" + id);
-    }
 
 // http://tuDominio.com/createList?s=A&s=B&s=C&s=D&s=E
 
@@ -82,15 +72,11 @@ public class ListController {
 
     @RequestMapping("/profile/{username}/watchedList")
     public ModelAndView watchedlist(@PathVariable("username") final String username) {
-        return getPrivateListMav("Watched");
+        return new ModelAndView();
     }
 
     @RequestMapping("/profile/{username}/watchList")
     public ModelAndView watchlist(@PathVariable("username") final String username) {
-        return getPrivateListMav("Watchlist");
-    }
-
-    private ModelAndView getPrivateListMav(String name) {
         return new ModelAndView();
     }
 
@@ -110,6 +96,18 @@ public class ListController {
     public ModelAndView mostPopularList(){
         MoovieList moovieList = moovieListService.
     }*/
+
+    @RequestMapping(value = "/createListAction", method = RequestMethod.POST)
+    public ModelAndView createListAction(@Valid @ModelAttribute("ListForm") final CreateListForm form, final BindingResult errors) {
+        if (errors.hasErrors()) {
+            return createList(null, null, null, null, form);
+        }
+
+        MoovieList list = moovieListService.createMoovieListWithContent(form.getListName(), moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC , form.getListDescription(), form.getMediaIdsList());
+
+        int id = list.getMoovieListId();
+        return new ModelAndView("redirect:/list/" + id);
+    }
 
     @RequestMapping(value = "/like", method = RequestMethod.POST)
     public ModelAndView putLike(@RequestParam("listId") int listId) {

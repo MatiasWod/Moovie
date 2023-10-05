@@ -40,6 +40,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     private static final RowMapper<MoovieListCard> MOOVIE_LIST_CARD_ROW_MAPPER = (rs, rowNum) -> new MoovieListCard(
         rs.getInt("moovieListId"),
+        rs.getString("name"),
         rs.getString("username"),
         rs.getString("description"),
         rs.getInt("likeCount"),
@@ -105,9 +106,9 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(l.userid) AS likeCount, ");
         ArrayList<Object> args = new ArrayList<>();
 
-        sql.append(" ( SELECT ARRAY_ARG(posterPath) FROM ( SELECT posterPath FROM moovielistscontent mlc INNER JOIN media ");
+        sql.append(" ( SELECT ARRAY_AGG(posterPath) FROM ( SELECT posterPath FROM moovielistscontent mlc INNER JOIN media ");
         sql.append(" ON mlc.mediaId = media.mediaid WHERE mlc.moovielistId = ml.moovielistid LIMIT 4 ) AS subquery ) AS images, ");
-        sql.append(" (SELECT COUNT(*) FROM moovieListsContent mlc WHERE mlc.moovieListId = ml.moovieListId) AS size ");
+        sql.append(" (SELECT COUNT(*) FROM moovieListsContent mlc2 WHERE mlc2.moovieListId = ml.moovieListId) AS size ");
         sql.append(" FROM moovieLists ml LEFT JOIN users u ON ml.userid = u.userid LEFT JOIN moovieListsLikes l ON ml.moovielistid = l.moovielistid ");
 
         sql.append(" WHERE type = ? ");

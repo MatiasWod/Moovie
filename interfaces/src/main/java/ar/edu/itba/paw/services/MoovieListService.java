@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface MoovieListService {
 
-    public static final int DEFAULT_PAGE_SIZE = 25;
+    public static final int DEFAULT_PAGE_SIZE = 24;
 
     public static final int MOOVIE_LIST_TYPE_STANDARD_PUBLIC = 1;   //Listas que crea un usuario y son publicas
     public static final int MOOVIE_LIST_TYPE_STANDARD_PRIVATE = 2;  //Listas que crea un usuario y puso privada

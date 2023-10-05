@@ -48,10 +48,10 @@
                 <div class="list-card card"
                      onclick="location.href='${pageContext.request.contextPath}/list/${showList.moovieListId}?page=1'">
                     <div class="list-img-container card-img-top">
-                        <c:forEach var="image" items="${showList.posters}">
+                        <c:forEach var="image" items="${showList.images}">
                             <img class="cropCenterImage" src="${image}" alt="...">
                         </c:forEach>
-                        <c:forEach begin="${fn:length(showList.posters)}" end="3">
+                        <c:forEach begin="${fn:length(showList.images)}" end="3">
                             <img class="cropCenterImage"
                                  src=${pageContext.request.contextPath}/resources/defaultPoster.png alt="...">
                         </c:forEach>
@@ -63,9 +63,10 @@
                                     <h5 class="card-title"><strong><c:out value="${showList.name}"/></strong></h5>
                                 </div>
                                 <div class="card-likes">
-                                    <h5><i class="bi bi-hand-thumbs-up"></i>${showList.likes}</h5>
+                                    <h5><i class="bi bi-hand-thumbs-up"></i>${showList.likeCount}</h5>
                                 </div>
                             </div>
+                            <!--
                             <div style="display: flex;">
                                 <c:if test="${showList.mooviesCount > 0}">
                                     <p>${showList.mooviesCount} Movies</p>
@@ -81,7 +82,7 @@
                                 <c:if test="${showList.tvseriesCount > 0}">
                                     <p>${showList.tvseriesCount} Series</p>
                                 </c:if>
-                            </div>
+                            </div><!-->
                             <p style="max-height: 4.5rem" class="card-text overflow-hidden text-muted">by <c:out
                                     value="${showList.owner}"/>
                             </p>

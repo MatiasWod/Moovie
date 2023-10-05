@@ -40,20 +40,6 @@ public class HelloWorldController {
         return new ModelAndView("helloworld/register");
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ModelAndView registerForm(@Valid @ModelAttribute("registerForm") final RegisterForm form,final BindingResult errors) {
-        if (errors.hasErrors()) {
-            return register(form);
-        }
-        try{
-            userService.createUser(form.getUsername(), form.getEmail(), form.getPassword());
-        } catch (UnableToCreateUserException e){
-            return new ModelAndView("redirect:/register?error=" + e.getMessage());
-        } 
-
-        return new ModelAndView("redirect:/login");
-    }
-
     @RequestMapping(value = "/register/confirm")
     public ModelAndView confirmRegistration(@RequestParam("token") final String token) {
         Token verificationToken = verificationTokenService.getToken(token).orElseThrow(VerificationTokenNotFoundException::new);
@@ -92,23 +78,7 @@ public class HelloWorldController {
         return new ModelAndView();
     }
 
-    @RequestMapping(value = "/uploadProfilePicture", method = {RequestMethod.POST})
-    public String uploadProfilePicture(@RequestParam("file") MultipartFile picture, HttpServletRequest request) {
-        String referer = request.getHeader("referer");
-        try {
-            userService.setProfilePicture(picture);
-        }catch (InvalidTypeException e) {
-            return "redirect:" + referer + "?error=invalidType";
-        } catch (NoFileException e) {
-            return "redirect:" + referer + "?error=noFile";
-        } catch (FailedToSetProfilePictureException e) {
-            return "redirect:" + referer + "?error=failedSetProfilePicture";
-        } catch (Exception e) {
-            // Handle other exceptions if needed
-            return "redirect:" + referer + "?error=error";
-        }
-        return "redirect:" + referer;
-    }
+
 
     @ControllerAdvice
     public class FileUploadExceptionAdvice {
@@ -126,6 +96,38 @@ public class HelloWorldController {
     public @ResponseBody
     byte[] getProfilePicture(@PathVariable("username") final String username){
         return userService.getProfilePicture(username);
+    }
+
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public ModelAndView registerForm(@Valid @ModelAttribute("registerForm") final RegisterForm form,final BindingResult errors) {
+        if (errors.hasErrors()) {
+            return register(form);
+        }
+        try{
+            userService.createUser(form.getUsername(), form.getEmail(), form.getPassword());
+        } catch (UnableToCreateUserException e){
+            return new ModelAndView("redirect:/register?error=" + e.getMessage());
+        }
+
+        return new ModelAndView("redirect:/login");
+    }
+
+    @RequestMapping(value = "/uploadProfilePicture", method = {RequestMethod.POST})
+    public String uploadProfilePicture(@RequestParam("file") MultipartFile picture, HttpServletRequest request) {
+        String referer = request.getHeader("referer");
+        try {
+            userService.setProfilePicture(picture);
+        }catch (InvalidTypeException e) {
+            return "redirect:" + referer + "?error=invalidType";
+        } catch (NoFileException e) {
+            return "redirect:" + referer + "?error=noFile";
+        } catch (FailedToSetProfilePictureException e) {
+            return "redirect:" + referer + "?error=failedSetProfilePicture";
+        } catch (Exception e) {
+            // Handle other exceptions if needed
+            return "redirect:" + referer + "?error=error";
+        }
+        return "redirect:" + referer;
     }
 
 }

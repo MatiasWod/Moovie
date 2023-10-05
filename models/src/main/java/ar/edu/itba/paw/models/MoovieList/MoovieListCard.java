@@ -8,6 +8,7 @@ import java.util.List;
 
 public class MoovieListCard {
     private final int moovieListId;
+    private final String name;
     private final String username;
     private final String description;
     private final int likeCount;
@@ -15,8 +16,9 @@ public class MoovieListCard {
     private final int size;
     private List<String> images;
 
-    public MoovieListCard(int moovieListId, String username, String description, int likeCount, int type, int size, Array images) {
+    public MoovieListCard(int moovieListId, String name,  String username, String description, int likeCount, int type, int size, Array images) {
         this.moovieListId = moovieListId;
+        this.name = name;
         this.username = username;
         this.description = description;
         this.likeCount = likeCount;
@@ -32,6 +34,10 @@ public class MoovieListCard {
 
     public int getMoovieListId() {
         return moovieListId;
+    }
+
+    public String getName(){
+        return name;
     }
 
     public String getUsername() {
