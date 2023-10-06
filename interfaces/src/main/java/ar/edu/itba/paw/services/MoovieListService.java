@@ -10,7 +10,8 @@ import java.util.Optional;
 
 public interface MoovieListService {
 
-    public static final int DEFAULT_PAGE_SIZE = 24;
+    public static final int DEFAULT_PAGE_SIZE_CARDS = 24;
+    public static final int DEFAULT_PAGE_SIZE_CONTENT = 25;
 
     public static final int MOOVIE_LIST_TYPE_STANDARD_PUBLIC = 1;   //Listas que crea un usuario y son publicas
     public static final int MOOVIE_LIST_TYPE_STANDARD_PRIVATE = 2;  //Listas que crea un usuario y puso privada
@@ -25,7 +26,7 @@ public interface MoovieListService {
     MoovieListCard getMoovieListCardById(int moovieListId);
 
     //Get the content of media of some moovieList by its id TODO MISSING THE BOOLEAN ISWATCHED FUNTIONALITY
-    List<MoovieListContent> getMoovieListContent(int moovieListId, int userId, String orderBy, int size, int pageNumber);
+    List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy, int size, int pageNumber);
 
     //Get the MoovieListCard, which contains the element presented in searchs, has a lot of arguments for searchs/querys
     List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , int size, int pageNumber);

@@ -86,7 +86,7 @@ public class MediaController {
             type = mediaService.getMediaById(mediaId).isType();
         } catch (MediaNotFoundException e){
             final ModelAndView mav = new ModelAndView("helloworld/404.jsp");
-            mav.addObject("extraInfo", "The media with id: " + mediaId + " doesn't exists");
+            mav.addObject("extraInfo", e.getMessage());
             return mav;
         }
         
@@ -103,8 +103,8 @@ public class MediaController {
         }
         try{
             String username =  userService.getInfoOfMyUser().getUsername();
-            mav.addObject("privateLists", moovieListService.getMoovieListCards(null, username, moovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE, moovieListService.DEFAULT_PAGE_SIZE, 0));
-            mav.addObject("publicLists", moovieListService.getMoovieListCards(null, username, moovieListService.MOOVIE_LIST_TYPE_STANDARD_PRIVATE, moovieListService.DEFAULT_PAGE_SIZE, 0));
+            mav.addObject("privateLists", moovieListService.getMoovieListCards(null, username, moovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE, moovieListService.DEFAULT_PAGE_SIZE_CARDS, 0));
+            mav.addObject("publicLists", moovieListService.getMoovieListCards(null, username, moovieListService.MOOVIE_LIST_TYPE_STANDARD_PRIVATE, moovieListService.DEFAULT_PAGE_SIZE_CARDS, 0));
         }catch(Exception e){
         }
         if(!type){

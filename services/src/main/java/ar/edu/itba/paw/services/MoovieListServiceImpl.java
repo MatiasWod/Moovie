@@ -54,10 +54,10 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
     @Override
-    public List<MoovieListContent> getMoovieListContent(int moovieListId, int userId, String orderBy, int size, int pageNumber) {
+    public List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy, int size, int pageNumber) {
         getMoovieListById(moovieListId);
         //If the previous didnt fail we are good to go
-        return moovieListDao.getMoovieListContent(moovieListId, userId, orderBy, size, pageNumber);
+        return moovieListDao.getMoovieListContent(moovieListId, orderBy, size, pageNumber);
     }
 
     @Override
