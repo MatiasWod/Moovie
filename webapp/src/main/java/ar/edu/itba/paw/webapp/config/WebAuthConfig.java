@@ -82,7 +82,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .deleteCookies("remember-me")
                 .and().authorizeRequests()
                 .antMatchers("/login", "/register").anonymous()
-                .antMatchers( "/createreview", "/profile/**", "/uploadProfilePicture","/createrating","/list/**","/insertMediaToList","/like" ).hasRole("USER")
+                .antMatchers( "/createreview", "/profile/**", "/uploadProfilePicture","/createrating","/insertMediaToList","/like" ).hasRole("USER")
                 .antMatchers( "/deleteReview/**", "/deleteList/**","/banUser/**" ).hasRole("MODERATOR")
                 .antMatchers("/**").permitAll()
                 .and().exceptionHandling()

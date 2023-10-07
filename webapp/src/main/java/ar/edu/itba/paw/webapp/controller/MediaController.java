@@ -2,13 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.FailedToInsertToListException;
 import ar.edu.itba.paw.exceptions.MediaNotFoundException;
-import ar.edu.itba.paw.models.Cast.Actor;
 import ar.edu.itba.paw.models.Media.Media;
-import ar.edu.itba.paw.models.Media.Movie;
-import ar.edu.itba.paw.models.Media.TVSerie;
-import ar.edu.itba.paw.models.MoovieList.MoovieList;
-import ar.edu.itba.paw.models.User.User;
-import ar.edu.itba.paw.persistence.TVCreatorsDao;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.CreateReviewForm;
 import org.slf4j.Logger;
@@ -132,7 +126,7 @@ public class MediaController {
         }catch(Exception e){
         }
         if(!type){
-            mav.addObject("media", mediaService.getMovieById(mediaId));
+            mav.addObject("media",mediaService.getMovieById(mediaId));
         } else{
             mav.addObject("media", mediaService.getTvById(mediaId));
             mav.addObject("creators", tvCreatorsService.getTvCreatorsByMediaId(mediaId));
@@ -149,7 +143,6 @@ public class MediaController {
             return details(form.getMediaId(), form,null);
         }
         redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully created.");
-        final int userId = userService.getInfoOfMyUser().getUserId();
         reviewService.createReview(form.getMediaId(), form.getRating(), form.getReviewContent());
         return new ModelAndView("redirect:/details/" + form.getMediaId());
     }
