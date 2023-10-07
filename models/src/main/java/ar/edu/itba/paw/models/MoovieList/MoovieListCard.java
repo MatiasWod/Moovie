@@ -14,9 +14,10 @@ public class MoovieListCard {
     private final int likeCount;
     private final int type;
     private final int size;
+    private final int moviesAmount;
     private List<String> images;
 
-    public MoovieListCard(int moovieListId, String name,  String username, String description, int likeCount, int type, int size, String images) {
+    public MoovieListCard(int moovieListId, String name,  String username, String description, int likeCount, int type, int size, int moviesAmount, String images) {
         this.moovieListId = moovieListId;
         this.name = name;
         this.username = username;
@@ -24,6 +25,7 @@ public class MoovieListCard {
         this.likeCount = likeCount;
         this.type = type;
         this.size = size;
+        this.moviesAmount = moviesAmount;
         if(images!=null){
             String[] aux = images.replaceAll("[{}]","").split(",");
             this.images = new ArrayList<>(Arrays.asList(aux));
@@ -58,6 +60,10 @@ public class MoovieListCard {
 
     public int getSize() {
         return size;
+    }
+
+    public int getMoviesAmount() {
+        return moviesAmount;
     }
 
     public List<String> getImages() {

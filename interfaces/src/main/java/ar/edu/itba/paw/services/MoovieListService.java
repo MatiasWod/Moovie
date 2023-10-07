@@ -20,6 +20,7 @@ public interface MoovieListService {
 
 
     //Get the moovieList object, doesnt contain  much info
+    //For controllers is best to use the CARDS
     MoovieList getMoovieListById(int moovieListId);
 
     //Gets the moovieListCard (recomended for querys and contains useful info for the visualization of a MoovieList

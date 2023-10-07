@@ -46,6 +46,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         rs.getInt("likeCount"),
         rs.getInt("type"),
         rs.getInt("size"),
+        rs.getInt("movieAmount"),
         rs.getString("images")
     );
 
@@ -92,7 +93,8 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
         sql.append(" ( SELECT ARRAY_AGG(posterPath) FROM ( SELECT m.posterPath FROM moovielistscontent mlc INNER JOIN media m ");
         sql.append(" ON mlc.mediaId = m.mediaId WHERE mlc.moovielistId = ml.moovielistid LIMIT 4 ) AS subquery ) AS images, ");
-        sql.append(" (SELECT COUNT(*) FROM moovieListsContent mlc2 WHERE mlc2.moovieListId = ml.moovieListId) AS size ");
+        sql.append(" (SELECT COUNT(*) FROM moovieListsContent mlc2 WHERE mlc2.moovieListId = ml.moovieListId) AS size, ");
+        sql.append(" (SELECT COUNT(*) FROM moovielistsContent mlc3 INNER JOIN media m2 ON mlc3.mediaid = m2.mediaid WHERE m2.type = false AND mlc3.moovieListid = ml.moovieListId) AS movieAmount ");
         sql.append(" FROM moovieLists ml LEFT JOIN users u ON ml.userid = u.userid LEFT JOIN moovieListsLikes l ON ml.moovielistid = l.moovielistid ");
         sql.append(" WHERE ml.moovieListId = ? GROUP BY ml.moovielistid, u.userid;");
 
@@ -106,9 +108,10 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(l.userid) AS likeCount, ");
         ArrayList<Object> args = new ArrayList<>();
 
-        sql.append(" ( SELECT ARRAY_AGG(posterPath) FROM ( SELECT posterPath FROM moovielistscontent mlc INNER JOIN media m");
+        sql.append(" ( SELECT ARRAY_AGG(posterPath) FROM ( SELECT posterPath FROM moovielistscontent mlc INNER JOIN media m ");
         sql.append(" ON mlc.mediaId = m.mediaid WHERE mlc.moovielistId = ml.moovielistid LIMIT 4 ) AS subquery ) AS images, ");
-        sql.append(" (SELECT COUNT(*) FROM moovieListsContent mlc2 WHERE mlc2.moovieListId = ml.moovieListId) AS size ");
+        sql.append(" (SELECT COUNT(*) FROM moovieListsContent mlc2 WHERE mlc2.moovieListId = ml.moovieListId) AS size, ");
+        sql.append(" (SELECT COUNT(*) FROM moovielistsContent mlc3 INNER JOIN media m2 ON mlc3.mediaid = m2.mediaid WHERE m2.type = false AND mlc3.moovieListid = ml.moovieListId) AS movieAmount ");
         sql.append(" FROM moovieLists ml LEFT JOIN users u ON ml.userid = u.userid LEFT JOIN moovieListsLikes l ON ml.moovielistid = l.moovielistid ");
 
         sql.append(" WHERE type = ? ");
@@ -138,8 +141,12 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
         sql.append(" WHERE mlc.moovielistid = ? ");
         args.add(moovieListId);
-        sql.append(" ORDER BY ? ");
-        args.add(orderBy);
+
+        if(orderBy!=null && orderBy.length() !=0 ){
+            sql.append(" ORDER BY ? ");
+            args.add(orderBy);
+        }
+
 
         sql.append(" LIMIT ? OFFSET ? ;");
         args.add(size);

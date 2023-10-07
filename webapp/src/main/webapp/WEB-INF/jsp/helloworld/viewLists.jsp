@@ -66,24 +66,22 @@
                                     <h5><i class="bi bi-hand-thumbs-up"></i>${showList.likeCount}</h5>
                                 </div>
                             </div>
-                            <%--
                             <div style="display: flex;">
-                                <c:if test="${showList.mooviesCount > 0}">
-                                    <p>${showList.mooviesCount} Movies</p>
+                                <c:if test="${showList.moviesAmount > 0}">
+                                    <p>${showList.moviesAmount} Movies</p>
                                 </c:if>
 
-                                <c:if test="${showList.mooviesCount > 0 && showList.tvseriesCount > 0}">
+                                <c:if test="${showList.moviesAmount > 0 && (showList.size - showList.moviesAmount) > 0}">
                                     <style>
                                         p {
                                             margin-right: 10px; /* Add a space between "Movies" and "Series" */
                                         }
                                     </style>
                                 </c:if>
-                                <c:if test="${showList.tvseriesCount > 0}">
-                                    <p>${showList.tvseriesCount} Series</p>
+                                <c:if test="${(showList.size - showList.moviesAmount) > 0}">
+                                    <p>${(showList.size - showList.moviesAmount)} Series</p>
                                 </c:if>
                             </div>
-                               --%>
                             <p style="max-height: 4.5rem" class="card-text overflow-hidden text-muted">by <c:out
                                     value="${showList.username}"/>
                             </p>
