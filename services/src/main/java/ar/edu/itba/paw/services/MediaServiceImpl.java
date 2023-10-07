@@ -42,4 +42,9 @@ public class MediaServiceImpl implements MediaService{
     public TVSerie getTvById(int mediaId) {
         return mediaDao.getTvById(mediaId).orElseThrow(() -> new MediaNotFoundException("Tv was not found for the id:" + mediaId));
     }
+
+    @Override
+    public Optional<Integer> getTotalMediaCount(int type, String search, List<String> genres) {
+        return mediaDao.getTotalMediaCount(type,search,genres);
+    }
 }

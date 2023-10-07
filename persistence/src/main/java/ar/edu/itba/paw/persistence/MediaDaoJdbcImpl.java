@@ -118,13 +118,13 @@ public class MediaDaoJdbcImpl implements MediaDao {
         if (genres!=null && !genres.isEmpty()) {
             sql.append(" AND mediaId IN ( SELECT mediaId FROM genres WHERE "); // Start the OR conditions for genres
             for (String genre : genres) {
-                sql.append(" genre_column = ? OR "); // Replace 'genre_column' with your actual genre column name
+                sql.append(" genre = ? OR "); // Replace 'genre_column' with your actual genre column name
                 args.add(genre);
             }
-            sql.deleteCharAt(sql.length());
-            sql.deleteCharAt(sql.length());
-            sql.deleteCharAt(sql.length());
-            sql.append(" GROUP BY mediaId HAVING COUNT(*) >= 2) ");
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.append(" ) ");
         }
 
         // Order by
@@ -163,4 +163,39 @@ public class MediaDaoJdbcImpl implements MediaDao {
         return jdbcTemplate.query("SELECT media.* FROM moovieListscontent INNER JOIN media ON media.mediaId = moovieListscontent.mediaid WHERE moovielistscontent.moovieListId = ? ORDER BY media.mediaId LIMIT ? OFFSET ?", new Object[]{moovieListId, size, pageNumber * size}, MEDIA_ROW_MAPPER);
     }
 
+    @Override
+    public Optional<Integer> getTotalMediaCount(int type, String search, List<String> genres) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM media ");
+        ArrayList<Object> args = new ArrayList<>();
+
+        // If type is 0 or 1 it's specifically movies or TVs, else it's not restricted
+        if (type == 0 || type == 1) {
+            sql.append(" WHERE type = ? ");
+            args.add(type == 1);
+        } else {
+            sql.append(" WHERE type IS NOT NULL ");
+        }
+
+        // Input the search
+        if (search!=null && search.length()>0) {
+            sql.append(" AND name ILIKE ? ");
+            args.add('%' + search + '%');
+        }
+
+        // Add the genres filter
+        if (genres!=null && !genres.isEmpty()) {
+            sql.append(" AND mediaId IN ( SELECT mediaId FROM genres WHERE "); // Start the OR conditions for genres
+            for (String genre : genres) {
+                sql.append(" genre = ? OR "); // Replace 'genre_column' with your actual genre column name
+                args.add(genre);
+            }
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.append(" ) ");
+        }
+
+        // Execute the query
+        return jdbcTemplate.query(sql.toString(), args.toArray(), COUNT_ROW_MAPPER).stream().findFirst();
+    }
 }

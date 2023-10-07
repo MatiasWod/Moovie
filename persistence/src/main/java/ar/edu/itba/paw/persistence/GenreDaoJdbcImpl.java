@@ -29,7 +29,7 @@ public class GenreDaoJdbcImpl implements GenreDao{
         public List<String> getAllGenres() {
         //revisar el findFirst, creo que siempre devuelve el primer género que encuentre que matchea con el tvId
 
-        return jdbcTemplate.query("SELECT DISTINCT genres.genre FROM genres",ALL_GENRES_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT DISTINCT genres.genre FROM genres ORDER BY genres.genre",ALL_GENRES_ROW_MAPPER);
     }
 
 

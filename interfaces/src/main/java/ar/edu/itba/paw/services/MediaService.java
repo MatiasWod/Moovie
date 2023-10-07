@@ -25,4 +25,5 @@ public interface MediaService {
     Media getMediaById(int mediaId);
     Movie getMovieById(int mediaId);
     TVSerie getTvById(int mediaId);
+    Optional<Integer> getTotalMediaCount(int type, String search, List<String> genres);
 }

@@ -34,6 +34,9 @@ public class MediaController {
     private UserService userService;
 
     @Autowired
+    private GenreService genreService;
+
+    @Autowired
     private ReviewService reviewService;
 
     @Autowired
@@ -65,16 +68,37 @@ public class MediaController {
     }
 
     @RequestMapping("/discover")
-    public ModelAndView discover(@RequestParam(value = "media", required = false) String media, @RequestParam(value = "g", required = false) List<String> genres,
-                             @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
-        return new ModelAndView();
+    public ModelAndView discover(@RequestParam(value = "media", required = false, defaultValue = "Movies and Series") String media,
+                                 @RequestParam(value = "g", required = false) List<String> genres,
+                                 @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
+        final ModelAndView mav = new ModelAndView("helloworld/discover");
+        int numberOfPages;
+        int mediaCount;
+        mav.addObject("searchMode",false);
+        if (media.equals("Movies and Series")){
+            mav.addObject("mediaList",mediaService.getMedia(mediaService.TYPE_ALL,null,genres,null, mediaService.DEFAULT_PAGE_SIZE,pageNumber - 1));
+            mediaCount = mediaService.getTotalMediaCount(mediaService.TYPE_ALL,null,genres).get().intValue();
+        }
+        else if (media.equals("Movies")){
+            mav.addObject("mediaList",mediaService.getMedia(mediaService.TYPE_MOVIE,null,genres,null, mediaService.DEFAULT_PAGE_SIZE,pageNumber - 1));
+            mediaCount = mediaService.getTotalMediaCount(mediaService.TYPE_MOVIE,null,genres).get().intValue();
+        }
+        else{
+            mav.addObject("mediaList",mediaService.getMedia(mediaService.TYPE_TVSERIE,null,genres,null, mediaService.DEFAULT_PAGE_SIZE,pageNumber - 1));
+            mediaCount = mediaService.getTotalMediaCount(mediaService.TYPE_TVSERIE,null,genres).get().intValue();
+        }
+        numberOfPages = (int) Math.ceil(mediaCount * 1.0 / mediaService.DEFAULT_PAGE_SIZE);
+        mav.addObject("numberOfPages",numberOfPages);
+        mav.addObject("currentPage",pageNumber - 1);
+        mav.addObject("genresList", genreService.getAllGenres());
+        return mav;
     }
 
     @RequestMapping("/search")
     public ModelAndView search(@RequestParam(value = "query", required = true) String query) {
         final ModelAndView mav = new ModelAndView("helloworld/discover");
         mav.addObject("searchMode", true);
-        mav.addObject("mediaList", mediaService.getMedia(mediaService.TYPE_ALL, null, null, null, mediaService.DEFAULT_PAGE_SIZE, 0));
+        mav.addObject("mediaList", mediaService.getMedia(mediaService.TYPE_ALL, query, null, null, mediaService.DEFAULT_PAGE_SIZE, 0));
         return mav;
 
     }
@@ -114,7 +138,7 @@ public class MediaController {
             mav.addObject("creators", tvCreatorsService.getTvCreatorsByMediaId(mediaId));
         }
         mav.addObject("actorsList", actorService.getAllActorsForMedia(mediaId));
-        mav.addObject("reviewList", reviewService.getReviewsByMediaId(mediaId));
+        mav.addObject("reviewsList", reviewService.getReviewsByMediaId(mediaId));
         mav.addObject("providerList", providerService.getProviderForMedia(mediaId));
         return mav;
     }

@@ -129,7 +129,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </sec:authorize>
 <sec:authorize access="!isAuthenticated()">

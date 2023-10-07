@@ -342,16 +342,16 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div class="d-flex align-items-center">
-                                        <a href="${pageContext.request.contextPath}/profile/${review.userName}"
+                                        <a href="${pageContext.request.contextPath}/profile/${review.username}"
                                            style="text-decoration: none; color: inherit;">
-                                            <img src="${pageContext.request.contextPath}/profile/image/${review.userName}"
+                                            <img src="${pageContext.request.contextPath}/profile/image/${review.username}"
                                                  alt="${review.userId} Reviewer Profile" class="mr-3 review-profile-image rounded-circle"
                                                  width="64" height="64">
                                         </a>
                                         <div class="mt-0" style="margin-left: 15px">
-                                            <a href="${pageContext.request.contextPath}/profile/${review.userName}"
+                                            <a href="${pageContext.request.contextPath}/profile/${review.username}"
                                                style="text-decoration: none; color: inherit;">
-                                                <h5><c:out value="${review.userName}"/></h5>
+                                                <h5><c:out value="${review.username}"/></h5>
                                             </a>
                                         </div>
                                     </div>

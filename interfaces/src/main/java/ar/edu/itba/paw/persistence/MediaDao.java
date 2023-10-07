@@ -15,4 +15,5 @@ public interface MediaDao {
     Optional<Media> getMediaById(int mediaId);
     Optional<Movie> getMovieById(int mediaId);
     Optional<TVSerie> getTvById(int mediaId);
+    Optional<Integer> getTotalMediaCount(int type, String search, List<String> genres);
 }

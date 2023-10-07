@@ -25,11 +25,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -39,6 +38,12 @@ public class ListController {
 
     @Autowired
     private MoovieListService moovieListService;
+
+    @Autowired
+    private MediaService mediaService;
+
+    @Autowired
+    private GenreService genreService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
 
@@ -65,13 +70,34 @@ public class ListController {
 // http://tuDominio.com/createList?s=A&s=B&s=C&s=D&s=E
 
     @RequestMapping("/createList")
-    public ModelAndView createList(@RequestParam(value = "g", required = false) List<String> genre,
-                                   @RequestParam(value = "m", required = false) String media,
+    public ModelAndView createList(@RequestParam(value = "g", required = false) List<String> genres,
+                                   @RequestParam(value = "m", required = false,defaultValue = "Movies and Series") String media,
                                    @RequestParam(value = "q", required = false) String query,
                                    @RequestParam(value = "s", required = false) List<String> selected,
+                                   @RequestParam(value = "page",defaultValue = "1") final int pageNumber,
                                    @ModelAttribute("ListForm") final CreateListForm form) {
 
-        return new ModelAndView();
+        final ModelAndView mav = new ModelAndView("helloworld/createList");
+        int numberOfPages;
+        int mediaCount;
+        mav.addObject("searchMode",false);
+        if (media.equals("Movies and Series")){
+            mav.addObject("mediaList",mediaService.getMedia(mediaService.TYPE_ALL,null,genres,null, mediaService.DEFAULT_PAGE_SIZE,pageNumber - 1));
+            mediaCount = mediaService.getTotalMediaCount(mediaService.TYPE_ALL,null,genres).get().intValue();
+        }
+        else if (media.equals("Movies")){
+            mav.addObject("mediaList",mediaService.getMedia(mediaService.TYPE_MOVIE,null,genres,null, mediaService.DEFAULT_PAGE_SIZE,pageNumber - 1));
+            mediaCount = mediaService.getTotalMediaCount(mediaService.TYPE_MOVIE,null,genres).get().intValue();
+        }
+        else{
+            mav.addObject("mediaList",mediaService.getMedia(mediaService.TYPE_TVSERIE,null,genres,null, mediaService.DEFAULT_PAGE_SIZE,pageNumber - 1));
+            mediaCount = mediaService.getTotalMediaCount(mediaService.TYPE_TVSERIE,null,genres).get().intValue();
+        }
+        numberOfPages = (int) Math.ceil(mediaCount * 1.0 / mediaService.DEFAULT_PAGE_SIZE);
+        mav.addObject("numberOfPages",numberOfPages);
+        mav.addObject("currentPage",pageNumber - 1);
+        mav.addObject("genresList", genreService.getAllGenres());
+        return mav;
     }
 
     @RequestMapping("/profile/{username}/watchedList")
@@ -133,7 +159,7 @@ public class ListController {
     @RequestMapping(value = "/createListAction", method = RequestMethod.POST)
     public ModelAndView createListAction(@Valid @ModelAttribute("ListForm") final CreateListForm form, final BindingResult errors) {
         if (errors.hasErrors()) {
-            return createList(null, null, null, null, form);
+            return createList(null, null, null, null,1, form);
         }
 
         MoovieList list = moovieListService.createMoovieListWithContent(form.getListName(), moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC , form.getListDescription(), form.getMediaIdsList());
