@@ -127,8 +127,8 @@ public class MediaController {
         }
         try{
             String username =  userService.getInfoOfMyUser().getUsername();
+            mav.addObject("publicLists", moovieListService.getMoovieListCards(null, username, moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC, moovieListService.DEFAULT_PAGE_SIZE_CARDS, 0));
             mav.addObject("privateLists", moovieListService.getMoovieListCards(null, username, moovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE, moovieListService.DEFAULT_PAGE_SIZE_CARDS, 0));
-            mav.addObject("publicLists", moovieListService.getMoovieListCards(null, username, moovieListService.MOOVIE_LIST_TYPE_STANDARD_PRIVATE, moovieListService.DEFAULT_PAGE_SIZE_CARDS, 0));
         }catch(Exception e){
         }
         if(!type){

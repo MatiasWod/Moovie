@@ -46,7 +46,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         MoovieListCard mlc = moovieListDao.getMoovieListCardById(moovieListId).orElseThrow( () -> new MoovieListNotFoundException("Moovie list by id: " + moovieListId + " not found"));
         User currentUser = userService.getInfoOfMyUser();
         if( mlc.getType() == MOOVIE_LIST_TYPE_STANDARD_PRIVATE || mlc.getType() == MOOVIE_LIST_TYPE_STANDARD_PRIVATE ){
-            if(mlc.getUsername() != currentUser.getUsername()){
+            if(!mlc.getUsername().equals(currentUser.getUsername()) ){
                 throw new InvalidAccessToResourceException("User is not owner of the list and its private");
             }
         }
@@ -55,15 +55,24 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Override
     public List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy, int size, int pageNumber) {
-        getMoovieListById(moovieListId);
-        //If the previous didnt fail we are good to go
-        return moovieListDao.getMoovieListContent(moovieListId, orderBy, size, pageNumber);
+        MoovieList ml = getMoovieListById(moovieListId);
+        //If the previous didnt throw exception, we have the permissions needed to perform the next action
+        List<MoovieListContent> mlc = moovieListDao.getMoovieListContent(moovieListId, orderBy, size, pageNumber);
+
+        if(ml.getUserId() != userService.getInfoOfMyUser().getUserId() ){
+            //The atribute isWatched is set by defualt to false if the owner isnt the one who made the query
+            for(MoovieListContent m : mlc){
+                m.setWatched(false);
+            }
+        }
+        
+        return mlc;
     }
 
     @Override
     public List<MoovieListCard> getMoovieListCards(String search, String ownerUsername, int type, int size, int pageNumber) {
         if(type == MOOVIE_LIST_TYPE_STANDARD_PRIVATE || type == MOOVIE_LIST_TYPE_DEFAULT_PRIVATE){
-            if(userService.getInfoOfMyUser().getUsername() != ownerUsername){
+            if(!userService.getInfoOfMyUser().getUsername().equals(ownerUsername)){
                 throw new InvalidAccessToResourceException("Need to be owner to acces thr private list of this user");
             }
         }

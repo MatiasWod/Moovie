@@ -10,10 +10,11 @@
         <h2 th:text="#{email.greeting}"></h2>
         <p th:text="#{email.welcome (${username})}"></p>
         <p th:text="#{email.confirmation}"></p>
-        <!--<a th:href="@{http://pawserver.it.itba.edu.ar/paw-2023b-06/register/confirm(token=${token})}">-->
         <a th:href="@{http://localhost:8080/register/confirm(token=${token})}">
             <button th:text="#{email.verify}"></button>
         </a>
     </div>
 </div>
 </body>
+
+<!--<a th:href="@{http://pawserver.it.itba.edu.ar/paw-2023b-06/register/confirm(token=${token})}">-->

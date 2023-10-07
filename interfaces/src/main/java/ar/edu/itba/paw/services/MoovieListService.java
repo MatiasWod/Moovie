@@ -26,7 +26,8 @@ public interface MoovieListService {
     //Gets the moovieListCard (recomended for querys and contains useful info for the visualization of a MoovieList
     MoovieListCard getMoovieListCardById(int moovieListId);
 
-    //Get the content of media of some moovieList by its id TODO MISSING THE BOOLEAN ISWATCHED FUNTIONALITY
+    //Get the content of media of some moovieList by its id
+    //The isWatched is returned as false (in every element) if the user who makes the query is not the owner
     List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy, int size, int pageNumber);
 
     //Get the MoovieListCard, which contains the element presented in searchs, has a lot of arguments for searchs/querys

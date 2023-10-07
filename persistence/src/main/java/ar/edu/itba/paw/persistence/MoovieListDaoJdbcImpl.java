@@ -50,7 +50,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         rs.getString("images")
     );
 
-    private static final RowMapper<MoovieListContent> MOOVIE_LIST_ITEM_ROW_MAPPER = (rs, rowNum) -> new MoovieListContent(
+    private static final RowMapper<MoovieListContent> MOOVIE_LIST_CONTENT_ROW_MAPPER = (rs, rowNum) -> new MoovieListContent(
             rs.getInt("mediaId"),
             rs.getBoolean("type"),
             rs.getString("name"),
@@ -65,7 +65,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
             rs.getInt("totalRating"),
             rs.getInt("voteCount"),
             rs.getString("status"),
-            false   //TODO IMPLEMENT THE WATCHED
+            rs.getBoolean("isWatched")
     );
 
     private static final RowMapper<Integer> COUNT_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("count"));
@@ -142,6 +142,10 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         sql.append(" WHERE mlc.moovielistid = ? ");
         args.add(moovieListId);
 
+        //Add the part of the query that checks if its watched by its owner
+        sql.append(" (SELECT true FROM moovielists ml INNER JOIN moovieListsContent mlc2 ON ml.moovielistid = mlc2.moovielistid ");
+        sql.append(" WHERE m.mediaId = mlc2.mediaId AND ml.name = 'Watched' ) AS isWatched ");
+
         if(orderBy!=null && orderBy.length() !=0 ){
             sql.append(" ORDER BY ? ");
             args.add(orderBy);
@@ -153,7 +157,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         args.add(pageNumber*size);
 
         // Execute the query
-        return jdbcTemplate.query(sql.toString(), args.toArray(), MOOVIE_LIST_ITEM_ROW_MAPPER);
+        return jdbcTemplate.query(sql.toString(), args.toArray(), MOOVIE_LIST_CONTENT_ROW_MAPPER);
     }
 
 
