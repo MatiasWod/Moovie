@@ -1,13 +1,11 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.exceptions.FailedToInsertToListException;
 import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
 import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
-import ar.edu.itba.paw.exceptions.UnableToFindUserException;
+import ar.edu.itba.paw.exceptions.UserNotLoggedException;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
-import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.MoovieListDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class MoovieListServiceImpl implements MoovieListService{
@@ -32,9 +29,13 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public MoovieList getMoovieListById(int moovieListId) { //Check permissions
         MoovieList ml = moovieListDao.getMoovieListById(moovieListId).orElseThrow( () -> new MoovieListNotFoundException("Moovie list by id: " + moovieListId + " not found"));
-        User currentUser = userService.getInfoOfMyUser();
-        if( ml.getType() == MOOVIE_LIST_TYPE_STANDARD_PRIVATE || ml.getType() == MOOVIE_LIST_TYPE_STANDARD_PRIVATE ){
-            if(ml.getUserId() != currentUser.getUserId()){
+        if( ml.getType() == MOOVIE_LIST_TYPE_STANDARD_PRIVATE || ml.getType() == MOOVIE_LIST_TYPE_DEFAULT_PRIVATE ){
+            try{
+                User currentUser = userService.getInfoOfMyUser();
+                if(ml.getUserId() != currentUser.getUserId()){
+                    throw new InvalidAccessToResourceException("User is not owner of the list and its private");
+                }
+            } catch (UserNotLoggedException e){
                 throw new InvalidAccessToResourceException("User is not owner of the list and its private");
             }
         }
@@ -44,9 +45,13 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public MoovieListCard getMoovieListCardById(int moovieListId) {
         MoovieListCard mlc = moovieListDao.getMoovieListCardById(moovieListId).orElseThrow( () -> new MoovieListNotFoundException("Moovie list by id: " + moovieListId + " not found"));
-        User currentUser = userService.getInfoOfMyUser();
-        if( mlc.getType() == MOOVIE_LIST_TYPE_STANDARD_PRIVATE || mlc.getType() == MOOVIE_LIST_TYPE_STANDARD_PRIVATE ){
-            if(!mlc.getUsername().equals(currentUser.getUsername()) ){
+        if( mlc.getType() == MOOVIE_LIST_TYPE_STANDARD_PRIVATE || mlc.getType() == MOOVIE_LIST_TYPE_DEFAULT_PRIVATE ){
+            try {
+                User currentUser = userService.getInfoOfMyUser();
+                if(!mlc.getUsername().equals(currentUser.getUsername()) ){
+                    throw new InvalidAccessToResourceException("User is not owner of the list and its private");
+                }
+            }catch (UserNotLoggedException e){
                 throw new InvalidAccessToResourceException("User is not owner of the list and its private");
             }
         }
@@ -58,13 +63,18 @@ public class MoovieListServiceImpl implements MoovieListService{
         MoovieList ml = getMoovieListById(moovieListId);
         //If the previous didnt throw exception, we have the permissions needed to perform the next action
         List<MoovieListContent> mlc = moovieListDao.getMoovieListContent(moovieListId, orderBy, size, pageNumber);
-
-        if(ml.getUserId() != userService.getInfoOfMyUser().getUserId() ){
-            //The atribute isWatched is set by defualt to false if the owner isnt the one who made the query
+        try{
+            if(ml.getUserId() != userService.getInfoOfMyUser().getUserId() ){
+                for(MoovieListContent m : mlc){
+                    m.setWatched(false);
+                }
+            }
+        }catch (UserNotLoggedException e){
             for(MoovieListContent m : mlc){
                 m.setWatched(false);
             }
         }
+
         
         return mlc;
     }
@@ -140,6 +150,11 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Override
     public boolean likeMoovieListStatusForUser(int moovieListId) {
-        return moovieListDao.likeMoovieListStatusForUser(userService.getInfoOfMyUser().getUserId(), moovieListId);
+        try {
+            User currentUser = userService.getInfoOfMyUser();
+            return moovieListDao.likeMoovieListStatusForUser(currentUser.getUserId(), moovieListId);
+        }catch (UserNotLoggedException e){
+            return false;
+        }
     }
 }

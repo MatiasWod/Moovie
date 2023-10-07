@@ -1,37 +1,24 @@
 package ar.edu.itba.paw.webapp.controller;
 
 
-import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
-import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
-import ar.edu.itba.paw.exceptions.UnableToFindUserException;
-import ar.edu.itba.paw.models.Media.Media;
-import ar.edu.itba.paw.models.Media.Movie;
-import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
-import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
-import ar.edu.itba.paw.models.MoovieList.extendedMoovieList;
-import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.GenreService;
 import ar.edu.itba.paw.services.MediaService;
 import ar.edu.itba.paw.services.MoovieListService;
-import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.form.CreateListForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.util.*;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Controller
 public class ListController {
@@ -123,24 +110,6 @@ public class ListController {
         mav.addObject("isLiked",moovieListService.likeMoovieListStatusForUser(moovieListId));
         mav.addObject("likedCount",moovieListCard.getLikeCount());
         mav.addObject("listOwner",moovieListCard.getUsername());
-        /*try{
-            ModelAndView mav = new ModelAndView("helloworld/moovieList");
-            MoovieListCard moovieListCard = moovieListService.getMoovieListCardById(moovieListId);
-            List<MoovieListContent> moovieListContent = moovieListService.getMoovieListContent(moovieListId, null, moovieListService.DEFAULT_PAGE_SIZE_CONTENT, 0);
-
-
-            moovieListCard.getSize();
-
-            return mav;
-        }catch (MoovieListNotFoundException e){
-            final ModelAndView mav = new ModelAndView("helloworld/404.jsp");
-            mav.addObject("extraInfo", e.getMessage());
-            return mav;
-        }catch(InvalidAccessToResourceException e){
-            final ModelAndView mav = new ModelAndView("helloworld/404.jsp");
-            mav.addObject("extraInfo", e.getMessage());
-            return mav;
-        }*/
         return mav;
     }
 

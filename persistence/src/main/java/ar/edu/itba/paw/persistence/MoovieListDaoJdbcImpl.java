@@ -1,10 +1,10 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
-import ar.edu.itba.paw.models.Media.Media;
-import ar.edu.itba.paw.models.MoovieList.*;
-import ar.edu.itba.paw.models.User.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import ar.edu.itba.paw.models.MoovieList.MoovieList;
+import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
+import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
+import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 import java.util.*;
 
 @Repository
@@ -136,22 +135,21 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     @Override
     public List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy, int size, int pageNumber){
-        StringBuilder sql = new StringBuilder("SELECT * FROM moovieListsContent mlc INNER JOIN media m ON mlc.mediaId = m.mediaId ");
+        StringBuilder sql = new StringBuilder("SELECT *,  ");
         ArrayList<Object> args = new ArrayList<>();
+
+        //Add the part of the query that checks if its watched by its owner
+        sql.append(" (CASE WHEN EXISTS ( SELECT 1 FROM moovielists ml INNER JOIN moovieListsContent mlc2 ON ml.moovielistid = mlc2.moovielistid ");
+        sql.append(" WHERE m.mediaId = mlc2.mediaId AND ml.name = 'Watched' ) THEN true ELSE false END) AS isWatched FROM moovieListsContent mlc ");
+        sql.append(" INNER JOIN media m ON mlc.mediaId = m.mediaId ");
 
         sql.append(" WHERE mlc.moovielistid = ? ");
         args.add(moovieListId);
-
-        //Add the part of the query that checks if its watched by its owner
-        sql.append(" (SELECT true FROM moovielists ml INNER JOIN moovieListsContent mlc2 ON ml.moovielistid = mlc2.moovielistid ");
-        sql.append(" WHERE m.mediaId = mlc2.mediaId AND ml.name = 'Watched' ) AS isWatched ");
 
         if(orderBy!=null && orderBy.length() !=0 ){
             sql.append(" ORDER BY ? ");
             args.add(orderBy);
         }
-
-
         sql.append(" LIMIT ? OFFSET ? ;");
         args.add(size);
         args.add(pageNumber*size);
