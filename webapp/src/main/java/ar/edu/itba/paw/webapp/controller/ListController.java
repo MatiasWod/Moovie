@@ -86,6 +86,17 @@ public class ListController {
 
     @RequestMapping("/list/{id:\\d+}")
     public ModelAndView list(@PathVariable("id") final int moovieListId, @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
+        final ModelAndView mav = new ModelAndView("helloworld/moovieList");
+        mav.addObject("moovieList",moovieListService.getMoovieListById(moovieListId));
+        mav.addObject("mediaList",moovieListService.getMoovieListContent(moovieListId,"name",MoovieListService.DEFAULT_PAGE_SIZE_CONTENT,pageNumber - 1));
+        final MoovieListCard moovieListCard = moovieListService.getMoovieListCardById(moovieListId);
+        int mediaCountForMoovieList = moovieListCard.getSize();
+        int numberOfPages = (int) Math.ceil(mediaCountForMoovieList * 1.0 / moovieListService.DEFAULT_PAGE_SIZE_CONTENT);
+        mav.addObject("numberOfPages",numberOfPages);
+        mav.addObject("currentPage",pageNumber - 1);
+        mav.addObject("isLiked",moovieListService.likeMoovieListStatusForUser(moovieListId));
+        mav.addObject("likedCount",moovieListCard.getLikeCount());
+        mav.addObject("listOwner",moovieListCard.getUsername());
         /*try{
             ModelAndView mav = new ModelAndView("helloworld/moovieList");
             MoovieListCard moovieListCard = moovieListService.getMoovieListCardById(moovieListId);
@@ -104,7 +115,7 @@ public class ListController {
             mav.addObject("extraInfo", e.getMessage());
             return mav;
         }*/
-        return new ModelAndView();
+        return mav;
     }
 
     /*@RequestMapping(value = "/featuredList/topRated")

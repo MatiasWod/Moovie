@@ -87,11 +87,11 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     @Override
     public Optional<MoovieListCard> getMoovieListCardById(int moovieListId) {
-        StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(l.userid) AS likeCount ");
+        StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(l.userid) AS likeCount, ");
         ArrayList<Object> args = new ArrayList<>();
 
         sql.append(" ( SELECT ARRAY_AGG(posterPath) FROM ( SELECT m.posterPath FROM moovielistscontent mlc INNER JOIN media m ");
-        sql.append(" ON mlc.mediaId = media.mediaId WHERE mlc.moovielistId = ml.moovielistid LIMIT 4 ) AS subquery ) AS images, ");
+        sql.append(" ON mlc.mediaId = m.mediaId WHERE mlc.moovielistId = ml.moovielistid LIMIT 4 ) AS subquery ) AS images, ");
         sql.append(" (SELECT COUNT(*) FROM moovieListsContent mlc2 WHERE mlc2.moovieListId = ml.moovieListId) AS size ");
         sql.append(" FROM moovieLists ml LEFT JOIN users u ON ml.userid = u.userid LEFT JOIN moovieListsLikes l ON ml.moovielistid = l.moovielistid ");
         sql.append(" WHERE ml.moovieListId = ? GROUP BY ml.moovielistid, u.userid;");
@@ -106,8 +106,8 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(l.userid) AS likeCount, ");
         ArrayList<Object> args = new ArrayList<>();
 
-        sql.append(" ( SELECT ARRAY_AGG(posterPath) FROM ( SELECT posterPath FROM moovielistscontent mlc INNER JOIN media ");
-        sql.append(" ON mlc.mediaId = media.mediaid WHERE mlc.moovielistId = ml.moovielistid LIMIT 4 ) AS subquery ) AS images, ");
+        sql.append(" ( SELECT ARRAY_AGG(posterPath) FROM ( SELECT posterPath FROM moovielistscontent mlc INNER JOIN media m");
+        sql.append(" ON mlc.mediaId = m.mediaid WHERE mlc.moovielistId = ml.moovielistid LIMIT 4 ) AS subquery ) AS images, ");
         sql.append(" (SELECT COUNT(*) FROM moovieListsContent mlc2 WHERE mlc2.moovieListId = ml.moovieListId) AS size ");
         sql.append(" FROM moovieLists ml LEFT JOIN users u ON ml.userid = u.userid LEFT JOIN moovieListsLikes l ON ml.moovielistid = l.moovielistid ");
 
