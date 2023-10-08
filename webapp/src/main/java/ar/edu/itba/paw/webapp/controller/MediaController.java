@@ -90,10 +90,15 @@ public class MediaController {
     }
 
     @RequestMapping("/search")
-    public ModelAndView search(@RequestParam(value = "query", required = true) String query) {
+    public ModelAndView search(@RequestParam(value = "query", required = true) String query,
+                               @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
         final ModelAndView mav = new ModelAndView("helloworld/discover");
         mav.addObject("searchMode", true);
-        mav.addObject("mediaList", mediaService.getMedia(mediaService.TYPE_ALL, query, null, null, mediaService.DEFAULT_PAGE_SIZE, 0));
+        mav.addObject("mediaList", mediaService.getMedia(mediaService.TYPE_ALL, query, null, null, mediaService.DEFAULT_PAGE_SIZE, pageNumber - 1));
+        int mediaCount = mediaService.getTotalMediaCount(mediaService.TYPE_ALL,query,null).get().intValue();
+        int numberOfPages = (int) Math.ceil(mediaCount * 1.0 / mediaService.DEFAULT_PAGE_SIZE);
+        mav.addObject("numberOfPages",numberOfPages);
+        mav.addObject("currentPage",pageNumber - 1);
         return mav;
 
     }
