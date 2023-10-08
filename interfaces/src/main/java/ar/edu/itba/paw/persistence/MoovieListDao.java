@@ -20,6 +20,10 @@ public interface MoovieListDao {
     public static final int MOOVIE_LIST_TYPE_DEFAULT_PRIVATE = 4;   //Listas creadas automaticamente por ej: "Watchlist"
 
 
+    MoovieList getWatchedByUserId(int userId);
+
+    MoovieList getWatchlistByUserId(int userId);
+
     Optional<MoovieList> getMoovieListById(int moovieListId);
     Optional<MoovieListCard> getMoovieListCardById(int moovieListId);
     List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy, int size, int pageNumber);

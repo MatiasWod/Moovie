@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.*;
 
+import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.services.*;
@@ -90,9 +91,12 @@ public class HelloWorldController {
 
             mav.addObject("profile",requestedProfile);
             mav.addObject("isMe",userService.isUsernameMe(username));
+
             if (list != null){
                 switch (list) {
                     case "watched-list":
+                        mav.addObject("listDetails",moovieListService.getMoovieListDetails(8,null,MoovieListService.DEFAULT_PAGE_SIZE_CONTENT,0));
+
                         break;
                     case "watchlist":
 

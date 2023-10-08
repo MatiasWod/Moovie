@@ -19,14 +19,14 @@ document.getElementById('sortSelectWatchlist').addEventListener('change', functi
     sortTable(this.value,"movieTableWatchlist");
 });
 
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', () => {
     const radioButtons = document.querySelectorAll('[name="btnradio"]');
     const divs = document.querySelectorAll('#user-lists, #liked-lists, #reviews, #watched-list, #watchlist');
 
     console.log(divs)
 
     radioButtons.forEach(radio => {
-        radio.addEventListener('change', (event) => {
+        radio.addEventListener('change', () => {
             divs.forEach(div => {
                 console.log(div.id)
                 if (div.id === radio.id.replace('btnradio-', '')) {
@@ -43,10 +43,39 @@ document.addEventListener("DOMContentLoaded", function() {
     const profileImage = document.getElementById("profile-image-big");
     if (profileImage) {
         profileImage.onerror = function() {
-            profileImage.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
+            profileImage.src = "/resources/defaultProfile.jpg";
+        }
+    }
+    const profileImageAgain = document.getElementById("profile-image-");
+    if (profileImageAgain) {
+        profileImageAgain.onerror = function() {
+            profileImageAgain.src = "/resources/defaultProfile.jpg";
+        }
+    }
+    const profileImagePreview = document.getElementById("profile-image-preview");
+    if (profileImagePreview) {
+        profileImagePreview.onerror = function() {
+            profileImagePreview.src = "/resources/defaultProfile.jpg";
         }
     }
 });
+
+setTimeout(function() {
+    document.getElementById('errorAlert').style.display = 'none';
+}, 5000);
+
+function previewImage(input) {
+    let preview = document.getElementById('profile-image-preview');
+    let file = input.files[0];
+    let reader = new FileReader();
+    reader.onload = function() {
+        preview.src = reader.result;
+    }
+    if (file) {
+        reader.readAsDataURL(file);
+    }
+}
+
 
 // Get the error message from the alert div
 var errorAlert = document.getElementById("errorAlert");

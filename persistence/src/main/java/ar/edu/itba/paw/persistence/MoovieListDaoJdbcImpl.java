@@ -81,6 +81,16 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
 
     @Override
+    public MoovieList getWatchedByUserId(int userId) {
+        return null;
+    }
+
+    @Override
+    public MoovieList getWatchlistByUserId(int userId) {
+        return null;
+    }
+
+    @Override
     public Optional<MoovieList> getMoovieListById(int moovieListId) {
         return jdbcTemplate.query("SELECT * FROM moovieLists WHERE moovieListId = ?",new Object[]{moovieListId},MOOVIE_LIST_ROW_MAPPER).stream().findFirst();
     }
