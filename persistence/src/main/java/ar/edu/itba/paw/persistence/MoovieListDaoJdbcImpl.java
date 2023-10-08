@@ -144,6 +144,24 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     @Override
+    public Optional<Integer> getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber){
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM moovielists");
+        ArrayList<Object> args = new ArrayList<>();
+
+        sql.append(" WHERE type = ? ");
+        args.add(type);
+
+        if(search != null && search.length() > 0){
+            sql.append(" AND name ILIKE ? ");
+            args.add('%' + search + '%');
+        }
+
+        // Execute the query
+        return jdbcTemplate.query(sql.toString(), args.toArray(), COUNT_ROW_MAPPER).stream().findFirst();
+    }
+
+
+    @Override
     public List<MoovieListCard> getLikedMoovieListCards(int userId, int type, int size, int pageNumber) {
         StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(l.userId) AS likeCount, ");
         ArrayList<Object> args = new ArrayList<>();
@@ -166,8 +184,6 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
         return jdbcTemplate.query(sql.toString(), args.toArray(), MOOVIE_LIST_CARD_ROW_MAPPER);
     }
-
-
 
     @Override
     public List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy, int size, int pageNumber){

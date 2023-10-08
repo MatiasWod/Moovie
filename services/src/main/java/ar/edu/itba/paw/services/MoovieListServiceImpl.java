@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class MoovieListServiceImpl implements MoovieListService{
@@ -98,6 +99,11 @@ public class MoovieListServiceImpl implements MoovieListService{
             }
         }
         return moovieListDao.getMoovieListCards(search, ownerUsername, type, size, pageNumber);
+    }
+
+    @Override
+    public Optional<Integer> getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber){
+        return moovieListDao.getMoovieListCardsCount(search,ownerUsername,type,size,pageNumber);
     }
 
     @Override
