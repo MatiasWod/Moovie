@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.FailedToInsertToListException;
 import ar.edu.itba.paw.exceptions.MediaNotFoundException;
+import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.CreateReviewForm;
@@ -142,8 +143,14 @@ public class MediaController {
         if (errors.hasErrors()) {
             return details(form.getMediaId(), form,null);
         }
-        redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully created.");
-        reviewService.createReview(form.getMediaId(), form.getRating(), form.getReviewContent());
+        try{
+            reviewService.createReview(form.getMediaId(), form.getRating(), form.getReviewContent());
+            redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully created.");
+
+        } catch(UnableToInsertIntoDatabase e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Review wasn't created, user already has a review for this media.");
+        }
+
         return new ModelAndView("redirect:/details/" + form.getMediaId());
     }
 
