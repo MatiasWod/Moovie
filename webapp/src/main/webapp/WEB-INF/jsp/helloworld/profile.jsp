@@ -120,89 +120,373 @@
         </div>
 
         <c:if test="${param.list == 'watched-list'}">
-        WATCHED LIST
-            <div class="container" id="watched-list" style="margin-top: 30px">
+            <div class="container lists-container" id="watched-list" style="margin-top: 30px">
 
-
-                    <%--                ACA EL CODIGO PARA EL DETALLE DE UNA LISTA--%>
+                <div class="container d-flex flex-column">
+                    <div class="header">
+                        <h1 style="font-size: 60px; font-weight: bold;"><c:out value="${moovieList.name}"/></h1>
+                        <h3><c:out value="${moovieList.description}"/></h3>
+                    </div>
+                    <div style="display: flex; align-items: center;justify-content: center">
+                        <c:if test="${moviesCount > 0}">
+                            <h4>${moviesCount} Movies</h4>
+                        </c:if>
+                        <c:if test="${moviesCount > 0 && tvSeriesCount > 0}">
+                            <h4 style="margin-right: 5px;margin-left: 5px">and</h4>
+                        </c:if>
+                        <c:if test="${tvSeriesCount > 0}">
+                            <h4>${tvSeriesCount} Series</h4>
+                        </c:if>
+                    </div>
+                    <table class="table table-striped" id="movieTable">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Score</th>
+                            <th scope="col">Release Date</th>
+                        </tr>
+                        </thead>
+                        <c:choose>
+                            <c:when test="${not empty mediaList}">
+                                <tbody>
+                                <c:forEach var="index" items="${mediaList}" varStatus="loop">
+                                    <tr>
+                                        <!-- Index -->
+                                        <td style="text-align: center">${loop.index + 1}</td>
+                                        <!-- Title -->
+                                        <td>
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <a href="${pageContext.request.contextPath}/details/${mediaList[loop.index].mediaId}"
+                                                       style="text-decoration: none; color: inherit;">
+                                                        <img src="${mediaList[loop.index].posterPath}" class="img-fluid" width="100"
+                                                             height="100" alt="${mediaList[loop.index].name} poster"/>
+                                                    </a>
+                                                </div>
+                                                <div class="col">
+                                                    <a href="${pageContext.request.contextPath}/details/${mediaList[loop.index].mediaId}"
+                                                       style="text-decoration: none; color: inherit;">
+                                                        <strong>${mediaList[loop.index].name}</strong>
+                                                    </a>
+                                                </div>
+                                                <c:if test="${watchedMovies.contains(mediaList[loop.index].mediaId)}">
+                                                    <div class="col-auto">
+                                                        <i class="bi bi-check-circle-fill" style="color: green"></i>
+                                                    </div>
+                                                </c:if>
+                                            </div>
+                                        </td>
+                                        <!-- Type -->
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${mediaList[loop.index].type}">
+                                                    Tv Series
+                                                </c:when>
+                                                <c:otherwise>
+                                                    Movie
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <!-- Score -->
+                                        <td>${mediaList[loop.index].tmdbRating}<i class="bi bi-star-fill" style="margin-left: 5px"></i>
+                                        </td>
+                                        <td>
+                                            <span>${mediaList[loop.index].releaseDate}</span>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                                </tbody>
+                            </c:when>
+                            <c:otherwise>
+                                <tbody>
+                                <tr>
+                                    <td colspan="5">List is empty</td>
+                                </tr>
+                                </tbody>
+                            </c:otherwise>
+                        </c:choose>
+                    </table>
+                    <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+                        <c:param name="mediaPages" value="${numberOfPages}"/>
+                        <c:param name="currentPage" value="${currentPage + 1}"/>
+                        <c:param name="url" value="/list/${moovieList.moovieListId}/"/>
+                    </c:import>
+                </div>
 
             </div>
         </c:if>
 
         <c:if test="${param.list == 'watchlist'}">
-        WATCHLIST
-            <div class="container" id="watchlist" style="margin-top: 30px">
+            <div class="container lists-container" id="watchlist" style="margin-top: 30px">
+
+                <div class="container d-flex flex-column">
+                    <div class="header">
+                        <h1 style="font-size: 60px; font-weight: bold;"><c:out value="${moovieList.name}"/></h1>
+                        <h3><c:out value="${moovieList.description}"/></h3>
+                    </div>
+                    <div style="display: flex; align-items: center;justify-content: center">
+                        <c:if test="${moviesCount > 0}">
+                            <h4>${moviesCount} Movies</h4>
+                        </c:if>
+                        <c:if test="${moviesCount > 0 && tvSeriesCount > 0}">
+                            <h4 style="margin-right: 5px;margin-left: 5px">and</h4>
+                        </c:if>
+                        <c:if test="${tvSeriesCount > 0}">
+                            <h4>${tvSeriesCount} Series</h4>
+                        </c:if>
+                    </div>
+                    <table class="table table-striped" id="movieTable">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Score</th>
+                            <th scope="col">Release Date</th>
+                        </tr>
+                        </thead>
+                        <c:choose>
+                            <c:when test="${not empty mediaList}">
+                                <tbody>
+                                <c:forEach var="index" items="${mediaList}" varStatus="loop">
+                                    <tr>
+                                        <!-- Index -->
+                                        <td style="text-align: center">${loop.index + 1}</td>
+                                        <!-- Title -->
+                                        <td>
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <a href="${pageContext.request.contextPath}/details/${mediaList[loop.index].mediaId}"
+                                                       style="text-decoration: none; color: inherit;">
+                                                        <img src="${mediaList[loop.index].posterPath}" class="img-fluid" width="100"
+                                                             height="100" alt="${mediaList[loop.index].name} poster"/>
+                                                    </a>
+                                                </div>
+                                                <div class="col">
+                                                    <a href="${pageContext.request.contextPath}/details/${mediaList[loop.index].mediaId}"
+                                                       style="text-decoration: none; color: inherit;">
+                                                        <strong>${mediaList[loop.index].name}</strong>
+                                                    </a>
+                                                </div>
+                                                <c:if test="${watchedMovies.contains(mediaList[loop.index].mediaId)}">
+                                                    <div class="col-auto">
+                                                        <i class="bi bi-check-circle-fill" style="color: green"></i>
+                                                    </div>
+                                                </c:if>
+                                            </div>
+                                        </td>
+                                        <!-- Type -->
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${mediaList[loop.index].type}">
+                                                    Tv Series
+                                                </c:when>
+                                                <c:otherwise>
+                                                    Movie
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <!-- Score -->
+                                        <td>${mediaList[loop.index].tmdbRating}<i class="bi bi-star-fill" style="margin-left: 5px"></i>
+                                        </td>
+                                        <td>
+                                            <span>${mediaList[loop.index].releaseDate}</span>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                                </tbody>
+                            </c:when>
+                            <c:otherwise>
+                                <tbody>
+                                <tr>
+                                    <td colspan="5">List is empty</td>
+                                </tr>
+                                </tbody>
+                            </c:otherwise>
+                        </c:choose>
+                    </table>
+                    <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+                        <c:param name="mediaPages" value="${numberOfPages}"/>
+                        <c:param name="currentPage" value="${currentPage + 1}"/>
+                        <c:param name="url" value="/list/${moovieList.moovieListId}/"/>
+                    </c:import>
+                </div>
 
             </div>
         </c:if>
 
         <c:if test="${param.list == 'liked-lists'}">
-            LIKED LISTS
-            <%--                ACA EL CODIGO PARA EL BROWSE DE LISTAS--%>
+            <div class="container lists-container" id="liked-lists" style="margin-top: 30px">
+                <c:if test="${showLists.size()==0}">
+                    <h3>No results were found</h3>
+                </c:if>
+                <c:forEach var="showList" items="${showLists}">
+                    <div class="list-card card"
+                         onclick="location.href='${pageContext.request.contextPath}/list/${showList.moovieListId}?page=1'">
+                        <div class="list-img-container card-img-top">
+                            <c:forEach var="image" items="${showList.images}">
+                                <img class="cropCenterImage" src="${image}" alt="...">
+                            </c:forEach>
+                            <c:forEach begin="${fn:length(showList.images)}" end="3">
+                                <img class="cropCenterImage"
+                                     src=${pageContext.request.contextPath}/resources/defaultPoster.png alt="...">
+                            </c:forEach>
+                        </div>
+                        <div class="card-body cardBodyFlex">
+                            <div>
+                                <div class="card-name-likes">
+                                    <div class="card-content overflow-hidden">
+                                        <h5 class="card-title"><strong><c:out value="${showList.name}"/></strong></h5>
+                                    </div>
+                                    <div class="card-likes">
+                                        <h5><i class="bi bi-hand-thumbs-up"></i>${showList.likeCount}</h5>
+                                    </div>
+                                </div>
+                                <div style="display: flex;">
+                                    <c:if test="${showList.moviesAmount > 0}">
+                                        <p>${showList.moviesAmount} Movies</p>
+                                    </c:if>
+
+                                    <c:if test="${showList.moviesAmount > 0 && (showList.size - showList.moviesAmount) > 0}">
+                                        <style>
+                                            p {
+                                                margin-right: 10px; /* Add a space between "Movies" and "Series" */
+                                            }
+                                        </style>
+                                    </c:if>
+                                    <c:if test="${(showList.size - showList.moviesAmount) > 0}">
+                                        <p>${(showList.size - showList.moviesAmount)} Series</p>
+                                    </c:if>
+                                </div>
+                                <p style="max-height: 4.5rem" class="card-text overflow-hidden text-muted">by <c:out
+                                        value="${showList.username}"/>
+                                </p>
+                                <p style="max-height: 3.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" class="card-text">
+                                    <c:out value="${showList.description}"/>
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </c:forEach>
+            </div>
         </c:if>
 
         <c:if test="${param.list == null || param.list == '' || param.list == 'user-lists'}">
-            USER LISTS
-            <%--                ACA EL CODIGO PARA EL BROWSE DE LISTAS--%>
+            <div class="container lists-container" id="user-lists" style="margin-top: 30px">
+                <c:if test="${showLists.size()==0}">
+                <h3>No results were found</h3>
+                </c:if>
+                <c:forEach var="showList" items="${showLists}">
+        <div class="list-card card"
+             onclick="location.href='${pageContext.request.contextPath}/list/${showList.moovieListId}?page=1'">
+            <div class="list-img-container card-img-top">
+                <c:forEach var="image" items="${showList.images}">
+                    <img class="cropCenterImage" src="${image}" alt="...">
+                </c:forEach>
+                <c:forEach begin="${fn:length(showList.images)}" end="3">
+                    <img class="cropCenterImage"
+                         src=${pageContext.request.contextPath}/resources/defaultPoster.png alt="...">
+                </c:forEach>
+            </div>
+            <div class="card-body cardBodyFlex">
+                <div>
+                    <div class="card-name-likes">
+                        <div class="card-content overflow-hidden">
+                            <h5 class="card-title"><strong><c:out value="${showList.name}"/></strong></h5>
+                        </div>
+                        <div class="card-likes">
+                            <h5><i class="bi bi-hand-thumbs-up"></i>${showList.likeCount}</h5>
+                        </div>
+                    </div>
+                    <div style="display: flex;">
+                        <c:if test="${showList.moviesAmount > 0}">
+                            <p>${showList.moviesAmount} Movies</p>
+                        </c:if>
+
+                        <c:if test="${showList.moviesAmount > 0 && (showList.size - showList.moviesAmount) > 0}">
+                            <style>
+                                p {
+                                    margin-right: 10px; /* Add a space between "Movies" and "Series" */
+                                }
+                            </style>
+                        </c:if>
+                        <c:if test="${(showList.size - showList.moviesAmount) > 0}">
+                            <p>${(showList.size - showList.moviesAmount)} Series</p>
+                        </c:if>
+                    </div>
+                    <p style="max-height: 4.5rem" class="card-text overflow-hidden text-muted">by <c:out
+                            value="${showList.username}"/>
+                    </p>
+                    <p style="max-height: 3.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" class="card-text">
+                        <c:out value="${showList.description}"/>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+        </c:forEach>
+            </div>
         </c:if>
 
         <c:if test="${param.list == 'reviews'}">
-            REVIEWS
-        <div id="reviews" class="container lists-container" style="margin-top: 30px">
-            <!-- Reviews -->
-            <h2>Reviews</h2>
-            <hr class="my-8">
-            <c:choose>
-                <c:when test="${fn:length(reviewsList)>0}">
-                    <div class="scrollableDiv">
-                        <c:forEach var="review" items="${reviewsList}">
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <div class="d-flex align-items-center">
-                                            <a href="${pageContext.request.contextPath}/details/${review.mediaId}"
-                                               style="text-decoration: none; color: inherit;">
-                                                <img src="${review.mediaPosterPath}"
-                                                     alt="" class="mr-3 review-profile-image rounded-circle"
-                                                     width="64" height="64">
-                                            </a>
-                                            <div class="mt-0" style="margin-left: 15px">
-                                                <a href="${pageContext.request.contextPath}/profile/${review.username}"
-                                                   style="text-decoration: none; color: inherit;">
-                                                    <h5><c:out value="${review.mediaTitle}"/></h5>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <h5>
-                                                <i class="bi bi-star-fill ml-2"></i> ${review.rating}/5
-                                            </h5>
-                                            <sec:authorize access="hasRole('ROLE_MODERATOR')">
-                                                <div class="text-center" style="margin: 10px">
-                                                    <form action="${pageContext.request.contextPath}/deleteReview/${review.mediaId}" method="post">
-                                                        <input type="hidden" name="reviewId" value="${review.reviewId}"/>
-                                                        <button type="submit" class="btn btn-danger btn-sm">Delete Review</button>
-                                                    </form>
-                                                </div>
-                                            </sec:authorize>
-                                        </div>
 
+            <div id="reviews" class="container lists-container" style="margin-top: 30px">
+                <!-- Reviews -->
+                <hr class="my-8">
+                <c:choose>
+                    <c:when test="${fn:length(reviewsList)>0}">
+                        <div class="scrollableDiv">
+                            <c:forEach var="review" items="${reviewsList}">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center">
+                                                <a href="${pageContext.request.contextPath}/details/${review.mediaId}"
+                                                   style="text-decoration: none; color: inherit;">
+                                                    <img src="${review.mediaPosterPath}"
+                                                         alt="" class="mr-3 review-profile-image rounded-circle"
+                                                         width="64" height="64">
+                                                </a>
+                                                <div class="mt-0" style="margin-left: 15px">
+                                                    <a href="${pageContext.request.contextPath}/profile/${review.username}"
+                                                       style="text-decoration: none; color: inherit;">
+                                                        <h5><c:out value="${review.mediaTitle}"/></h5>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <h5>
+                                                    <i class="bi bi-star-fill ml-2"></i> ${review.rating}/5
+                                                </h5>
+                                                <sec:authorize access="hasRole('ROLE_MODERATOR')">
+                                                    <div class="text-center" style="margin: 10px">
+                                                        <form action="${pageContext.request.contextPath}/deleteReview/${review.mediaId}" method="post">
+                                                            <input type="hidden" name="reviewId" value="${review.reviewId}"/>
+                                                            <button type="submit" class="btn btn-danger btn-sm">Delete Review</button>
+                                                        </form>
+                                                    </div>
+                                                </sec:authorize>
+                                            </div>
+
+                                        </div>
+                                        <p>
+                                            <c:out value="${review.reviewContent}"/>
+                                        </p>
                                     </div>
-                                    <p>
-                                        <c:out value="${review.reviewContent}"/>
-                                    </p>
                                 </div>
-                            </div>
-                        </c:forEach>
-                    </div>
-                </c:when>
-                <c:otherwise>
-                    <div class="text-center">
-                        <h3>No reviews yet</h3>
-                    </div>
-                </c:otherwise>
-            </c:choose>
-        </div>
+                            </c:forEach>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="text-center">
+                            <h3>No reviews yet</h3>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
+            </div>
 
         </c:if>
 

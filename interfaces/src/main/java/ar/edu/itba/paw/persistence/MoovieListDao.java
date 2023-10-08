@@ -25,6 +25,8 @@ public interface MoovieListDao {
     List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy, int size, int pageNumber);
     List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , int size, int pageNumber);
 
+    List<MoovieListCard> getLikedMoovieListCards(int userId,int type, int size, int pageNumber);
+
     MoovieList createMoovieList(int userId, String name, int type, String description);
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
     void deleteMoovieList(int moovieListId);

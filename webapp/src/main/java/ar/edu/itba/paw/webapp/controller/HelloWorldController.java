@@ -35,6 +35,9 @@ public class HelloWorldController {
     @Autowired
     ReviewService reviewService;
 
+    @Autowired
+    MoovieListService moovieListService;
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
 
@@ -92,15 +95,20 @@ public class HelloWorldController {
                     case "watched-list":
                         break;
                     case "watchlist":
+
                         break;
-                    case "liked-list":
+                    case "liked-lists":
+                        mav.addObject("showLists",moovieListService.getLikedMoovieListCards(requestedProfile.getUserId(),moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC,MoovieListService.DEFAULT_PAGE_SIZE_CARDS,0));
                         break;
                     case "reviews":
                         mav.addObject("reviewsList",reviewService.getMovieReviewsFromUser(requestedProfile.getUserId()));
                         break;
                     default: // este es el caso para user-lists. como es el default al entrar al profile
+                        mav.addObject("showLists", moovieListService.getMoovieListCards(null, requestedProfile.getUsername(),moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC, moovieListService.DEFAULT_PAGE_SIZE_CARDS,0));
                         break;
                 }
+            }else{
+                mav.addObject("showLists", moovieListService.getMoovieListCards(null, requestedProfile.getUsername(),moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC, moovieListService.DEFAULT_PAGE_SIZE_CARDS,0));
             }
 
             return mav;

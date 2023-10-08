@@ -90,6 +90,11 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
     @Override
+    public List<MoovieListCard> getLikedMoovieListCards(int userId,int type, int size, int pageNumber){
+        return moovieListDao.getLikedMoovieListCards(userId, type, size, pageNumber);
+    }
+
+    @Override
     public MoovieList createMoovieList(String name, int type, String description) {
         return moovieListDao.createMoovieList(userService.getInfoOfMyUser().getUserId(), name, type, description);
     }
