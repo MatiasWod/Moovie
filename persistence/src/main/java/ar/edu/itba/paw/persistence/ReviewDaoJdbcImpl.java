@@ -50,13 +50,23 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
     }
 
 
+//    @Override
+//    public List<Review> getMovieReviewsFromUser(int userId) {
+//        String sql = "SELECT reviews.* FROM reviews " +
+//                "JOIN media ON reviews.mediaId = media.mediaId " +
+//                "WHERE reviews.userId = ?";
+//        return jdbcTemplate.query(sql, new Object[]{userId}, REVIEW_ROW_MAPPER);
+//    }
+//      FALTABAN LOS JOINS CON LAS OTRAS TABLAS, SE PODRIA HACER MEJOR? LIT COPIE LA OTRAS QUERIES
     @Override
     public List<Review> getMovieReviewsFromUser(int userId) {
-        String sql = "SELECT reviews.* FROM reviews " +
-                "JOIN media ON reviews.mediaId = media.mediaId " +
+        String sql = "SELECT * FROM reviews " +
+                "INNER JOIN users ON users.userId = reviews.userId " +
+                "INNER JOIN media ON media.mediaId = reviews.mediaId " +
                 "WHERE reviews.userId = ?";
         return jdbcTemplate.query(sql, new Object[]{userId}, REVIEW_ROW_MAPPER);
     }
+
 
 
     @Override

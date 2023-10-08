@@ -32,6 +32,9 @@ public class HelloWorldController {
     @Autowired
     VerificationTokenService verificationTokenService;
 
+    @Autowired
+    ReviewService reviewService;
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
 
@@ -93,6 +96,7 @@ public class HelloWorldController {
                     case "liked-list":
                         break;
                     case "reviews":
+                        mav.addObject("reviewsList",reviewService.getMovieReviewsFromUser(requestedProfile.getUserId()));
                         break;
                     default: // este es el caso para user-lists. como es el default al entrar al profile
                         break;

@@ -99,20 +99,20 @@
                 <input type="hidden" name="list" id="listField">
             </form>
                 <c:if test="${isMe}">
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio-watched-list" autocomplete="off">
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio-watched-list" autocomplete="off" ${(param.list != null && param.list == 'watched-list')? 'checked':''}>
                     <label class="btn btn-outline-success" for="btnradio-watched-list">Watched</label>
                 </c:if>
 
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio-user-lists" autocomplete="off" checked>
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio-user-lists" autocomplete="off" ${(param.list == null || param.list == '' || param.list == 'user-lists')? 'checked':''}>
                 <label class="btn btn-outline-success" for="btnradio-user-lists">User Lists</label>
 
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio-liked-lists" autocomplete="off">
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio-liked-lists" autocomplete="off" ${(param.list != null && param.list == 'liked-lists')? 'checked':''}>
                 <label class="btn btn-outline-success" for="btnradio-liked-lists">Liked Lists</label>
 
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio-reviews" autocomplete="off">
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio-reviews" autocomplete="off" ${(param.list != null && param.list == 'reviews')? 'checked':''}>
                 <label class="btn btn-outline-success" for="btnradio-reviews">Reviews</label>
                 <c:if test="${isMe}">
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio-watchlist" autocomplete="off">
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio-watchlist" autocomplete="off" ${(param.list != null && param.list == 'watchlist')? 'checked':''}>
                     <label class="btn btn-outline-success" for="btnradio-watchlist">Watchlist</label>
                 </c:if>
 
@@ -121,7 +121,7 @@
 
         <c:if test="${param.list == 'watched-list'}">
         WATCHED LIST
-            <div class="container" id="watched-list" style="display:none; margin-top: 30px">
+            <div class="container" id="watched-list" style="margin-top: 30px">
 
 
                     <%--                ACA EL CODIGO PARA EL DETALLE DE UNA LISTA--%>
@@ -131,7 +131,7 @@
 
         <c:if test="${param.list == 'watchlist'}">
         WATCHLIST
-            <div class="container" id="watchlist" style="display:none; margin-top: 30px">
+            <div class="container" id="watchlist" style="margin-top: 30px">
 
             </div>
         </c:if>
@@ -141,39 +141,52 @@
             <%--                ACA EL CODIGO PARA EL BROWSE DE LISTAS--%>
         </c:if>
 
-        <c:if test="${param.list == null || param.list == ''}">
+        <c:if test="${param.list == null || param.list == '' || param.list == 'user-lists'}">
             USER LISTS
             <%--                ACA EL CODIGO PARA EL BROWSE DE LISTAS--%>
         </c:if>
 
         <c:if test="${param.list == 'reviews'}">
             REVIEWS
-        <div id="reviews" class="container lists-container" style="display:none; margin-top: 30px">
+        <div id="reviews" class="container lists-container" style="margin-top: 30px">
+            <!-- Reviews -->
             <h2>Reviews</h2>
             <hr class="my-8">
             <c:choose>
-                <c:when test="${fn:length(notEmptyContentReviewList)>0}">
+                <c:when test="${fn:length(reviewsList)>0}">
                     <div class="scrollableDiv">
-                        <c:forEach var="review" items="${notEmptyContentReviewList}">
+                        <c:forEach var="review" items="${reviewsList}">
                             <div class="card mb-3">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <div class="d-flex align-items-center">
-                                            <a href="${pageContext.request.contextPath}/details/${review.mediaId}" style="text-decoration: none; color: inherit;">
+                                            <a href="${pageContext.request.contextPath}/details/${review.mediaId}"
+                                               style="text-decoration: none; color: inherit;">
                                                 <img src="${review.mediaPosterPath}"
-                                                     alt="${review.userId} Reviewer Profile" class="mr-3 rounded-circle"
+                                                     alt="" class="mr-3 review-profile-image rounded-circle"
                                                      width="64" height="64">
                                             </a>
                                             <div class="mt-0" style="margin-left: 15px">
-                                                <a href="${pageContext.request.contextPath}/details/${review.mediaId}"
+                                                <a href="${pageContext.request.contextPath}/profile/${review.username}"
                                                    style="text-decoration: none; color: inherit;">
                                                     <h5><c:out value="${review.mediaTitle}"/></h5>
                                                 </a>
                                             </div>
                                         </div>
-                                        <h5 class="align-items-left"><i
-                                                class="bi bi-star-fill ml-2"></i> ${review.rating}/5
-                                        </h5>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <h5>
+                                                <i class="bi bi-star-fill ml-2"></i> ${review.rating}/5
+                                            </h5>
+                                            <sec:authorize access="hasRole('ROLE_MODERATOR')">
+                                                <div class="text-center" style="margin: 10px">
+                                                    <form action="${pageContext.request.contextPath}/deleteReview/${review.mediaId}" method="post">
+                                                        <input type="hidden" name="reviewId" value="${review.reviewId}"/>
+                                                        <button type="submit" class="btn btn-danger btn-sm">Delete Review</button>
+                                                    </form>
+                                                </div>
+                                            </sec:authorize>
+                                        </div>
+
                                     </div>
                                     <p>
                                         <c:out value="${review.reviewContent}"/>

@@ -5,8 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     radios.forEach((radio) => {
         radio.addEventListener("change", function() {
-            const cleanedId = radio.id.replace("btnradio-", "");
-            listField.value = cleanedId;
+            listField.value = radio.id.replace("btnradio-", "");
             form.submit();
         });
     });
