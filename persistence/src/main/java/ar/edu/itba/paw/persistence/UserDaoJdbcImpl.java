@@ -100,7 +100,9 @@ public class UserDaoJdbcImpl implements UserDao{
         sql.append(" (SELECT COUNT(*) FROM moovieLists ml WHERE ml.userId = u.userId) AS moovieListCount, ");
         sql.append(" (SELECT COUNT(*) FROM moovieListsLikes l WHERE l.userId = u.userId) AS likedMoovieListCount, ");
         sql.append(" (SELECT COUNT(*) FROM reviews r WHERE r.userId = u.userId) AS reviewCount ");
-        sql.append(" FROM users u WHERE username = 'Pepe'; ");
+        sql.append(" FROM users u WHERE username = ?; ");
+        args.add(username);
+
 
         return jdbcTemplate.query(sql.toString(), args.toArray(), PROFILE_ROW_MAPPER).stream().findFirst();
     }

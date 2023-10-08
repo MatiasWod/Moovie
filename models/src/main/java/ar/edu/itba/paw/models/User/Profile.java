@@ -35,7 +35,7 @@ public class Profile {
         return role;
     }
 
-    public int getmoovieListCount() {
+    public int getMoovieListCount() {
         return moovieListCount;
     }
 
