@@ -76,7 +76,7 @@ public class HelloWorldController {
 
     @RequestMapping("/profile/{username:.+}")
     public ModelAndView profilePage(@PathVariable String username,
-                                    @RequestParam String list){
+                                    @RequestParam( value = "list", required = false) String list){
         try{
             Profile requestedProfile = userService.getProfileByUsername(username);
 
@@ -84,18 +84,19 @@ public class HelloWorldController {
 
             mav.addObject("profile",requestedProfile);
             mav.addObject("isMe",userService.isUsernameMe(username));
-
-            switch (list) {
-                case "watched-list":
-                    break;
-                case "watchlist":
-                    break;
-                case "liked-list":
-                    break;
-                case "reviews":
-                    break;
-                default: // este es el caso para user-lists
-                    break;
+            if (list != null){
+                switch (list) {
+                    case "watched-list":
+                        break;
+                    case "watchlist":
+                        break;
+                    case "liked-list":
+                        break;
+                    case "reviews":
+                        break;
+                    default: // este es el caso para user-lists. como es el default al entrar al profile
+                        break;
+                }
             }
 
             return mav;
