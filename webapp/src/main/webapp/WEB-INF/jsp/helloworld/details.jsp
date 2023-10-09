@@ -110,7 +110,7 @@
                 </div>
                 <div>
                     <c:forEach var="genre" items="${genresList}">
-                        <span class="badge text-bg-dark">${genre.genre}</span>
+                        <span class="badge text-bg-dark">${genre}</span>
                     </c:forEach>
                 </div>
             </div>
@@ -150,7 +150,7 @@
                     </c:if>
                 </c:when>
                 <c:otherwise>
-                    <c:if test="${creators!=null}">
+                    <c:if test="${creators.size()>0}">
                         <div class="d-flex flex-row align-items-center">
                             <div style="margin-right: 10px">
                                 <c:choose>

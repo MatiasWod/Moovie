@@ -155,6 +155,7 @@ public class MediaController {
         mav.addObject("actorsList", actorService.getAllActorsForMedia(mediaId));
         mav.addObject("reviewsList", reviewService.getReviewsByMediaId(mediaId));
         mav.addObject("providerList", providerService.getProviderForMedia(mediaId));
+        mav.addObject("genresList", genreService.getGenresForMedia(mediaId));
         return mav;
     }
 
