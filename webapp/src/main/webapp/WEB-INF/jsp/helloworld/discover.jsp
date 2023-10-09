@@ -115,13 +115,24 @@
                     </div>
                 </c:forEach>
             </div>
-            <div class="m-1">
-                <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
-                    <c:param name="mediaPages" value="${numberOfPages}"/>
-                    <c:param name="currentPage" value="${currentPage + 1}"/>
-                    <c:param name="url" value="/discover?media=${param.media}&g=${param.g}"/>
-                </c:import>
-            </div>
+            <c:if test="${searchMode == false}">
+                <div class="m-1">
+                    <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+                        <c:param name="mediaPages" value="${numberOfPages}"/>
+                        <c:param name="currentPage" value="${currentPage + 1}"/>
+                        <c:param name="url" value="/discover?query=${param.media}&g=${param.g}"/>
+                    </c:import>
+                </div>
+            </c:if>
+            <c:if test="${searchMode == true}">
+                <div class="m-1">
+                    <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+                        <c:param name="mediaPages" value="${numberOfPages}"/>
+                        <c:param name="currentPage" value="${currentPage + 1}"/>
+                        <c:param name="url" value="/search?query=${param.query}"/>
+                    </c:import>
+                </div>
+            </c:if>
         </div>
 <%--        PREVIEW      --%>
     <div id="preview" style="position: relative; display: none !important" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
