@@ -19,8 +19,8 @@ public class MediaServiceImpl implements MediaService{
     private MediaDao mediaDao;
 
     @Override
-    public List<Media> getMedia(int type, String search, List<String> genres, String actor, String director, String creator, String orderBy, int size, int pageNumber) {
-        return mediaDao.getMedia(type, search, genres, actor, director, creator, orderBy, size, pageNumber);
+    public List<Media> getMedia(int type, String search, List<String> genres, String orderBy, int size, int pageNumber) {
+        return mediaDao.getMedia(type, search, genres, orderBy, size, pageNumber);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class MediaServiceImpl implements MediaService{
     }
 
     @Override
-    public int getMediaCount(int type, String search, List<String> genres, String actor, String director, String creator) {
-        return mediaDao.getMediaCount(type,search,genres,actor,director,creator);
+    public int getMediaCount(int type, String search, List<String> genres) {
+        return mediaDao.getMediaCount(type,search,genres);
     }
 }
