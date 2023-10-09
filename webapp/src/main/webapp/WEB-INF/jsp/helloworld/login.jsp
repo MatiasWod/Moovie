@@ -16,6 +16,7 @@
 <c:url value="/login" var="loginUrl"/>
 <c:url value="/register" var="registerUrl"/>
 <c:url value="/" var="homeUrl"/>
+<c:import url="navBar.jsp"/>
 <div style="border:solid black;width: fit-content; min-height: 60%; padding: 5%; margin-top: 5%" class="container container-gray align-items-center justify-content-center d-flex flex-column">
     <form action="${loginUrl}" method="post" enctype="application/x-www-form-urlencoded">
         <h1>Login</h1>
