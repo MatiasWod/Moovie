@@ -14,7 +14,7 @@ public class GenreDaoJdbcImpl implements GenreDao{
     private final JdbcTemplate jdbcTemplate;
 
 
-    private static final RowMapper<String> ALL_GENRES_ROW_MAPPER = (rs, rowNum) -> new String(
+    private static final RowMapper<String> GENRE_STRING_ROW_MAPPER = (rs, rowNum) -> new String(
             rs.getString("genre")
     );
 
@@ -29,7 +29,12 @@ public class GenreDaoJdbcImpl implements GenreDao{
         public List<String> getAllGenres() {
         //revisar el findFirst, creo que siempre devuelve el primer género que encuentre que matchea con el tvId
 
-        return jdbcTemplate.query("SELECT DISTINCT genres.genre FROM genres ORDER BY genres.genre",ALL_GENRES_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT DISTINCT genres.genre FROM genres ORDER BY genres.genre",GENRE_STRING_ROW_MAPPER);
+    }
+
+    @Override
+    public List<String> getGenresForMedia(int mediaId){
+        return jdbcTemplate.query("SELECT g.genre FROM genres g INNER JOIN media m on m.mediaId = g.mediaId WHERE m.mediaid = ? ", new Object[]{mediaId}, GENRE_STRING_ROW_MAPPER);
     }
 
 
