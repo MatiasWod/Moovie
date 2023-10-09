@@ -277,11 +277,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     public boolean likeMoovieListStatusForUser(int userId, int moovieListId) {
         Optional<MoovieListLikes> mll = jdbcTemplate.query("SELECT * FROM moovieListsLikes WHERE moovieListId = ? AND userId = ?", new Object[]{moovieListId, userId} , MOOVIE_LIST_LIKES_ROW_MAPPER)
                 .stream().findFirst();
-        if(mll.isPresent()){
-            return true;
-        }
-        return false;
-
+        return mll.isPresent();
     }
 }
 

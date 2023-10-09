@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class MoovieListServiceImpl implements MoovieListService{
@@ -175,18 +174,19 @@ public class MoovieListServiceImpl implements MoovieListService{
         int userId = userService.getInfoOfMyUser().getUserId();
         if(likeMoovieListStatusForUser(moovieListId)){
             moovieListDao.removeLikeMoovieList(userId, moovieListId);
+        } else {
+            MoovieList mvlAux = getMoovieListById(moovieListId);
+
+            //Send mail
+            User aux = userService.findUserById(mvlAux.getUserId());
+            final Map<String, Object> mailMap = new HashMap<>();
+            mailMap.put("username", aux.getUsername());
+            mailMap.put("moovieListName", mvlAux.getName());
+            emailService.sendEmail(aux.getEmail(), "Someone liked your list: " + mvlAux.getName() + "!!!", "notificationLikeMoovieList.html", mailMap);
+
+
+            moovieListDao.likeMoovieList(userId, moovieListId);
         }
-        MoovieList mvlAux =  getMoovieListById(moovieListId);
-
-        //Send mail
-        User aux = userService.findUserById( mvlAux.getUserId());
-        final Map<String,Object> mailMap = new HashMap<>();
-        mailMap.put("username",aux.getUsername());
-        mailMap.put("moovieListName",mvlAux.getName());
-        emailService.sendEmail(aux.getEmail(), "Someone liked your list: " + mvlAux.getName() + "!!!" , "notificationLikeMoovieList.html", mailMap );
-
-
-        moovieListDao.likeMoovieList(userId, moovieListId);
     }
 
     @Override
