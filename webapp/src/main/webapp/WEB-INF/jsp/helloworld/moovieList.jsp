@@ -11,7 +11,8 @@
     <link href="${pageContext.request.contextPath}/resources/main.css?version=55" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <title>Moovie List</title>
-    <link href="${pageContext.request.contextPath}/resources/moovieList.css?version=62" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/moovieList.css?version=63" rel="stylesheet"/>
+
 </head>
 <body style="background: whitesmoke">
 <c:import url="navBar.jsp">
@@ -41,36 +42,43 @@
                     <c:choose>
                         <c:when test="${isLiked}">
                             <button type="submit" class="btn btn-style"><i
-                                    class="bi bi-hand-thumbs-up-fill"></i>${likeCount} Liked
+                                    class="bi bi-hand-thumbs-up-fill"></i>${likedCount} Liked
                             </button>
                         </c:when>
                         <c:otherwise>
-                            <button type="submit" class="btn btn-style"><i class="bi bi-hand-thumbs-up"></i>${likeCount}
+                            <button type="submit" class="btn btn-style"><i
+                                    class="bi bi-hand-thumbs-up"></i>${likedCount}
                                 Like
                             </button>
                         </c:otherwise>
                     </c:choose>
                 </form>
             </div>
-
-            <div style="display: flex; align-items: center;">
-                <h2 style="padding-right: 4px">Sort by</h2>
-                <select name="media" class="form-select filter-width" aria-label="Filter!" id="sortSelect">
-                    <option value="title">Title</option>
-                    <option value="type">Type</option>
-                    <option value="score">Score</option>
-                    <option value="release date">Release Date</option>
-                </select>
-                <button class="btn btn-style" id="sortButton" onclick="changeSortOrder('sortSelect','sortIcon','movieTable')"><i id="sortIcon" class="bi bi-arrow-down-circle-fill"></i></button>
-            </div>
+            <form id="sortForm" method="get">
+                <div style="display: flex; align-items: center;">
+                    <h2 style="padding-right: 4px">Sort by</h2>
+                    <select name="orderBy" class="form-select filter-width" aria-label="Filter!" id="sortSelect">
+                        <option ${'name' == param.orderBy ? 'selected' : ''} value="name">Title</option>
+                        <option ${'type' == param.orderBy ? 'selected' : ''} value="type">Type</option>
+                        <option ${'tmdbrating' == param.orderBy ? 'selected' : ''} value="tmdbrating">Score</option>
+                        <option ${'releasedate' == param.orderBy ? 'selected' : ''} value="releasedate">Release Date</option>
+                    </select>
+                    <input type="hidden" name="order" id="sortOrderInput" value="${param.order =='desc'? 'desc':'asc'}">
+                    <div style="margin: 0;" class="btn btn-style" id="sortButton" onclick="changeSortOrder('sortOrderInput', 'sortIcon', '${param.orderBy}')">
+                        <i id="sortIcon" class="bi bi-arrow-${param.order == 'desc' ? 'up' : 'down'}-circle-fill"></i>
+                    </div>
+                    <button type="submit" id="applyButton" class="btn btn-style2">Apply</button>
+                </div>
+            </form>
         </div>
     </div>
     <div>
         <h4>List progress</h4>
         <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: ${(watchedMovies.size()*100)/mediaList.size()}%;" id="progressBar"
-                 aria-valuenow="${(watchedMovies.size()*100)/mediaList.size()}" aria-valuemin="0" aria-valuemax="100">
-                ${(watchedMovies.size()*100)/mediaList.size()}%
+            <div class="progress-bar" role="progressbar" style="width: ${(watchedCount*100)/mediaList.size()}%;"
+                 id="progressBar"
+                 aria-valuenow="${(watchedCount*100)/mediaList.size()}" aria-valuemin="0" aria-valuemax="100">
+                ${(watchedCount*100)/mediaList.size()}%
             </div>
         </div>
     </div>
@@ -101,7 +109,7 @@
                 <c:forEach var="index" items="${mediaList}" varStatus="loop">
                     <tr>
                         <!-- Index -->
-                        <td style="text-align: center">${loop.index + 1}</td>
+                        <td style="text-align: center">${(loop.index + 1)+(currentPage*itemsPerPage)}</td>
                         <!-- Title -->
                         <td>
                             <div class="row align-items-center">
@@ -118,7 +126,7 @@
                                         <strong>${mediaList[loop.index].name}</strong>
                                     </a>
                                 </div>
-                                <c:if test="${watchedMovies.contains(mediaList[loop.index].mediaId)}">
+                                <c:if test="${mediaList[loop.index].watched}">
                                     <div class="col-auto">
                                         <i class="bi bi-check-circle-fill" style="color: green"></i>
                                     </div>
@@ -165,6 +173,6 @@
 </html>
 
 <script src="${pageContext.request.contextPath}/resources/moovieListFunctions.js?version=81"></script>
-<script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=85"></script>
+<script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=82"></script>
 
 

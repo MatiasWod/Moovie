@@ -71,10 +71,10 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
     @Override
-    public List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy, int size, int pageNumber) {
+    public List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy,String sortOrder, int size, int pageNumber) {
         MoovieList ml = getMoovieListById(moovieListId);
         //If the previous didnt throw exception, we have the permissions needed to perform the next action
-        List<MoovieListContent> mlc = moovieListDao.getMoovieListContent(moovieListId, orderBy, size, pageNumber);
+        List<MoovieListContent> mlc = moovieListDao.getMoovieListContent(moovieListId, orderBy,sortOrder ,size, pageNumber);
         try{
             if(ml.getUserId() != userService.getInfoOfMyUser().getUserId() ){
                 for(MoovieListContent m : mlc){
@@ -115,7 +115,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public MoovieListDetails getMoovieListDetails(int moovieListId, String orderBy, int size, int pageNumber) {
         MoovieListCard card = moovieListDao.getMoovieListCardById(moovieListId).get();
-        List<MoovieListContent> content = moovieListDao.getMoovieListContent(moovieListId,orderBy,size,pageNumber);
+        List<MoovieListContent> content = moovieListDao.getMoovieListContent(moovieListId,orderBy,"asc",size,pageNumber);
         return new MoovieListDetails(card,content);
     }
 
@@ -186,5 +186,18 @@ public class MoovieListServiceImpl implements MoovieListService{
         }catch (UserNotLoggedException e){
             return false;
         }
+    }
+
+    @Override
+    public int countWatchedMovies(List<MoovieListContent> mediaList) {
+        int watchedCount = 0;
+
+        for (MoovieListContent media : mediaList) {
+            if (media.isWatched()) {
+                watchedCount++;
+            }
+        }
+
+        return watchedCount;
     }
 }

@@ -186,7 +186,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     @Override
-    public List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy, int size, int pageNumber){
+    public List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy,String sortOrder ,int size, int pageNumber){
         StringBuilder sql = new StringBuilder("SELECT *,  ");
         ArrayList<Object> args = new ArrayList<>();
 
@@ -199,7 +199,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         args.add(moovieListId);
 
         if(orderBy!=null && !orderBy.isEmpty()){
-            sql.append(" ORDER BY ").append(orderBy);
+            sql.append(" ORDER BY ").append(orderBy).append(" ").append(sortOrder);
         }
         sql.append(" LIMIT ? OFFSET ? ;");
         args.add(size);

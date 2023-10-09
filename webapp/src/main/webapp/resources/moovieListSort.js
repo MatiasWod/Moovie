@@ -1,7 +1,5 @@
 var sortOrder = 'asc';
 
-
-
 function sortTable(sortBy,tableName) {
     var table, rows, switching, i, shouldSwitch;
     table = document.getElementById(tableName);
@@ -80,21 +78,21 @@ function getCellValue(cell) {
     }
 }
 
-function changeSortOrder(selectedId,sortIconId,tableName) {
-    sortOrder = (sortOrder === 'asc') ? 'desc' : 'asc';
-
-    // Get the currently selected column for sorting
-    var selectedColumn = document.getElementById(selectedId).value;
-
+function changeSortOrder(sortOrderInputId, sortIconId) {
     var sortIcon = document.getElementById(sortIconId);
-    if (sortOrder === 'asc') {
+    var sortOrderInput = document.getElementById(sortOrderInputId);
+
+    if (sortOrderInput.value === 'asc') {
         sortIcon.className = 'bi bi-arrow-up-circle-fill';
+        sortOrderInput.value = 'desc'; // Toggle sortOrder to 'desc' when changing to ascending
     } else {
         sortIcon.className = 'bi bi-arrow-down-circle-fill';
+        sortOrderInput.value = 'asc'; // Toggle sortOrder to 'asc' when changing to descending
     }
-    // Call the sortTable function with the selected column
-    sortTable(selectedColumn,tableName);
+
+
 }
+
 
 // Call the roundUpProgress function on page load
 window.onload = roundUpProgress;

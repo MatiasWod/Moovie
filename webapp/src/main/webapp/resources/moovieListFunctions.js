@@ -1,9 +1,3 @@
-var sortOrder = 'asc';
-
-document.getElementById('sortSelect').addEventListener('change', function () {
-    sortTable(this.value,"movieTable");
-});
-
 function liked() {
     let button = document.getElementById("likeButton");
     if (!button.classList.contains("liked")) {
