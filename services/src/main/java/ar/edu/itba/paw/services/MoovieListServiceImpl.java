@@ -113,9 +113,25 @@ public class MoovieListServiceImpl implements MoovieListService{
 
 //TODO: MANEJO DE EXCEPCIONES EN getMoovieListDetails por el Optional<>.get()
     @Override
-    public MoovieListDetails getMoovieListDetails(int moovieListId, String orderBy, int size, int pageNumber) {
+    public MoovieListDetails getMoovieListDetails(int moovieListId, String orderBy, String sortOrder, int size, int pageNumber) {
         MoovieListCard card = moovieListDao.getMoovieListCardById(moovieListId).get();
-        List<MoovieListContent> content = moovieListDao.getMoovieListContent(moovieListId,orderBy,"asc",size,pageNumber);
+        List<MoovieListContent> content = moovieListDao.getMoovieListContent(moovieListId,orderBy,sortOrder,size,pageNumber);
+        return new MoovieListDetails(card,content);
+    }
+
+    @Override
+    public MoovieListDetails getWatchlistDetails(String ownerUsername, String orderBy, String sortOrder, int size, int pageNumber) {
+//        SOLO existe una lista Watchlist DEFAULT_PRIVATE por user, es seguro asumir que el resultado es una lista con unicamente lo pedido
+        MoovieListCard card = moovieListDao.getMoovieListCards("Watchlist",ownerUsername, MoovieListDao.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE, DEFAULT_PAGE_SIZE_CARDS, 0 ).get(0);
+        List<MoovieListContent> content = moovieListDao.getMoovieListContent(card.getMoovieListId(),orderBy,sortOrder,size,pageNumber);
+        return new MoovieListDetails(card,content);
+    }
+
+    @Override
+    public MoovieListDetails getWatchedDetails(String ownerUsername, String orderBy, String sortOrder, int size, int pageNumber) {
+        //        SOLO existe una lista Watched DEFAULT_PRIVATE por user, es seguro asumir que el resultado es una lista con unicamente lo pedido
+        MoovieListCard card = moovieListDao.getMoovieListCards("Watched",ownerUsername, MoovieListDao.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE, DEFAULT_PAGE_SIZE_CARDS, 0 ).get(0);
+        List<MoovieListContent> content = moovieListDao.getMoovieListContent(card.getMoovieListId(),orderBy,sortOrder,size,pageNumber);
         return new MoovieListDetails(card,content);
     }
 

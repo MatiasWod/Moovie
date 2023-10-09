@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.exceptions.*;
 
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
+import ar.edu.itba.paw.models.MoovieList.MoovieListDetails;
 import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.services.*;
@@ -99,12 +100,14 @@ public class HelloWorldController {
             if (list != null){
                 switch (list) {
                     case "watched-list":
-                        mav.addObject("listDetails",moovieListService.getMoovieListCards("Watched",username,moovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE,MoovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE,pageNumber - 1));
-                        listCount = moovieListService.getMoovieListCardsCount("Watched",username,moovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE,MoovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE,pageNumber - 1);
+                        MoovieListDetails watchedDetails = moovieListService.getWatchedDetails(username,null, "asc",MoovieListService.DEFAULT_PAGE_SIZE_CONTENT,pageNumber-1);
+                        listCount = watchedDetails.getContent().size();
+                        mav.addObject("listDetails",watchedDetails);
                         break;
                     case "watchlist":
-                        mav.addObject("listDetails",moovieListService.getMoovieListCards("Watchlist",username,moovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE,MoovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE,pageNumber - 1));
-                        listCount = moovieListService.getMoovieListCardsCount("Watchlist",username,moovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE,MoovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE,pageNumber - 1);
+                        MoovieListDetails watchlistDetails = moovieListService.getWatchlistDetails(username,null, "asc",MoovieListService.DEFAULT_PAGE_SIZE_CONTENT,pageNumber-1);
+                        listCount = watchlistDetails.getContent().size();
+                        mav.addObject("listDetails",watchlistDetails);
                         break;
                     case "liked-lists":
                         mav.addObject("showLists",moovieListService.getLikedMoovieListCards(requestedProfile.getUserId(),moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC,MoovieListService.DEFAULT_PAGE_SIZE_CARDS,pageNumber - 1));
