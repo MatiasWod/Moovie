@@ -102,7 +102,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
     @Override
-    public Optional<Integer> getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber){
+    public int getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber){
         return moovieListDao.getMoovieListCardsCount(search,ownerUsername,type,size,pageNumber);
     }
 

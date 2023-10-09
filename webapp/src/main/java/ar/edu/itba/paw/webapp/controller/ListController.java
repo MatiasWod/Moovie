@@ -43,7 +43,7 @@ public class ListController {
                               @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
         final ModelAndView mav = new ModelAndView("helloworld/viewLists");
         mav.addObject("showLists", moovieListService.getMoovieListCards(search, null, moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC, moovieListService.DEFAULT_PAGE_SIZE_CARDS, pageNumber - 1));
-        int listCount = moovieListService.getMoovieListCardsCount(search,null,moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC,moovieListService.DEFAULT_PAGE_SIZE_CARDS, pageNumber - 1).get().intValue();
+        int listCount = moovieListService.getMoovieListCardsCount(search,null,moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC,moovieListService.DEFAULT_PAGE_SIZE_CARDS, pageNumber - 1);
         int numberOfPages = (int) Math.ceil(listCount * 1.0 / moovieListService.DEFAULT_PAGE_SIZE_CONTENT);
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
@@ -83,15 +83,15 @@ public class ListController {
         mav.addObject("searchMode",false);
         if (media.equals("Movies and Series")){
             mav.addObject("mediaList",mediaService.getMedia(mediaService.TYPE_ALL,null,genres,null, mediaService.DEFAULT_PAGE_SIZE,pageNumber - 1));
-            mediaCount = mediaService.getTotalMediaCount(mediaService.TYPE_ALL,null,genres).get().intValue();
+            mediaCount = mediaService.getTotalMediaCount(mediaService.TYPE_ALL,null,genres);
         }
         else if (media.equals("Movies")){
             mav.addObject("mediaList",mediaService.getMedia(mediaService.TYPE_MOVIE,null,genres,null, mediaService.DEFAULT_PAGE_SIZE,pageNumber - 1));
-            mediaCount = mediaService.getTotalMediaCount(mediaService.TYPE_MOVIE,null,genres).get().intValue();
+            mediaCount = mediaService.getTotalMediaCount(mediaService.TYPE_MOVIE,null,genres);
         }
         else{
             mav.addObject("mediaList",mediaService.getMedia(mediaService.TYPE_TVSERIE,null,genres,null, mediaService.DEFAULT_PAGE_SIZE,pageNumber - 1));
-            mediaCount = mediaService.getTotalMediaCount(mediaService.TYPE_TVSERIE,null,genres).get().intValue();
+            mediaCount = mediaService.getTotalMediaCount(mediaService.TYPE_TVSERIE,null,genres);
         }
         numberOfPages = (int) Math.ceil(mediaCount * 1.0 / mediaService.DEFAULT_PAGE_SIZE);
         mav.addObject("numberOfPages",numberOfPages);
@@ -162,7 +162,4 @@ public class ListController {
         moovieListService.likeMoovieList(listId);
         return new ModelAndView("redirect:/list/" + listId);
     }
-
-
-
 }

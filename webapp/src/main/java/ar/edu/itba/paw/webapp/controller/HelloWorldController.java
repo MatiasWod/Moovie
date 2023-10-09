@@ -83,11 +83,15 @@ public class HelloWorldController {
 
     @RequestMapping("/profile/{username:.+}")
     public ModelAndView profilePage(@PathVariable String username,
-                                    @RequestParam( value = "list", required = false) String list){
+                                    @RequestParam( value = "list", required = false) String list,
+                                    @RequestParam(value = "page",defaultValue = "1") final int pageNumber){
         try{
             Profile requestedProfile = userService.getProfileByUsername(username);
 
             ModelAndView mav = new ModelAndView("helloworld/profile");
+
+            int listCount = 0;
+            int numberOfPages;
 
             mav.addObject("profile",requestedProfile);
             mav.addObject("isMe",userService.isUsernameMe(username));
@@ -95,25 +99,33 @@ public class HelloWorldController {
             if (list != null){
                 switch (list) {
                     case "watched-list":
-                        mav.addObject("listDetails",moovieListService.getMoovieListDetails(8,null,MoovieListService.DEFAULT_PAGE_SIZE_CONTENT,0));
-
+                        mav.addObject("listDetails",moovieListService.getMoovieListCards("Watched",username,moovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE,MoovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE,pageNumber - 1));
+                        listCount = moovieListService.getMoovieListCardsCount("Watched",username,moovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE,MoovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE,pageNumber - 1);
                         break;
                     case "watchlist":
-
+                        mav.addObject("listDetails",moovieListService.getMoovieListCards("Watchlist",username,moovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE,MoovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE,pageNumber - 1));
+                        listCount = moovieListService.getMoovieListCardsCount("Watchlist",username,moovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE,MoovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE,pageNumber - 1);
                         break;
                     case "liked-lists":
-                        mav.addObject("showLists",moovieListService.getLikedMoovieListCards(requestedProfile.getUserId(),moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC,MoovieListService.DEFAULT_PAGE_SIZE_CARDS,0));
+                        mav.addObject("showLists",moovieListService.getLikedMoovieListCards(requestedProfile.getUserId(),moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC,MoovieListService.DEFAULT_PAGE_SIZE_CARDS,pageNumber - 1));
+                        //Obtener la cantidad de listas likeadas por el usuario
                         break;
                     case "reviews":
                         mav.addObject("reviewsList",reviewService.getMovieReviewsFromUser(requestedProfile.getUserId()));
+                        //Obtener la cantidad de reviews del usuario
                         break;
                     default: // este es el caso para user-lists. como es el default al entrar al profile
-                        mav.addObject("showLists", moovieListService.getMoovieListCards(null, requestedProfile.getUsername(),moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC, moovieListService.DEFAULT_PAGE_SIZE_CARDS,0));
+                        mav.addObject("showLists", moovieListService.getMoovieListCards(null, requestedProfile.getUsername(),moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC, moovieListService.DEFAULT_PAGE_SIZE_CARDS,pageNumber - 1));
+                        //Obtener la cantidad de listas creadas por el usuario
                         break;
                 }
             }else{
                 mav.addObject("showLists", moovieListService.getMoovieListCards(null, requestedProfile.getUsername(),moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC, moovieListService.DEFAULT_PAGE_SIZE_CARDS,0));
             }
+
+            numberOfPages = (int) Math.ceil(listCount * 1.0 / moovieListService.DEFAULT_PAGE_SIZE_CONTENT);
+            mav.addObject("numberOfPages",numberOfPages);
+            mav.addObject("currentPage",pageNumber - 1);
 
             return mav;
 
@@ -122,8 +134,6 @@ public class HelloWorldController {
         }
 
     }
-
-
 
     @ControllerAdvice
     public class FileUploadExceptionAdvice {

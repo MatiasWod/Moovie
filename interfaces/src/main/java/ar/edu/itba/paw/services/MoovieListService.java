@@ -37,7 +37,7 @@ public interface MoovieListService {
     //Get the MoovieListCard, which contains the element presented in searchs, has a lot of arguments for searchs/querys
     List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , int size, int pageNumber);
 
-    Optional<Integer> getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber);
+    int getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber);
 
     List<MoovieListCard> getLikedMoovieListCards(int userId,int type, int size, int pageNumber);
 

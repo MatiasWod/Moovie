@@ -128,9 +128,8 @@ public class MediaDaoJdbcImpl implements MediaDao {
         }
 
         // Order by
-        if (orderBy!=null && orderBy.length()>0) {
-            sql.append(" ORDER BY ? ");
-            args.add(orderBy);
+        if (orderBy!=null && !orderBy.isEmpty()) {
+            sql.append(" ORDER BY ").append(orderBy);
         }
 
         // Pagination
@@ -164,7 +163,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
     }
 
     @Override
-    public Optional<Integer> getTotalMediaCount(int type, String search, List<String> genres) {
+    public int getTotalMediaCount(int type, String search, List<String> genres) {
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM media ");
         ArrayList<Object> args = new ArrayList<>();
 
@@ -196,6 +195,6 @@ public class MediaDaoJdbcImpl implements MediaDao {
         }
 
         // Execute the query
-        return jdbcTemplate.query(sql.toString(), args.toArray(), COUNT_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query(sql.toString(), args.toArray(), COUNT_ROW_MAPPER).stream().findFirst().get().intValue();
     }
 }

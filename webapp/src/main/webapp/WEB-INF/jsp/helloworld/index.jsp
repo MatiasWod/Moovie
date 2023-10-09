@@ -24,7 +24,7 @@
             <button class="btn btn-success btn-lg">GET STARTED - SIGN IN</button>
         </div>--%>
         <div class="container d-flex justify-content-between p-2">
-            <h3>Discover Your Next Favorite Movies</h3>
+            <h3>Top Rated Movies</h3>
             <a href="${pageContext.request.contextPath}/discover?media=Movies">see more</a>
         </div>
         <hr class="my-1">
@@ -43,7 +43,7 @@
         </div>
 
         <div class="container d-flex justify-content-between mt-2 p-2">
-            <h3>Discover Your Next Favorite Series</h3>
+            <h3>Top Rated Series</h3>
             <a href="${pageContext.request.contextPath}/discover?media=Series">see more</a>
         </div>
         <hr class="my-1">

@@ -144,7 +144,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     @Override
-    public Optional<Integer> getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber){
+    public int getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber){
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM moovielists");
         ArrayList<Object> args = new ArrayList<>();
 
@@ -157,7 +157,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         }
 
         // Execute the query
-        return jdbcTemplate.query(sql.toString(), args.toArray(), COUNT_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query(sql.toString(), args.toArray(), COUNT_ROW_MAPPER).stream().findFirst().get().intValue();
     }
 
 
@@ -198,7 +198,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         sql.append(" WHERE mlc.moovielistid = ? ");
         args.add(moovieListId);
 
-        if(orderBy!=null && !orderBy.isEmpty()){
+        if(orderBy!=null && !orderBy.isEmpty() ){
             sql.append(" ORDER BY ").append(orderBy).append(" ").append(sortOrder);
         }
         sql.append(" LIMIT ? OFFSET ? ;");
