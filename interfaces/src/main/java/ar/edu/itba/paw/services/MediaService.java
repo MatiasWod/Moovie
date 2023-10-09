@@ -15,15 +15,16 @@ public interface MediaService {
     public static final int DEFAULT_PAGE_SIZE = 25;
 
     // Returns a list of media that satisfy the conditions
-    List<Media> getMedia(int type, String search, List<String> genres, String orderBy, int size, int pagNumber);
+    public List<Media> getMedia(int type, String search, List<String> genres, String actor, String director, String creator, String orderBy, int size, int pageNumber);
+    //The amount of results that a query of getMedia will give
+    int getMediaCount(int type, String search, List<String> genres, String actor, String director, String creator);
 
     //Return a list of media that are in a moovie list
     List<Media> getMediaInMoovieList(int moovieListId, int size, int pageNumber);
 
     //Get the Tv or Movie details data
-    //TODO add actors and proviers to the querys
     Media getMediaById(int mediaId);
     Movie getMovieById(int mediaId);
     TVSerie getTvById(int mediaId);
-    int getTotalMediaCount(int type, String search, List<String> genres);
+
 }

@@ -93,6 +93,29 @@ public class UserDaoJdbcImpl implements UserDao{
     }
 
     @Override
+    public Optional<User> findUserByUsername(String username) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE username ILIKE ?", new Object[]{username}, USER_ROW_MAPPER).stream().findFirst();
+    }
+
+    @Override
+    public List<Profile> searchUsers(String username, int size, int pageNumber) {
+        StringBuilder sql = new StringBuilder("SELECT * , ");
+        ArrayList<Object> args = new ArrayList<>();
+
+        sql.append(" (SELECT COUNT(*) FROM moovieLists ml WHERE ml.userId = u.userId) AS moovieListCount, ");
+        sql.append(" (SELECT COUNT(*) FROM moovieListsLikes l WHERE l.userId = u.userId) AS likedMoovieListCount, ");
+        sql.append(" (SELECT COUNT(*) FROM reviews r WHERE r.userId = u.userId) AS reviewCount ");
+        sql.append(" FROM users u WHERE username ILIKE ? ");
+        args.add('%' + username + '%');
+
+        sql.append(" LIMIT ? OFFSET ? ");
+        args.add(size);
+        args.add(pageNumber*size);
+
+        return jdbcTemplate.query(sql.toString(), args.toArray(), PROFILE_ROW_MAPPER);
+    }
+
+    @Override
     public Optional<Profile> getProfileByUsername(String username) {
         StringBuilder sql = new StringBuilder("SELECT * , ");
         ArrayList<Object> args = new ArrayList<>();
@@ -103,14 +126,9 @@ public class UserDaoJdbcImpl implements UserDao{
         sql.append(" FROM users u WHERE username = ?; ");
         args.add(username);
 
-
         return jdbcTemplate.query(sql.toString(), args.toArray(), PROFILE_ROW_MAPPER).stream().findFirst();
     }
 
-    @Override
-    public Optional<User> findUserByUsername(String username) {
-        return jdbcTemplate.query("SELECT * FROM users WHERE username ILIKE ?", new Object[]{username}, USER_ROW_MAPPER).stream().findFirst();
-    }
 
 
     @Override

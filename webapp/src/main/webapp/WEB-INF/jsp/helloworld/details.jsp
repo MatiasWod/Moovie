@@ -120,7 +120,9 @@
                             <h5>Director:</h5>
                         </div>
                         <div>
-                            <span class="badge text-bg-light border border-black">${media.director}</span>
+                            <a href="${pageContext.request.contextPath}/search?type=director&query=${media.director}">
+                                <span class="badge text-bg-light border border-black">${media.director}</span>
+                            </a>
                         </div>
                     </div>
                     <c:if test="${media.budget != 0}">
@@ -160,7 +162,9 @@
                             </div>
                             <div>
                                 <c:forEach var="creator" items="${creators}">
-                                    <span class="badge text-bg-light border border-black">${creator.creatorName}</span>
+                                    <a href="${pageContext.request.contextPath}/search?type=creator&query=${creator.creatorName.trim()}">
+                                        <span class="badge text-bg-light border border-black">${creator.creatorName}</span>
+                                    </a>
                                 </c:forEach>
                             </div>
                         </div>
@@ -260,21 +264,28 @@
                                 <c:choose>
                                     <c:when test="${actor.profilePath=='None'}">
                                         <img
-                                                src="${pageContext.request.contextPath}/resources/defaultProfile.jpg"
-                                                alt="${actor.actorName} picture not found"
-                                                style="max-width: 100px; height: 150px; border-radius: 5px;">
+                                                    src="${pageContext.request.contextPath}/resources/defaultProfile.jpg"
+                                                    alt="${actor.actorName} picture not found"
+                                                    style="max-width: 100px; height: 150px; border-radius: 5px;"
+
+                                        >
                                     </c:when>
                                     <c:otherwise>
+                                    <a href="${pageContext.request.contextPath}/search?type=actor&query=${actor.actorName}">
                                         <img
                                                 src="${actor.profilePath}"
                                                 alt="${actor.actorName} picture"
-                                                style="max-width: 150px; max-height: 150px; border-radius: 5px;">
+                                                style="max-width: 150px; max-height: 150px; border-radius: 5px;"
+                                                href="${pageContext.request.contextPath}/search?type=actor&query=${actor.actorName}">
+                                    </a>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
                             <div class="col-8" style="min-width: 160px">
                                 <div class="card-body" style="min-width: 120px">
-                                    <h5 class="card-title">${actor.actorName}</h5>
+                                    <a style="color:black; text-decoration: none;" href="${pageContext.request.contextPath}/search?type=actor&query=${actor.actorName}">
+                                        <h5 class="card-title">${actor.actorName}</h5>
+                                    </a>
                                     <p class="card-text">${actor.characterName}</p>
                                 </div>
                             </div>

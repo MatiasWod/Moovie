@@ -6,9 +6,12 @@ import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
+
+    public static final int DEFAULT_PAGE_SIZE_CONTENT = 25;
 
     public static final int ROLE_NOT_AUTHENTICATED = -1;
     public static final int ROLE_UNREGISTERED = 0;
@@ -24,6 +27,9 @@ public interface UserService {
     User findUserById(int userId);
     User findUserByEmail(String mail);
     User findUserByUsername(String username);
+
+    //Search user (recomeneded only for the searchbar)
+    List<Profile> searchUsers(String username,  int size, int pageNumber);
 
     //Return the parameters needed to show in the profile page
     Profile getProfileByUsername(String username);

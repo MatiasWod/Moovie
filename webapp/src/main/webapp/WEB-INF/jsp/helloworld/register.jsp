@@ -15,6 +15,7 @@
 </head>
 
 <body style="background: whitesmoke">
+    <c:import url="navBar.jsp"/>
     <div style="border: solid black; width: fit-content" class="container-gray container d-flex flex-column p-3 mt-5">
         <h1>Sign Up</h1>
         <div class="alert alert-danger" id="errorAlert" style="display: none;">

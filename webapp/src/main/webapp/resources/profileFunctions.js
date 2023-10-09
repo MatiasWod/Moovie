@@ -39,27 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-document.addEventListener("DOMContentLoaded", function() {
-    const profileImage = document.getElementById("profile-image-big");
-    if (profileImage) {
-        profileImage.onerror = function() {
-            profileImage.src = "/resources/defaultProfile.jpg";
-        }
-    }
-    const profileImageAgain = document.getElementById("profile-image-");
-    if (profileImageAgain) {
-        profileImageAgain.onerror = function() {
-            profileImageAgain.src = "/resources/defaultProfile.jpg";
-        }
-    }
-    const profileImagePreview = document.getElementById("profile-image-preview");
-    if (profileImagePreview) {
-        profileImagePreview.onerror = function() {
-            profileImagePreview.src = "/resources/defaultProfile.jpg";
-        }
-    }
-});
-
 setTimeout(function() {
     document.getElementById('errorAlert').style.display = 'none';
 }, 5000);

@@ -38,7 +38,7 @@ function displayMediaName(name, id) {
 
 function updateSelectedMediaInput() {
     const selectedMediaInput = document.getElementById("selected-media-input");
-    selectedMediaInput.value = JSON.stringify(selectedMediaId);
+    selectedMediaInput.value = JSON.stringify(selectedMediaId).replaceAll(']','').replaceAll('[','');
 
     const selectedCreateInput = document.getElementById("selected-create-media");
     selectedCreateInput.value =selectedMediaId.map(Number);
@@ -86,28 +86,62 @@ function showSelectedMediaList() {
 window.onload = function() {
 
     let elems = document.getElementsByClassName("distinct-class");
+    console.log(elems[0])
     let j = 0;
     while (elems[j] != null){
         selectedMediaId.push(parseInt(elems[j].id));
         selectedMedia.push(elems[j++].innerHTML);
     }
+
     updateSelectedMediaInput();
-
-    // const filterTypesSelect = document.getElementById("filter-types");
-    // const genreSelect = document.getElementById("genre-select");
-
-    // if (filterTypesSelect.value === "Genre") {
-    //     genreSelect.style.display = "block";
-    // }
 };
 
-function beforeSubmit() {
-/*    const filterTypesSelect = document.getElementById("filter-types");
-    const genreSelect = document.getElementById("genre-select");
 
-    if (filterTypesSelect.value === "Popular") {
-        genreSelect.removeAttribute("name");
-    }*/
+
+document.addEventListener("DOMContentLoaded", function() {
+    if(localStorage.getItem('formSubmitted')){
+        deleteStorage();
+        localStorage.removeItem('formSubmitted');
+        console.log('storageDeleted');
+    }
+
+    const storedTitleValue = localStorage.getItem("titleValue");
+    const titleInput = document.getElementById("list-name");
+    if (storedTitleValue) {
+        titleInput.value = storedTitleValue;
+    }
+    titleInput.addEventListener("input", function() {
+        localStorage.setItem("titleValue", titleInput.value);
+    });
+
+    const storedDescriptionValue = localStorage.getItem("descriptionValue");
+    const descriptionInput = document.getElementById("list-description");
+    if (storedDescriptionValue) {
+        descriptionInput.value = storedDescriptionValue;
+    }
+    descriptionInput.addEventListener("input", function() {
+        localStorage.setItem("descriptionValue", descriptionInput.value);
+    });
+
+    var form = document.getElementById('create-form');
+    form.addEventListener('submit', function(e) {
+        localStorage.setItem('formSubmitted', 'true');
+        console.log('FORM SUBMITTED')
+    });
+
+});
+
+function deleteStorage() {
+
+    localStorage.removeItem("titleValue")
+    const titleInput = document.getElementById("list-name");
+    titleInput.value = ""
+    localStorage.removeItem("descriptionValue")
+    const descriptionInput = document.getElementById("list-description");
+    descriptionInput.value = ""
+}
+
+function beforeSubmit() {
     const selectedOptions = [];
     document.querySelectorAll('.form-check-input:checked').forEach(function(checkbox) {
         selectedOptions.push(checkbox.nextElementSibling.innerText);
@@ -116,8 +150,7 @@ function beforeSubmit() {
     console.log(selectedOptions)
 
     document.getElementById('hiddenGenreInput').value = selectedOptions.join(",");
-    // mandar todas la media de las lists al url
-};
+}
 
 function toggleGenreSelect() {
     const filterTypesSelect = document.getElementById("filter-types");
@@ -128,4 +161,4 @@ function toggleGenreSelect() {
     } else {
         genreSelect.style.display = "none";
     }
-};
+}

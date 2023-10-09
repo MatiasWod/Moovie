@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class MoovieListServiceImpl implements MoovieListService{
@@ -74,21 +73,12 @@ public class MoovieListServiceImpl implements MoovieListService{
     public List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy,String sortOrder, int size, int pageNumber) {
         MoovieList ml = getMoovieListById(moovieListId);
         //If the previous didnt throw exception, we have the permissions needed to perform the next action
-        List<MoovieListContent> mlc = moovieListDao.getMoovieListContent(moovieListId, orderBy,sortOrder ,size, pageNumber);
         try{
-            if(ml.getUserId() != userService.getInfoOfMyUser().getUserId() ){
-                for(MoovieListContent m : mlc){
-                    m.setWatched(false);
-                }
-            }
-        }catch (UserNotLoggedException e){
-            for(MoovieListContent m : mlc){
-                m.setWatched(false);
-            }
+            int userid = userService.getInfoOfMyUser().getUserId();
+            return moovieListDao.getMoovieListContent(moovieListId, userid , orderBy,sortOrder ,size, pageNumber);
+        } catch(UserNotLoggedException e){
+            return moovieListDao.getMoovieListContent(moovieListId, -1 , orderBy,sortOrder ,size, pageNumber);
         }
-
-        
-        return mlc;
     }
 
     @Override
@@ -113,9 +103,25 @@ public class MoovieListServiceImpl implements MoovieListService{
 
 //TODO: MANEJO DE EXCEPCIONES EN getMoovieListDetails por el Optional<>.get()
     @Override
-    public MoovieListDetails getMoovieListDetails(int moovieListId, String orderBy, int size, int pageNumber) {
+    public MoovieListDetails getMoovieListDetails(int moovieListId, String orderBy, String sortOrder, int size, int pageNumber) {
         MoovieListCard card = moovieListDao.getMoovieListCardById(moovieListId).get();
-        List<MoovieListContent> content = moovieListDao.getMoovieListContent(moovieListId,orderBy,"asc",size,pageNumber);
+        List<MoovieListContent> content = getMoovieListContent(moovieListId,orderBy,sortOrder,size,pageNumber);
+        return new MoovieListDetails(card,content);
+    }
+
+    @Override
+    public MoovieListDetails getWatchlistDetails(String ownerUsername, String orderBy, String sortOrder, int size, int pageNumber) {
+//        SOLO existe una lista Watchlist DEFAULT_PRIVATE por user, es seguro asumir que el resultado es una lista con unicamente lo pedido
+        MoovieListCard card = moovieListDao.getMoovieListCards("Watchlist",ownerUsername, MoovieListDao.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE, DEFAULT_PAGE_SIZE_CARDS, 0 ).get(0);
+        List<MoovieListContent> content = getMoovieListContent(card.getMoovieListId(),orderBy,sortOrder,size,pageNumber);
+        return new MoovieListDetails(card,content);
+    }
+
+    @Override
+    public MoovieListDetails getWatchedDetails(String ownerUsername, String orderBy, String sortOrder, int size, int pageNumber) {
+        //        SOLO existe una lista Watched DEFAULT_PRIVATE por user, es seguro asumir que el resultado es una lista con unicamente lo pedido
+        MoovieListCard card = moovieListDao.getMoovieListCards("Watched",ownerUsername, MoovieListDao.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE, DEFAULT_PAGE_SIZE_CARDS, 0 ).get(0);
+        List<MoovieListContent> content = getMoovieListContent(card.getMoovieListId(),orderBy,sortOrder,size,pageNumber);
         return new MoovieListDetails(card,content);
     }
 
@@ -159,18 +165,19 @@ public class MoovieListServiceImpl implements MoovieListService{
         int userId = userService.getInfoOfMyUser().getUserId();
         if(likeMoovieListStatusForUser(moovieListId)){
             moovieListDao.removeLikeMoovieList(userId, moovieListId);
+        } else {
+            MoovieList mvlAux = getMoovieListById(moovieListId);
+
+            //Send mail
+            User aux = userService.findUserById(mvlAux.getUserId());
+            final Map<String, Object> mailMap = new HashMap<>();
+            mailMap.put("username", aux.getUsername());
+            mailMap.put("moovieListName", mvlAux.getName());
+            emailService.sendEmail(aux.getEmail(), "Someone liked your list: " + mvlAux.getName() + "!!!", "notificationLikeMoovieList.html", mailMap);
+
+
+            moovieListDao.likeMoovieList(userId, moovieListId);
         }
-        MoovieList mvlAux =  getMoovieListById(moovieListId);
-
-        //Send mail
-        User aux = userService.findUserById( mvlAux.getUserId());
-        final Map<String,Object> mailMap = new HashMap<>();
-        mailMap.put("username",aux.getUsername());
-        mailMap.put("moovieListName",mvlAux.getName());
-        emailService.sendEmail(aux.getEmail(), "Someone liked your list: " + mvlAux.getName() + "!!!" , "notificationLikeMoovieList.html", mailMap );
-
-
-        moovieListDao.likeMoovieList(userId, moovieListId);
     }
 
     @Override

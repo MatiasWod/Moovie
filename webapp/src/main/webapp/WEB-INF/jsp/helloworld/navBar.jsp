@@ -32,16 +32,32 @@
             }
         });
 
-        const profileImages = document.querySelectorAll(".review-profile-image");
-
-        profileImages.forEach(profileImage => {
-
-            profileImage.onerror = function() {
-
-                profileImage.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
-
+        const profileImageBig = document.getElementById("profile-image-big");
+        if (profileImageBig) {
+            profileImageBig.onerror = function() {
+                profileImageBig.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
             }
+        }
 
+        const profileImageAgain = document.getElementById("profile-image-");
+        if (profileImageAgain) {
+            profileImageAgain.onerror = function() {
+                profileImageAgain.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
+            }
+        }
+
+        const profileImagePreview = document.getElementById("profile-image-preview");
+        if (profileImagePreview) {
+            profileImagePreview.onerror = function() {
+                profileImagePreview.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
+            }
+        }
+
+        const profileImages = document.querySelectorAll(".review-profile-image");
+        profileImages.forEach(profileImage => {
+            profileImage.onerror = function() {
+                profileImage.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
+            }
         });
     });
 </script>

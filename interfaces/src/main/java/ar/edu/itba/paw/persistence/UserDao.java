@@ -5,9 +5,12 @@ import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserDao {
+
+    public static final int DEFAULT_PAGE_SIZE_CONTENT = 25;
 
     public static final  int ROLE_BANNED = -2;
     public static final  int ROLE_NOT_AUTHENTICATED = -1;
@@ -23,6 +26,9 @@ public interface UserDao {
     Optional<User> findUserById(int userId);
     Optional<User> findUserByEmail(String email);
     Optional<User> findUserByUsername(String username);
+
+    List<Profile> searchUsers(String username, int size, int pageNumber);
+
     Optional<Profile> getProfileByUsername(String username);
 
     void setProfilePicture(int userId, byte[] image);

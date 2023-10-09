@@ -26,9 +26,7 @@
 </head>
 <body style="background: whitesmoke">
 
-<c:import url="navBar.jsp">
-    <c:param name="userName" value="${user.username}"/>
-</c:import>
+<c:import url="navBar.jsp"/>
 <sec:authorize access="isAuthenticated()">
     <div class="container d-flex flex-column">
         <div class="container d-flex flex-row ">
@@ -36,7 +34,7 @@
                 <div>
                     <form id="filter-form" class="mb-2 d-flex flex-row justify-content-between" action="${pageContext.request.contextPath}/createList" method="get" onsubmit="beforeSubmit()">
                         <input type="hidden"  id="selected-media-input" name="s" />
-                        <div class="d-flex flex-row">
+                        <div role="group" class="input-group d-flex flex-row m-1">
                             <select name="m" class="form-select filter-width" aria-label="Filter!">
                                 <option ${'Movies and Series' == param.m ? 'selected' : ''}>Movies and Series</option>
                                 <option  ${'Movies' == param.m ? 'selected' : ''}>Movies</option>
@@ -44,13 +42,13 @@
                             </select>
                             <input type="hidden" name="g" id="hiddenGenreInput">
                             <div class="dropdown">
-                                <button style="height:100%;width: 150px;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                <button style="height:100%;;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                                     Genres
                                 </button>
                                 <div class="dropdown-menu scrollableDiv flex-wrap p-4">
                                     <c:forEach var="genre" items="${genresList}">
                                         <div class="form-check">
-                                            <input ${fn:contains(param.g,genre)? 'checked':''} type="checkbox" class="form-check-input" id="dropdownCheck${genre}">
+                                            <label for="dropdownCheck${genre}"></label><input ${fn:contains(param.g,genre)? 'checked':''} type="checkbox" class="form-check-input" id="dropdownCheck${genre}">
                                             <label class="form-check-label" for="dropdownCheck${genresList.indexOf(genre)}">${genre}</label>
                                         </div>
                                     </c:forEach>
@@ -58,7 +56,7 @@
                             </div>
                             <button class="btn btn-outline-success" type="submit" >Apply filters</button>
                         </div>
-                        <div class="d-flex flex-row">
+                        <div role="group" class="input-group d-flex flex-row m-1">
                             <input class="form-control me-2" type="search" name="q" value="${param.q}" placeholder="Search" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Search</button>
                             <a style="height: 100%;" class="btn btn-outline-success align-bottom" href="${pageContext.request.contextPath}/createList">
@@ -97,12 +95,18 @@
                         </div>
                     </c:forEach>
                 </div>
-
+                <div class="m-1">
+                    <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+                        <c:param name="mediaPages" value="${numberOfPages}"/>
+                        <c:param name="currentPage" value="${currentPage + 1}"/>
+                        <c:param name="url" value="/createList?s=${param.s}&m=${param.m}&g=${param.g}&q=${param.q}"/>
+                    </c:import>
+                </div>
             </div>
             <div id="preview" style="position: relative" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
                 <div class="image-blur height-full background" style="background: dimgray"></div>
                 <form:form modelAttribute="ListForm" action="${pageContext.request.contextPath}/createListAction"
-                           method="POST">
+                           method="POST" id="create-form">
                 <div style="position: absolute;top: 0;left: 0;height: 100%;overflow: hidden" class="d-flex p-4 container flex-column">
                     <h2 class="m-2">List Name:</h2>
                     <form:input path="listName" name="listName" id="list-name" required="required"
@@ -110,7 +114,7 @@
                     <span id="listNameCharCount" class="text-muted"><span id="listNameRemainingChars">0</span>/50</span>
                     <form:errors path="listName" cssClass="error"/>
                     <h3 class="m-2" >Description:</h3>
-                    <form:textarea path="listDescription" class="review-textarea" rows="3" name="listDescription"
+                    <form:textarea path="listDescription" id="list-description" class="review-textarea" rows="3" name="listDescription"
                                    placeholder="Your description..." maxlength="255" />
                     <span id="listDescriptionCharCount" class="text-muted"><span id="listDescriptionRemainingChars">0</span>/255</span>
                     <form:errors path="listDescription" cssClass="error"/>

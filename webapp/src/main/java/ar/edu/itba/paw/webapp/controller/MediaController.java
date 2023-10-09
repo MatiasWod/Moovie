@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.exceptions.FailedToInsertToListException;
 import ar.edu.itba.paw.exceptions.MediaNotFoundException;
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.Media;
@@ -54,9 +53,9 @@ public class MediaController {
     @RequestMapping("/")
     public ModelAndView home() {
         final ModelAndView mav = new ModelAndView("helloworld/index");
-        List<Media> movieList = mediaService.getMedia(mediaService.TYPE_MOVIE, null, null, "tmdbrating DESC", mediaService.DEFAULT_PAGE_SIZE, 0);
+        List<Media> movieList = mediaService.getMedia(mediaService.TYPE_MOVIE, null, null , null, null, null, "tmdbrating DESC", mediaService.DEFAULT_PAGE_SIZE, 0);
         mav.addObject("movieList", movieList);
-        List<Media> tvSerieList = mediaService.getMedia(mediaService.TYPE_TVSERIE, null, null, "tmdbrating DESC", mediaService.DEFAULT_PAGE_SIZE, 0);
+        List<Media> tvSerieList = mediaService.getMedia(mediaService.TYPE_TVSERIE, null, null, null , null, null,"tmdbrating DESC", mediaService.DEFAULT_PAGE_SIZE, 0);
         mav.addObject("tvList", tvSerieList);
         return mav;
     }
@@ -70,16 +69,16 @@ public class MediaController {
         int mediaCount;
         mav.addObject("searchMode",false);
         if (media.equals("Movies and Series")){
-            mav.addObject("mediaList",mediaService.getMedia(mediaService.TYPE_ALL,null,genres,null, mediaService.DEFAULT_PAGE_SIZE,pageNumber - 1));
-            mediaCount = mediaService.getTotalMediaCount(mediaService.TYPE_ALL,null,genres);
+            mav.addObject("mediaList",mediaService.getMedia(mediaService.TYPE_ALL,null, genres,null, null , null, null,  mediaService.DEFAULT_PAGE_SIZE,pageNumber - 1));
+            mediaCount = mediaService.getMediaCount(mediaService.TYPE_ALL,null,genres,null,null,null);
         }
         else if (media.equals("Movies")){
-            mav.addObject("mediaList",mediaService.getMedia(mediaService.TYPE_MOVIE,null,genres,null, mediaService.DEFAULT_PAGE_SIZE,pageNumber - 1));
-            mediaCount = mediaService.getTotalMediaCount(mediaService.TYPE_MOVIE,null,genres);
+            mav.addObject("mediaList",mediaService.getMedia(mediaService.TYPE_MOVIE,null,genres,null, null , null, null,  mediaService.DEFAULT_PAGE_SIZE,pageNumber - 1));
+            mediaCount = mediaService.getMediaCount(mediaService.TYPE_MOVIE,null,genres,null,null,null);
         }
         else{
-            mav.addObject("mediaList",mediaService.getMedia(mediaService.TYPE_TVSERIE,null,genres,null, mediaService.DEFAULT_PAGE_SIZE,pageNumber - 1));
-            mediaCount = mediaService.getTotalMediaCount(mediaService.TYPE_TVSERIE,null,genres);
+            mav.addObject("mediaList",mediaService.getMedia(mediaService.TYPE_TVSERIE,null,genres,null, null , null, null, mediaService.DEFAULT_PAGE_SIZE,pageNumber - 1));
+            mediaCount = mediaService.getMediaCount(mediaService.TYPE_TVSERIE,null,genres,null,null,null);
         }
         numberOfPages = (int) Math.ceil(mediaCount * 1.0 / mediaService.DEFAULT_PAGE_SIZE);
         mav.addObject("numberOfPages",numberOfPages);
@@ -90,11 +89,28 @@ public class MediaController {
 
     @RequestMapping("/search")
     public ModelAndView search(@RequestParam(value = "query", required = true) String query,
+                               @RequestParam(value = "type", required = false) String type,
                                @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
         final ModelAndView mav = new ModelAndView("helloworld/discover");
         mav.addObject("searchMode", true);
-        mav.addObject("mediaList", mediaService.getMedia(mediaService.TYPE_ALL, query, null, null, mediaService.DEFAULT_PAGE_SIZE, pageNumber - 1));
-        int mediaCount = mediaService.getTotalMediaCount(mediaService.TYPE_ALL,query,null);
+        int mediaCount = 0;
+        if(type == null){
+            mav.addObject("mediaList", mediaService.getMedia(mediaService.TYPE_ALL, query, null, null , null, null, null, mediaService.DEFAULT_PAGE_SIZE, pageNumber - 1));
+            mediaCount = mediaService.getMediaCount(mediaService.TYPE_ALL,query,null, null,null,null);
+        }else{
+            if(type.equals("director")){
+                mav.addObject("mediaList", mediaService.getMedia(mediaService.TYPE_ALL,null,null, null,query,null, null, mediaService.DEFAULT_PAGE_SIZE, pageNumber - 1));
+                mediaCount = mediaService.getMediaCount(mediaService.TYPE_ALL,null,null, null,query,null);
+            }else if(type.equals("creator")){
+                mav.addObject("mediaList", mediaService.getMedia(mediaService.TYPE_ALL, null, null, null , null, query, null, mediaService.DEFAULT_PAGE_SIZE, pageNumber - 1));
+                mediaCount = mediaService.getMediaCount(mediaService.TYPE_ALL, null, null, null , null, query);
+
+            }else if(type.equals("actor")){
+                mav.addObject("mediaList", mediaService.getMedia(mediaService.TYPE_ALL, null, null, query , null, null, null, mediaService.DEFAULT_PAGE_SIZE, pageNumber - 1));
+                mediaCount = mediaService.getMediaCount(mediaService.TYPE_ALL, null, null, query , null, null);
+            }
+        }
+
         int numberOfPages = (int) Math.ceil(mediaCount * 1.0 / mediaService.DEFAULT_PAGE_SIZE);
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
@@ -163,7 +179,7 @@ public class MediaController {
         try {
             moovieListService.insertMediaIntoMoovieList(listId, Collections.singletonList(mediaId));
             redirectAttributes.addFlashAttribute("successMessage", "Media has been successfully added to your list.");
-        } catch (FailedToInsertToListException exception) {
+        } catch (UnableToInsertIntoDatabase exception) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to insert media into the list. Already in the list.");
         }
         return new ModelAndView("redirect:/details/" + mediaId);
