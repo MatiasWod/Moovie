@@ -2,6 +2,8 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.*;
 
+import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
+import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
@@ -30,6 +32,12 @@ public class HelloWorldController {
 
     @Autowired
     VerificationTokenService verificationTokenService;
+
+    @Autowired
+    ReviewService reviewService;
+
+    @Autowired
+    MoovieListService moovieListService;
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
@@ -74,8 +82,45 @@ public class HelloWorldController {
 
 
     @RequestMapping("/profile/{username:.+}")
-    public ModelAndView profilePage(@PathVariable String username){
-        return new ModelAndView();
+    public ModelAndView profilePage(@PathVariable String username,
+                                    @RequestParam( value = "list", required = false) String list){
+        try{
+            Profile requestedProfile = userService.getProfileByUsername(username);
+
+            ModelAndView mav = new ModelAndView("helloworld/profile");
+
+            mav.addObject("profile",requestedProfile);
+            mav.addObject("isMe",userService.isUsernameMe(username));
+
+            if (list != null){
+                switch (list) {
+                    case "watched-list":
+                        mav.addObject("listDetails",moovieListService.getMoovieListDetails(8,null,MoovieListService.DEFAULT_PAGE_SIZE_CONTENT,0));
+
+                        break;
+                    case "watchlist":
+
+                        break;
+                    case "liked-lists":
+                        mav.addObject("showLists",moovieListService.getLikedMoovieListCards(requestedProfile.getUserId(),moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC,MoovieListService.DEFAULT_PAGE_SIZE_CARDS,0));
+                        break;
+                    case "reviews":
+                        mav.addObject("reviewsList",reviewService.getMovieReviewsFromUser(requestedProfile.getUserId()));
+                        break;
+                    default: // este es el caso para user-lists. como es el default al entrar al profile
+                        mav.addObject("showLists", moovieListService.getMoovieListCards(null, requestedProfile.getUsername(),moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC, moovieListService.DEFAULT_PAGE_SIZE_CARDS,0));
+                        break;
+                }
+            }else{
+                mav.addObject("showLists", moovieListService.getMoovieListCards(null, requestedProfile.getUsername(),moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC, moovieListService.DEFAULT_PAGE_SIZE_CARDS,0));
+            }
+
+            return mav;
+
+        }catch (UnableToFindUserException e){
+            return new ModelAndView("helloworld/404");
+        }
+
     }
 
 

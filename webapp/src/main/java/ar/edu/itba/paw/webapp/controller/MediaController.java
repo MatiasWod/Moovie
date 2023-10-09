@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.FailedToInsertToListException;
 import ar.edu.itba.paw.exceptions.MediaNotFoundException;
+import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.CreateReviewForm;
@@ -89,10 +90,15 @@ public class MediaController {
     }
 
     @RequestMapping("/search")
-    public ModelAndView search(@RequestParam(value = "query", required = true) String query) {
+    public ModelAndView search(@RequestParam(value = "query", required = true) String query,
+                               @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
         final ModelAndView mav = new ModelAndView("helloworld/discover");
         mav.addObject("searchMode", true);
-        mav.addObject("mediaList", mediaService.getMedia(mediaService.TYPE_ALL, query, null, null, mediaService.DEFAULT_PAGE_SIZE, 0));
+        mav.addObject("mediaList", mediaService.getMedia(mediaService.TYPE_ALL, query, null, null, mediaService.DEFAULT_PAGE_SIZE, pageNumber - 1));
+        int mediaCount = mediaService.getTotalMediaCount(mediaService.TYPE_ALL,query,null).get().intValue();
+        int numberOfPages = (int) Math.ceil(mediaCount * 1.0 / mediaService.DEFAULT_PAGE_SIZE);
+        mav.addObject("numberOfPages",numberOfPages);
+        mav.addObject("currentPage",pageNumber - 1);
         return mav;
 
     }
@@ -142,8 +148,14 @@ public class MediaController {
         if (errors.hasErrors()) {
             return details(form.getMediaId(), form,null);
         }
-        redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully created.");
-        reviewService.createReview(form.getMediaId(), form.getRating(), form.getReviewContent());
+        try{
+            reviewService.createReview(form.getMediaId(), form.getRating(), form.getReviewContent());
+            redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully created.");
+
+        } catch(UnableToInsertIntoDatabase e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Review wasn't created, user already has a review for this media.");
+        }
+
         return new ModelAndView("redirect:/details/" + form.getMediaId());
     }
 

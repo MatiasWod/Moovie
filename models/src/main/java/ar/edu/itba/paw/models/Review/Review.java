@@ -11,7 +11,7 @@ public class Review {
     private final String mediaTitle;
     private final String reviewContent;
 
-    public Review(int reviewId, int userId, String username, int mediaId, int rating, int reviewLikes, String mediaPosterPath, String mediaTitle, String reviewContent) {
+    public Review(int reviewId, int userId, String username, int mediaId, int rating, int reviewLikes, String mediaTitle, String mediaPosterPath, String reviewContent) {
         this.reviewId = reviewId;
         this.userId = userId;
         this.username = username;

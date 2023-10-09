@@ -6,6 +6,7 @@ import ar.edu.itba.paw.exceptions.UserNotLoggedException;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
+import ar.edu.itba.paw.models.MoovieList.MoovieListDetails;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.MoovieListDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class MoovieListServiceImpl implements MoovieListService{
@@ -40,6 +42,16 @@ public class MoovieListServiceImpl implements MoovieListService{
             }
         }
         return ml;
+    }
+
+    @Override
+    public MoovieList getWatchedByUserId(int userId) {
+        return null;
+    }
+
+    @Override
+    public MoovieList getWatchlistByUserId(int userId) {
+        return null;
     }
 
     @Override
@@ -87,6 +99,24 @@ public class MoovieListServiceImpl implements MoovieListService{
             }
         }
         return moovieListDao.getMoovieListCards(search, ownerUsername, type, size, pageNumber);
+    }
+
+    @Override
+    public Optional<Integer> getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber){
+        return moovieListDao.getMoovieListCardsCount(search,ownerUsername,type,size,pageNumber);
+    }
+
+    @Override
+    public List<MoovieListCard> getLikedMoovieListCards(int userId,int type, int size, int pageNumber){
+        return moovieListDao.getLikedMoovieListCards(userId, type, size, pageNumber);
+    }
+
+//TODO: MANEJO DE EXCEPCIONES EN getMoovieListDetails por el Optional<>.get()
+    @Override
+    public MoovieListDetails getMoovieListDetails(int moovieListId, String orderBy, int size, int pageNumber) {
+        MoovieListCard card = moovieListDao.getMoovieListCardById(moovieListId).get();
+        List<MoovieListContent> content = moovieListDao.getMoovieListContent(moovieListId,orderBy,size,pageNumber);
+        return new MoovieListDetails(card,content);
     }
 
     @Override

@@ -93,9 +93,16 @@
 
                 </div>
             </c:forEach>
-        </div>
+    </div>
 </div>
 </body>
+<div class="m-1">
+    <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+        <c:param name="mediaPages" value="${numberOfPages}"/>
+        <c:param name="currentPage" value="${currentPage + 1}"/>
+        <c:param name="url" value="${urlBase}"/>
+    </c:import>
+</div>
 </html>
 
 <style>

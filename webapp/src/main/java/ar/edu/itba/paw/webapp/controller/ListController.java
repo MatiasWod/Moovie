@@ -14,9 +14,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,9 +38,18 @@ public class ListController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
 
     @RequestMapping("/lists")
-    public ModelAndView lists(@RequestParam(value = "search", required = false) final String searchQ) {
+    public ModelAndView lists(@RequestParam(value = "search", required = false) final String search,
+                              @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
         final ModelAndView mav = new ModelAndView("helloworld/viewLists");
-        mav.addObject("showLists", moovieListService.getMoovieListCards(null, null, moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC, moovieListService.DEFAULT_PAGE_SIZE_CARDS, 0));
+        mav.addObject("showLists", moovieListService.getMoovieListCards(search, null, moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC, moovieListService.DEFAULT_PAGE_SIZE_CARDS, pageNumber - 1));
+        int listCount = moovieListService.getMoovieListCardsCount(search,null,moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC,moovieListService.DEFAULT_PAGE_SIZE_CARDS, pageNumber - 1).get().intValue();
+        int numberOfPages = (int) Math.ceil(listCount * 1.0 / moovieListService.DEFAULT_PAGE_SIZE_CONTENT);
+        mav.addObject("numberOfPages",numberOfPages);
+        mav.addObject("currentPage",pageNumber - 1);
+        final Map<String, String> queries = new HashMap<>();
+        queries.put("search", search);
+        String urlBase = UriComponentsBuilder.newInstance().path("/lists").query("search={search}").buildAndExpand(queries).toUriString();
+        mav.addObject("urlBase", urlBase);
         return mav;
     }
 
@@ -89,12 +101,14 @@ public class ListController {
 
     @RequestMapping("/profile/{username}/watchedList")
     public ModelAndView watchedlist(@PathVariable("username") final String username) {
-        return new ModelAndView();
+        final List<MoovieListCard> moovieListCards = moovieListService.getMoovieListCards("Watched",username,moovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE,mediaService.DEFAULT_PAGE_SIZE,0);
+        return list(moovieListCards.get(0).getMoovieListId(),1);
     }
 
     @RequestMapping("/profile/{username}/watchList")
     public ModelAndView watchlist(@PathVariable("username") final String username) {
-        return new ModelAndView();
+        final List<MoovieListCard> moovieListCards = moovieListService.getMoovieListCards("Watchlist",username,moovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE,mediaService.DEFAULT_PAGE_SIZE,0);
+        return list(moovieListCards.get(0).getMoovieListId(),1);
     }
 
     @RequestMapping("/list/{id:\\d+}")

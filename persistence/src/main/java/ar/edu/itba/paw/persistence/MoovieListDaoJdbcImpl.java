@@ -81,6 +81,16 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
 
     @Override
+    public MoovieList getWatchedByUserId(int userId) {
+        return null;
+    }
+
+    @Override
+    public MoovieList getWatchlistByUserId(int userId) {
+        return null;
+    }
+
+    @Override
     public Optional<MoovieList> getMoovieListById(int moovieListId) {
         return jdbcTemplate.query("SELECT * FROM moovieLists WHERE moovieListId = ?",new Object[]{moovieListId},MOOVIE_LIST_ROW_MAPPER).stream().findFirst();
     }
@@ -130,6 +140,48 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         args.add(size*pageNumber);
 
         // Execute the query
+        return jdbcTemplate.query(sql.toString(), args.toArray(), MOOVIE_LIST_CARD_ROW_MAPPER);
+    }
+
+    @Override
+    public Optional<Integer> getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber){
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM moovielists");
+        ArrayList<Object> args = new ArrayList<>();
+
+        sql.append(" WHERE type = ? ");
+        args.add(type);
+
+        if(search != null && search.length() > 0){
+            sql.append(" AND name ILIKE ? ");
+            args.add('%' + search + '%');
+        }
+
+        // Execute the query
+        return jdbcTemplate.query(sql.toString(), args.toArray(), COUNT_ROW_MAPPER).stream().findFirst();
+    }
+
+
+    @Override
+    public List<MoovieListCard> getLikedMoovieListCards(int userId, int type, int size, int pageNumber) {
+        StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(l.userId) AS likeCount, ");
+        ArrayList<Object> args = new ArrayList<>();
+
+        sql.append(" ( SELECT ARRAY_AGG(posterPath) FROM ( SELECT posterPath FROM moovieListsContent mlc INNER JOIN media m ");
+        sql.append(" ON mlc.mediaId = m.mediaId WHERE mlc.moovieListId = ml.moovieListId LIMIT 4 ) AS subquery ) AS images, ");
+        sql.append(" (SELECT COUNT(*) FROM moovieListsContent mlc2 WHERE mlc2.moovieListId = ml.moovieListId) AS size, ");
+        sql.append(" (SELECT COUNT(*) FROM moovieListsContent mlc3 INNER JOIN media m2 ON mlc3.mediaId = m2.mediaId WHERE m2.type = false AND mlc3.moovieListId = ml.moovieListId) AS movieAmount ");
+        sql.append(" FROM moovieLists ml LEFT JOIN users u ON ml.userId = u.userId LEFT JOIN moovieListsLikes l ON ml.moovieListId = l.moovieListId ");
+
+        sql.append(" WHERE type = ? ");
+        args.add(type);
+
+        sql.append(" AND ml.moovieListId IN (SELECT moovieListId FROM moovieListsLikes WHERE userId = ?) ");
+        args.add(userId);
+
+        sql.append(" GROUP BY ml.moovieListId, u.userId LIMIT ? OFFSET ?;");
+        args.add(size);
+        args.add(size * pageNumber);
+
         return jdbcTemplate.query(sql.toString(), args.toArray(), MOOVIE_LIST_CARD_ROW_MAPPER);
     }
 
