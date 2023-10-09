@@ -100,12 +100,12 @@ public class HelloWorldController {
             if (list != null){
                 switch (list) {
                     case "watched-list":
-                        MoovieListDetails watchedDetails = moovieListService.getWatchedDetails(username,null, "asc",MoovieListService.DEFAULT_PAGE_SIZE_CONTENT,pageNumber-1);
+                        MoovieListDetails watchedDetails = moovieListService.getMoovieListDetails( -1 , "WATCHED" , username,null, "asc",MoovieListService.DEFAULT_PAGE_SIZE_CONTENT,pageNumber-1);
                         listCount = watchedDetails.getContent().size();
                         mav.addObject("listDetails",watchedDetails);
                         break;
                     case "watchlist":
-                        MoovieListDetails watchlistDetails = moovieListService.getWatchlistDetails(username,null, "asc",MoovieListService.DEFAULT_PAGE_SIZE_CONTENT,pageNumber-1);
+                        MoovieListDetails watchlistDetails = moovieListService.getMoovieListDetails(-1, "WATCHLIST" , username, null, "asc",MoovieListService.DEFAULT_PAGE_SIZE_CONTENT,pageNumber-1);
                         listCount = watchlistDetails.getContent().size();
                         mav.addObject("listDetails",watchlistDetails);
                         break;

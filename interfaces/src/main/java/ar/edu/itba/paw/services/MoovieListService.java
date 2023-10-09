@@ -41,11 +41,8 @@ public interface MoovieListService {
 
     List<MoovieListCard> getLikedMoovieListCards(int userId,int type, int size, int pageNumber);
 
-    MoovieListDetails getMoovieListDetails(int moovieListId, String orderBy, String sortOrder, int size, int pageNumber);
+    MoovieListDetails getMoovieListDetails(int moovieListId, String name, String ownerUsername, String orderBy, String sortOrder, int size, int pageNumber);
 
-    MoovieListDetails getWatchlistDetails(String ownerUsername, String orderBy, String sortOrder, int size, int pageNumber);
-
-    MoovieListDetails getWatchedDetails(String ownerUsername, String orderBy, String sortOrder, int size, int pageNumber);
 
     //Create or insert into moovieList
     MoovieList createMoovieList(String name, int type, String description);
@@ -58,5 +55,6 @@ public interface MoovieListService {
     void removeLikeMoovieList(int moovieListId);
     boolean likeMoovieListStatusForUser( int moovieListId);
 
+    //Gives the amount of movies watched for a user in a moovielists
     int countWatchedMovies(List<MoovieListContent> mediaList);
 }

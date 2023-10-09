@@ -103,27 +103,25 @@ public class MoovieListServiceImpl implements MoovieListService{
 
 //TODO: MANEJO DE EXCEPCIONES EN getMoovieListDetails por el Optional<>.get()
     @Override
-    public MoovieListDetails getMoovieListDetails(int moovieListId, String orderBy, String sortOrder, int size, int pageNumber) {
-        MoovieListCard card = moovieListDao.getMoovieListCardById(moovieListId).get();
-        List<MoovieListContent> content = getMoovieListContent(moovieListId,orderBy,sortOrder,size,pageNumber);
+    public MoovieListDetails getMoovieListDetails(int moovieListId, String name, String ownerUsername, String orderBy, String sortOrder, int size, int pageNumber) {
+        MoovieListCard card = null;
+        List<MoovieListContent> content = null;
+        if(moovieListId == -1){
+            List<MoovieListCard> cards = moovieListDao.getMoovieListCards(name,ownerUsername, MoovieListDao.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE, DEFAULT_PAGE_SIZE_CARDS, 0 );
+            if(cards.size() != 1){
+                throw new MoovieListNotFoundException("MoovieList: " + name+ " of: " +ownerUsername+ " not found");
+            }
+             card = cards.get(0);
+             content = getMoovieListContent(card.getMoovieListId(),orderBy,sortOrder,size,pageNumber);
+        }
+        else{
+            card = moovieListDao.getMoovieListCardById(moovieListId).get();
+            content = getMoovieListContent(moovieListId,orderBy,sortOrder,size,pageNumber);
+        }
         return new MoovieListDetails(card,content);
+
     }
 
-    @Override
-    public MoovieListDetails getWatchlistDetails(String ownerUsername, String orderBy, String sortOrder, int size, int pageNumber) {
-//        SOLO existe una lista Watchlist DEFAULT_PRIVATE por user, es seguro asumir que el resultado es una lista con unicamente lo pedido
-        MoovieListCard card = moovieListDao.getMoovieListCards("Watchlist",ownerUsername, MoovieListDao.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE, DEFAULT_PAGE_SIZE_CARDS, 0 ).get(0);
-        List<MoovieListContent> content = getMoovieListContent(card.getMoovieListId(),orderBy,sortOrder,size,pageNumber);
-        return new MoovieListDetails(card,content);
-    }
-
-    @Override
-    public MoovieListDetails getWatchedDetails(String ownerUsername, String orderBy, String sortOrder, int size, int pageNumber) {
-        //        SOLO existe una lista Watched DEFAULT_PRIVATE por user, es seguro asumir que el resultado es una lista con unicamente lo pedido
-        MoovieListCard card = moovieListDao.getMoovieListCards("Watched",ownerUsername, MoovieListDao.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE, DEFAULT_PAGE_SIZE_CARDS, 0 ).get(0);
-        List<MoovieListContent> content = getMoovieListContent(card.getMoovieListId(),orderBy,sortOrder,size,pageNumber);
-        return new MoovieListDetails(card,content);
-    }
 
     @Override
     public MoovieList createMoovieList(String name, int type, String description) {
@@ -198,7 +196,6 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public int countWatchedMovies(List<MoovieListContent> mediaList) {
         int watchedCount = 0;
-
         for (MoovieListContent media : mediaList) {
             if (media.isWatched()) {
                 watchedCount++;
