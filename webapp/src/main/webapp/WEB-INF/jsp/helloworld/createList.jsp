@@ -36,7 +36,7 @@
                 <div>
                     <form id="filter-form" class="mb-2 d-flex flex-row justify-content-between" action="${pageContext.request.contextPath}/createList" method="get" onsubmit="beforeSubmit()">
                         <input type="hidden"  id="selected-media-input" name="s" />
-                        <div class="d-flex flex-row">
+                        <div role="group" class="input-group d-flex flex-row m-1">
                             <select name="m" class="form-select filter-width" aria-label="Filter!">
                                 <option ${'Movies and Series' == param.m ? 'selected' : ''}>Movies and Series</option>
                                 <option  ${'Movies' == param.m ? 'selected' : ''}>Movies</option>
@@ -44,13 +44,13 @@
                             </select>
                             <input type="hidden" name="g" id="hiddenGenreInput">
                             <div class="dropdown">
-                                <button style="height:100%;width: 150px;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                <button style="height:100%;;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                                     Genres
                                 </button>
                                 <div class="dropdown-menu scrollableDiv flex-wrap p-4">
                                     <c:forEach var="genre" items="${genresList}">
                                         <div class="form-check">
-                                            <input ${fn:contains(param.g,genre)? 'checked':''} type="checkbox" class="form-check-input" id="dropdownCheck${genre}">
+                                            <label for="dropdownCheck${genre}"></label><input ${fn:contains(param.g,genre)? 'checked':''} type="checkbox" class="form-check-input" id="dropdownCheck${genre}">
                                             <label class="form-check-label" for="dropdownCheck${genresList.indexOf(genre)}">${genre}</label>
                                         </div>
                                     </c:forEach>
@@ -58,7 +58,7 @@
                             </div>
                             <button class="btn btn-outline-success" type="submit" >Apply filters</button>
                         </div>
-                        <div class="d-flex flex-row">
+                        <div role="group" class="input-group d-flex flex-row m-1">
                             <input class="form-control me-2" type="search" name="q" value="${param.q}" placeholder="Search" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Search</button>
                             <a style="height: 100%;" class="btn btn-outline-success align-bottom" href="${pageContext.request.contextPath}/createList">
@@ -97,7 +97,13 @@
                         </div>
                     </c:forEach>
                 </div>
-
+                <div class="m-1">
+                    <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+                        <c:param name="mediaPages" value="${numberOfPages}"/>
+                        <c:param name="currentPage" value="${currentPage + 1}"/>
+                        <c:param name="url" value="/createList?s=${param.s}&m=${param.m}&g=${param.g}&q=${param.q}"/>
+                    </c:import>
+                </div>
             </div>
             <div id="preview" style="position: relative" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
                 <div class="image-blur height-full background" style="background: dimgray"></div>
