@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface GenreService {
     List<String> getAllGenres();
-    List<String> getGenresForMedia(int mediaId)
+    List<String> getGenresForMedia(int mediaId);
 }

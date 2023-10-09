@@ -132,7 +132,7 @@ public class ListController {
     public ModelAndView list(@PathVariable("id") final int moovieListId, @RequestParam(value = "page", defaultValue = "1") final int pageNumber, @RequestParam(value="orderBy", defaultValue = "name") final String orderBy, @RequestParam(value="order", defaultValue = "asc") final String order) {
         final ModelAndView mav = new ModelAndView("helloworld/moovieList");
         int pagesSize=moovieListService.DEFAULT_PAGE_SIZE_CONTENT;
-        MoovieListDetails myList=moovieListService.getMoovieListDetails(moovieListId,orderBy,order,pagesSize,pageNumber - 1);
+        MoovieListDetails myList=moovieListService.getMoovieListDetails(moovieListId,null,null,orderBy,order,pagesSize,pageNumber - 1);
         final MoovieListCard moovieListCard = myList.getCard();
         int mediaCountForMoovieList = moovieListCard.getSize();
         int numberOfPages = (int) Math.ceil(mediaCountForMoovieList * 1.0 / pagesSize);
