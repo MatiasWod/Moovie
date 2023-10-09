@@ -20,11 +20,11 @@
     <script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=87"></script>
     <script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=87"></script>
 
-    <title>Moovie ${user.username}</title>
+    <title>Moovie ${profile.username}</title>
 </head>
 <body id="grad">
 <c:import url="navBar.jsp">
-    <c:param name="userName" value="${myUser.username}"/>
+    <c:param name="userName" value="${profile.username}"/>
 </c:import>
 <sec:authorize access="isAuthenticated()">
     <div style="align-items: center" class="d-flex flex-column">
@@ -113,26 +113,28 @@
         <hr class="my-8">
 
         <div class="btn-group m-2" role="group" aria-label="Basic radio toggle button group">
+            <c:if test="${isMe}">
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio-watched-list" autocomplete="off" ${(param.list != null && param.list == 'watched-list')? 'checked':''}>
+                <label class="btn btn-outline-success" for="btnradio-watched-list">Watched</label>
+            </c:if>
+
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio-user-lists" autocomplete="off" ${(param.list == null || param.list == '' || param.list == 'user-lists')? 'checked':''}>
+            <label class="btn btn-outline-success" for="btnradio-user-lists">User Lists</label>
+
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio-liked-lists" autocomplete="off" ${(param.list != null && param.list == 'liked-lists')? 'checked':''}>
+            <label class="btn btn-outline-success" for="btnradio-liked-lists">Liked Lists</label>
+
             <form id="selected-radio" action="${pageContext.request.contextPath}/profile/${profile.username}">
                 <input type="hidden" name="list" id="listField">
             </form>
-                <c:if test="${isMe}">
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio-watched-list" autocomplete="off" ${(param.list != null && param.list == 'watched-list')? 'checked':''}>
-                    <label class="btn btn-outline-success" for="btnradio-watched-list">Watched</label>
-                </c:if>
 
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio-user-lists" autocomplete="off" ${(param.list == null || param.list == '' || param.list == 'user-lists')? 'checked':''}>
-                <label class="btn btn-outline-success" for="btnradio-user-lists">User Lists</label>
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio-reviews" autocomplete="off" ${(param.list != null && param.list == 'reviews')? 'checked':''}>
+            <label class="btn btn-outline-success" for="btnradio-reviews">Reviews</label>
 
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio-liked-lists" autocomplete="off" ${(param.list != null && param.list == 'liked-lists')? 'checked':''}>
-                <label class="btn btn-outline-success" for="btnradio-liked-lists">Liked Lists</label>
-
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio-reviews" autocomplete="off" ${(param.list != null && param.list == 'reviews')? 'checked':''}>
-                <label class="btn btn-outline-success" for="btnradio-reviews">Reviews</label>
-                <c:if test="${isMe}">
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio-watchlist" autocomplete="off" ${(param.list != null && param.list == 'watchlist')? 'checked':''}>
-                    <label class="btn btn-outline-success" for="btnradio-watchlist">Watchlist</label>
-                </c:if>
+            <c:if test="${isMe}">
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio-watchlist" autocomplete="off" ${(param.list != null && param.list == 'watchlist')? 'checked':''}>
+                <label class="btn btn-outline-success" for="btnradio-watchlist">Watchlist</label>
+            </c:if>
         </div>
 
         <c:if test="${param.list == 'watched-list' || param.list == 'watchlist'}">
