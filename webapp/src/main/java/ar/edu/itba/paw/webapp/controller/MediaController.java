@@ -165,6 +165,7 @@ public class MediaController {
         try {
             moovieListService.insertMediaIntoMoovieList(listId, Collections.singletonList(mediaId));
             redirectAttributes.addFlashAttribute("successMessage", "Media has been successfully added to your list.");
+            redirectAttributes.addFlashAttribute("successMooovieListId", listId);
         } catch (UnableToInsertIntoDatabase exception) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to insert media into the list. Already in the list.");
         }

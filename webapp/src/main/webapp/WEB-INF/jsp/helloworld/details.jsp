@@ -246,7 +246,7 @@
         <c:if test="${not empty successMessage}">
             <div class="alert alert-success alert-dismissible" style="margin: 10px" role="alert">
                 <div class="d-flex justify-content-between align-items-center">
-                    <div>${successMessage}</div>
+                    <div>${successMessage} Moovie List Id = <a href="${pageContext.request.contextPath}/list/${successMooovieListId}">${successMooovieListId}</a></div>
                     <button type="button" class="close btn btn-success" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
