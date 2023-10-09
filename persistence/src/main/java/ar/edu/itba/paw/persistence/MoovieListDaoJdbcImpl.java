@@ -146,9 +146,8 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         sql.append(" WHERE mlc.moovielistid = ? ");
         args.add(moovieListId);
 
-        if(orderBy!=null && orderBy.length() !=0 ){
-            sql.append(" ORDER BY ? ");
-            args.add(orderBy);
+        if(orderBy!=null && !orderBy.isEmpty()){
+            sql.append(" ORDER BY ").append(orderBy);
         }
         sql.append(" LIMIT ? OFFSET ? ;");
         args.add(size);
