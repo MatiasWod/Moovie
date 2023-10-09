@@ -23,7 +23,6 @@ public interface MediaService {
     List<Media> getMediaInMoovieList(int moovieListId, int size, int pageNumber);
 
     //Get the Tv or Movie details data
-    //TODO add actors and proviers to the querys
     Media getMediaById(int mediaId);
     Movie getMovieById(int mediaId);
     TVSerie getTvById(int mediaId);

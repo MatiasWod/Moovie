@@ -73,21 +73,12 @@ public class MoovieListServiceImpl implements MoovieListService{
     public List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy,String sortOrder, int size, int pageNumber) {
         MoovieList ml = getMoovieListById(moovieListId);
         //If the previous didnt throw exception, we have the permissions needed to perform the next action
-        List<MoovieListContent> mlc = moovieListDao.getMoovieListContent(moovieListId, orderBy,sortOrder ,size, pageNumber);
         try{
-            if(ml.getUserId() != userService.getInfoOfMyUser().getUserId() ){
-                for(MoovieListContent m : mlc){
-                    m.setWatched(false);
-                }
-            }
-        }catch (UserNotLoggedException e){
-            for(MoovieListContent m : mlc){
-                m.setWatched(false);
-            }
+            int userid = userService.getInfoOfMyUser().getUserId();
+            return moovieListDao.getMoovieListContent(moovieListId, userid , orderBy,sortOrder ,size, pageNumber);
+        } catch(UserNotLoggedException e){
+            return moovieListDao.getMoovieListContent(moovieListId, -1 , orderBy,sortOrder ,size, pageNumber);
         }
-
-        
-        return mlc;
     }
 
     @Override
