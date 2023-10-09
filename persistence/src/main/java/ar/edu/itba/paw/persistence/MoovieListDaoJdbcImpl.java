@@ -186,14 +186,15 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     @Override
-    public List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy,String sortOrder ,int size, int pageNumber){
+    public List<MoovieListContent> getMoovieListContent(int moovieListId, int userid , String orderBy, String sortOrder ,int size, int pageNumber){
         StringBuilder sql = new StringBuilder("SELECT *,  ");
         ArrayList<Object> args = new ArrayList<>();
 
         //Add the part of the query that checks if its watched by its owner
-        sql.append(" (CASE WHEN EXISTS ( SELECT 1 FROM moovielists ml INNER JOIN moovieListsContent mlc2 ON ml.moovielistid = mlc2.moovielistid ");
-        sql.append(" WHERE m.mediaId = mlc2.mediaId AND ml.name = 'Watched' ) THEN true ELSE false END) AS isWatched FROM moovieListsContent mlc ");
-        sql.append(" INNER JOIN media m ON mlc.mediaId = m.mediaId ");
+        sql.append(" (CASE WHEN EXISTS ( SELECT 1 FROM moovielists ml INNER JOIN moovieListsContent mlc2 ON ml.moovielistid = mlc2.moovielistid  ");
+        sql.append(" WHERE m.mediaId = mlc2.mediaId AND ml.name = 'Watched' AND ml.userid = ? ) THEN true ELSE false END) AS isWatched FROM moovieListsContent mlc ");
+        args.add(userid);
+        sql.append(" INNER JOIN media m ON mlc.mediaId = m.mediaId  ");
 
         sql.append(" WHERE mlc.moovielistid = ? ");
         args.add(moovieListId);

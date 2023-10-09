@@ -26,7 +26,7 @@ public interface MoovieListDao {
 
     Optional<MoovieList> getMoovieListById(int moovieListId);
     Optional<MoovieListCard> getMoovieListCardById(int moovieListId);
-    List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy,String sortOrder, int size, int pageNumber);
+    List<MoovieListContent> getMoovieListContent(int moovieListId, int userid, String orderBy,String sortOrder, int size, int pageNumber);
     List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , int size, int pageNumber);
     int getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber);
 
