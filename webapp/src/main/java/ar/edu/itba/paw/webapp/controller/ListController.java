@@ -4,7 +4,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
-import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
+import ar.edu.itba.paw.models.MoovieList.MoovieListDetails;
 import ar.edu.itba.paw.services.GenreService;
 import ar.edu.itba.paw.services.MediaService;
 import ar.edu.itba.paw.services.MoovieListService;
@@ -131,15 +131,17 @@ public class ListController {
     @RequestMapping("/list/{id:\\d+}")
     public ModelAndView list(@PathVariable("id") final int moovieListId, @RequestParam(value = "page", defaultValue = "1") final int pageNumber, @RequestParam(value="orderBy", defaultValue = "name") final String orderBy, @RequestParam(value="order", defaultValue = "asc") final String order) {
         final ModelAndView mav = new ModelAndView("helloworld/moovieList");
-        mav.addObject("moovieList",moovieListService.getMoovieListById(moovieListId));
-        List<MoovieListContent> mediaList=moovieListService.getMoovieListContent(moovieListId,orderBy,order,MoovieListService.DEFAULT_PAGE_SIZE_CONTENT,pageNumber - 1);
-        mav.addObject("mediaList",mediaList);
-        mav.addObject("watchedCount",moovieListService.countWatchedMovies(mediaList));
-        final MoovieListCard moovieListCard = moovieListService.getMoovieListCardById(moovieListId);
+        int pagesSize=moovieListService.DEFAULT_PAGE_SIZE_CONTENT;
+        MoovieListDetails myList=moovieListService.getMoovieListDetails(moovieListId,orderBy,order,pagesSize,pageNumber - 1);
+        final MoovieListCard moovieListCard = myList.getCard();
         int mediaCountForMoovieList = moovieListCard.getSize();
-        int numberOfPages = (int) Math.ceil(mediaCountForMoovieList * 1.0 / moovieListService.DEFAULT_PAGE_SIZE_CONTENT);
+        int numberOfPages = (int) Math.ceil(mediaCountForMoovieList * 1.0 / pagesSize);
+
+        mav.addObject("moovieList",moovieListCard);
+        mav.addObject("mediaList",myList.getContent());
+        mav.addObject("watchedCount",moovieListService.countWatchedMovies(myList.getContent()));
         mav.addObject("initialOrder",order);
-        mav.addObject("itemsPerPage",moovieListService.DEFAULT_PAGE_SIZE_CONTENT);
+        mav.addObject("itemsPerPage",pagesSize);
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
         mav.addObject("isLiked",moovieListService.likeMoovieListStatusForUser(moovieListId));

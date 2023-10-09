@@ -41,7 +41,6 @@
 
         </div>
         <div class="col">
-
             <!-- Title and Details -->
             <h1>${media.name} <sup class="badge text-bg-light border border-black"
                                    style="font-size: 14px;">${media.status}</sup>
@@ -92,14 +91,17 @@
                 ${media.tmdbRating}
             </h1>
             <!-- Watch it on -->
-            <div class="d-flex flex-row  align-items-center ">
-                <c:forEach var="provider" items="${providerList}">
-                        <span class="badge text-bg-light border border-black" style="margin: 3px">
-                        <img src="${provider.logoPath}" alt="${provider.providerName} logo not found"
-                             style="height: 1.6em; margin-right: 5px;">
-                        ${provider.providerName}
-                            </span>
-                </c:forEach>
+            <div class="d-flex flex-row align-items-center">
+                <div class="providers-container" style="max-width: 80%; overflow-x: auto; max-height: 200px;">
+                    <!-- Providers content here -->
+                    <c:forEach var="provider" items="${providerList}">
+            <span class="badge text-bg-light border border-black" style="margin: 3px;">
+                <img src="${provider.logoPath}" alt="${provider.providerName} logo not found"
+                     style="height: 1.6em; margin-right: 5px;">
+                ${provider.providerName}
+            </span>
+                    </c:forEach>
+                </div>
             </div>
             <!-- Genres -->
             <div class="d-flex flex-row  align-items-center ">
