@@ -21,4 +21,7 @@ function roundUpProgress() {
 }
 
 // Call the roundUpProgress function on page load
-window.onload = roundUpProgress;
+
+window.onload = function (){
+    roundUpProgress();
+}

@@ -106,7 +106,7 @@
             <div id="preview" style="position: relative" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
                 <div class="image-blur height-full background" style="background: dimgray"></div>
                 <form:form modelAttribute="ListForm" action="${pageContext.request.contextPath}/createListAction"
-                           method="POST">
+                           method="POST" id="create-form">
                 <div style="position: absolute;top: 0;left: 0;height: 100%;overflow: hidden" class="d-flex p-4 container flex-column">
                     <h2 class="m-2">List Name:</h2>
                     <form:input path="listName" name="listName" id="list-name" required="required"
@@ -114,7 +114,7 @@
                     <span id="listNameCharCount" class="text-muted"><span id="listNameRemainingChars">0</span>/50</span>
                     <form:errors path="listName" cssClass="error"/>
                     <h3 class="m-2" >Description:</h3>
-                    <form:textarea path="listDescription" class="review-textarea" rows="3" name="listDescription"
+                    <form:textarea path="listDescription" id="list-description" class="review-textarea" rows="3" name="listDescription"
                                    placeholder="Your description..." maxlength="255" />
                     <span id="listDescriptionCharCount" class="text-muted"><span id="listDescriptionRemainingChars">0</span>/255</span>
                     <form:errors path="listDescription" cssClass="error"/>

@@ -92,10 +92,54 @@ window.onload = function() {
         selectedMediaId.push(parseInt(elems[j].id));
         selectedMedia.push(elems[j++].innerHTML);
     }
-    updateSelectedMediaInput();
 
+    updateSelectedMediaInput();
 };
 
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    if(localStorage.getItem('formSubmitted')){
+        deleteStorage();
+        localStorage.removeItem('formSubmitted');
+        console.log('storageDeleted');
+    }
+
+    const storedTitleValue = localStorage.getItem("titleValue");
+    const titleInput = document.getElementById("list-name");
+    if (storedTitleValue) {
+        titleInput.value = storedTitleValue;
+    }
+    titleInput.addEventListener("input", function() {
+        localStorage.setItem("titleValue", titleInput.value);
+    });
+
+    const storedDescriptionValue = localStorage.getItem("descriptionValue");
+    const descriptionInput = document.getElementById("list-description");
+    if (storedDescriptionValue) {
+        descriptionInput.value = storedDescriptionValue;
+    }
+    descriptionInput.addEventListener("input", function() {
+        localStorage.setItem("descriptionValue", descriptionInput.value);
+    });
+
+    var form = document.getElementById('create-form');
+    form.addEventListener('submit', function(e) {
+        localStorage.setItem('formSubmitted', 'true');
+        console.log('FORM SUBMITTED')
+    });
+
+});
+
+function deleteStorage() {
+
+    localStorage.removeItem("titleValue")
+    const titleInput = document.getElementById("list-name");
+    titleInput.value = ""
+    localStorage.removeItem("descriptionValue")
+    const descriptionInput = document.getElementById("list-description");
+    descriptionInput.value = ""
+}
 
 function beforeSubmit() {
     const selectedOptions = [];
@@ -106,7 +150,6 @@ function beforeSubmit() {
     console.log(selectedOptions)
 
     document.getElementById('hiddenGenreInput').value = selectedOptions.join(",");
-    // mandar todas la media de las lists al url
 }
 
 function toggleGenreSelect() {
