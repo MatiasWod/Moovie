@@ -38,7 +38,7 @@ function displayMediaName(name, id) {
 
 function updateSelectedMediaInput() {
     const selectedMediaInput = document.getElementById("selected-media-input");
-    selectedMediaInput.value = JSON.stringify(selectedMediaId);
+    selectedMediaInput.value = JSON.stringify(selectedMediaId).replaceAll(']','').replaceAll('[','');
 
     const selectedCreateInput = document.getElementById("selected-create-media");
     selectedCreateInput.value =selectedMediaId.map(Number);
@@ -86,6 +86,7 @@ function showSelectedMediaList() {
 window.onload = function() {
 
     let elems = document.getElementsByClassName("distinct-class");
+    console.log(elems[0])
     let j = 0;
     while (elems[j] != null){
         selectedMediaId.push(parseInt(elems[j].id));
@@ -93,21 +94,10 @@ window.onload = function() {
     }
     updateSelectedMediaInput();
 
-    // const filterTypesSelect = document.getElementById("filter-types");
-    // const genreSelect = document.getElementById("genre-select");
-
-    // if (filterTypesSelect.value === "Genre") {
-    //     genreSelect.style.display = "block";
-    // }
 };
 
-function beforeSubmit() {
-/*    const filterTypesSelect = document.getElementById("filter-types");
-    const genreSelect = document.getElementById("genre-select");
 
-    if (filterTypesSelect.value === "Popular") {
-        genreSelect.removeAttribute("name");
-    }*/
+function beforeSubmit() {
     const selectedOptions = [];
     document.querySelectorAll('.form-check-input:checked').forEach(function(checkbox) {
         selectedOptions.push(checkbox.nextElementSibling.innerText);
@@ -117,7 +107,7 @@ function beforeSubmit() {
 
     document.getElementById('hiddenGenreInput').value = selectedOptions.join(",");
     // mandar todas la media de las lists al url
-};
+}
 
 function toggleGenreSelect() {
     const filterTypesSelect = document.getElementById("filter-types");
@@ -128,4 +118,4 @@ function toggleGenreSelect() {
     } else {
         genreSelect.style.display = "none";
     }
-};
+}

@@ -26,9 +26,7 @@
 </head>
 <body style="background: whitesmoke">
 
-<c:import url="navBar.jsp">
-    <c:param name="userName" value="${user.username}"/>
-</c:import>
+<c:import url="navBar.jsp"/>
 <sec:authorize access="isAuthenticated()">
     <div class="container d-flex flex-column">
         <div class="container d-flex flex-row ">
