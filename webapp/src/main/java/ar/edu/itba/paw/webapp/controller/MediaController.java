@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.exceptions.FailedToInsertToListException;
 import ar.edu.itba.paw.exceptions.MediaNotFoundException;
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.Media;
@@ -180,7 +179,7 @@ public class MediaController {
         try {
             moovieListService.insertMediaIntoMoovieList(listId, Collections.singletonList(mediaId));
             redirectAttributes.addFlashAttribute("successMessage", "Media has been successfully added to your list.");
-        } catch (FailedToInsertToListException exception) {
+        } catch (UnableToInsertIntoDatabase exception) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to insert media into the list. Already in the list.");
         }
         return new ModelAndView("redirect:/details/" + mediaId);
