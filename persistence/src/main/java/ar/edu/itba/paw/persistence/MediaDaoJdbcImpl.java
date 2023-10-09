@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.exceptions.InvalidParametersException;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
@@ -18,6 +19,10 @@ import java.util.Optional;
 @Repository
 public class MediaDaoJdbcImpl implements MediaDao {
     private final JdbcTemplate jdbcTemplate;
+
+    static final int TYPE_MOVIE = 0;
+    static final int TYPE_TVSERIE = 1;
+    static final int TYPE_ALL = 2;
 
     private static final RowMapper<Media> MEDIA_ROW_MAPPER = (rs, rowNum) -> new Media(
             rs.getInt("mediaId"),
@@ -95,8 +100,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
 
     @Override
-    public List<Media> getMedia(int type, String search, List<String> genres,
-                                String orderBy, int size, int pageNumber) {
+    public List<Media> getMedia(int type, String search, List<String> genres, String actor, String director, String creator, String orderBy, int size, int pageNumber) {
         StringBuilder sql = new StringBuilder("SELECT * FROM media ");
         ArrayList<Object> args = new ArrayList<>();
 
@@ -125,6 +129,26 @@ public class MediaDaoJdbcImpl implements MediaDao {
             sql.deleteCharAt(sql.length() - 1);
             sql.deleteCharAt(sql.length() - 1);
             sql.append(" ) ");
+        }
+
+        //Add the actors, directors, creators filter
+        if(actor!=null && actor.length()>0){
+            sql.append(" AND media.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
+            args.add('%' + actor + '%');
+        }
+        if(director!=null && director.length()>0){
+            if(type == TYPE_TVSERIE){
+                throw new InvalidParametersException("Theres no directors for series");
+            }
+            sql.append(" AND media.mediaId IN (SELECT mediaid FROM movies m WHERE director ILIKE ? ) ");
+            args.add('%' + director + '%');
+        }
+        if(creator!=null && creator.length()>0){
+            if(type == TYPE_MOVIE){
+                throw new InvalidParametersException("Theres no creators for movies");
+            }
+            sql.append(" AND media.mediaId IN (SELECT mediaid FROM creators c WHERE creatorname ILIKE ? ) ");
+            args.add('%' + creator + '%');
         }
 
         // Order by
@@ -163,7 +187,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
     }
 
     @Override
-    public int getTotalMediaCount(int type, String search, List<String> genres) {
+    public int getMediaCount(int type, String search, List<String> genres, String actor, String director, String creator) {
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM media ");
         ArrayList<Object> args = new ArrayList<>();
 
@@ -192,6 +216,26 @@ public class MediaDaoJdbcImpl implements MediaDao {
             sql.deleteCharAt(sql.length() - 1);
             sql.deleteCharAt(sql.length() - 1);
             sql.append(" ) ");
+        }
+
+        //Add the actors, directors, creators filter
+        if(actor!=null && actor.length()>0){
+            sql.append(" AND media.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
+            args.add('%' + actor + '%');
+        }
+        if(director!=null && director.length()>0){
+            if(type == TYPE_TVSERIE){
+                throw new InvalidParametersException("Theres no directors for series");
+            }
+            sql.append(" AND media.mediaId IN (SELECT mediaid FROM movies m WHERE director ILIKE ? ) ");
+            args.add('%' + director + '%');
+        }
+        if(creator!=null && creator.length()>0){
+            if(type == TYPE_MOVIE){
+                throw new InvalidParametersException("Theres no creators for movies");
+            }
+            sql.append(" AND media.mediaId IN (SELECT mediaid FROM creators c WHERE creatorname ILIKE ? ) ");
+            args.add('%' + director + '%');
         }
 
         // Execute the query
