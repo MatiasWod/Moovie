@@ -75,7 +75,6 @@ public class ListController {
     public ModelAndView createList(@RequestParam(value = "g", required = false) List<String> genres,
                                    @RequestParam(value = "m", required = false,defaultValue = "Movies and Series") String media,
                                    @RequestParam(value = "q", required = false) String query,
-                                   @RequestParam(value = "s", required = false) List<String> selected,
                                    @RequestParam(value = "page",defaultValue = "1") final int pageNumber,
                                    @ModelAttribute("ListForm") final CreateListForm form) {
 
@@ -99,20 +98,6 @@ public class ListController {
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
         mav.addObject("genresList", genreService.getAllGenres());
-
-        // TODO: La parte de selected podria estar mejor
-        if (selected != null && !selected.isEmpty()) {
-            List<Media> selectedMedia = new ArrayList<>();
-            for (String id : selected) {
-                String numericPart = extractNumericPart(id);
-                if (numericPart != null) {
-                    int mediaId = Integer.parseInt(numericPart);
-                    Media aux = mediaService.getMediaById(mediaId);
-                    selectedMedia.add(aux);
-                }
-            }
-            mav.addObject("selected", selectedMedia);
-        }
         return mav;
     }
 
@@ -166,7 +151,7 @@ public class ListController {
     @RequestMapping(value = "/createListAction", method = RequestMethod.POST)
     public ModelAndView createListAction(@Valid @ModelAttribute("ListForm") final CreateListForm form, final BindingResult errors) {
         if (errors.hasErrors()) {
-            return createList(null, null, null, null,1, form);
+            return createList(null, null, null,1, form);
         }
 
         MoovieList list = moovieListService.createMoovieListWithContent(form.getListName(), moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC , form.getListDescription(), form.getMediaIdsList());

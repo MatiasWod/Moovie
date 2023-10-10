@@ -101,7 +101,6 @@ public class MoovieListServiceImpl implements MoovieListService{
         return moovieListDao.getLikedMoovieListCards(userId, type, size, pageNumber);
     }
 
-//TODO: MANEJO DE EXCEPCIONES EN getMoovieListDetails por el Optional<>.get()
     @Override
     public MoovieListDetails getMoovieListDetails(int moovieListId, String name, String ownerUsername, String orderBy, String sortOrder, int size, int pageNumber) {
         MoovieListCard card = null;

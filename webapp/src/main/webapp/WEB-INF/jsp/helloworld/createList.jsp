@@ -33,7 +33,7 @@
             <div class="container d-flex flex-column">
                 <div>
                     <form id="filter-form" class="mb-2 d-flex flex-row justify-content-between" action="${pageContext.request.contextPath}/createList" method="get" onsubmit="beforeSubmit()">
-                        <input type="hidden"  id="selected-media-input" name="s" />
+                        <input type="hidden"  id="selected-media-input" />
                         <div role="group" class="input-group d-flex flex-row m-1">
                             <select name="m" class="form-select filter-width" aria-label="Filter!">
                                 <option ${'Movies and Series' == param.m ? 'selected' : ''}>Movies and Series</option>
@@ -99,36 +99,47 @@
                     <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
                         <c:param name="mediaPages" value="${numberOfPages}"/>
                         <c:param name="currentPage" value="${currentPage + 1}"/>
-                        <c:param name="url" value="/createList?s=${param.s}&m=${param.m}&g=${param.g}&q=${param.q}"/>
+                        <c:param name="url" value="/createList?m=${param.m}&g=${param.g}&q=${param.q}"/>
                     </c:import>
                 </div>
             </div>
             <div id="preview" style="position: relative" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
                 <div class="image-blur height-full background" style="background: dimgray"></div>
-                <form:form modelAttribute="ListForm" action="${pageContext.request.contextPath}/createListAction"
-                           method="POST" id="create-form">
                 <div style="position: absolute;top: 0;left: 0;height: 100%;overflow: hidden" class="d-flex p-4 container flex-column">
-                    <h2 class="m-2">List Name:</h2>
-                    <form:input path="listName" name="listName" id="list-name" required="required"
-                                class="form-control me-2 createListInput" maxlength="50"/>
-                    <span id="listNameCharCount" class="text-muted"><span id="listNameRemainingChars">0</span>/50</span>
-                    <form:errors path="listName" cssClass="error"/>
-                    <h3 class="m-2" >Description:</h3>
-                    <form:textarea path="listDescription" id="list-description" class="review-textarea" rows="3" name="listDescription"
-                                   placeholder="Your description..." maxlength="255" />
-                    <span id="listDescriptionCharCount" class="text-muted"><span id="listDescriptionRemainingChars">0</span>/255</span>
-                    <form:errors path="listDescription" cssClass="error"/>
-                    <form:input path="mediaIdsList" type="hidden" name="mediaIds" id="selected-create-media"/>
-                    </form:form>
-                    <div class="scrollableMedia d-flex flex-column m-2 p-2" id="selected-media-names">
-                        <c:forEach var="sel" items="${selected}">
-                            <div class="d-flex justify-content-between ">
-                                <div id="${sel.mediaId}" class="distinct-class">${sel.name}</div>
-                                <i class="btn bi bi-trash" onclick="deleteMedia(this)"></i>
-                            </div>
-                        </c:forEach>
+
+                    <div class="d-flex justify-content-between">
+                        <h2 class="m-2">List Name:</h2>
+                        <button class="btn btn-danger m-2" onclick="deleteStorage()">Clear all</button>
                     </div>
-                    <button id="preview-details" type="submit" class="m-4 btn btn-outline-success align-bottom">Create List</button>
+                    <div class="d-flex flex-column">
+                        <form:form modelAttribute="ListForm" action="${pageContext.request.contextPath}/createListAction"
+                                   method="POST" id="create-form">
+                            <form:input path="listName" name="listName" id="list-name" required="required"
+                                        class="form-control me-2 createListInput" maxlength="50"/>
+                            <span id="listNameCharCount" class="text-muted"><span id="listNameRemainingChars">0</span>/50</span>
+                            <form:errors path="listName" cssClass="error"/>
+                            <h3 class="m-2" >Description:</h3>
+                            <form:textarea path="listDescription" id="list-description" class="review-textarea" rows="3" name="listDescription"
+                                           placeholder="Your description..." maxlength="255" />
+                            <span id="listDescriptionCharCount" class="text-muted"><span id="listDescriptionRemainingChars">0</span>/255</span>
+                            <form:errors path="listDescription" cssClass="error"/>
+                            <form:input path="mediaIdsList" type="hidden" name="mediaIds" id="selected-create-media"/>
+                            <div class="scrollableMedia d-flex flex-column m-2 p-2" id="selected-media-names">
+                                <c:forEach var="sel" items="${selected}">
+                                    <div class="other-distinct d-flex justify-content-between ">
+                                        <div id="${sel.mediaId}" class="distinct-class">${sel.name}</div>
+                                        <i class="btn bi bi-trash" onclick="deleteMedia(this)"></i>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                            <button id="preview-details" type="submit" class="m-4 btn btn-outline-success align-bottom">Create List</button>
+                        </form:form>
+                    </div>
+
+                    <div>
+                        <h4>Feel free to use other features on the website!
+                        We will keep your list progress.</h4>
+                    </div>
                     <div class="d-flex" id="preview-list"></div>
                 </div>
             </div>

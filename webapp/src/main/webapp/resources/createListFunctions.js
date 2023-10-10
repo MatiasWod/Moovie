@@ -1,14 +1,6 @@
 let selectedMedia = [];
 let selectedMediaId = [];
 
-
-
-function fillMedia(id, name){
-    console.log('media filled\n')
-    selectedMedia.push(name);
-    selectedMediaId.push(id);
-}
-
 function deleteGenre(element) {
     let aux = document.getElementById("dropdownCheck" + element.previousElementSibling.innerText.trim());
     aux.checked = false;
@@ -20,26 +12,46 @@ function deleteGenre(element) {
 function displayMediaName(name, id) {
 
     if (!selectedMediaId.includes(id)){
-        selectedMedia.push(name);
+        selectedMedia.push(name.replaceAll(",",""));
         selectedMediaId.push(id);
+        console.log(selectedMedia)
+
+        localStorage.setItem("mediaNames",JSON.stringify(selectedMedia).replaceAll('"','').replaceAll(']','').replaceAll('[',''))
+
+        console.log(localStorage.getItem("mediaNames"))
+
         const selectedMediaDiv = document.getElementById("selected-media-names");
         const newElement = document.createElement('div');
         newElement.id = "list-element-preview";
-        newElement.className = "d-flex justify-content-between";
+        newElement.className = "d-flex other-distinct justify-content-between";
         newElement.innerHTML = '<a>' + name +
             '</a>' +
             '<i class="btn bi bi-trash" onclick="deleteMedia(this)"></i>';
         selectedMediaDiv.appendChild(newElement);
         updateSelectedMediaInput();
     }
+}
 
+function displayAllMediaNames(){
 
+    for(let i = 0; i < selectedMedia.length ; i++){
+        let name = selectedMedia[i]
+        let id = selectedMediaId[i]
+        const selectedMediaDiv = document.getElementById("selected-media-names");
+        const newElement = document.createElement('div');
+        newElement.id = "list-element-preview";
+        newElement.className = "d-flex other-distinct justify-content-between";
+        newElement.innerHTML = '<a>' + name +
+            '</a>' +
+            '<i class="btn bi bi-trash" onclick="deleteMedia(this)"></i>';
+        selectedMediaDiv.appendChild(newElement);
+    }
 }
 
 function updateSelectedMediaInput() {
     const selectedMediaInput = document.getElementById("selected-media-input");
     selectedMediaInput.value = JSON.stringify(selectedMediaId).replaceAll(']','').replaceAll('[','');
-
+    localStorage.setItem("selectedMediaIds",selectedMediaInput.value);
     const selectedCreateInput = document.getElementById("selected-create-media");
     selectedCreateInput.value =selectedMediaId.map(Number);
 }
@@ -50,53 +62,40 @@ function deleteMedia(element) {
     if (index !== -1) {
         selectedMedia.splice(index, 1);
         selectedMediaId.splice(index, 1);
+        localStorage.setItem("mediaNames",JSON.stringify(selectedMedia).replaceAll('"','').replaceAll(']','').replaceAll('[',''))
+        localStorage.setItem("selectedMediaIds",JSON.stringify(selectedMediaId).replaceAll(']','').replaceAll('[',''))
 
     }
     element.parentElement.remove();
     updateSelectedMediaInput();
 }
 
-function resetSelectedMediaNames() {
-    const selectedMediaDiv = document.getElementById("selected-media-names");
-    selectedMediaDiv.innerHTML = '';
-    selectedMedia = [];
-    selectedMediaId = [];
-    updateSelectedMediaInput();
-}
-
-function showSelectedMediaList() {
-    const selectedMediaList = selectedMedia.join(', ');
-    if (selectedMediaList.trim() === '') return;
-
-    const existingList = document.getElementById('list-result');
-
-    if (!existingList) {
-        const listDiv = document.createElement('div');
-        listDiv.innerHTML = '<div class="d-flex flex-column">' +
-            '<h4 id="result-title">Created List: </h4>' +
-            '<div style="max-height: 150px" id="list-result" class="container d-flex scrollableMedia">' + selectedMediaList + '</div>' +
-            '</div>';
-        document.getElementById("preview-list").appendChild(listDiv);
-    } else {
-        existingList.innerHTML = selectedMediaList;
-    }
-    resetSelectedMediaNames();
-}
-
 window.onload = function() {
-
     let elems = document.getElementsByClassName("distinct-class");
-    console.log(elems[0])
     let j = 0;
     while (elems[j] != null){
         selectedMediaId.push(parseInt(elems[j].id));
         selectedMedia.push(elems[j++].innerHTML);
     }
 
+    console.log(localStorage.getItem("mediaNames"))
+
+    // Obtener el String desde localStorage y convertirlo en un array de números
+    const storedMediaIds = localStorage.getItem("selectedMediaIds");
+    if (storedMediaIds) {
+        const mediaIdArray = storedMediaIds.split(",").map(Number);
+        selectedMediaId = [...selectedMediaId, ...mediaIdArray];
+    }
+
+    const storedMediaNames = localStorage.getItem("mediaNames");
+    if (storedMediaNames) {
+        const mediaArray = storedMediaNames.split(",").map(String);
+        selectedMedia = [...selectedMedia, ...mediaArray];
+    }
+
     updateSelectedMediaInput();
+    displayAllMediaNames();
 };
-
-
 
 document.addEventListener("DOMContentLoaded", function() {
     if(localStorage.getItem('formSubmitted')){
@@ -123,22 +122,28 @@ document.addEventListener("DOMContentLoaded", function() {
         localStorage.setItem("descriptionValue", descriptionInput.value);
     });
 
-    var form = document.getElementById('create-form');
+    const form = document.getElementById('create-form');
     form.addEventListener('submit', function(e) {
         localStorage.setItem('formSubmitted', 'true');
-        console.log('FORM SUBMITTED')
     });
 
 });
 
 function deleteStorage() {
-
     localStorage.removeItem("titleValue")
     const titleInput = document.getElementById("list-name");
     titleInput.value = ""
     localStorage.removeItem("descriptionValue")
     const descriptionInput = document.getElementById("list-description");
     descriptionInput.value = ""
+    const mediaNamesInputs = document.getElementsByClassName("other-distinct");
+    let i = 0;
+    while (mediaNamesInputs[i] != null){
+        mediaNamesInputs[i].remove()
+    }
+    console.log(mediaNamesInputs)
+    localStorage.removeItem("mediaNames")
+    localStorage.removeItem("selectedMediaIds")
 }
 
 function beforeSubmit() {
@@ -150,15 +155,4 @@ function beforeSubmit() {
     console.log(selectedOptions)
 
     document.getElementById('hiddenGenreInput').value = selectedOptions.join(",");
-}
-
-function toggleGenreSelect() {
-    const filterTypesSelect = document.getElementById("filter-types");
-    const genreSelect = document.getElementById("genre-select");
-
-    if (filterTypesSelect.value === "Genre") {
-        genreSelect.style.display = "block";
-    } else {
-        genreSelect.style.display = "none";
-    }
 }
