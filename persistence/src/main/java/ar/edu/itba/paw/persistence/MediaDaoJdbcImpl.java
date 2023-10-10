@@ -100,7 +100,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
 
     @Override
-    public List<Media> getMedia(int type, String search, List<String> genres, String actor, String director, String creator, String orderBy, int size, int pageNumber) {
+    public List<Media> getMedia(int type, String search, List<String> genres, String orderBy, int size, int pageNumber) {
         StringBuilder sql = new StringBuilder("SELECT * FROM media ");
         ArrayList<Object> args = new ArrayList<>();
 
@@ -110,12 +110,6 @@ public class MediaDaoJdbcImpl implements MediaDao {
             args.add(type == 1);
         } else {
             sql.append(" WHERE type IS NOT NULL ");
-        }
-
-        // Input the search
-        if (search!=null && search.length()>0) {
-            sql.append(" AND name ILIKE ? ");
-            args.add('%' + search + '%');
         }
 
         // Add the genres filter
@@ -131,24 +125,26 @@ public class MediaDaoJdbcImpl implements MediaDao {
             sql.append(" ) ");
         }
 
-        //Add the actors, directors, creators filter
-        if(actor!=null && actor.length()>0){
-            sql.append(" AND media.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
-            args.add('%' + actor + '%');
-        }
-        if(director!=null && director.length()>0){
-            if(type == TYPE_TVSERIE){
-                throw new InvalidParametersException("Theres no directors for series");
+        // Input the search, it searches in actors, media.name, creators and directors
+        if (search!=null && search.length()>0) {
+            sql.append(" AND ( " );
+            sql.append(" name ILIKE ? ");
+            args.add('%' + search + '%');
+
+            sql.append(" OR media.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
+            args.add('%' + search + '%');
+
+            if(type != TYPE_TVSERIE){
+                sql.append(" OR media.mediaId IN (SELECT mediaid FROM movies m WHERE director ILIKE ? ) ");
+                args.add('%' + search + '%');
             }
-            sql.append(" AND media.mediaId IN (SELECT mediaid FROM movies m WHERE director ILIKE ? ) ");
-            args.add('%' + director + '%');
-        }
-        if(creator!=null && creator.length()>0){
-            if(type == TYPE_MOVIE){
-                throw new InvalidParametersException("Theres no creators for movies");
+
+            if(type != TYPE_MOVIE){
+                sql.append(" OR media.mediaId IN (SELECT mediaid FROM creators c WHERE creatorname ILIKE ? ) ");
+                args.add('%' + search + '%');
             }
-            sql.append(" AND media.mediaId IN (SELECT mediaid FROM creators c WHERE creatorname ILIKE ? ) ");
-            args.add('%' + creator + '%');
+
+            sql.append(" ) ");
         }
 
         // Order by
@@ -187,7 +183,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
     }
 
     @Override
-    public int getMediaCount(int type, String search, List<String> genres, String actor, String director, String creator) {
+    public int getMediaCount(int type, String search, List<String> genres) {
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM media ");
         ArrayList<Object> args = new ArrayList<>();
 
@@ -199,11 +195,6 @@ public class MediaDaoJdbcImpl implements MediaDao {
             sql.append(" WHERE type IS NOT NULL ");
         }
 
-        // Input the search
-        if (search!=null && search.length()>0) {
-            sql.append(" AND name ILIKE ? ");
-            args.add('%' + search + '%');
-        }
 
         // Add the genres filter
         if (genres!=null && !genres.isEmpty()) {
@@ -218,24 +209,26 @@ public class MediaDaoJdbcImpl implements MediaDao {
             sql.append(" ) ");
         }
 
-        //Add the actors, directors, creators filter
-        if(actor!=null && actor.length()>0){
-            sql.append(" AND media.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
-            args.add('%' + actor + '%');
-        }
-        if(director!=null && director.length()>0){
-            if(type == TYPE_TVSERIE){
-                throw new InvalidParametersException("Theres no directors for series");
+        // Input the search, it searches in actors, media.name, creators and directors
+        if (search!=null && search.length()>0) {
+            sql.append(" AND ( " );
+            sql.append(" name ILIKE ? ");
+            args.add('%' + search + '%');
+
+            sql.append(" OR media.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
+            args.add('%' + search + '%');
+
+            if(type != TYPE_TVSERIE){
+                sql.append(" OR media.mediaId IN (SELECT mediaid FROM movies m WHERE director ILIKE ? ) ");
+                args.add('%' + search + '%');
             }
-            sql.append(" AND media.mediaId IN (SELECT mediaid FROM movies m WHERE director ILIKE ? ) ");
-            args.add('%' + director + '%');
-        }
-        if(creator!=null && creator.length()>0){
-            if(type == TYPE_MOVIE){
-                throw new InvalidParametersException("Theres no creators for movies");
+
+            if(type != TYPE_MOVIE){
+                sql.append(" OR media.mediaId IN (SELECT mediaid FROM creators c WHERE creatorname ILIKE ? ) ");
+                args.add('%' + search + '%');
             }
-            sql.append(" AND media.mediaId IN (SELECT mediaid FROM creators c WHERE creatorname ILIKE ? ) ");
-            args.add('%' + director + '%');
+
+            sql.append(" ) ");
         }
 
         // Execute the query

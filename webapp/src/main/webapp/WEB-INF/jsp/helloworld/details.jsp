@@ -110,7 +110,7 @@
                 </div>
                 <div>
                     <c:forEach var="genre" items="${genresList}">
-                        <span class="badge text-bg-dark">${genre.genre}</span>
+                        <span class="badge text-bg-dark">${genre}</span>
                     </c:forEach>
                 </div>
             </div>
@@ -150,7 +150,7 @@
                     </c:if>
                 </c:when>
                 <c:otherwise>
-                    <c:if test="${creators!=null}">
+                    <c:if test="${creators.size()>0}">
                         <div class="d-flex flex-row align-items-center">
                             <div style="margin-right: 10px">
                                 <c:choose>
@@ -246,7 +246,7 @@
         <c:if test="${not empty successMessage}">
             <div class="alert alert-success alert-dismissible" style="margin: 10px" role="alert">
                 <div class="d-flex justify-content-between align-items-center">
-                    <div>${successMessage}</div>
+                    <div>${successMessage} Moovie List Id = <a href="${pageContext.request.contextPath}/list/${successMooovieListId}">${successMooovieListId}</a></div>
                     <button type="button" class="close btn btn-success" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
