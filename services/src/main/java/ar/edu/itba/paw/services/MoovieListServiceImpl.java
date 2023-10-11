@@ -3,10 +3,8 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
 import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.exceptions.UserNotLoggedException;
-import ar.edu.itba.paw.models.MoovieList.MoovieList;
-import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
-import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
-import ar.edu.itba.paw.models.MoovieList.MoovieListDetails;
+import ar.edu.itba.paw.models.MoovieList.*;
+import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.MoovieListDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +28,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public MoovieList getMoovieListById(int moovieListId) { //Check permissions
         MoovieList ml = moovieListDao.getMoovieListById(moovieListId).orElseThrow( () -> new MoovieListNotFoundException("Moovie list by id: " + moovieListId + " not found"));
-        if( ml.getType() == MOOVIE_LIST_TYPE_STANDARD_PRIVATE || ml.getType() == MOOVIE_LIST_TYPE_DEFAULT_PRIVATE ){
+        if( ml.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.getType() || ml.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType() ){
             try{
                 User currentUser = userService.getInfoOfMyUser();
                 if(ml.getUserId() != currentUser.getUserId()){
@@ -56,7 +54,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public MoovieListCard getMoovieListCardById(int moovieListId) {
         MoovieListCard mlc = moovieListDao.getMoovieListCardById(moovieListId).orElseThrow( () -> new MoovieListNotFoundException("Moovie list by id: " + moovieListId + " not found"));
-        if( mlc.getType() == MOOVIE_LIST_TYPE_STANDARD_PRIVATE || mlc.getType() == MOOVIE_LIST_TYPE_DEFAULT_PRIVATE ){
+        if( mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.getType() || mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType()){
             try {
                 User currentUser = userService.getInfoOfMyUser();
                 if(!mlc.getUsername().equals(currentUser.getUsername()) ){
@@ -83,7 +81,7 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Override
     public List<MoovieListCard> getMoovieListCards(String search, String ownerUsername, int type, int size, int pageNumber) {
-        if(type == MOOVIE_LIST_TYPE_STANDARD_PRIVATE || type == MOOVIE_LIST_TYPE_DEFAULT_PRIVATE){
+        if(type == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.getType() || type == MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType()){
             if(!userService.getInfoOfMyUser().getUsername().equals(ownerUsername)){
                 throw new InvalidAccessToResourceException("Need to be owner to acces thr private list of this user");
             }
@@ -106,7 +104,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         MoovieListCard card = null;
         List<MoovieListContent> content = null;
         if(moovieListId == -1){
-            List<MoovieListCard> cards = moovieListDao.getMoovieListCards(name,ownerUsername, MoovieListDao.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE, DEFAULT_PAGE_SIZE_CARDS, 0 );
+            List<MoovieListCard> cards = moovieListDao.getMoovieListCards(name,ownerUsername, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(), PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), 0 );
             if(cards.size() != 1){
                 throw new MoovieListNotFoundException("MoovieList: " + name+ " of: " +ownerUsername+ " not found");
             }

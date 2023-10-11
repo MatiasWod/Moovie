@@ -10,14 +10,6 @@ import java.util.Optional;
 
 public interface MoovieListService {
 
-    public static final int DEFAULT_PAGE_SIZE_CARDS = 24;
-    public static final int DEFAULT_PAGE_SIZE_CONTENT = 25;
-
-    public static final int MOOVIE_LIST_TYPE_STANDARD_PUBLIC = 1;   //Listas que crea un usuario y son publicas
-    public static final int MOOVIE_LIST_TYPE_STANDARD_PRIVATE = 2;  //Listas que crea un usuario y puso privada
-    public static final int MOOVIE_LIST_TYPE_DEFAULT_PUBLIC = 3;   //Listas creadas automaticamente por ej: "Top 50"
-    public static final int MOOVIE_LIST_TYPE_DEFAULT_PRIVATE = 4;   //Listas creadas automaticamente por ej: "Watchlist"
-
 
     //Get the moovieList object, doesnt contain  much info
     //For controllers is best to use the CARDS

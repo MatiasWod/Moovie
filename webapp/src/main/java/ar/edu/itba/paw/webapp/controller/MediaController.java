@@ -3,6 +3,9 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.exceptions.MediaNotFoundException;
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.Media.MediaTypes;
+import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
+import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.CreateReviewForm;
 import org.slf4j.Logger;
@@ -53,9 +56,9 @@ public class MediaController {
     @RequestMapping("/")
     public ModelAndView home() {
         final ModelAndView mav = new ModelAndView("helloworld/index");
-        List<Media> movieList = mediaService.getMedia(mediaService.TYPE_MOVIE, null, null, "tmdbrating DESC", mediaService.DEFAULT_PAGE_SIZE, 0);
+        List<Media> movieList = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null, "tmdbrating DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("movieList", movieList);
-        List<Media> tvSerieList = mediaService.getMedia(mediaService.TYPE_TVSERIE, null, null,"tmdbrating DESC", mediaService.DEFAULT_PAGE_SIZE, 0);
+        List<Media> tvSerieList = mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), null, null,"tmdbrating DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("tvList", tvSerieList);
         return mav;
     }
@@ -69,18 +72,18 @@ public class MediaController {
         int mediaCount;
         mav.addObject("searchMode",false);
         if (media.equals("Movies and Series")){
-            mav.addObject("mediaList",mediaService.getMedia(mediaService.TYPE_ALL,null, genres,null,   mediaService.DEFAULT_PAGE_SIZE,pageNumber - 1));
-            mediaCount = mediaService.getMediaCount(mediaService.TYPE_ALL,null,genres);
+            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null, genres,null,   PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), null,genres);
         }
         else if (media.equals("Movies")){
-            mav.addObject("mediaList",mediaService.getMedia(mediaService.TYPE_MOVIE,null,genres,null,   mediaService.DEFAULT_PAGE_SIZE,pageNumber - 1));
-            mediaCount = mediaService.getMediaCount(mediaService.TYPE_MOVIE,null,genres);
+            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null,genres,null,   PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_MOVIE.getType(), null,genres);
         }
         else{
-            mav.addObject("mediaList",mediaService.getMedia(mediaService.TYPE_TVSERIE,null,genres,null,  mediaService.DEFAULT_PAGE_SIZE,pageNumber - 1));
-            mediaCount = mediaService.getMediaCount(mediaService.TYPE_TVSERIE,null,genres);
+            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), null,genres,null,  PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_TVSERIE.getType(), null,genres);
         }
-        numberOfPages = (int) Math.ceil(mediaCount * 1.0 / mediaService.DEFAULT_PAGE_SIZE);
+        numberOfPages = (int) Math.ceil(mediaCount * 1.0 / PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize());
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
         mav.addObject("genresList", genreService.getAllGenres());
@@ -93,10 +96,10 @@ public class MediaController {
         final ModelAndView mav = new ModelAndView("helloworld/discover");
 
         mav.addObject("searchMode", true);
-        mav.addObject("mediaList", mediaService.getMedia(mediaService.TYPE_ALL, query, null,  null, mediaService.DEFAULT_PAGE_SIZE, pageNumber - 1));
-        int mediaCount = mediaService.getMediaCount(mediaService.TYPE_ALL,query,null);
+        mav.addObject("mediaList", mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null,  null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1));
+        int mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query,null);
 
-        int numberOfPages = (int) Math.ceil(mediaCount * 1.0 / mediaService.DEFAULT_PAGE_SIZE);
+        int numberOfPages = (int) Math.ceil(mediaCount * 1.0 / PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize());
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
         return mav;
@@ -127,8 +130,8 @@ public class MediaController {
         }
         try{
             String username =  userService.getInfoOfMyUser().getUsername();
-            mav.addObject("publicLists", moovieListService.getMoovieListCards(null, username, moovieListService.MOOVIE_LIST_TYPE_STANDARD_PUBLIC, moovieListService.DEFAULT_PAGE_SIZE_CARDS, 0));
-            mav.addObject("privateLists", moovieListService.getMoovieListCards(null, username, moovieListService.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE, moovieListService.DEFAULT_PAGE_SIZE_CARDS, 0));
+            mav.addObject("publicLists", moovieListService.getMoovieListCards(null, username, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), 0));
+            mav.addObject("privateLists", moovieListService.getMoovieListCards(null, username, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(), PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), 0));
         }catch(Exception e){
         }
         if(!type){
