@@ -18,18 +18,23 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     public Review getReviewById(int reviewId) {
-        return reviewDao.getReviewById(reviewId).orElseThrow( ()-> new ReviewNotFoundException("Review not found for id: " + reviewId));
+        return reviewDao.getReviewById( userService.tryToGetCurrentUserId(), reviewId).orElseThrow( ()-> new ReviewNotFoundException("Review not found for id: " + reviewId));
     }
 
     @Override
     public List<Review> getReviewsByMediaId(int mediaId) {
-        return reviewDao.getReviewsByMediaId(mediaId);
+        return reviewDao.getReviewsByMediaId(userService.tryToGetCurrentUserId(), mediaId);
     }
 
 
     @Override
     public List<Review> getMovieReviewsFromUser(int userId) {
-        return reviewDao.getMovieReviewsFromUser(userId);
+        return reviewDao.getMovieReviewsFromUser(userService.tryToGetCurrentUserId(), userId);
+    }
+
+    @Override
+    public void likeReview(int reviewId) {
+        return;
     }
 
     @Override

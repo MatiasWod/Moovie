@@ -11,6 +11,10 @@ public interface ReviewService {
     List<Review> getReviewsByMediaId(int mediaId);
     //Returns all the reviews a user has made, contains all nescesary data to display
     List<Review> getMovieReviewsFromUser(int userId);
+
+    //Likes a review;
+    void likeReview(int reviewId);
+
     //Creates review
     void createReview( int mediaId, int rating, String reviewContent);
 }

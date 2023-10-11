@@ -150,7 +150,7 @@ CREATE TABLE IF NOT EXISTS verificationTokens(
 );
 
 /*
---Modifications in table Users post primer sprint
+--Modifications in table created before for Sprint 2
 --1
 ALTER TABLE users
     ADD username VARCHAR(30),
@@ -184,4 +184,20 @@ ALTER TABLE moovieLists ALTER COLUMN type SET NOT NULL;
 UPDATE reviews SET rating=rating/2
 ALTER TABLE reviews DROP CONSTRAINT reviews_rating_check;
 ALTER TABLE reviews ADD CONSTRAINT check_rating_range CHECK (rating BETWEEN 1 AND 5);
+ */
+
+
+--MODIFICATIONS FOR SPRINT 3
+
+CREATE TABLE IF NOT EXISTS reviewsLikes (
+    reviewId 		INTEGER NOT NULL,
+    userId			INTEGER NOT NULL,
+    FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE,
+    FOREIGN KEY(reviewId) REFERENCES reviews(reviewId) ON DELETE CASCADE
+);
+
+/*
+--Modifications in table created before for Sprint 2
+
+Hay que modificar el reviews que tiene el like ahi, pero en realidad es un count en reviewsLikes
  */

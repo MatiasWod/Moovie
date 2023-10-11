@@ -132,6 +132,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public int tryToGetCurrentUserId() {
+        try{
+            return getInfoOfMyUser().getUserId();
+        } catch(UserNotLoggedException e){
+            return -1;
+        }
+    }
+
+    @Override
     public boolean isUsernameMe(String username) {
         if( getInfoOfMyUser().getUsername().equals(username)  ){
             return true;

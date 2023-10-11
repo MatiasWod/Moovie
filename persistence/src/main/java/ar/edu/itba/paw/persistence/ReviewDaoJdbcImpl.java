@@ -11,10 +11,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class ReviewDaoJdbcImpl implements ReviewDao {
@@ -28,6 +25,7 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
             rs.getInt("mediaId"),
             rs.getInt("rating"),
             rs.getInt("reviewLikes"),
+            rs.getBoolean("hasLiked"),
             rs.getString("name"),
             rs.getString("posterpath"),
             rs.getString("reviewContent")
@@ -40,13 +38,37 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
     }
 
     @Override
-    public Optional<Review> getReviewById(int reviewId) {
-        return jdbcTemplate.query("SELECT * FROM reviews INNER JOIN users ON users.userid = reviews.userid INNER JOIN media ON media.mediaId = reviews.mediaId WHERE reviews.reviewId = ?", new Object[]{reviewId}, REVIEW_ROW_MAPPER).stream().findFirst();
+    public Optional<Review> getReviewById(int currentUserId, int reviewId) {
+        StringBuilder sql = new StringBuilder("SELECT *, ");
+        ArrayList<Object> args = new ArrayList<>();
+
+        sql.append(" (SELECT COUNT(*) FROM reviewsLikes rl WHERE r.reviewid = rl.reviewid) AS reviewLikes, ");
+        sql.append(" (SELECT CASE WHEN EXISTS (SELECT 1 FROM reviewsLikes rl2 WHERE r.reviewId = rl2.reviewId AND rl2.userid = ?)  ");
+        sql.append(" THEN true ELSE false END) AS hasLiked ");
+        args.add(currentUserId);
+
+        sql.append(" FROM reviews r INNER JOIN users ON users.userid = r.userid INNER JOIN media  ");
+        sql.append(" ON media.mediaId = r.mediaId WHERE r.reviewId = ? ;");
+        args.add(reviewId);
+
+        return jdbcTemplate.query(sql.toString(), args.toArray(), REVIEW_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
-    public List<Review> getReviewsByMediaId(int mediaId) {
-        return jdbcTemplate.query("SELECT * FROM reviews INNER JOIN users ON users.userid = reviews.userid INNER JOIN media ON media.mediaId = reviews.mediaId WHERE reviews.mediaId = ?", new Object[]{mediaId}, REVIEW_ROW_MAPPER);
+    public List<Review> getReviewsByMediaId(int currentUserId, int mediaId) {
+        StringBuilder sql = new StringBuilder("SELECT *, ");
+        ArrayList<Object> args = new ArrayList<>();
+
+        sql.append(" (SELECT COUNT(*) FROM reviewsLikes rl WHERE r.reviewid = rl.reviewid) AS reviewLikes, ");
+        sql.append(" (SELECT CASE WHEN EXISTS (SELECT 1 FROM reviewsLikes rl2 WHERE r.reviewId = rl2.reviewId AND rl2.userid = ?)  ");
+        sql.append(" THEN true ELSE false END) AS hasLiked ");
+        args.add(currentUserId);
+
+        sql.append(" FROM reviews r INNER JOIN users ON users.userid = r.userid INNER JOIN media  ");
+        sql.append(" ON media.mediaId = r.mediaId WHERE r.mediaId = ? ;");
+        args.add(mediaId);
+
+        return jdbcTemplate.query(sql.toString(), args.toArray(), REVIEW_ROW_MAPPER);
     }
 
 
@@ -58,13 +80,22 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
 //        return jdbcTemplate.query(sql, new Object[]{userId}, REVIEW_ROW_MAPPER);
 //    }
 //      FALTABAN LOS JOINS CON LAS OTRAS TABLAS, SE PODRIA HACER MEJOR? LIT COPIE LA OTRAS QUERIES
+
     @Override
-    public List<Review> getMovieReviewsFromUser(int userId) {
-        String sql = "SELECT * FROM reviews " +
-                "INNER JOIN users ON users.userId = reviews.userId " +
-                "INNER JOIN media ON media.mediaId = reviews.mediaId " +
-                "WHERE reviews.userId = ?";
-        return jdbcTemplate.query(sql, new Object[]{userId}, REVIEW_ROW_MAPPER);
+    public List<Review> getMovieReviewsFromUser(int currentUserId, int userId) {
+        StringBuilder sql = new StringBuilder("SELECT *, ");
+        ArrayList<Object> args = new ArrayList<>();
+
+        sql.append(" (SELECT COUNT(*) FROM reviewsLikes rl WHERE r.reviewid = rl.reviewid) AS reviewLikes, ");
+        sql.append(" (SELECT CASE WHEN EXISTS (SELECT 1 FROM reviewsLikes rl2 WHERE r.reviewId = rl2.reviewId AND rl2.userid = ?)  ");
+        sql.append(" THEN true ELSE false END) AS hasLiked ");
+        args.add(currentUserId);
+
+        sql.append(" FROM reviews r INNER JOIN users ON users.userid = r.userid INNER JOIN media  ");
+        sql.append(" ON media.mediaId = r.mediaId WHERE r.userId = ? ;");
+        args.add(userId);
+
+        return jdbcTemplate.query(sql.toString(), args.toArray(), REVIEW_ROW_MAPPER);
     }
 
 

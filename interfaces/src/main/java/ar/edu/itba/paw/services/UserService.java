@@ -36,6 +36,8 @@ public interface UserService {
 
     //Auth info of users
     User getInfoOfMyUser();
+    //Returns -1 if not authenticated
+    int tryToGetCurrentUserId();
     boolean isUsernameMe(String username);
 
     //Profile picture functions

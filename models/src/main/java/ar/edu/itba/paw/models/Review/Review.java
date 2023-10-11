@@ -7,17 +7,19 @@ public class Review {
     private final int mediaId;
     private final int rating;
     private final int reviewLikes;
+    private final boolean currentUserHasLiked;
     private final String mediaPosterPath;
     private final String mediaTitle;
     private final String reviewContent;
 
-    public Review(int reviewId, int userId, String username, int mediaId, int rating, int reviewLikes, String mediaTitle, String mediaPosterPath, String reviewContent) {
+    public Review(int reviewId, int userId, String username, int mediaId, int rating, int reviewLikes, boolean currentUserHasLiked, String mediaTitle, String mediaPosterPath, String reviewContent) {
         this.reviewId = reviewId;
         this.userId = userId;
         this.username = username;
         this.mediaId = mediaId;
         this.rating = rating;
         this.reviewLikes = reviewLikes;
+        this.currentUserHasLiked = currentUserHasLiked;
         this.mediaPosterPath = mediaPosterPath;
         this.mediaTitle = mediaTitle;
         this.reviewContent = reviewContent;
@@ -45,6 +47,10 @@ public class Review {
 
     public int getReviewLikes() {
         return reviewLikes;
+    }
+
+    public boolean isCurrentUserHasLiked() {
+        return currentUserHasLiked;
     }
 
     public String getMediaPosterPath() {
