@@ -125,14 +125,13 @@ public class MediaController {
         }
         String successMessage = (String) redirectAttributes.getFlashAttributes().get("successMessage");
         if (successMessage != null) {
-            // Add the error message to the ModelAndView
             mav.addObject("successMessage", successMessage);
         }
         try{
             String username =  userService.getInfoOfMyUser().getUsername();
             mav.addObject("publicLists", moovieListService.getMoovieListCards(null, username, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), 0));
             mav.addObject("privateLists", moovieListService.getMoovieListCards(null, username, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(), PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), 0));
-        }catch(Exception e){
+        } catch (Exception ignored) {
         }
         if(!type){
             mav.addObject("media",mediaService.getMovieById(mediaId));
@@ -167,11 +166,11 @@ public class MediaController {
     public ModelAndView insertMediaToList(@RequestParam("listId") int listId, @RequestParam("mediaId") int mediaId, RedirectAttributes redirectAttributes) {
         try {
             moovieListService.insertMediaIntoMoovieList(listId, Collections.singletonList(mediaId));
-            redirectAttributes.addFlashAttribute("successMessage", "Media has been successfully added to your list.");
-            redirectAttributes.addFlashAttribute("successMooovieListId", listId);
+            redirectAttributes.addFlashAttribute("successMessage", "Media has been successfully added to ");
         } catch (UnableToInsertIntoDatabase exception) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to insert media into the list. Already in the list.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to insert media into the list. Already in ");
         }
+        redirectAttributes.addFlashAttribute("insertedMooovieList", moovieListService.getMoovieListCardById(listId));
         return new ModelAndView("redirect:/details/" + mediaId);
     }
 }

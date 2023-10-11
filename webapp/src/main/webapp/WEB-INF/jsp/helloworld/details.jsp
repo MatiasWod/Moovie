@@ -236,7 +236,7 @@
         <c:if test="${not empty errorMessage}">
             <div class="alert alert-danger alert-dismissible" style="margin: 10px" role="alert">
                 <div class="d-flex justify-content-between align-items-center">
-                    <div>${errorMessage}</div>
+                    <div>${errorMessage} <a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}">${insertedMooovieList.name}</a></div>
                     <button type="button" class="close btn btn-danger" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -246,7 +246,7 @@
         <c:if test="${not empty successMessage}">
             <div class="alert alert-success alert-dismissible" style="margin: 10px" role="alert">
                 <div class="d-flex justify-content-between align-items-center">
-                    <div>${successMessage} Moovie List Id = <a href="${pageContext.request.contextPath}/list/${successMooovieListId}">${successMooovieListId}</a></div>
+                    <div>${successMessage} <a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}">${insertedMooovieList.name}</a></div>
                     <button type="button" class="close btn btn-success" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
