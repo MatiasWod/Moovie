@@ -45,7 +45,7 @@
                                 <button style="height:100%;;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                                     Genres
                                 </button>
-                                <div class="dropdown-menu scrollableDiv flex-wrap p-4">
+                                <div style="height: 50vh" class="dropdown-menu scrollableDiv flex-wrap p-4">
                                     <c:forEach var="genre" items="${genresList}">
                                         <div class="form-check">
                                             <label for="dropdownCheck${genre}"></label><input ${fn:contains(param.g,genre)? 'checked':''} type="checkbox" class="form-check-input" id="dropdownCheck${genre}">
