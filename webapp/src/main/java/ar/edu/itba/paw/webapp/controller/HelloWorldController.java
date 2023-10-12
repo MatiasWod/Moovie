@@ -24,6 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 
@@ -48,7 +49,11 @@ public class HelloWorldController {
 
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
-    public ModelAndView register(@ModelAttribute("registerForm") final RegisterForm form) {
+    public ModelAndView register(@ModelAttribute("registerForm") final RegisterForm form,
+                                 HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String previousPage = request.getHeader("Referer");
+        session.setAttribute("previousPage", previousPage);
         return new ModelAndView("helloworld/register");
     }
 
@@ -97,9 +102,21 @@ public class HelloWorldController {
 
 
     @RequestMapping("/login")
-    public ModelAndView login() {
+    public ModelAndView login(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String previousPage = request.getHeader("Referer");
+        session.setAttribute("previousPage", previousPage);
         return new ModelAndView("helloworld/login");
     }
+
+
+    @RequestMapping("/continueWithoutLogin")
+    public String continueWithoutLogin(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String previousPage = (String) session.getAttribute("previousPage");
+        return "redirect:" + previousPage;
+    }
+
 
 
     @RequestMapping("/profile/{username:.+}")
@@ -177,9 +194,11 @@ public class HelloWorldController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ModelAndView registerForm(@Valid @ModelAttribute("registerForm") final RegisterForm form,final BindingResult errors) {
+    public ModelAndView registerForm(@Valid @ModelAttribute("registerForm") final RegisterForm form,
+                                     final BindingResult errors,
+                                     HttpServletRequest request) {
         if (errors.hasErrors()) {
-            return register(form);
+            return register(form, request);
         }
         String token;
         try {
