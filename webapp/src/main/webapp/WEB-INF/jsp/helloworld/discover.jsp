@@ -38,56 +38,53 @@
                     </h1>
                 </div>
             </c:if>
-            <c:if test="${!searchMode}">
-                <div >
+            <div >
+
+                <c:if test="${!searchMode}">
                     <form id="filter-form" class="mb-2 d-flex justify-content-between flex-row" action="${pageContext.request.contextPath}/discover" method="get" onsubmit="beforeSubmit()">
-                        <div class="d-flex align-content-center  flex-row">
-                            <select name="media" class="form-select filter-width" aria-label="Filter!">
-                                <option ${'Movies and Series' == param.media ? 'selected' : ''}>Movies and Series</option>
-                                <option  ${'Movies' == param.media ? 'selected' : ''}>Movies</option>
-                                <option  ${'Series' == param.media ? 'selected' : ''}>Series</option>
-                            </select>
-<%--                            <select name="f" id="filter-types" class="form-select filter-width" aria-label="Filter!" onchange="toggleGenreSelect()">
-                                <option ${'Popular' == param.f ? 'selected' : ''}>Popular</option>
-                                <option ${'Genre' == param.f ? 'selected' : ''}>Genre</option>
-                            </select>--%>
-    <%--                        <select id="genre-select" class="form-select filter-width" aria-label="Filter!" style="display:none">--%>
-    <%--                            <c:forEach var="genre" items="${genresList}">--%>
-    <%--                                <option value="${genre}" ${genre == param.g? 'selected' : ''}>${genre}</option>--%>
-    <%--                            </c:forEach>--%>
-    <%--                        </select>--%>
-                            <input type="hidden" name="g" id="hiddenGenreInput">
-                            <div class="dropdown">
-                                <button style="height:100%;width: 150px;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                                    Genres
-                                </button>
-                                <div class="dropdown-menu scrollableDiv flex-wrap p-4">
-                                        <c:forEach var="genre" items="${genresList}">
-                                            <div class="form-check">
-                                                <input ${fn:contains(param.g,genre)? 'checked':''} type="checkbox" class="form-check-input" id="dropdownCheck${genre}">
-                                                <label class="form-check-label" for="dropdownCheck${genresList.indexOf(genre)}">${genre}</label>
-                                            </div>
-                                        </c:forEach>
-                                </div>
+                </c:if>
+                <c:if test="${searchMode}">
+                    <form id="filter-form" class="mb-2 d-flex justify-content-between flex-row" action="${pageContext.request.contextPath}/search" method="get" onsubmit="beforeSubmit()">
+                    <input type="hidden" name="query" id="hiddenQueryParam" value="${param.query}">
+                </c:if>
+
+                    <div class="d-flex align-content-center  flex-row">
+                        <select name="media" class="form-select filter-width" aria-label="Filter!">
+                            <option ${'Movies and Series' == param.media ? 'selected' : ''}>Movies and Series</option>
+                            <option  ${'Movies' == param.media ? 'selected' : ''}>Movies</option>
+                            <option  ${'Series' == param.media ? 'selected' : ''}>Series</option>
+                        </select>
+                        <input type="hidden" name="g" id="hiddenGenreInput">
+                        <div class="dropdown">
+                            <button style="height:100%;width: 150px;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                Genres
+                            </button>
+                            <div class="dropdown-menu scrollableDiv flex-wrap p-4">
+                                    <c:forEach var="genre" items="${genresList}">
+                                        <div class="form-check">
+                                            <input ${fn:contains(param.g,genre)? 'checked':''} type="checkbox" class="form-check-input" id="dropdownCheck${genre}">
+                                            <label class="form-check-label" for="dropdownCheck${genresList.indexOf(genre)}">${genre}</label>
+                                        </div>
+                                    </c:forEach>
                             </div>
-                            <button class="btn btn-outline-success" type="submit">Apply filters</button>
                         </div>
-                        <div >
-                            <a style="height: 100%;" class="btn btn-outline-success align-bottom" href="${pageContext.request.contextPath}/discover">
-                                Reset Filters
-                            </a>
-                        </div>
-                    </form>
-                </div>
-                <div class="container d-flex justify-content-left p-0" id="genre-chips">
-                    <c:forEach var="gen" items="${param.g}">
-                        <div class="m-1 badge text-bg-dark">
-                            <span class="text-bg-dark"> ${gen} </span>
-                            <i class="btn bi bi-trash-fill" onclick="deleteGenre(this)"></i>
-                        </div>
-                    </c:forEach>
-                </div>
-            </c:if>
+                        <button class="btn btn-outline-success" type="submit">Apply filters</button>
+                    </div>
+                    <div >
+                        <a style="height: 100%;" class="btn btn-outline-success align-bottom" href="${pageContext.request.contextPath}/discover">
+                            Reset Filters
+                        </a>
+                    </div>
+                </form>
+            </div>
+            <div class="container d-flex justify-content-left p-0" id="genre-chips">
+                <c:forEach var="gen" items="${param.g}">
+                    <div class="m-1 badge text-bg-dark">
+                        <span class="text-bg-dark"> ${gen} </span>
+                        <i class="btn bi bi-trash-fill" onclick="deleteGenre(this)"></i>
+                    </div>
+                </c:forEach>
+            </div>
             <div class="scrollableDiv flex-wrap d-flex justify-space-between">
                 <c:if test="${fn:length(mediaList) == 0 }">
                     <div class="d-flex m-2 flex-column">

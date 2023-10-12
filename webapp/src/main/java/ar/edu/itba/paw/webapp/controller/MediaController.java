@@ -92,16 +92,31 @@ public class MediaController {
 
     @RequestMapping("/search")
     public ModelAndView search(@RequestParam(value = "query", required = true) String query,
+                               @RequestParam(value = "media", required = false, defaultValue = "Movies and Series") String media,
+                               @RequestParam(value = "g", required = false) List<String> genres,
                                @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
         final ModelAndView mav = new ModelAndView("helloworld/discover");
 
         mav.addObject("searchMode", true);
-        mav.addObject("mediaList", mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null,  null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1));
-        int mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query,null);
+        int mediaCount;
+
+        if (media.equals("Movies and Series")){
+            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, genres,null,   PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query,genres);
+        }
+        else if (media.equals("Movies")){
+            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), query,genres,null,   PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_MOVIE.getType(), query,genres);
+        }
+        else{
+            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), query,genres,null,  PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_TVSERIE.getType(), query,genres);
+        }
 
         int numberOfPages = (int) Math.ceil(mediaCount * 1.0 / PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize());
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
+        mav.addObject("genresList", genreService.getAllGenres());
         return mav;
 
     }
