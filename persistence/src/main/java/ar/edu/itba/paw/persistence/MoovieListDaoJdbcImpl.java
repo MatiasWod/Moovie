@@ -299,6 +299,12 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     @Override
+    public int getLikeCountForMoovieList(int moovieListId){
+        return jdbcTemplate.query("SELECT COUNT(*) FROM moovieListsLikes WHERE moovieListId = ?", new Object[]{moovieListId},COUNT_ROW_MAPPER)
+                .stream().findFirst().get().intValue();
+    }
+
+    @Override
     public void removeLikeMoovieList(int userId, int moovieListId) {
         String sql = "DELETE FROM moovielistslikes WHERE userid=? AND moovieListId = ?";
         jdbcTemplate.update( sql , new Object[]{userId, moovieListId} );
