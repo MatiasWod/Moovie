@@ -62,7 +62,7 @@
     });
 </script>
 
-    <nav class="sticky-top navbar navbar-expand-lg navbar-light container-gray mb-4">
+    <nav style="z-index: 2" class="sticky-top navbar navbar-expand-lg navbar-light container-gray mb-4">
         <div class="container-fluid">
             <a class="navbar-brand" href="${pageContext.request.contextPath}/">
                 <img src="${pageContext.request.contextPath}/resources/logo.png" height="50" alt="Moovie logo">
