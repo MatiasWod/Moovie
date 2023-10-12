@@ -19,7 +19,7 @@
 </head>
 <body id="grad">
 <c:import url="navBar.jsp">
-    <c:param name="userName" value="${user.username}"/>
+
 </c:import>
 <div class="container my-1">
     <div class="row align-items-center justify-content-center" style="margin-bottom: 20px">
