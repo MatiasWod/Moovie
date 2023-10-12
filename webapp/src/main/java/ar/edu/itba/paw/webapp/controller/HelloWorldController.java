@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -173,21 +174,24 @@ public class HelloWorldController {
     }
 
     @RequestMapping(value = "/uploadProfilePicture", method = {RequestMethod.POST})
-    public String uploadProfilePicture(@RequestParam("file") MultipartFile picture, HttpServletRequest request) {
+    public String uploadProfilePicture(@RequestParam("file") MultipartFile picture, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         String referer = request.getHeader("referer");
+
         try {
             userService.setProfilePicture(picture);
-        }catch (InvalidTypeException e) {
-            return "redirect:" + referer + "?error=invalidType";
+        } catch (InvalidTypeException e) {
+            redirectAttributes.addAttribute("error", "invalidType");
         } catch (NoFileException e) {
-            return "redirect:" + referer + "?error=noFile";
+            redirectAttributes.addAttribute("error", "noFile");
         } catch (FailedToSetProfilePictureException e) {
-            return "redirect:" + referer + "?error=failedSetProfilePicture";
+            redirectAttributes.addAttribute("error", "failedSetProfilePicture");
         } catch (Exception e) {
             // Handle other exceptions if needed
-            return "redirect:" + referer + "?error=error";
+            redirectAttributes.addAttribute("error", "error");
         }
+
         return "redirect:" + referer;
     }
+
 
 }

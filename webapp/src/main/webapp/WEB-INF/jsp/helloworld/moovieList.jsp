@@ -50,16 +50,9 @@
             </div>
         </sec:authorize>
     </div>
-    <c:if test="${not empty param.error}">
+    <c:if test="${not empty errorMessage}">
         <div class="alert alert-danger alert-dismissible fade show" id="errorAlert" role="alert">
-            <c:choose>
-                <c:when test="${param.error == 'delete'}">
-                    Oops! There was an error while trying to delete this list. Please try again later.
-                </c:when>
-                <c:otherwise>
-                    An unexpected error occurred. Please try again later.
-                </c:otherwise>
-            </c:choose>
+            ${errorMessage}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     </c:if>

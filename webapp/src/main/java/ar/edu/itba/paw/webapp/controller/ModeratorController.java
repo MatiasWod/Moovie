@@ -28,7 +28,7 @@ public class ModeratorController {
     public ModelAndView deleteReview(@RequestParam("reviewId") int reviewId, RedirectAttributes redirectAttributes, @PathVariable int mediaId) {
         try {
             moderatorService.deleteReview(reviewId, mediaId);
-            redirectAttributes.addFlashAttribute("successMessage", "Review deleted successfully");
+            redirectAttributes.addFlashAttribute("successMessage", "Review successfully deleted");
         }catch (Exception e){
 
             redirectAttributes.addFlashAttribute("errorMessage", "Error deleting review");
@@ -38,59 +38,52 @@ public class ModeratorController {
 
     @RequestMapping(value = "/deleteList/{moovieListId:\\d+}", method = RequestMethod.POST)
     public ModelAndView deleteMoovieList(@PathVariable int moovieListId, RedirectAttributes redirectAttributes) {
-        StringBuilder redirectUrl = new StringBuilder();
         try {
             moderatorService.deleteMoovieListList(moovieListId);
+            redirectAttributes.addFlashAttribute("successMessage", "Moovie list deleted successfully");
         } catch (Exception e) {
-            redirectUrl.append("redirect:/list/")
-                    .append(moovieListId)
-                    .append("?error=delete");
-            return new ModelAndView(redirectUrl.toString());
+            redirectAttributes.addFlashAttribute("errorMessage", "Error deleting Moovie list");
+            return new ModelAndView("redirect:/list/" + moovieListId);
         }
-        redirectUrl.append("redirect:/lists?success=delete");
-        return new ModelAndView(redirectUrl.toString());
+        return new ModelAndView("redirect:/lists");
     }
+
 
 
     @RequestMapping(value = "/banUser/{userId:\\d+}", method = RequestMethod.POST)
     public ModelAndView banUser(@PathVariable int userId, RedirectAttributes redirectAttributes) {
-        User bannedUser;
+        User user;
         try {
-            bannedUser = userService.findUserById(userId);
+            user = userService.findUserById(userId);
         } catch (UnableToFindUserException e) {
             return new ModelAndView("helloworld/404");
         }
-        StringBuilder redirectUrl = new StringBuilder("redirect:/profile/")
-                .append(bannedUser.getUsername())
-                .append("?");
         try {
             moderatorService.banUser(userId);
-            redirectUrl.append("success=ban");
+            redirectAttributes.addFlashAttribute("successMessage", "User successfully banned");
         } catch (Exception e) {
-            redirectUrl.append("error=ban");
+            redirectAttributes.addFlashAttribute("errorMessage", "Error banning user");
         }
-        return new ModelAndView(redirectUrl.toString());
+        return new ModelAndView("redirect:/profile/" + user.getUsername());
     }
 
     @RequestMapping(value = "/unbanUser/{userId:\\d+}", method = RequestMethod.POST)
     public ModelAndView unbanUser(@PathVariable int userId, RedirectAttributes redirectAttributes) {
-        User bannedUser;
+        User user;
         try {
-            bannedUser = userService.findUserById(userId);
+            user = userService.findUserById(userId);
         } catch (UnableToFindUserException e) {
             return new ModelAndView("helloworld/404");
         }
-        StringBuilder redirectUrl = new StringBuilder("redirect:/profile/")
-                .append(bannedUser.getUsername())
-                .append("?");
         try {
             moderatorService.unbanUser(userId);
-            redirectUrl.append("success=unban");
+            redirectAttributes.addFlashAttribute("successMessage", "User successfully unbanned");
         } catch (Exception e) {
-            redirectUrl.append("error=unban");
+            redirectAttributes.addFlashAttribute("errorMessage", "Error unbanning user");
         }
-        return new ModelAndView(redirectUrl.toString());
+        return new ModelAndView("redirect:/profile/" + user.getUsername());
     }
+
 
     @RequestMapping(value = "/makeUserMod/{userId:\\d+}", method = RequestMethod.POST)
     public ModelAndView makeUserMod(@PathVariable int userId, RedirectAttributes redirectAttributes) {
@@ -100,15 +93,12 @@ public class ModeratorController {
         } catch (UnableToFindUserException e) {
             return new ModelAndView("helloworld/404");
         }
-        StringBuilder redirectUrl = new StringBuilder("redirect:/profile/")
-                .append(user.getUsername())
-                .append("?");
         try {
             moderatorService.makeUserModerator(userId);
-            redirectUrl.append("success=mod");
+            redirectAttributes.addFlashAttribute("successMessage", "User successfully promoted to moderator");
         } catch (Exception e) {
-            redirectUrl.append("error=mod");
+            redirectAttributes.addFlashAttribute("errorMessage", "Error promoting user to moderator");
         }
-        return new ModelAndView(redirectUrl.toString());
+        return new ModelAndView("redirect:/profile/" + user.getUsername());
     }
 }

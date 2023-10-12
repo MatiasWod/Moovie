@@ -31,10 +31,12 @@
                 Results for: "<c:out value="${param.search}"/>"
             </h2>
         </c:if>
-        <c:if test="${not empty param.success}">
+        <c:if test="${not empty successMessage}">
             <div class="alert alert-success alert-dismissible fade show" id="errorAlert" role="alert">
-                <c:if test="${param.success == 'delete'}">Succesfully deleted the list</c:if>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>${successMessage}</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             </div>
         </c:if>
         <h1>

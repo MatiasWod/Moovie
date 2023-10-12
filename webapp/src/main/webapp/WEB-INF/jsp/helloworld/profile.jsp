@@ -163,24 +163,20 @@
             </div>
         </div>
         <hr class="my-8">
-        <c:if test="${not empty param.success}">
+        <c:if test="${not empty successMessage}">
         <div class="alert alert-success alert-dismissible fade show" id="errorAlert" role="alert">
-            <c:if test="${param.success == 'ban'}">Succesfully banned <c:out value="${profile.username}"/></c:if>
-            <c:if test="${param.success == 'unban'}">Succesfully unbanned <c:out value="${profile.username}"/></c:if>
-            <c:if test="${param.success == 'mod'}">Succesfully promoted <c:out value="${profile.username}"/></c:if>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>${successMessage}</div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         </div>
         </c:if>
-        <c:if test="${not empty param.error}">
+        <c:if test="${not empty errorMessage}">
         <div class="alert alert-danger alert-dismissible fade show" id="errorAlert" role="alert">
-            <c:if test="${param.error == 'invalidType'}">File is of invalid type</c:if>
-            <c:if test="${param.error == 'ban'}">Error banning user</c:if>
-            <c:if test="${param.error == 'unban'}">Error unbanning user</c:if>
-            <c:if test="${param.error == 'mod'}">Error in promoting user to moderator</c:if>
-            <c:if test="${param.error == 'noFile'}">No file was provided</c:if>
-            <c:if test="${param.error == 'failedSetProfilePicture' || param.error == 'error'}">Error uploading file </c:if>
-            <c:if test="${param.error == 'fileTooBig'}">File is too big </c:if>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>${errorMessage}</div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         </div>
         </c:if>
         <hr class="my-8">

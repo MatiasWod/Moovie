@@ -234,22 +234,18 @@
 
         </div>
         <c:if test="${not empty errorMessage}">
-            <div class="alert alert-danger alert-dismissible" style="margin: 10px" role="alert">
+            <div class="alert alert-danger alert-dismissible fade show m-2" id="errorAlert" role="alert">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>${errorMessage} <a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}">${insertedMooovieList.name}</a></div>
-                    <button type="button" class="close btn btn-danger" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             </div>
         </c:if>
         <c:if test="${not empty successMessage}">
-            <div class="alert alert-success alert-dismissible" style="margin: 10px" role="alert">
+            <div class="alert alert-success alert-dismissible fade show m-2" id="errorAlert" role="alert">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>${successMessage} <a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}">${insertedMooovieList.name}</a></div>
-                    <button type="button" class="close btn btn-success" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             </div>
         </c:if>
