@@ -31,6 +31,12 @@
                 Results for: "<c:out value="${param.search}"/>"
             </h2>
         </c:if>
+        <c:if test="${not empty param.success}">
+            <div class="alert alert-success alert-dismissible fade show" id="errorAlert" role="alert">
+                <c:if test="${param.success == 'delete'}">Succesfully deleted the list</c:if>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
         <h1>
             Community lists
         </h1>

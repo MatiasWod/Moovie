@@ -50,8 +50,20 @@
             </div>
         </sec:authorize>
     </div>
+    <c:if test="${not empty param.error}">
+        <div class="alert alert-danger alert-dismissible fade show" id="errorAlert" role="alert">
+            <c:choose>
+                <c:when test="${param.error == 'delete'}">
+                    Oops! There was an error while trying to delete this list. Please try again later.
+                </c:when>
+                <c:otherwise>
+                    An unexpected error occurred. Please try again later.
+                </c:otherwise>
+            </c:choose>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </c:if>
     <div class="buttons">
-
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <div>
                 <form action="${pageContext.request.contextPath}/like" method="POST">

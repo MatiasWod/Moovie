@@ -38,12 +38,19 @@ public class ModeratorController {
 
     @RequestMapping(value = "/deleteList/{moovieListId:\\d+}", method = RequestMethod.POST)
     public ModelAndView deleteMoovieList(@PathVariable int moovieListId, RedirectAttributes redirectAttributes) {
+        StringBuilder redirectUrl = new StringBuilder();
         try {
             moderatorService.deleteMoovieListList(moovieListId);
-        }catch (Exception e){
+        } catch (Exception e) {
+            redirectUrl.append("redirect:/list/")
+                    .append(moovieListId)
+                    .append("?error=delete");
+            return new ModelAndView(redirectUrl.toString());
         }
-        return new ModelAndView("redirect:/lists");
+        redirectUrl.append("redirect:/lists?success=delete");
+        return new ModelAndView(redirectUrl.toString());
     }
+
 
     @RequestMapping(value = "/banUser/{userId:\\d+}", method = RequestMethod.POST)
     public ModelAndView banUser(@PathVariable int userId, RedirectAttributes redirectAttributes) {
