@@ -87,16 +87,21 @@ public class ModeratorController {
 
     @RequestMapping(value = "/makeUserMod/{userId:\\d+}", method = RequestMethod.POST)
     public ModelAndView makeUserMod(@PathVariable int userId, RedirectAttributes redirectAttributes) {
+        User user;
+        try {
+            user = userService.findUserById(userId);
+        } catch (UnableToFindUserException e) {
+            return new ModelAndView("helloworld/404");
+        }
+        StringBuilder redirectUrl = new StringBuilder("redirect:/profile/")
+                .append(user.getUsername())
+                .append("?");
         try {
             moderatorService.makeUserModerator(userId);
-        }catch (Exception e){
+            redirectUrl.append("success=mod");
+        } catch (Exception e) {
+            redirectUrl.append("error=mod");
         }
-        try{
-            String username = userDao.findUserById(userId).get().getUsername();
-            return new ModelAndView("redirect:/profile/" + username );
-        } catch ( UnableToFindUserException e ){
-            return new ModelAndView().addObject("extraInfo", "Error while retrieving the user after making a moderator");
-        }
-
+        return new ModelAndView(redirectUrl.toString());
     }
 }

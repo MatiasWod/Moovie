@@ -58,11 +58,9 @@
             <div class="m-2">
                 <div class="d-flex align-items-center justify-content-between">
                     <h1><c:out value="${profile.username}"/></h1>
-                    <sec:authorize access="hasRole('ROLE_MODERATOR')">
-                        <c:if test="${isMe}">
-                            <img class="cropCenter" style="height:50px;width:50px" src="${pageContext.request.contextPath}/resources/moderator_logo.png" alt="moderator profile pic">
-                        </c:if>
-                    </sec:authorize>
+                    <c:if test="${profile.role == 2}">
+                        <img class="cropCenter" style="height:50px;width:50px" src="${pageContext.request.contextPath}/resources/moderator_logo.png" alt="moderator profile pic">
+                    </c:if>
                     <c:if test="${profile.role == -2}">
                         <a class="ms-2 me-2 btn btn-danger btn-sm" aria-disabled="true">banned</a>
                     </c:if>
@@ -77,21 +75,15 @@
                                     <c:choose>
                                         <c:when test="${profile.role != -2}">
                                             <li>
-                                                <form class="m-0" action="${pageContext.request.contextPath}/banUser/${profile.userId}" method="post">
-                                                    <button class="dropdown-item" type="submit">Ban User</button>
-                                                </form>
+                                                <button class="dropdown-item" onclick="openPopup('ban-popup')">Ban User</button>
                                             </li>
                                             <li>
-                                                <form class="m-0" action="${pageContext.request.contextPath}/makeUserMod/${profile.userId}" method="post">
-                                                    <a class="dropdown-item" type="submit">Make User Mod</a>
-                                                </form>
+                                                <button class="dropdown-item" onclick="openPopup('mod-popup')">Make User Mod</button>
                                             </li>
                                         </c:when>
                                         <c:when test="${profile.role == -2}">
                                             <li>
-                                                <form class="m-0" action="${pageContext.request.contextPath}/unbanUser/${profile.userId}" method="post">
-                                                    <button class="dropdown-item" type="submit">Unban User</button>
-                                                </form>
+                                                <button class="dropdown-item" onclick="openPopup('unban-popup')">Unban User</button>
                                             </li>
                                         </c:when>
                                     </c:choose>
@@ -127,13 +119,55 @@
                 </div>
             </div>
         </div>
-        <div class="d-flex container justify-content-center">
+        <div class="popup-overlay" onclick="closePopup('ban-popup')"></div>
+        <div style="background-color: transparent; box-shadow: none" class="popup ban-popup">
+            <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-warning" role="alert">
+                <h5 class="alert-heading">Confirm User Ban</h5>
+                <p>Are you sure you want to ban this user? Once banned, they will no longer have access to the app and their account will be suspended indefinitely.</p>
+                <%--<div class="mb-3">
+                    <label for="banReason" class="form-label">Reason for Ban</label>
+                    <input type="text" class="form-control" id="banReason">
+                </div>--%>
+                <div class="d-flex justify-content-evenly">
+                    <form class="m-0" action="${pageContext.request.contextPath}/banUser/${profile.userId}" method="post">
+                        <button type="submit" class="btn btn-danger" id="banUserButton">Ban User</button>
+                    </form>
+                    <button type="button" onclick="closePopup('ban-popup')" class="btn btn-secondary" id="cancelBanButton">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <div class="popup-overlay" onclick="closePopup('unban-popup')"></div>
+        <div style="background-color: transparent; box-shadow: none" class="popup unban-popup">
+            <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-success" role="alert">
+                <h5 class="alert-heading">Confirm User Unban</h5>
+                <p>Are you sure you want to unban this user? Once unbanned, they will regain access to the app.</p>
+                <div class="d-flex justify-content-evenly">
+                    <form class="m-0" action="${pageContext.request.contextPath}/unbanUser/${profile.userId}" method="post">
+                        <button type="submit" class="btn btn-success" id="unbanUserButton">Unban User</button>
+                    </form>
+                    <button type="button" onclick="closePopup('unban-popup')" class="btn btn-secondary" id="cancelUnbanButton">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <div class="popup-overlay" onclick="closePopup('mod-popup')"></div>
+        <div style="background-color: transparent; box-shadow: none" class="popup mod-popup">
+            <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-info" role="alert">
+                <h5 class="alert-heading">Confirm User Promotion</h5>
+                <p>Are you sure you want to make this user a moderator? Once promoted, they will have additional privileges in the app.</p>
+                <div class="d-flex justify-content-evenly">
+                    <form class="m-0" action="${pageContext.request.contextPath}/makeUserMod/${profile.userId}" method="post">
+                        <button type="submit" class="btn btn-info" id="makeUserModButton">Make Moderator</button>
+                    </form>
+                    <button type="button" onclick="closePopup('mod-popup')" class="btn btn-secondary" id="cancelModButton">Cancel</button>
+                </div>
+            </div>
         </div>
         <hr class="my-8">
         <c:if test="${not empty param.success}">
         <div class="alert alert-success alert-dismissible fade show" id="errorAlert" role="alert">
             <c:if test="${param.success == 'ban'}">Succesfully banned <c:out value="${profile.username}"/></c:if>
             <c:if test="${param.success == 'unban'}">Succesfully unbanned <c:out value="${profile.username}"/></c:if>
+            <c:if test="${param.success == 'mod'}">Succesfully promoted user moderator <c:out value="${profile.username}"/></c:if>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         </c:if>
@@ -142,6 +176,7 @@
             <c:if test="${param.error == 'invalidType'}">File is of invalid type</c:if>
             <c:if test="${param.error == 'ban'}">Error banning user</c:if>
             <c:if test="${param.error == 'unban'}">Error unbanning user</c:if>
+            <c:if test="${param.error == 'mod'}">Error in promoting user to moderator</c:if>
             <c:if test="${param.error == 'noFile'}">No file was provided</c:if>
             <c:if test="${param.error == 'failedSetProfilePicture' || param.error == 'error'}">Error uploading file </c:if>
             <c:if test="${param.error == 'fileTooBig'}">File is too big </c:if>
