@@ -53,16 +53,23 @@ public class HelloWorldController {
     }
 
     @RequestMapping(value = "/register/confirm")
-    public ModelAndView confirmRegistration(@RequestParam("token") final String token) {
-        Token verificationToken = verificationTokenService.getToken(token).orElseThrow(VerificationTokenNotFoundException::new);
-        LOGGER.debug("Verification token: " + verificationToken.getToken());
-        if(userService.confirmRegister(verificationToken)) {
-            return new ModelAndView("redirect:/login");
+    public ModelAndView confirmRegistration(@RequestParam("token") final String token, RedirectAttributes redirectAttributes) {
+        try {
+            Token verificationToken = verificationTokenService.getToken(token).get();
+            LOGGER.debug("Verification token: " + verificationToken.getToken());
 
+            if (userService.confirmRegister(verificationToken)) {
+                return new ModelAndView("redirect:/login");
+            } else {
+                redirectAttributes.addAttribute("token", token);
+                redirectAttributes.addAttribute("message", "The verification token had expired. A new email was sent!");
+                return new ModelAndView("redirect:/register/resendEmail");
+            }
+        } catch (VerificationTokenNotFoundException e) {
+            return new ModelAndView("helloworld/404");
         }
-       //TODO return new ModelAndView("redirect:/register/tokentimedout?token=" + token);
-        return new ModelAndView("redirect:/register/tokentimedout?token=" + token);
     }
+
 
     //TODO
     @RequestMapping(value = "/register/tokentimedout")
@@ -73,10 +80,15 @@ public class HelloWorldController {
     }
 
     @RequestMapping(value = "/register/resendEmail", method = RequestMethod.POST)
-    public ModelAndView resendEmail(@RequestParam("token") final String token, RedirectAttributes redirectAttributes) {
+    public ModelAndView resendEmail(@RequestParam("token") final String token,
+                                    @RequestParam("message") final String message,
+                                    RedirectAttributes redirectAttributes) {
         redirectAttributes.addAttribute("token", token);
-        redirectAttributes.addAttribute("message", "Verification email has been resent successfully.");
-
+        if (message == null || message.isEmpty()) {
+            redirectAttributes.addAttribute("message", "Verification email has been resent successfully.");
+        } else {
+            redirectAttributes.addAttribute("message", message);
+        }
         ModelAndView mav = new ModelAndView("redirect:/register/sentEmail");
         userService.resendVerificationEmail(token);
         return mav;
