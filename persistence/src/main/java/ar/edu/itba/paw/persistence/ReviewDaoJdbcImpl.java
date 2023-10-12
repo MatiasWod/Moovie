@@ -30,6 +30,8 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
             rs.getString("reviewContent")
     );
 
+    private static final RowMapper<Integer> COUNT_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("count"));
+
     @Autowired
     public ReviewDaoJdbcImpl(final DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
@@ -54,7 +56,7 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
     }
 
     @Override
-    public List<Review> getReviewsByMediaId(int currentUserId, int mediaId) {
+    public List<Review> getReviewsByMediaId(int currentUserId, int mediaId, int size, int pageNumber) {
         StringBuilder sql = new StringBuilder("SELECT *, ");
         ArrayList<Object> args = new ArrayList<>();
 
@@ -64,10 +66,17 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
         args.add(currentUserId);
 
         sql.append(" FROM reviews r INNER JOIN users ON users.userid = r.userid INNER JOIN media  ");
-        sql.append(" ON media.mediaId = r.mediaId WHERE r.mediaId = ? ;");
+        sql.append(" ON media.mediaId = r.mediaId WHERE r.mediaId = ? ");
+        sql.append(" LIMIT ? OFFSET ?; ");
         args.add(mediaId);
+        args.add(size);
+        args.add(pageNumber * size);
 
         return jdbcTemplate.query(sql.toString(), args.toArray(), REVIEW_ROW_MAPPER);
+    }
+
+    public int getReviewsByMediaIdCount(int mediaId){
+        return jdbcTemplate.query("SELECT COUNT(*) FROM reviews WHERE mediaId = ?",new Object[]{mediaId},COUNT_ROW_MAPPER).stream().findFirst().get().intValue();
     }
 
 

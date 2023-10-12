@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
+import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.CreateReviewForm;
 import org.slf4j.Logger;
@@ -124,7 +125,9 @@ public class MediaController {
     }
 
     @RequestMapping(value = "/details/{id:\\d+}")
-    public ModelAndView details(@PathVariable("id") final int mediaId, @ModelAttribute("detailsForm") final CreateReviewForm form, RedirectAttributes redirectAttributes) {
+    public ModelAndView details(@PathVariable("id") final int mediaId,
+                                @RequestParam(value = "page",defaultValue = "1") final int pageNumber,
+                                @ModelAttribute("detailsForm") final CreateReviewForm form, RedirectAttributes redirectAttributes) {
         boolean type;
         try{
             type = mediaService.getMediaById(mediaId).isType();
@@ -157,7 +160,11 @@ public class MediaController {
             mav.addObject("creators", tvCreatorsService.getTvCreatorsByMediaId(mediaId));
         }
         mav.addObject("actorsList", actorService.getAllActorsForMedia(mediaId));
-        mav.addObject("reviewsList", reviewService.getReviewsByMediaId(mediaId));
+        mav.addObject("reviewsList", reviewService.getReviewsByMediaId(mediaId,PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+        mav.addObject("currentPage",pageNumber - 1);
+        int totalReviewsForMedia = reviewService.getReviewsByMediaIdCount(mediaId);
+        int numberOfPages = (int) Math.ceil(totalReviewsForMedia * 1.0 / PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize());
+        mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("providerList", providerService.getProviderForMedia(mediaId));
         mav.addObject("genresList", genreService.getGenresForMedia(mediaId));
         return mav;
@@ -166,7 +173,7 @@ public class MediaController {
     @RequestMapping(value = "/createrating", method = RequestMethod.POST)
     public ModelAndView createReview(@Valid @ModelAttribute("detailsForm") final CreateReviewForm form, final BindingResult errors, RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
-            return details(form.getMediaId(), form,null);
+            return details(form.getMediaId(),1, form,null);
         }
         try{
             reviewService.createReview(form.getMediaId(), form.getRating(), form.getReviewContent());

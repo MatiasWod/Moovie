@@ -410,6 +410,13 @@
             </c:otherwise>
         </c:choose>
     </div>
+    <div class="m-1">
+        <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+            <c:param name="mediaPages" value="${numberOfPages}"/>
+            <c:param name="currentPage" value="${currentPage + 1}"/>
+            <c:param name="url" value="/details/${media.mediaId}"/>
+        </c:import>
+    </div>
 </div>
 </body>
 </html>

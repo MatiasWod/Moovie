@@ -23,10 +23,14 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
-    public List<Review> getReviewsByMediaId(int mediaId) {
-        return reviewDao.getReviewsByMediaId(userService.tryToGetCurrentUserId(), mediaId);
+    public List<Review> getReviewsByMediaId(int mediaId, int size, int pageNumber)  {
+        return reviewDao.getReviewsByMediaId(userService.tryToGetCurrentUserId(), mediaId, size, pageNumber);
     }
 
+    @Override
+    public int getReviewsByMediaIdCount(int mediaId) {
+        return reviewDao.getReviewsByMediaIdCount(mediaId);
+    }
 
     @Override
     public List<Review> getMovieReviewsFromUser(int userId) {
