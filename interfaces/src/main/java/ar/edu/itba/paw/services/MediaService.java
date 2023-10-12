@@ -5,7 +5,6 @@ import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface MediaService {
 
@@ -22,4 +21,8 @@ public interface MediaService {
     Movie getMovieById(int mediaId);
     TVSerie getTvById(int mediaId);
 
-}
+    void upMediaVoteCount(int mediaId);
+
+    void downMediaVoteCount(int mediaId);
+
+    }

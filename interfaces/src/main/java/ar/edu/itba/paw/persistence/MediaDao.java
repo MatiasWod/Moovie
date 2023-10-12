@@ -16,4 +16,8 @@ public interface MediaDao {
     Optional<Movie> getMovieById(int mediaId);
     Optional<TVSerie> getTvById(int mediaId);
     int getMediaCount(int type, String search, List<String> genres);
+
+    void upMediaVoteCount(int mediaId);
+
+    void downMediaVoteCount(int mediaId);
 }

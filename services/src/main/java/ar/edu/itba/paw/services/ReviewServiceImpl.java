@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ReviewServiceImpl implements ReviewService{
@@ -15,6 +14,8 @@ public class ReviewServiceImpl implements ReviewService{
     private ReviewDao reviewDao;
     @Autowired
     private UserService userService;
+    @Autowired
+    private MediaService mediaService;
 
     @Override
     public Review getReviewById(int reviewId) {
@@ -41,5 +42,6 @@ public class ReviewServiceImpl implements ReviewService{
     public void createReview(int mediaId, int rating, String reviewContent) {
         int userId = userService.getInfoOfMyUser().getUserId();
         reviewDao.createReview(userId, mediaId, rating, reviewContent);
+        mediaService.upMediaVoteCount(mediaId);
     }
 }

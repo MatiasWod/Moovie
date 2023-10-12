@@ -21,12 +21,15 @@ public class ModeratorServiceImpl implements ModeratorService{
     private MoovieListDao moovieListDao;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private MediaService mediaService;
 
 
     @Override
-    public void deleteReview(int reviewId) {
+    public void deleteReview(int reviewId, int mediaId) {
         amIModerator();
         reviewDao.deleteReview(reviewId);
+        mediaService.downMediaVoteCount(mediaId);
     }
 
     @Override

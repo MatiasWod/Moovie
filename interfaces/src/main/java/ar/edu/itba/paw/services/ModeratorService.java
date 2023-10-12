@@ -2,7 +2,7 @@ package ar.edu.itba.paw.services;
 
 public interface ModeratorService {
     //Deletes a Media Review
-    void deleteReview(int reviewId);
+    void deleteReview(int reviewId,int mediaId);
     //Delete a Moovie List
     void deleteMoovieListList(int moovieListId);
 

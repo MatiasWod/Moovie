@@ -156,7 +156,7 @@ public class MediaController {
             redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully created.");
 
         } catch(UnableToInsertIntoDatabase e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Review wasn't created, user already has a review for this media.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Couldn't create review, you already have a review for this media.");
         }
 
         return new ModelAndView("redirect:/details/" + form.getMediaId());

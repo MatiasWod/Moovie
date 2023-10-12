@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -46,5 +45,15 @@ public class MediaServiceImpl implements MediaService{
     @Override
     public int getMediaCount(int type, String search, List<String> genres) {
         return mediaDao.getMediaCount(type,search,genres);
+    }
+
+    @Override
+    public void upMediaVoteCount(int mediaId) {
+        mediaDao.upMediaVoteCount(mediaId);
+    }
+
+    @Override
+    public void downMediaVoteCount(int mediaId) {
+        mediaDao.downMediaVoteCount(mediaId);
     }
 }
