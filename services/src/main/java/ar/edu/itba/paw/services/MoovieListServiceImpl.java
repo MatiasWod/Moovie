@@ -26,6 +26,8 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Autowired
     private EmailService emailService;
 
+    private static final int EVERY_THIS_AMOUNT_OF_LIKES_SEND_EMAIL = 5;
+
     @Override
     public MoovieList getMoovieListById(int moovieListId) { //Check permissions
         MoovieList ml = moovieListDao.getMoovieListById(moovieListId).orElseThrow( () -> new MoovieListNotFoundException("Moovie list by id: " + moovieListId + " not found"));
@@ -173,18 +175,27 @@ public class MoovieListServiceImpl implements MoovieListService{
         if(likeMoovieListStatusForUser(moovieListId)){
             moovieListDao.removeLikeMoovieList(userId, moovieListId);
         } else {
-            MoovieList mvlAux = getMoovieListById(moovieListId);
-
-            //Send mail
-            User aux = userService.findUserById(mvlAux.getUserId());
-            final Map<String, Object> mailMap = new HashMap<>();
-            mailMap.put("username", aux.getUsername());
-            mailMap.put("moovieListName", mvlAux.getName());
-            emailService.sendEmail(aux.getEmail(), "Someone liked your list: " + mvlAux.getName() + "!!!", "notificationLikeMoovieList.html", mailMap);
-
-
             moovieListDao.likeMoovieList(userId, moovieListId);
+            int likeCountForMoovieList = getLikeCountForMoovieList(moovieListId);
+            if(likeCountForMoovieList != 0 && (likeCountForMoovieList % EVERY_THIS_AMOUNT_OF_LIKES_SEND_EMAIL) == 0){
+                MoovieList mvlAux = getMoovieListById(moovieListId);
+                User toUser = userService.findUserById(mvlAux.getUserId());
+                Map<String,Object> map = new HashMap<>();
+                map.put("username",toUser.getUsername());
+                map.put("likes", likeCountForMoovieList);
+                map.put("moovieListId",mvlAux.getMoovieListId());
+                map.put("moovieListName",mvlAux.getName());
+                emailService.sendEmail(toUser.getEmail(),
+                        "New like goal on your list!",
+                        "notificationLikeMilestoneMoovieList.html",
+                        map);
+            }
         }
+    }
+
+    @Override
+    public int getLikeCountForMoovieList(int moovieListId) {
+        return moovieListDao.getLikeCountForMoovieList(moovieListId);
     }
 
     @Override

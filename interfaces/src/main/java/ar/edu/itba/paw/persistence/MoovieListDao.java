@@ -35,6 +35,7 @@ public interface MoovieListDao {
     void deleteMoovieList(int moovieListId);
 
     void likeMoovieList(int userId, int moovieListId);
+    int getLikeCountForMoovieList(int moovieListId);
     void removeLikeMoovieList(int userId, int moovieListId);
     boolean likeMoovieListStatusForUser(int userId, int moovieListId);
 

@@ -47,6 +47,7 @@ public interface MoovieListService {
 
     //Likes functions
     void likeMoovieList( int moovieListId);
+    int getLikeCountForMoovieList(int moovieListId);
     void removeLikeMoovieList(int moovieListId);
     boolean likeMoovieListStatusForUser( int moovieListId);
 
