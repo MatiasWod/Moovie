@@ -235,26 +235,6 @@ public class ListController {
         return mav;
     }
 
-    @RequestMapping("featured")
-    public ModelAndView featuredLists(){
-        ModelAndView mav = new ModelAndView("helloworld/featuredLists");
-
-        List<Media> movieList = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null, "tmdbrating DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
-        mav.addObject("movieList", movieList);
-        List<Media> tvSerieList = mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), null, null,"tmdbrating DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
-        mav.addObject("tvList", tvSerieList);
-
-        return mav;
-    }
-
-    @RequestMapping("featured/list")
-    public ModelAndView featuredListView(){
-        ModelAndView mav = new ModelAndView("helloworld/MoovieList");
-
-
-
-        return mav;
-    }
 
     @RequestMapping(value = "/createListAction", method = RequestMethod.POST)
     public ModelAndView createListAction(@Valid @ModelAttribute("ListForm") final CreateListForm form, final BindingResult errors) {
