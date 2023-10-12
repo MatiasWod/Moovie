@@ -101,6 +101,7 @@
             <th scope="col">Type</th>
             <th scope="col">Score</th>
             <th scope="col">Release Date</th>
+            <th scope="col" style="width: 50px"></th>
         </tr>
         </thead>
         <c:choose>
@@ -126,11 +127,6 @@
                                         <strong>${mediaList[loop.index].name}</strong>
                                     </a>
                                 </div>
-                                <c:if test="${mediaList[loop.index].watched}">
-                                    <div class="col-auto">
-                                        <i class="bi bi-check-circle-fill" style="color: green"></i>
-                                    </div>
-                                </c:if>
                             </div>
                         </td>
                         <!-- Type -->
@@ -149,6 +145,13 @@
                         </td>
                         <td>
                             <span>${mediaList[loop.index].releaseDate}</span>
+                        </td>
+                        <td>
+                        <c:if test="${mediaList[loop.index].watched}">
+                                <div class="col-auto text-center">
+                                    <i class="bi bi-check-circle-fill" style="color: green"></i>
+                                </div>
+                        </c:if>
                         </td>
                     </tr>
                 </c:forEach>
