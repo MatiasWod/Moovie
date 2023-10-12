@@ -49,11 +49,7 @@ public class HelloWorldController {
 
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
-    public ModelAndView register(@ModelAttribute("registerForm") final RegisterForm form,
-                                 HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        String previousPage = request.getHeader("Referer");
-        session.setAttribute("previousPage", previousPage);
+    public ModelAndView register(@ModelAttribute("registerForm") final RegisterForm form) {
         return new ModelAndView("helloworld/register");
     }
 
@@ -86,7 +82,7 @@ public class HelloWorldController {
 
     @RequestMapping(value = "/register/resendEmail", method = RequestMethod.POST)
     public ModelAndView resendEmail(@RequestParam("token") final String token,
-                                    @RequestParam("message") final String message,
+                                    @RequestParam(value = "message", required = false) final String message,
                                     RedirectAttributes redirectAttributes) {
         redirectAttributes.addAttribute("token", token);
         if (message == null || message.isEmpty()) {
@@ -195,10 +191,9 @@ public class HelloWorldController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ModelAndView registerForm(@Valid @ModelAttribute("registerForm") final RegisterForm form,
-                                     final BindingResult errors,
-                                     HttpServletRequest request) {
+                                     final BindingResult errors) {
         if (errors.hasErrors()) {
-            return register(form, request);
+            return register(form);
         }
         String token;
         try {

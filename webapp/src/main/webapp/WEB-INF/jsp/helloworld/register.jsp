@@ -58,7 +58,7 @@
                 </div>
                 <div>
                     Continue
-                    <a href="${pageContext.request.contextPath}/continueWithoutLogin""> without logging in</a>
+                    <a href="${pageContext.request.contextPath}/"> without logging in</a>
                 </div>
             </div>
         </form:form>
