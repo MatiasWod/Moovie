@@ -167,7 +167,7 @@
         <div class="alert alert-success alert-dismissible fade show" id="errorAlert" role="alert">
             <c:if test="${param.success == 'ban'}">Succesfully banned <c:out value="${profile.username}"/></c:if>
             <c:if test="${param.success == 'unban'}">Succesfully unbanned <c:out value="${profile.username}"/></c:if>
-            <c:if test="${param.success == 'mod'}">Succesfully promoted user moderator <c:out value="${profile.username}"/></c:if>
+            <c:if test="${param.success == 'mod'}">Succesfully promoted <c:out value="${profile.username}"/></c:if>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         </c:if>
