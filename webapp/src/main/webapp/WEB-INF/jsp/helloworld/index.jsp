@@ -10,57 +10,55 @@
     <title>Moovie</title>
 </head>
 <body style="background: whitesmoke;">
-<c:import url="navBar.jsp">
-    <c:param name="userName" value="${user.username}"/>
-</c:import>
-<div class="container d-flex flex-column" style="margin-bottom: 50px">
-    <div style="position: page;" class="d-flex flex-column align-items-center justify-content-center">
-        <c:import url="imageBackdrop.jsp"/>
-    <div style="margin-top: calc(100vh - 250px);" class="container d-flex flex-column justify-content-end">
-        <div class="container d-flex justify-content-center p-4">
-            <h1 class="text-center">Immerse Yourself in Movies and Series, <br> Discover Your Next Favorite Experience.</h1>
-        </div>
-        <%--<div class="d-flex justify-content-center">
-            <button class="btn btn-success btn-lg">GET STARTED - SIGN IN</button>
-        </div>--%>
-        <div class="container d-flex justify-content-between p-2">
-            <h3>Top Rated Movies</h3>
-            <a href="${pageContext.request.contextPath}/discover?media=Movies">see more</a>
-        </div>
-        <hr class="my-1">
-        <div class="container d-flex scrollableDiv">
-            <c:forEach var="movie" items="${movieList}" end="5">
-                <a href="${pageContext.request.contextPath}/details/${movie.mediaId}" class="poster card text-bg-dark m-1">
-                    <div   class="card-img-container"> <!-- Add a container for the image -->
-                        <img class="cropCenter" src="${movie.posterPath}" alt="${movie.name} poster">
-                        <div class="card-img-overlay">
-                            <h5 class="card-title">${movie.name}</h5>
-                            <p class="card-text">${movie.tmdbRating}</p>
-                        </div>
-                    </div>
-                </a>
-            </c:forEach>
-        </div>
-
-        <div class="container d-flex justify-content-between mt-2 p-2">
-            <h3>Top Rated Series</h3>
-            <a href="${pageContext.request.contextPath}/discover?media=Series">see more</a>
-        </div>
-        <hr class="my-1">
-        <div class="container d-flex overflow-hidden" style="max-height: 300px;"> <!-- Set a fixed maximum height for the container -->
-                <c:forEach var="series" items="${tvList}" end="5">
-                        <a href="${pageContext.request.contextPath}/details/${series.mediaId}" class="poster card text-bg-dark m-1">
-                            <div class="card-img-container" style="max-height: 100%; overflow: hidden;"> <!-- Set a maximum height for the image container -->
-                                <img class="img-fluid" src="${series.posterPath}" alt="${series.name} poster" style="max-height: 100%; object-fit: cover;"> <!-- Use 'img-fluid' class for responsive images -->
+    <c:import url="navBar.jsp">
+        <c:param name="userName" value="${user.username}"/>
+    </c:import>
+    <div class="container d-flex flex-column" style="margin-bottom: 50px">
+        <div style="position: page;" class="d-flex flex-column align-items-center justify-content-center">
+            <div class="container d-flex flex-column justify-content-end">
+                <div class="container d-flex justify-content-center p-4">
+                    <h1 class="text-center">Immerse Yourself in Movies and Series, <br> Discover Your Next Favorite Experience.</h1>
+                </div>
+                <%--<div class="d-flex justify-content-center">
+                    <button class="btn btn-success btn-lg">GET STARTED - SIGN IN</button>
+                </div>--%>
+                <div class="container d-flex justify-content-between p-2">
+                    <h3>Top Rated Movies</h3>
+                    <a href="${pageContext.request.contextPath}/discover?media=Movies">see more</a>
+                </div>
+                <hr class="my-1">
+                <div class="container d-flex scrollableDiv">
+                    <c:forEach var="movie" items="${movieList}" end="5">
+                        <a href="${pageContext.request.contextPath}/details/${movie.mediaId}" class="poster card text-bg-dark m-1">
+                            <div   class="card-img-container"> <!-- Add a container for the image -->
+                                <img class="cropCenter" src="${movie.posterPath}" alt="${movie.name} poster">
                                 <div class="card-img-overlay">
-                                    <h5 class="card-title">${series.name}</h5>
-                                    <p class="card-text">${series.tmdbRating}</p>
+                                    <h5 class="card-title">${movie.name}</h5>
+                                    <p class="card-text">${movie.tmdbRating}</p>
                                 </div>
                             </div>
                         </a>
-                </c:forEach>
-        </div>
+                    </c:forEach>
+                </div>
 
+                <div class="container d-flex justify-content-between mt-2 p-2">
+                    <h3>Top Rated Series</h3>
+                    <a href="${pageContext.request.contextPath}/discover?media=Series">see more</a>
+                </div>
+                <hr class="my-1">
+                <div class="container d-flex overflow-hidden" style="max-height: 300px;"> <!-- Set a fixed maximum height for the container -->
+                        <c:forEach var="series" items="${tvList}" end="5">
+                                <a href="${pageContext.request.contextPath}/details/${series.mediaId}" class="poster card text-bg-dark m-1">
+                                    <div class="card-img-container" style="max-height: 100%; overflow: hidden;"> <!-- Set a maximum height for the image container -->
+                                        <img class="img-fluid" src="${series.posterPath}" alt="${series.name} poster" style="max-height: 100%; object-fit: cover;"> <!-- Use 'img-fluid' class for responsive images -->
+                                        <div class="card-img-overlay">
+                                            <h5 class="card-title">${series.name}</h5>
+                                            <p class="card-text">${series.tmdbRating}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                        </c:forEach>
+                </div>
 
     </div>
 </body>
