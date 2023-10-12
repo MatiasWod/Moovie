@@ -60,6 +60,10 @@
                             </button>
                             <c:set var="isChecked" value="" />
                             <div style="height: 50vh" class="dropdown-menu scrollableDiv flex-wrap p-4">
+<%--                                ES NECESARIO UTILIZAR LA VAR isChecked.
+                Porque al simplemente realizar fn:contains(param.g,genre)
+                 existen casos como Action&Adventure que siempre daran match para Action y Adventure
+                 Es preferible esto a en el controlador manejar la creacion de modelos nuevos que contemplen el checked para cada genero--%>
                                 <c:forEach var="genre" items="${genresList}">
                                     <c:forEach var="selectedGenre" items="${selectedGenres}">
                                         <c:if test="${selectedGenre == genre}">
