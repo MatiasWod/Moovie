@@ -20,7 +20,7 @@
 </head>
 <body style="background: whitesmoke">
 <c:import url="navBar.jsp">
-    <c:param name="userName" value="${user.username}"/>
+
 </c:import>
 
 <div style="margin-bottom: 30px">

@@ -19,7 +19,7 @@ public interface UserService {
     public static final int ROLE_MODERATOR = 2;
 
     //Registration actions
-    void createUser(String username, String email, String password);
+    String createUser(String username, String email, String password);
     User createUserFromUnregistered(String username, String email, String password);
     boolean confirmRegister(Token token);
 
