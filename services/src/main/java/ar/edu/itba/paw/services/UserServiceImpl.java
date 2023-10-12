@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void createUser(String username, String email, String password){
+    public String createUser(String username, String email, String password){
         if(userDao.findUserByUsername(username).isPresent()){
             throw new UnableToCreateUserException("username_taken");
         }
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
                 User user = createUserFromUnregistered(username, email, password);
                 String token = verificationTokenService.createVerificationToken(user.getUserId());
                 sendVerificationEmail(email,username,token);
-                return;
+                return token;
             } else{
                 throw new UnableToCreateUserException("email_taken");
             }
@@ -69,6 +69,7 @@ public class UserServiceImpl implements UserService {
         User user = userDao.createUser(username, email, passwordEncoder.encode(password));
         String token = verificationTokenService.createVerificationToken(user.getUserId());
         sendVerificationEmail(email,username,token);
+        return token;
     }
 
     @Override
