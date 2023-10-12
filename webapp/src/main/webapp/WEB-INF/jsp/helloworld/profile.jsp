@@ -33,15 +33,15 @@
                 <img id="profile-image-big" class="cropCenter" style="height:100px;width:100px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/profile/image/${profile.username}" alt="profile pic">
             </c:if>
             <c:if test="${isMe}">
-                <button style="background: none; border: none; padding: 0; cursor: pointer" onclick="openReviewPopup()">
+                <button style="background: none; border: none; padding: 0; cursor: pointer" onclick="openPopup('popup')">
                     <img id="profile-image-" class="cropCenter" style="height:100px;width:100px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/profile/image/${profile.username}" alt="profile pic">
                 </button>
-                <div class="popup-overlay" onclick="closeReviewPopup()"></div>
+                <div class="popup-overlay" onclick="closePopup('popup')"></div>
                 <div class="popup">
                     <div class="p-1 container d-flex flex-column justify-content-center">
                         <div class="d-flex justify-content-between">
                             <h1 class="m-1">Change Profile Picture</h1>
-                            <button class="btn" onclick="closeReviewPopup()">
+                            <button class="btn" onclick="closePopup('popup')">
                                 <i class="bi bi-x"></i>
                             </button>
                         </div>

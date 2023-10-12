@@ -227,7 +227,7 @@
                                 class="bi bi-plus-circle-fill"></i> Create new List</a></li>
                     </ul>
                 </div>
-                <button type="button" class="btn btn-light border border-black" onclick="openReviewPopup()"><i
+                <button type="button" class="btn btn-light border border-black" onclick="openPopup('popup')"><i
                         class="bi bi-star-fill"></i> Rate
                 </button>
             </div>
@@ -306,7 +306,7 @@
             </div>
         </div>
 
-        <div class="popup-overlay" onclick="closeReviewPopup()"></div>
+        <div class="popup-overlay" onclick="closePopup('popup')"></div>
         <div class="popup">
             <!-- Popup content goes here -->
             <h2>Your rating of "${media.name}"</h2>

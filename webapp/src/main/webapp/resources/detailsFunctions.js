@@ -42,20 +42,22 @@ function showLessActors() {
     seeMoreButton.onclick = showMoreActors;
 }
 
-function openReviewPopup() {
+function openPopup(className) {
+    const popup = document.querySelector("." + className);
     const overlay = document.querySelector(".popup-overlay");
-    const popup = document.querySelector(".popup");
-
-    overlay.style.display = "block";
-    popup.style.display = "block";
+    if (popup) {
+        popup.style.display = "block";
+        overlay.style.display = "block";
+    }
 }
 
-function closeReviewPopup() {
+function closePopup(className) {
+    const popup = document.querySelector("." + className);
     const overlay = document.querySelector(".popup-overlay");
-    const popup = document.querySelector(".popup");
-
-    overlay.style.display = "none";
-    popup.style.display = "none";
+    if (popup) {
+        popup.style.display = "none";
+        overlay.style.display = "none";
+    }
 }
 
 let selectedRating = 0;
