@@ -227,7 +227,7 @@
                                 class="bi bi-plus-circle-fill"></i> Create new List</a></li>
                     </ul>
                 </div>
-                <button type="button" class="btn btn-light border border-black" onclick="openPopup('popup')"><i
+                <button type="button" class="btn btn-light border border-black" onclick="openPopup('rate-popup')"><i
                         class="bi bi-star-fill"></i> Rate
                 </button>
             </div>
@@ -306,8 +306,8 @@
             </div>
         </div>
 
-        <div class="popup-overlay" onclick="closePopup('popup')"></div>
-        <div class="popup">
+        <div class="popup-overlay rate-popup-overlay" onclick="closePopup('rate-popup')"></div>
+        <div class="popup rate-popup">
             <!-- Popup content goes here -->
             <h2>Your rating of "${media.name}"</h2>
             <hr class="my-8">
@@ -334,7 +334,7 @@
                 <!-- Submit Button -->
                 <div class="text-center" style="margin-top: 20px">
                     <button type="button" class="btn btn-danger" style="margin-inline: 10px"
-                            onclick="closeReviewPopup()">
+                            onclick="closePopup('rate-popup')">
                         Cancel
                     </button>
                     <button type="submit" class="btn btn-dark" style="margin-inline: 10px" id="submitButton" disabled>
@@ -369,19 +369,31 @@
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-center justify-content-between">
-                                        <h5>
+                                        <h5 class="m-0">
                                             <i class="bi bi-star-fill ml-2"></i> ${review.rating}/5
                                         </h5>
                                         <sec:authorize access="hasRole('ROLE_MODERATOR')">
-                                            <div class="text-center" style="margin: 10px">
-                                                <form action="${pageContext.request.contextPath}/deleteReview/${media.mediaId}" method="post">
-                                                    <input type="hidden" name="reviewId" value="${review.reviewId}"/>
-                                                    <button type="submit" class="btn btn-danger btn-sm">Delete Review</button>
-                                                </form>
+                                            <div class="text-center m-2" >
+                                                <button onclick="openPopup('review${review.reviewId}')" class="btn btn-danger btn-sm">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
                                             </div>
                                         </sec:authorize>
+                                        <div class="review${review.reviewId}-overlay popup-overlay" onclick="closePopup('review${review.reviewId}')"></div>
+                                        <div style="background-color: transparent; box-shadow: none" class="popup review${review.reviewId}">
+                                            <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
+                                                <h5 class="alert-heading">Confirm Review Deletion</h5>
+                                                <p>Are you sure you want to delete this review? Once deleted, it cannot be recovered</p>
+                                                <div class="d-flex justify-content-evenly">
+                                                    <form class="m-0" action="${pageContext.request.contextPath}/deleteReview/${media.mediaId}" method="post">
+                                                        <input type="hidden" name="reviewId" value="${review.reviewId}"/>
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                    </form>
+                                                    <button type="button" onclick="closePopup('review${review.reviewId}')" class="btn btn-secondary" id="cancelModButton">Cancel</button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-
                                 </div>
                                 <p>
                                     <c:out value="${review.reviewContent}"/>

@@ -44,7 +44,7 @@ function showLessActors() {
 
 function openPopup(className) {
     const popup = document.querySelector("." + className);
-    const overlay = document.querySelector(".popup-overlay");
+    const overlay = document.querySelector("."+className+"-overlay");
     if (popup) {
         popup.style.display = "block";
         overlay.style.display = "block";
@@ -53,7 +53,7 @@ function openPopup(className) {
 
 function closePopup(className) {
     const popup = document.querySelector("." + className);
-    const overlay = document.querySelector(".popup-overlay");
+    const overlay = document.querySelector("."+className+"-overlay");
     if (popup) {
         popup.style.display = "none";
         overlay.style.display = "none";

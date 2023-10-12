@@ -33,11 +33,11 @@
                 <img id="profile-image-big" class="cropCenter" style="height:100px;width:100px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/profile/image/${profile.username}" alt="profile pic">
             </c:if>
             <c:if test="${isMe}">
-                <button style="background: none; border: none; padding: 0; cursor: pointer" onclick="openPopup('popup')">
+                <button style="background: none; border: none; padding: 0; cursor: pointer" onclick="openPopup('image-popup')">
                     <img id="profile-image-" class="cropCenter" style="height:100px;width:100px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/profile/image/${profile.username}" alt="profile pic">
                 </button>
-                <div class="popup-overlay" onclick="closePopup('popup')"></div>
-                <div class="popup">
+                <div class="popup-overlay image-popup-overlay" onclick="closePopup('popup')"></div>
+                <div class="popup image-popup">
                     <div class="p-1 container d-flex flex-column justify-content-center">
                         <div class="d-flex justify-content-between">
                             <h1 class="m-1">Change Profile Picture</h1>
@@ -119,7 +119,7 @@
                 </div>
             </div>
         </div>
-        <div class="popup-overlay" onclick="closePopup('ban-popup')"></div>
+        <div class="popup-overlay ban-popup-overlay" onclick="closePopup('ban-popup')"></div>
         <div style="background-color: transparent; box-shadow: none" class="popup ban-popup">
             <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-warning" role="alert">
                 <h5 class="alert-heading">Confirm User Ban</h5>
@@ -136,7 +136,7 @@
                 </div>
             </div>
         </div>
-        <div class="popup-overlay" onclick="closePopup('unban-popup')"></div>
+        <div class="popup-overlay unban-popup-overlay" onclick="closePopup('unban-popup')"></div>
         <div style="background-color: transparent; box-shadow: none" class="popup unban-popup">
             <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-success" role="alert">
                 <h5 class="alert-heading">Confirm User Unban</h5>
@@ -149,7 +149,7 @@
                 </div>
             </div>
         </div>
-        <div class="popup-overlay" onclick="closePopup('mod-popup')"></div>
+        <div class="popup-overlay mod-popup-overlay" onclick="closePopup('mod-popup')"></div>
         <div style="background-color: transparent; box-shadow: none" class="popup mod-popup">
             <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-info" role="alert">
                 <h5 class="alert-heading">Confirm User Promotion</h5>
