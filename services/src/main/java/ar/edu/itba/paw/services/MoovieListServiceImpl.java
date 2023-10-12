@@ -3,6 +3,7 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
 import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.exceptions.UserNotLoggedException;
+import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.User.User;
@@ -76,6 +77,17 @@ public class MoovieListServiceImpl implements MoovieListService{
             return moovieListDao.getMoovieListContent(moovieListId, userid , orderBy,sortOrder ,size, pageNumber);
         } catch(UserNotLoggedException e){
             return moovieListDao.getMoovieListContent(moovieListId, -1 , orderBy,sortOrder ,size, pageNumber);
+        }
+    }
+
+    @Override
+    public List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
+        //If the previous didnt throw exception, we have the permissions needed to perform the next action
+        try{
+            int userid = userService.getInfoOfMyUser().getUserId();
+            return moovieListDao.getFeaturedMoovieListContent(moovieListId,mediaType, userid ,featuredListOrder, orderBy,sortOrder ,size, pageNumber);
+        } catch(UserNotLoggedException e){
+            return moovieListDao.getFeaturedMoovieListContent(moovieListId,mediaType, -1 , featuredListOrder, orderBy,sortOrder ,size, pageNumber);
         }
     }
 

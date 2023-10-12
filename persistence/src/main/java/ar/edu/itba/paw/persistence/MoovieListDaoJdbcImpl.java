@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
+import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
@@ -201,6 +202,35 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
         if(orderBy!=null && !orderBy.isEmpty() ){
             sql.append(" ORDER BY ").append(orderBy).append(" ").append(sortOrder);
+        }
+        sql.append(" LIMIT ? OFFSET ? ;");
+        args.add(size);
+        args.add(pageNumber*size);
+
+        // Execute the query
+        return jdbcTemplate.query(sql.toString(), args.toArray(), MOOVIE_LIST_CONTENT_ROW_MAPPER);
+    }
+
+
+    //realizar bien la query
+    @Override
+    public List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, int userid ,String featuredListOrder, String orderBy, String sortOrder ,int size, int pageNumber){
+        StringBuilder sql = new StringBuilder("SELECT * FROM (SELECT *,  ");
+        ArrayList<Object> args = new ArrayList<>();
+
+        //Add the part of the query that checks if its watched by its owner
+        sql.append(" (CASE WHEN EXISTS ( SELECT 1 FROM moovielists ml INNER JOIN moovieListsContent mlc2 ON ml.moovielistid = mlc2.moovielistid  ");
+        sql.append(" WHERE m.mediaId = mlc2.mediaId AND ml.name = 'Watched' AND ml.userid = ? ) THEN true ELSE false END) AS isWatched FROM media m ");
+        args.add(userid);
+        // If type is 0 or 1 it's specifically movies or TVs, else it's not restricted
+        if (mediaType == MediaTypes.TYPE_MOVIE.getType() || mediaType == MediaTypes.TYPE_TVSERIE.getType()) {
+            sql.append(" WHERE type = ? ");
+            args.add(mediaType == MediaTypes.TYPE_TVSERIE.getType());
+        } else {
+            sql.append(" WHERE type IS NOT NULL ");
+        }
+        if(orderBy!=null && !orderBy.isEmpty() ){
+            sql.append(" ORDER BY ").append(featuredListOrder).append(" DESC LIMIT 100) AS topRated ORDER BY ").append(orderBy).append(" ").append(sortOrder);
         }
         sql.append(" LIMIT ? OFFSET ? ;");
         args.add(size);

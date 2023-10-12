@@ -3,10 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
-import ar.edu.itba.paw.models.MoovieList.MoovieList;
-import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
-import ar.edu.itba.paw.models.MoovieList.MoovieListDetails;
-import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
+import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.GenreService;
@@ -111,17 +108,20 @@ public class ListController {
     @RequestMapping("/profile/{username}/watchedList")
     public ModelAndView watchedlist(@PathVariable("username") final String username) {
         final List<MoovieListCard> moovieListCards = moovieListService.getMoovieListCards("Watched",username,MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),0);
-        return list(moovieListCards.get(0).getMoovieListId(),1,null,null);
+        return list(moovieListCards.get(0).getMoovieListId(),null,null,1);
     }
 
     @RequestMapping("/profile/{username}/watchList")
     public ModelAndView watchlist(@PathVariable("username") final String username) {
         final List<MoovieListCard> moovieListCards = moovieListService.getMoovieListCards("Watchlist",username,MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),0);
-        return list(moovieListCards.get(0).getMoovieListId(),1,null,null);
+        return list(moovieListCards.get(0).getMoovieListId(),null,null,1);
     }
 
     @RequestMapping("/list/{id:\\d+}")
-    public ModelAndView list(@PathVariable("id") final int moovieListId, @RequestParam(value = "page", defaultValue = "1") final int pageNumber, @RequestParam(value="orderBy", defaultValue = "name") final String orderBy, @RequestParam(value="order", defaultValue = "asc") final String order) {
+    public ModelAndView list(@PathVariable("id") final int moovieListId,
+                             @RequestParam(value="orderBy", defaultValue = "name") final String orderBy,
+                             @RequestParam(value="order", defaultValue = "asc") final String order,
+                             @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
         final ModelAndView mav = new ModelAndView("helloworld/moovieList");
         int pagesSize= PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
         MoovieListDetails myList=moovieListService.getMoovieListDetails(moovieListId,null,null,orderBy,order,pagesSize,pageNumber - 1);
@@ -146,6 +146,92 @@ public class ListController {
         mav.addObject("likedCount",moovieListCard.getLikeCount());
         mav.addObject("listOwner",moovieListCard.getUsername());
         mav.addObject("orderBy", orderBy);
+        Integer id = moovieListId;
+        final Map<String, String> queries = new HashMap<>();
+        queries.put("id",id.toString());
+        queries.put("orderBy", orderBy);
+        queries.put("order", order);
+        String urlBase = UriComponentsBuilder.newInstance().path("/list/{id}").query("orderBy={orderBy}&order={order}").buildAndExpand(queries).toUriString();
+        mav.addObject("urlBase", urlBase);
+        return mav;
+    }
+
+    @RequestMapping(value = "/featuredList/{list}")
+    public ModelAndView featuredList(
+                                     @PathVariable("list") final String list,
+                                     @RequestParam(value="orderBy", defaultValue = "tmdbRating") final String orderBy,
+                                     @RequestParam(value="order", defaultValue = "desc") final String order,
+                                     @RequestParam(value = "page",defaultValue = "1") final int pageNumber){
+        final ModelAndView mav = new ModelAndView("helloworld/moovieList");
+        int pagesSize= PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
+        MoovieListCard moovieListCard;
+        List<MoovieListContent> moovieListContentList;
+        if(list.equals("topRatedMovies")){
+            moovieListCard = moovieListService.getMoovieListCards("Top Rated Movies","Moovie",MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
+                    1,0).get(0); //Solo hay una lista de Moovie con ese nombre, entonces solo traigo esa lista
+            moovieListContentList = moovieListService.getFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_MOVIE.getType(), "tmdbrating" ,orderBy,
+                    order,pagesSize,pageNumber - 1);
+        }
+        else if (list.equals("topRatedSeries")){
+            moovieListCard = moovieListService.getMoovieListCards("Top Rated TV Series","Moovie",MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
+                    1,0).get(0); //Solo hay una lista de Moovie con ese nombre, entonces solo traigo esa lista
+            moovieListContentList = moovieListService.getFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_TVSERIE.getType(), "tmdbrating" ,orderBy,
+                    order,pagesSize,pageNumber - 1);
+        }
+        else if (list.equals("topRatedMedia")){
+            moovieListCard = moovieListService.getMoovieListCards("Top Rated Media","Moovie",MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
+                    1,0).get(0); //Solo hay una lista de Moovie con ese nombre, entonces solo traigo esa lista
+            moovieListContentList = moovieListService.getFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_ALL.getType(), "tmdbrating" ,orderBy,
+                    order,pagesSize,pageNumber - 1);
+        }
+        else if (list.equals("mostPopularMovies")){
+            moovieListCard = moovieListService.getMoovieListCards("Most Popular Movies","Moovie",MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
+                    1,0).get(0); //Solo hay una lista de Moovie con ese nombre, entonces solo traigo esa lista
+            moovieListContentList = moovieListService.getFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_ALL.getType(), "votecount" ,orderBy,
+                    order,pagesSize,pageNumber - 1);
+        }
+        else if (list.equals("mostPopularSeries")){
+            moovieListCard = moovieListService.getMoovieListCards("Most Popular Series","Moovie",MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
+                    1,0).get(0); //Solo hay una lista de Moovie con ese nombre, entonces solo traigo esa lista
+            moovieListContentList = moovieListService.getFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_ALL.getType(), "votecount" ,orderBy,
+                    order,pagesSize,pageNumber - 1);
+        }
+        else if (list.equals("mostPopularMedia")){
+            moovieListCard = moovieListService.getMoovieListCards("Most Popular Media","Moovie",MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
+                    1,0).get(0); //Solo hay una lista de Moovie con ese nombre, entonces solo traigo esa lista
+            moovieListContentList = moovieListService.getFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_ALL.getType(), "votecount" ,orderBy,
+                    order,pagesSize,pageNumber - 1);
+        }
+        else {
+            return new ModelAndView("helloworld/404");
+        }
+        int mediaCountForMoovieList = PagingSizes.FEATURED_MOOVIE_LIST_DEFAULT_TOTAL_CONTENT.getSize();
+        int numberOfPages = (int) Math.ceil(mediaCountForMoovieList * 1.0 / pagesSize);
+        mav.addObject("moovieList",moovieListCard);
+        mav.addObject("mediaList",moovieListContentList);
+        try {
+            User currentUser=userService.getInfoOfMyUser();
+            mav.addObject("watchedCount",moovieListService.countWatchedMoviesInList(currentUser.getUserId(),moovieListCard.getMoovieListId()));
+        }catch (Exception e){
+            mav.addObject("watchedCount",0);
+        }
+        mav.addObject("listCount",mediaCountForMoovieList);
+        mav.addObject("initialOrder",order);
+        mav.addObject("itemsPerPage",pagesSize);
+        mav.addObject("numberOfPages",numberOfPages);
+        mav.addObject("currentPage",pageNumber - 1);
+        mav.addObject("isLiked",moovieListService.likeMoovieListStatusForUser(moovieListCard.getMoovieListId()));
+        mav.addObject("likedCount",moovieListCard.getLikeCount());
+        mav.addObject("listOwner",moovieListCard.getUsername());
+        mav.addObject("orderBy", orderBy);
+        final Map<String, String> queries = new HashMap<>();
+        queries.put("list",list);
+        queries.put("orderBy", orderBy);
+        queries.put("order", order);
+        String urlBase = UriComponentsBuilder.newInstance().path("/featuredList/{list}")
+                .query("orderBy={orderBy}&order={order}")
+                .buildAndExpand(queries).toUriString();
+        mav.addObject("urlBase", urlBase);
         return mav;
     }
 
@@ -169,18 +255,6 @@ public class ListController {
 
         return mav;
     }
-
-    /*@RequestMapping(value = "/featuredList/topRated")
-    public ModelAndView topRatedList(){
-        List<Integer> mediaIdList = mediaService.getMediaIdOrderedByTmdbRatingDesc(25,0);
-        MoovieList moovieList = moovieListService.createStandardPublicMoovieListWithContent("Top Rated","These are the best movies and series according to our users' rating",mediaIdList);
-        return list(moovieList.getMoovieListId());
-    }
-
-    @RequestMapping(value = "/featuredList/mostPopular")
-    public ModelAndView mostPopularList(){
-        MoovieList moovieList = moovieListService.
-    }*/
 
     @RequestMapping(value = "/createListAction", method = RequestMethod.POST)
     public ModelAndView createListAction(@Valid @ModelAttribute("ListForm") final CreateListForm form, final BindingResult errors) {

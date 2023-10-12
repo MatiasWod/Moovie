@@ -56,9 +56,11 @@ public class MediaController {
     @RequestMapping("/")
     public ModelAndView home() {
         final ModelAndView mav = new ModelAndView("helloworld/index");
-        List<Media> movieList = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null, "tmdbrating DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
+        List<Media> movieList = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null,
+                null, "tmdbrating DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("movieList", movieList);
-        List<Media> tvSerieList = mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), null, null,"tmdbrating DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
+        List<Media> tvSerieList = mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), null,
+                null,"tmdbrating DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("tvList", tvSerieList);
         return mav;
     }
