@@ -1,11 +1,13 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.MoovieList.MoovieListDetails;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MoovieListService {
 
@@ -24,6 +26,8 @@ public interface MoovieListService {
     //Get the content of media of some moovieList by its id
     //The isWatched is returned as false (in every element) if the user who makes the query is not the owner
     List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy,String sortOrder, int size, int pageNumber);
+
+    List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber);
 
     //Get the MoovieListCard, which contains the element presented in searchs, has a lot of arguments for searchs/querys
     List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , int size, int pageNumber);

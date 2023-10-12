@@ -1,12 +1,5 @@
 window.onload = function() {
-    // const filterTypesSelect = document.getElementById("filter-types");
-    // const genreSelect = document.getElementById("genre-select");
-    //
-    // if (filterTypesSelect.value === "Genre") {
-    //     genreSelect.style.display = "block";
-    // }
-
-
+    localStorage.removeItem("searchValue");
 };
 function deleteGenre(element) {
     let aux = document.getElementById("dropdownCheck" + element.previousElementSibling.innerText.trim());
@@ -17,12 +10,6 @@ function deleteGenre(element) {
 }
 
 function beforeSubmit() {
-    // const filterTypesSelect = document.getElementById("filter-types");
-    // const genreSelect = document.getElementById("genre-select");
-    //
-    // if (filterTypesSelect.value === "Popular") {
-    //     genreSelect.removeAttribute("name");
-    // }
     const selectedOptions = [];
     document.querySelectorAll('.form-check-input:checked').forEach(function(checkbox) {
         selectedOptions.push(checkbox.nextElementSibling.innerText);
