@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 
+import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.jws.WebParam;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
@@ -144,6 +146,27 @@ public class ListController {
         mav.addObject("likedCount",moovieListCard.getLikeCount());
         mav.addObject("listOwner",moovieListCard.getUsername());
         mav.addObject("orderBy", orderBy);
+        return mav;
+    }
+
+    @RequestMapping("featured")
+    public ModelAndView featuredLists(){
+        ModelAndView mav = new ModelAndView("helloworld/featuredLists");
+
+        List<Media> movieList = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null, "tmdbrating DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
+        mav.addObject("movieList", movieList);
+        List<Media> tvSerieList = mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), null, null,"tmdbrating DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
+        mav.addObject("tvList", tvSerieList);
+
+        return mav;
+    }
+
+    @RequestMapping("featured/list")
+    public ModelAndView featuredListView(){
+        ModelAndView mav = new ModelAndView("helloworld/MoovieList");
+
+
+
         return mav;
     }
 

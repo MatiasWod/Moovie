@@ -80,6 +80,9 @@
                         <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/lists">Browse lists</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/featured">Featured lists</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/createList">Create a list</a>
                     </li>
                 </ul>
