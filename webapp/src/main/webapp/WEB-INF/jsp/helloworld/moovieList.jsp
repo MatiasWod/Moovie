@@ -9,27 +9,44 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link href="${pageContext.request.contextPath}/resources/main.css?version=55" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/details.css?version=87" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <title>Moovie List</title>
     <link href="${pageContext.request.contextPath}/resources/moovieList.css?version=63" rel="stylesheet"/>
+    <script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=87"></script>
 
 </head>
 <body style="background: whitesmoke">
-<c:import url="navBar.jsp">
-    <c:param name="userName" value="${user.username}"/>
-</c:import>
+<c:import url="navBar.jsp"/>
 <div class="container d-flex flex-column">
-    <div class="header">
+    <div class="header d-flex text-center">
+        <div class="d-flex flex-column flex-grow-1">
             <h1 style="font-size: 60px; font-weight: bold;"><c:out value="${moovieList.name}"/></h1>
             <h3><c:out value="${moovieList.description}"/></h3>
-        <h4 style="color: lightgray;">by <a style="text-decoration: none; color: inherit;"
-                                            href="${pageContext.request.contextPath}/profile/${listOwner}"><c:out
-                value="${listOwner}"/></a></h4>
-            <sec:authorize access="hasRole('ROLE_MODERATOR')">
-            <div class="text-center" style="margin: 10px">
-                <form action="${pageContext.request.contextPath}/deleteList/${moovieList.moovieListId}" method="post">
-                    <button type="submit" class="btn btn-danger btn-sm">Delete List</button>
-                </form>
+            <h4 style="color: lightgray;">by
+                <a style="text-decoration: none; color: inherit;" href="${pageContext.request.contextPath}/profile/${listOwner}">
+                    <c:out value="${listOwner}"/>
+                </a>
+            </h4>
+        </div>
+        <sec:authorize access="hasRole('ROLE_MODERATOR')">
+            <div style="position: absolute;" class="d-flex">
+                    <button onclick="openPopup('popup')" class="btn btn-danger btn-sm">
+                        <i class="bi bi-trash"></i>
+                    </button>
+            </div>
+            <div class="popup-overlay" onclick="closePopup('popup')"></div>
+            <div style="background-color: transparent; box-shadow: none" class="popup">
+                <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
+                    <h5 class="alert-heading">Confirm List Deletion</h5>
+                    <p>Are you sure you want to delete this list? Once deleted, it cannot be recovered</p>
+                    <div class="d-flex justify-content-evenly">
+                        <form class="m-0" action="${pageContext.request.contextPath}/deleteList/${moovieList.moovieListId}" method="post">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                        <button type="button" onclick="closePopup('popup')" class="btn btn-secondary" id="cancelModButton">Cancel</button>
+                    </div>
+                </div>
             </div>
         </sec:authorize>
     </div>
