@@ -58,37 +58,67 @@
             <div class="m-2">
                 <div class="d-flex align-items-center justify-content-between">
                     <h1><c:out value="${profile.username}"/></h1>
-                    <c:if test="${profile.role == 2}"><img class="cropCenter" style="height:100px;width:100px" src="${pageContext.request.contextPath}/resources/moderator_logo.png"></c:if>
+                    <sec:authorize access="hasRole('ROLE_MODERATOR')">
+                        <c:if test="${isMe}">
+                            <img class="cropCenter" style="height:50px;width:50px" src="${pageContext.request.contextPath}/resources/moderator_logo.png" alt="moderator profile pic">
+                        </c:if>
+                    </sec:authorize>
+                    <c:if test="${profile.role == -2}">
+                        <a class="ms-2 me-2 btn btn-danger btn-sm" aria-disabled="true">banned</a>
+                    </c:if>
+
                     <sec:authorize access="hasRole('ROLE_MODERATOR')">
                         <c:if test="${profile.role != 2 && !isMe}">
-                            <div class="text-center" style="margin-top: 20px">
-                                <form action="${pageContext.request.contextPath}/banUser/${profile.userId}" method="post">
-                                    <button type="submit" class="btn btn-danger btn-sm">Ban User</button>
-                                </form>
-                            </div>
-                            <div class="text-center" style="margin-top: 20px">
-                                <form action="${pageContext.request.contextPath}/makeUserMod/${profile.userId}" method="post">
-                                    <button type="submit" class="btn btn-success btn-sm">Make User Mod</button>
-                                </form>
+                            <div class="btn-group">
+                                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <c:choose>
+                                        <c:when test="${profile.role != -2}">
+                                            <li>
+                                                <form class="m-0" action="${pageContext.request.contextPath}/banUser/${profile.userId}" method="post">
+                                                    <button class="dropdown-item" type="submit">Ban User</button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <form class="m-0" action="${pageContext.request.contextPath}/makeUserMod/${profile.userId}" method="post">
+                                                    <a class="dropdown-item" type="submit">Make User Mod</a>
+                                                </form>
+                                            </li>
+                                        </c:when>
+                                        <c:when test="${profile.role == -2}">
+                                            <li>
+                                                <form class="m-0" action="${pageContext.request.contextPath}/unbanUser/${profile.userId}" method="post">
+                                                    <button class="dropdown-item" type="submit">Unban User</button>
+                                                </form>
+                                            </li>
+                                        </c:when>
+                                    </c:choose>
+                                </ul>
                             </div>
                         </c:if>
                     </sec:authorize>
                 </div>
-                <c:if test="${isMe}"><h5><c:out value="${profile.email}"/></h5></c:if>
-                <div class="d-flex">
-                    <div class="d-flex align-items-center">
-                        <img height="35" width="35" src="${pageContext.request.contextPath}/resources/logo.png" alt="moo">
+                <c:if test="${isMe}">
+                    <h5>
+                        <c:out value="${profile.email}"/>
+                    </h5>
+                </c:if>
+                <div class="d-flex align-items-center">
+                    <div class="m-1 d-flex align-items-center">
+                        <img style="padding-bottom: 6px;" height="37" width="37" src="${pageContext.request.contextPath}/resources/logo.png" alt="moo">
                         <h5>
                                 ${profile.moovieListCount}
                         </h5>
                     </div>
-                    <div>
+                    <div class="m-1 d-flex align-items-center">
                         <h5>
                             <i class="bi-hand-thumbs-up"></i>
                                 ${profile.likedMoovieListCount}
                         </h5>
                     </div>
-                    <div>
+                    <div class="m-1 d-flex align-items-center">
                         <h5>
                             <i class="bi-star"></i>
                                 ${profile.reviewsCount}
@@ -98,12 +128,20 @@
             </div>
         </div>
         <div class="d-flex container justify-content-center">
-            <c:if test="${profile.role == -2}"><h2 style="color: red">User is banned indefinitely/h2></c:if>
         </div>
         <hr class="my-8">
+        <c:if test="${not empty param.success}">
+        <div class="alert alert-success alert-dismissible fade show" id="errorAlert" role="alert">
+            <c:if test="${param.success == 'ban'}">Succesfully banned <c:out value="${profile.username}"/></c:if>
+            <c:if test="${param.success == 'unban'}">Succesfully unbanned <c:out value="${profile.username}"/></c:if>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        </c:if>
         <c:if test="${not empty param.error}">
         <div class="alert alert-danger alert-dismissible fade show" id="errorAlert" role="alert">
             <c:if test="${param.error == 'invalidType'}">File is of invalid type</c:if>
+            <c:if test="${param.error == 'ban'}">Error banning user</c:if>
+            <c:if test="${param.error == 'unban'}">Error unbanning user</c:if>
             <c:if test="${param.error == 'noFile'}">No file was provided</c:if>
             <c:if test="${param.error == 'failedSetProfilePicture' || param.error == 'error'}">Error uploading file </c:if>
             <c:if test="${param.error == 'fileTooBig'}">File is too big </c:if>
