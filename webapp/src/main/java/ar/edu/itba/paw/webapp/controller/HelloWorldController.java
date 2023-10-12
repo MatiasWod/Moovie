@@ -72,12 +72,17 @@ public class HelloWorldController {
         return mav;
     }
 
-    @RequestMapping(value = "/register/resendemail")
-    public ModelAndView resendEmail(@RequestParam("token") final String token) {
-        ModelAndView mav = new ModelAndView("helloworld/sentEmail");
+    @RequestMapping(value = "/register/resendEmail", method = RequestMethod.POST)
+    public ModelAndView resendEmail(@RequestParam("token") final String token, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addAttribute("token", token);
+        redirectAttributes.addAttribute("message", "Verification email has been resent successfully.");
+
+        ModelAndView mav = new ModelAndView("redirect:/register/sentEmail");
         userService.resendVerificationEmail(token);
         return mav;
     }
+
+
 
     @RequestMapping("/login")
     public ModelAndView login() {
@@ -164,13 +169,21 @@ public class HelloWorldController {
         if (errors.hasErrors()) {
             return register(form);
         }
-        try{
-            userService.createUser(form.getUsername(), form.getEmail(), form.getPassword());
-        } catch (UnableToCreateUserException e){
+        String token;
+        try {
+            token = userService.createUser(form.getUsername(), form.getEmail(), form.getPassword());
+        } catch (UnableToCreateUserException e) {
             return new ModelAndView("redirect:/register?error=" + e.getMessage());
         }
 
-        return new ModelAndView("redirect:/login");
+        ModelAndView modelAndView = new ModelAndView("redirect:/register/sentEmail");
+        modelAndView.addObject("token", token);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/register/sentEmail")
+    public ModelAndView sentEmail() {
+        return new ModelAndView("helloworld/sentEmail");
     }
 
     @RequestMapping(value = "/uploadProfilePicture", method = {RequestMethod.POST})
