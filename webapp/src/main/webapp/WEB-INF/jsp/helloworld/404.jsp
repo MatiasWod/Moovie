@@ -15,7 +15,7 @@
 </f:view>
 
 <c:import url="navBar.jsp">
-    <c:param name="userName" value="${user.username}"/>
+
 </c:import>
 <div class="container d-flex flex-column">
 

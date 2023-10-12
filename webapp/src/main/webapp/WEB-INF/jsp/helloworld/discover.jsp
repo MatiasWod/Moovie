@@ -23,9 +23,8 @@
     <script src="${pageContext.request.contextPath}/resources/discoverFunctions.js?version=81"></script>
 </head>
 <body style="background: whitesmoke">
-<c:import url="navBar.jsp">
-    <c:param name="userName" value="${user.username}"/>
-</c:import>
+<c:import url="navBar.jsp"></c:import>
+<c:set var="selectedGenres" value="${fn:split(param.g, ',')}" />
 <div class="container d-flex flex-column">
     <c class="container d-flex flex-row ">
         <%--        FILTROS y PELIS    --%>
@@ -59,13 +58,20 @@
                             <button style="height:100%;width: 150px;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                                 Genres
                             </button>
+                            <c:set var="isChecked" value="" />
                             <div style="height: 50vh" class="dropdown-menu scrollableDiv flex-wrap p-4">
-                                    <c:forEach var="genre" items="${genresList}">
-                                        <div class="form-check">
-                                            <input ${fn:contains(param.g,genre)? 'checked':''} type="checkbox" class="form-check-input" id="dropdownCheck${genre}">
-                                            <label class="form-check-label" for="dropdownCheck${genresList.indexOf(genre)}">${genre}</label>
-                                        </div>
+                                <c:forEach var="genre" items="${genresList}">
+                                    <c:forEach var="selectedGenre" items="${selectedGenres}">
+                                        <c:if test="${selectedGenre == genre}">
+                                            <c:set var="isChecked" value="checked" />
+                                        </c:if>
                                     </c:forEach>
+                                    <div class="form-check">
+                                        <input ${isChecked} type="checkbox" class="form-check-input" id="dropdownCheck${genre}">
+                                        <label class="form-check-label" for="dropdownCheck${genresList.indexOf(genre)}">${genre}</label>
+                                    </div>
+                                    <c:set var="isChecked" value="" /> <!-- Reset the isChecked variable -->
+                                </c:forEach>
                             </div>
                         </div>
                         <button class="btn btn-outline-success" type="submit">Apply filters</button>
@@ -77,7 +83,7 @@
                     </div>
                 </form>
             </div>
-            <div class="container d-flex justify-content-left p-0" id="genre-chips">
+            <div class="container d-flex justify-content-left p-1" id="genre-chips">
                 <c:forEach var="gen" items="${param.g}">
                     <div class="m-1 badge text-bg-dark">
                         <span class="text-bg-dark"> ${gen} </span>
