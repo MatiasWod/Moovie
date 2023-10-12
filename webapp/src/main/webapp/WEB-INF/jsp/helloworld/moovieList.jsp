@@ -96,7 +96,7 @@
     <table class="table table-striped" id="movieTable">
         <thead>
         <tr>
-            <th scope="col">#</th>
+            <th scope="col"></th>
             <th scope="col">Title</th>
             <th scope="col">Type</th>
             <th scope="col">Score</th>
@@ -109,26 +109,24 @@
                 <tbody>
                 <c:forEach var="index" items="${mediaList}" varStatus="loop">
                     <tr>
-                        <!-- Index -->
-                        <td style="text-align: center">${(loop.index + 1)+(currentPage*itemsPerPage)}</td>
                         <!-- Title -->
                         <td>
-                            <div class="row align-items-center">
-                                <div class="col-auto">
+                            <div class="col-auto">
                                     <a href="${pageContext.request.contextPath}/details/${mediaList[loop.index].mediaId}"
                                        style="text-decoration: none; color: inherit;">
                                         <img src="${mediaList[loop.index].posterPath}" class="img-fluid" width="100"
                                              height="100" alt="${mediaList[loop.index].name} poster"/>
                                     </a>
-                                </div>
-                                <div class="col">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="col-auto" style="text-align: center">
                                     <a href="${pageContext.request.contextPath}/details/${mediaList[loop.index].mediaId}"
                                        style="text-decoration: none; color: inherit;">
                                         <strong>${mediaList[loop.index].name}</strong>
                                     </a>
                                 </div>
                             </div>
-                        </td>
                         <!-- Type -->
                         <td>
                             <c:choose>
