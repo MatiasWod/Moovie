@@ -82,37 +82,44 @@
                     <li class="nav-item">
                         <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/createList">Create a list</a>
                     </li>
+                    <li class="nav-item">
+                        <div class="d-flex flex-row align-self-left">
+                            <div class="collapse navbar-collapse" id="navBarTopRatedDropdown">
+                                <ul class="navbar-nav">
+                                    <li class="nav-item dropdown">
+                                        <button class="btn bg-transparent dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Top rated
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/topRatedMedia">Media</a></li>
+                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/topRatedMovies">Movies</a></li>
+                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/topRatedSeries">Series</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <div class="collapse navbar-collapse" id="navBarMostPopularDropdown">
+                            <ul class="navbar-nav">
+                                <li class="nav-item dropdown">
+                                    <button class="btn bg-transparent dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Most popular
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/mostPopularMedia">Media</a></li>
+                                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/mostPopularMovies">Movies</a></li>
+                                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/mostPopularSeries">Series</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
                 </ul>
-                <div class="d-flex flex-row align-self-left">
-                    <div class="collapse navbar-collapse" id="navBarTopRatedDropdown">
-                        <ul class="navbar-nav">
-                            <li class="nav-item dropdown">
-                                <button class="btn bg-transparent dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Top rated
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/topRatedMedia">Media</a></li>
-                                    <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/topRatedMovies">Movies</a></li>
-                                    <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/topRatedSeries">Series</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="collapse navbar-collapse" id="navBarMostPopularDropdown">
-                        <ul class="navbar-nav">
-                            <li class="nav-item dropdown">
-                                <button class="btn bg-transparent dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Most popular
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/mostPopularMedia">Media</a></li>
-                                    <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/mostPopularMovies">Movies</a></li>
-                                    <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/mostPopularSeries">Series</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+
+
+
 
                 <form class="d-flex mb-0" role="search" action="${pageContext.request.contextPath}/discover" method="get">
                 <div class="input-group">
