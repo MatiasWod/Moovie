@@ -24,7 +24,7 @@
                 </div>--%>
                 <div class="container d-flex justify-content-between p-2">
                     <h3>Top Rated Movies</h3>
-                    <a href="${pageContext.request.contextPath}/discover?media=Movies">see more</a>
+                    <a href="${pageContext.request.contextPath}/featuredList/topRatedMovies">see more</a>
                 </div>
                 <hr class="my-1">
                 <div class="container d-flex scrollableDiv">
@@ -43,7 +43,7 @@
 
                 <div class="container d-flex justify-content-between mt-2 p-2">
                     <h3>Top Rated Series</h3>
-                    <a href="${pageContext.request.contextPath}/discover?media=Series">see more</a>
+                    <a href="${pageContext.request.contextPath}/featuredList/topRatedSeries">see more</a>
                 </div>
                 <hr class="my-1">
                 <div class="container d-flex overflow-hidden" style="max-height: 300px;"> <!-- Set a fixed maximum height for the container -->
