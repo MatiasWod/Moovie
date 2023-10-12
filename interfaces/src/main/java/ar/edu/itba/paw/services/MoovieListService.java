@@ -1,12 +1,11 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
+import ar.edu.itba.paw.models.MoovieList.MoovieListDetails;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface MoovieListService {
 
@@ -47,6 +46,5 @@ public interface MoovieListService {
     void removeLikeMoovieList(int moovieListId);
     boolean likeMoovieListStatusForUser( int moovieListId);
 
-    //Gives the amount of movies watched for a user in a moovielists
-    int countWatchedMovies(List<MoovieListContent> mediaList);
+    int countWatchedMoviesInList(int UserId,int moovieListId);
 }

@@ -280,6 +280,18 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
                 .stream().findFirst();
         return mll.isPresent();
     }
+
+    @Override
+    public int countWatchedMoviesInList(int userId, int moovieListId){
+        String sql = "SELECT COUNT(*) " +
+                "FROM moovieListsContent mlc " +
+                "JOIN moovieListsContent mlcw ON mlc.mediaId = mlcw.mediaId " +
+                "JOIN moovieLists ml ON mlcw.moovieListId = ml.moovieListId " +
+                "WHERE mlc.moovieListId = ? " +
+                "AND ml.name = 'Watched' " +
+                "AND ml.userId = ?; ";
+        return jdbcTemplate.query(sql, new Object[]{moovieListId, userId}, COUNT_ROW_MAPPER).stream().findFirst().get().intValue();
+    }
 }
 
 

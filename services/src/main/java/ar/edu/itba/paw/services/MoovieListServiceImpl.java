@@ -191,14 +191,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
     @Override
-    public int countWatchedMovies(List<MoovieListContent> mediaList) {
-        int watchedCount = 0;
-        for (MoovieListContent media : mediaList) {
-            if (media.isWatched()) {
-                watchedCount++;
-            }
-        }
-
-        return watchedCount;
+    public int countWatchedMoviesInList(int UserId,int moovieListId){
+        return moovieListDao.countWatchedMoviesInList(UserId,moovieListId);
     }
 }

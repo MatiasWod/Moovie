@@ -4,10 +4,7 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
-import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
 
-
-import javax.swing.tree.RowMapper;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,4 +36,6 @@ public interface MoovieListDao {
     void likeMoovieList(int userId, int moovieListId);
     void removeLikeMoovieList(int userId, int moovieListId);
     boolean likeMoovieListStatusForUser(int userId, int moovieListId);
+
+    int countWatchedMoviesInList(int userId, int moovieListId);
 }

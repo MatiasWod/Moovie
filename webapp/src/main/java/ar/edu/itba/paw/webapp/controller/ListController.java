@@ -1,16 +1,17 @@
 package ar.edu.itba.paw.webapp.controller;
 
 
-import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListDetails;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
+import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.GenreService;
 import ar.edu.itba.paw.services.MediaService;
 import ar.edu.itba.paw.services.MoovieListService;
+import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.form.CreateListForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +41,8 @@ public class ListController {
     @Autowired
     private GenreService genreService;
 
+    @Autowired
+    private UserService userService;
     private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
 
     @RequestMapping("/lists")
@@ -122,12 +124,18 @@ public class ListController {
         int pagesSize= PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
         MoovieListDetails myList=moovieListService.getMoovieListDetails(moovieListId,null,null,orderBy,order,pagesSize,pageNumber - 1);
         final MoovieListCard moovieListCard = myList.getCard();
-        int mediaCountForMoovieList = moovieListCard.getSize();
+        int mediaCountForMoovieList =moovieListCard.getSize();
         int numberOfPages = (int) Math.ceil(mediaCountForMoovieList * 1.0 / pagesSize);
 
         mav.addObject("moovieList",moovieListCard);
         mav.addObject("mediaList",myList.getContent());
-        mav.addObject("watchedCount",moovieListService.countWatchedMovies(myList.getContent()));
+        try {
+            User currentUser=userService.getInfoOfMyUser();
+            mav.addObject("watchedCount",moovieListService.countWatchedMoviesInList(currentUser.getUserId(),moovieListId));
+        }catch (Exception e){
+            mav.addObject("watchedCount",0);
+        }
+        mav.addObject("listCount",mediaCountForMoovieList);
         mav.addObject("initialOrder",order);
         mav.addObject("itemsPerPage",pagesSize);
         mav.addObject("numberOfPages",numberOfPages);

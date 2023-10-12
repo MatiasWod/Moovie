@@ -75,10 +75,10 @@
     <div>
         <h4>List progress</h4>
         <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: ${(watchedCount*100)/mediaList.size()}%;"
+            <div class="progress-bar" role="progressbar" style="width: ${(watchedCount*100)/listCount}%;"
                  id="progressBar"
-                 aria-valuenow="${(watchedCount*100)/mediaList.size()}" aria-valuemin="0" aria-valuemax="100">
-                ${(watchedCount*100)/mediaList.size()}%
+                 aria-valuenow="${(watchedCount*100)/listCount}" aria-valuemin="0" aria-valuemax="100">
+                ${(watchedCount*100)/listCount}%
             </div>
         </div>
     </div>
