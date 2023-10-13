@@ -10,12 +10,14 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.*;
 
 @Repository
 public class ReviewDaoJdbcImpl implements ReviewDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert reviewJdbcInsert;
+    private final SimpleJdbcInsert reviewLikesJdbcInsert;
 
     private static final RowMapper<Review> REVIEW_ROW_MAPPER = (rs, rowNum) -> new Review(
             rs.getInt("reviewId"),
@@ -36,6 +38,8 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
     public ReviewDaoJdbcImpl(final DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
         reviewJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("reviews").usingGeneratedKeyColumns("reviewid");
+        reviewLikesJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("reviewsLikes");
+
     }
 
     @Override
@@ -132,5 +136,28 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
     public void deleteReview(int reviewId) {
         String sqlDel = "DELETE FROM reviews WHERE reviewId = " + reviewId;
         jdbcTemplate.execute(sqlDel);
+    }
+
+    @Override
+    public void likeReview(int userId, int reviewId) {
+        final Map<String, Object> args = new HashMap<>();
+        args.put("userId", userId);
+        args.put("reviewId", reviewId);
+
+        try{
+            reviewJdbcInsert.executeAndReturnKey(args);
+        } catch(Exception e){
+            throw new UnableToInsertIntoDatabase("Review like failed");
+        }
+    }
+
+    @Override
+    public void removeLikeReview(int userId, int reviewId) {
+        StringBuilder sqlDel = new StringBuilder( "DELETE FROM reviewsLikes WHERE reviewId = ");
+        sqlDel.append(userId);
+        sqlDel.append(" AND userId = ");
+        sqlDel.append(userId);
+        sqlDel.append(" ; ");
+        jdbcTemplate.execute(sqlDel.toString());
     }
 }

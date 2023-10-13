@@ -47,9 +47,10 @@ public interface MoovieListService {
 
     //Likes functions
     void likeMoovieList( int moovieListId);
-    int getLikeCountForMoovieList(int moovieListId);
     void removeLikeMoovieList(int moovieListId);
-    boolean likeMoovieListStatusForUser( int moovieListId);
 
+    //TODO Change this to be part of the moovielist model
+    boolean likeMoovieListStatusForUser( int moovieListId);
+    int getLikeCountForMoovieList(int moovieListId);
     int countWatchedMoviesInList(int UserId,int moovieListId);
 }

@@ -39,7 +39,20 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     public void likeReview(int reviewId) {
-        return;
+        try{
+            reviewDao.likeReview(userService.getInfoOfMyUser().getUserId(),reviewId);
+        } catch (Exception e){
+            return; //TODO ver que hacer con esta exc
+        }
+    }
+
+    @Override
+    public void removeLikeReview(int userId, int reviewId) {
+        try{
+            reviewDao.removeLikeReview(userService.getInfoOfMyUser().getUserId(),reviewId);
+        } catch (Exception e){
+            return; //TODO ver que hacer con esta exc
+        }
     }
 
     @Override

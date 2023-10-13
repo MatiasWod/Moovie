@@ -13,8 +13,10 @@ public interface ReviewService {
     //Returns all the reviews a user has made, contains all nescesary data to display
     List<Review> getMovieReviewsFromUser(int userId);
 
-    //Likes a review;
+    //Likes a review
     void likeReview(int reviewId);
+    //Removes like of a review
+    void removeLikeReview(int userId, int reviewId);
 
     //Creates review
     void createReview( int mediaId, int rating, String reviewContent);

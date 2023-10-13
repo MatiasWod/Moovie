@@ -193,7 +193,8 @@ CREATE TABLE IF NOT EXISTS reviewsLikes (
     reviewId 		INTEGER NOT NULL,
     userId			INTEGER NOT NULL,
     FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE,
-    FOREIGN KEY(reviewId) REFERENCES reviews(reviewId) ON DELETE CASCADE
+    FOREIGN KEY(reviewId) REFERENCES reviews(reviewId) ON DELETE CASCADE,
+    UNIQUE(reviewId, userId)
 );
 
 /*

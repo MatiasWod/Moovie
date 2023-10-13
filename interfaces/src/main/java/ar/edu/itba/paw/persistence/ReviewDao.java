@@ -13,4 +13,7 @@ public interface ReviewDao {
 
     void createReview(int userId, int mediaId, int rating, String reviewContent);
     void deleteReview(int reviewId);
+
+    void likeReview(int userId, int reviewId);
+    void removeLikeReview(int userId, int reviewId);
 }
