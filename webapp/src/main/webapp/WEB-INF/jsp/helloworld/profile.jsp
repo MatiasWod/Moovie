@@ -217,6 +217,16 @@
                         <c:if test="${listDetails.card.moviesAmount > 0}">
                             <h4>${listDetails.card.moviesAmount} Movies</h4>
                         </c:if>
+                        <c:if test="${listDetails.card.moviesAmount > 0 && (listDetails.card.size - listDetails.card.moviesAmount) > 0}">
+                            <style>
+                                h4 {
+                                    margin-right: 10px; /* Add a space between "Movies" and "Series" */
+                                }
+                            </style>
+                        </c:if>
+                        <c:if test="${(listDetails.card.size - listDetails.card.moviesAmount) > 0}">
+                            <h4>${(listDetails.card.size - listDetails.card.moviesAmount)} Series</h4>
+                        </c:if>
 <%--                        <c:if test="${listDetails.card.moviesAmount > 0 && tvSeriesCount > 0}">--%>
 <%--                            <h4 style="margin-right: 5px;margin-left: 5px">and</h4>--%>
 <%--                        </c:if>--%>
