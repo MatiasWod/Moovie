@@ -13,6 +13,7 @@ public interface UserService {
 
     public static final int DEFAULT_PAGE_SIZE_CONTENT = 25;
 
+    public static final  int ROLE_BANNED = -2;
     public static final int ROLE_NOT_AUTHENTICATED = -1;
     public static final int ROLE_UNREGISTERED = 0;
     public static final int ROLE_USER = 1;

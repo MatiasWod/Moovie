@@ -62,7 +62,7 @@
                         <img class="cropCenter" style="height:50px;width:50px" src="${pageContext.request.contextPath}/resources/moderator_logo.png" alt="moderator profile pic">
                     </c:if>
                     <c:if test="${profile.role == -2}">
-                        <a class="ms-2 me-2 btn btn-danger btn-sm" aria-disabled="true">banned</a>
+                        <a class="ms-2 me-2 btn btn-danger btn-sm" aria-disabled="true">Banned</a>
                     </c:if>
 
                     <sec:authorize access="hasRole('ROLE_MODERATOR')">
@@ -124,16 +124,15 @@
             <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-warning" role="alert">
                 <h5 class="alert-heading">Confirm User Ban</h5>
                 <p>Are you sure you want to ban this user? Once banned, they will no longer have access to the app and their account will be suspended indefinitely.</p>
-                <%--<div class="mb-3">
-                    <label for="banReason" class="form-label">Reason for Ban</label>
-                    <input type="text" class="form-control" id="banReason">
-                </div>--%>
-                <div class="d-flex justify-content-evenly">
-                    <form class="m-0" action="${pageContext.request.contextPath}/banUser/${profile.userId}" method="post">
+
+                <form class="m-0" action="${pageContext.request.contextPath}/banUser/${profile.userId}" method="post">
+                    <textarea name="message" id="message" rows="6" cols="50"
+                              placeholder="Explain why the user is being banned" maxlength="500"></textarea>
+                    <div class="d-flex justify-content-evenly">
                         <button type="submit" class="btn btn-danger" id="banUserButton">Ban User</button>
-                    </form>
-                    <button type="button" onclick="closePopup('ban-popup')" class="btn btn-secondary" id="cancelBanButton">Cancel</button>
-                </div>
+                        <button type="button" onclick="closePopup('ban-popup')" class="btn btn-secondary" id="cancelBanButton">Cancel</button>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="popup-overlay unban-popup-overlay" onclick="closePopup('unban-popup')"></div>

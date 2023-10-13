@@ -51,7 +51,8 @@ public class ModeratorController {
 
 
     @RequestMapping(value = "/banUser/{userId:\\d+}", method = RequestMethod.POST)
-    public ModelAndView banUser(@PathVariable int userId, RedirectAttributes redirectAttributes) {
+    public ModelAndView banUser(@PathVariable int userId, RedirectAttributes redirectAttributes,
+                                @RequestParam(value = "message", required = false) String message ) {
         User user;
         try {
             user = userService.findUserById(userId);
@@ -59,7 +60,7 @@ public class ModeratorController {
             return new ModelAndView("helloworld/404");
         }
         try {
-            moderatorService.banUser(userId);
+            moderatorService.banUser(userId, message);
             redirectAttributes.addFlashAttribute("successMessage", "User successfully banned");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error banning user");

@@ -7,7 +7,7 @@ public interface ModeratorService {
     void deleteMoovieListList(int moovieListId);
 
     //Bans an user
-    void banUser(int userId);
+    void banUser(int userId, String message);
     //Bans an user
     void unbanUser(int userId);
     //Chane the tole of an user to Moderator

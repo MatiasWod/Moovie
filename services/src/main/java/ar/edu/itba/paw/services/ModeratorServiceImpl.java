@@ -5,6 +5,7 @@ import ar.edu.itba.paw.exceptions.UnableToBanUserException;
 import ar.edu.itba.paw.exceptions.UnableToChangeRoleException;
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.persistence.BannedDao;
 import ar.edu.itba.paw.persistence.MoovieListDao;
 import ar.edu.itba.paw.persistence.ReviewDao;
 import ar.edu.itba.paw.persistence.UserDao;
@@ -23,6 +24,8 @@ public class ModeratorServiceImpl implements ModeratorService{
     private UserDao userDao;
     @Autowired
     private MediaService mediaService;
+    @Autowired
+    private BannedDao bannedDao;
 
 
     @Override
@@ -39,7 +42,7 @@ public class ModeratorServiceImpl implements ModeratorService{
     }
 
     @Override
-    public void banUser(int userId) {
+    public void banUser(int userId, String message) {
         amIModerator();
         User u = userDao.findUserById(userId).orElseThrow(() -> new UnableToFindUserException("No user for the id = " + userId ));
         if(u.getRole() == userDao.ROLE_MODERATOR){
@@ -49,6 +52,7 @@ public class ModeratorServiceImpl implements ModeratorService{
             throw new UnableToBanUserException("Cannot ban an unregisted user");
         }
         userDao.changeUserRole(userId, userDao.ROLE_BANNED);
+        bannedDao.createBannedMessage(userId, userService.getInfoOfMyUser().getUserId(), message);
     }
 
     @Override
@@ -62,6 +66,7 @@ public class ModeratorServiceImpl implements ModeratorService{
             throw new UnableToBanUserException("Cannot ban an unregisted user");
         }
         userDao.changeUserRole(userId, userDao.ROLE_USER);
+        bannedDao.deleteBannedMessage(userId);
     }
 
 
