@@ -295,14 +295,15 @@
                             </c:otherwise>
                         </c:choose>
                     </table>
-<%--                    <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">--%>
-<%--                        <c:param name="mediaPages" value="${numberOfPages}"/>--%>
-<%--                        <c:param name="currentPage" value="${currentPage + 1}"/>--%>
-<%--                        <c:param name="url" value="/list/${moovieList.moovieListId}/"/>--%>
-<%--                    </c:import>--%>
                 </div>
-
             </div>
+        <div class="m-1">
+            <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+                <c:param name="mediaPages" value="${numberOfPages}"/>
+                <c:param name="currentPage" value="${currentPage + 1}"/>
+                <c:param name="url" value="${urlBase}"/>
+            </c:import>
+        </div>
         </c:if>
 
         <c:if test="${param.list == 'liked-lists'}">
@@ -360,6 +361,13 @@
                     </div>
                 </c:forEach>
             </div>
+        <div class="m-1">
+            <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+                <c:param name="mediaPages" value="${numberOfPages}"/>
+                <c:param name="currentPage" value="${currentPage + 1}"/>
+                <c:param name="url" value="${urlBase}"/>
+            </c:import>
+        </div>
         </c:if>
 
         <c:if test="${param.list == null || param.list == '' || param.list == 'user-lists'}">
@@ -417,6 +425,13 @@
         </div>
         </c:forEach>
             </div>
+        <div class="m-1">
+            <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+                <c:param name="mediaPages" value="${numberOfPages}"/>
+                <c:param name="currentPage" value="${currentPage + 1}"/>
+                <c:param name="url" value="${urlBase}"/>
+            </c:import>
+        </div>
         </c:if>
 
         <c:if test="${param.list == 'reviews'}">
@@ -474,7 +489,16 @@
                         </div>
                     </c:otherwise>
                 </c:choose>
+                <div class="m-1">
+                    <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+                        <c:param name="mediaPages" value="${numberOfPages}"/>
+                        <c:param name="currentPage" value="${currentPage + 1}"/>
+                        <c:param name="url" value="${urlBase}"/>
+                    </c:import>
+                </div>
             </div>
+
+
 
         </c:if>
 
