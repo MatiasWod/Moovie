@@ -65,7 +65,10 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
             rs.getInt("totalRating"),
             rs.getInt("voteCount"),
             rs.getString("status"),
-            rs.getBoolean("isWatched")
+            rs.getBoolean("isWatched"),
+            rs.getString("genres"),
+            rs.getString("providerNames"),
+            rs.getString("providerLogos")
     );
 
     private static final RowMapper<Integer> COUNT_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("count"));
@@ -193,7 +196,11 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
         //Add the part of the query that checks if its watched by its owner
         sql.append(" (CASE WHEN EXISTS ( SELECT 1 FROM moovielists ml INNER JOIN moovieListsContent mlc2 ON ml.moovielistid = mlc2.moovielistid  ");
-        sql.append(" WHERE m.mediaId = mlc2.mediaId AND ml.name = 'Watched' AND ml.userid = ? ) THEN true ELSE false END) AS isWatched FROM moovieListsContent mlc ");
+        sql.append(" WHERE m.mediaId = mlc2.mediaId AND ml.name = 'Watched' AND ml.userid = ? ) THEN true ELSE false END) AS isWatched,");
+        sql.append("(SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = m.mediaId) AS genres, ");
+        sql.append("(SELECT ARRAY_AGG(p.providerName) FROM providers p WHERE p.mediaId = m.mediaId) AS providerNames, ");
+        sql.append("(SELECT ARRAY_AGG(p.logoPath) FROM providers p WHERE p.mediaId = m.mediaId) AS providerLogos ");
+        sql.append(" FROM moovieListsContent mlc ");
         args.add(userid);
         sql.append(" INNER JOIN media m ON mlc.mediaId = m.mediaId  ");
 
@@ -216,11 +223,16 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     @Override
     public List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, int userid ,String featuredListOrder, String orderBy, String sortOrder ,int size, int pageNumber){
         StringBuilder sql = new StringBuilder("SELECT * FROM (SELECT *,  ");
+
         ArrayList<Object> args = new ArrayList<>();
 
         //Add the part of the query that checks if its watched by its owner
         sql.append(" (CASE WHEN EXISTS ( SELECT 1 FROM moovielists ml INNER JOIN moovieListsContent mlc2 ON ml.moovielistid = mlc2.moovielistid  ");
-        sql.append(" WHERE m.mediaId = mlc2.mediaId AND ml.name = 'Watched' AND ml.userid = ? ) THEN true ELSE false END) AS isWatched FROM media m ");
+        sql.append(" WHERE m.mediaId = mlc2.mediaId AND ml.name = 'Watched' AND ml.userid = ? ) THEN true ELSE false END) AS isWatched, ");
+        sql.append("(SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = m.mediaId) AS genres, ");
+        sql.append("(SELECT ARRAY_AGG(p.providerName) FROM providers p WHERE p.mediaId = m.mediaId) AS providerNames, ");
+        sql.append("(SELECT ARRAY_AGG(p.logoPath) FROM providers p WHERE p.mediaId = m.mediaId) AS providerLogos ");
+        sql.append("FROM media m ");
         args.add(userid);
         // If type is 0 or 1 it's specifically movies or TVs, else it's not restricted
         if (mediaType == MediaTypes.TYPE_MOVIE.getType() || mediaType == MediaTypes.TYPE_TVSERIE.getType()) {

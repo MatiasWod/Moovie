@@ -2,6 +2,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <%--
   Created by IntelliJ IDEA.
@@ -23,10 +24,10 @@
     <script src="${pageContext.request.contextPath}/resources/discoverFunctions.js?version=81"></script>
 </head>
 <body style="background: whitesmoke">
-<c:import url="navBar.jsp"></c:import>
+<c:import url="navBar.jsp"/>
 <c:set var="selectedGenres" value="${fn:split(param.g, ',')}" />
 <div class="container d-flex flex-column">
-    <c class="container d-flex flex-row ">
+    <div class="container d-flex flex-row ">
         <%--        FILTROS y PELIS    --%>
 
         <div class="container d-flex flex-column">
@@ -60,11 +61,12 @@
                             </button>
                             <c:set var="isChecked" value="" />
                             <div style="height: 50vh" class="dropdown-menu scrollableDiv flex-wrap p-4">
-<%--                                ES NECESARIO UTILIZAR LA VAR isChecked.
-                Porque al simplemente realizar fn:contains(param.g,genre)
-                 existen casos como Action&Adventure que siempre daran match para Action y Adventure
-                 Es preferible esto a en el controlador manejar la creacion de modelos nuevos que contemplen el checked para cada genero--%>
+                 <%--   ES NECESARIO UTILIZAR LA VAR isChecked.
+                   Porque al simplemente realizar fn:contains(param.g,genre)
+                   existen casos como Action&Adventure que siempre daran match para Action y Adventure
+                   Es preferible esto a en el controlador manejar la creacion de modelos nuevos que contemplen el checked para cada genero--%>
                                 <c:forEach var="genre" items="${genresList}">
+<%--                                    selectedGenre no deberia ser muy grande, ya que es el listado de genres seleccionados--%>
                                     <c:forEach var="selectedGenre" items="${selectedGenres}">
                                         <c:if test="${selectedGenre == genre}">
                                             <c:set var="isChecked" value="checked" />
@@ -102,24 +104,36 @@
                         <a class="btn mt-2 btn-outline-success align-bottom" href="${pageContext.request.contextPath}/discover">Discover other content</a>
                     </div>
                 </c:if>
-                <c:forEach var="movie" items="${mediaList}" end="24">
-                    <div class="poster card text-bg-dark m-1"
-                         onclick="loadPreview(
-                                 '${(fn:replace(fn:replace(movie.name,"'", "\\'"), "\"", "&quot;"))}',
-                                 '${movie.tmdbRating}',
-                                 '${movie.posterPath}',
-                                 '${(fn:replace(fn:replace(movie.overview, "'", "\\'"), "\"", "&quot;"))}',
-                                 '${movie.adult}',
-                                 '${movie.mediaId}',
-                                 '${movie.releaseDate}')">
-                    <div class="card-img-container"> <!-- Add a container for the image -->
-                            <img class="cropCenter" src="${movie.posterPath}">
+                <c:forEach var="movie" items="${mediaList}" varStatus="loop">
+                    <a href="${pageContext.request.contextPath}/details/${movie.mediaId}" class="poster card text-bg-dark m-1">
+                        <div class="card-img-container"> <!-- Add a container for the image -->
+                            <img class="cropCenter" src="${movie.posterPath}" alt="media poster">
                             <div class="card-img-overlay">
-                                <h5 class="card-title">${movie.name}</h5>
-                                <p class="card-text">${movie.tmdbRating}</p>
+                                <h6 class="card-title text-center">${movie.name}</h6>
+                                <div class="d-flex justify-content-evenly">
+                                    <p class="card-text">
+                                        <i class="bi bi-star-fill"></i>
+                                            ${movie.tmdbRating}
+                                    </p>
+                                    <p class="card-text">
+                                        <fmt:formatDate value="${movie.releaseDate}" pattern="YYYY"/>
+                                    </p>
+                                </div>
+                                <div class="d-flex justify-content-evenly">
+                                    <c:forEach var="genre" items="${movie.genres}" end="1">
+                                        <span class="badge text-bg-dark">${fn:replace(genre,"\"" ,"" )}</span>
+                                    </c:forEach>
+                                </div>
+                                <div class="d-flex mt-3 justify-content-evenly">
+                                    <c:forEach var="provider" items="${movie.providerLogos}" end="1">
+                                        <span class="badge text-bg-light border border-black">
+                                            <img src="${provider}" alt="provider logo" style="height: 1.6em; margin-right: 5px;">
+                                        </span>
+                                    </c:forEach>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </c:forEach>
             </div>
             <c:if test="${searchMode == false}">
@@ -127,7 +141,7 @@
                     <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
                         <c:param name="mediaPages" value="${numberOfPages}"/>
                         <c:param name="currentPage" value="${currentPage + 1}"/>
-                        <c:param name="url" value="/discover?query=${param.media}&g=${param.g}"/>
+                        <c:param name="url" value="/discover?media=${param.media}&g=${param.g}"/>
                     </c:import>
                 </div>
             </c:if>
@@ -136,38 +150,12 @@
                     <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
                         <c:param name="mediaPages" value="${numberOfPages}"/>
                         <c:param name="currentPage" value="${currentPage + 1}"/>
-                        <c:param name="url" value="/search?query=${param.query}"/>
+                        <c:param name="url" value="/search?query=${param.query}&media=${param.media}&g=${param.g}"/>
                     </c:import>
                 </div>
             </c:if>
         </div>
-<%--        PREVIEW      --%>
-    <div id="preview" style="position: relative; display: none !important" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
-        <img id="preview-img" style="" class="image-blur height-full background" src="" alt="poster">
-        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: auto;" class="p-4 container">
-            <h1 id="preview-explicit" class="mt-2 mb-2 bi bi-explicit" style="display: none"></h1>
-            <div class="d-flex container flex-column">
-                <h1 class="text-center" id="preview-title"></h1>
-                <div class="m-1 d-flex justify-content-between align-items-center">
-                    <div class="d-flex align-items-center">
-                        <h3>
-                            <i class="bi bi-star-fill m-1"></i>
-                        </h3>
-                        <h3 id="preview-rating"></h3>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <h3 id="preview-year"></h3>
-                    </div>
-                </div>
-                <p id="preview-synopsis"></p>
-                <h3 id="preview-director"></h3>
-            </div>
-            <div class="text-center">
-                <a id="preview-details" class="mt-4 btn btn-outline-success" type="submit">More details</a>
-            </div>
-        </div>
     </div>
-
 </div>
 
 </body>

@@ -3,7 +3,6 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
-import ar.edu.itba.paw.models.Media.extendedMedia;
 
 import java.util.List;
 
@@ -12,7 +11,6 @@ public interface MediaService {
     // Returns a list of media that satisfy the conditions
     public List<Media> getMedia(int type, String search, List<String> genres, String orderBy, int size, int pageNumber);
 
-    public List<extendedMedia> getExtendedMedia(int type, String search, List<String> genres, String orderBy, int size, int pageNumber);
     //The amount of results that a query of getMedia will give
     int getMediaCount(int type, String search, List<String> genres);
 

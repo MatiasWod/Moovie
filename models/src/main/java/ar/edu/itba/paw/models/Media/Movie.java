@@ -11,8 +11,8 @@ public class Movie extends Media{
 
     public Movie(int mediaId, boolean type, String name, String originalLanguage, boolean adult, Date releaseDate, String overview,
                  String backdropPath, String posterPath, String trailerLink, float tmdbRating, int totalRating, int voteCount,
-                 String status, int runtime, long budget, long revenue, int directorId, String director) {
-        super(mediaId, type, name, originalLanguage, adult, releaseDate, overview, backdropPath, posterPath, trailerLink, tmdbRating, totalRating, voteCount, status);
+                 String status, int runtime, long budget, long revenue, int directorId, String director, String genres, String providerNames, String providerLogos) {
+        super(mediaId, type, name, originalLanguage, adult, releaseDate, overview, backdropPath, posterPath, trailerLink, tmdbRating, totalRating, voteCount, status, genres, providerNames, providerLogos);
         this.runtime = runtime;
         this.budget = budget;
         this.revenue = revenue;

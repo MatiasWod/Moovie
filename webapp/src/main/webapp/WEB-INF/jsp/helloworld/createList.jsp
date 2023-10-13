@@ -31,7 +31,7 @@
     <div class="container d-flex flex-column">
         <div class="container d-flex flex-row ">
             <div class="container d-flex flex-column">
-                <div>
+                <div style="z-index: 1;">
                     <form id="filter-form" class="mb-2 d-flex flex-row justify-content-between" action="${pageContext.request.contextPath}/createList" method="get" onsubmit="beforeSubmit()">
                         <input type="hidden"  id="selected-media-input" />
                         <div role="group" class="input-group d-flex flex-row m-1">
@@ -132,7 +132,7 @@
                                     </div>
                                 </c:forEach>
                             </div>
-                            <button id="preview-details" type="submit" class="m-4 btn btn-outline-success align-bottom">Create List</button>
+                            <button id="preview-details" type="submit" class="btn btn-lg btn-outline-success mt-4">Create List</button>
                         </form:form>
                     </div>
 

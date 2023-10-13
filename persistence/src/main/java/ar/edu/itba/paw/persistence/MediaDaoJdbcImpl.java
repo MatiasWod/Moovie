@@ -3,7 +3,6 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
-import ar.edu.itba.paw.models.Media.extendedMedia;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -24,23 +23,6 @@ public class MediaDaoJdbcImpl implements MediaDao {
     static final int TYPE_ALL = 2;
 
     private static final RowMapper<Media> MEDIA_ROW_MAPPER = (rs, rowNum) -> new Media(
-            rs.getInt("mediaId"),
-            rs.getBoolean("type"),
-            rs.getString("name"),
-            rs.getString("originalLanguage"),
-            rs.getBoolean("adult"),
-            rs.getDate("releaseDate"),
-            rs.getString("overview"),
-            rs.getString("backdropPath"),
-            rs.getString("posterPath"),
-            rs.getString("trailerLink"),
-            rs.getFloat("tmdbRating"),
-            rs.getInt("totalRating"),
-            rs.getInt("voteCount"),
-            rs.getString("status")
-    );
-
-    private static final RowMapper<extendedMedia> EXTENDED_MEDIA_ROW_MAPPER = (rs, rowNum) -> new extendedMedia(
             rs.getInt("mediaId"),
             rs.getBoolean("type"),
             rs.getString("name"),
@@ -79,7 +61,10 @@ public class MediaDaoJdbcImpl implements MediaDao {
             rs.getLong("budget"),
             rs.getLong("revenue"),
             rs.getInt("directorId"),
-            rs.getString("director")
+            rs.getString("director"),
+            rs.getString("genres"),
+            rs.getString("providerNames"),
+            rs.getString("providerLogos")
     );
 
     private static final String moviesQueryParams = " media.mediaId, type, name, originalLanguage, adult, releaseDate, overview, backdropPath, posterPath, trailerLink, tmdbRating, totalRating, voteCount, status, runtime, budget, revenue, directorId, director ";
@@ -102,7 +87,10 @@ public class MediaDaoJdbcImpl implements MediaDao {
             rs.getDate("lastAirDate"),
             rs.getDate("nextEpisodeToAir"),
             rs.getInt("numberOfEpisodes"),
-            rs.getInt("numberOfSeasons")
+            rs.getInt("numberOfSeasons"),
+            rs.getString("genres"),
+            rs.getString("providerNames"),
+            rs.getString("providerLogos")
     );
 
     private static final String tvQueryParams = " media.mediaId, type, name, originalLanguage, adult, releaseDate, overview, backdropPath, posterPath, trailerLink, tmdbRating, totalRating, voteCount, status, lastAirDate, nextEpisodeToAir, numberOfEpisodes, numberOfSeasons ";
@@ -120,68 +108,6 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
     @Override
     public List<Media> getMedia(int type, String search, List<String> genres, String orderBy, int size, int pageNumber) {
-        StringBuilder sql = new StringBuilder("SELECT * FROM media ");
-        ArrayList<Object> args = new ArrayList<>();
-
-        // If type is 0 or 1 it's specifically movies or TVs, else it's not restricted
-        if (type == 0 || type == 1) {
-            sql.append(" WHERE type = ? ");
-            args.add(type == 1);
-        } else {
-            sql.append(" WHERE type IS NOT NULL ");
-        }
-
-        // Add the genres filter
-        if (genres!=null && !genres.isEmpty()) {
-            sql.append(" AND mediaId IN ( SELECT mediaId FROM genres WHERE "); // Start the OR conditions for genres
-            for (String genre : genres) {
-                sql.append(" genre = ? OR "); // Replace 'genre_column' with your actual genre column name
-                args.add(genre);
-            }
-            sql.deleteCharAt(sql.length() - 1);
-            sql.deleteCharAt(sql.length() - 1);
-            sql.deleteCharAt(sql.length() - 1);
-            sql.append(" ) ");
-        }
-
-        // Input the search, it searches in actors, media.name, creators and directors
-        if (search!=null && search.length()>0) {
-            sql.append(" AND ( " );
-            sql.append(" name ILIKE ? ");
-            args.add('%' + search + '%');
-
-            sql.append(" OR media.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
-            args.add('%' + search + '%');
-
-            if(type != TYPE_TVSERIE){
-                sql.append(" OR media.mediaId IN (SELECT mediaid FROM movies m WHERE director ILIKE ? ) ");
-                args.add('%' + search + '%');
-            }
-
-            if(type != TYPE_MOVIE){
-                sql.append(" OR media.mediaId IN (SELECT mediaid FROM creators c WHERE creatorname ILIKE ? ) ");
-                args.add('%' + search + '%');
-            }
-
-            sql.append(" ) ");
-        }
-
-        // Order by
-        if (orderBy!=null && !orderBy.isEmpty()) {
-            sql.append(" ORDER BY ").append(orderBy);
-        }
-
-        // Pagination
-        sql.append(" LIMIT ? OFFSET ? "); // Add LIMIT and OFFSET clauses
-        args.add(size);
-        args.add(pageNumber * size);
-
-        // Execute the query
-        return jdbcTemplate.query(sql.toString(), args.toArray(), MEDIA_ROW_MAPPER);
-    }
-
-    @Override
-    public List<extendedMedia> getExtendedMedia(int type, String search, List<String> genres, String orderBy, int size, int pageNumber) {
         StringBuilder sql = new StringBuilder("SELECT m.*, ");
         ArrayList<Object> args = new ArrayList<>();
 
@@ -245,28 +171,56 @@ public class MediaDaoJdbcImpl implements MediaDao {
         args.add(pageNumber * size);
 
         // Execute the query
-        return jdbcTemplate.query(sql.toString(), args.toArray(), EXTENDED_MEDIA_ROW_MAPPER);
+        return jdbcTemplate.query(sql.toString(), args.toArray(), MEDIA_ROW_MAPPER);
     }
+
 
     @Override
     public Optional<Media> getMediaById(int mediaId) {
-        return jdbcTemplate.query("SELECT * FROM media  WHERE mediaid = ?", new Object[]{mediaId}, MEDIA_ROW_MAPPER).stream().findFirst();
+        StringBuilder sql = new StringBuilder("SELECT media.*, ");
+        sql.append("(SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = media.mediaId) AS genres, ");
+        sql.append("(SELECT ARRAY_AGG(p.providerName) FROM providers p WHERE p.mediaId = media.mediaId) AS providerNames, ");
+        sql.append("(SELECT ARRAY_AGG(p.logoPath) FROM providers p WHERE p.mediaId = media.mediaId) AS providerLogos ");
+        sql.append(" FROM media  WHERE mediaid = ?");
+
+        return jdbcTemplate.query(sql.toString(), new Object[]{mediaId}, MEDIA_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
     public Optional<Movie> getMovieById(int mediaId) {
-        return jdbcTemplate.query("SELECT " + moviesQueryParams + " FROM media INNER JOIN movies ON media.mediaid = movies.mediaid WHERE  movies.mediaid = ?", new Object[]{mediaId}, MOVIE_ROW_MAPPER).stream().findFirst();
+        StringBuilder sql = new StringBuilder("SELECT ");
+        sql.append(moviesQueryParams);
+        sql.append(", (SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = media.mediaId) AS genres, ");
+        sql.append("(SELECT ARRAY_AGG(p.providerName) FROM providers p WHERE p.mediaId = media.mediaId) AS providerNames, ");
+        sql.append("(SELECT ARRAY_AGG(p.logoPath) FROM providers p WHERE p.mediaId = media.mediaId) AS providerLogos ");
+        sql.append(" FROM media INNER JOIN movies ON media.mediaid = movies.mediaid WHERE  movies.mediaid = ?");
+
+        return jdbcTemplate.query(sql.toString(),new Object[]{mediaId}, MOVIE_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
     public Optional<TVSerie> getTvById(int mediaId) {
-        return jdbcTemplate.query("SELECT " + tvQueryParams + " FROM media INNER JOIN tv ON media.mediaid = tv.mediaid WHERE  tv.mediaid = ?", new Object[]{mediaId}, TV_SERIE_ROW_MAPPER).stream().findFirst();
+        StringBuilder sql = new StringBuilder("SELECT ");
+        sql.append(tvQueryParams);
+        sql.append(", (SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = media.mediaId) AS genres, ");
+        sql.append("(SELECT ARRAY_AGG(p.providerName) FROM providers p WHERE p.mediaId = media.mediaId) AS providerNames, ");
+        sql.append("(SELECT ARRAY_AGG(p.logoPath) FROM providers p WHERE p.mediaId = media.mediaId) AS providerLogos ");
+        sql.append(" FROM media INNER JOIN tv ON media.mediaid = tv.mediaid WHERE  tv.mediaid = ?");
+
+        return jdbcTemplate.query(sql.toString(), new Object[]{mediaId}, TV_SERIE_ROW_MAPPER).stream().findFirst();
     }
 
 
     @Override
     public List<Media> getMediaInMoovieList(int moovieListId, int size, int pageNumber) {
-        return jdbcTemplate.query("SELECT media.* FROM moovieListscontent INNER JOIN media ON media.mediaId = moovieListscontent.mediaid WHERE moovielistscontent.moovieListId = ? ORDER BY media.mediaId LIMIT ? OFFSET ?", new Object[]{moovieListId, size, pageNumber * size}, MEDIA_ROW_MAPPER);
+        StringBuilder sql = new StringBuilder("SELECT media.*, ");
+        sql.append("(SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = media.mediaId) AS genres, ");
+        sql.append("(SELECT ARRAY_AGG(p.providerName) FROM providers p WHERE p.mediaId = media.mediaId) AS providerNames, ");
+        sql.append("(SELECT ARRAY_AGG(p.logoPath) FROM providers p WHERE p.mediaId = media.mediaId) AS providerLogos ");
+        sql.append(" FROM moovieListscontent INNER JOIN media ON media.mediaId = moovieListscontent.mediaid WHERE moovielistscontent.moovieListId = ? ORDER BY media.mediaId LIMIT ? OFFSET ?");
+
+        return jdbcTemplate.query(sql.toString(),new Object[]{moovieListId, size, pageNumber * size}, MEDIA_ROW_MAPPER);
+//        return jdbcTemplate.query("SELECT media.* FROM moovieListscontent INNER JOIN media ON media.mediaId = moovieListscontent.mediaid WHERE moovielistscontent.moovieListId = ? ORDER BY media.mediaId LIMIT ? OFFSET ?", new Object[]{moovieListId, size, pageNumber * size}, MEDIA_ROW_MAPPER);
     }
 
     @Override

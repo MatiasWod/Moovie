@@ -5,7 +5,6 @@ import ar.edu.itba.paw.exceptions.MediaNotFoundException;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
-import ar.edu.itba.paw.models.Media.extendedMedia;
 import ar.edu.itba.paw.persistence.MediaDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,11 +20,6 @@ public class MediaServiceImpl implements MediaService{
     @Override
     public List<Media> getMedia(int type, String search, List<String> genres, String orderBy, int size, int pageNumber) {
         return mediaDao.getMedia(type, search, genres, orderBy, size, pageNumber);
-    }
-
-    @Override
-    public List<extendedMedia> getExtendedMedia(int type, String search, List<String> genres, String orderBy, int size, int pageNumber) {
-        return mediaDao.getExtendedMedia(type,search,genres,orderBy,size,pageNumber);
     }
 
     @Override
