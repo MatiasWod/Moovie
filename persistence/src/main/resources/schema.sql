@@ -189,13 +189,25 @@ ALTER TABLE reviews ADD CONSTRAINT check_rating_range CHECK (rating BETWEEN 1 AN
 
 --MODIFICATIONS FOR SPRINT 3
 
+--ReviewsLikes
 CREATE TABLE IF NOT EXISTS reviewsLikes (
-    reviewId 		INTEGER NOT NULL,
-    userId			INTEGER NOT NULL,
+    reviewId 		    INTEGER NOT NULL,
+    userId			    INTEGER NOT NULL,
     FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE,
     FOREIGN KEY(reviewId) REFERENCES reviews(reviewId) ON DELETE CASCADE,
     UNIQUE(reviewId, userId)
 );
+
+
+--BannedMessage
+CREATE TABLE IF NOT EXISTS  bannedMessage (
+    modUserId	        INTEGER NOT NULL,
+    bannedUserId        INTEGER NOT NULL,
+    message             TEXT,
+    FOREIGN KEY(modUserId) REFERENCES users(userId) ON DELETE CASCADE,
+    FOREIGN KEY(bannedUserId) REFERENCES users(userId) ON DELETE CASCADE,
+    UNIQUE(bannedUserId)
+    );
 
 /*
 --Modifications in table created before for Sprint 2
