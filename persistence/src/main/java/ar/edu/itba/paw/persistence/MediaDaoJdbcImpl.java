@@ -3,6 +3,7 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
+import ar.edu.itba.paw.models.Media.extendedMedia;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -37,6 +38,26 @@ public class MediaDaoJdbcImpl implements MediaDao {
             rs.getInt("totalRating"),
             rs.getInt("voteCount"),
             rs.getString("status")
+    );
+
+    private static final RowMapper<extendedMedia> EXTENDED_MEDIA_ROW_MAPPER = (rs, rowNum) -> new extendedMedia(
+            rs.getInt("mediaId"),
+            rs.getBoolean("type"),
+            rs.getString("name"),
+            rs.getString("originalLanguage"),
+            rs.getBoolean("adult"),
+            rs.getDate("releaseDate"),
+            rs.getString("overview"),
+            rs.getString("backdropPath"),
+            rs.getString("posterPath"),
+            rs.getString("trailerLink"),
+            rs.getFloat("tmdbRating"),
+            rs.getInt("totalRating"),
+            rs.getInt("voteCount"),
+            rs.getString("status"),
+            rs.getString("genres"),
+            rs.getString("providerNames"),
+            rs.getString("providerLogos")
     );
 
     private static final RowMapper<Movie> MOVIE_ROW_MAPPER = (rs, rowNum) -> new Movie(
@@ -157,6 +178,74 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
         // Execute the query
         return jdbcTemplate.query(sql.toString(), args.toArray(), MEDIA_ROW_MAPPER);
+    }
+
+    @Override
+    public List<extendedMedia> getExtendedMedia(int type, String search, List<String> genres, String orderBy, int size, int pageNumber) {
+        StringBuilder sql = new StringBuilder("SELECT m.*, ");
+        ArrayList<Object> args = new ArrayList<>();
+
+        sql.append("(SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = m.mediaId) AS genres, ");
+        sql.append("(SELECT ARRAY_AGG(p.providerName) FROM providers p WHERE p.mediaId = m.mediaId) AS providerNames, ");
+        sql.append("(SELECT ARRAY_AGG(p.logoPath) FROM providers p WHERE p.mediaId = m.mediaId) AS providerLogos ");
+
+        sql.append("FROM media m ");
+
+        // If type is 0 or 1 it's specifically movies or TVs, else it's not restricted
+        if (type == 0 || type == 1) {
+            sql.append(" WHERE type = ? ");
+            args.add(type == 1);
+        } else {
+            sql.append(" WHERE type IS NOT NULL ");
+        }
+
+        // Add the genres filter
+        if (genres!=null && !genres.isEmpty()) {
+            sql.append(" AND mediaId IN ( SELECT mediaId FROM genres WHERE "); // Start the OR conditions for genres
+            for (String genre : genres) {
+                sql.append(" genre = ? OR "); // Replace 'genre_column' with your actual genre column name
+                args.add(genre);
+            }
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.append(" ) ");
+        }
+
+        // Input the search, it searches in actors, media.name, creators and directors
+        if (search!=null && search.length()>0) {
+            sql.append(" AND ( " );
+            sql.append(" name ILIKE ? ");
+            args.add('%' + search + '%');
+
+            sql.append(" OR m.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
+            args.add('%' + search + '%');
+
+            if(type != TYPE_TVSERIE){
+                sql.append(" OR m.mediaId IN (SELECT mediaid FROM movies m WHERE director ILIKE ? ) ");
+                args.add('%' + search + '%');
+            }
+
+            if(type != TYPE_MOVIE){
+                sql.append(" OR m.mediaId IN (SELECT mediaid FROM creators c WHERE creatorname ILIKE ? ) ");
+                args.add('%' + search + '%');
+            }
+
+            sql.append(" ) ");
+        }
+
+        // Order by
+        if (orderBy!=null && !orderBy.isEmpty()) {
+            sql.append(" ORDER BY ").append(orderBy);
+        }
+
+        // Pagination
+        sql.append(" LIMIT ? OFFSET ? "); // Add LIMIT and OFFSET clauses
+        args.add(size);
+        args.add(pageNumber * size);
+
+        // Execute the query
+        return jdbcTemplate.query(sql.toString(), args.toArray(), EXTENDED_MEDIA_ROW_MAPPER);
     }
 
     @Override
