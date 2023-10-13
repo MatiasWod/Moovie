@@ -22,6 +22,8 @@
 
     <title>Discover your next favorite experience</title>
     <script src="${pageContext.request.contextPath}/resources/discoverFunctions.js?version=81"></script>
+    <script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=82"></script>
+
 </head>
 <body style="background: whitesmoke">
 <c:import url="navBar.jsp"/>
@@ -38,8 +40,7 @@
                     </h1>
                 </div>
             </c:if>
-            <div >
-
+            <div>
                 <c:if test="${!searchMode}">
                     <form id="filter-form" class="mb-2 d-flex justify-content-between flex-row" action="${pageContext.request.contextPath}/discover" method="get" onsubmit="beforeSubmit()">
                 </c:if>
@@ -54,6 +55,7 @@
                             <option  ${'Movies' == param.media ? 'selected' : ''}>Movies</option>
                             <option  ${'Series' == param.media ? 'selected' : ''}>Series</option>
                         </select>
+
                         <input type="hidden" name="g" id="hiddenGenreInput">
                         <div class="dropdown">
                             <button style="height:100%;width: 150px;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
@@ -80,7 +82,16 @@
                                 </c:forEach>
                             </div>
                         </div>
-                        <button class="btn btn-outline-success" type="submit">Apply filters</button>
+                        <button class="btn btn-outline-success me-1" type="submit">Apply filters</button>
+                        <select name="orderBy" class="form-select filter-width" aria-label="Filter!">
+                            <option ${'name' == param.orderBy ? 'selected' : ''} value="name">Title</option>
+                            <option ${'tmdbrating' == param.orderBy ? 'selected' : ''} value="tmdbrating">Score</option>
+                            <option ${'releasedate' == param.orderBy ? 'selected' : ''} value="releasedate">Release Date</option>
+                        </select>
+                        <input type="hidden" name="order" id="sortOrderInput" value="${param.order =='desc'? 'desc':'asc'}">
+                        <div class="btn btn-style me-1" id="sortButton" onclick="changeSortOrder('sortOrderInput', 'sortIcon', '${param.orderBy}')">
+                            <i id="sortIcon" class="bi bi-arrow-${param.order == 'desc' ? 'up' : 'down'}-circle-fill"></i>
+                        </div>
                     </div>
                     <div >
                         <a style="height: 100%;" class="btn btn-outline-success align-bottom" href="${pageContext.request.contextPath}/discover">
@@ -119,15 +130,15 @@
                                         <fmt:formatDate value="${movie.releaseDate}" pattern="YYYY"/>
                                     </p>
                                 </div>
-                                <div class="d-flex justify-content-evenly">
+                                <div class="d-flex justify-content-evenly flex-wrap">
                                     <c:forEach var="genre" items="${movie.genres}" end="1">
-                                        <span class="badge text-bg-dark">${fn:replace(genre,"\"" ,"" )}</span>
+                                        <span class="mt-1 badge text-bg-dark">${fn:replace(genre,"\"" ,"" )}</span>
                                     </c:forEach>
                                 </div>
-                                <div class="d-flex mt-3 justify-content-evenly">
+                                <div class="d-flex mt-3 justify-content-evenly flex-wrap">
                                     <c:forEach var="provider" items="${movie.providerLogos}" end="1">
-                                        <span class="badge text-bg-light border border-black">
-                                            <img src="${provider}" alt="provider logo" style="height: 1.6em; margin-right: 5px;">
+                                        <span class="mt-1 badge text-bg-light border border-black">
+                                            <img src="${provider}" alt="provider logo" style="height: 1.4em; margin-right: 5px;">
                                         </span>
                                     </c:forEach>
                                 </div>

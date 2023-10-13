@@ -107,7 +107,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
 
     @Override
-    public List<Media> getMedia(int type, String search, List<String> genres, String orderBy, int size, int pageNumber) {
+    public List<Media> getMedia(int type, String search, List<String> genres, String orderBy, String sortOrder, int size, int pageNumber) {
         StringBuilder sql = new StringBuilder("SELECT m.*, ");
         ArrayList<Object> args = new ArrayList<>();
 
@@ -163,6 +163,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
         // Order by
         if (orderBy!=null && !orderBy.isEmpty()) {
             sql.append(" ORDER BY ").append(orderBy);
+            sql.append(" ").append(sortOrder);
         }
 
         // Pagination

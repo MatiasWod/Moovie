@@ -147,6 +147,9 @@ function deleteStorage() {
     console.log(mediaNamesInputs)
     localStorage.removeItem("mediaNames")
     localStorage.removeItem("selectedMediaIds")
+
+    selectedMedia = [];
+    selectedMediaId = [];
 }
 
 function beforeSubmit() {
