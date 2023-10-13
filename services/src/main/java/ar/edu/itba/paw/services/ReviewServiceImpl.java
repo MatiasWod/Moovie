@@ -33,8 +33,8 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
-    public List<Review> getMovieReviewsFromUser(int userId) {
-        return reviewDao.getMovieReviewsFromUser(userService.tryToGetCurrentUserId(), userId);
+    public List<Review> getMovieReviewsFromUser(int userId, int size, int pageNumber) {
+        return reviewDao.getMovieReviewsFromUser(userService.tryToGetCurrentUserId(), userId, size, pageNumber);
     }
 
     @Override

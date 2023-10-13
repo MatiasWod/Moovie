@@ -2,7 +2,6 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.*;
 
-import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListDetails;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
@@ -21,16 +20,18 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Controller
-public class HelloWorldController {
+public class UserController {
 
     @Autowired
     UserService userService;
@@ -125,7 +126,9 @@ public class HelloWorldController {
             ModelAndView mav = new ModelAndView("helloworld/profile");
 
             int listCount = 0;
-            int numberOfPages;
+            int numberOfPages = 0;
+            final Map<String, String> queries = new HashMap<>();
+            queries.put("username",username);
 
             mav.addObject("profile",requestedProfile);
             mav.addObject("isMe",userService.isUsernameMe(username));
@@ -134,34 +137,54 @@ public class HelloWorldController {
                 switch (list) {
                     case "watched-list":
                         MoovieListDetails watchedDetails = moovieListService.getMoovieListDetails( -1 , "WATCHED" , username,null, "asc",PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(),pageNumber-1);
-                        listCount = watchedDetails.getContent().size();
+                        listCount = watchedDetails.getCard().getSize();
+                        queries.put("list","watched-list");
+                        numberOfPages = (int) Math.ceil(listCount * 1.0 / PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize());
                         mav.addObject("listDetails",watchedDetails);
                         break;
                     case "watchlist":
                         MoovieListDetails watchlistDetails = moovieListService.getMoovieListDetails(-1, "WATCHLIST" , username, null, "asc",PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(),pageNumber-1);
-                        listCount = watchlistDetails.getContent().size();
+                        listCount = watchlistDetails.getCard().getSize();
+                        queries.put("list","watchlist");
+                        numberOfPages = (int) Math.ceil(listCount * 1.0 / PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize());
                         mav.addObject("listDetails",watchlistDetails);
                         break;
                     case "liked-lists":
-                        mav.addObject("showLists",moovieListService.getLikedMoovieListCards(requestedProfile.getUserId(), MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(),pageNumber - 1));
+                        mav.addObject("showLists",moovieListService.getLikedMoovieListCards(requestedProfile.getUserId(), MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+                        listCount = requestedProfile.getLikedMoovieListCount();
+                        queries.put("list","liked-lists");
+                        numberOfPages = (int) Math.ceil(listCount * 1.0 / PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize());
                         //Obtener la cantidad de listas likeadas por el usuario
                         break;
                     case "reviews":
-                        mav.addObject("reviewsList",reviewService.getMovieReviewsFromUser(requestedProfile.getUserId()));
+                        mav.addObject("reviewsList",reviewService.getMovieReviewsFromUser(requestedProfile.getUserId(),PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+                        queries.put("list","reviews");
+                        listCount = requestedProfile.getReviewsCount();
+                        numberOfPages = (int) Math.ceil(listCount * 1.0 / PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize());
                         //Obtener la cantidad de reviews del usuario
                         break;
                     default: // este es el caso para user-lists. como es el default al entrar al profile
-                        mav.addObject("showLists", moovieListService.getMoovieListCards(null, requestedProfile.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(),pageNumber - 1));
+                        mav.addObject("showLists", moovieListService.getMoovieListCards(null, requestedProfile.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1));
+                        queries.put("list","user-lists");
+                        listCount = requestedProfile.getMoovieListCount();
+                        numberOfPages = (int) Math.ceil(listCount * 1.0 / PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize());
                         //Obtener la cantidad de listas creadas por el usuario
                         break;
                 }
             }else{
-                mav.addObject("showLists", moovieListService.getMoovieListCards(null, requestedProfile.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), 0));
+                mav.addObject("showLists", moovieListService.getMoovieListCards(null, requestedProfile.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1));
+                queries.put("list","user-lists");
+                listCount = requestedProfile.getMoovieListCount();
+                numberOfPages = (int) Math.ceil(listCount * 1.0 / PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize());
+                //Obtener la cantidad de listas creadas por el usuario
             }
 
-            numberOfPages = (int) Math.ceil(listCount * 1.0 / PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize());
+
             mav.addObject("numberOfPages",numberOfPages);
             mav.addObject("currentPage",pageNumber - 1);
+
+            String urlBase = UriComponentsBuilder.newInstance().path("/profile/{username}").query("list={list}").buildAndExpand(queries).toUriString();
+            mav.addObject("urlBase", urlBase);
 
             return mav;
 

@@ -94,7 +94,7 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
 //      FALTABAN LOS JOINS CON LAS OTRAS TABLAS, SE PODRIA HACER MEJOR? LIT COPIE LA OTRAS QUERIES
 
     @Override
-    public List<Review> getMovieReviewsFromUser(int currentUserId, int userId) {
+    public List<Review> getMovieReviewsFromUser(int currentUserId, int userId, int size, int pageNumber) {
         StringBuilder sql = new StringBuilder("SELECT *, ");
         ArrayList<Object> args = new ArrayList<>();
 
@@ -104,8 +104,11 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
         args.add(currentUserId);
 
         sql.append(" FROM reviews r INNER JOIN users ON users.userid = r.userid INNER JOIN media  ");
-        sql.append(" ON media.mediaId = r.mediaId WHERE r.userId = ? ;");
+        sql.append(" ON media.mediaId = r.mediaId WHERE r.userId = ? ");
+        sql.append(" LIMIT ? OFFSET ? ");
         args.add(userId);
+        args.add(size);
+        args.add(pageNumber*size);
 
         return jdbcTemplate.query(sql.toString(), args.toArray(), REVIEW_ROW_MAPPER);
     }

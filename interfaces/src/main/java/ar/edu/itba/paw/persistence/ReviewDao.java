@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface ReviewDao {
     Optional<Review> getReviewById(int currentUserId, int reviewId);
     List<Review> getReviewsByMediaId(int currentUserId, int mediaId, int size, int pageNumber);
-    List<Review> getMovieReviewsFromUser(int currentUserId, int userId);
+    List<Review> getMovieReviewsFromUser(int currentUserId, int userId, int size, int pageNumber);
     int getReviewsByMediaIdCount(int mediaId);
 
     void createReview(int userId, int mediaId, int rating, String reviewContent);
