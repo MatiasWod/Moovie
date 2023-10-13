@@ -80,6 +80,8 @@ public class ListController {
     public ModelAndView createList(@RequestParam(value = "g", required = false) List<String> genres,
                                    @RequestParam(value = "m", required = false,defaultValue = "Movies and Series") String media,
                                    @RequestParam(value = "q", required = false) String query,
+                                   @RequestParam(value="orderBy", defaultValue = "tmdbRating") final String orderBy,
+                                   @RequestParam(value="order", defaultValue = "desc") final String order,
                                    @RequestParam(value = "page",defaultValue = "1") final int pageNumber,
                                    @ModelAttribute("ListForm") final CreateListForm form) {
 
@@ -88,15 +90,15 @@ public class ListController {
         int mediaCount;
         mav.addObject("searchMode",false);
         if (media.equals("Movies and Series")){
-            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query,genres, null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query,genres, orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
             mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query,genres);
         }
         else if (media.equals("Movies")){
-            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), query, genres, null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), query, genres, orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
             mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_MOVIE.getType(), query,genres);
         }
         else{
-            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), query, genres,  null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), query, genres,  orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
             mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_TVSERIE.getType(), query,genres);
         }
         numberOfPages = (int) Math.ceil(mediaCount * 1.0 / PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize());
@@ -240,7 +242,7 @@ public class ListController {
     @RequestMapping(value = "/createListAction", method = RequestMethod.POST)
     public ModelAndView createListAction(@Valid @ModelAttribute("ListForm") final CreateListForm form, final BindingResult errors) {
         if (errors.hasErrors()) {
-            return createList(null, null, null,1, form);
+            return createList(null, null, null,null,null,1, form);
         }
 
         MoovieList list = moovieListService.createMoovieListWithContent(form.getListName(), MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType() , form.getListDescription(), form.getMediaIdsList());

@@ -110,7 +110,10 @@
                 </div>
                 <div>
                     <c:forEach var="genre" items="${genresList}">
-                        <span class="badge text-bg-dark">${genre}</span>
+                        <a href="${pageContext.request.contextPath}/discover?g=${genre}&media=${media.type? 'Series':'Movies'}">
+                            <span class="badge text-bg-dark">${genre}</span>
+                        </a>
+
                     </c:forEach>
                 </div>
             </div>

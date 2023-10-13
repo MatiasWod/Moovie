@@ -22,6 +22,7 @@
 
     <title>Share your favorite media</title>
     <script src="${pageContext.request.contextPath}/resources/createListFunctions.js?version=82"></script>
+    <script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=82"></script>
 
 </head>
 <body style="background: whitesmoke">
@@ -34,8 +35,8 @@
                 <div style="z-index: 1;">
                     <form id="filter-form" class="mb-2 d-flex flex-row justify-content-between" action="${pageContext.request.contextPath}/createList" method="get" onsubmit="beforeSubmit()">
                         <input type="hidden"  id="selected-media-input" />
-                        <div role="group" class="input-group d-flex flex-row m-1">
-                            <select name="m" class="form-select filter-width" aria-label="Filter!">
+                        <div role="group" class="input-group d-flex flex-row m-1 me-3">
+                            <select  name="m" class="form-select filter-width" aria-label="Filter!">
                                 <option ${'Movies and Series' == param.m ? 'selected' : ''}>Movies and Series</option>
                                 <option  ${'Movies' == param.m ? 'selected' : ''}>Movies</option>
                                 <option  ${'Series' == param.m ? 'selected' : ''}>Series</option>
@@ -54,14 +55,23 @@
                                     </c:forEach>
                                 </div>
                             </div>
-                            <button class="btn btn-outline-success" type="submit" >Apply filters</button>
+                            <button class="btn btn-outline-success me-1" type="submit" >Apply</button>
+                            <select name="orderBy" class="form-select filter-width" aria-label="Filter!">
+                                <option ${'name' == param.orderBy ? 'selected' : ''} value="name">Title</option>
+                                <option ${'tmdbrating' == param.orderBy ? 'selected' : ''} value="tmdbrating">Score</option>
+                                <option ${'releasedate' == param.orderBy ? 'selected' : ''} value="releasedate">Release Date</option>
+                            </select>
+                            <input type="hidden" name="order" id="sortOrderInput" value="${param.order =='desc'? 'desc':'asc'}">
+                            <div class="btn btn-style me-1" id="sortButton" onclick="changeSortOrder('sortOrderInput', 'sortIcon', '${param.orderBy}')">
+                                <i id="sortIcon" class="bi bi-arrow-${param.order == 'desc' ? 'up' : 'down'}-circle-fill"></i>
+                            </div>
                         </div>
                         <div role="group" class="input-group d-flex flex-row m-1">
-                            <input class="form-control me-2" type="search" name="q" value="${param.q}" placeholder="Search" aria-label="Search">
-                            <button class="btn btn-outline-success" type="submit">Search</button>
-                            <a style="height: 100%;" class="btn btn-outline-success align-bottom" href="${pageContext.request.contextPath}/createList">
-                                Reset
-                            </a>
+                                <input class="form-control me-2" type="search" name="q" value="${param.q}" placeholder="Search" aria-label="Search">
+                                <button class="btn btn-outline-success" type="submit">Search</button>
+                                <a style="height: 100%;" class="btn btn-outline-success align-bottom" href="${pageContext.request.contextPath}/createList">
+                                    Reset
+                                </a>
                         </div>
                     </form>
                     <div class="container d-flex justify-content-left p-0" id="genre-chips">
@@ -81,15 +91,32 @@
                         </div>
                     </c:if>
                     <c:forEach var="movie" items="${mediaList}" end="24">
-                        <div class="poster card text-bg-dark m-1"
-                             onclick="displayMediaName(
-                                     '${(fn:replace(fn:replace(movie.name,"'", "\\'"), "\"", "&quot;"))}',
-                                 ${movie.mediaId})">
+                        <div onclick="displayMediaName('${(fn:replace(fn:replace(movie.name,"'", "\\'"), "\"", "&quot;"))}','${movie.mediaId}')" class="poster card text-bg-dark m-1">
                             <div class="card-img-container"> <!-- Add a container for the image -->
-                                <img class="height-full" src="${movie.posterPath}" alt="poster image">
+                                <img class="cropCenter" src="${movie.posterPath}" alt="media poster">
                                 <div class="card-img-overlay">
-                                    <h5 class="card-title">${movie.name}</h5>
-                                    <p class="card-text">${movie.tmdbRating}</p>
+                                    <h6 class="card-title text-center">${movie.name}</h6>
+                                    <div class="d-flex justify-content-evenly">
+                                        <p class="card-text">
+                                            <i class="bi bi-star-fill"></i>
+                                                ${movie.tmdbRating}
+                                        </p>
+                                        <p class="card-text">
+                                            <fmt:formatDate value="${movie.releaseDate}" pattern="YYYY"/>
+                                        </p>
+                                    </div>
+                                    <div class="d-flex justify-content-evenly flex-wrap">
+                                        <c:forEach var="genre" items="${movie.genres}" end="1">
+                                            <span class="mt-1 badge text-bg-dark">${fn:replace(genre,"\"" ,"" )}</span>
+                                        </c:forEach>
+                                    </div>
+                                    <div class="d-flex mt-3 justify-content-evenly flex-wrap">
+                                        <c:forEach var="provider" items="${movie.providerLogos}" end="1">
+                                        <span class="mt-1 badge text-bg-light border border-black">
+                                            <img src="${provider}" alt="provider logo" style="height: 1.4em; margin-right: 5px;">
+                                        </span>
+                                        </c:forEach>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -137,8 +164,8 @@
                     </div>
 
                     <div>
-                        <h4>Feel free to use other features on the website!
-                        We will keep your list progress.</h4>
+                        <h6>Feel free to use other features on the website!
+                        We will keep your list progress.</h6>
                     </div>
                     <div class="d-flex" id="preview-list"></div>
                 </div>
