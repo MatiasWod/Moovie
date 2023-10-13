@@ -7,7 +7,7 @@
     <link href="${pageContext.request.contextPath}/resources/main.css?version=59" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
-    <title>Error 404</title>
+    <title>BANNED</title>
 </head>
 <body style="background: whitesmoke">
 <f:view>
@@ -24,7 +24,11 @@
     <div class="col">
         <h1>You are currently banned indefinitely!</h1>
         <h2><c:out value="${bannedMessageObject.modUsername}"/> banned you!</h2>
-        <h3>Reason: <c:out value="${bannedMessageObject.message}"/></h3>
+        <c:if test="bannedMessageObject != null">
+            <h3>Reason: <c:out value="${bannedMessageObject.message}"/></h3>
+        </c:if><c:otherwise>
+            <h3>Reason of the ban is not available</h3>
+    </c:otherwise>
     </div>
 
 

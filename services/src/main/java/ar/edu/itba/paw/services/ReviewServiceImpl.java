@@ -39,6 +39,7 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     public void likeReview(int reviewId) {
+        getReviewById(reviewId);
         try{
             reviewDao.likeReview(userService.getInfoOfMyUser().getUserId(),reviewId);
         } catch (Exception e){

@@ -132,7 +132,7 @@
             </form>
 
                 <div style="margin-left: 15px; margin-right:10px" class="d-flex nav-item justify-content-center">
-                        <sec:authorize access="hasRole('ROLE_USER')">
+                        <sec:authorize access="hasRole('ROLE_USER') || hasRole('ROLE_BANNED')">
                             <sec:authentication property="name" var="username"></sec:authentication>
                             <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
                                 <ul class="navbar-nav">

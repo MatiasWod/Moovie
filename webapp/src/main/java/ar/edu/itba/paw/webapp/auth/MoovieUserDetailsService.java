@@ -22,7 +22,7 @@ public class MoovieUserDetailsService implements UserDetailsService {
     private boolean ACCOUNT_ENABLED = true;
     private static final boolean ACCOUNT_NON_EXPIRED = true;
     private static final boolean CREDENTIALS_NON_EXPIRED = true;
-    private boolean ACCOUNT_NON_BANNED = true;
+    private boolean ACCOUNT_NON_LOCKED = true;
 
     @Autowired
     public MoovieUserDetailsService(final UserService us) {
@@ -32,7 +32,6 @@ public class MoovieUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException, UserNotVerifiedException, UserIsBannedException{
         ACCOUNT_ENABLED = true;
-        ACCOUNT_NON_BANNED = true;
         final User user = us.findUserByUsername(username);
 
         final Set<GrantedAuthority> authorities = new HashSet<>();
@@ -44,7 +43,7 @@ public class MoovieUserDetailsService implements UserDetailsService {
             }
         } else {
             if(user.getRole() == -2  ){
-                ACCOUNT_NON_BANNED = false;
+                authorities.add(new SimpleGrantedAuthority("ROLE_BANNED"));
             }
             if(user.getRole() == -1 ){
                 ACCOUNT_ENABLED = false;
@@ -52,6 +51,6 @@ public class MoovieUserDetailsService implements UserDetailsService {
             // If the user doesn't have the required role, you can handle it here.
         }
 
-        return new MoovieAuthUser(user.getUsername(), user.getPassword(), ACCOUNT_ENABLED, ACCOUNT_NON_EXPIRED, CREDENTIALS_NON_EXPIRED, ACCOUNT_NON_BANNED, authorities);
+        return new MoovieAuthUser(user.getUsername(), user.getPassword(), ACCOUNT_ENABLED, ACCOUNT_NON_EXPIRED, CREDENTIALS_NON_EXPIRED, ACCOUNT_NON_LOCKED, authorities);
     }
 }
