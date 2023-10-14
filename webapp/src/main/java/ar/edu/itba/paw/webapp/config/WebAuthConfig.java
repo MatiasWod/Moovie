@@ -94,10 +94,10 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests()
                     .antMatchers("/bannedMessage").hasRole("BANNED")
                     .antMatchers("/login", "/register").anonymous()
-                    .antMatchers( "/createreview", "/profile/**", "/uploadProfilePicture","/createrating","/insertMediaToList","/like" ).hasRole("USER")
+                    .antMatchers("/profile/**").hasAnyRole("USER", "BANNED")
+                    .antMatchers( "/createreview", "/uploadProfilePicture","/createrating","/insertMediaToList","/like", "/createlist" ).hasRole("USER")
                     .antMatchers( "/deleteReview/**", "/deleteList/**","/banUser/**" ).hasRole("MODERATOR")
-                    .antMatchers("/**").hasRole("USER") //This and the line below check
-                    .antMatchers("/**").anonymous()
+                    .antMatchers("/**").permitAll()
                 .and().exceptionHandling()
                     .accessDeniedPage("/403")
                 .and().csrf().disable();
