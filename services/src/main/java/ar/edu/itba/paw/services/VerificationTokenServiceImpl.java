@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.persistence.VerificationTokenDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -21,6 +22,7 @@ public class VerificationTokenServiceImpl implements VerificationTokenService{
         this.verificationTokenDao = verificationTokenDao;
     }
 
+    @Transactional
     @Override
     public String createVerificationToken(int userId) {
         String token = UUID.randomUUID().toString();
@@ -35,11 +37,13 @@ public class VerificationTokenServiceImpl implements VerificationTokenService{
         return new Date(calendar.getTime().getTime());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Token> getToken(String token) {
         return verificationTokenDao.getToken(token);
     }
 
+    @Transactional
     @Override
     public void deleteToken(Token token) {
         verificationTokenDao.deleteToken(token);
@@ -53,6 +57,7 @@ public class VerificationTokenServiceImpl implements VerificationTokenService{
         return aux1 > aux2;
     }
 
+    @Transactional
     @Override
     public void renewToken(String token) {
         verificationTokenDao.renewToken(token,calculateExpirationDate());

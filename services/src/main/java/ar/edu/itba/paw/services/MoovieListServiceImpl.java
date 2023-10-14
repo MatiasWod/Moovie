@@ -10,6 +10,7 @@ import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.MoovieListDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     private static final int EVERY_THIS_AMOUNT_OF_LIKES_SEND_EMAIL = 5;
 
+    @Transactional(readOnly = true)
     @Override
     public MoovieList getMoovieListById(int moovieListId) { //Check permissions
         MoovieList ml = moovieListDao.getMoovieListById(moovieListId).orElseThrow( () -> new MoovieListNotFoundException("Moovie list by id: " + moovieListId + " not found"));
@@ -44,16 +46,19 @@ public class MoovieListServiceImpl implements MoovieListService{
         return ml;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public MoovieList getWatchedByUserId(int userId) {
         return null;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public MoovieList getWatchlistByUserId(int userId) {
         return null;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public MoovieListCard getMoovieListCardById(int moovieListId) {
         MoovieListCard mlc = moovieListDao.getMoovieListCardById(moovieListId).orElseThrow( () -> new MoovieListNotFoundException("Moovie list by id: " + moovieListId + " not found"));
@@ -70,6 +75,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         return mlc;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy,String sortOrder, int size, int pageNumber) {
         MoovieList ml = getMoovieListById(moovieListId);
@@ -82,6 +88,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
         //If the previous didnt throw exception, we have the permissions needed to perform the next action
@@ -93,6 +100,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public int countWatchedFeaturedMoovieListContent(int moovieListId, int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
         try{
@@ -103,6 +111,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , String orderBy, String order, int size, int pageNumber) {
         if(type == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.getType() || type == MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType()){
@@ -113,16 +122,19 @@ public class MoovieListServiceImpl implements MoovieListService{
         return moovieListDao.getMoovieListCards(search, ownerUsername, type,orderBy,order, size, pageNumber);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public int getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber){
         return moovieListDao.getMoovieListCardsCount(search,ownerUsername,type,size,pageNumber);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<MoovieListCard> getLikedMoovieListCards(int userId,int type, int size, int pageNumber){
         return moovieListDao.getLikedMoovieListCards(userId, type, size, pageNumber);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public MoovieListDetails getMoovieListDetails(int moovieListId, String name, String ownerUsername, String orderBy, String sortOrder, int size, int pageNumber) {
         MoovieListCard card = null;
@@ -143,18 +155,20 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     }
 
-
+    @Transactional
     @Override
     public MoovieList createMoovieList(String name, int type, String description) {
         return moovieListDao.createMoovieList(userService.getInfoOfMyUser().getUserId(), name, type, description);
     }
 
+    @Transactional
     @Override
     public MoovieList createMoovieListWithContent(String name, int type, String description, List<Integer> mediaIdList) {
         MoovieList ml =  moovieListDao.createMoovieList(userService.getInfoOfMyUser().getUserId(), name, type, description);
         return insertMediaIntoMoovieList(ml.getMoovieListId(), mediaIdList);
     }
 
+    @Transactional
     @Override
     public MoovieList insertMediaIntoMoovieList(int moovieListId, List<Integer> mediaIdList) {
         MoovieList ml = getMoovieListById(moovieListId);
@@ -167,6 +181,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         }
     }
 
+    @Transactional
     @Override
     public void deleteMediaFromMoovieList(int moovieListId, int mediaId) {
         MoovieList ml = getMoovieListById(moovieListId);
@@ -179,6 +194,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         }
     }
 
+    @Transactional
     @Override
     public void deleteMoovieList(int moovieListId) {
         MoovieList ml = getMoovieListById(moovieListId);
@@ -190,7 +206,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         }
     }
 
-
+    @Transactional
     @Override
     public void likeMoovieList(int moovieListId) {
         int userId = userService.getInfoOfMyUser().getUserId();
@@ -215,16 +231,19 @@ public class MoovieListServiceImpl implements MoovieListService{
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public int getLikeCountForMoovieList(int moovieListId) {
         return moovieListDao.getLikeCountForMoovieList(moovieListId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public void removeLikeMoovieList(int moovieListId) {
         moovieListDao.removeLikeMoovieList(userService.getInfoOfMyUser().getUserId(), moovieListId);
     }
 
+    @Transactional
     @Override
     public boolean likeMoovieListStatusForUser(int moovieListId) {
         try {
@@ -235,6 +254,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public int countWatchedMoviesInList(int UserId,int moovieListId){
         return moovieListDao.countWatchedMoviesInList(UserId,moovieListId);

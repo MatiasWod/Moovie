@@ -15,6 +15,7 @@ import ar.edu.itba.paw.persistence.ReviewDao;
 import ar.edu.itba.paw.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +42,7 @@ public class ModeratorServiceImpl implements ModeratorService{
     private BannedDao bannedDao;
 
 
+    @Transactional
     @Override
     public void deleteReview(int reviewId, int mediaId) {
         amIModerator();
@@ -58,6 +60,7 @@ public class ModeratorServiceImpl implements ModeratorService{
         reviewDao.deleteReview(reviewId);
     }
 
+    @Transactional
     @Override
     public void deleteMoovieListList(int moovieListId) {
         amIModerator();
@@ -75,6 +78,7 @@ public class ModeratorServiceImpl implements ModeratorService{
         moovieListDao.deleteMoovieList(moovieListId);
     }
 
+    @Transactional
     @Override
     public void banUser(int userId, String message) {
         amIModerator();
@@ -95,6 +99,7 @@ public class ModeratorServiceImpl implements ModeratorService{
         emailService.sendEmail(u.getEmail(),"You have been baned from Moovie", "youHaveBeenBannedMail.html", mailMap);
     }
 
+    @Transactional
     @Override
     public void unbanUser(int userId) {
         amIModerator();

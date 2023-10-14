@@ -7,6 +7,7 @@ import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.BannedDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BannedServiceImpl implements BannedService{
@@ -15,19 +16,9 @@ public class BannedServiceImpl implements BannedService{
     @Autowired
     UserService userService;
 
+    @Transactional(readOnly = true)
     @Override
     public BannedMessage getBannedMessage(int userId) {
         return bannedDao.getBannedMessage(userId).orElseThrow(() -> new BannedMessageNotFoundException("Banned message for user not found"));
-        /*
-        try{
-            User u = userService.getInfoOfMyUser();
-            if(u.getRole()!= userService.ROLE_BANNED){
-                throw new BannedMessageNotFoundException("Banned message for user not found, user not banned");
-            }
-            return bannedDao.getBannedMessage(u.getUserId()).orElseThrow(() -> new BannedMessageNotFoundException("Banned message for user not found"));
-
-        } catch (UserNotLoggedException e){
-            throw new BannedMessageNotFoundException("Banned message for user not found, user not logged");
-        }*/
     }
 }

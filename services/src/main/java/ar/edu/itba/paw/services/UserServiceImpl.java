@@ -13,6 +13,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -49,6 +50,7 @@ public class UserServiceImpl implements UserService {
     //REGSITRATION
 
 
+    @Transactional
     @Override
     public String createUser(String username, String email, String password){
         if(userDao.findUserByUsername(username).isPresent()){
@@ -72,11 +74,13 @@ public class UserServiceImpl implements UserService {
         return token;
     }
 
+    @Transactional
     @Override
     public User createUserFromUnregistered(String username, String email, String password) {
         return userDao.createUserFromUnregistered(username, email, passwordEncoder.encode(password));
     }
 
+    @Transactional
     @Override
     public boolean confirmRegister(Token token) {
         boolean isValidToken = verificationTokenService.isValidToken(token);
@@ -94,33 +98,37 @@ public class UserServiceImpl implements UserService {
     //FIND USERS
 
 
+    @Transactional(readOnly = true)
     @Override
     public User findUserById(int userId) {
         return userDao.findUserById(userId).orElseThrow(() -> new UnableToFindUserException("User with id: " + userId + " not found"));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public User findUserByEmail(String email) {
         return userDao.findUserByEmail(email).orElseThrow(() -> new UnableToFindUserException("User with email: " + email + " not found"));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public User findUserByUsername(String username) {
         return userDao.findUserByUsername(username).orElseThrow(() -> new UnableToFindUserException("User with username: " + username + " not found"));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Profile> searchUsers(String username, int size, int pageNumber) {
         return userDao.searchUsers(username, size, pageNumber);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Profile getProfileByUsername(String username) {
         return userDao.getProfileByUsername(username).orElseThrow(() -> new UnableToFindUserException("No user with username: " + username));
     }
 
     //AUTHENTICATION INFO
-
 
     @Override
     public User getInfoOfMyUser() {
@@ -153,6 +161,7 @@ public class UserServiceImpl implements UserService {
     //PROFILE PICTURES
 
 
+    @Transactional
     @Override
     public void setProfilePicture(MultipartFile picture) {
         int uid = getInfoOfMyUser().getUserId();
@@ -176,6 +185,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public byte[] getProfilePicture(String username) {
         return userDao.getProfilePicture(findUserByUsername(username).getUserId()).orElseThrow(() -> new NoFileException("Profile picture not found")).getImage();
@@ -193,6 +203,7 @@ public class UserServiceImpl implements UserService {
         emailService.sendEmail(email,subject,"confirmationMail.html",mailMap);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public void resendVerificationEmail(String token) {
         verificationTokenService.renewToken(token);
