@@ -239,13 +239,17 @@ public class ListController {
 
 
     @RequestMapping(value = "/createListAction", method = RequestMethod.POST)
-    public ModelAndView createListAction(@Valid @ModelAttribute("ListForm") final CreateListForm form, final BindingResult errors) {
+    public ModelAndView createListAction(@Valid @ModelAttribute("ListForm") final CreateListForm form, final BindingResult errors, RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
-            return createList(null, null, null,null,null,1, form);
+            return createList(null, null, null, null, null, 1, form);
         }
-
-        MoovieList list = moovieListService.createMoovieListWithContent(form.getListName(), MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType() , form.getListDescription(), form.getMediaIdsList());
-
+        MoovieList list = null;
+        try {
+            list = moovieListService.createMoovieListWithContent(form.getListName(), MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), form.getListDescription(), form.getMediaIdsList());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error creating list");
+            return new ModelAndView("redirect:/createList");
+        }
         int id = list.getMoovieListId();
         return new ModelAndView("redirect:/list/" + id);
     }

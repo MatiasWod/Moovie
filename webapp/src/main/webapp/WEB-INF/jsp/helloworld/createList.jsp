@@ -138,6 +138,14 @@
                         <h2 class="m-2">List Name:</h2>
                         <button class="btn btn-danger m-2" onclick="deleteStorage()">Clear all</button>
                     </div>
+                    <c:if test="${not empty errorMessage}">
+                        <div class="alert alert-danger alert-dismissible fade show" id="errorAlert" role="alert">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>${errorMessage}</div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        </div>
+                    </c:if>
                     <div class="d-flex flex-column">
                         <form:form modelAttribute="ListForm" action="${pageContext.request.contextPath}/createListAction"
                                    method="POST" id="create-form">
