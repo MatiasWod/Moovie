@@ -3,7 +3,6 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.models.Review.Review;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ReviewService {
     Review getReviewById(int reviewId);
@@ -16,7 +15,7 @@ public interface ReviewService {
     //Likes a review
     void likeReview(int reviewId);
     //Removes like of a review
-    void removeLikeReview(int userId, int reviewId);
+    void removeLikeReview(int reviewId);
 
     //Creates review
     void createReview( int mediaId, int rating, String reviewContent);

@@ -44,7 +44,7 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
-    public void removeLikeReview(int userId, int reviewId) {
+    public void removeLikeReview(int reviewId) {
         reviewDao.removeLikeReview(userService.getInfoOfMyUser().getUserId(),reviewId);
     }
 
