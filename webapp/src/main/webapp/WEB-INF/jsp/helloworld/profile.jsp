@@ -60,7 +60,7 @@
                         <img class="cropCenter" style="height:50px;width:50px" src="${pageContext.request.contextPath}/resources/moderator_logo.png" alt="moderator profile pic">
                     </c:if>
                     <c:if test="${profile.role == -2}">
-                        <a class="ms-2 me-2 btn btn-danger btn-sm" aria-disabled="true">Banned</a>
+                        <span class="ms-2 me-2 badge text-bg-danger" aria-disabled="true">Banned</span>
                     </c:if>
 
                     <sec:authorize access="hasRole('ROLE_MODERATOR')">
