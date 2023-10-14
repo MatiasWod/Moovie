@@ -16,8 +16,8 @@ public class BannedServiceImpl implements BannedService{
     UserService userService;
 
     @Override
-    public BannedMessage getBannedMessage() {
-        return bannedDao.getBannedMessage(10).orElseThrow(() -> new BannedMessageNotFoundException("Banned message for user not found"));
+    public BannedMessage getBannedMessage(int userId) {
+        return bannedDao.getBannedMessage(userId).orElseThrow(() -> new BannedMessageNotFoundException("Banned message for user not found"));
         /*
         try{
             User u = userService.getInfoOfMyUser();

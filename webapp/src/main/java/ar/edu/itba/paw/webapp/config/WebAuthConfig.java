@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.config;
 
+import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.auth.CustomAuthenticationSuccessHandler;
 import ar.edu.itba.paw.webapp.auth.MoovieUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,10 @@ import java.util.concurrent.TimeUnit;
 @EnableWebSecurity
 @Configuration
 public class WebAuthConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private UserService userService;
+
     @Autowired
     private MoovieUserDetailsService userDetailsService;
 
@@ -49,8 +54,9 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 // Account wasnt verified
                 response.sendRedirect(contextPath + "/login?error=disabled");
             } else if (exception instanceof LockedException) {
-                // Account was banned
-                response.sendRedirect(contextPath + "/login?error=locked");
+                // Account wasnt verified
+                int uid = userService.findUserByUsername(request.getParameter("username")).getUserId();
+                response.sendRedirect(contextPath + "/bannedMessage/" + uid);
             }else if(exception instanceof UsernameNotFoundException) {
                 // User not found
                 response.sendRedirect(contextPath + "/login?error=unknown_user");

@@ -15,10 +15,10 @@ public class BannedUserController {
     @Autowired
     BannedService bannedService;
 
-    @RequestMapping(value = "/bannedMessage", method = RequestMethod.GET)
-    public ModelAndView bannedMessage() {
+    @RequestMapping(value = "/bannedMessage/{id:\\d+}", method = RequestMethod.GET)
+    public ModelAndView bannedMessage( @PathVariable("id") final int userId) {
         ModelAndView mav = new ModelAndView("helloworld/bannedMessage");
-        mav.addObject("bannedMessageObject", bannedService.getBannedMessage());
+        mav.addObject("bannedMessageObject", bannedService.getBannedMessage(userId));
         return mav;
     }
 }
