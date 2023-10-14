@@ -24,9 +24,4 @@ public interface MediaService {
     Media getMediaById(int mediaId);
     Movie getMovieById(int mediaId);
     TVSerie getTvById(int mediaId);
-
-    void upMediaVoteCount(int mediaId);
-
-    void downMediaVoteCount(int mediaId);
-
     }

@@ -60,6 +60,5 @@ public class ReviewServiceImpl implements ReviewService{
     public void createReview(int mediaId, int rating, String reviewContent) {
         int userId = userService.getInfoOfMyUser().getUserId();
         reviewDao.createReview(userId, mediaId, rating, reviewContent);
-        mediaService.upMediaVoteCount(mediaId);
     }
 }

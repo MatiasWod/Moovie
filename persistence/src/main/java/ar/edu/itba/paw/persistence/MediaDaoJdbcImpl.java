@@ -285,13 +285,4 @@ public class MediaDaoJdbcImpl implements MediaDao {
         return jdbcTemplate.query(sql.toString(), args.toArray(), COUNT_ROW_MAPPER).stream().findFirst().get().intValue();
     }
 
-    @Override
-    public void upMediaVoteCount(int mediaId){
-        jdbcTemplate.update("UPDATE media SET voteCount = voteCount + 1 WHERE mediaId = ?", mediaId);
-    }
-
-    @Override
-    public void downMediaVoteCount(int mediaId){
-        jdbcTemplate.update("UPDATE media SET voteCount = voteCount - 1 WHERE mediaId = ?", mediaId);
-    }
 }
