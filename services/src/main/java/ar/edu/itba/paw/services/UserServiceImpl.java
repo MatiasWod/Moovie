@@ -178,7 +178,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public byte[] getProfilePicture(String username) {
-        return userDao.getProfilePicture(findUserByUsername(username).getUserId()).get().getImage();
+        return userDao.getProfilePicture(findUserByUsername(username).getUserId()).orElseThrow(() -> new NoFileException("Profile picture not found")).getImage();
     }
 
 

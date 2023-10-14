@@ -164,7 +164,7 @@ public class UserController {
                         //Obtener la cantidad de reviews del usuario
                         break;
                     default: // este es el caso para user-lists. como es el default al entrar al profile
-                        mav.addObject("showLists", moovieListService.getMoovieListCards(null, requestedProfile.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1));
+                        mav.addObject("showLists", moovieListService.getMoovieListCards(null, requestedProfile.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),null,null, PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1));
                         queries.put("list","user-lists");
                         listCount = requestedProfile.getMoovieListCount();
                         numberOfPages = (int) Math.ceil(listCount * 1.0 / PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize());
@@ -172,7 +172,7 @@ public class UserController {
                         break;
                 }
             }else{
-                mav.addObject("showLists", moovieListService.getMoovieListCards(null, requestedProfile.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1));
+                mav.addObject("showLists", moovieListService.getMoovieListCards(null, requestedProfile.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),null,null, PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1));
                 queries.put("list","user-lists");
                 listCount = requestedProfile.getMoovieListCount();
                 numberOfPages = (int) Math.ceil(listCount * 1.0 / PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize());

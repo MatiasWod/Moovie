@@ -94,13 +94,23 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
     @Override
-    public List<MoovieListCard> getMoovieListCards(String search, String ownerUsername, int type, int size, int pageNumber) {
+    public int countWatchedFeaturedMoovieListContent(int moovieListId, int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
+        try{
+            int userid = userService.getInfoOfMyUser().getUserId();
+            return moovieListDao.countWatchedFeaturedMoovieListContent(moovieListId,mediaType, userid ,featuredListOrder, orderBy,sortOrder ,size, pageNumber);
+        } catch(UserNotLoggedException e){
+            return moovieListDao.countWatchedFeaturedMoovieListContent(moovieListId,mediaType, -1 , featuredListOrder, orderBy,sortOrder ,size, pageNumber);
+        }
+    }
+
+    @Override
+    public List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , String orderBy, String order, int size, int pageNumber) {
         if(type == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.getType() || type == MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType()){
             if(!userService.getInfoOfMyUser().getUsername().equals(ownerUsername)){
                 throw new InvalidAccessToResourceException("Need to be owner to acces thr private list of this user");
             }
         }
-        return moovieListDao.getMoovieListCards(search, ownerUsername, type, size, pageNumber);
+        return moovieListDao.getMoovieListCards(search, ownerUsername, type,orderBy,order, size, pageNumber);
     }
 
     @Override
@@ -118,7 +128,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         MoovieListCard card = null;
         List<MoovieListContent> content = null;
         if(moovieListId == -1){
-            List<MoovieListCard> cards = moovieListDao.getMoovieListCards(name,ownerUsername, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(), PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), 0 );
+            List<MoovieListCard> cards = moovieListDao.getMoovieListCards(name,ownerUsername, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(), null, null, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), 0 );
             if(cards.size() != 1){
                 throw new MoovieListNotFoundException("MoovieList: " + name+ " of: " +ownerUsername+ " not found");
             }

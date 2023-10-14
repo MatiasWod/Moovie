@@ -16,7 +16,10 @@
     <link href="${pageContext.request.contextPath}/resources/main.css?version=59" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/resources/lists.css?version=60" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/moovieList.css?version=65" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/details.css?version=87" rel="stylesheet"/>
     <title>Discover your next passion</title>
+    <script src="${pageContext.request.contextPath}/resources/browseListsFunctions.js?version=87"></script>
 </head>
 <body style="background: whitesmoke">
 <c:import url="navBar.jsp">
@@ -49,6 +52,20 @@
     </div>
 
     <div class="lists-container" style="margin-top: 30px">
+        <form id="sortForm" method="get">
+            <div style="display: flex; align-items: center;">
+                <h2 style="padding-right: 4px">Sort by</h2>
+                <select name="orderBy" class="form-select filter-width" aria-label="Filter!" id="sortSelect">
+                    <option ${'likeCount' == param.orderBy ? 'selected' : ''} value="likeCount">Likes</option>
+                    <option ${'moovieListId' == param.orderBy ? 'selected' : ''} value="moovieListId">Recent</option>
+                </select>
+                <input type="hidden" name="order" id="sortOrderInput" value="${param.order =='desc'? 'desc':'asc'}">
+                <div style="margin: 0;" class="btn btn-style" id="sortButton" onclick="changeSortOrder('sortOrderInput', 'sortIcon', '${param.orderBy}')">
+                    <i id="sortIcon" class="bi bi-arrow-${param.order == 'desc' ? 'up' : 'down'}-circle-fill"></i>
+                </div>
+                <button type="submit" id="applyButton" class="btn btn-style2">Apply</button>
+            </div>
+        </form>
         <c:if test="${showLists.size()==0}">
                 <h3>No results were found</h3>
             </c:if>
