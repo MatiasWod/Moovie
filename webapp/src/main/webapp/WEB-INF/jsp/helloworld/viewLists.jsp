@@ -45,27 +45,33 @@
         <h1>
             Community lists
         </h1>
-        <form class="d-flex mb-0" role="search" action="${pageContext.request.contextPath}/lists" method="get">
-            <input class="form-control me-2" type="search" name="search" placeholder="Search a Moovie List!" aria-label="Moovie List id">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
-    </div>
-
-    <div class="lists-container" style="margin-top: 30px">
-        <form id="sortForm" method="get">
-            <div style="display: flex; align-items: center;">
+        <div class="d-flex justify-content-between align-items-center">
+            <form class="flex-grow-1" role="search" action="${pageContext.request.contextPath}/lists" method="get">
+                <div class="d-flex" style="margin-right: 5px">
+                    <input class="form-control" style="margin-right: 5px" type="search" name="search" placeholder="Search a Moovie List!" aria-label="Moovie List id">
+                    <button class="btn btn-outline-success ml-2" style="margin-right: 5px" type="submit">Search</button>
+                </div>
+            </form>
+            <form id="sortForm" method="get" class="d-flex align-items-center">
                 <h2 style="padding-right: 4px">Sort by</h2>
                 <select name="orderBy" class="form-select filter-width" aria-label="Filter!" id="sortSelect">
                     <option ${'likeCount' == param.orderBy ? 'selected' : ''} value="likeCount">Likes</option>
                     <option ${'moovieListId' == param.orderBy ? 'selected' : ''} value="moovieListId">Recent</option>
                 </select>
-                <input type="hidden" name="order" id="sortOrderInput" value="${param.order =='desc'? 'desc':'asc'}">
-                <div style="margin: 0;" class="btn btn-style" id="sortButton" onclick="changeSortOrder('sortOrderInput', 'sortIcon', '${param.orderBy}')">
+                <input type="hidden" name="order" id="sortOrderInput" value="${param.order == 'desc' ? 'desc' : 'asc'}">
+                <div style="margin: 0;" class="btn btn-style" id="sortButton"
+                     onclick="changeSortOrder('sortOrderInput', 'sortIcon', '${param.orderBy}')">
                     <i id="sortIcon" class="bi bi-arrow-${param.order == 'desc' ? 'up' : 'down'}-circle-fill"></i>
                 </div>
                 <button type="submit" id="applyButton" class="btn btn-style2">Apply</button>
-            </div>
-        </form>
+            </form>
+        </div>
+
+
+
+    </div>
+
+    <div class="lists-container" style="margin-top: 30px">
         <c:if test="${showLists.size()==0}">
                 <h3>No results were found</h3>
             </c:if>
