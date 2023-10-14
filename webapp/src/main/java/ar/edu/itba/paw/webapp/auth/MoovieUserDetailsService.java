@@ -33,7 +33,7 @@ public class MoovieUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException, UserNotVerifiedException, UserIsBannedException{
         ACCOUNT_ENABLED = true;
         ACCOUNT_NON_LOCKED = true;
-        
+
         final User user = us.findUserByUsername(username);
 
         final Set<GrantedAuthority> authorities = new HashSet<>();
