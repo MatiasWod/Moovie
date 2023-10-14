@@ -43,8 +43,8 @@ public class MediaServiceImpl implements MediaService{
     }
 
     @Override
-    public int getMediaCount(int type, String search, List<String> genres) {
-        return mediaDao.getMediaCount(type,search,genres);
+    public int getMediaCount(int type, String search, String participantSearch, List<String> genres, List<String> providers) {
+        return mediaDao.getMediaCount(type, search, participantSearch, genres, providers);
     }
 
     @Override
