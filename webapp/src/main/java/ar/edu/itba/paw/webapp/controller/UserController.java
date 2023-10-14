@@ -108,10 +108,10 @@ public class UserController {
 
 
     @RequestMapping("/continueWithoutLogin")
-    public String continueWithoutLogin(HttpServletRequest request) {
+    public ModelAndView continueWithoutLogin(HttpServletRequest request) {
         HttpSession session = request.getSession();
         String previousPage = (String) session.getAttribute("previousPage");
-        return "redirect:" + previousPage;
+        return new ModelAndView("redirect:" + previousPage);
     }
 
 

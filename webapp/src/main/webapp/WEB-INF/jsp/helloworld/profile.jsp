@@ -474,11 +474,25 @@
                                                     <i class="bi bi-star-fill ml-2"></i> ${review.rating}/5
                                                 </h5>
                                                 <sec:authorize access="hasRole('ROLE_MODERATOR')">
-                                                    <div class="text-center" style="margin: 10px">
-                                                        <form action="${pageContext.request.contextPath}/deleteReview/${review.mediaId}" method="post">
-                                                            <input type="hidden" name="reviewId" value="${review.reviewId}"/>
-                                                            <button type="submit" class="btn btn-danger btn-sm">Delete Review</button>
-                                                        </form>
+                                                    <div class="text-center m-2" >
+                                                        <button onclick="openPopup('review${review.reviewId}')" class="btn btn-danger btn-sm">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div class="review${review.reviewId}-overlay popup-overlay" onclick="closePopup('review${review.reviewId}')"></div>
+                                                    <div style="background-color: transparent; box-shadow: none" class="popup review${review.reviewId}">
+                                                        <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
+                                                            <h5 class="alert-heading">Confirm Review Deletion</h5>
+                                                            <p>Are you sure you want to delete this review? Once deleted, it cannot be recovered</p>
+                                                            <div class="d-flex justify-content-evenly">
+                                                                <form class="m-0" action="${pageContext.request.contextPath}/deleteReview/${review.mediaId}" method="post">
+                                                                    <input type="hidden" name="reviewId" value="${review.reviewId}"/>
+                                                                    <input type="hidden" name="path" value="/profile/${username}"/>
+                                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                                </form>
+                                                                <button type="button" onclick="closePopup('review${review.reviewId}')" class="btn btn-secondary" id="cancelModButton">Cancel</button>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </sec:authorize>
                                             </div>

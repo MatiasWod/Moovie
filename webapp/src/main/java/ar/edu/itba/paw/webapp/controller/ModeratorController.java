@@ -25,7 +25,7 @@ public class ModeratorController {
     private UserDao userDao;
 
     @RequestMapping(value = "/deleteReview/{mediaId:\\d+}", method = RequestMethod.POST)
-    public ModelAndView deleteReview(@RequestParam("reviewId") int reviewId, RedirectAttributes redirectAttributes, @PathVariable int mediaId) {
+    public ModelAndView deleteReview(@RequestParam("reviewId") int reviewId, @RequestParam("path") String path, RedirectAttributes redirectAttributes, @PathVariable int mediaId) {
         try {
             moderatorService.deleteReview(reviewId, mediaId);
             redirectAttributes.addFlashAttribute("successMessage", "Review successfully deleted");
@@ -33,7 +33,7 @@ public class ModeratorController {
 
             redirectAttributes.addFlashAttribute("errorMessage", "Error deleting review");
         }
-        return new ModelAndView("redirect:/details/" + mediaId);
+        return new ModelAndView("redirect:" + path);
     }
 
     @RequestMapping(value = "/deleteList/{moovieListId:\\d+}", method = RequestMethod.POST)

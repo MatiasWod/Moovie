@@ -34,7 +34,7 @@
             </div>
         </div>
     </c:if>
-    <h5 class="text-center m-2">A new email verification link has been emailed to you!</h5>
+    <h5 class="text-center m-2">An email verification link has been emailed to you!</h5>
     <form action="${pageContext.request.contextPath}/register/resendEmail" method="post" class="text-center">
         <input type="hidden" name="token" value="${param.token}">
         <button type="submit" class="btn btn-lg btn-outline-success mt-4">Resend verification email</button>
