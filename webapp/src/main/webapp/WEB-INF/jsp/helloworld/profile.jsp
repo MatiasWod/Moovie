@@ -463,7 +463,7 @@
                                                          width="64" height="64">
                                                 </a>
                                                 <div class="mt-0" style="margin-left: 15px">
-                                                    <a href="${pageContext.request.contextPath}/profile/${review.username}"
+                                                    <a href="${pageContext.request.contextPath}/details/${review.mediaId}"
                                                        style="text-decoration: none; color: inherit;">
                                                         <h5><c:out value="${review.mediaTitle}"/></h5>
                                                     </a>
