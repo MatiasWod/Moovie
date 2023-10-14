@@ -23,9 +23,7 @@
     <title>Moovie ${profile.username}</title>
 </head>
 <body id="grad">
-<c:import url="navBar.jsp">
-    <c:param name="userName" value="${profile.username}"/>
-</c:import>
+<c:import url="navBar.jsp"/>
 <sec:authorize access="isAuthenticated()">
     <div style="align-items: center" class="d-flex flex-column">
         <div class="d-flex container justify-content-center">
