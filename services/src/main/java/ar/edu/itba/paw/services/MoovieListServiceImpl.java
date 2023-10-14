@@ -158,6 +158,18 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
     @Override
+    public void deleteMediaFromMoovieList(int moovieListId, int mediaId) {
+        MoovieList ml = getMoovieListById(moovieListId);
+        User currentUser = userService.getInfoOfMyUser();
+        if(ml.getUserId() == currentUser.getUserId()){
+            moovieListDao.deleteMediaFromMoovieList(moovieListId, mediaId);
+        }
+        else{
+            throw new InvalidAccessToResourceException("User is not owner of the list");
+        }
+    }
+
+    @Override
     public void deleteMoovieList(int moovieListId) {
         MoovieList ml = getMoovieListById(moovieListId);
         User currentUser = userService.getInfoOfMyUser();

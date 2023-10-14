@@ -32,6 +32,7 @@ public interface MoovieListDao {
 
     MoovieList createMoovieList(int userId, String name, int type, String description);
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
+    void deleteMediaFromMoovieList(int moovieListId, int mediaId);
     void deleteMoovieList(int moovieListId);
 
     void likeMoovieList(int userId, int moovieListId);
