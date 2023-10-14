@@ -107,7 +107,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
 
     @Override
-    public List<Media> getMedia(int type, String search, List<String> genres, String orderBy, String sortOrder, int size, int pageNumber) {
+    public List<Media> getMedia(int type, String search, String participant, List<String> genres, String orderBy, String sortOrder, int size, int pageNumber) {
         StringBuilder sql = new StringBuilder("SELECT m.*, ");
         ArrayList<Object> args = new ArrayList<>();
 
@@ -138,23 +138,27 @@ public class MediaDaoJdbcImpl implements MediaDao {
             sql.append(" ) ");
         }
 
-        // Input the search, it searches in actors, media.name, creators and directors
-        if (search!=null && search.length()>0) {
-            sql.append(" AND ( " );
+        //Input the search
+        if(search!=null && search.length()>0){
+            sql.append(" AND " );
             sql.append(" name ILIKE ? ");
             args.add('%' + search + '%');
+        }
 
-            sql.append(" OR m.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
-            args.add('%' + search + '%');
+        // Input its participants in actors, media.name, creators and directors
+        if (participant!=null && participant.length()>0) {
+            sql.append(" AND ( " );
+            sql.append("  m.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
+            args.add('%' + participant + '%');
 
             if(type != TYPE_TVSERIE){
                 sql.append(" OR m.mediaId IN (SELECT mediaid FROM movies m WHERE director ILIKE ? ) ");
-                args.add('%' + search + '%');
+                args.add('%' + participant + '%');
             }
 
             if(type != TYPE_MOVIE){
                 sql.append(" OR m.mediaId IN (SELECT mediaid FROM creators c WHERE creatorname ILIKE ? ) ");
-                args.add('%' + search + '%');
+                args.add('%' + participant + '%');
             }
 
             sql.append(" ) ");

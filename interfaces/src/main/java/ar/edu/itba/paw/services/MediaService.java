@@ -9,7 +9,7 @@ import java.util.List;
 public interface MediaService {
 
     // Returns a list of media that satisfy the conditions
-    public List<Media> getMedia(int type, String search, List<String> genres, String orderBy, String sortOrder, int size, int pageNumber);
+    List<Media> getMedia(int type, String search, String participant, List<String> genres, String orderBy, String sortOrder, int size, int pageNumber);
 
     //The amount of results that a query of getMedia will give
     int getMediaCount(int type, String search, List<String> genres);

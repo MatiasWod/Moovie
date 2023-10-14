@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MediaDao {
-    public List<Media> getMedia(int type, String search, List<String> genres, String orderBy, String sortOrder, int size, int pageNumber);
+    List<Media> getMedia(int type, String search, String participant, List<String> genres, String orderBy, String sortOrder, int size, int pageNumber);
 
     List<Media> getMediaInMoovieList(int moovieListId, int size, int pageNumber);
 
