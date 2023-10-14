@@ -95,9 +95,19 @@ public class MediaController {
     public ModelAndView search(@RequestParam(value = "query") String query){
         final ModelAndView mav = new ModelAndView("helloworld/search");
         // Aca se realizan 3 queries. Para poder notificar correctamente al JSP de las listas que va a recibir, primero se corre el getMediaCount
+        int nameMediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query, null, null, null);
+        int creditMediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), null, query, null, null);
+//        int usersCount = userService.getSearchCount(query);
         // Name media query
+        if (nameMediaCount > 0){
+            mav.addObject("nameMedia", mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null, null, null, null, null,PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),0 ));
+        }
         // Credited media query
+        if (creditMediaCount > 0){
+            mav.addObject("creditMedia", mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null, query, null, null, null, null,PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),0 ));
+        }
         // Users query
+        // if (usersCount > 0) --> mav.addObject(userList, userService.searchUsers(query,...))
         return mav;
     }
 
