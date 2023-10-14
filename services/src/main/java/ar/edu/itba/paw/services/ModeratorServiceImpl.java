@@ -12,6 +12,9 @@ import ar.edu.itba.paw.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class ModeratorServiceImpl implements ModeratorService{
     @Autowired
@@ -24,6 +27,8 @@ public class ModeratorServiceImpl implements ModeratorService{
     private UserDao userDao;
     @Autowired
     private MediaService mediaService;
+    @Autowired
+    private EmailService emailService;
     @Autowired
     private BannedDao bannedDao;
 
@@ -53,6 +58,12 @@ public class ModeratorServiceImpl implements ModeratorService{
         }
         userDao.changeUserRole(userId, userDao.ROLE_BANNED);
         bannedDao.createBannedMessage(userId, userService.getInfoOfMyUser().getUserId(), message);
+
+        final Map<String,Object> mailMap = new HashMap<>();
+        mailMap.put("username", u.getUsername());
+        mailMap.put("modUsername", userService.getInfoOfMyUser().getUsername());
+        mailMap.put("message", message);
+        emailService.sendEmail(u.getEmail(),"You have been baned from Moovie", "youHaveBeenBannedMail.html", mailMap);
     }
 
     @Override
@@ -67,6 +78,10 @@ public class ModeratorServiceImpl implements ModeratorService{
         }
         userDao.changeUserRole(userId, userDao.ROLE_USER);
         bannedDao.deleteBannedMessage(userId);
+
+        final Map<String,Object> mailMap = new HashMap<>();
+        mailMap.put("username", u.getUsername());
+        emailService.sendEmail(u.getEmail(),"You have been unbaned from Moovie", "youHaveBeenUnbannedMail.html", mailMap);
     }
 
 
