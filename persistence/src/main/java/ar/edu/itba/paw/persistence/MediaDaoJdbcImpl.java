@@ -155,23 +155,24 @@ public class MediaDaoJdbcImpl implements MediaDao {
         }
 
         // Input its participants in actors, media.name, creators and directors
-        if (participant!=null && participant.length()>0) {
-            sql.append(" AND ( " );
-            sql.append("  m.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
+        if (participant != null && participant.length() > 0) {
+            sql.append(" AND ( ( " );  // Agregado un paréntesis adicional
+            sql.append(" m.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
             args.add('%' + participant + '%');
 
-            if(type != TYPE_TVSERIE){
+            if (type != TYPE_TVSERIE) {
                 sql.append(" OR m.mediaId IN (SELECT mediaid FROM movies m WHERE director ILIKE ? ) ");
                 args.add('%' + participant + '%');
             }
 
-            if(type != TYPE_MOVIE){
+            if (type != TYPE_MOVIE) {
                 sql.append(" OR m.mediaId IN (SELECT mediaid FROM creators c WHERE creatorname ILIKE ? ) ");
                 args.add('%' + participant + '%');
             }
 
-            sql.append(" ) ");
+            sql.append(" ) ) ");  // Agregado un paréntesis adicional
         }
+
 
         // Order by
         if (orderBy!=null && !orderBy.isEmpty()) {
@@ -235,7 +236,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
     @Override
     public int getMediaCount(int type, String search, String participantSearch, List<String> genres, List<String> providers) {
-        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM media ");
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM media m");
         ArrayList<Object> args = new ArrayList<>();
         Boolean flag = false;
 
@@ -250,7 +251,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
         // Add the genres filter
         if (genres!=null && !genres.isEmpty()) {
-            sql.append(" AND mediaId IN ( SELECT mediaId FROM genres WHERE "); // Start the OR conditions for genres
+            sql.append(" AND m.mediaId IN ( SELECT mediaId FROM genres WHERE "); // Start the OR conditions for genres
             for (String genre : genres) {
                 sql.append(" genre = ? OR ");
                 args.add(genre);
@@ -264,7 +265,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
         // Add the providers filter
         if (providers!=null && !providers.isEmpty()) {
-            sql.append(" AND mediaId IN ( SELECT mediaId FROM providers WHERE "); // Start the OR conditions for providers
+            sql.append(" AND m.mediaId IN ( SELECT mediaId FROM providers WHERE "); // Start the OR conditions for providers
             for (String provider : providers) {
                 sql.append(" providername = ? OR ");
                 args.add(provider);
@@ -284,22 +285,22 @@ public class MediaDaoJdbcImpl implements MediaDao {
         }
 
         // Input its participants in actors, media.name, creators and directors
-        if (participantSearch!=null && !participantSearch.isEmpty()) {
-            sql.append(" AND ( " );
-            sql.append("  m.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
+        if (participantSearch != null && participantSearch.length() > 0) {
+            sql.append(" AND ( ( " );  // Agregado un paréntesis adicional
+            sql.append(" m.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
             args.add('%' + participantSearch + '%');
 
-            if(type != TYPE_TVSERIE){
+            if (type != TYPE_TVSERIE) {
                 sql.append(" OR m.mediaId IN (SELECT mediaid FROM movies m WHERE director ILIKE ? ) ");
                 args.add('%' + participantSearch + '%');
             }
 
-            if(type != TYPE_MOVIE){
+            if (type != TYPE_MOVIE) {
                 sql.append(" OR m.mediaId IN (SELECT mediaid FROM creators c WHERE creatorname ILIKE ? ) ");
                 args.add('%' + participantSearch + '%');
             }
 
-            sql.append(" ) ");
+            sql.append(" ) ) ");  // Agregado un paréntesis adicional
         }
 
         // Execute the query

@@ -214,3 +214,4 @@ CREATE TABLE IF NOT EXISTS  bannedMessage (
 
 Hay que modificar el reviews que tiene el like ahi, pero en realidad es un count en reviewsLikes
  */
+

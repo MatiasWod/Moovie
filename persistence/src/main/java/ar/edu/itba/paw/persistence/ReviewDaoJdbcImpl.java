@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.exceptions.LikingFailedException;
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Review.Review;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
     public ReviewDaoJdbcImpl(final DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
         reviewJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("reviews").usingGeneratedKeyColumns("reviewid");
-        reviewLikesJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("reviewsLikes");
+        reviewLikesJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("reviewslikes");
 
     }
 
@@ -146,13 +147,13 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
         final Map<String, Object> args = new HashMap<>();
         args.put("userId", userId);
         args.put("reviewId", reviewId);
-
         try{
-            reviewJdbcInsert.executeAndReturnKey(args);
-        } catch(Exception e){
-            throw new UnableToInsertIntoDatabase("Review like failed");
+            reviewLikesJdbcInsert.execute(args);
+        } catch (Exception e){
+            throw new LikingFailedException();
         }
     }
+
 
     @Override
     public void removeLikeReview(int userId, int reviewId) {
