@@ -15,7 +15,7 @@ public interface MediaService {
     List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, String orderBy, String sortOrder, int size, int pageNumber);
 
     //The amount of results that a query of getMedia will give
-    int getMediaCount(int type, String search, List<String> genres);
+    int getMediaCount(int type, String search, String participantSearch, List<String> genres, List<String> providers);
 
     //Return a list of media that are in a moovie list
     List<Media> getMediaInMoovieList(int moovieListId, int size, int pageNumber);
@@ -24,9 +24,4 @@ public interface MediaService {
     Media getMediaById(int mediaId);
     Movie getMovieById(int mediaId);
     TVSerie getTvById(int mediaId);
-
-    void upMediaVoteCount(int mediaId);
-
-    void downMediaVoteCount(int mediaId);
-
     }

@@ -1,8 +1,10 @@
 package ar.edu.itba.paw.webapp.config;
 
+import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.auth.CustomAuthenticationSuccessHandler;
 import ar.edu.itba.paw.webapp.auth.MoovieUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -23,11 +25,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.core.io.Resource;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
@@ -35,11 +40,18 @@ import java.util.concurrent.TimeUnit;
 @EnableWebSecurity
 @Configuration
 public class WebAuthConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private UserService userService;
+
     @Autowired
     private MoovieUserDetailsService userDetailsService;
 
     @Autowired
     private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
+    @Value("classpath:supersecrete.key")
+    private Resource supersecrete;
 
     private AuthenticationFailureHandler authenticationFailureHandler = new AuthenticationFailureHandler() {
         @Override
@@ -48,10 +60,11 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
             if (exception instanceof DisabledException) {
                 // Account wasnt verified
                 response.sendRedirect(contextPath + "/login?error=disabled");
-            } /*else if (exception instanceof LockedException) {
-                // Account was banned
-                response.sendRedirect(contextPath + "/login?error=locked");
-            }*/ else if(exception instanceof UsernameNotFoundException) {
+            } else if (exception instanceof LockedException) {
+                // Account wasnt verified
+                int uid = userService.findUserByUsername(request.getParameter("username")).getUserId();
+                response.sendRedirect(contextPath + "/bannedMessage/" + uid);
+            }else if(exception instanceof UsernameNotFoundException) {
                 // User not found
                 response.sendRedirect(contextPath + "/login?error=unknown_user");
             } else if (exception instanceof BadCredentialsException) {
@@ -79,22 +92,21 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     .loginPage("/login")
                     .usernameParameter("username")
                     .passwordParameter("password")
-                    .successHandler(customAuthenticationSuccessHandler)
+                    //.successHandler(customAuthenticationSuccessHandler)
                     .failureHandler(authenticationFailureHandler)
                 .and().rememberMe()
                     .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
                     .userDetailsService(userDetailsService)
                     .rememberMeParameter("rememberme")
-                    .key("ultrasecretkey")
+                    .key(FileCopyUtils.copyToString(new InputStreamReader(supersecrete.getInputStream())))
                 .and().logout()
                     .logoutUrl("/logout")
                     .logoutSuccessUrl("/login")
                     .deleteCookies("JSESSIONID")
                     .deleteCookies("remember-me")
                 .and().authorizeRequests()
-                    .antMatchers("/bannedMessage").hasRole("BANNED")
                     .antMatchers("/login", "/register").anonymous()
-                    .antMatchers( "/createreview", "/uploadProfilePicture","/createrating","/insertMediaToList","/like", "/createlist", "/profile/**" ).hasAnyRole("USER", "BANNED")
+                    .antMatchers( "/createreview", "/uploadProfilePicture","/createrating","/insertMediaToList","/like", "/createlist", "/profile/**" ).hasRole( "USER")
                     .antMatchers( "/deleteReview/**", "/deleteList/**","/banUser/**" ).hasRole("MODERATOR")
                     .antMatchers("/**").permitAll()
                 .and().exceptionHandling()

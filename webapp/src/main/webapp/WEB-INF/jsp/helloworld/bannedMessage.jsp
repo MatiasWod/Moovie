@@ -24,12 +24,14 @@
     <div class="col">
         <h1>You are currently banned indefinitely!</h1>
         <h2><c:out value="${bannedMessageObject.modUsername}"/> banned you!</h2>
-        <c:if test="bannedMessageObject != null">
-            <h3>Reason: <c:out value="${bannedMessageObject.message}"/></h3>
-        </c:if>
-        <c:if test="bannedMessageObject == null">
-            <h3>Reason of the ban is not available</h3>
-        </c:if>
+        <c:choose>
+            <c:when test="${bannedMessageObject != null}">
+                <h3>Reason: <c:out value="${bannedMessageObject.message}"/></h3>
+            </c:when>
+            <c:otherwise>
+                <h3>Reason of the ban is not available</h3>
+            </c:otherwise>
+        </c:choose>
 
 
     </div>
