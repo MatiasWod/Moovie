@@ -157,7 +157,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
         // Input its participants in actors, media.name, creators and directors
         if (participant!=null && participant.length()>0) {
             sql.append(" AND ( " );
-            sql.append("  m.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
+            sql.append(" (  m.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
             args.add('%' + participant + '%');
 
             if(type != TYPE_TVSERIE){
@@ -286,7 +286,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
         // Input its participants in actors, media.name, creators and directors
         if (participantSearch!=null && !participantSearch.isEmpty()) {
             sql.append(" AND ( " );
-            sql.append("  m.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
+            sql.append(" ( m.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
             args.add('%' + participantSearch + '%');
 
             if(type != TYPE_TVSERIE){
