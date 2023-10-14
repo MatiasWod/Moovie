@@ -6,7 +6,6 @@ import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
-import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.CreateReviewForm;
 import org.slf4j.Logger;
@@ -19,7 +18,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -141,15 +139,6 @@ public class MediaController {
         }
         
         final ModelAndView mav = new ModelAndView("helloworld/details");
-        String errorMessage = (String) redirectAttributes.getFlashAttributes().get("errorMessage");
-        if (errorMessage != null) {
-            // Add the error message to the ModelAndView
-            mav.addObject("errorMessage", errorMessage);
-        }
-        String successMessage = (String) redirectAttributes.getFlashAttributes().get("successMessage");
-        if (successMessage != null) {
-            mav.addObject("successMessage", successMessage);
-        }
         try{
             String username =  userService.getInfoOfMyUser().getUsername();
             mav.addObject("publicLists", moovieListService.getMoovieListCards(null, username, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), 0));
@@ -189,16 +178,5 @@ public class MediaController {
         return new ModelAndView("redirect:/details/" + form.getMediaId());
     }
 
-    @RequestMapping(value = "/insertMediaToList", method = RequestMethod.POST)
-    public ModelAndView insertMediaToList(@RequestParam("listId") int listId, @RequestParam("mediaId") int mediaId, RedirectAttributes redirectAttributes) {
-        try {
-            moovieListService.insertMediaIntoMoovieList(listId, Collections.singletonList(mediaId));
-            redirectAttributes.addFlashAttribute("successMessage", "Media has been successfully added to ");
-        } catch (UnableToInsertIntoDatabase exception) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to insert media into the list. Already in ");
-        }
-        redirectAttributes.addFlashAttribute("insertedMooovieList", moovieListService.getMoovieListCardById(listId));
-        return new ModelAndView("redirect:/details/" + mediaId);
-    }
 }
 

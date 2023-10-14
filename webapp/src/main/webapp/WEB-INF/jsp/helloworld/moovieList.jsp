@@ -12,9 +12,8 @@
     <link href="${pageContext.request.contextPath}/resources/details.css?version=87" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <title>Moovie List</title>
-    <link href="${pageContext.request.contextPath}/resources/moovieList.css?version=63" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/moovieList.css?version=65" rel="stylesheet"/>
     <script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=87"></script>
-
 </head>
 <body style="background: whitesmoke">
 <c:import url="navBar.jsp"/>
@@ -95,6 +94,24 @@
         </div>
     </div>
     <div>
+        <c:if test="${not empty errorMessage}">
+            <div class="alert alert-danger alert-dismissible fade show m-2" id="errorAlert" role="alert">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>${errorMessage} <a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}">${insertedMooovieList.name}</a></div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        </c:if>
+        <c:if test="${not empty successMessage}">
+            <div class="alert alert-success alert-dismissible fade show m-2" id="errorAlert" role="alert">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>${successMessage} <a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}">${insertedMooovieList.name}</a></div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        </c:if>
+    </div>
+    <div>
         <h4>List progress</h4>
         <div class="progress">
             <div class="progress-bar" role="progressbar" style="width: ${(watchedCount*100)/listCount}%;"
@@ -166,17 +183,64 @@
                         <td>
                             <span>${mediaList[loop.index].releaseDate}</span>
                         </td>
-                        <td>
-                        <c:if test="${mediaList[loop.index].watched}">
-                                <div class="col-auto text-center">
-                                    <i class="bi bi-check-circle-fill" style="color: green"></i>
-                                </div>
-                        </c:if>
-                        </td>
-                    </tr>
+<td>
+    <div class="popup-overlay watch-popup-overlay" onclick="closePopup('remove-watch-popup-${loop.index}')"></div>
+    <c:choose>
+        <c:when test="${mediaList[loop.index].watched}">
+            <div class="col-auto text-center">
+            <span class="d-inline-block" onclick="openPopup('remove-watch-popup-${loop.index}')" tabindex="0"
+                  data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="You watched this media">
+                <i class="bi bi-eye-fill" style="color: green; cursor: pointer;"></i>
+            </span>
+            </div>
+        </c:when>
+        <c:otherwise>
+            <div class="col-auto text-center">
+            <span class="d-inline-block" onclick="openPopup('add-watch-popup-${loop.index}')" tabindex="0"
+                  data-bs-toggle="popover" data-bs-trigger="hover"
+                  data-bs-content="You haven't watched this media">
+                <i class="bi bi-eye" style="color: grey; cursor: pointer;"></i>
+            </span>
+            </div>
+        </c:otherwise>
+    </c:choose>
+
+    <div class="popup-overlay remove-watch-popup-${loop.index}-overlay"
+         onclick="closePopup('remove-watch-popup-${loop.index}')"></div>
+    <div class="popup remove-watch-popup-${loop.index}">
+        <h2>Remove "${mediaList[loop.index].name}" from Watched?</h2>
+        <div class="text-center" style="margin-top: 20px">
+            <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">
+            <button type="button" class="btn btn-danger" style="margin-inline: 10px"
+                    onclick="closePopup('remove-watch-popup-${loop.index}')">No
+            </button>
+                <input type="hidden" name="listId" value="${watchedListId}"/>
+                <input type="hidden" name="mediaId" value="${mediaList[loop.index].mediaId}"/>
+                <button type="submit" class="btn btn-dark" style="margin-inline: 10px">Yes</button>
+            </form>
+        </div>
+    </div>
+    <div class="popup-overlay add-watch-popup-${loop.index}-overlay"
+         onclick="closePopup('add-watch-popup-${loop.index}')"></div>
+    <div class="popup add-watch-popup-${loop.index}">
+        <h2>Add "${mediaList[loop.index].name}" to Watched?</h2>
+        <div class="text-center" style="margin-top: 20px">
+            <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
+            <button type="button" class="btn btn-danger" style="margin-inline: 10px"
+                    onclick="closePopup('add-watch-popup-${loop.index}')">No
+            </button>
+                <input type="hidden" name="listId" value="${watchedListId}"/>
+                <input type="hidden" name="mediaId" value="${mediaList[loop.index].mediaId}"/>
+                <button type="submit" class="btn btn-dark" style="margin-inline: 10px">Yes</button>
+            </form>
+        </div>
+    </div>
+</td>
+</tr>
                 </c:forEach>
                 </tbody>
-            </c:when>
+
+</c:when>
             <c:otherwise>
                 <tbody>
                 <tr>
@@ -197,5 +261,3 @@
 
 <script src="${pageContext.request.contextPath}/resources/moovieListFunctions.js?version=81"></script>
 <script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=82"></script>
-
-

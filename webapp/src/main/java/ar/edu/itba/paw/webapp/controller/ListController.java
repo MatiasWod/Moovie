@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 
-import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.PagingSizes;
@@ -15,10 +15,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.jws.WebParam;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -137,12 +139,11 @@ public class ListController {
         try {
             User currentUser=userService.getInfoOfMyUser();
             mav.addObject("watchedCount",moovieListService.countWatchedMoviesInList(currentUser.getUserId(),moovieListId));
+            mav.addObject("watchedListId",moovieListService.getMoovieListCards("Watched",currentUser.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),1,0).get(0).getMoovieListId());
         }catch (Exception e){
             mav.addObject("watchedCount",0);
         }
         mav.addObject("listCount",mediaCountForMoovieList);
-        mav.addObject("initialOrder",order);
-        mav.addObject("itemsPerPage",pagesSize);
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
         mav.addObject("isLiked",moovieListService.likeMoovieListStatusForUser(moovieListId));
@@ -219,8 +220,6 @@ public class ListController {
             mav.addObject("watchedCount",0);
         }
         mav.addObject("listCount",mediaCountForMoovieList);
-        mav.addObject("initialOrder",order);
-        mav.addObject("itemsPerPage",pagesSize);
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
         mav.addObject("isLiked",moovieListService.likeMoovieListStatusForUser(moovieListCard.getMoovieListId()));
@@ -255,5 +254,38 @@ public class ListController {
     public ModelAndView putLike(@RequestParam("listId") int listId) {
         moovieListService.likeMoovieList(listId);
         return new ModelAndView("redirect:/list/" + listId);
+    }
+
+    @RequestMapping(value = "/insertMediaToList", method = RequestMethod.POST)
+    public ModelAndView insertMediaToList(@RequestParam("listId") int listId, @RequestParam("mediaId") int mediaId, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        try {
+            moovieListService.insertMediaIntoMoovieList(listId, Collections.singletonList(mediaId));
+            redirectAttributes.addFlashAttribute("successMessage", "Media has been successfully added to ");
+        } catch (UnableToInsertIntoDatabase exception) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to insert media into the list. Already in ");
+        }
+        redirectAttributes.addFlashAttribute("insertedMooovieList", moovieListService.getMoovieListCardById(listId));
+
+        String referer = request.getHeader("Referer");
+        if (referer.contains("details")) {
+            return new ModelAndView("redirect:/details/" + mediaId);
+        } else if (referer.contains("list")) {
+            return new ModelAndView("redirect:" + referer);
+        } else {
+            return new ModelAndView("redirect:/");
+        }
+    }
+
+    @RequestMapping(value = "/deleteMediaFromList", method = RequestMethod.POST)
+    public ModelAndView deleteMediaFromList(@RequestParam("listId") int listId,@RequestParam("mediaId") int mediaId,HttpServletRequest request,RedirectAttributes redirectAttributes){
+        try{
+            moovieListService.deleteMediaFromMoovieList(listId,mediaId);
+            redirectAttributes.addFlashAttribute("successMessage", "Media has been successfully deleted from ");
+        } catch (Exception e){
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete media from the list ");
+    }
+        String referer = request.getHeader("Referer");
+        redirectAttributes.addFlashAttribute("insertedMooovieList", moovieListService.getMoovieListCardById(listId));
+        return new ModelAndView("redirect:" + referer);
     }
 }

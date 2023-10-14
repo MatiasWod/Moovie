@@ -25,3 +25,24 @@ function roundUpProgress() {
 window.onload = function (){
     roundUpProgress();
 }
+
+const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
+function openPopup(className) {
+    const popup = document.querySelector("." + className);
+    const overlay = document.querySelector("." + className + "-overlay");
+    if (popup) {
+        popup.style.display = "block";
+        overlay.style.display = "block";
+    }
+}
+
+function closePopup(className) {
+    const popup = document.querySelector("." + className);
+    const overlay = document.querySelector("." + className + "-overlay");
+    if (popup) {
+        popup.style.display = "none";
+        overlay.style.display = "none";
+    }
+}
