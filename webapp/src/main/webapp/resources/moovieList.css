@@ -36,27 +36,6 @@
     margin-top: 10px;
 }
 
-.btn-style {
-    color: white;
-    background-color: #198754;
-}
-.btn-style:hover {
-    color: white;
-    background-color: #333333;
-    border-style: solid;
-}
-.btn-style2 {
-    color:#198754 ;
-    background-color: white;
-    border : 1px solid #198754;
-    margin-left: 5px;
-}
-.btn-style2:hover {
-    color: white;
-    background-color: #333333;
-    border-style: solid;
-}
-
 
 .progress {
     margin-bottom: 10px;

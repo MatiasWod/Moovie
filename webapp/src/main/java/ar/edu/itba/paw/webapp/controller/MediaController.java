@@ -209,5 +209,26 @@ public class MediaController {
         return new ModelAndView("redirect:/details/" + form.getMediaId());
     }
 
+    @RequestMapping(value= "/likeReview", method = RequestMethod.POST)
+    public ModelAndView likeReview(@RequestParam int reviewId,@RequestParam int mediaId, RedirectAttributes redirectAttributes){
+        try {
+            reviewService.likeReview(reviewId);
+            redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully liked.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Couldn't like review.");
+        }
+        return new ModelAndView("redirect:/details/" + mediaId);
+    }
+
+    @RequestMapping(value= "/unlikeReview", method = RequestMethod.POST)
+    public ModelAndView unlikeReview(@RequestParam int reviewId,@RequestParam int mediaId, RedirectAttributes redirectAttributes){
+        try {
+            reviewService.removeLikeReview(reviewId);
+            redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully unliked.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Couldn't unlike review.");
+        }
+        return new ModelAndView("redirect:/details/" + mediaId);
+    }
 }
 

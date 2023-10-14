@@ -13,6 +13,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <title>Moovie List</title>
     <link href="${pageContext.request.contextPath}/resources/moovieList.css?version=65" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/likeButtons.css?version=1" rel="stylesheet"/>
     <script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=87"></script>
 </head>
 <body style="background: whitesmoke">
@@ -62,12 +63,12 @@
                     <input type="hidden" name="listId" value="${moovieList.moovieListId}"/>
                     <c:choose>
                         <c:when test="${isLiked}">
-                            <button type="submit" class="btn btn-style"><i
+                            <button type="submit" class="btn like-btn-style"><i
                                     class="bi bi-hand-thumbs-up-fill"></i>${likedCount} Liked
                             </button>
                         </c:when>
                         <c:otherwise>
-                            <button type="submit" class="btn btn-style"><i
+                            <button type="submit" class="btn like-btn-style"><i
                                     class="bi bi-hand-thumbs-up"></i>${likedCount}
                                 Like
                             </button>

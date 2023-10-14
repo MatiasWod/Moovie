@@ -13,6 +13,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/resources/main.css?version=55" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/resources/details.css?version=55" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/likeButtons.css?version=1" rel="stylesheet"/>
     <title>Moovie-${media.name}</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -356,9 +357,11 @@
                                     <div class="d-flex align-items-center">
                                         <a href="${pageContext.request.contextPath}/profile/${review.username}"
                                            style="text-decoration: none; color: inherit;">
-                                            <img src="${pageContext.request.contextPath}/profile/image/${review.username}"
-                                                 alt="${review.userId} Reviewer Profile" class="mr-3 review-profile-image rounded-circle"
-                                                 width="64" height="64">
+                                            <img class="cropCenter mr-3 review-profile-image rounded-circle"
+                                                 style="height:60px;width:60px;border: solid black; border-radius: 50%"
+                                                 src="${pageContext.request.contextPath}/profile/image/${review.username}"
+                                                 alt="${review.userId} Reviewer Profile"
+                                            >
                                         </a>
                                         <div class="mt-0" style="margin-left: 15px">
                                             <a href="${pageContext.request.contextPath}/profile/${review.username}"
@@ -398,6 +401,37 @@
                                 <p>
                                     <c:out value="${review.reviewContent}"/>
                                 </p>
+                                <div class="d-flex align-items-center justify-content-start">
+                                    <c:choose>
+                                        <c:when test="${review.currentUserHasLiked}">
+                                            <form action="${pageContext.request.contextPath}/unlikeReview"
+                                                  method="post">
+                                                <input type="hidden" name="reviewId" value="${review.reviewId}"/>
+                                                <input type="hidden" name="mediaId" value="${media.mediaId}"/>
+                                                <button class="btn like-btn-style" style="font-size: 14px">
+                                        <span>
+                                         <i class="bi bi-hand-thumbs-up-fill"></i>
+                                        ${review.reviewLikes}
+                                        </span>
+                                                    Liked
+                                                </button>
+                                            </form>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <form action="${pageContext.request.contextPath}/likeReview" method="post">
+                                                <input type="hidden" name="reviewId" value="${review.reviewId}"/>
+                                                <input type="hidden" name="mediaId" value="${media.mediaId}"/>
+                                                <button class="btn like-btn-style" style="font-size: 14px">
+                                        <span>
+                                    <i class="bi bi-hand-thumbs-up"></i>
+                                        ${review.reviewLikes}
+                                    </span>
+                                                    Like
+                                                </button>
+                                            </form>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
                             </div>
                         </div>
                     </c:forEach>
