@@ -43,7 +43,7 @@ public class MoovieUserDetailsService implements UserDetailsService {
             }
         } else {
             if(user.getRole() == -2  ){
-                authorities.add(new SimpleGrantedAuthority("ROLE_BANNED"));
+                ACCOUNT_NON_LOCKED = false;
             }
             if(user.getRole() == -1 ){
                 ACCOUNT_ENABLED = false;

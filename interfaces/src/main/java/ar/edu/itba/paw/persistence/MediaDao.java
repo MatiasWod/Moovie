@@ -20,4 +20,5 @@ public interface MediaDao {
     void upMediaVoteCount(int mediaId);
 
     void downMediaVoteCount(int mediaId);
+    int getMediaCount(int type, String search, List<String> genres);
 }

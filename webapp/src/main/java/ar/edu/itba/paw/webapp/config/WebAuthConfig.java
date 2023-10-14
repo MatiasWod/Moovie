@@ -48,10 +48,10 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
             if (exception instanceof DisabledException) {
                 // Account wasnt verified
                 response.sendRedirect(contextPath + "/login?error=disabled");
-            } /*else if (exception instanceof LockedException) {
+            } else if (exception instanceof LockedException) {
                 // Account was banned
                 response.sendRedirect(contextPath + "/login?error=locked");
-            }*/ else if(exception instanceof UsernameNotFoundException) {
+            }else if(exception instanceof UsernameNotFoundException) {
                 // User not found
                 response.sendRedirect(contextPath + "/login?error=unknown_user");
             } else if (exception instanceof BadCredentialsException) {
@@ -79,7 +79,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     .loginPage("/login")
                     .usernameParameter("username")
                     .passwordParameter("password")
-                    .successHandler(customAuthenticationSuccessHandler)
+                    //.successHandler(customAuthenticationSuccessHandler)
                     .failureHandler(authenticationFailureHandler)
                 .and().rememberMe()
                     .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
@@ -92,9 +92,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     .deleteCookies("JSESSIONID")
                     .deleteCookies("remember-me")
                 .and().authorizeRequests()
-                    .antMatchers("/bannedMessage").hasRole("BANNED")
                     .antMatchers("/login", "/register").anonymous()
-                    .antMatchers( "/createreview", "/uploadProfilePicture","/createrating","/insertMediaToList","/like", "/createlist", "/profile/**" ).hasAnyRole("USER", "BANNED")
+                    .antMatchers( "/createreview", "/uploadProfilePicture","/createrating","/insertMediaToList","/like", "/createlist", "/profile/**" ).hasRole( "USER")
                     .antMatchers( "/deleteReview/**", "/deleteList/**","/banUser/**" ).hasRole("MODERATOR")
                     .antMatchers("/**").permitAll()
                 .and().exceptionHandling()

@@ -4,6 +4,10 @@ import ar.edu.itba.paw.exceptions.InvalidAuthenticationLevelRequiredToPerformAct
 import ar.edu.itba.paw.exceptions.UnableToBanUserException;
 import ar.edu.itba.paw.exceptions.UnableToChangeRoleException;
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
+import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.MoovieList.MoovieList;
+import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
+import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.BannedDao;
 import ar.edu.itba.paw.persistence.MoovieListDao;
@@ -12,6 +16,9 @@ import ar.edu.itba.paw.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class ModeratorServiceImpl implements ModeratorService{
     @Autowired
@@ -19,11 +26,17 @@ public class ModeratorServiceImpl implements ModeratorService{
     @Autowired
     private ReviewDao reviewDao;
     @Autowired
+    private ReviewService reviewService;
+    @Autowired
     private MoovieListDao moovieListDao;
+    @Autowired
+    private MoovieListService moovieListService;
     @Autowired
     private UserDao userDao;
     @Autowired
     private MediaService mediaService;
+    @Autowired
+    private EmailService emailService;
     @Autowired
     private BannedDao bannedDao;
 
@@ -31,13 +44,34 @@ public class ModeratorServiceImpl implements ModeratorService{
     @Override
     public void deleteReview(int reviewId, int mediaId) {
         amIModerator();
+
+        Media m = mediaService.getMediaById(mediaId);
+        Review r = reviewService.getReviewById(reviewId);
+        User u = userService.findUserById(r.getUserId());
+
+        final Map<String,Object> mailMap = new HashMap<>();
+        mailMap.put("username", u.getUsername());
+        mailMap.put("mediaName", m.getName());
+
+        emailService.sendEmail(u.getEmail(),"You review on " + m.getName() + " has been deleted", "yourReviewHasBeenRemovedEmail.html", mailMap);
+
         reviewDao.deleteReview(reviewId);
-        mediaService.downMediaVoteCount(mediaId);
     }
 
     @Override
     public void deleteMoovieListList(int moovieListId) {
         amIModerator();
+
+        MoovieList m = moovieListService.getMoovieListById(moovieListId);
+        User u = userService.findUserById(m.getUserId());
+
+        final Map<String,Object> mailMap = new HashMap<>();
+
+        mailMap.put("username", u.getUsername());
+        mailMap.put("moovieListName", m.getName());
+
+        emailService.sendEmail(u.getEmail(),"Your moovie list" + m.getName() + " has been deleted", "yourListHasBeenRemovedMail.html", mailMap);
+
         moovieListDao.deleteMoovieList(moovieListId);
     }
 
@@ -53,6 +87,12 @@ public class ModeratorServiceImpl implements ModeratorService{
         }
         userDao.changeUserRole(userId, userDao.ROLE_BANNED);
         bannedDao.createBannedMessage(userId, userService.getInfoOfMyUser().getUserId(), message);
+
+        final Map<String,Object> mailMap = new HashMap<>();
+        mailMap.put("username", u.getUsername());
+        mailMap.put("modUsername", userService.getInfoOfMyUser().getUsername());
+        mailMap.put("message", message);
+        emailService.sendEmail(u.getEmail(),"You have been baned from Moovie", "youHaveBeenBannedMail.html", mailMap);
     }
 
     @Override
@@ -67,6 +107,10 @@ public class ModeratorServiceImpl implements ModeratorService{
         }
         userDao.changeUserRole(userId, userDao.ROLE_USER);
         bannedDao.deleteBannedMessage(userId);
+
+        final Map<String,Object> mailMap = new HashMap<>();
+        mailMap.put("username", u.getUsername());
+        emailService.sendEmail(u.getEmail(),"You have been unbaned from Moovie", "youHaveBeenUnbannedMail.html", mailMap);
     }
 
 
