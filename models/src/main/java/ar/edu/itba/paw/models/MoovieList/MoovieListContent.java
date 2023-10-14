@@ -11,8 +11,8 @@ public class MoovieListContent extends Media {
                              boolean adult, Date releaseDate, String overview, String backdropPath,
                              String posterPath, String trailerLink, float tmdbRating, int totalRating,
                              int voteCount, String status, boolean watched,
-                             String genres, String providerNames, String providerLogos) {
-        super(mediaId, type, name, originalLanguage, adult, releaseDate, overview, backdropPath, posterPath, trailerLink, tmdbRating, totalRating, voteCount, status, genres, providerNames, providerLogos);
+                             String genres, String providers) {
+        super(mediaId, type, name, originalLanguage, adult, releaseDate, overview, backdropPath, posterPath, trailerLink, tmdbRating, totalRating, voteCount, status, genres, providers);
         this.watched = watched;
     }
 

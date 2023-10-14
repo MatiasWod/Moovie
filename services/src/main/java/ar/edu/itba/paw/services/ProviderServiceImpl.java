@@ -13,7 +13,7 @@ public class ProviderServiceImpl implements ProviderService{
     private ProviderDao providerDao;
 
     @Override
-    public List<Provider> getProviderForMedia(int mediaId) {
-        return providerDao.getProviderForMedia(mediaId);
+    public List<Provider> getAllProviders() {
+        return providerDao.getAllProviders();
     }
 }

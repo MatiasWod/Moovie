@@ -11,8 +11,8 @@ public class TVSerie extends Media{
     public TVSerie(int mediaId, boolean type, String name, String originalLanguage, boolean adult, Date releaseDate, String overview,
                    String backdropPath, String posterPath, String trailerLink, float tmdbRating, int totalRating, int voteCount,
                    String status, Date lastAirDate, Date nextEpisodeToAir, int numberOfEpisodes, int numberOfSeasons,
-                   String genres, String providerNames, String providerLogos) {
-        super(mediaId, type, name, originalLanguage, adult, releaseDate, overview, backdropPath, posterPath, trailerLink, tmdbRating, totalRating, voteCount, status, genres, providerNames, providerLogos);
+                   String genres, String providers) {
+        super(mediaId, type, name, originalLanguage, adult, releaseDate, overview, backdropPath, posterPath, trailerLink, tmdbRating, totalRating, voteCount, status, genres, providers);
         this.lastAirDate = lastAirDate;
         this.nextEpisodeToAir = nextEpisodeToAir;
         this.numberOfEpisodes = numberOfEpisodes;

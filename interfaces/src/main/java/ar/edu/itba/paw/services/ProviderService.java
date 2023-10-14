@@ -5,6 +5,5 @@ import ar.edu.itba.paw.models.Provider.Provider;
 import java.util.List;
 
 public interface ProviderService {
-
-    List<Provider> getProviderForMedia(int mediaId);
+    List<Provider> getAllProviders();
 }

@@ -67,8 +67,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
             rs.getString("status"),
             rs.getBoolean("isWatched"),
             rs.getString("genres"),
-            rs.getString("providerNames"),
-            rs.getString("providerLogos")
+            rs.getString("providers")
     );
 
     private static final RowMapper<Integer> COUNT_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("count"));
@@ -198,8 +197,8 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         sql.append(" (CASE WHEN EXISTS ( SELECT 1 FROM moovielists ml INNER JOIN moovieListsContent mlc2 ON ml.moovielistid = mlc2.moovielistid  ");
         sql.append(" WHERE m.mediaId = mlc2.mediaId AND ml.name = 'Watched' AND ml.userid = ? ) THEN true ELSE false END) AS isWatched,");
         sql.append("(SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = m.mediaId) AS genres, ");
-        sql.append("(SELECT ARRAY_AGG(p.providerName) FROM providers p WHERE p.mediaId = m.mediaId) AS providerNames, ");
-        sql.append("(SELECT ARRAY_AGG(p.logoPath) FROM providers p WHERE p.mediaId = m.mediaId) AS providerLogos ");
+        sql.append("(SELECT ARRAY_AGG(p) FROM providers p WHERE p.mediaId = m.mediaId) AS providers ");
+
         sql.append(" FROM moovieListsContent mlc ");
         args.add(userid);
         sql.append(" INNER JOIN media m ON mlc.mediaId = m.mediaId  ");
@@ -230,8 +229,8 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         sql.append(" (CASE WHEN EXISTS ( SELECT 1 FROM moovielists ml INNER JOIN moovieListsContent mlc2 ON ml.moovielistid = mlc2.moovielistid  ");
         sql.append(" WHERE m.mediaId = mlc2.mediaId AND ml.name = 'Watched' AND ml.userid = ? ) THEN true ELSE false END) AS isWatched, ");
         sql.append("(SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = m.mediaId) AS genres, ");
-        sql.append("(SELECT ARRAY_AGG(p.providerName) FROM providers p WHERE p.mediaId = m.mediaId) AS providerNames, ");
-        sql.append("(SELECT ARRAY_AGG(p.logoPath) FROM providers p WHERE p.mediaId = m.mediaId) AS providerLogos ");
+        sql.append("(SELECT ARRAY_AGG(p) FROM providers p WHERE p.mediaId = m.mediaId) AS providers ");
+
         sql.append("FROM media m ");
         args.add(userid);
         // If type is 0 or 1 it's specifically movies or TVs, else it's not restricted

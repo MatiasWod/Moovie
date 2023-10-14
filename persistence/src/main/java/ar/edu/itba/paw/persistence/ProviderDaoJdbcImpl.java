@@ -14,7 +14,6 @@ public class ProviderDaoJdbcImpl implements ProviderDao{
     private final JdbcTemplate jdbcTemplate;
 
     private static final RowMapper<Provider> PROVIDER_ROW_MAPPER = (rs, rowNum) -> new Provider(
-            rs.getInt("mediaId"),
             rs.getInt("providerId"),
             rs.getString("providerName"),
             rs.getString("logoPath")
@@ -28,7 +27,9 @@ public class ProviderDaoJdbcImpl implements ProviderDao{
     }
 
     @Override
-    public List<Provider> getProviderForMedia(int mediaId) {
-        return jdbcTemplate.query("SELECT * FROM providers WHERE mediaId = ?",new Object[]{mediaId},PROVIDER_ROW_MAPPER);
+    public List<Provider> getAllProviders() {
+        return null;
     }
+
+
 }

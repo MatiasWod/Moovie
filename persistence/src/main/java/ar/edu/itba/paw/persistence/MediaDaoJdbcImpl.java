@@ -38,8 +38,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
             rs.getInt("voteCount"),
             rs.getString("status"),
             rs.getString("genres"),
-            rs.getString("providerNames"),
-            rs.getString("providerLogos")
+            rs.getString("providers")
     );
 
     private static final RowMapper<Movie> MOVIE_ROW_MAPPER = (rs, rowNum) -> new Movie(
@@ -63,8 +62,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
             rs.getInt("directorId"),
             rs.getString("director"),
             rs.getString("genres"),
-            rs.getString("providerNames"),
-            rs.getString("providerLogos")
+            rs.getString("providers")
     );
 
     private static final String moviesQueryParams = " media.mediaId, type, name, originalLanguage, adult, releaseDate, overview, backdropPath, posterPath, trailerLink, tmdbRating, totalRating, voteCount, status, runtime, budget, revenue, directorId, director ";
@@ -89,8 +87,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
             rs.getInt("numberOfEpisodes"),
             rs.getInt("numberOfSeasons"),
             rs.getString("genres"),
-            rs.getString("providerNames"),
-            rs.getString("providerLogos")
+            rs.getString("providers")
     );
 
     private static final String tvQueryParams = " media.mediaId, type, name, originalLanguage, adult, releaseDate, overview, backdropPath, posterPath, trailerLink, tmdbRating, totalRating, voteCount, status, lastAirDate, nextEpisodeToAir, numberOfEpisodes, numberOfSeasons ";
@@ -112,8 +109,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
         ArrayList<Object> args = new ArrayList<>();
 
         sql.append("(SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = m.mediaId) AS genres, ");
-        sql.append("(SELECT ARRAY_AGG(p.providerName) FROM providers p WHERE p.mediaId = m.mediaId) AS providerNames, ");
-        sql.append("(SELECT ARRAY_AGG(p.logoPath) FROM providers p WHERE p.mediaId = m.mediaId) AS providerLogos ");
+        sql.append("(SELECT ARRAY_AGG(p) FROM providers p WHERE p.mediaId = m.mediaId) AS providers ");
 
         sql.append("FROM media m ");
 
@@ -197,8 +193,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
     public Optional<Media> getMediaById(int mediaId) {
         StringBuilder sql = new StringBuilder("SELECT media.*, ");
         sql.append("(SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = media.mediaId) AS genres, ");
-        sql.append("(SELECT ARRAY_AGG(p.providerName) FROM providers p WHERE p.mediaId = media.mediaId) AS providerNames, ");
-        sql.append("(SELECT ARRAY_AGG(p.logoPath) FROM providers p WHERE p.mediaId = media.mediaId) AS providerLogos ");
+        sql.append("(SELECT ARRAY_AGG(p) FROM providers p WHERE p.mediaId = media.mediaId) AS providers ");
         sql.append(" FROM media  WHERE mediaid = ?");
 
         return jdbcTemplate.query(sql.toString(), new Object[]{mediaId}, MEDIA_ROW_MAPPER).stream().findFirst();
@@ -209,8 +204,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
         StringBuilder sql = new StringBuilder("SELECT ");
         sql.append(moviesQueryParams);
         sql.append(", (SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = media.mediaId) AS genres, ");
-        sql.append("(SELECT ARRAY_AGG(p.providerName) FROM providers p WHERE p.mediaId = media.mediaId) AS providerNames, ");
-        sql.append("(SELECT ARRAY_AGG(p.logoPath) FROM providers p WHERE p.mediaId = media.mediaId) AS providerLogos ");
+        sql.append("(SELECT ARRAY_AGG(p) FROM providers p WHERE p.mediaId = media.mediaId) AS providers ");
         sql.append(" FROM media INNER JOIN movies ON media.mediaid = movies.mediaid WHERE  movies.mediaid = ?");
 
         return jdbcTemplate.query(sql.toString(),new Object[]{mediaId}, MOVIE_ROW_MAPPER).stream().findFirst();
@@ -221,8 +215,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
         StringBuilder sql = new StringBuilder("SELECT ");
         sql.append(tvQueryParams);
         sql.append(", (SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = media.mediaId) AS genres, ");
-        sql.append("(SELECT ARRAY_AGG(p.providerName) FROM providers p WHERE p.mediaId = media.mediaId) AS providerNames, ");
-        sql.append("(SELECT ARRAY_AGG(p.logoPath) FROM providers p WHERE p.mediaId = media.mediaId) AS providerLogos ");
+        sql.append("(SELECT ARRAY_AGG(p) FROM providers p WHERE p.mediaId = media.mediaId) AS providers ");
         sql.append(" FROM media INNER JOIN tv ON media.mediaid = tv.mediaid WHERE  tv.mediaid = ?");
 
         return jdbcTemplate.query(sql.toString(), new Object[]{mediaId}, TV_SERIE_ROW_MAPPER).stream().findFirst();
@@ -233,8 +226,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
     public List<Media> getMediaInMoovieList(int moovieListId, int size, int pageNumber) {
         StringBuilder sql = new StringBuilder("SELECT media.*, ");
         sql.append("(SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = media.mediaId) AS genres, ");
-        sql.append("(SELECT ARRAY_AGG(p.providerName) FROM providers p WHERE p.mediaId = media.mediaId) AS providerNames, ");
-        sql.append("(SELECT ARRAY_AGG(p.logoPath) FROM providers p WHERE p.mediaId = media.mediaId) AS providerLogos ");
+        sql.append("(SELECT ARRAY_AGG(p) FROM providers p WHERE p.mediaId = media.mediaId) AS providers ");
         sql.append(" FROM moovieListscontent INNER JOIN media ON media.mediaId = moovieListscontent.mediaid WHERE moovielistscontent.moovieListId = ? ORDER BY media.mediaId LIMIT ? OFFSET ?");
 
         return jdbcTemplate.query(sql.toString(),new Object[]{moovieListId, size, pageNumber * size}, MEDIA_ROW_MAPPER);

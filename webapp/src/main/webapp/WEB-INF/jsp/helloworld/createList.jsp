@@ -111,9 +111,9 @@
                                         </c:forEach>
                                     </div>
                                     <div class="d-flex mt-3 justify-content-evenly flex-wrap">
-                                        <c:forEach var="provider" items="${movie.providerLogos}" end="1">
+                                        <c:forEach var="provider" items="${movie.providers}" end="1">
                                         <span class="mt-1 badge text-bg-light border border-black">
-                                            <img src="${provider}" alt="provider logo" style="height: 1.4em; margin-right: 5px;">
+                                            <img src="${provider.logoPath}" alt="provider logo" style="height: 1.4em; margin-right: 5px;">
                                         </span>
                                         </c:forEach>
                                     </div>

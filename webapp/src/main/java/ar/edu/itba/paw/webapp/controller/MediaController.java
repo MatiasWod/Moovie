@@ -145,20 +145,30 @@ public class MediaController {
             mav.addObject("privateLists", moovieListService.getMoovieListCards(null, username, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(), PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), 0));
         } catch (Exception ignored) {
         }
+
+        Media media = null;
+
         if(!type){
-            mav.addObject("media",mediaService.getMovieById(mediaId));
+            media = mediaService.getMovieById(mediaId);
         } else{
-            mav.addObject("media", mediaService.getTvById(mediaId));
+            media =  mediaService.getTvById(mediaId);
             mav.addObject("creators", tvCreatorsService.getTvCreatorsByMediaId(mediaId));
         }
+
+        mav.addObject("media", media);
+
+        mav.addObject("genresList", media.getGenres());
         mav.addObject("actorsList", actorService.getAllActorsForMedia(mediaId));
+        mav.addObject("providersList", media.getProviders());
+
+
+        //Pagination of reviews
         mav.addObject("reviewsList", reviewService.getReviewsByMediaId(mediaId,PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
         mav.addObject("currentPage",pageNumber - 1);
         int totalReviewsForMedia = reviewService.getReviewsByMediaIdCount(mediaId);
         int numberOfPages = (int) Math.ceil(totalReviewsForMedia * 1.0 / PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize());
         mav.addObject("numberOfPages",numberOfPages);
-        mav.addObject("providerList", providerService.getProviderForMedia(mediaId));
-        mav.addObject("genresList", genreService.getGenresForMedia(mediaId));
+
         return mav;
     }
 

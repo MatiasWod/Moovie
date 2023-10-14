@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.models.Media;
 
+import ar.edu.itba.paw.models.Provider.Provider;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -22,13 +24,12 @@ public class Media {
     private final String status;
     private final List<String> genres;
 
-    private final List<String> providerNames;
+    private final List<Provider> providers;
 
-    private final List<String> providerLogos;
 
     public Media(int mediaId, boolean type, String name, String originalLanguage, boolean adult, Date releaseDate, String overview,
                  String backdropPath, String posterPath, String trailerLink, float tmdbRating, int totalRating, int voteCount, String status,
-                 String genres, String providerNames, String providerLogos) {
+                 String genres, String providers) {
         this.mediaId = mediaId;
         this.type = type;
         this.name = name;
@@ -43,6 +44,7 @@ public class Media {
         this.totalRating = totalRating;
         this.voteCount = voteCount;
         this.status = status;
+
         if(genres!=null){
             String[] aux = genres.replaceAll("[{}]","").split(",");
             this.genres = new ArrayList<>(Arrays.asList(aux));
@@ -50,19 +52,16 @@ public class Media {
             this.genres = new ArrayList<>();
         }
 
-        if(providerNames!=null){
-            String[] aux = providerNames.replaceAll("[{}]","").split(",");
-            this.providerNames = new ArrayList<>(Arrays.asList(aux));
+        if(providers!=null){
+            this.providers = new ArrayList<Provider>();
+            String[] aux = providers.replaceAll("[({\"\\\\})]","").split(",");
+            for(int i=0 ; i  < aux.length ; i+=4 ){
+                this.providers.add(new Provider( Integer.parseInt(aux[i+1]) , aux[i+2], aux[i+3]));
+            }
         }else{
-            this.providerNames = new ArrayList<>();
+            this.providers = new ArrayList<>();
         }
 
-        if(providerLogos!=null){
-            String[] aux = providerLogos.replaceAll("[{}]","").split(",");
-            this.providerLogos = new ArrayList<>(Arrays.asList(aux));
-        }else{
-            this.providerLogos = new ArrayList<>();
-        }
     }
 
     public int getMediaId() {
@@ -129,11 +128,8 @@ public class Media {
         return genres;
     }
 
-    public List<String> getProviderLogos() {
-        return providerLogos;
+    public List<Provider> getProviders() {
+        return providers;
     }
 
-    public List<String> getProviderNames() {
-        return providerNames;
-    }
 }
