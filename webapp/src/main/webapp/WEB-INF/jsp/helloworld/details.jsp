@@ -111,7 +111,7 @@
                 </div>
                 <div>
                     <c:forEach var="genre" items="${genresList}">
-                        <a href="${pageContext.request.contextPath}/discover?g=${genre}&media=${media.type? 'Series':'Movies'}">
+                        <a style="text-decoration: none;" href="${pageContext.request.contextPath}/discover?g=${genre}&media=${media.type? 'Series':'Movies'}">
                             <span class="badge text-bg-dark">${genre}</span>
                         </a>
 
@@ -168,7 +168,7 @@
                             </div>
                             <div>
                                 <c:forEach var="creator" items="${creators}">
-                                    <a href="${pageContext.request.contextPath}/discover?credit=${creator.creatorName.trim()}">
+                                    <a style="text-decoration: none;" href="${pageContext.request.contextPath}/discover?credit=${creator.creatorName.trim()}">
                                         <span class="badge text-bg-light border border-black">${creator.creatorName}</span>
                                     </a>
                                 </c:forEach>
