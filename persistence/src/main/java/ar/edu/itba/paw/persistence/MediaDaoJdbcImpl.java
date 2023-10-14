@@ -134,7 +134,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
             sql.append(" ) ");
         }
 
-        // Add the genres filter
+        // Add the providers filter
         if (providers!=null && !providers.isEmpty()) {
             sql.append(" AND mediaId IN ( SELECT mediaId FROM providers WHERE "); // Start the OR conditions for genres
             for (String provider : providers) {
@@ -234,9 +234,10 @@ public class MediaDaoJdbcImpl implements MediaDao {
     }
 
     @Override
-    public int getMediaCount(int type, String search, List<String> genres) {
+    public int getMediaCount(int type, String search, String participantSearch, List<String> genres, List<String> providers) {
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM media ");
         ArrayList<Object> args = new ArrayList<>();
+        Boolean flag = false;
 
         // If type is 0 or 1 it's specifically movies or TVs, else it's not restricted
         if (type == 0 || type == 1) {
@@ -251,36 +252,56 @@ public class MediaDaoJdbcImpl implements MediaDao {
         if (genres!=null && !genres.isEmpty()) {
             sql.append(" AND mediaId IN ( SELECT mediaId FROM genres WHERE "); // Start the OR conditions for genres
             for (String genre : genres) {
-                sql.append(" genre = ? OR "); // Replace 'genre_column' with your actual genre column name
+                sql.append(" genre = ? OR ");
                 args.add(genre);
             }
+            // delete last OR
             sql.deleteCharAt(sql.length() - 1);
             sql.deleteCharAt(sql.length() - 1);
             sql.deleteCharAt(sql.length() - 1);
             sql.append(" ) ");
         }
 
-        // Input the search, it searches in actors, media.name, creators and directors
-        if (search!=null && search.length()>0) {
-            sql.append(" AND ( " );
+        // Add the providers filter
+        if (providers!=null && !providers.isEmpty()) {
+            sql.append(" AND mediaId IN ( SELECT mediaId FROM providers WHERE "); // Start the OR conditions for providers
+            for (String provider : providers) {
+                sql.append(" providername = ? OR ");
+                args.add(provider);
+            }
+            // delete last OR
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.append(" ) ");
+        }
+
+        //Input the search
+        if(search!=null && !search.isEmpty()){
+            sql.append(" AND " );
             sql.append(" name ILIKE ? ");
             args.add('%' + search + '%');
+        }
 
-            sql.append(" OR media.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
-            args.add('%' + search + '%');
+        // Input its participants in actors, media.name, creators and directors
+        if (participantSearch!=null && !participantSearch.isEmpty()) {
+            sql.append(" AND ( " );
+            sql.append("  m.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
+            args.add('%' + participantSearch + '%');
 
             if(type != TYPE_TVSERIE){
-                sql.append(" OR media.mediaId IN (SELECT mediaid FROM movies m WHERE director ILIKE ? ) ");
-                args.add('%' + search + '%');
+                sql.append(" OR m.mediaId IN (SELECT mediaid FROM movies m WHERE director ILIKE ? ) ");
+                args.add('%' + participantSearch + '%');
             }
 
             if(type != TYPE_MOVIE){
-                sql.append(" OR media.mediaId IN (SELECT mediaid FROM creators c WHERE creatorname ILIKE ? ) ");
-                args.add('%' + search + '%');
+                sql.append(" OR m.mediaId IN (SELECT mediaid FROM creators c WHERE creatorname ILIKE ? ) ");
+                args.add('%' + participantSearch + '%');
             }
 
             sql.append(" ) ");
         }
+
         // Execute the query
         return jdbcTemplate.query(sql.toString(), args.toArray(), COUNT_ROW_MAPPER).stream().findFirst().get().intValue();
     }
