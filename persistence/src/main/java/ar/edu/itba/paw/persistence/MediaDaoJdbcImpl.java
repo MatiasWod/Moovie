@@ -107,7 +107,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
 
     @Override
-    public List<Media> getMedia(int type, String search, String participant, List<String> genres, String orderBy, String sortOrder, int size, int pageNumber) {
+    public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, String orderBy, String sortOrder, int size, int pageNumber){
         StringBuilder sql = new StringBuilder("SELECT m.*, ");
         ArrayList<Object> args = new ArrayList<>();
 
@@ -131,6 +131,19 @@ public class MediaDaoJdbcImpl implements MediaDao {
             for (String genre : genres) {
                 sql.append(" genre = ? OR "); // Replace 'genre_column' with your actual genre column name
                 args.add(genre);
+            }
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.append(" ) ");
+        }
+
+        // Add the genres filter
+        if (providers!=null && !providers.isEmpty()) {
+            sql.append(" AND mediaId IN ( SELECT mediaId FROM providers WHERE "); // Start the OR conditions for genres
+            for (String provider : providers) {
+                sql.append(" providername = ? OR "); // Replace 'genre_column' with your actual genre column name
+                args.add(provider);
             }
             sql.deleteCharAt(sql.length() - 1);
             sql.deleteCharAt(sql.length() - 1);
