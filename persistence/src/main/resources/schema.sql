@@ -54,7 +54,6 @@ CREATE TABLE IF NOT EXISTS reviews(
     userId                                      INTEGER NOT NULL,
     mediaId                                     INTEGER NOT NULL,
     rating                                      INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 10),
-    reviewLikes                                 INTEGER NOT NULL,
     reviewContent                               TEXT,
     FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE,
     FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE,
@@ -213,5 +212,8 @@ CREATE TABLE IF NOT EXISTS  bannedMessage (
 --Modifications in table created before for Sprint 2
 
 Hay que modificar el reviews que tiene el like ahi, pero en realidad es un count en reviewsLikes
+
+--Reviews change
+ALTER TABLE reviews DROP COLUMN reviewlikes;
  */
 

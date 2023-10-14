@@ -125,7 +125,6 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
         args.put("userId", userId);
         args.put("mediaId", mediaId);
         args.put("rating", rating);
-        args.put("reviewLikes", 0);
 
         args.put("reviewContent", reviewContent);
         try{
@@ -158,7 +157,7 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
     @Override
     public void removeLikeReview(int userId, int reviewId) {
         StringBuilder sqlDel = new StringBuilder( "DELETE FROM reviewsLikes WHERE reviewId = ");
-        sqlDel.append(userId);
+        sqlDel.append(reviewId);
         sqlDel.append(" AND userId = ");
         sqlDel.append(userId);
         sqlDel.append(" ; ");
