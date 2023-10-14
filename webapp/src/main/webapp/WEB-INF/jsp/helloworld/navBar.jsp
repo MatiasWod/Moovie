@@ -121,7 +121,7 @@
 
 
 
-                <form class="d-flex mb-0" role="search" action="${pageContext.request.contextPath}/discover" method="get">
+                <form class="d-flex mb-0" role="search" action="${pageContext.request.contextPath}/search" method="get">
                 <div class="input-group">
                     <input id="searchInput" class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">

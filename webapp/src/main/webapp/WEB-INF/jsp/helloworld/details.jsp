@@ -125,7 +125,7 @@
                             <h5>Director:</h5>
                         </div>
                         <div>
-                            <a href="${pageContext.request.contextPath}/discover?type=director&query=${media.director}">
+                            <a href="${pageContext.request.contextPath}/discover?credit=${media.director}">
                                 <span class="badge text-bg-light border border-black">${media.director}</span>
                             </a>
                         </div>
@@ -167,7 +167,7 @@
                             </div>
                             <div>
                                 <c:forEach var="creator" items="${creators}">
-                                    <a href="${pageContext.request.contextPath}/discover?type=creator&query=${creator.creatorName.trim()}">
+                                    <a href="${pageContext.request.contextPath}/discover?credit=${creator.creatorName.trim()}">
                                         <span class="badge text-bg-light border border-black">${creator.creatorName}</span>
                                     </a>
                                 </c:forEach>
@@ -272,19 +272,19 @@
                                         >
                                     </c:when>
                                     <c:otherwise>
-                                    <a href="${pageContext.request.contextPath}/discover?type=actor&query=${actor.actorName}">
+                                    <a href="${pageContext.request.contextPath}/discover?credit=${actor.actorName}">
                                         <img
                                                 src="${actor.profilePath}"
                                                 alt="${actor.actorName} picture"
                                                 style="max-width: 150px; max-height: 150px; border-radius: 5px;"
-                                                href="${pageContext.request.contextPath}/discover?type=actor&query=${actor.actorName}">
+                                                href="${pageContext.request.contextPath}/discover?credit=${actor.actorName}">
                                     </a>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
                             <div class="col-8" style="min-width: 160px">
                                 <div class="card-body" style="min-width: 120px">
-                                    <a style="color:black; text-decoration: none;" href="${pageContext.request.contextPath}/discover?type=actor&query=${actor.actorName}">
+                                    <a style="color:black; text-decoration: none;" href="${pageContext.request.contextPath}/discover?credit=${actor.actorName}">
                                         <h5 class="card-title">${actor.actorName}</h5>
                                     </a>
                                     <p class="card-text">${actor.characterName}</p>
