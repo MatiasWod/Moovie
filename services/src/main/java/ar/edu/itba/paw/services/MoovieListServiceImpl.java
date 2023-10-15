@@ -150,12 +150,6 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Transactional
     @Override
-    public MoovieList createMoovieList(String name, int type, String description) {
-        return moovieListDao.createMoovieList(userService.getInfoOfMyUser().getUserId(), name, type, description);
-    }
-
-    @Transactional
-    @Override
     public MoovieList createMoovieListWithContent(String name, int type, String description, List<Integer> mediaIdList) {
         MoovieList ml =  moovieListDao.createMoovieList(userService.getInfoOfMyUser().getUserId(), name, type, description);
         return insertMediaIntoMoovieList(ml.getMoovieListId(), mediaIdList);

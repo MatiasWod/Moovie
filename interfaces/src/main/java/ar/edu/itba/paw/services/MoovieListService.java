@@ -38,7 +38,6 @@ public interface MoovieListService {
     int countWatchedFeaturedMoovieListContent(int moovieListId, int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber);
 
     //Create or insert into moovieList
-    MoovieList createMoovieList(String name, int type, String description);
     MoovieList createMoovieListWithContent(String name, int type, String description, List<Integer> mediaIdList);
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
     void deleteMediaFromMoovieList(int moovieListId, int mediaId);
