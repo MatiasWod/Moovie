@@ -126,15 +126,36 @@ public class MoovieListServiceImpl implements MoovieListService{
         return moovieListDao.getLikedMoovieListCards(userId, type, size, pageNumber, userService.tryToGetCurrentUserId());
     }
 
-    public List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber, int currentUserId){
-        return moovieListDao.getFollowedMoovieListCards(userId, type, size, pageNumber, currentUserId);
+    public List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber){
+        return moovieListDao.getFollowedMoovieListCards(userId, type, size, pageNumber, userService.tryToGetCurrentUserId());
     }
 
 
     @Transactional(readOnly = true)
     @Override
-    public List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber, int currentUserId){
-        return moovieListDao.getRecommendedMoovieListCards(moovieListId, size, pageNumber, currentUserId);
+    public List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber){
+        List<MoovieListCard> mlc =  moovieListDao.getRecommendedMoovieListCards(moovieListId, size, pageNumber, userService.tryToGetCurrentUserId());
+        if(mlc.size()<size){
+            // 4 are searched in order to be 100% sure there wont be repeating elements
+            List<MoovieListCard> aux =  moovieListDao.getMoovieListCards(null, null, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), " random() "," asc ", size, pageNumber, userService.tryToGetCurrentUserId());
+            // A check is needed so as no to add duplicates
+            boolean flag;
+            for(MoovieListCard mlcAux : aux ){
+                flag = true;
+                for(MoovieListCard mlcOriginal : mlc){
+                    if(mlcOriginal.getMoovieListId() == mlcAux.getMoovieListId()){
+                        flag = false;
+                    }
+                }
+                if(flag){
+                    mlc.add(mlcAux);
+                    if(mlc.size()==size){
+                        return mlc;
+                    }
+                }
+            }
+        }
+        return mlc;
     }
 
 
