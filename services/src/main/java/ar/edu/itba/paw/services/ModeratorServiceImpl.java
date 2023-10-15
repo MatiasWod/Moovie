@@ -9,6 +9,7 @@ import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.models.User.UserRoles;
 import ar.edu.itba.paw.persistence.BannedDao;
 import ar.edu.itba.paw.persistence.MoovieListDao;
 import ar.edu.itba.paw.persistence.ReviewDao;
@@ -83,13 +84,13 @@ public class ModeratorServiceImpl implements ModeratorService{
     public void banUser(int userId, String message) {
         amIModerator();
         User u = userDao.findUserById(userId).orElseThrow(() -> new UnableToFindUserException("No user for the id = " + userId ));
-        if(u.getRole() == userDao.ROLE_MODERATOR){
+        if(u.getRole() == UserRoles.MODERATOR.getRole()){
             throw new UnableToBanUserException("Cannot ban another moderator");
         }
-        if(u.getRole() == userDao.ROLE_UNREGISTERED){
+        if(u.getRole() == UserRoles.UNREGISTERED.getRole()){
             throw new UnableToBanUserException("Cannot ban an unregisted user");
         }
-        userDao.changeUserRole(userId, userDao.ROLE_BANNED);
+        userDao.changeUserRole(userId, UserRoles.BANNED.getRole());
         bannedDao.createBannedMessage(userId, userService.getInfoOfMyUser().getUserId(), message);
 
         final Map<String,Object> mailMap = new HashMap<>();
@@ -104,13 +105,13 @@ public class ModeratorServiceImpl implements ModeratorService{
     public void unbanUser(int userId) {
         amIModerator();
         User u = userDao.findUserById(userId).orElseThrow(() -> new UnableToFindUserException("No user for the id = " + userId ));
-        if(u.getRole() == userDao.ROLE_MODERATOR){
+        if(u.getRole() == UserRoles.MODERATOR.getRole()){
             throw new UnableToBanUserException("Cannot unban another moderator");
         }
-        if(u.getRole() == userDao.ROLE_UNREGISTERED){
+        if(u.getRole() == UserRoles.UNREGISTERED.getRole()){
             throw new UnableToBanUserException("Cannot ban an unregisted user");
         }
-        userDao.changeUserRole(userId, userDao.ROLE_USER);
+        userDao.changeUserRole(userId, UserRoles.USER.getRole());
         bannedDao.deleteBannedMessage(userId);
 
         final Map<String,Object> mailMap = new HashMap<>();
@@ -124,14 +125,14 @@ public class ModeratorServiceImpl implements ModeratorService{
     public void makeUserModerator(int userId) {
         amIModerator();
         User u = userDao.findUserById(userId).orElseThrow(() -> new UnableToFindUserException("No user for the id = " + userId ));
-        if(u.getRole() != userDao.ROLE_USER ){
+        if(u.getRole() != UserRoles.USER.getRole() ){
             throw new UnableToChangeRoleException("Unable to change role of uid: " + userId + ", user must be ROLE_USER");
         }
-        userDao.changeUserRole(userId, userDao.ROLE_MODERATOR);
+        userDao.changeUserRole(userId, UserRoles.MODERATOR.getRole());
     }
 
     private void amIModerator(){
-        if(userService.getInfoOfMyUser().getRole() != userService.ROLE_MODERATOR){
+        if(userService.getInfoOfMyUser().getRole() != UserRoles.MODERATOR.getRole()){
             throw new InvalidAuthenticationLevelRequiredToPerformActionException("To perform this action you must have role: moderator");
         }
     }

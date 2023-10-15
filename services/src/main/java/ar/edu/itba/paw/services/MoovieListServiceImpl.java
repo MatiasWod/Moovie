@@ -7,6 +7,7 @@ import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.models.User.UserRoles;
 import ar.edu.itba.paw.persistence.MoovieListDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -199,7 +200,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     public void deleteMoovieList(int moovieListId) {
         MoovieList ml = getMoovieListById(moovieListId);
         User currentUser = userService.getInfoOfMyUser();
-        if(currentUser.getRole() == userService.ROLE_MODERATOR || currentUser.getUserId() == ml.getUserId()){
+        if(currentUser.getRole() == UserRoles.MODERATOR.getRole() || currentUser.getUserId() == ml.getUserId()){
             deleteMoovieList(moovieListId);
         }else{
             throw new InvalidAccessToResourceException("You are not the user of this list, so you can't delete it");

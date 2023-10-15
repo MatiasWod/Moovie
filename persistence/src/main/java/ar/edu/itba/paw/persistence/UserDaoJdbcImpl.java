@@ -3,6 +3,7 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.models.User.Image;
 import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.models.User.UserRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -21,10 +22,6 @@ public class UserDaoJdbcImpl implements UserDao{
     private final SimpleJdbcInsert userJdbcInsert;
     private final SimpleJdbcInsert imageJdbcInsert;
 
-    private static final int ROLE_NOT_AUTHENTICATED = -1;
-    private static final int ROLE_UNREGISTERED = 0;
-    private static final int ROLE_USER = 1;
-    private static final int ROLE_MODERATOR = 2;
 
     private static final RowMapper<User> USER_ROW_MAPPER = (rs, rowNum) -> new User(
             rs.getInt("userId"),
@@ -64,16 +61,16 @@ public class UserDaoJdbcImpl implements UserDao{
         args.put("username",username);
         args.put("email", email);
         args.put("password",password);
-        args.put("role", ROLE_NOT_AUTHENTICATED);
+        args.put("role", UserRoles.NOT_AUTHENTICATED.getRole());
 
         final Number reviewId = userJdbcInsert.executeAndReturnKey(args);
-        return new User(reviewId.intValue(), username,email,password, ROLE_NOT_AUTHENTICATED);
+        return new User(reviewId.intValue(), username,email,password, UserRoles.NOT_AUTHENTICATED.getRole());
     }
 
     @Override
     public User createUserFromUnregistered(String username, String email, String password) {
         String sql = "UPDATE users SET username = ?, password = ?, role = ? WHERE email = ?";
-        jdbcTemplate.update(sql, username, password, ROLE_NOT_AUTHENTICATED, email);
+        jdbcTemplate.update(sql, username, password, UserRoles.NOT_AUTHENTICATED.getRole(), email);
         return findUserByEmail(email).get();
     }
 

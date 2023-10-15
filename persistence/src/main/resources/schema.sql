@@ -207,7 +207,6 @@ CREATE TABLE IF NOT EXISTS  bannedMessage (
     FOREIGN KEY(bannedUserId) REFERENCES users(userId) ON DELETE CASCADE,
     UNIQUE(bannedUserId)
     );
-
 /*
 --Modifications in table created before for Sprint 2
 

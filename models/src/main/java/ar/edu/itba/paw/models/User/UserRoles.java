@@ -1,0 +1,19 @@
+package ar.edu.itba.paw.models.User;
+
+public enum UserRoles {
+    BANNED(-2),
+    NOT_AUTHENTICATED(-1),
+    UNREGISTERED(0),
+    USER(1),
+    MODERATOR(2);
+
+    private final int role;
+    UserRoles(int role){
+        this.role = role;
+    }
+
+    public int getRole(){
+        return role;
+    }
+}
+
