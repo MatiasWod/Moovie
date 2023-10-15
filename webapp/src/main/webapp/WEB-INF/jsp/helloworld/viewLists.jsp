@@ -55,13 +55,14 @@
             <form id="sortForm" method="get" class="d-flex align-items-center">
                 <h2 style="padding-right: 4px">Sort by</h2>
                 <select name="orderBy" class="form-select filter-width" aria-label="Filter!" id="sortSelect">
+<%--                    <option ${'name' == param.orderBy ? 'selected' : ''} value="name">Name</option>--%>
                     <option ${'likeCount' == param.orderBy ? 'selected' : ''} value="likeCount">Likes</option>
-                    <option ${'moovieListId' == param.orderBy ? 'selected' : ''} value="moovieListId">Recent</option>
+                    <option ${('moovieListId' == param.orderBy || param.orderBy == null)? 'selected' : ''} value="moovieListId">Recent</option>
                 </select>
-                <input type="hidden" name="order" id="sortOrderInput" value="${param.order == 'desc' ? 'desc' : 'asc'}">
-                <div style="margin: 0;" class="btn btn-style" id="sortButton"
-                     onclick="changeSortOrder('sortOrderInput', 'sortIcon', '${param.orderBy}')">
-                    <i id="sortIcon" class="bi bi-arrow-${param.order == 'desc' ? 'up' : 'down'}-circle-fill"></i>
+<%--                PARA TENER EN CUENTA --> MIRAR EL DEFAULT sort y orderBy en el controller para settear los valores iniciales de las labels/iconos--%>
+                <input type="hidden" name="order" id="sortOrderInput" value="${param.order =='asc'? 'asc':'desc'}">
+                <div class="btn btn-style me-1" id="sortButton" onclick="changeSortOrder('sortOrderInput', 'sortIcon', '${param.orderBy}')">
+                    <i id="sortIcon" class="bi bi-arrow-${param.order == 'asc' ? 'up' : 'down'}-circle-fill"></i>
                 </div>
                 <button type="submit" id="applyButton" class="btn btn-style2">Apply</button>
             </form>

@@ -109,12 +109,49 @@
     </c:if>
 
     <%--TODO: test="${userList}"--%>
-<%--    <c:if test="${userList != null}">--%>
-<%--        <div>--%>
-<%--            Aqui van los users--%>
-<%--        </div>--%>
+    <c:if test="${usersFlag}">
+        <div class="container d-flex justify-content-between mt-2 p-2">
+            <h3>Users for: ${param.query}</h3>
+<%--            <a href="${pageContext.request.contextPath}/discover?credit=${param.query}">see more</a>--%>
+        </div>
+        <hr class="my-1">
+        <div class="container d-flex overflow-hidden" style="max-height: 300px;">
+            <c:forEach items="${usersList}" var="user">
+                <a href="${pageContext.request.contextPath}/profile/${user.username}" class="poster card text-bg-dark m-1">
+                    <div class="card-img-container"> <!-- Add a container for the image -->
+                        <img src="${pageContext.request.contextPath}/resources/logo.png"/>
+                        <div class="card-img-overlay" style="opacity: 1; background-color: rgba(255,255,255,0.1);">
+                            <c:if test="${user.role == 2 || user.role == -102}">
+                                <img class="cropCenter" style="height:50px;width:50px" src="${pageContext.request.contextPath}/resources/moderator_logo.png" alt="moderator profile pic">
+                            </c:if>
+                            <h3 class="card-title text-center">${user.username}</h3>
+                            <div class="d-flex align-items-center">
+                                <div class="m-1 d-flex align-items-center">
+                                    <img style="padding-bottom: 6px;" height="37" width="37" src="${pageContext.request.contextPath}/resources/logo.png" alt="moo">
+                                    <h5>
+                                            ${user.moovieListCount}
+                                    </h5>
+                                </div>
+                                <div class="m-1 d-flex align-items-center">
+                                    <h5>
+                                        <i class="bi-hand-thumbs-up"></i>
+                                            ${user.likedMoovieListCount}
+                                    </h5>
+                                </div>
+                                <div class="m-1 d-flex align-items-center">
+                                    <h5>
+                                        <i class="bi-star"></i>
+                                            ${user.reviewsCount}
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </c:forEach>
+        </div>
 
-<%--    </c:if>--%>
+    </c:if>
 </div>
 
 

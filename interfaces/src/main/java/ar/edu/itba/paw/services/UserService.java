@@ -24,6 +24,9 @@ public interface UserService {
     //Search user (recomeneded only for the searchbar)
     List<Profile> searchUsers(String username,  int size, int pageNumber);
 
+    //Search user count for pagination in searchUsers cases
+    int getSearchCount(String username);
+
     //Return the parameters needed to show in the profile page
     Profile getProfileByUsername(String username);
 

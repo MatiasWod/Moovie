@@ -27,7 +27,11 @@
 </head>
 <body style="background: whitesmoke">
 <c:import url="navBar.jsp"/>
+
+<%--variables para el manejo de selected filters--%>
 <c:set var="selectedGenres" value="${fn:split(param.g, ',')}" />
+<c:set var="selectedProviders" value="${fn:split(param.providers, ',')}" />
+
 <div class="container d-flex flex-column">
     <div class="container d-flex flex-row ">
         <%--        FILTROS y PELIS    --%>
@@ -51,7 +55,7 @@
 
                     <div class="d-flex align-content-center  flex-row">
                         <select name="media" class="form-select filter-width" aria-label="Filter!">
-                            <option ${'Movies and Series' == param.media ? 'selected' : ''}>Movies and Series</option>
+                            <option ${'All' == param.media ? 'selected' : ''}>All media</option>
                             <option  ${'Movies' == param.media ? 'selected' : ''}>Movies</option>
                             <option  ${'Series' == param.media ? 'selected' : ''}>Series</option>
                         </select>
@@ -63,6 +67,7 @@
                             </button>
                             <c:set var="isChecked" value="" />
                             <div style="height: 50vh" class="dropdown-menu scrollableDiv flex-wrap p-4">
+                                <input type="text" id="searchBoxGenre" placeholder="Search..." class="form-control mb-3">
                  <%--   ES NECESARIO UTILIZAR LA VAR isChecked.
                    Porque al simplemente realizar fn:contains(param.g,genre)
                    existen casos como Action&Adventure que siempre daran match para Action y Adventure
@@ -74,23 +79,59 @@
                                             <c:set var="isChecked" value="checked" />
                                         </c:if>
                                     </c:forEach>
-                                    <div class="form-check">
-                                        <input ${isChecked} type="checkbox" class="form-check-input" id="dropdownCheck${genre}">
+                                    <div class="form-check special-genre-class">
+                                        <input ${isChecked} type="checkbox" class="form-check-input special-genre-input" id="dropdownCheck${genre}">
                                         <label class="form-check-label" for="dropdownCheck${genresList.indexOf(genre)}">${genre}</label>
                                     </div>
                                     <c:set var="isChecked" value="" /> <!-- Reset the isChecked variable -->
                                 </c:forEach>
                             </div>
                         </div>
+
+
+                        <input type="hidden" name="providers" id="hiddenProviderInput">
+                        <div class="dropdown">
+                            <button style="height:100%;width: 150px;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                Providers
+                            </button>
+                            <c:set var="isChecked" value="" />
+                            <div style="height: 50vh" class="dropdown-menu scrollableDiv flex-wrap p-4">
+                                <input type="text" id="searchBoxProvider" placeholder="Search..." class="form-control mb-3">
+                                <%--   ES NECESARIO UTILIZAR LA VAR isChecked.
+                                  Porque al simplemente realizar fn:contains(param.g,genre)
+                                  existen casos como Action&Adventure que siempre daran match para Action y Adventure
+                                  Es preferible esto a en el controlador manejar la creacion de modelos nuevos que contemplen el checked para cada genero--%>
+                                <c:forEach var="provider" items="${providersList}">
+                                    <%--                                    selectedGenre no deberia ser muy grande, ya que es el listado de genres seleccionados--%>
+                                    <c:forEach var="selectedProvider" items="${selectedProviders}">
+                                        <c:if test="${selectedProvider == provider.providerName}">
+                                            <c:set var="isChecked" value="checked" />
+                                        </c:if>
+                                    </c:forEach>
+                                    <div class="form-check special-provider-class">
+                                        <input ${isChecked} type="checkbox" class="form-check-input special-provider-input" id="dropdownCheck${provider.providerName}">
+<%--                                        <label class="form-check-label" for="dropdownCheck${providersList.indexOf(provider)}">${provider.providerName}</label>--%>
+                                        <label class="form-check-label" for="dropdownCheck${providersList.indexOf(provider)}"><span class="mt-1 badge text-bg-light border border-black">
+                                            <img src="${provider.logoPath}" alt="provider logo" style="height: 1.4em; margin-right: 5px;">
+                                            ${provider.providerName}
+                                        </span></label>
+                                    </div>
+                                    <c:set var="isChecked" value="" /> <!-- Reset the isChecked variable -->
+                                </c:forEach>
+                            </div>
+                        </div>
+
+
                         <button class="btn btn-outline-success me-1" type="submit">Apply filters</button>
                         <select name="orderBy" class="form-select filter-width" aria-label="Filter!">
                             <option ${'name' == param.orderBy ? 'selected' : ''} value="name">Title</option>
-                            <option ${'tmdbrating' == param.orderBy ? 'selected' : ''} value="tmdbrating">Score</option>
+                            <option ${('tmdbrating' == param.orderBy || param.orderBy == null) ? 'selected' : ''} value="tmdbrating">Score</option>
                             <option ${'releasedate' == param.orderBy ? 'selected' : ''} value="releasedate">Release Date</option>
                         </select>
-                        <input type="hidden" name="order" id="sortOrderInput" value="${param.order =='desc'? 'desc':'asc'}">
+                        <%--                PARA TENER EN CUENTA --> MIRAR EL DEFAULT sort y orderBy en el controller para settear los valores iniciales de las labels/iconos--%>
+                        <input type="hidden" name="order" id="sortOrderInput" value="${param.order =='asc'? 'asc':'desc'}">
                         <div class="btn btn-style me-1" id="sortButton" onclick="changeSortOrder('sortOrderInput', 'sortIcon', '${param.orderBy}')">
-                            <i id="sortIcon" class="bi bi-arrow-${param.order == 'desc' ? 'up' : 'down'}-circle-fill"></i>
+                            <i id="sortIcon" class="bi bi-arrow-${param.order == 'asc' ? 'up' : 'down'}-circle-fill"></i>
                         </div>
                     </div>
                     <div >

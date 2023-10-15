@@ -97,7 +97,7 @@ public class MediaController {
         // Aca se realizan 3 queries. Para poder notificar correctamente al JSP de las listas que va a recibir, primero se corre el getMediaCount
         int nameMediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query, null, null, null);
         int creditMediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), null, query, null, null);
-//        int usersCount = userService.getSearchCount(query);
+        int usersCount = userService.getSearchCount(query);
         // Name media query
         if (nameMediaCount > 0){
             mav.addObject("nameMediaFlag", true);
@@ -113,6 +113,12 @@ public class MediaController {
             mav.addObject("creditMediaFlag",false);
         }
         // Users query
+        if (usersCount > 0){
+            mav.addObject("usersFlag", true);
+            mav.addObject("usersList", userService.searchUsers(query,PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),0));
+        }else{
+            mav.addObject("usersFlag",false);
+        }
         // if (usersCount > 0) --> mav.addObject(userList, userService.searchUsers(query,...))
         return mav;
     }
@@ -120,7 +126,7 @@ public class MediaController {
     @RequestMapping("/discover")
     public ModelAndView discover(@RequestParam(value = "query", required = false) String query,
                                @RequestParam(value = "credit", required = false) String credit,
-                               @RequestParam(value = "media", required = false, defaultValue = "Movies and Series") String media,
+                               @RequestParam(value = "media", required = false, defaultValue = "All") String media,
                                @RequestParam(value = "g", required = false) List<String> genres,
                                  @RequestParam(value = "providers", required = false) List<String> providers,
                                  @RequestParam(value="orderBy", defaultValue = "tmdbRating") final String orderBy,
@@ -131,7 +137,7 @@ public class MediaController {
         mav.addObject("searchMode", (query != null && !query.isEmpty()));
         int mediaCount;
 
-        if (media.equals("Movies and Series")){
+        if (media.equals("All")){
             mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, credit,  genres, providers,  orderBy, order,   PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
             mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query, credit, genres, providers);
         }
@@ -148,6 +154,7 @@ public class MediaController {
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
         mav.addObject("genresList", genreService.getAllGenres());
+        mav.addObject("providersList", providerService.getAllProviders());
         return mav;
 
     }

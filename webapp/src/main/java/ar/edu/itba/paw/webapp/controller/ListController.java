@@ -45,6 +45,9 @@ public class ListController {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private ProviderService providerService;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
 
     @RequestMapping("/lists")
@@ -87,8 +90,9 @@ public class ListController {
 
     @RequestMapping("/createList")
     public ModelAndView createList(@RequestParam(value = "g", required = false) List<String> genres,
-                                   @RequestParam(value = "m", required = false,defaultValue = "Movies and Series") String media,
+                                   @RequestParam(value = "m", required = false,defaultValue = "All") String media,
                                    @RequestParam(value = "q", required = false) String query,
+                                   @RequestParam(value = "providers", required = false) List<String> providers,
                                    @RequestParam(value="orderBy", defaultValue = "tmdbRating") final String orderBy,
                                    @RequestParam(value="order", defaultValue = "desc") final String order,
                                    @RequestParam(value = "page",defaultValue = "1") final int pageNumber,
@@ -98,22 +102,23 @@ public class ListController {
         int numberOfPages;
         int mediaCount;
         mav.addObject("searchMode",false);
-        if (media.equals("Movies and Series")){
-            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null, genres, null, orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+        if (media.equals("All")){
+            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null, genres, providers, orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
             mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query,null,genres,null);
         }
         else if (media.equals("Movies")){
-            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), query, null,  genres, null, orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), query, null,  genres, providers, orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
             mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_MOVIE.getType(), query, null, genres, null);
         }
         else{
-            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), query, null,  genres,  null,  orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), query, null,  genres,  providers,  orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
             mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_TVSERIE.getType(), query, null, genres, null);
         }
         numberOfPages = (int) Math.ceil(mediaCount * 1.0 / PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize());
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
         mav.addObject("genresList", genreService.getAllGenres());
+        mav.addObject("providersList", providerService.getAllProviders());
         return mav;
     }
 
@@ -260,7 +265,7 @@ public class ListController {
     @RequestMapping(value = "/createListAction", method = RequestMethod.POST)
     public ModelAndView createListAction(@Valid @ModelAttribute("ListForm") final CreateListForm form, final BindingResult errors, RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
-            return createList(null, null, null, null, null, 1, form);
+            return createList(null, null, null, null, null, null, 1, form);
         }
         MoovieList list = null;
         try {

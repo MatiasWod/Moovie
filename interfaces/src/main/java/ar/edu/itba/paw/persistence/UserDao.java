@@ -21,6 +21,8 @@ public interface UserDao {
 
     List<Profile> searchUsers(String username, int size, int pageNumber);
 
+    int getSearchCount(String username);
+
     Optional<Profile> getProfileByUsername(String username);
 
     void setProfilePicture(int userId, byte[] image);

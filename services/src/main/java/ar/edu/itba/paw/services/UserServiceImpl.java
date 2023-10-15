@@ -128,6 +128,11 @@ public class UserServiceImpl implements UserService {
         return userDao.searchUsers(username, size, pageNumber);
     }
 
+    @Override
+    public int getSearchCount(String username) {
+        return userDao.getSearchCount(username);
+    }
+
     @Transactional(readOnly = true)
     @Override
     public Profile getProfileByUsername(String username) {
