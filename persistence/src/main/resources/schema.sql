@@ -206,7 +206,18 @@ CREATE TABLE IF NOT EXISTS  bannedMessage (
     FOREIGN KEY(modUserId) REFERENCES users(userId) ON DELETE CASCADE,
     FOREIGN KEY(bannedUserId) REFERENCES users(userId) ON DELETE CASCADE,
     UNIQUE(bannedUserId)
-    );
+);
+
+
+--MoovieListsFollows
+CREATE TABLE IF NOT EXISTS moovieListsFollows(
+    moovieListId                        INTEGER NOT NULL,
+    userId                              INTEGER NOT NULL,
+    UNIQUE(moovieListId,userId),
+    FOREIGN KEY(moovieListId) REFERENCES moovieLists(moovieListId) ON DELETE CASCADE,
+    FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE
+);
+
 /*
 --Modifications in table created before for Sprint 2
 

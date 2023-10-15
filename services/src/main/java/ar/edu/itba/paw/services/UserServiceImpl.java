@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.*;
+import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
@@ -94,8 +95,8 @@ public class UserServiceImpl implements UserService {
 
             verificationTokenService.deleteToken(token);
         }
-        moovieListDao.createMoovieList(token.getUserId(), "Watched" , moovieListDao.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE, "" );
-        moovieListDao.createMoovieList(token.getUserId(), "Watchlist", moovieListDao.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE,  "" );
+        moovieListDao.createMoovieList(token.getUserId(), "Watched" , MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType() , "" );
+        moovieListDao.createMoovieList(token.getUserId(), "Watchlist", MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),  "" );
         return isValidToken;
     }
 

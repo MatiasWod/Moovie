@@ -16,33 +16,28 @@ public interface MoovieListService {
     //For controllers is best to use the CARDS
     MoovieList getMoovieListById(int moovieListId);
 
-    MoovieList getWatchedByUserId(int userId);
-
-    MoovieList getWatchlistByUserId(int userId);
+    //Union of the content and the card of a moovieListId, also workds searching with name username
+    MoovieListDetails getMoovieListDetails(int moovieListId, String name, String ownerUsername, String orderBy, String sortOrder, int size, int pageNumber);
 
     //Gets the moovieListCard (recomended for querys and contains useful info for the visualization of a MoovieList
     MoovieListCard getMoovieListCardById(int moovieListId);
+
+    //Bro, just read the function name!
+    List<MoovieListCard> getLikedMoovieListCards(int userId, int type, int size, int pageNumber);
+
+    //Get the MoovieListCard, which contains the element presented in searchs, has a lot of arguments for searchs/querys
+    List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , String orderBy, String order, int size, int pageNumber);
+    int getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber);
 
     //Get the content of media of some moovieList by its id
     //The isWatched is returned as false (in every element) if the user who makes the query is not the owner
     List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy,String sortOrder, int size, int pageNumber);
 
+    //Featured List Functions
     List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber);
-
     int countWatchedFeaturedMoovieListContent(int moovieListId, int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber);
 
-    //Get the MoovieListCard, which contains the element presented in searchs, has a lot of arguments for searchs/querys
-    List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , String orderBy, String order, int size, int pageNumber);
-
-    int getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber);
-
-    List<MoovieListCard> getLikedMoovieListCards(int userId,int type, int size, int pageNumber);
-
-    MoovieListDetails getMoovieListDetails(int moovieListId, String name, String ownerUsername, String orderBy, String sortOrder, int size, int pageNumber);
-
-
     //Create or insert into moovieList
-    MoovieList createMoovieList(String name, int type, String description);
     MoovieList createMoovieListWithContent(String name, int type, String description, List<Integer> mediaIdList);
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
     void deleteMediaFromMoovieList(int moovieListId, int mediaId);
@@ -51,9 +46,4 @@ public interface MoovieListService {
     //Likes functions
     void likeMoovieList( int moovieListId);
     void removeLikeMoovieList(int moovieListId);
-
-    //TODO Change this to be part of the moovielist model
-    boolean likeMoovieListStatusForUser( int moovieListId);
-    int getLikeCountForMoovieList(int moovieListId);
-    int countWatchedMoviesInList(int UserId,int moovieListId);
 }

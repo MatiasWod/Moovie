@@ -49,20 +49,9 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Transactional(readOnly = true)
     @Override
-    public MoovieList getWatchedByUserId(int userId) {
-        return null;
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public MoovieList getWatchlistByUserId(int userId) {
-        return null;
-    }
-
-    @Transactional(readOnly = true)
-    @Override
     public MoovieListCard getMoovieListCardById(int moovieListId) {
-        MoovieListCard mlc = moovieListDao.getMoovieListCardById(moovieListId).orElseThrow( () -> new MoovieListNotFoundException("Moovie list by id: " + moovieListId + " not found"));
+        int currentUserId = userService.tryToGetCurrentUserId();
+        MoovieListCard mlc = moovieListDao.getMoovieListCardById(moovieListId, currentUserId).orElseThrow( () -> new MoovieListNotFoundException("Moovie list by id: " + moovieListId + " not found"));
         if( mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.getType() || mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType()){
             try {
                 User currentUser = userService.getInfoOfMyUser();
@@ -120,7 +109,7 @@ public class MoovieListServiceImpl implements MoovieListService{
                 throw new InvalidAccessToResourceException("Need to be owner to acces thr private list of this user");
             }
         }
-        return moovieListDao.getMoovieListCards(search, ownerUsername, type,orderBy,order, size, pageNumber);
+        return moovieListDao.getMoovieListCards(search, ownerUsername, type,orderBy,order, size, pageNumber, userService.tryToGetCurrentUserId());
     }
 
     @Transactional(readOnly = true)
@@ -132,7 +121,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Transactional(readOnly = true)
     @Override
     public List<MoovieListCard> getLikedMoovieListCards(int userId,int type, int size, int pageNumber){
-        return moovieListDao.getLikedMoovieListCards(userId, type, size, pageNumber);
+        return moovieListDao.getLikedMoovieListCards(userId, type, size, pageNumber, userService.tryToGetCurrentUserId());
     }
 
     @Transactional(readOnly = true)
@@ -140,8 +129,11 @@ public class MoovieListServiceImpl implements MoovieListService{
     public MoovieListDetails getMoovieListDetails(int moovieListId, String name, String ownerUsername, String orderBy, String sortOrder, int size, int pageNumber) {
         MoovieListCard card = null;
         List<MoovieListContent> content = null;
+
+        int currentUserId = userService.tryToGetCurrentUserId();
+
         if(moovieListId == -1){
-            List<MoovieListCard> cards = moovieListDao.getMoovieListCards(name,ownerUsername, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(), null, null, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), 0 );
+            List<MoovieListCard> cards = moovieListDao.getMoovieListCards(name,ownerUsername, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(), null, null, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), 0 , currentUserId);
             if(cards.size() != 1){
                 throw new MoovieListNotFoundException("MoovieList: " + name+ " of: " +ownerUsername+ " not found");
             }
@@ -149,17 +141,11 @@ public class MoovieListServiceImpl implements MoovieListService{
              content = getMoovieListContent(card.getMoovieListId(),orderBy,sortOrder,size,pageNumber);
         }
         else{
-            card = moovieListDao.getMoovieListCardById(moovieListId).get();
+            card = moovieListDao.getMoovieListCardById(moovieListId, currentUserId).get();
             content = getMoovieListContent(moovieListId,orderBy,sortOrder,size,pageNumber);
         }
         return new MoovieListDetails(card,content);
 
-    }
-
-    @Transactional
-    @Override
-    public MoovieList createMoovieList(String name, int type, String description) {
-        return moovieListDao.createMoovieList(userService.getInfoOfMyUser().getUserId(), name, type, description);
     }
 
     @Transactional
@@ -211,11 +197,12 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public void likeMoovieList(int moovieListId) {
         int userId = userService.getInfoOfMyUser().getUserId();
-        if(likeMoovieListStatusForUser(moovieListId)){
+        MoovieListCard mlc = getMoovieListCardById(moovieListId);
+        if(mlc.isCurrentUserHasLiked()){
             moovieListDao.removeLikeMoovieList(userId, moovieListId);
         } else {
             moovieListDao.likeMoovieList(userId, moovieListId);
-            int likeCountForMoovieList = getLikeCountForMoovieList(moovieListId);
+            int likeCountForMoovieList = mlc.getLikeCount();
             if(likeCountForMoovieList != 0 && (likeCountForMoovieList % EVERY_THIS_AMOUNT_OF_LIKES_SEND_EMAIL) == 0){
                 MoovieList mvlAux = getMoovieListById(moovieListId);
                 User toUser = userService.findUserById(mvlAux.getUserId());
@@ -232,32 +219,10 @@ public class MoovieListServiceImpl implements MoovieListService{
         }
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public int getLikeCountForMoovieList(int moovieListId) {
-        return moovieListDao.getLikeCountForMoovieList(moovieListId);
-    }
 
     @Transactional(readOnly = true)
     @Override
     public void removeLikeMoovieList(int moovieListId) {
         moovieListDao.removeLikeMoovieList(userService.getInfoOfMyUser().getUserId(), moovieListId);
-    }
-
-    @Transactional
-    @Override
-    public boolean likeMoovieListStatusForUser(int moovieListId) {
-        try {
-            User currentUser = userService.getInfoOfMyUser();
-            return moovieListDao.likeMoovieListStatusForUser(currentUser.getUserId(), moovieListId);
-        }catch (UserNotLoggedException e){
-            return false;
-        }
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public int countWatchedMoviesInList(int UserId,int moovieListId){
-        return moovieListDao.countWatchedMoviesInList(UserId,moovieListId);
     }
 }
