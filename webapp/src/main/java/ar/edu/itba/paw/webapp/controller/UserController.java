@@ -1,18 +1,24 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.*;
-
 import ar.edu.itba.paw.models.MoovieList.MoovieListDetails;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.Token;
-import ar.edu.itba.paw.services.*;
+import ar.edu.itba.paw.services.MoovieListService;
+import ar.edu.itba.paw.services.ReviewService;
+import ar.edu.itba.paw.services.UserService;
+import ar.edu.itba.paw.services.VerificationTokenService;
+import ar.edu.itba.paw.webapp.auth.MoovieUserDetailsService;
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
 import ar.edu.itba.paw.webapp.form.RegisterForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +51,10 @@ public class UserController {
     @Autowired
     MoovieListService moovieListService;
 
+    @Autowired
+    MoovieUserDetailsService moovieUserDetailsService;
+
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
 
@@ -58,10 +68,15 @@ public class UserController {
     public ModelAndView confirmRegistration(@RequestParam("token") final String token, RedirectAttributes redirectAttributes) {
         try {
             Token verificationToken = verificationTokenService.getToken(token).get();
-            LOGGER.debug("Verification token: " + verificationToken.getToken());
-
             if (userService.confirmRegister(verificationToken)) {
-                return new ModelAndView("redirect:/login");
+                UserDetails userDetails = moovieUserDetailsService.loadUserByUsername(userService.findUserById(verificationToken.getUserId()).getUsername());
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+                LOGGER.info("Auto login " + userDetails.getUsername() + " successfully!");
+                LOGGER.info("Authentication data: " + usernamePasswordAuthenticationToken.getPrincipal() + " " + usernamePasswordAuthenticationToken.getCredentials() + " " + usernamePasswordAuthenticationToken.getAuthorities() + " " + usernamePasswordAuthenticationToken.getDetails() + " " + usernamePasswordAuthenticationToken.isAuthenticated());
+                if (usernamePasswordAuthenticationToken.isAuthenticated()) {
+                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                }
+                return new ModelAndView("redirect:/");
             } else {
                 redirectAttributes.addAttribute("token", token);
                 redirectAttributes.addAttribute("message", "The verification token had expired. A new email was sent!");
@@ -71,6 +86,8 @@ public class UserController {
             return new ModelAndView("helloworld/404");
         }
     }
+
+
 
 
     //TODO

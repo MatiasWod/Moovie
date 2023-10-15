@@ -2,16 +2,15 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.User.Profile;
+import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.User.UserRoles;
 import ar.edu.itba.paw.persistence.MoovieListDao;
 import ar.edu.itba.paw.persistence.UserDao;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import ar.edu.itba.paw.models.User.Token;
 import org.springframework.context.MessageSource;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,7 +84,7 @@ public class UserServiceImpl implements UserService {
             int userId = token.getUserId();
             int role = findUserById(userId).getRole();
 
-            if(role == UserRoles.UNREGISTERED.getRole()){
+            if(role == UserRoles.UNREGISTERED.getRole() || role == UserRoles.NOT_AUTHENTICATED.getRole()){
                 userDao.confirmRegister(token.getUserId(), UserRoles.USER.getRole());
             } else if(role == UserRoles.MODERATOR_NOT_REGISTERED.getRole()){
                 userDao.confirmRegister(token.getUserId(), UserRoles.MODERATOR.getRole());
