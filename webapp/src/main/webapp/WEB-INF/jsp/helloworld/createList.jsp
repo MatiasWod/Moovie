@@ -91,7 +91,11 @@
                                         </c:forEach>
                                         <div class="form-check special-provider-class">
                                             <input ${isChecked} type="checkbox" class="form-check-input special-provider-input" id="dropdownCheck${provider.providerName}">
-                                            <label class="form-check-label" for="dropdownCheck${providersList.indexOf(provider)}">${provider.providerName}</label>
+                                                <%--                                        <label class="form-check-label" for="dropdownCheck${providersList.indexOf(provider)}">${provider.providerName}</label>--%>
+                                            <label class="form-check-label" for="dropdownCheck${providersList.indexOf(provider)}"><span class="mt-1 badge text-bg-light border border-black">
+                                            <img src="${provider.logoPath}" alt="provider logo" style="height: 1.4em; margin-right: 5px;">
+                                            ${provider.providerName}
+                                        </span></label>
                                         </div>
                                         <c:set var="isChecked" value="" /> <!-- Reset the isChecked variable -->
                                     </c:forEach>
