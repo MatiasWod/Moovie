@@ -44,9 +44,11 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         rs.getString("username"),
         rs.getString("description"),
         rs.getInt("likeCount"),
+        rs.getBoolean("currentUserHasLiked"),
         rs.getInt("type"),
         rs.getInt("size"),
         rs.getInt("movieAmount"),
+        rs.getInt("currentUserWatchAmount"),
         rs.getString("images")
     );
 
@@ -99,14 +101,26 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     @Override
-    public Optional<MoovieListCard> getMoovieListCardById(int moovieListId) {
+    public Optional<MoovieListCard> getMoovieListCardById(int moovieListId, int currentUserId) {
         StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(l.userid) AS likeCount, ");
         ArrayList<Object> args = new ArrayList<>();
+
+        sql.append(" ( CASE WHEN EXISTS (SELECT 1 FROM moovielistslikes mll WHERE mll.moovieListId = ? AND mll.userId = ?) ");
+        sql.append(" THEN true ELSE false END )AS currentUserHasLiked, ");
+        args.add(moovieListId);
+        args.add(currentUserId);
 
         sql.append(" ( SELECT ARRAY_AGG(posterPath) FROM ( SELECT m.posterPath FROM moovielistscontent mlc INNER JOIN media m ");
         sql.append(" ON mlc.mediaId = m.mediaId WHERE mlc.moovielistId = ml.moovielistid LIMIT 4 ) AS subquery ) AS images, ");
         sql.append(" (SELECT COUNT(*) FROM moovieListsContent mlc2 WHERE mlc2.moovieListId = ml.moovieListId) AS size, ");
-        sql.append(" (SELECT COUNT(*) FROM moovielistsContent mlc3 INNER JOIN media m2 ON mlc3.mediaid = m2.mediaid WHERE m2.type = false AND mlc3.moovieListid = ml.moovieListId) AS movieAmount ");
+        sql.append(" (SELECT COUNT(*) FROM moovielistsContent mlc3 INNER JOIN media m2 ON mlc3.mediaid = m2.mediaid WHERE m2.type = false AND mlc3.moovieListid = ml.moovieListId) AS movieAmount, ");
+
+        sql.append(" (SELECT COUNT(*) FROM moovielistsContent mlc4 INNER JOIN moovielistscontent mlc5 on mlc4.mediaid=mlc5.mediaid JOIN moovieLists ml2 ");
+        sql.append(" ON mlc5.moovieListId = ml2.moovieListId WHERE mlc4.moovieListId = ? AND ml2.name = 'Watched' AND ml2.userId = ?) AS currentUserWatchAmount ");
+        args.add(moovieListId);
+        args.add(currentUserId);
+
+
         sql.append(" FROM moovieLists ml LEFT JOIN users u ON ml.userid = u.userid LEFT JOIN moovieListsLikes l ON ml.moovielistid = l.moovielistid ");
         sql.append(" WHERE ml.moovieListId = ? GROUP BY ml.moovielistid, u.userid;");
 
@@ -115,15 +129,25 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         return jdbcTemplate.query(sql.toString(), args.toArray(), MOOVIE_LIST_CARD_ROW_MAPPER).stream().findFirst();
     }
 
+
     @Override
-    public List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , String orderBy, String order, int size, int pageNumber){
+    public List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , String orderBy, String order, int size, int pageNumber, int currentUserId){
         StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(l.userid) AS likeCount, ");
         ArrayList<Object> args = new ArrayList<>();
+
+        sql.append(" ( CASE WHEN EXISTS (SELECT 1 FROM moovielistslikes mll WHERE mll.moovieListId = ml.moovieListId AND mll.userId = ?) ");
+        sql.append(" THEN true ELSE false END )AS currentUserHasLiked, ");
+        args.add(currentUserId);
 
         sql.append(" ( SELECT ARRAY_AGG(posterPath) FROM ( SELECT posterPath FROM moovielistscontent mlc INNER JOIN media m ");
         sql.append(" ON mlc.mediaId = m.mediaid WHERE mlc.moovielistId = ml.moovielistid LIMIT 4 ) AS subquery ) AS images, ");
         sql.append(" (SELECT COUNT(*) FROM moovieListsContent mlc2 WHERE mlc2.moovieListId = ml.moovieListId) AS size, ");
-        sql.append(" (SELECT COUNT(*) FROM moovielistsContent mlc3 INNER JOIN media m2 ON mlc3.mediaid = m2.mediaid WHERE m2.type = false AND mlc3.moovieListid = ml.moovieListId) AS movieAmount ");
+        sql.append(" (SELECT COUNT(*) FROM moovielistsContent mlc3 INNER JOIN media m2 ON mlc3.mediaid = m2.mediaid WHERE m2.type = false AND mlc3.moovieListid = ml.moovieListId) AS movieAmount, ");
+
+        sql.append(" (SELECT COUNT(*) FROM moovielistsContent mlc4 INNER JOIN moovielistscontent mlc5 on mlc4.mediaid=mlc5.mediaid JOIN moovieLists ml2 ");
+        sql.append(" ON mlc5.moovieListId = ml2.moovieListId WHERE mlc4.moovieListId = ml.moovieListid AND ml2.name = 'Watched' AND ml2.userId = ?) AS currentUserWatchAmount ");
+        args.add(currentUserId);
+
         sql.append(" FROM moovieLists ml LEFT JOIN users u ON ml.userid = u.userid LEFT JOIN moovieListsLikes l ON ml.moovielistid = l.moovielistid ");
 
         sql.append(" WHERE type = ? ");
@@ -150,6 +174,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         return jdbcTemplate.query(sql.toString(), args.toArray(), MOOVIE_LIST_CARD_ROW_MAPPER);
     }
 
+
     @Override
     public int getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber){
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM moovielists");
@@ -169,7 +194,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
 
     @Override
-    public List<MoovieListCard> getLikedMoovieListCards(int userId, int type, int size, int pageNumber) {
+    public List<MoovieListCard> getLikedMoovieListCards(int userId, int type, int size, int pageNumber, int currentUserId) {
         StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(l.userId) AS likeCount, ");
         ArrayList<Object> args = new ArrayList<>();
 
@@ -351,35 +376,11 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         moovieListLikesJdbcInsert.execute(args);
     }
 
-    @Override
-    public int getLikeCountForMoovieList(int moovieListId){
-        return jdbcTemplate.query("SELECT COUNT(*) FROM moovieListsLikes WHERE moovieListId = ?", new Object[]{moovieListId},COUNT_ROW_MAPPER)
-                .stream().findFirst().get().intValue();
-    }
 
     @Override
     public void removeLikeMoovieList(int userId, int moovieListId) {
         String sql = "DELETE FROM moovielistslikes WHERE userid=? AND moovieListId = ?";
         jdbcTemplate.update( sql , new Object[]{userId, moovieListId} );
-    }
-
-    @Override
-    public boolean likeMoovieListStatusForUser(int userId, int moovieListId) {
-        Optional<MoovieListLikes> mll = jdbcTemplate.query("SELECT * FROM moovieListsLikes WHERE moovieListId = ? AND userId = ?", new Object[]{moovieListId, userId} , MOOVIE_LIST_LIKES_ROW_MAPPER)
-                .stream().findFirst();
-        return mll.isPresent();
-    }
-
-    @Override
-    public int countWatchedMoviesInList(int userId, int moovieListId){
-        String sql = "SELECT COUNT(*) " +
-                "FROM moovieListsContent mlc " +
-                "JOIN moovieListsContent mlcw ON mlc.mediaId = mlcw.mediaId " +
-                "JOIN moovieLists ml ON mlcw.moovieListId = ml.moovieListId " +
-                "WHERE mlc.moovieListId = ? " +
-                "AND ml.name = 'Watched' " +
-                "AND ml.userId = ?; ";
-        return jdbcTemplate.query(sql, new Object[]{moovieListId, userId}, COUNT_ROW_MAPPER).stream().findFirst().get().intValue();
     }
 }
 

@@ -92,7 +92,8 @@
                         <div>
                             <div class="card-name-likes">
                                 <div class="card-content overflow-hidden">
-                                    <h5 class="card-title"><strong><c:out value="${showList.name}"/></strong></h5>
+                                    <h5 class="card-title"><strong><c:out value="${showList.name}"/></strong>
+                                        <c:if test="${showList.getcurrentUserWatchAmount() == showList.size }"> <i class="bi bi-check-circle-fill" style="color: green"></i></c:if></h5>
                                 </div>
                                 <div class="card-likes">
                                     <h5><i class="bi bi-hand-thumbs-up"></i>${showList.likeCount}</h5>

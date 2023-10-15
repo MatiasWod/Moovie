@@ -16,10 +16,6 @@ public interface MoovieListService {
     //For controllers is best to use the CARDS
     MoovieList getMoovieListById(int moovieListId);
 
-    MoovieList getWatchedByUserId(int userId);
-
-    MoovieList getWatchlistByUserId(int userId);
-
     //Gets the moovieListCard (recomended for querys and contains useful info for the visualization of a MoovieList
     MoovieListCard getMoovieListCardById(int moovieListId);
 
@@ -51,9 +47,4 @@ public interface MoovieListService {
     //Likes functions
     void likeMoovieList( int moovieListId);
     void removeLikeMoovieList(int moovieListId);
-
-    //TODO Change this to be part of the moovielist model
-    boolean likeMoovieListStatusForUser( int moovieListId);
-    int getLikeCountForMoovieList(int moovieListId);
-    int countWatchedMoviesInList(int UserId,int moovieListId);
 }

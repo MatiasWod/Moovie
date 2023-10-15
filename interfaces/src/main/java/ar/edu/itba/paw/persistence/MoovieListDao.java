@@ -11,35 +11,29 @@ import java.util.Optional;
 
 public interface MoovieListDao {
 
-    public static final int MOOVIE_LIST_TYPE_STANDARD_PUBLIC = 1;   //Listas que crea un usuario y son publicas
-    public static final int MOOVIE_LIST_TYPE_STANDARD_PRIVATE = 2;  //Listas que crea un usuario y puso privada
-    public static final int MOOVIE_LIST_TYPE_DEFAULT_PUBLIC = 3;   //Listas creadas automaticamente por ej: "Top 50"
-    public static final int MOOVIE_LIST_TYPE_DEFAULT_PRIVATE = 4;   //Listas creadas automaticamente por ej: "Watchlist"
 
-
-    MoovieList getWatchedByUserId(int userId);
-
-    MoovieList getWatchlistByUserId(int userId);
 
     Optional<MoovieList> getMoovieListById(int moovieListId);
-    Optional<MoovieListCard> getMoovieListCardById(int moovieListId);
-    List<MoovieListContent> getMoovieListContent(int moovieListId, int userid, String orderBy,String sortOrder, int size, int pageNumber);
-    List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, int userid, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber);
-    int countWatchedFeaturedMoovieListContent(int moovieListId, int mediaType, int userid , String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber);
-    List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , String orderBy, String order, int size, int pageNumber);
+
+    Optional<MoovieListCard> getMoovieListCardById(int moovieListId, int currentUserId);
+    List<MoovieListCard> getLikedMoovieListCards(int userId,int type, int size, int pageNumber, int currentUserId);
+
+    List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , String orderBy, String order, int size, int pageNumber, int currentUserId);
     int getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber);
 
-    List<MoovieListCard> getLikedMoovieListCards(int userId,int type, int size, int pageNumber);
+    List<MoovieListContent> getMoovieListContent(int moovieListId, int userid, String orderBy,String sortOrder, int size, int pageNumber);
+
+    List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, int userid, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber);
+    int countWatchedFeaturedMoovieListContent(int moovieListId, int mediaType, int userid , String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber);
+    MoovieList getWatchedByUserId(int userId);
+    MoovieList getWatchlistByUserId(int userId);
 
     MoovieList createMoovieList(int userId, String name, int type, String description);
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
     void deleteMediaFromMoovieList(int moovieListId, int mediaId);
     void deleteMoovieList(int moovieListId);
 
-    void likeMoovieList(int userId, int moovieListId);
-    int getLikeCountForMoovieList(int moovieListId);
-    void removeLikeMoovieList(int userId, int moovieListId);
-    boolean likeMoovieListStatusForUser(int userId, int moovieListId);
 
-    int countWatchedMoviesInList(int userId, int moovieListId);
+    void removeLikeMoovieList(int userId, int moovieListId);
+    void likeMoovieList(int userId, int moovieListId);
 }
