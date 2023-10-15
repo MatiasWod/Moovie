@@ -95,7 +95,12 @@
                             <div class="card-name-likes">
                                 <div class="card-content overflow-hidden">
                                     <h5 class="card-title"><strong><c:out value="${showList.name}"/></strong>
-                                        <c:if test="${showList.currentUserWatchAmount == showList.size }"> <i class="bi bi-check-circle-fill" style="color: green"></i></c:if></h5>
+                                        <c:if test="${showList.currentUserWatchAmount == showList.size }">             <span
+                                                class="d-inline-block"
+                                                data-bs-toggle="popover" data-bs-trigger="hover"
+                                                data-bs-content="You have watched all the medias in this list">
+                <i class="bi bi-check-circle-fill" style="color: green"></i>
+            </span></c:if></h5>
                                 </div>
                                 <div class="card-likes">
                                     <h5><i class="bi bi-hand-thumbs-up"></i>${showList.likeCount}</h5>
@@ -153,4 +158,11 @@
         margin-right: 10px;
         min-width: 50px;
     }
+
 </style>
+
+<script>
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
+</script>
