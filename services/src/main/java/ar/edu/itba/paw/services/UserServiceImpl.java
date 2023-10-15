@@ -3,6 +3,7 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.models.User.UserRoles;
 import ar.edu.itba.paw.persistence.MoovieListDao;
 import ar.edu.itba.paw.persistence.UserDao;
 import org.apache.commons.io.IOUtils;
@@ -29,10 +30,6 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final MessageSource messageSource;
     private final VerificationTokenService verificationTokenService;
-    private static final int ROLE_NOT_AUTHENTICATED = -1;
-    private static final int ROLE_UNREGISTERED = 0;
-    private static final int ROLE_USER = 1;
-    private static final int ROLE_MODERATOR = 2;
 
     @Autowired
     public UserServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder, EmailService emailService,
@@ -59,7 +56,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> aux = userDao.findUserByEmail(email);
 
         if(aux.isPresent()){
-            if(aux.get().getRole() == ROLE_UNREGISTERED){
+            if(aux.get().getRole() == UserRoles.UNREGISTERED.getRole()){
                 User user = createUserFromUnregistered(username, email, password);
                 String token = verificationTokenService.createVerificationToken(user.getUserId());
                 sendVerificationEmail(email,username,token);
@@ -85,7 +82,17 @@ public class UserServiceImpl implements UserService {
     public boolean confirmRegister(Token token) {
         boolean isValidToken = verificationTokenService.isValidToken(token);
         if(isValidToken) {
-            userDao.confirmRegister(token.getUserId(), ROLE_USER);
+            int userId = token.getUserId();
+            int role = findUserById(userId).getRole();
+
+            if(role == UserRoles.UNREGISTERED.getRole()){
+                userDao.confirmRegister(token.getUserId(), UserRoles.USER.getRole());
+            } else if(role == UserRoles.MODERATOR_NOT_REGISTERED.getRole()){
+                userDao.confirmRegister(token.getUserId(), UserRoles.MODERATOR.getRole());
+            } else if(role == UserRoles.BANNED_NOT_REGISTERED.getRole()){
+                userDao.confirmRegister(token.getUserId(), UserRoles.BANNED.getRole());
+            }
+
             verificationTokenService.deleteToken(token);
         }
         moovieListDao.createMoovieList(token.getUserId(), "Watched" , moovieListDao.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE, "" );

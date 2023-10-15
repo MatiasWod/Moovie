@@ -84,13 +84,17 @@ public class ModeratorServiceImpl implements ModeratorService{
     public void banUser(int userId, String message) {
         amIModerator();
         User u = userDao.findUserById(userId).orElseThrow(() -> new UnableToFindUserException("No user for the id = " + userId ));
-        if(u.getRole() == UserRoles.MODERATOR.getRole()){
+        if(u.getRole() == UserRoles.MODERATOR.getRole() || u.getRole() == UserRoles.MODERATOR_NOT_REGISTERED.getRole()){
             throw new UnableToBanUserException("Cannot ban another moderator");
         }
+
         if(u.getRole() == UserRoles.UNREGISTERED.getRole()){
-            throw new UnableToBanUserException("Cannot ban an unregisted user");
+            userDao.changeUserRole(userId, UserRoles.BANNED_NOT_REGISTERED.getRole());
         }
-        userDao.changeUserRole(userId, UserRoles.BANNED.getRole());
+        else{
+            userDao.changeUserRole(userId, UserRoles.BANNED.getRole());
+        }
+
         bannedDao.createBannedMessage(userId, userService.getInfoOfMyUser().getUserId(), message);
 
         final Map<String,Object> mailMap = new HashMap<>();
@@ -105,13 +109,12 @@ public class ModeratorServiceImpl implements ModeratorService{
     public void unbanUser(int userId) {
         amIModerator();
         User u = userDao.findUserById(userId).orElseThrow(() -> new UnableToFindUserException("No user for the id = " + userId ));
-        if(u.getRole() == UserRoles.MODERATOR.getRole()){
-            throw new UnableToBanUserException("Cannot unban another moderator");
-        }
+
         if(u.getRole() == UserRoles.UNREGISTERED.getRole()){
-            throw new UnableToBanUserException("Cannot ban an unregisted user");
+            userDao.changeUserRole(userId, UserRoles.NOT_AUTHENTICATED.getRole());
+        } else{
+            userDao.changeUserRole(userId, UserRoles.USER.getRole());
         }
-        userDao.changeUserRole(userId, UserRoles.USER.getRole());
         bannedDao.deleteBannedMessage(userId);
 
         final Map<String,Object> mailMap = new HashMap<>();
@@ -125,10 +128,15 @@ public class ModeratorServiceImpl implements ModeratorService{
     public void makeUserModerator(int userId) {
         amIModerator();
         User u = userDao.findUserById(userId).orElseThrow(() -> new UnableToFindUserException("No user for the id = " + userId ));
-        if(u.getRole() != UserRoles.USER.getRole() ){
-            throw new UnableToChangeRoleException("Unable to change role of uid: " + userId + ", user must be ROLE_USER");
+        if(u.getRole() == UserRoles.MODERATOR.getRole() || u.getRole() == UserRoles.MODERATOR_NOT_REGISTERED.getRole()){
+            throw new UnableToChangeRoleException("Unable to change role of uid: " + userId + ", user must not be ROLE_MODERATOR");
         }
-        userDao.changeUserRole(userId, UserRoles.MODERATOR.getRole());
+
+        if(u.getRole() == UserRoles.UNREGISTERED.getRole()){
+            userDao.changeUserRole(userId, UserRoles.MODERATOR_NOT_REGISTERED.getRole());
+        } else{
+            userDao.changeUserRole(userId, UserRoles.MODERATOR.getRole());
+        }
     }
 
     private void amIModerator(){

@@ -56,10 +56,10 @@
             <div class="m-2">
                 <div class="d-flex align-items-center justify-content-between">
                     <h1><c:out value="${profile.username}"/></h1>
-                    <c:if test="${profile.role == 2}">
+                    <c:if test="${profile.role == 2 || profile.role == -102}">
                         <img class="cropCenter" style="height:50px;width:50px" src="${pageContext.request.contextPath}/resources/moderator_logo.png" alt="moderator profile pic">
                     </c:if>
-                    <c:if test="${profile.role == -2}">
+                    <c:if test="${profile.role == -2 || profile.role == -101}">
                         <span class="ms-2 me-2 badge text-bg-danger" aria-disabled="true">Banned</span>
                     </c:if>
 
@@ -71,7 +71,7 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <c:choose>
-                                        <c:when test="${profile.role != -2}">
+                                        <c:when test="${profile.role != -2 && profile.role != -101 }">
                                             <li>
                                                 <button class="dropdown-item" onclick="openPopup('ban-popup')">Ban User</button>
                                             </li>
@@ -79,7 +79,7 @@
                                                 <button class="dropdown-item" onclick="openPopup('mod-popup')">Make User Mod</button>
                                             </li>
                                         </c:when>
-                                        <c:when test="${profile.role == -2}">
+                                        <c:when test="${profile.role == -2 || profile.role == -101}">
                                             <li>
                                                 <button class="dropdown-item" onclick="openPopup('unban-popup')">Unban User</button>
                                             </li>
