@@ -113,6 +113,17 @@ public class UserDaoJdbcImpl implements UserDao{
     }
 
     @Override
+    public int getSearchCount(String username) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) AS count ");
+        ArrayList<Object> args = new ArrayList<>();
+
+        sql.append("FROM users WHERE username ILIKE ? ");
+        args.add('%' + username + '%');
+
+        return jdbcTemplate.query(sql.toString(), args.toArray(), COUNT_ROW_MAPPER).stream().findFirst().get().intValue();
+    }
+
+    @Override
     public Optional<Profile> getProfileByUsername(String username) {
         StringBuilder sql = new StringBuilder("SELECT * , ");
         ArrayList<Object> args = new ArrayList<>();

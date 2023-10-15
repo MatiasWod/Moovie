@@ -97,7 +97,7 @@ public class MediaController {
         // Aca se realizan 3 queries. Para poder notificar correctamente al JSP de las listas que va a recibir, primero se corre el getMediaCount
         int nameMediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query, null, null, null);
         int creditMediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), null, query, null, null);
-//        int usersCount = userService.getSearchCount(query);
+        int usersCount = userService.getSearchCount(query);
         // Name media query
         if (nameMediaCount > 0){
             mav.addObject("nameMediaFlag", true);
@@ -113,6 +113,12 @@ public class MediaController {
             mav.addObject("creditMediaFlag",false);
         }
         // Users query
+        if (usersCount > 0){
+            mav.addObject("usersFlag", true);
+            mav.addObject("usersList", userService.searchUsers(query,PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),0));
+        }else{
+            mav.addObject("usersFlag",false);
+        }
         // if (usersCount > 0) --> mav.addObject(userList, userService.searchUsers(query,...))
         return mav;
     }
