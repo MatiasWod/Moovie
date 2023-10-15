@@ -25,8 +25,7 @@ public interface MoovieListDao {
 
     List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, int userid, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber);
     int countWatchedFeaturedMoovieListContent(int moovieListId, int mediaType, int userid , String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber);
-    MoovieList getWatchedByUserId(int userId);
-    MoovieList getWatchlistByUserId(int userId);
+
 
     MoovieList createMoovieList(int userId, String name, int type, String description);
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
