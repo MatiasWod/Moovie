@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS moovieLists(
     name                                VARCHAR(255) NOT NULL,
     description                         TEXT,
     type                                INTEGER NOT NULL,
+    customOrder                        INTEGER NOT NULL,
     FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE,
     UNIQUE(userId,name)
 );
@@ -42,7 +43,7 @@ CREATE TABLE IF NOT EXISTS media(
 CREATE TABLE IF NOT EXISTS moovieListsContent(
     moovieListId                        INTEGER NOT NULL,
     mediaId                            INTEGER NOT NULL,
-    status                             VARCHAR(30),
+
     UNIQUE(moovieListId,mediaId),
     FOREIGN KEY(moovieListId) REFERENCES moovieLists(moovieListId) ON DELETE CASCADE,
     FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE
@@ -225,5 +226,13 @@ Hay que modificar el reviews que tiene el like ahi, pero en realidad es un count
 
 --Reviews change
 ALTER TABLE reviews DROP COLUMN reviewlikes;
+
+--MoovieLists changes
+ALTER TABLE moovielistscontent DROP COLUMN status
+ALTER TABLE moovieListsContent ADD COLUMN customOrder INTEGER;
+
+
+ALTER TABLE moovieListsContent ALTER COLUMN defaultOrder SET NOT NULL;
+
  */
 
