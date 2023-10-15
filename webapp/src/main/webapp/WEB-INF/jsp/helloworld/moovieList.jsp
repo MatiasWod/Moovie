@@ -87,7 +87,7 @@
                     </select>
                     <input type="hidden" name="order" id="sortOrderInput" value="${param.order =='desc'? 'desc':'asc'}">
                     <div style="margin: 0;" class="btn btn-style" id="sortButton" onclick="changeSortOrder('sortOrderInput', 'sortIcon', '${param.orderBy}')">
-                        <i id="sortIcon" class="bi bi-arrow-${param.order == 'desc' ? 'up' : 'down'}-circle-fill"></i>
+                        <i id="sortIcon" class="bi bi-arrow-${param.order == 'desc' ? 'down' : 'up'}-circle-fill"></i>
                     </div>
                     <button type="submit" id="applyButton" class="btn btn-style2">Apply</button>
                 </div>
