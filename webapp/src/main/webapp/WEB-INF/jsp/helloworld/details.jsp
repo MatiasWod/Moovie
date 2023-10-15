@@ -96,11 +96,14 @@
                 <div class="providers-container" style="max-width: 80%; overflow-x: auto; max-height: 200px;">
                     <!-- Providers content here -->
                     <c:forEach var="provider" items="${providersList}">
-                        <span class="badge text-bg-light border border-black" style="margin: 3px;">
+                        <a href="${pageContext.request.contextPath}/discover?providers=${provider.providerName}">
+                            <span class="badge text-bg-light border border-black" style="margin: 3px;">
                             <img src="${provider.logoPath}" alt="${provider.providerName} logo not found"
                                  style="height: 1.6em; margin-right: 5px;">
                             ${provider.providerName}
                         </span>
+                        </a>
+
                     </c:forEach>
                 </div>
             </div>
