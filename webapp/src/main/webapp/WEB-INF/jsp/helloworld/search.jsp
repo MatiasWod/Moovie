@@ -112,7 +112,7 @@
     <c:if test="${usersFlag}">
         <div class="container d-flex justify-content-between mt-2 p-2">
             <h3>Users for: ${param.query}</h3>
-            <a href="${pageContext.request.contextPath}/discover?credit=${param.query}">see more</a>
+<%--            <a href="${pageContext.request.contextPath}/discover?credit=${param.query}">see more</a>--%>
         </div>
         <hr class="my-1">
         <div class="container d-flex overflow-hidden" style="max-height: 300px;">
