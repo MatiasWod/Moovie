@@ -59,6 +59,7 @@
                     <option ${'likeCount' == param.orderBy ? 'selected' : ''} value="likeCount">Likes</option>
                     <option ${('moovieListId' == param.orderBy || param.orderBy == null)? 'selected' : ''} value="moovieListId">Recent</option>
                 </select>
+<%--                PARA TENER EN CUENTA --> MIRAR EL DEFAULT sort y orderBy en el controller para settear los valores iniciales de las labels/iconos--%>
                 <input type="hidden" name="order" id="sortOrderInput" value="${param.order =='asc'? 'asc':'desc'}">
                 <div class="btn btn-style me-1" id="sortButton" onclick="changeSortOrder('sortOrderInput', 'sortIcon', '${param.orderBy}')">
                     <i id="sortIcon" class="bi bi-arrow-${param.order == 'asc' ? 'up' : 'down'}-circle-fill"></i>
