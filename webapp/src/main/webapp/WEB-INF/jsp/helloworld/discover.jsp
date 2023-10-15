@@ -23,6 +23,7 @@
     <title>Discover your next favorite experience</title>
     <script src="${pageContext.request.contextPath}/resources/discoverFunctions.js?version=81"></script>
     <script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=82"></script>
+    <link href="${pageContext.request.contextPath}/resources/buttonsStyle.css?version=1" rel="stylesheet"/>
 
 </head>
 <body style="background: whitesmoke">

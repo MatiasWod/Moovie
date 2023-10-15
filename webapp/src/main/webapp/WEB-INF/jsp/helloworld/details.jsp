@@ -13,7 +13,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/resources/main.css?version=55" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/resources/details.css?version=55" rel="stylesheet"/>
-    <link href="${pageContext.request.contextPath}/resources/likeButtons.css?version=1" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/buttonsStyle.css?version=1" rel="stylesheet"/>
     <title>Moovie-${media.name}</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -411,7 +411,7 @@
                                                   method="post">
                                                 <input type="hidden" name="reviewId" value="${review.reviewId}"/>
                                                 <input type="hidden" name="mediaId" value="${media.mediaId}"/>
-                                                <button class="btn like-btn-style" style="font-size: 14px">
+                                                <button class="btn btn-style" style="font-size: 14px">
                                         <span>
                                          <i class="bi bi-hand-thumbs-up-fill"></i>
                                         ${review.reviewLikes}
@@ -424,7 +424,7 @@
                                             <form action="${pageContext.request.contextPath}/likeReview" method="post">
                                                 <input type="hidden" name="reviewId" value="${review.reviewId}"/>
                                                 <input type="hidden" name="mediaId" value="${media.mediaId}"/>
-                                                <button class="btn like-btn-style" style="font-size: 14px">
+                                                <button class="btn btn-style" style="font-size: 14px">
                                         <span>
                                     <i class="bi bi-hand-thumbs-up"></i>
                                         ${review.reviewLikes}

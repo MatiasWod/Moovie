@@ -23,6 +23,7 @@
     <title>Share your favorite media</title>
     <script src="${pageContext.request.contextPath}/resources/createListFunctions.js?version=82"></script>
     <script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=82"></script>
+    <link href="${pageContext.request.contextPath}/resources/buttonsStyle.css?version=1" rel="stylesheet"/>
 
 </head>
 <body style="background: whitesmoke">

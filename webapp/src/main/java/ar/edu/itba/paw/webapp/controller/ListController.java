@@ -253,6 +253,7 @@ public class ListController {
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
         mav.addObject("isLiked",moovieListCard.isCurrentUserHasLiked());
+        mav.addObject("isFollowed",moovieListCard.isCurrentUserHasFollowed());
         mav.addObject("likedCount",moovieListCard.getLikeCount());
         mav.addObject("listOwner",moovieListCard.getUsername());
         mav.addObject("orderBy", orderBy);
@@ -287,6 +288,12 @@ public class ListController {
     @RequestMapping(value = "/like", method = RequestMethod.POST)
     public ModelAndView putLike(@RequestParam("listId") int listId) {
         moovieListService.likeMoovieList(listId);
+        return new ModelAndView("redirect:/list/" + listId);
+    }
+
+    @RequestMapping(value = "/followList", method = RequestMethod.POST)
+    public ModelAndView followList(@RequestParam("listId") int listId) {
+        moovieListService.followMoovieList(listId);
         return new ModelAndView("redirect:/list/" + listId);
     }
 

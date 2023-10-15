@@ -13,7 +13,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <title>Moovie List</title>
     <link href="${pageContext.request.contextPath}/resources/moovieList.css?version=65" rel="stylesheet"/>
-    <link href="${pageContext.request.contextPath}/resources/likeButtons.css?version=1" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/buttonsStyle.css?version=1" rel="stylesheet"/>
     <script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=87"></script>
 </head>
 <body style="background: whitesmoke">
@@ -58,24 +58,43 @@
     </c:if>
     <div class="buttons">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
+            <div class="d-flex flex-row justify-content-center">
+                <div>
                 <form action="${pageContext.request.contextPath}/like" method="POST">
                     <input type="hidden" name="listId" value="${moovieList.moovieListId}"/>
                     <c:choose>
                         <c:when test="${isLiked}">
-                            <button type="submit" class="btn like-btn-style"><i
+                            <button type="submit" class="btn btn-style"><i
                                     class="bi bi-hand-thumbs-up-fill"></i>${likedCount} Liked
                             </button>
                         </c:when>
                         <c:otherwise>
-                            <button type="submit" class="btn like-btn-style"><i
+                            <button type="submit" class="btn btn-style"><i
                                     class="bi bi-hand-thumbs-up"></i>${likedCount}
                                 Like
                             </button>
                         </c:otherwise>
                     </c:choose>
                 </form>
+                </div>
+                <div>
+                    <c:out value="${isFollowed}"> </c:out>
+                    <form action="${pageContext.request.contextPath}/followList" method="POST">
+                        <input type="hidden" name="listId" value="${moovieList.moovieListId}"/>
+                        <c:choose>
+                            <c:when test="${isFollowed}">
+                                <button type="submit" class="btn btn-style2"><i class="bi bi-bell-fill"></i> Following
+                                </button>
+                            </c:when>
+                            <c:otherwise>
+                                <button type="submit" class="btn btn-style2"><i class="bi bi-bell"></i> Follow
+                                </button>
+                            </c:otherwise>
+                        </c:choose>
+                    </form>
+                </div>
             </div>
+
             <form id="sortForm" method="get">
                 <div style="display: flex; align-items: center;">
                     <h2 style="padding-right: 4px">Sort by</h2>

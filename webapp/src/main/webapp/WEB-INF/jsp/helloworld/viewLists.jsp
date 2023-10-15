@@ -20,6 +20,8 @@
     <link href="${pageContext.request.contextPath}/resources/details.css?version=87" rel="stylesheet"/>
     <title>Discover your next passion</title>
     <script src="${pageContext.request.contextPath}/resources/browseListsFunctions.js?version=87"></script>
+    <link href="${pageContext.request.contextPath}/resources/buttonsStyle.css?version=1" rel="stylesheet"/>
+
 </head>
 <body style="background: whitesmoke">
 <c:import url="navBar.jsp">
