@@ -30,6 +30,8 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     private static final int EVERY_THIS_AMOUNT_OF_LIKES_SEND_EMAIL = 5;
 
+    private static final int EVERY_THIS_AMOUNT_OF_FOLLOWS_SEND_EMAIL = 5;
+
     @Transactional(readOnly = true)
     @Override
     public MoovieList getMoovieListById(int moovieListId) { //Check permissions
@@ -235,6 +237,20 @@ public class MoovieListServiceImpl implements MoovieListService{
             moovieListDao.removeFollowMoovieList(userId, moovieListId);
         } else {
             moovieListDao.followMoovieList(userId, moovieListId);
+            int followCountForMoovieList = mlc.getFollowerCount();
+            if(followCountForMoovieList != 0 && (followCountForMoovieList % EVERY_THIS_AMOUNT_OF_FOLLOWS_SEND_EMAIL) == 0){
+                MoovieList mvlAux = getMoovieListById(moovieListId);
+                User toUser = userService.findUserById(mvlAux.getUserId());
+                Map<String,Object> map = new HashMap<>();
+                map.put("username",toUser.getUsername());
+                map.put("follows", followCountForMoovieList);
+                map.put("moovieListId",mvlAux.getMoovieListId());
+                map.put("moovieListName",mvlAux.getName());
+                emailService.sendEmail(toUser.getEmail(),
+                        "New follow goal on your list!",
+                        "notificationFollowMilestoneMoovieList.html",
+                        map);
+            }
         }
     }
 
