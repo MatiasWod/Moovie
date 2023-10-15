@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -156,16 +157,16 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
         // Input its participants in actors, media.name, creators and directors
         if (participant!=null && participant.length()>0) {
-            sql.append(" AND ( " );
+            sql.append(" AND  " );
             sql.append(" (  m.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
             args.add('%' + participant + '%');
 
-            if(type != TYPE_TVSERIE){
+            if(type != MediaTypes.TYPE_TVSERIE.getType()){
                 sql.append(" OR m.mediaId IN (SELECT mediaid FROM movies m WHERE director ILIKE ? ) ");
                 args.add('%' + participant + '%');
             }
 
-            if(type != TYPE_MOVIE){
+            if(type != MediaTypes.TYPE_MOVIE.getType()){
                 sql.append(" OR m.mediaId IN (SELECT mediaid FROM creators c WHERE creatorname ILIKE ? ) ");
                 args.add('%' + participant + '%');
             }
@@ -235,12 +236,12 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
     @Override
     public int getMediaCount(int type, String search, String participantSearch, List<String> genres, List<String> providers) {
-        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM media ");
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM media m ");
         ArrayList<Object> args = new ArrayList<>();
         Boolean flag = false;
 
         // If type is 0 or 1 it's specifically movies or TVs, else it's not restricted
-        if (type == 0 || type == 1) {
+        if (type == MediaTypes.TYPE_MOVIE.getType() || type == MediaTypes.TYPE_TVSERIE.getType()) {
             sql.append(" WHERE type = ? ");
             args.add(type == 1);
         } else {
@@ -285,23 +286,23 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
         // Input its participants in actors, media.name, creators and directors
         if (participantSearch!=null && !participantSearch.isEmpty()) {
-            sql.append(" AND ( " );
+            sql.append(" AND " );
             sql.append(" ( m.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
             args.add('%' + participantSearch + '%');
 
-            if(type != TYPE_TVSERIE){
+            if(type != MediaTypes.TYPE_TVSERIE.getType()){
                 sql.append(" OR m.mediaId IN (SELECT mediaid FROM movies m WHERE director ILIKE ? ) ");
                 args.add('%' + participantSearch + '%');
             }
 
-            if(type != TYPE_MOVIE){
+            if(type != MediaTypes.TYPE_MOVIE.getType()){
                 sql.append(" OR m.mediaId IN (SELECT mediaid FROM creators c WHERE creatorname ILIKE ? ) ");
                 args.add('%' + participantSearch + '%');
             }
 
             sql.append(" ) ");
         }
-
+        sql.append(";");
         // Execute the query
         return jdbcTemplate.query(sql.toString(), args.toArray(), COUNT_ROW_MAPPER).stream().findFirst().get().intValue();
     }
