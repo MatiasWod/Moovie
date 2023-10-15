@@ -225,4 +225,22 @@ public class MoovieListServiceImpl implements MoovieListService{
     public void removeLikeMoovieList(int moovieListId) {
         moovieListDao.removeLikeMoovieList(userService.getInfoOfMyUser().getUserId(), moovieListId);
     }
+
+    @Transactional
+    @Override
+    public void followMoovieList(int moovieListId) {
+        int userId = userService.tryToGetCurrentUserId();
+        MoovieListCard mlc = getMoovieListCardById(moovieListId);
+        if(mlc.isCurrentUserHasFollowed()){
+            moovieListDao.removeFollowMoovieList(userId, moovieListId);
+        } else {
+            moovieListDao.followMoovieList(userId, moovieListId);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public void removeFollowMoovieList(int moovieListId) {
+        moovieListDao.removeFollowMoovieList(userService.tryToGetCurrentUserId(), moovieListId);
+    }
 }

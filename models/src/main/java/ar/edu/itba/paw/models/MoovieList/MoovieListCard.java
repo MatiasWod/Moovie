@@ -13,19 +13,23 @@ public class MoovieListCard {
     private final String description;
     private final int likeCount;
     private final boolean currentUserHasLiked;
+    private final int followerCount;
+    private final boolean currentUserHasFollowed;
     private final int type;
     private final int size;
     private final int moviesAmount;
     private final int currentUserWatchAmount;
     private List<String> images;
 
-    public MoovieListCard(int moovieListId, String name,  String username, String description, int likeCount, boolean currentUserHasLiked, int type, int size, int moviesAmount, int currentUserWatchAmount, String images) {
+    public MoovieListCard(int moovieListId, String name,  String username, String description, int likeCount,  boolean currentUserHasLiked, int followerCount, boolean currentUserHasFollowed, int type, int size, int moviesAmount, int currentUserWatchAmount, String images) {
         this.moovieListId = moovieListId;
         this.name = name;
         this.username = username;
         this.description = description;
         this.likeCount = likeCount;
         this.currentUserHasLiked = currentUserHasLiked;
+        this.followerCount = followerCount;
+        this.currentUserHasFollowed = currentUserHasFollowed;
         this.type = type;
         this.size = size;
         this.moviesAmount = moviesAmount;
@@ -62,6 +66,14 @@ public class MoovieListCard {
         return currentUserHasLiked;
     }
 
+    public int getFollowerCount() {
+        return followerCount;
+    }
+
+    public boolean isCurrentUserHasFollowed() {
+        return currentUserHasFollowed;
+    }
+
     public int getType() {
         return type;
     }
@@ -74,11 +86,11 @@ public class MoovieListCard {
         return moviesAmount;
     }
 
-    public int getcurrentUserWatchAmount() {
+    public int getCurrentUserWatchAmount() {
         return currentUserWatchAmount;
     }
+
     public List<String> getImages() {
         return images;
     }
-
 }

@@ -2,10 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.MediaTypes;
-import ar.edu.itba.paw.models.MoovieList.MoovieList;
-import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
-import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
-import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
+import ar.edu.itba.paw.models.MoovieList.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,6 +19,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     private final SimpleJdbcInsert moovieListJdbcInsert;
     private final SimpleJdbcInsert moovieListContentJdbcInsert;
     private final SimpleJdbcInsert moovieListLikesJdbcInsert;
+    private final SimpleJdbcInsert moovieListFollowsJdbcInsert;
     private static final int INITIAL_LIKE_COUNT = 0;
 
     private static final RowMapper<MoovieList> MOOVIE_LIST_ROW_MAPPER = (rs, rowNum) -> new MoovieList(
@@ -38,6 +36,11 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
             rs.getInt("userId")
     );
 
+    private static final RowMapper<MoovieListFollowers> MOOVIE_LIST_FOLLOWERS_ROW_MAPPER = (rs, rowNum) -> new MoovieListFollowers(
+            rs.getInt("moovielistid"),
+            rs.getInt("userId")
+    );
+
     private static final RowMapper<MoovieListCard> MOOVIE_LIST_CARD_ROW_MAPPER = (rs, rowNum) -> new MoovieListCard(
         rs.getInt("moovieListId"),
         rs.getString("name"),
@@ -45,6 +48,8 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         rs.getString("description"),
         rs.getInt("likeCount"),
         rs.getBoolean("currentUserHasLiked"),
+        rs.getInt("followerCount"),
+        rs.getBoolean("currentUserHasFollowed"),
         rs.getInt("type"),
         rs.getInt("size"),
         rs.getInt("movieAmount"),
@@ -82,6 +87,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         moovieListJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("moovieLists").usingGeneratedKeyColumns("moovielistid");
         moovieListContentJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("moovieListsContent");
         moovieListLikesJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("moovieListsLikes");
+        moovieListFollowsJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("moovieListsFollows");
     }
 
     @Override
@@ -91,11 +97,16 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     @Override
     public Optional<MoovieListCard> getMoovieListCardById(int moovieListId, int currentUserId) {
-        StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(l.userid) AS likeCount, ");
+        StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(l.userid) AS likeCount, COUNT(mlf.userid) AS followerCount,");
         ArrayList<Object> args = new ArrayList<>();
 
         sql.append(" ( CASE WHEN EXISTS (SELECT 1 FROM moovielistslikes mll WHERE mll.moovieListId = ? AND mll.userId = ?) ");
-        sql.append(" THEN true ELSE false END )AS currentUserHasLiked, ");
+        sql.append(" THEN true ELSE false END ) AS currentUserHasLiked, ");
+        args.add(moovieListId);
+        args.add(currentUserId);
+
+        sql.append(" ( CASE WHEN EXISTS (SELECT 1 FROM moovielistsfollows mlf1 WHERE mlf1.moovieListId = ? AND mlf1.userId = ?) ");
+        sql.append(" THEN true ELSE false END ) AS currentUserHasFollowed, ");
         args.add(moovieListId);
         args.add(currentUserId);
 
@@ -111,6 +122,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
 
         sql.append(" FROM moovieLists ml LEFT JOIN users u ON ml.userid = u.userid LEFT JOIN moovieListsLikes l ON ml.moovielistid = l.moovielistid ");
+        sql.append(" LEFT JOIN moovieListsFollows mlf ON ml.moovielistid = mlf.moovielistid ");
         sql.append(" WHERE ml.moovieListId = ? GROUP BY ml.moovielistid, u.userid;");
 
         args.add(moovieListId);
@@ -121,11 +133,15 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     @Override
     public List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , String orderBy, String order, int size, int pageNumber, int currentUserId){
-        StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(l.userid) AS likeCount, ");
+        StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(l.userid) AS likeCount, COUNT(mlf.userid) AS followerCount, ");
         ArrayList<Object> args = new ArrayList<>();
 
         sql.append(" ( CASE WHEN EXISTS (SELECT 1 FROM moovielistslikes mll WHERE mll.moovieListId = ml.moovieListId AND mll.userId = ?) ");
         sql.append(" THEN true ELSE false END )AS currentUserHasLiked, ");
+        args.add(currentUserId);
+
+        sql.append(" ( CASE WHEN EXISTS (SELECT 1 FROM moovielistsfollows mlfs WHERE mlfs.moovieListId = ml.moovieListId AND mlfs.userId = ?) ");
+        sql.append(" THEN true ELSE false END )AS currentUserHasFollowed, ");
         args.add(currentUserId);
 
         sql.append(" ( SELECT ARRAY_AGG(posterPath) FROM ( SELECT posterPath FROM moovielistscontent mlc INNER JOIN media m ");
@@ -138,6 +154,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         args.add(currentUserId);
 
         sql.append(" FROM moovieLists ml LEFT JOIN users u ON ml.userid = u.userid LEFT JOIN moovieListsLikes l ON ml.moovielistid = l.moovielistid ");
+        sql.append(" LEFT JOIN moovieListsFollows mlf ON ml.moovieListId = mlf.moovieListId ");
 
         sql.append(" WHERE type = ? ");
         args.add(type);
@@ -370,6 +387,45 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     public void removeLikeMoovieList(int userId, int moovieListId) {
         String sql = "DELETE FROM moovielistslikes WHERE userid=? AND moovieListId = ?";
         jdbcTemplate.update( sql , new Object[]{userId, moovieListId} );
+    }
+
+    @Override
+    public List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber, int currentUserId) {
+        StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(mlf.userId) AS followerCount, ");
+        ArrayList<Object> args = new ArrayList<>();
+
+        sql.append(" ( SELECT ARRAY_AGG(posterPath) FROM ( SELECT posterPath FROM moovieListsContent mlc INNER JOIN media m ");
+        sql.append(" ON mlc.mediaId = m.mediaId WHERE mlc.moovieListId = ml.moovieListId LIMIT 4 ) AS subquery ) AS images, ");
+        sql.append(" (SELECT COUNT(*) FROM moovieListsContent mlc2 WHERE mlc2.moovieListId = ml.moovieListId) AS size, ");
+        sql.append(" (SELECT COUNT(*) FROM moovieListsContent mlc3 INNER JOIN media m2 ON mlc3.mediaId = m2.mediaId WHERE m2.type = false AND mlc3.moovieListId = ml.moovieListId) AS movieAmount ");
+        sql.append(" FROM moovieLists ml LEFT JOIN users u ON ml.userId = u.userId LEFT JOIN moovieListsFollows mlf ON ml.moovieListId = mlf.moovieListId ");
+
+        sql.append(" WHERE type = ? ");
+        args.add(type);
+
+        sql.append(" AND ml.moovieListId IN (SELECT moovieListId FROM moovieListsLikes WHERE userId = ?) ");
+        args.add(userId);
+
+        sql.append(" GROUP BY ml.moovieListId, u.userId LIMIT ? OFFSET ?;");
+        args.add(size);
+        args.add(size * pageNumber);
+
+        return jdbcTemplate.query(sql.toString(), args.toArray(), MOOVIE_LIST_CARD_ROW_MAPPER);
+    }
+
+    @Override
+    public void removeFollowMoovieList(int userId, int moovieListId) {
+        String sql = "DELETE FROM moovielistsfollows WHERE userid=? AND moovieListId = ?";
+        jdbcTemplate.update( sql , new Object[]{userId, moovieListId} );
+    }
+
+    @Override
+    public void followMoovieList(int userId, int moovieListId) {
+        final Map<String,Object> args = new HashMap<>();
+        args.put("moovieListId", moovieListId);
+        args.put("userId", userId);
+
+        moovieListFollowsJdbcInsert.execute(args);
     }
 }
 

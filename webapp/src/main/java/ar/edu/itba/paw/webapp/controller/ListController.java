@@ -154,7 +154,7 @@ public class ListController {
         mav.addObject("mediaList",myList.getContent());
         try {
             User currentUser=userService.getInfoOfMyUser();
-            mav.addObject("watchedCount",myList.getCard().getcurrentUserWatchAmount());
+            mav.addObject("watchedCount",myList.getCard().getCurrentUserWatchAmount());
             mav.addObject("watchedListId",moovieListService.getMoovieListCards("Watched",currentUser.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId());
         }catch (Exception e){
             mav.addObject("watchedCount",0);
