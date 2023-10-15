@@ -121,12 +121,12 @@
                         <button class="btn btn-outline-success me-1" type="submit">Apply filters</button>
                         <select name="orderBy" class="form-select filter-width" aria-label="Filter!">
                             <option ${'name' == param.orderBy ? 'selected' : ''} value="name">Title</option>
-                            <option ${'tmdbrating' == param.orderBy ? 'selected' : ''} value="tmdbrating">Score</option>
+                            <option ${('tmdbrating' == param.orderBy || param.orderBy == null) ? 'selected' : ''} value="tmdbrating">Score</option>
                             <option ${'releasedate' == param.orderBy ? 'selected' : ''} value="releasedate">Release Date</option>
                         </select>
-                        <input type="hidden" name="order" id="sortOrderInput" value="${param.order =='desc'? 'desc':'asc'}">
+                        <input type="hidden" name="order" id="sortOrderInput" value="${param.order =='asc'? 'asc':'desc'}">
                         <div class="btn btn-style me-1" id="sortButton" onclick="changeSortOrder('sortOrderInput', 'sortIcon', '${param.orderBy}')">
-                            <i id="sortIcon" class="bi bi-arrow-${param.order == 'desc' ? 'up' : 'down'}-circle-fill"></i>
+                            <i id="sortIcon" class="bi bi-arrow-${param.order == 'asc' ? 'up' : 'down'}-circle-fill"></i>
                         </div>
                     </div>
                     <div >
