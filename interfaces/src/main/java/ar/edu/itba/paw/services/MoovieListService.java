@@ -26,10 +26,10 @@ public interface MoovieListService {
     List<MoovieListCard> getLikedMoovieListCards(int userId, int type, int size, int pageNumber);
 
     //Returns the followed MoovieListsCards
-    List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber, int currentUserId);
+    List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber);
 
-    //Returns the recomended
-    List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber, int currentUserId);
+    //Returns a list of recomended amount of moovie list, recomends are based on user who liked this list likes (if the return size < size its filled with random moovie lists)
+    List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber);
 
 
     //Get the MoovieListCard, which contains the element presented in searchs, has a lot of arguments for searchs/querys
