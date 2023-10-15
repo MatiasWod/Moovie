@@ -136,7 +136,10 @@ public class UserController {
     @RequestMapping("/profile/{username:.+}")
     public ModelAndView profilePage(@PathVariable String username,
                                     @RequestParam( value = "list", required = false) String list,
-                                    @RequestParam(value = "page",defaultValue = "1") final int pageNumber){
+                                    @RequestParam(value = "page",defaultValue = "1") final int pageNumber,
+                                    @RequestParam(value="orderBy", defaultValue = "name") final String orderBy,
+                                    @RequestParam(value="order", defaultValue = "asc") final String order
+                                    ){
         try{
             Profile requestedProfile = userService.getProfileByUsername(username);
 
@@ -158,6 +161,16 @@ public class UserController {
                         queries.put("list","watched-list");
                         numberOfPages = (int) Math.ceil(listCount * 1.0 / PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize());
                         mav.addObject("listDetails",watchedDetails);
+                        mav.addObject("moovieList",watchedDetails.getCard());
+                        mav.addObject("mediaList",watchedDetails.getContent());
+                        mav.addObject("watchedCount",watchedDetails.getCard().getCurrentUserWatchAmount());
+                        mav.addObject("watchedListId",watchedDetails.getCard().getMoovieListId());
+                        mav.addObject("listCount",watchedDetails.getCard().getSize());
+                        mav.addObject("numberOfPages",numberOfPages);
+                        mav.addObject("currentPage",pageNumber - 1);
+                        mav.addObject("listOwner",watchedDetails.getCard().getUsername());
+                        mav.addObject("orderBy", orderBy);
+                        mav.addObject("order", order);
                         break;
                     case "watchlist":
                         MoovieListDetails watchlistDetails = moovieListService.getMoovieListDetails(-1, "WATCHLIST" , username, null, "asc",PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(),pageNumber-1);

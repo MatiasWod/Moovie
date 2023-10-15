@@ -17,7 +17,6 @@
     <script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=87"></script>
 </head>
 <body style="background: whitesmoke">
-<c:import url="navBar.jsp"/>
 <div class="container d-flex flex-column">
     <div class="header d-flex text-center">
         <div class="d-flex flex-column flex-grow-1">

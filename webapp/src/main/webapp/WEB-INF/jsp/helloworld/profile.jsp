@@ -205,112 +205,13 @@
 
         <c:if test="${param.list == 'watched-list' || param.list == 'watchlist'}">
             <div class="container lists-container" id="detailed-list" style="margin-top: 30px">
-
-                <div class="container d-flex flex-column">
-                    <div class="header">
-                        <h1 style="font-size: 60px; font-weight: bold;"><c:out value="${listDetails.card.name}"/></h1>
-                        <h3><c:out value="${listDetails.card.description}"/></h3>
-                    </div>
-                    <div style="display: flex; align-items: center;justify-content: center">
-                        <c:if test="${listDetails.card.moviesAmount > 0}">
-                            <h4>${listDetails.card.moviesAmount} Movies</h4>
-                        </c:if>
-                        <c:if test="${listDetails.card.moviesAmount > 0 && (listDetails.card.size - listDetails.card.moviesAmount) > 0}">
-                            <style>
-                                h4 {
-                                    margin-right: 10px; /* Add a space between "Movies" and "Series" */
-                                }
-                            </style>
-                        </c:if>
-                        <c:if test="${(listDetails.card.size - listDetails.card.moviesAmount) > 0}">
-                            <h4>${(listDetails.card.size - listDetails.card.moviesAmount)} Series</h4>
-                        </c:if>
-<%--                        <c:if test="${listDetails.card.moviesAmount > 0 && tvSeriesCount > 0}">--%>
-<%--                            <h4 style="margin-right: 5px;margin-left: 5px">and</h4>--%>
-<%--                        </c:if>--%>
-<%--                        <c:if test="${tvSeriesCount > 0}">--%>
-<%--                            <h4>${tvSeriesCount} Series</h4>--%>
-<%--                        </c:if>--%>
-                    </div>
-                    <table class="table table-striped" id="movieTable">
-                        <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Title</th>
-                            <th scope="col">Type</th>
-                            <th scope="col">Score</th>
-                            <th scope="col">Release Date</th>
-                        </tr>
-                        </thead>
-                        <c:choose>
-                            <c:when test="${not empty listDetails.content}">
-                                <tbody>
-                                <c:forEach var="index" items="${listDetails.content}" varStatus="loop">
-                                    <tr>
-                                        <!-- Index -->
-                                        <td style="text-align: center">${loop.index + 1}</td>
-                                        <!-- Title -->
-                                        <td>
-                                            <div class="row align-items-center">
-                                                <div class="col-auto">
-                                                    <a href="${pageContext.request.contextPath}/details/${listDetails.content[loop.index].mediaId}"
-                                                       style="text-decoration: none; color: inherit;">
-                                                        <img src="${listDetails.content[loop.index].posterPath}" class="img-fluid" width="100"
-                                                             height="100" alt="${listDetails.content[loop.index].name} poster"/>
-                                                    </a>
-                                                </div>
-                                                <div class="col">
-                                                    <a href="${pageContext.request.contextPath}/details/${listDetails.content[loop.index].mediaId}"
-                                                       style="text-decoration: none; color: inherit;">
-                                                        <strong>${listDetails.content[loop.index].name}</strong>
-                                                    </a>
-                                                </div>
-                                                <c:if test="${listDetails.content[loop.index].watched}">
-                                                    <div class="col-auto">
-                                                        <i class="bi bi-check-circle-fill" style="color: green"></i>
-                                                    </div>
-                                                </c:if>
-                                            </div>
-                                        </td>
-                                        <!-- Type -->
-                                        <td>
-                                            <c:choose>
-                                                <c:when test="${listDetails.content[loop.index].type}">
-                                                    Tv Series
-                                                </c:when>
-                                                <c:otherwise>
-                                                    Movie
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </td>
-                                        <!-- Score -->
-                                        <td>${listDetails.content[loop.index].tmdbRating}<i class="bi bi-star-fill" style="margin-left: 5px"></i>
-                                        </td>
-                                        <td>
-                                            <span>${listDetails.content[loop.index].releaseDate}</span>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                                </tbody>
-                            </c:when>
-                            <c:otherwise>
-                                <tbody>
-                                <tr>
-                                    <td colspan="5">List is empty</td>
-                                </tr>
-                                </tbody>
-                            </c:otherwise>
-                        </c:choose>
-                    </table>
-                </div>
+                <c:import url="/WEB-INF/jsp/helloworld/moovieList.jsp">
+                    <c:param name="mediaPages" value="${numberOfPages}"/>
+                    <c:param name="currentPage" value="${currentPage + 1}"/>
+                    <c:param name="url" value="${urlBase}"/>
+                    <c:param name="list" value="${param.list}"/>
+                </c:import>
             </div>
-        <div class="m-1">
-            <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
-                <c:param name="mediaPages" value="${numberOfPages}"/>
-                <c:param name="currentPage" value="${currentPage + 1}"/>
-                <c:param name="url" value="${urlBase}"/>
-            </c:import>
-        </div>
         </c:if>
 
         <c:if test="${param.list == 'liked-lists'}">
