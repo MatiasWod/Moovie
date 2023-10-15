@@ -154,6 +154,7 @@ public class MediaController {
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
         mav.addObject("genresList", genreService.getAllGenres());
+        mav.addObject("providersList", providerService.getAllProviders());
         return mav;
 
     }

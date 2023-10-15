@@ -22,29 +22,23 @@ function deleteGenre(element) {
 
 function beforeSubmit() {
     console.log('running beforeSubmit');
+
     const selectedOptions = [];
-    document.querySelectorAll('.form-check-input:checked').forEach(function(checkbox) {
+    document.querySelectorAll('.special-genre-input:checked').forEach(function(checkbox) {
         console.log('checkbox elem: '+checkbox.id);
         selectedOptions.push(checkbox.nextElementSibling.innerText);
     });
-
-
     document.getElementById('hiddenGenreInput').value = selectedOptions.join(",");
+
+    const selectedProviders = [];
+    document.querySelectorAll('.special-provider-input:checked').forEach(function(checkbox) {
+        console.log('checkbox elem: '+checkbox.id);
+        selectedProviders.push(checkbox.nextElementSibling.innerText);
+    });
+    document.getElementById('hiddenProviderInput').value = selectedProviders.join(",");
 };
 
-function loadPreview(title, rating, posterPath, overview, adult, id, year) {
-    document.getElementById("preview").style.display = 'block';
-    document.getElementById("preview-title").innerText = title;
-    document.getElementById("preview-rating").innerText = rating;
-    document.getElementById("preview-img").src = posterPath;
-    document.getElementById("preview-synopsis").innerText = overview;
-    document.getElementById("preview-details").href = 'details/' + String(id);
-    var yearSubstring = year.split('-')[0];
-    document.getElementById("preview-year").innerText = yearSubstring;
-    if (adult == 'true'){
-        document.getElementById("preview-explicit").style.display = 'block';
-    }
-};
+
 function toggleGenreSelect() {
     const filterTypesSelect = document.getElementById("filter-types");
     const genreSelect = document.getElementById("genre-select");
@@ -55,3 +49,30 @@ function toggleGenreSelect() {
         genreSelect.style.display = "none";
     }
 };
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    function addSearchFunctionality(searchBoxId, formCheckClass) {
+        var searchBox = document.getElementById(searchBoxId);
+        searchBox.addEventListener("keyup", function() {
+            var value = searchBox.value.toLowerCase();
+            var formChecks = document.querySelectorAll(formCheckClass);
+
+            formChecks.forEach(function(formCheck) {
+                var label = formCheck.querySelector("label").textContent.toLowerCase();
+                if (label.indexOf(value) > -1) {
+                    formCheck.style.display = "";
+                } else {
+                    formCheck.style.display = "none";
+                }
+            });
+        });
+    }
+
+    // Añadir funcionalidad de búsqueda al campo de géneros
+    addSearchFunctionality("searchBoxGenre", ".special-genre-class");
+
+    // Añadir funcionalidad de búsqueda al campo de proveedores
+    addSearchFunctionality("searchBoxProvider", ".special-provider-class");
+});
+

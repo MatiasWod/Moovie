@@ -27,7 +27,11 @@
 </head>
 <body style="background: whitesmoke">
 <c:import url="navBar.jsp"/>
+
+<%--variables para el manejo de selected filters--%>
 <c:set var="selectedGenres" value="${fn:split(param.g, ',')}" />
+<c:set var="selectedProviders" value="${fn:split(param.providers, ',')}" />
+
 <div class="container d-flex flex-column">
     <div class="container d-flex flex-row ">
         <%--        FILTROS y PELIS    --%>
@@ -63,6 +67,7 @@
                             </button>
                             <c:set var="isChecked" value="" />
                             <div style="height: 50vh" class="dropdown-menu scrollableDiv flex-wrap p-4">
+                                <input type="text" id="searchBoxGenre" placeholder="Search..." class="form-control mb-3">
                  <%--   ES NECESARIO UTILIZAR LA VAR isChecked.
                    Porque al simplemente realizar fn:contains(param.g,genre)
                    existen casos como Action&Adventure que siempre daran match para Action y Adventure
@@ -74,14 +79,45 @@
                                             <c:set var="isChecked" value="checked" />
                                         </c:if>
                                     </c:forEach>
-                                    <div class="form-check">
-                                        <input ${isChecked} type="checkbox" class="form-check-input" id="dropdownCheck${genre}">
+                                    <div class="form-check special-genre-class">
+                                        <input ${isChecked} type="checkbox" class="form-check-input special-genre-input" id="dropdownCheck${genre}">
                                         <label class="form-check-label" for="dropdownCheck${genresList.indexOf(genre)}">${genre}</label>
                                     </div>
                                     <c:set var="isChecked" value="" /> <!-- Reset the isChecked variable -->
                                 </c:forEach>
                             </div>
                         </div>
+
+
+                        <input type="hidden" name="providers" id="hiddenProviderInput">
+                        <div class="dropdown">
+                            <button style="height:100%;width: 150px;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                Providers
+                            </button>
+                            <c:set var="isChecked" value="" />
+                            <div style="height: 50vh" class="dropdown-menu scrollableDiv flex-wrap p-4">
+                                <input type="text" id="searchBoxProvider" placeholder="Search..." class="form-control mb-3">
+                                <%--   ES NECESARIO UTILIZAR LA VAR isChecked.
+                                  Porque al simplemente realizar fn:contains(param.g,genre)
+                                  existen casos como Action&Adventure que siempre daran match para Action y Adventure
+                                  Es preferible esto a en el controlador manejar la creacion de modelos nuevos que contemplen el checked para cada genero--%>
+                                <c:forEach var="provider" items="${providersList}">
+                                    <%--                                    selectedGenre no deberia ser muy grande, ya que es el listado de genres seleccionados--%>
+                                    <c:forEach var="selectedProvider" items="${selectedProviders}">
+                                        <c:if test="${selectedProvider == provider.providerName}">
+                                            <c:set var="isChecked" value="checked" />
+                                        </c:if>
+                                    </c:forEach>
+                                    <div class="form-check special-provider-class">
+                                        <input ${isChecked} type="checkbox" class="form-check-input special-provider-input" id="dropdownCheck${provider.providerName}">
+                                        <label class="form-check-label" for="dropdownCheck${providersList.indexOf(provider)}">${provider.providerName}</label>
+                                    </div>
+                                    <c:set var="isChecked" value="" /> <!-- Reset the isChecked variable -->
+                                </c:forEach>
+                            </div>
+                        </div>
+
+
                         <button class="btn btn-outline-success me-1" type="submit">Apply filters</button>
                         <select name="orderBy" class="form-select filter-width" aria-label="Filter!">
                             <option ${'name' == param.orderBy ? 'selected' : ''} value="name">Title</option>

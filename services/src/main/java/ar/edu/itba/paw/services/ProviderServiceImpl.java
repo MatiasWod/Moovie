@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Provider.Provider;
+import ar.edu.itba.paw.models.Provider.dimensionedProvider;
 import ar.edu.itba.paw.persistence.ProviderDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ public class ProviderServiceImpl implements ProviderService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<Provider> getAllProviders() {
+    public List<dimensionedProvider> getAllProviders() {
         return providerDao.getAllProviders();
     }
 }
