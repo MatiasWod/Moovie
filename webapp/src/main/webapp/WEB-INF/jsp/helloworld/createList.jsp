@@ -83,7 +83,7 @@
                                           existen casos como Action&Adventure que siempre daran match para Action y Adventure
                                           Es preferible esto a en el controlador manejar la creacion de modelos nuevos que contemplen el checked para cada genero--%>
                                     <c:forEach var="provider" items="${providersList}">
-                                        <%--                                    selectedGenre no deberia ser muy grande, ya que es el listado de genres seleccionados--%>
+                                        <%--                                    selectedProviders no deberia ser muy grande, ya que es el listado de providers seleccionados--%>
                                         <c:forEach var="selectedProvider" items="${selectedProviders}">
                                             <c:if test="${selectedProvider == provider.providerName}">
                                                 <c:set var="isChecked" value="checked" />
