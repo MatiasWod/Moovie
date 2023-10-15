@@ -90,7 +90,7 @@ public class ListController {
 
     @RequestMapping("/createList")
     public ModelAndView createList(@RequestParam(value = "g", required = false) List<String> genres,
-                                   @RequestParam(value = "m", required = false,defaultValue = "Movies and Series") String media,
+                                   @RequestParam(value = "m", required = false,defaultValue = "All") String media,
                                    @RequestParam(value = "q", required = false) String query,
                                    @RequestParam(value = "providers", required = false) List<String> providers,
                                    @RequestParam(value="orderBy", defaultValue = "tmdbRating") final String orderBy,

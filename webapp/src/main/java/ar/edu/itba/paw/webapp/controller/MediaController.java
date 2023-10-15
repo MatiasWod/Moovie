@@ -126,7 +126,7 @@ public class MediaController {
     @RequestMapping("/discover")
     public ModelAndView discover(@RequestParam(value = "query", required = false) String query,
                                @RequestParam(value = "credit", required = false) String credit,
-                               @RequestParam(value = "media", required = false, defaultValue = "Movies and Series") String media,
+                               @RequestParam(value = "media", required = false, defaultValue = "All") String media,
                                @RequestParam(value = "g", required = false) List<String> genres,
                                  @RequestParam(value = "providers", required = false) List<String> providers,
                                  @RequestParam(value="orderBy", defaultValue = "tmdbRating") final String orderBy,
