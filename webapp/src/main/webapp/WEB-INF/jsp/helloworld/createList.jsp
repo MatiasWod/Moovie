@@ -37,7 +37,7 @@
                         <input type="hidden"  id="selected-media-input" />
                         <div role="group" class="input-group d-flex flex-row m-1 me-3">
                             <select  name="m" class="form-select filter-width" aria-label="Filter!">
-                                <option ${'Movies and Series' == param.m ? 'selected' : ''}>Movies and Series</option>
+                                <option ${'All' == param.m ? 'selected' : ''}>All media</option>
                                 <option  ${'Movies' == param.m ? 'selected' : ''}>Movies</option>
                                 <option  ${'Series' == param.m ? 'selected' : ''}>Series</option>
                             </select>

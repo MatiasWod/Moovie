@@ -102,7 +102,7 @@ public class ListController {
         int numberOfPages;
         int mediaCount;
         mav.addObject("searchMode",false);
-        if (media.equals("Movies and Series")){
+        if (media.equals("All")){
             mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null, genres, providers, orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
             mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query,null,genres,null);
         }

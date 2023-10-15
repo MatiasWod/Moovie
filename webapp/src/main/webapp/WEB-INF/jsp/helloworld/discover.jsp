@@ -55,7 +55,7 @@
 
                     <div class="d-flex align-content-center  flex-row">
                         <select name="media" class="form-select filter-width" aria-label="Filter!">
-                            <option ${'Movies and Series' == param.media ? 'selected' : ''}>Movies and Series</option>
+                            <option ${'All' == param.media ? 'selected' : ''}>All media</option>
                             <option  ${'Movies' == param.media ? 'selected' : ''}>Movies</option>
                             <option  ${'Series' == param.media ? 'selected' : ''}>Series</option>
                         </select>
