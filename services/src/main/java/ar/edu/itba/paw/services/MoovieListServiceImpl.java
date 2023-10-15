@@ -126,6 +126,18 @@ public class MoovieListServiceImpl implements MoovieListService{
         return moovieListDao.getLikedMoovieListCards(userId, type, size, pageNumber, userService.tryToGetCurrentUserId());
     }
 
+    public List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber, int currentUserId){
+        return moovieListDao.getFollowedMoovieListCards(userId, type, size, pageNumber, currentUserId);
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber, int currentUserId){
+        return moovieListDao.getRecommendedMoovieListCards(moovieListId, size, pageNumber, currentUserId);
+    }
+
+
     @Transactional(readOnly = true)
     @Override
     public MoovieListDetails getMoovieListDetails(int moovieListId, String name, String ownerUsername, String orderBy, String sortOrder, int size, int pageNumber) {

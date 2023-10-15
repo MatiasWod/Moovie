@@ -25,9 +25,17 @@ public interface MoovieListService {
     //Bro, just read the function name!
     List<MoovieListCard> getLikedMoovieListCards(int userId, int type, int size, int pageNumber);
 
+    //Returns the followed MoovieListsCards
+    List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber, int currentUserId);
+
+    //Returns the recomended
+    List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber, int currentUserId);
+
+
     //Get the MoovieListCard, which contains the element presented in searchs, has a lot of arguments for searchs/querys
     List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , String orderBy, String order, int size, int pageNumber);
     int getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber);
+
 
     //Get the content of media of some moovieList by its id
     //The isWatched is returned as false (in every element) if the user who makes the query is not the owner

@@ -18,6 +18,7 @@ public interface MoovieListDao {
     Optional<MoovieListCard> getMoovieListCardById(int moovieListId, int currentUserId);
     List<MoovieListCard> getLikedMoovieListCards(int userId,int type, int size, int pageNumber, int currentUserId);
     List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber, int currentUserId);
+    List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber, int currentUserId);
 
     List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , String orderBy, String order, int size, int pageNumber, int currentUserId);
     int getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber);
@@ -26,6 +27,7 @@ public interface MoovieListDao {
 
     List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, int userid, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber);
     int countWatchedFeaturedMoovieListContent(int moovieListId, int mediaType, int userid , String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber);
+
 
 
     MoovieList createMoovieList(int userId, String name, int type, String description);
