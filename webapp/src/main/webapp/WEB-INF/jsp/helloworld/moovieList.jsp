@@ -78,7 +78,6 @@
                 </form>
                 </div>
                 <div>
-                    <c:out value="${isFollowed}"> </c:out>
                     <form action="${pageContext.request.contextPath}/followList" method="POST">
                         <input type="hidden" name="listId" value="${moovieList.moovieListId}"/>
                         <c:choose>

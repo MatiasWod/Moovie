@@ -162,6 +162,7 @@ public class ListController {
         mav.addObject("listCount",mediaCountForMoovieList);
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
+        mav.addObject("isFollowed",moovieListCard.isCurrentUserHasFollowed());
         mav.addObject("isLiked",myList.getCard().isCurrentUserHasLiked());
         mav.addObject("likedCount",moovieListCard.getLikeCount());
         mav.addObject("listOwner",moovieListCard.getUsername());
