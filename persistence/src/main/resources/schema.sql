@@ -259,5 +259,10 @@ SELECT initcustomorder();
 ALTER TABLE moovieListsContent ALTER COLUMN customOrder SET NOT NULL;
 ALTER TABLE moovieListsContent ADD CONSTRAINT unique_moovieList_media_customOrder UNIQUE (moovieListId, mediaId, customOrder);
 
+
+ALTER TABLE media DROP COLUMN totalrating;
+ALTER TABLE media DROP COLUMN votecount;
+
+
  */
 
