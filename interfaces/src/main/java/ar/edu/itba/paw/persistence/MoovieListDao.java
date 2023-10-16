@@ -18,6 +18,8 @@ public interface MoovieListDao {
     Optional<MoovieListCard> getMoovieListCardById(int moovieListId, int currentUserId);
     List<MoovieListCard> getLikedMoovieListCards(int userId,int type, int size, int pageNumber, int currentUserId);
     List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber, int currentUserId);
+    int getFollowedMoovieListCardsCount(int userId, int type);
+
     List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber, int currentUserId);
 
     List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , String orderBy, String order, int size, int pageNumber, int currentUserId);

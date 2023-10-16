@@ -39,7 +39,6 @@
         <input type="hidden" name="token" value="${param.token}">
         <button type="submit" class="btn btn-lg btn-outline-success mt-4">Resend verification email</button>
     </form>
-
 </div>
 </body>
 </html>

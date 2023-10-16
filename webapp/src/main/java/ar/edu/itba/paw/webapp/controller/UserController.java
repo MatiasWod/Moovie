@@ -190,6 +190,12 @@ public class UserController {
                         numberOfPages = (int) Math.ceil(listCount * 1.0 / PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize());
                         //Obtener la cantidad de reviews del usuario
                         break;
+                    case "followed":
+                        mav.addObject("showLists",moovieListService.getFollowedMoovieListCards(requestedProfile.getUserId(),MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(),pageNumber-1));
+                        queries.put("list","followed");
+                        listCount = moovieListService.getFollowedMoovieListCardsCount(requestedProfile.getUserId(),MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
+                        numberOfPages = (int) Math.ceil(listCount * 1.0 / PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize());
+                        break;
                     default: // este es el caso para user-lists. como es el default al entrar al profile
                         mav.addObject("showLists", moovieListService.getMoovieListCards(null, requestedProfile.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),null,null, PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1));
                         queries.put("list","user-lists");

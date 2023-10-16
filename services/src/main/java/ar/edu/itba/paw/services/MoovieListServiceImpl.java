@@ -130,6 +130,11 @@ public class MoovieListServiceImpl implements MoovieListService{
         return moovieListDao.getFollowedMoovieListCards(userId, type, size, pageNumber, userService.tryToGetCurrentUserId());
     }
 
+    @Override
+    public int getFollowedMoovieListCardsCount(int userId, int type) {
+        return moovieListDao.getFollowedMoovieListCardsCount(userId,type);
+    }
+
 
     @Transactional(readOnly = true)
     @Override

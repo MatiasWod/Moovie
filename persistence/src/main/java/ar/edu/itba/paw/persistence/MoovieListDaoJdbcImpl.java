@@ -277,6 +277,23 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     @Override
+    public int getFollowedMoovieListCardsCount(int userId, int type) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) ");
+        ArrayList<Object> args = new ArrayList<>();
+
+        sql.append(" FROM moovieLists ml ");
+
+        sql.append(" WHERE type = ? ");
+        args.add(type);
+
+        sql.append(" AND ml.moovieListId IN (SELECT moovieListId FROM moovieListsFollows WHERE userId = ?) ");
+        args.add(userId);
+
+        return jdbcTemplate.query(sql.toString(), args.toArray(), COUNT_ROW_MAPPER).stream().findFirst().get().intValue();
+    }
+
+
+    @Override
     public List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber, int currentUserId){
         StringBuilder sql = new StringBuilder("SELECT ml.*, u.username, COUNT(l.userid) AS likeCount, COUNT(mlf.userid) AS followerCount,");
         ArrayList<Object> args = new ArrayList<>();

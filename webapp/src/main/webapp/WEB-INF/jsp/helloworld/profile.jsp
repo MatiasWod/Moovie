@@ -190,6 +190,9 @@
             <input type="radio" class="btn-check" name="btnradio" id="btnradio-liked-lists" autocomplete="off" ${(param.list != null && param.list == 'liked-lists')? 'checked':''}>
             <label class="btn btn-outline-success" for="btnradio-liked-lists">Liked Lists</label>
 
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio-followed" autocomplete="off" ${(param.list != null && param.list == 'followed')? 'checked':''}>
+            <label class="btn btn-outline-success" for="btnradio-followed">Followed Lists</label>
+
             <form id="selected-radio" action="${pageContext.request.contextPath}/profile/${profile.username}">
                 <input type="hidden" name="list" id="listField">
             </form>
@@ -211,11 +214,16 @@
             </div>
         </c:if>
 
-        <c:if test="${param.list == 'liked-lists'}">
+        <c:if test="${param.list == 'liked-lists' || param.list == 'followed' || param.list == null || param.list == '' || param.list == 'user-lists'}">
             <div class="container lists-container" id="liked-lists" style="margin-top: 30px">
+
                 <c:if test="${showLists.size()==0}">
-                    <h3>No results were found</h3>
+                    <div class="d-flex flex-column text-center justify-content-center">
+                        <h4>No lists found</h4>
+                        <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/lists">Discover your next favorite list!</a>
+                    </div>
                 </c:if>
+
                 <c:forEach var="showList" items="${showLists}">
                     <div class="list-card card"
                          onclick="location.href='${pageContext.request.contextPath}/list/${showList.moovieListId}?page=1'">
@@ -265,70 +273,6 @@
 
                     </div>
                 </c:forEach>
-            </div>
-        <div class="m-1">
-            <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
-                <c:param name="mediaPages" value="${numberOfPages}"/>
-                <c:param name="currentPage" value="${currentPage + 1}"/>
-                <c:param name="url" value="${urlBase}"/>
-            </c:import>
-        </div>
-        </c:if>
-
-        <c:if test="${param.list == null || param.list == '' || param.list == 'user-lists'}">
-            <div class="container lists-container" id="user-lists" style="margin-top: 30px">
-                <c:if test="${showLists.size()==0}">
-                <h3>No results were found</h3>
-                </c:if>
-                <c:forEach var="showList" items="${showLists}">
-        <div class="list-card card"
-             onclick="location.href='${pageContext.request.contextPath}/list/${showList.moovieListId}?page=1'">
-            <div class="list-img-container card-img-top">
-                <c:forEach var="image" items="${showList.images}">
-                    <img class="cropCenterImage" src="${image}" alt="...">
-                </c:forEach>
-                <c:forEach begin="${fn:length(showList.images)}" end="3">
-                    <img class="cropCenterImage"
-                         src=${pageContext.request.contextPath}/resources/defaultPoster.png alt="...">
-                </c:forEach>
-            </div>
-            <div class="card-body cardBodyFlex">
-                <div>
-                    <div class="card-name-likes">
-                        <div class="card-content overflow-hidden">
-                            <h5 class="card-title"><strong><c:out value="${showList.name}"/></strong></h5>
-                        </div>
-                        <div class="card-likes">
-                            <h5><i class="bi bi-hand-thumbs-up"></i>${showList.likeCount}</h5>
-                        </div>
-                    </div>
-                    <div style="display: flex;">
-                        <c:if test="${showList.moviesAmount > 0}">
-                            <p>${showList.moviesAmount} Movies</p>
-                        </c:if>
-
-                        <c:if test="${showList.moviesAmount > 0 && (showList.size - showList.moviesAmount) > 0}">
-                            <style>
-                                p {
-                                    margin-right: 10px; /* Add a space between "Movies" and "Series" */
-                                }
-                            </style>
-                        </c:if>
-                        <c:if test="${(showList.size - showList.moviesAmount) > 0}">
-                            <p>${(showList.size - showList.moviesAmount)} Series</p>
-                        </c:if>
-                    </div>
-                    <p style="max-height: 4.5rem" class="card-text overflow-hidden text-muted">by <c:out
-                            value="${showList.username}"/>
-                    </p>
-                    <p style="max-height: 3.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" class="card-text">
-                        <c:out value="${showList.description}"/>
-                    </p>
-                </div>
-            </div>
-
-        </div>
-        </c:forEach>
             </div>
         <div class="m-1">
             <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
