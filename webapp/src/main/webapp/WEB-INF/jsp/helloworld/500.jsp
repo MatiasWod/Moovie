@@ -8,7 +8,7 @@
     <link href="${pageContext.request.contextPath}/resources/main.css?version=59" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
-    <title>Error 404</title>
+    <title>Error 400</title>
 
 </head>
 
@@ -20,11 +20,10 @@
     <div class="col"><img src="${pageContext.request.contextPath}/resources/logo.png"  alt="Moovie logo" height="100px" width="100px"/> </div>
 
     <div class="col">
-        <h1>Error 404</h1>
-        <h2>The resource requested isn't available</h2>
+        <h1>500 Internal Server Error</h1>
+        <p>Oops! Something went wrong on our end. We're working to fix the issue. Please try again later.</p>
         <c:if test="${extraInfo != null}">${extraInfo}</c:if>
         <button type="button" onclick="history.back()" class="btn btn-outline-success" id="goBackButton">Go Back</button>
-
     </div>
 
 

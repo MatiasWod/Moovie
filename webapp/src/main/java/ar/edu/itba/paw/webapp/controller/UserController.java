@@ -116,22 +116,9 @@ public class UserController {
 
 
     @RequestMapping("/login")
-    public ModelAndView login(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        String previousPage = request.getHeader("Referer");
-        session.setAttribute("previousPage", previousPage);
+    public ModelAndView login() {
         return new ModelAndView("helloworld/login");
     }
-
-
-    @RequestMapping("/continueWithoutLogin")
-    public ModelAndView continueWithoutLogin(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        String previousPage = (String) session.getAttribute("previousPage");
-        return new ModelAndView("redirect:" + previousPage);
-    }
-
-
 
     @RequestMapping("/profile/{username:.+}")
     public ModelAndView profilePage(@PathVariable String username,
@@ -178,6 +165,16 @@ public class UserController {
                         queries.put("list","watchlist");
                         numberOfPages = (int) Math.ceil(listCount * 1.0 / PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize());
                         mav.addObject("listDetails",watchlistDetails);
+                        mav.addObject("moovieList",watchlistDetails.getCard());
+                        mav.addObject("mediaList",watchlistDetails.getContent());
+                        mav.addObject("watchedCount",watchlistDetails.getCard().getCurrentUserWatchAmount());
+                        mav.addObject("watchedListId",moovieListService.getMoovieListCards("Watched",userService.getInfoOfMyUser().getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId());
+                        mav.addObject("listCount",watchlistDetails.getCard().getSize());
+                        mav.addObject("numberOfPages",numberOfPages);
+                        mav.addObject("currentPage",pageNumber - 1);
+                        mav.addObject("listOwner",watchlistDetails.getCard().getUsername());
+                        mav.addObject("orderBy", orderBy);
+                        mav.addObject("order", order);
                         break;
                     case "liked-lists":
                         mav.addObject("showLists",moovieListService.getLikedMoovieListCards(requestedProfile.getUserId(), MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));

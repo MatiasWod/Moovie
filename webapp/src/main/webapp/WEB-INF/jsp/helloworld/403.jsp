@@ -10,10 +10,6 @@
     <title>Error 403</title>
 </head>
 <body style="background: whitesmoke">
-<f:view>
-    <h:outputLabel value="Hello, world"/>
-</f:view>
-
 <c:import url="navBar.jsp">
 
 </c:import>
@@ -25,6 +21,7 @@
         <h1>Error 403</h1>
         <h2>Cant access this page (missing permissions) </h2>
         <c:if test="${extraInfo != null}">${extraInfo}</c:if>
+        <button type="button" onclick="history.back()" class="btn btn-outline-success" id="goBackButton">Go Back</button>
     </div>
 
 

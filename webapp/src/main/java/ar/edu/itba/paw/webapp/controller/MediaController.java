@@ -98,6 +98,11 @@ public class MediaController {
         int nameMediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query, null, null, null);
         int creditMediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), null, query, null, null);
         int usersCount = userService.getSearchCount(query);
+
+        if (query.isEmpty()){
+            return mav;
+        }
+
         // Name media query
         if (nameMediaCount > 0){
             mav.addObject("nameMediaFlag", true);

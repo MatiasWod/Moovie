@@ -108,7 +108,6 @@
 
     </c:if>
 
-    <%--TODO: test="${userList}"--%>
     <c:if test="${usersFlag}">
         <div class="container d-flex justify-content-between mt-2 p-2">
             <h3>Users for: ${param.query}</h3>
@@ -119,7 +118,7 @@
             <c:forEach items="${usersList}" var="user">
                 <a href="${pageContext.request.contextPath}/profile/${user.username}" class="poster card text-bg-dark m-1">
                     <div class="card-img-container"> <!-- Add a container for the image -->
-                        <img src="${pageContext.request.contextPath}/resources/logo.png"/>
+                        <img class=" cropCenter"  src="${pageContext.request.contextPath}/resources/logo.png"/>
                         <div class="card-img-overlay" style="opacity: 1; background-color: rgba(255,255,255,0.1);">
                             <c:if test="${user.role == 2 || user.role == -102}">
                                 <img class="cropCenter" style="height:50px;width:50px" src="${pageContext.request.contextPath}/resources/moderator_logo.png" alt="moderator profile pic">
@@ -152,8 +151,24 @@
         </div>
 
     </c:if>
+
+    <c:if test="${!(creditMediaFlag||nameMediaFlag||usersFlag)}">
+        <div style="border: solid black; min-width: 40%; min-height: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 5%;" class="container-gray justify-content-center d-flex flex-column">
+            <div class="text-center m-3">
+                <img style="height: 15vh" src="${pageContext.request.contextPath}/resources/logo.png" alt="logo">
+                <h3>No results for "${param.query}" were found</h3>
+            </div>
+            <a class="btn mt-2 btn-outline-success align-bottom" href="#" onclick="history.back()">Go Back</a>
+        </div>
+    </c:if>
 </div>
 
 
 </body>
+<script>
+    window.onload = function (){
+        localStorage.removeItem("searchValue");
+
+    }
+</script>
 </html>

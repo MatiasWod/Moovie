@@ -62,7 +62,7 @@
     });
 </script>
 
-    <nav style="z-index: 2" class="sticky-top navbar navbar-expand-lg navbar-light container-gray mb-4">
+    <nav style="z-index: 2;" class="sticky-top navbar navbar-expand-lg navbar-light container-nav mb-4">
         <div class="container-fluid">
             <a class="navbar-brand" href="${pageContext.request.contextPath}/">
                 <img src="${pageContext.request.contextPath}/resources/logo.png" height="50" alt="Moovie logo">
@@ -123,7 +123,7 @@
 
                 <form class="d-flex mb-0" role="search" action="${pageContext.request.contextPath}/search" method="get">
                 <div class="input-group">
-                    <input id="searchInput" class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search">
+                    <input id="searchInput" class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search" required>
                     <button class="btn btn-outline-success" type="submit">
                         <i class="bi bi-search"></i> <!-- Bootstrap search icon -->
                         Search

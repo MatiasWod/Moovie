@@ -58,7 +58,7 @@
                 </div>
                 <div>
                     Continue
-                    <a href="${pageContext.request.contextPath}/"> without logging in</a>
+                    <a href="#" onclick="history.back()"> without logging in</a>
                 </div>
             </div>
         </form:form>

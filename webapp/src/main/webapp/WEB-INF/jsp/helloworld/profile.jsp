@@ -205,11 +205,8 @@
 
         <c:if test="${param.list == 'watched-list' || param.list == 'watchlist'}">
             <div class="container lists-container" id="detailed-list" style="margin-top: 30px">
-                <c:import url="/WEB-INF/jsp/helloworld/moovieList.jsp">
-                    <c:param name="mediaPages" value="${numberOfPages}"/>
-                    <c:param name="currentPage" value="${currentPage + 1}"/>
-                    <c:param name="url" value="${urlBase}"/>
-                    <c:param name="list" value="${param.list}"/>
+                <c:import url="/WEB-INF/jsp/helloworld/listExtract.jsp">
+                    <c:param name="listType" value="${param.list == 'watched-list' ? ('watched-list'):('watchlist')}"/>
                 </c:import>
             </div>
         </c:if>

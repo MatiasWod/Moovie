@@ -45,7 +45,7 @@
 
                             <input type="hidden" name="g" id="hiddenGenreInput">
                             <div class="dropdown">
-                                <button style="height:100%;width: 150px;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                <button style="height:100%;width: 100px;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                                     Genres
                                 </button>
                                 <c:set var="isChecked" value="" />
@@ -73,7 +73,7 @@
 
                             <input type="hidden" name="providers" id="hiddenProviderInput">
                             <div class="dropdown">
-                                <button style="height:100%;width: 150px;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                <button style="height:100%;width: 110px;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                                     Providers
                                 </button>
                                 <c:set var="isChecked" value="" />
@@ -103,7 +103,6 @@
                                 </div>
                             </div>
 
-                            <button class="btn btn-outline-success me-1" type="submit" >Apply</button>
                             <select name="orderBy" class="form-select filter-width" aria-label="Filter!">
                                 <option ${'name' == param.orderBy ? 'selected' : ''} value="name">Title</option>
                                 <option ${('tmdbrating' == param.orderBy || param.orderBy == null) ? 'selected' : ''} value="tmdbrating">Score</option>
@@ -114,13 +113,12 @@
                             <div class="btn btn-style me-1" id="sortButton" onclick="changeSortOrder('sortOrderInput', 'sortIcon', '${param.orderBy}')">
                                 <i id="sortIcon" class="bi bi-arrow-${param.order == 'asc' ? 'up' : 'down'}-circle-fill"></i>
                             </div>
-                        </div>
-                        <div role="group" class="input-group d-flex flex-row m-1">
-                                <input class="form-control me-2" type="search" name="q" value="${param.q}" placeholder="Search" aria-label="Search">
-                                <button class="btn btn-outline-success" type="submit">Search</button>
-                                <a style="height: 100%;" class="btn btn-outline-success align-bottom" href="${pageContext.request.contextPath}/createList">
-                                    Reset
-                                </a>
+
+                            <input class="form-control me-2" type="search" name="q" value="${param.q}" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-success me-1" type="submit" >Apply</button>
+                            <a style="height: 100%;" class="btn btn-outline-success align-bottom" href="${pageContext.request.contextPath}/createList">
+                                Reset
+                            </a>
                         </div>
                     </form>
                     <div class="container d-flex justify-content-left p-0" id="genre-chips">
