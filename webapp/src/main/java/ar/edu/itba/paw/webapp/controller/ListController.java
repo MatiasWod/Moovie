@@ -20,10 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -188,53 +185,13 @@ public class ListController {
         int pagesSize= PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
         MoovieListCard moovieListCard;
         List<MoovieListContent> moovieListContentList;
-
-        if(list.equals("topRatedMovies")){
-            moovieListCard = moovieListService.getMoovieListCards("Top Rated Movies","Moovie",MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PUBLIC.getType(),null,null,
+        Optional<FeaturedMoovieListEnum> topRatedMoovieLists = FeaturedMoovieListEnum.fromString(list);
+        if(topRatedMoovieLists.isPresent()){
+            moovieListCard = moovieListService.getMoovieListCards(topRatedMoovieLists.get().getName(),"Moovie",MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PUBLIC.getType(),null,null,
                     1,0).get(0); //Solo hay una lista de Moovie con ese nombre, entonces solo traigo esa lista
-            moovieListContentList = moovieListService.getFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_MOVIE.getType(), "tmdbrating" ,orderBy,
+            moovieListContentList = moovieListService.getFeaturedMoovieListContent(moovieListCard.getMoovieListId(),topRatedMoovieLists.get().getType(), topRatedMoovieLists.get().getOrder() ,orderBy,
                     order,pagesSize,pageNumber - 1);
-            mav.addObject("watchedCount",moovieListService.countWatchedFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_MOVIE.getType(), "tmdbrating" ,orderBy,
-                        order,100,0));
-        }
-        else if (list.equals("topRatedSeries")){
-            moovieListCard = moovieListService.getMoovieListCards("Top Rated TV Series","Moovie",MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PUBLIC.getType(),null,null,
-                    1,0).get(0); //Solo hay una lista de Moovie con ese nombre, entonces solo traigo esa lista
-            moovieListContentList = moovieListService.getFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_TVSERIE.getType(), "tmdbrating" ,orderBy,
-                    order,pagesSize,pageNumber - 1);
-            mav.addObject("watchedCount",moovieListService.countWatchedFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_TVSERIE.getType(), "tmdbrating" ,orderBy,
-                    order,100,0));
-        }
-        else if (list.equals("topRatedMedia")){
-            moovieListCard = moovieListService.getMoovieListCards("Top Rated Media","Moovie",MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PUBLIC.getType(),null,null,
-                    1,0).get(0); //Solo hay una lista de Moovie con ese nombre, entonces solo traigo esa lista
-            moovieListContentList = moovieListService.getFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_ALL.getType(), "tmdbrating" ,orderBy,
-                    order,pagesSize,pageNumber - 1);
-            mav.addObject("watchedCount",moovieListService.countWatchedFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_ALL.getType(), "tmdbrating" ,orderBy,
-                    order,100,0));
-        }
-        else if (list.equals("mostPopularMovies")){
-            moovieListCard = moovieListService.getMoovieListCards("Most Popular Movies","Moovie",MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PUBLIC.getType(),null,null,
-                    1,0).get(0); //Solo hay una lista de Moovie con ese nombre, entonces solo traigo esa lista
-            moovieListContentList = moovieListService.getFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_ALL.getType(), "votecount" ,orderBy,
-                    order,pagesSize,pageNumber - 1);
-            mav.addObject("watchedCount",moovieListService.countWatchedFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_ALL.getType(), "votecount" ,orderBy,
-                    order,100,0));
-        }
-        else if (list.equals("mostPopularSeries")){
-            moovieListCard = moovieListService.getMoovieListCards("Most Popular Series","Moovie",MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PUBLIC.getType(),null,null,
-                    1,0).get(0); //Solo hay una lista de Moovie con ese nombre, entonces solo traigo esa lista
-            moovieListContentList = moovieListService.getFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_ALL.getType(), "votecount" ,orderBy,
-                    order,pagesSize,pageNumber - 1);
-            mav.addObject("watchedCount",moovieListService.countWatchedFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_ALL.getType(), "votecount" ,orderBy,
-                    order,100,0));
-        }
-        else if (list.equals("mostPopularMedia")){
-            moovieListCard = moovieListService.getMoovieListCards("Most Popular Media","Moovie",MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PUBLIC.getType(),null,null,
-                    1,0).get(0); //Solo hay una lista de Moovie con ese nombre, entonces solo traigo esa lista
-            moovieListContentList = moovieListService.getFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_ALL.getType(), "votecount" ,orderBy,
-                    order,100,1);
-            mav.addObject("watchedCount",moovieListService.countWatchedFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_ALL.getType(), "votecount" ,orderBy,
+            mav.addObject("watchedCount",moovieListService.countWatchedFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_MOVIE.getType(), topRatedMoovieLists.get().getOrder() ,orderBy,
                     order,100,0));
         }
         else {
