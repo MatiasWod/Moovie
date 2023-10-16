@@ -21,8 +21,14 @@
 <c:import url="/WEB-INF/jsp/helloworld/listExtract.jsp">
     <c:param name="publicList" value="true"/>
 </c:import>
+<hr>
+<div class="d-flex flex-column align-items-center" style="margin-bottom: 20px">
+    <h2>If you liked this one, you may also like...</h2>
+    <div class="d-flex flex-row">
+        <c:forEach var="cardList" items="${RecomendedListsCards}">
+        <%@include file="listCard.jsp"%>
+    </c:forEach>
+    </div>
+</div>
 </body>
 </html>
-
-<script src="${pageContext.request.contextPath}/resources/moovieListFunctions.js?version=81"></script>
-<script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=82"></script>

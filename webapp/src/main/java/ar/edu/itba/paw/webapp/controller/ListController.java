@@ -164,6 +164,7 @@ public class ListController {
         mav.addObject("likedCount",moovieListCard.getLikeCount());
         mav.addObject("listOwner",moovieListCard.getUsername());
         mav.addObject("orderBy", orderBy);
+        mav.addObject("RecomendedListsCards",moovieListService.getRecommendedMoovieListCards(moovieListId,4,0));
 
         Integer id = moovieListId;
         final Map<String, String> queries = new HashMap<>();
