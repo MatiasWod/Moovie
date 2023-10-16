@@ -67,40 +67,41 @@
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <div class="d-flex flex-row justify-content-center">
                 <div>
+                <c:if test="${param.publicList == 'true'}">
                     <form action="${pageContext.request.contextPath}/like" method="POST">
-                        <input type="hidden" name="listId" value="${moovieList.moovieListId}"/>
-                        <c:choose>
-                            <c:when test="${isLiked}">
-                                <button type="submit" class="btn btn-style"><i
-                                        class="bi bi-hand-thumbs-up-fill"></i>${likedCount} Liked
-                                </button>
-                            </c:when>
-                            <c:otherwise>
-                                <button type="submit" class="btn btn-style"><i
-                                        class="bi bi-hand-thumbs-up"></i>${likedCount}
-                                    Like
-                                </button>
-                            </c:otherwise>
-                        </c:choose>
-                    </form>
+                            <input type="hidden" name="listId" value="${moovieList.moovieListId}"/>
+                            <c:choose>
+                                <c:when test="${isLiked}">
+                                    <button type="submit" class="btn btn-style"><i
+                                            class="bi bi-hand-thumbs-up-fill"></i>${likedCount} Liked
+                                    </button>
+                                </c:when>
+                                <c:otherwise>
+                                    <button type="submit" class="btn btn-style"><i
+                                            class="bi bi-hand-thumbs-up"></i>${likedCount}
+                                        Like
+                                    </button>
+                                </c:otherwise>
+                            </c:choose>
+                        </form>
+                    </div>
+                    <div>
+                        <form action="${pageContext.request.contextPath}/followList" method="POST">
+                            <input type="hidden" name="listId" value="${moovieList.moovieListId}"/>
+                            <c:choose>
+                                <c:when test="${isFollowed}">
+                                    <button type="submit" class="btn btn-style2"><i class="bi bi-bell-fill"></i> Following
+                                    </button>
+                                </c:when>
+                                <c:otherwise>
+                                    <button type="submit" class="btn btn-style2"><i class="bi bi-bell"></i> Follow
+                                    </button>
+                                </c:otherwise>
+                            </c:choose>
+                        </form>
+                    </div>
                 </div>
-                <div>
-                    <form action="${pageContext.request.contextPath}/followList" method="POST">
-                        <input type="hidden" name="listId" value="${moovieList.moovieListId}"/>
-                        <c:choose>
-                            <c:when test="${isFollowed}">
-                                <button type="submit" class="btn btn-style2"><i class="bi bi-bell-fill"></i> Following
-                                </button>
-                            </c:when>
-                            <c:otherwise>
-                                <button type="submit" class="btn btn-style2"><i class="bi bi-bell"></i> Follow
-                                </button>
-                            </c:otherwise>
-                        </c:choose>
-                    </form>
-                </div>
-            </div>
-
+            </c:if>
             <form id="sortForm" method="get">
                 <div style="display: flex; align-items: center;">
                     <h2 style="padding-right: 4px">Sort by</h2>

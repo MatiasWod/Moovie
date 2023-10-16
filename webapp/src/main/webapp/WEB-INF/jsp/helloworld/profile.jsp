@@ -284,7 +284,7 @@
                                                                     <input type="hidden" name="path" value="/profile/${username}"/>
                                                                     <button type="submit" class="btn btn-danger">Delete</button>
                                                                 </form>
-                                                                <button type="button" onclick="closePopup('review${review.reviewId}')" class="btn btn-secondary" id="cancelModButton">Cancel</button>
+                                                                <button type="button" onclick="closePopup('review${review.reviewId}')" class="btn btn-secondary">Cancel</button>
                                                             </div>
                                                         </div>
                                                     </div>
