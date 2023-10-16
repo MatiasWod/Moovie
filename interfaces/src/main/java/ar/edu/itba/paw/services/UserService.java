@@ -22,7 +22,7 @@ public interface UserService {
     User findUserByUsername(String username);
 
     //Search user (recomeneded only for the searchbar)
-    List<Profile> searchUsers(String username,  int size, int pageNumber);
+    List<Profile> searchUsers(String username,  String orderBy, String sortOrder,  int size, int pageNumber);
 
     //Search user count for pagination in searchUsers cases
     int getSearchCount(String username);

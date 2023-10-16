@@ -19,7 +19,7 @@ public interface UserDao {
     Optional<User> findUserByEmail(String email);
     Optional<User> findUserByUsername(String username);
 
-    List<Profile> searchUsers(String username, int size, int pageNumber);
+    List<Profile> searchUsers(String username, String orderBy, String sortOrder, int size, int pageNumber);
 
     int getSearchCount(String username);
 

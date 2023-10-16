@@ -120,7 +120,7 @@ public class MediaController {
         // Users query
         if (usersCount > 0){
             mav.addObject("usersFlag", true);
-            mav.addObject("usersList", userService.searchUsers(query,PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),0));
+            mav.addObject("usersList", userService.searchUsers(query, "username", "ASC" ,PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),0));
         }else{
             mav.addObject("usersFlag",false);
         }

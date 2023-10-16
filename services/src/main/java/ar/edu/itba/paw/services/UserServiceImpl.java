@@ -125,8 +125,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Profile> searchUsers(String username, int size, int pageNumber) {
-        return userDao.searchUsers(username, size, pageNumber);
+    public List<Profile> searchUsers(String username, String orderBy, String sortOrder, int size, int pageNumber) {
+        return userDao.searchUsers(username, orderBy, sortOrder, size, pageNumber);
     }
 
     @Override

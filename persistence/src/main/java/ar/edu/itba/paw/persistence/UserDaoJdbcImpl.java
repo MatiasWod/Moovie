@@ -95,7 +95,7 @@ public class UserDaoJdbcImpl implements UserDao{
     }
 
     @Override
-    public List<Profile> searchUsers(String username, int size, int pageNumber) {
+    public List<Profile> searchUsers(String username, String orderBy, String sortOrder, int size, int pageNumber) {
         StringBuilder sql = new StringBuilder("SELECT * , ");
         ArrayList<Object> args = new ArrayList<>();
 
@@ -104,6 +104,11 @@ public class UserDaoJdbcImpl implements UserDao{
         sql.append(" (SELECT COUNT(*) FROM reviews r WHERE r.userId = u.userId) AS reviewCount ");
         sql.append(" FROM users u WHERE username ILIKE ? ");
         args.add('%' + username + '%');
+
+
+        if(orderBy!=null && orderBy.length()>0 && sortOrder!=null && sortOrder.length()>0){
+            sql.append(" ORDER BY ").append(orderBy).append(" ").append(sortOrder);
+        }
 
         sql.append(" LIMIT ? OFFSET ? ");
         args.add(size);
