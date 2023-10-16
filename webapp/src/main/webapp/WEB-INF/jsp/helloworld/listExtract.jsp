@@ -13,6 +13,9 @@
     <link href="${pageContext.request.contextPath}/resources/moovieList.css?version=65" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/resources/buttonsStyle.css?version=1" rel="stylesheet"/>
     <script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=87"></script>
+
+    <script src="${pageContext.request.contextPath}/resources/moovieListFunctions.js?version=81"></script>
+    <script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=82"></script>
 </head>
 <body>
 <div class="container d-flex flex-column">
@@ -283,3 +286,5 @@
 </div>
 </body>
 </html>
+
+

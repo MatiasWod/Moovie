@@ -78,60 +78,8 @@
         <c:if test="${showLists.size()==0}">
                 <h3>No results were found</h3>
             </c:if>
-        <c:forEach var="showList" items="${showLists}">
-                <div class="list-card card"
-                     onclick="location.href='${pageContext.request.contextPath}/list/${showList.moovieListId}?page=1'">
-                    <div class="list-img-container card-img-top">
-                        <c:forEach var="image" items="${showList.images}">
-                            <img class="cropCenterImage" src="${image}" alt="...">
-                        </c:forEach>
-                        <c:forEach begin="${fn:length(showList.images)}" end="3">
-                            <img class="cropCenterImage"
-                                 src=${pageContext.request.contextPath}/resources/defaultPoster.png alt="...">
-                        </c:forEach>
-                    </div>
-                    <div class="card-body cardBodyFlex">
-                        <div>
-                            <div class="card-name-likes">
-                                <div class="card-content overflow-hidden">
-                                    <h5 class="card-title"><strong><c:out value="${showList.name}"/></strong>
-                                        <c:if test="${showList.currentUserWatchAmount == showList.size }">             <span
-                                                class="d-inline-block"
-                                                data-bs-toggle="popover" data-bs-trigger="hover"
-                                                data-bs-content="You have watched all the medias in this list">
-                <i class="bi bi-check-circle-fill" style="color: green"></i>
-            </span></c:if></h5>
-                                </div>
-                                <div class="card-likes">
-                                    <h5><i class="bi bi-hand-thumbs-up"></i>${showList.likeCount}</h5>
-                                </div>
-                            </div>
-                            <div style="display: flex;">
-                                <c:if test="${showList.moviesAmount > 0}">
-                                    <p>${showList.moviesAmount} Movies</p>
-                                </c:if>
-
-                                <c:if test="${showList.moviesAmount > 0 && (showList.size - showList.moviesAmount) > 0}">
-                                    <style>
-                                        p {
-                                            margin-right: 10px; /* Add a space between "Movies" and "Series" */
-                                        }
-                                    </style>
-                                </c:if>
-                                <c:if test="${(showList.size - showList.moviesAmount) > 0}">
-                                    <p>${(showList.size - showList.moviesAmount)} Series</p>
-                                </c:if>
-                            </div>
-                            <p style="max-height: 4.5rem" class="card-text overflow-hidden text-muted">by <c:out
-                                    value="${showList.username}"/>
-                            </p>
-                            <p style="max-height: 3.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" class="card-text">
-                                <c:out value="${showList.description}"/>
-                            </p>
-                        </div>
-                    </div>
-
-                </div>
+        <c:forEach var="cardList" items="${showLists}">
+            <%@include file="listCard.jsp"%>
             </c:forEach>
     </div>
 </div>
