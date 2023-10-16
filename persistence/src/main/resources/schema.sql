@@ -43,8 +43,8 @@ CREATE TABLE IF NOT EXISTS media(
 CREATE TABLE IF NOT EXISTS moovieListsContent(
     moovieListId                        INTEGER NOT NULL,
     mediaId                            INTEGER NOT NULL,
-
-    UNIQUE(moovieListId,mediaId),
+    customOrder                         INTEGER NOT NULL,
+    UNIQUE(moovieListId,mediaid,customOrder),
     FOREIGN KEY(moovieListId) REFERENCES moovieLists(moovieListId) ON DELETE CASCADE,
     FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE
 );
@@ -229,10 +229,35 @@ ALTER TABLE reviews DROP COLUMN reviewlikes;
 
 --MoovieLists changes
 ALTER TABLE moovielistscontent DROP COLUMN status
+
 ALTER TABLE moovieListsContent ADD COLUMN customOrder INTEGER;
 
+--Following function is to set an custom order for the moovielistcontent before setting the column to not null and for it to have a default value;
+--START FUNCTION
+CREATE OR REPLACE FUNCTION initcustomorder() RETURNS VOID AS $$
+DECLARE
+    idx int;
+    med int;
+    ord int;
+BEGIN
+    ord := 1;
 
-ALTER TABLE moovieListsContent ALTER COLUMN defaultOrder SET NOT NULL;
+    -- Loop for moovielistid
+    FOR idx IN (SELECT moovielistid FROM moovielists) LOOP
+        -- Loop through the content media with id = idx
+        FOR med IN (SELECT mediaid FROM moovielistscontent WHERE moovielistid = idx) LOOP
+            UPDATE moovielistscontent SET customorder = ord WHERE moovielistid = idx AND mediaid = med;
+            ord := ord + 1;
+        END LOOP;
+		ord := 1;
+    END LOOP;
+END;
+$$LANGUAGE plpgsql;
+SELECT initcustomorder();
+--END FUNCTION
+
+ALTER TABLE moovieListsContent ALTER COLUMN customOrder SET NOT NULL;
+ALTER TABLE moovieListsContent ADD CONSTRAINT unique_moovieList_media_customOrder UNIQUE (moovieListId, mediaId, customOrder);
 
  */
 
