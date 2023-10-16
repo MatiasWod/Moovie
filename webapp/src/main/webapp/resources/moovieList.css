@@ -2,16 +2,25 @@
     color: white;
     background-color: #333;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     margin-bottom: 10px;
+    position: relative;
+    text-align: center; /* Center-align the header */
 }
+
 .header h1,
 .header h3,
 .header h4 {
-    overflow-wrap: break-word;
-    max-width: 100%;
-    text-align: center;
+    white-space: normal;
+    word-wrap: break-word;
+    text-overflow: ellipsis;
+    text-align: center; /* Center-align the text */
+    max-width: 100%; /* Ensure the text does not exceed the width of the header */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 1005); /* Adjust values as needed */
+}
+
+
+.header .d-flex.flex-column {
+    max-width: 100%; /* Adjust max-width as needed */
 }
 
 .table td {
