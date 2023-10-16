@@ -452,16 +452,20 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
             throw new UnableToInsertIntoDatabase("Unable to insert into the MoovieList since there are repeated elements");
         }
 
+        int currentMaxOrder = jdbcTemplate.queryForObject("SELECT MAX(customorder) FROM moovielistscontent WHERE moovielistid = ?", new Object[]{moovieListid}, Integer.class);
+
         // Iterate through the mediaIdList and insert each mediaId
         for (Integer mediaId : mediaIdList) {
+            currentMaxOrder++;
             final Map<String, Object> args = new HashMap<>();
             args.put("moovieListId", moovieListid);
             args.put("mediaId", mediaId);
+            args.put("customOrder", currentMaxOrder);
 
             try {
                 moovieListContentJdbcInsert.execute(args);
             } catch (DataIntegrityViolationException e) {
-                throw new UnableToInsertIntoDatabase("Unable to insert into the MoovieList, would result in repeated elements");
+                throw new UnableToInsertIntoDatabase("Unable to insert media into the MoovieList, would result in repeated elements");
             }
         }
 
