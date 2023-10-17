@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.webapp.auth;
 
-import ar.edu.itba.paw.exceptions.UserIsBannedException;
-import ar.edu.itba.paw.exceptions.UserNotVerifiedException;
+
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ public class MoovieUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException, UserNotVerifiedException, UserIsBannedException{
+    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException{
         ACCOUNT_ENABLED = true;
         ACCOUNT_NON_LOCKED = true;
 
