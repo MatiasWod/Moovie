@@ -83,10 +83,6 @@ public class ListController {
         }
     }
 
-
-
-// http://tuDominio.com/createList?s=A&s=B&s=C&s=D&s=E
-
     @RequestMapping("/createList")
     public ModelAndView createList(@RequestParam(value = "g", required = false) List<String> genres,
                                    @RequestParam(value = "m", required = false,defaultValue = "All") String media,

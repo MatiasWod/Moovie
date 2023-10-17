@@ -4,6 +4,7 @@ import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.PagingSizes;
+import ar.edu.itba.paw.models.User.User;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -181,6 +182,22 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
         // Execute the query
         return jdbcTemplate.query(sql.toString(), args.toArray(), MOOVIE_LIST_CARD_ROW_MAPPER);
+    }
+
+    @Override
+    public List<User> getMoovieListFollowers(int moovieListId) {
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT u.* FROM users u ")
+                .append("INNER JOIN moovieListsFollows mf ON u.userId = mf.userId ")
+                .append("WHERE mf.moovieListId = ?");
+
+        return jdbcTemplate.query(sql.toString(), new Object[]{moovieListId}, (rs, rowNum) -> new User(
+                rs.getInt("userId"),
+                rs.getString("username"),
+                rs.getString("email"),
+                rs.getString("password"),
+                rs.getInt("role")
+        ));
     }
 
 
