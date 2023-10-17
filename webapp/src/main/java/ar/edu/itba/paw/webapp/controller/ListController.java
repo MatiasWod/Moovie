@@ -135,7 +135,7 @@ public class ListController {
 
     @RequestMapping("/list/{id:\\d+}")
     public ModelAndView list(@PathVariable("id") final int moovieListId,
-                             @RequestParam(value="orderBy", defaultValue = "name") final String orderBy,
+                             @RequestParam(value="orderBy", defaultValue = "customorder") final String orderBy,
                              @RequestParam(value="order", defaultValue = "asc") final String order,
                              @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
 

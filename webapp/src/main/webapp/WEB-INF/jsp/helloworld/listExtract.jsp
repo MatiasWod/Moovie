@@ -119,6 +119,7 @@
                         <input style="display: none" name="list" value="${param.listType}"/>
                     </c:if>
                     <select name="orderBy" class="form-select filter-width" aria-label="Filter!" id="sortSelect">
+                        <option ${'customorder' == param.orderBy ? 'selected' : ''} value="customorder"><spring:message code="listExtract.orderByCustomOrder"/></option>
                         <option ${'name' == param.orderBy ? 'selected' : ''} value="name"><spring:message code="listExtract.orderByTitle"/></option>
                         <option ${'type' == param.orderBy ? 'selected' : ''} value="type"><spring:message code="listExtract.orderByType"/></option>
                         <option ${'tmdbrating' == param.orderBy ? 'selected' : ''} value="tmdbrating"><spring:message code="listExtract.orderByScore"/></option>
