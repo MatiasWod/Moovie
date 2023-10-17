@@ -1,9 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.BannedMessageNotFoundException;
-import ar.edu.itba.paw.exceptions.UserNotLoggedException;
 import ar.edu.itba.paw.models.BannedMessage.BannedMessage;
-import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.BannedDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
