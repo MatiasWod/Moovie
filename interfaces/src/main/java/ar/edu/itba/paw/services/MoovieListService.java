@@ -51,6 +51,9 @@ public interface MoovieListService {
     void deleteMediaFromMoovieList(int moovieListId, int mediaId);
     void deleteMoovieList(int moovieListId);
 
+    //Receives three arrays of mediaid, one taht will got o next page, previous page and current page in order
+    void updateMoovieListOrder(int moovieListId,  int[] toPrevPage, int[] currentPage, int[] toNextPage);
+
     //Likes functions
     void likeMoovieList( int moovieListId);
     void removeLikeMoovieList(int moovieListId);
@@ -58,6 +61,4 @@ public interface MoovieListService {
     void followMoovieList( int moovieListId);
     void removeFollowMoovieList(int moovieListId);
 
-    //TODO: Implement this
-    void updateMoovieListOrder(int moovieListId,int[] toPrevArray, int[] currentArray,int[] toNextArray);
 }

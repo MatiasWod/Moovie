@@ -488,6 +488,11 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     @Override
+    public void updateMoovieListOrder(int moovieListId, int[] toPrevPage, int[] currentPage, int[] toNextPage) {
+        return;
+    }
+
+    @Override
     public void deleteMoovieList(int moovieListId) {
         String sqlDel = "DELETE FROM moovieLists WHERE moovieListId = " + moovieListId;
         jdbcTemplate.execute(sqlDel);
