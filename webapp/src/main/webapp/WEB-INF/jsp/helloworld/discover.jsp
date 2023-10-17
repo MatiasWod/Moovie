@@ -33,7 +33,6 @@
 <%--variables para el manejo de selected filters--%>
 <c:set var="selectedGenres" value="${fn:split(param.g, ',')}" />
 <c:set var="selectedProviders" value="${fn:split(param.providers, ',')}" />
-
 <div class="container d-flex flex-column">
     <div class="container d-flex flex-row ">
         <%--        FILTROS y PELIS    --%>
@@ -112,11 +111,9 @@
                                     </c:forEach>
                                     <div class="form-check special-provider-class">
                                         <input ${isChecked} type="checkbox" class="form-check-input special-provider-input" id="dropdownCheck${provider.providerName}">
-<%--                                        <label class="form-check-label" for="dropdownCheck${providersList.indexOf(provider)}">${provider.providerName}</label>--%>
-                                        <label class="form-check-label" for="dropdownCheck${providersList.indexOf(provider)}"><span class="mt-1 badge text-bg-light border border-black">
-                                            <img src="${provider.logoPath}" alt="provider logo" style="height: 1.4em; margin-right: 5px;">
-                                            ${provider.providerName}
-                                        </span></label>
+<%--                                        Por el uso de inner text en el beforeSubmit, la label debe estar en este formato. Para no captar espacios de la estructura del html. por mas que el estilo no sea el mejor
+                                            sino hay que usar fn:trim para cada comparacion del isChecked, lo cual es un gran desperdicio de performance a cambio de un cambio de la estructura del html--%>
+                                        <label class="form-check-label" for="dropdownCheck${providersList.indexOf(provider)}"><span class="mt-1 badge text-bg-light border border-black"><img src="${provider.logoPath}" alt="provider logo" style="height: 1.4em; margin-right: 5px;">${provider.providerName}</span></label>
                                     </div>
                                     <c:set var="isChecked" value="" /> <!-- Reset the isChecked variable -->
                                 </c:forEach>
