@@ -38,7 +38,7 @@
             <div class="container d-flex flex-column">
                 <div style="z-index: 1;">
                     <form id="filter-form" class="mb-2 d-flex flex-row justify-content-between" action="${pageContext.request.contextPath}/createList" method="get" onsubmit="beforeSubmit()">
-                        <input type="hidden"  id="selected-media-input" />
+                        <input type="hidden" id="selected-media-input" />
                         <div role="group" class="input-group d-flex flex-row m-1 me-3">
                             <select  name="m" class="form-select filter-width" aria-label="Filter!">
                                 <option ${'All' == param.m ? 'selected' : ''} value="All"><spring:message code="createList.allMedia"/></option>
@@ -139,7 +139,7 @@
                         </div>
                     </c:if>
                     <c:forEach var="movie" items="${mediaList}" end="24">
-                        <div onclick="displayMediaName('${(fn:replace(fn:replace(movie.name,"'", "\\'"), "\"", "&quot;"))}','${movie.mediaId}')" class="poster card text-bg-dark m-1">
+                        <div onclick="displayMediaName('${(fn:replace(fn:replace(movie.name,"'", "\\'"), "\"", "&quot;"))}',${movie.mediaId})" class="poster card text-bg-dark m-1">
                             <div class="card-img-container"> <!-- Add a container for the image -->
                                 <img class="cropCenter" src="${movie.posterPath}" alt="media poster">
                                 <div class="card-img-overlay">
@@ -206,7 +206,7 @@
                                            placeholder="Your description..." maxlength="255" />
                             <span id="listDescriptionCharCount" class="text-muted"><span id="listDescriptionRemainingChars">0</span>/255</span>
                             <form:errors path="listDescription" cssClass="error"/>
-                            <form:input path="mediaIdsList" type="hidden" name="mediaIds" id="selected-create-media"/>
+                            <form:input path="mediaIdsList" type="hidden"  name="mediaIds" id="selected-create-media"/>
                             <div class="scrollableMedia d-flex flex-column m-2 p-2" id="selected-media-names">
                                 <c:forEach var="sel" items="${selected}">
                                     <div class="other-distinct d-flex justify-content-between ">
@@ -221,6 +221,7 @@
 
                     <div>
                         <h6><spring:message code="createList.keepProgressMessage"/></h6>
+
                     </div>
                     <div class="d-flex" id="preview-list"></div>
                 </div>

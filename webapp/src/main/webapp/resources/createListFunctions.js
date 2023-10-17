@@ -53,7 +53,8 @@ function displayAllMediaNames(){
 
 function updateSelectedMediaInput() {
     const selectedMediaInput = document.getElementById("selected-media-input");
-    selectedMediaInput.value = JSON.stringify(selectedMediaId).replaceAll(']','').replaceAll('[','');
+    // selectedMediaInput.value = JSON.stringify(selectedMediaId).replaceAll(']','').replaceAll('[','');
+    selectedMediaInput.value = selectedMediaId.map(Number);
     localStorage.setItem("selectedMediaIds",selectedMediaInput.value);
     const selectedCreateInput = document.getElementById("selected-create-media");
     selectedCreateInput.value =selectedMediaId.map(Number);
@@ -80,13 +81,13 @@ window.onload = function() {
         selectedMediaId.push(parseInt(elems[j].id));
         selectedMedia.push(elems[j++].innerHTML);
     }
-
-    console.log(localStorage.getItem("mediaNames"))
+    console.log("onload mediaNames localStorage: "+localStorage.getItem("selectedMediaIds"))
+    console.log("onload mediaNames localStorage: "+localStorage.getItem("mediaNames"))
 
     // Obtener el String desde localStorage y convertirlo en un array de números
     const storedMediaIds = localStorage.getItem("selectedMediaIds");
     if (storedMediaIds) {
-        const mediaIdArray = storedMediaIds.split(",").map(Number);
+        const mediaIdArray = storedMediaIds.replaceAll("\"","").split(",").map(Number);
         selectedMediaId = [...selectedMediaId, ...mediaIdArray];
     }
 
@@ -95,6 +96,10 @@ window.onload = function() {
         const mediaArray = storedMediaNames.split(",").map(String);
         selectedMedia = [...selectedMedia, ...mediaArray];
     }
+
+    console.log("onload selectedMediaId: "+selectedMediaId)
+    console.log("onload selectedMedia: "+selectedMedia)
+
 
     updateSelectedMediaInput();
     displayAllMediaNames();
@@ -174,6 +179,9 @@ function deleteStorage() {
 
     selectedMedia = [];
     selectedMediaId = [];
+
+    const formIdInput = document.getElementById("selected-create-media")
+    formIdInput.value = null;
 }
 
 function beforeSubmit() {
