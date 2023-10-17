@@ -15,8 +15,7 @@ public class ReviewServiceImpl implements ReviewService{
     private ReviewDao reviewDao;
     @Autowired
     private UserService userService;
-    @Autowired
-    private MediaService mediaService;
+
 
     @Transactional(readOnly = true)
     @Override
