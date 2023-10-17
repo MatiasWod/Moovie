@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -16,7 +17,7 @@
     <script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=82"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <title>Edit your List!</title>
+    <title><spring:message code="editList.title"/></title>
 </head>
 <body style="background: whitesmoke">
 <c:import url="navBar.jsp"/>
@@ -37,7 +38,7 @@
             <div class="alert alert-danger alert-dismissible fade show m-2" id="errorAlert" role="alert">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>${errorMessage} <a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}">${insertedMooovieList.name}</a></div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<spring:message code="editList.close"/>"></button>
                 </div>
             </div>
         </c:if>
@@ -45,29 +46,29 @@
             <div class="alert alert-success alert-dismissible fade show m-2" id="errorAlert" role="alert">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>${successMessage} <a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}">${insertedMooovieList.name}</a></div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<spring:message code="editList.close"/>"></button>
                 </div>
             </div>
         </c:if>
     </div>
     <div class="justify-content-between d-flex flex-row" style="margin: 10px">
-        <h2><strong>Editing mode</strong> </h2>
+        <h2><strong><spring:message code="editList.editingMode"/></strong> </h2>
         <form action="${pageContext.request.contextPath}/updateMoovieListOrder/${moovieList.moovieListId}" method="POST" onsubmit="beforeSubmit()">
             <input type="hidden" name="toPrevArray" id="toPrevArray" value="">
             <input type="hidden" name="currentArray" id="currentArray" value="">
             <input type="hidden" name="toNextArray" id="toNextArray" value="">
-            <button type="submit" class="btn btn-style">Apply new order</button>
+            <button type="submit" class="btn btn-style"><spring:message code="editList.applyNewOrder"/></button>
         </form>
     </div>
 <table class="table table-striped" id="movieTable">
     <thead>
     <tr>
-        <th scope="col">#</th>
+        <th scope="col"><spring:message code="editList.hashtag"/></th>
         <th scope="col"></th>
-        <th scope="col">Title</th>
-        <th scope="col">Type</th>
-        <th scope="col">Score</th>
-        <th scope="col">Release Date</th>
+        <th scope="col"><spring:message code="editList.titleCol"/></th>
+        <th scope="col"><spring:message code="editList.type"/></th>
+        <th scope="col"><spring:message code="editList.score"/></th>
+        <th scope="col"><spring:message code="editList.releaseDate"/></th>
         <th scope="col" style="width: 50px"></th>
         <th scope="col" style="width: 100px"></th>
     </tr>
@@ -98,10 +99,10 @@
                     <td>
                         <c:choose>
                             <c:when test="${mediaList[loop.index].type}">
-                                Tv Series
+                                <spring:message code="editList.series"/>
                             </c:when>
                             <c:otherwise>
-                                Movie
+                                <spring:message code="editList.movie"/>
                             </c:otherwise>
                         </c:choose>
                     </td>
@@ -120,24 +121,24 @@
             <!-- Dropdown menu items go here -->
             <c:if test="${(currentPage+1)!=numberOfPages}">
                 <li><a class="dropdown-item" onclick="openPopup('nextPage-popup-${loop.index}')"><i
-                        class="bi bi-caret-right-fill"></i> Next page</a></li>
+                        class="bi bi-caret-right-fill"></i><spring:message code="editList.nextPage"/></a></li>
             </c:if>
             <c:if test="${currentPage>0}">
                 <li><a class="dropdown-item" onclick="openPopup('previousPage-popup-${loop.index}')"><i
-                        class="bi bi-caret-left-fill"></i> Previous page</a></li>
+                        class="bi bi-caret-left-fill"></i><spring:message code="editList.previousPage"/></a></li>
             </c:if>
         </ul>
     </div>
     <div class="popup-overlay nextPage-popup-${loop.index}-overlay"
          onclick="closePopup('nextPage-popup-${loop.index}')"></div>
     <div class="popup nextPage-popup-${loop.index}">
-        <h2>Send "${mediaList[loop.index].name}" to the next page?</h2>
+        <h2><spring:message code="editList.sendToNextPage" arguments="${mediaList[loop.index].name}"/></h2>
         <div class="text-center" style="margin-top: 20px">
             <button type="button" class="btn btn-danger" style="margin-inline: 10px"
-                    onclick="closePopup('nextPage-popup-${loop.index}')">No
+                    onclick="closePopup('nextPage-popup-${loop.index}')"><spring:message code="editList.no"/>
             </button>
             <button class="btn btn-dark" style="margin-inline: 10px"
-                    onclick="moveRowToNextPage(${loop.index},${mediaList[loop.index].mediaId})">Yes
+                    onclick="moveRowToNextPage(${loop.index},${mediaList[loop.index].mediaId})"><spring:message code="editList.yes"/>
             </button>
         </div>
     </div>
@@ -146,13 +147,13 @@
     <div class="popup-overlay previousPage-popup-${loop.index}-overlay"
          onclick="closePopup('previousPage-popup-${loop.index}')"></div>
     <div class="popup previousPage-popup-${loop.index}">
-        <h2>Send "${mediaList[loop.index].name}" to the previous page?</h2>
+        <h2><spring:message code="editList.sendToPreviousPage" arguments="${mediaList[loop.index].name}"/></h2>
         <div class="text-center" style="margin-top: 20px">
             <button type="button" class="btn btn-danger" style="margin-inline: 10px"
-                    onclick="closePopup('previousPage-popup-${loop.index}')">No
+                    onclick="closePopup('previousPage-popup-${loop.index}')"><spring:message code="editList.no"/>
             </button>
             <button class="btn btn-dark" style="margin-inline: 10px"
-                    onclick="moveRowToPreviousPage(${loop.index},${mediaList[loop.index].mediaId})">Yes
+                    onclick="moveRowToPreviousPage(${loop.index},${mediaList[loop.index].mediaId})"><spring:message code="editList.yes"/>
             </button>
         </div>
     </div>
@@ -161,22 +162,22 @@
         <div class="popup-overlay remove-popup-overlay" onclick="closePopup('remove-popup-${loop.index}')"></div>
         <div class="col-auto text-center">
             <button class="btn btn-danger" onclick="openPopup('remove-popup-${loop.index}')">
-                    <i class="bi bi-trash-fill"></i> Remove
+                    <i class="bi bi-trash-fill"></i><spring:message code="editList.remove"/>
             </button>
         </div>
     </td>
 <div class="popup-overlay remove-popup-${loop.index}-overlay"
      onclick="closePopup('remove-popup-${loop.index}')"></div>
 <div class="popup remove-popup-${loop.index}">
-    <h2>Remove "${mediaList[loop.index].name}" from ${moovieList.name}?</h2>
+    <h2><spring:message code="editList.removeFrom" arguments="${mediaList[loop.index].name},${moovieList.name}"/></h2>
     <div class="text-center" style="margin-top: 20px">
         <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">
             <button type="button" class="btn btn-danger" style="margin-inline: 10px"
-                    onclick="closePopup('remove-popup-${loop.index}')">No
+                    onclick="closePopup('remove-popup-${loop.index}')"><spring:message code="editList.no"/>
             </button>
             <input type="hidden" name="listId" value="${moovieList.moovieListId}"/>
             <input type="hidden" name="mediaId" value="${mediaList[loop.index].mediaId}"/>
-            <button type="submit" class="btn btn-dark" style="margin-inline: 10px">Yes</button>
+            <button type="submit" class="btn btn-dark" style="margin-inline: 10px"><spring:message code="editList.yes"/></button>
         </form>
     </div>
 </div>
@@ -187,7 +188,7 @@
         <c:otherwise>
             <tbody>
             <tr>
-                <td colspan="5">List is empty</td>
+                <td colspan="5"><spring:message code="editList.empty"/></td>
             </tr>
             </tbody>
         </c:otherwise>

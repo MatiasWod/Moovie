@@ -131,7 +131,7 @@
 
                 <form class="d-flex mb-0" role="search" action="${pageContext.request.contextPath}/search" method="get">
                 <div class="input-group">
-                    <input id="searchInput" class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search" required>
+                    <input id="searchInput" class="form-control me-2" type="search" name="query" placeholder="<spring:message code="navBar.search"/>" aria-label="Search" required>
                     <button class="btn btn-outline-success" type="submit">
                         <i class="bi bi-search"></i> <!-- Bootstrap search icon -->
                         <spring:message code="navBar.search"/>

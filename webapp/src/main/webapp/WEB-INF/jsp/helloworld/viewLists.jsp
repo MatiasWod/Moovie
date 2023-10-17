@@ -41,7 +41,7 @@
             <div class="alert alert-success alert-dismissible fade show" id="errorAlert" role="alert">
                 <div class="d-flex justify-content-between align-items-center">
                     <div><c:url value="${successMessage}"/></div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<spring:message code="viewLists.close"/>"></button>
                 </div>
             </div>
         </c:if>
@@ -51,13 +51,13 @@
         <div class="d-flex justify-content-between align-items-center">
             <form class="flex-grow-1" role="search" action="${pageContext.request.contextPath}/lists" method="get">
                 <div class="d-flex" style="margin-right: 5px">
-                    <input class="form-control" style="margin-right: 5px" type="search" name="search" placeholder="Search a Moovie List!" aria-label="Moovie List id">
-                    <button class="btn btn-outline-success ml-2" style="margin-right: 5px" type="submit">Search</button>
+                    <input class="form-control" style="margin-right: 5px" type="search" name="search" placeholder="<spring:message code="viewLists.searchMoovieList"/>" aria-label="Moovie List id">
+                    <button class="btn btn-outline-success ml-2" style="margin-right: 5px" type="submit"><spring:message code="viewLists.search"/></button>
                 </div>
             </form>
             <form id="sortForm" method="get" class="d-flex align-items-center">
                 <h2 style="padding-right: 4px"><spring:message code="viewLists.sortBy"/></h2>
-                <select name="orderBy" class="form-select filter-width" aria-label="Filter!" id="sortSelect">
+                <select name="orderBy" class="form-select filter-width" aria-label="<spring:message code="viewLists.filter"/>" id="sortSelect">
 <%--                    <option ${'name' == param.orderBy ? 'selected' : ''} value="name">Name</option>--%>
                     <option ${'likeCount' == param.orderBy ? 'selected' : ''} value="likeCount"><spring:message code="viewLists.likes"/></option>
                     <option ${('moovieListId' == param.orderBy || param.orderBy == null)? 'selected' : ''} value="moovieListId"><spring:message code="viewLists.recent"/></option>

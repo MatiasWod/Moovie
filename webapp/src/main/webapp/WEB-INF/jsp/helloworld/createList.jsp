@@ -53,7 +53,7 @@
                                 </button>
                                 <c:set var="isChecked" value="" />
                                 <div style="height: 50vh" class="dropdown-menu scrollableDiv flex-wrap p-4">
-                                    <input type="text" id="searchBoxGenre" placeholder="Search..." class="form-control mb-3">
+                                    <input type="text" id="searchBoxGenre" placeholder="<spring:message code="createList.search"/>" class="form-control mb-3">
                                         <%--   ES NECESARIO UTILIZAR LA VAR isChecked.
                                           Porque al simplemente realizar fn:contains(param.g,genre)
                                           existen casos como Action&Adventure que siempre daran match para Action y Adventure
@@ -81,7 +81,7 @@
                                 </button>
                                 <c:set var="isChecked" value="" />
                                 <div style="height: 50vh" class="dropdown-menu scrollableDiv flex-wrap p-4">
-                                    <input type="text" id="searchBoxProvider" placeholder="Search..." class="form-control mb-3">
+                                    <input type="text" id="searchBoxProvider" placeholder="<spring:message code="createList.search"/>" class="form-control mb-3">
                                         <%--   ES NECESARIO UTILIZAR LA VAR isChecked.
                                           Porque al simplemente realizar fn:contains(param.g,genre)
                                           existen casos como Action&Adventure que siempre daran match para Action y Adventure
@@ -115,7 +115,7 @@
                                 <i id="sortIcon" class="bi bi-arrow-${param.order == 'asc' ? 'up' : 'down'}-circle-fill"></i>
                             </div>
 
-                            <input class="form-control me-2" type="search" name="q" value="${param.q}" placeholder="Search" aria-label="Search">
+                            <input class="form-control me-2" type="search" name="q" value="${param.q}" placeholder="<spring:message code="createList.searchBar"/>" aria-label="Search">
                             <button class="btn btn-outline-success me-1" type="submit" ><spring:message code="createList.apply"/></button>
                             <a style="height: 100%;" class="btn btn-outline-success align-bottom" href="${pageContext.request.contextPath}/createList">
                                 <spring:message code="createList.reset"/>

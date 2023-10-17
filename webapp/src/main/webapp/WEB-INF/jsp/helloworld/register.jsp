@@ -49,7 +49,7 @@
                 <form:errors path="repeatPassword" cssClass="error" element="p"/>
                 <form:errors path="passwordMatch" cssClass="error" element="p"/>
                 <div >
-                    <input class="mt-2 btn btn-outline-success" type="submit" value="Register!"/>
+                    <input class="mt-2 btn btn-outline-success" type="submit" value="<spring:message code="register.register"/>"/>
                 </div>
 
                 <div>

@@ -68,7 +68,7 @@
                             </button>
                             <c:set var="isChecked" value="" />
                             <div style="height: 50vh" class="dropdown-menu scrollableDiv flex-wrap p-4">
-                                <input type="text" id="searchBoxGenre" placeholder="Search..." class="form-control mb-3">
+                                <input type="text" id="searchBoxGenre" placeholder="<spring:message code="discover.search"/>" class="form-control mb-3">
                  <%--   ES NECESARIO UTILIZAR LA VAR isChecked.
                    Porque al simplemente realizar fn:contains(param.g,genre)
                    existen casos como Action&Adventure que siempre daran match para Action y Adventure
@@ -97,7 +97,7 @@
                             </button>
                             <c:set var="isChecked" value="" />
                             <div style="height: 50vh" class="dropdown-menu scrollableDiv flex-wrap p-4">
-                                <input type="text" id="searchBoxProvider" placeholder="Search..." class="form-control mb-3">
+                                <input type="text" id="searchBoxProvider" placeholder="<spring:message code="discover.search"/>" class="form-control mb-3">
                                 <%--   ES NECESARIO UTILIZAR LA VAR isChecked.
                                   Porque al simplemente realizar fn:contains(param.g,genre)
                                   existen casos como Action&Adventure que siempre daran match para Action y Adventure

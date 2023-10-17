@@ -43,7 +43,7 @@
         </div>
 
         <div style="margin: 5px; width: 35%">
-            <input class="btn btn-outline-success align-bottom" type="submit" value="Login!"/>
+            <input class="btn btn-outline-success align-bottom" type="submit" value="<spring:message code="login.login"/>"/>
         </div>
         <div style="margin-top: 20px; margin-bottom: 2px">
             <spring:message code="login.noAccount"/>
