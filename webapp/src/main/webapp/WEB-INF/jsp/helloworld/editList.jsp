@@ -264,7 +264,7 @@
     }
 
     function moveRowToPreviousPage(index, mediaId) {
-        toNext.push(mediaId); // Add the mediaId to the toNext array
+        toPrev.push(mediaId); // Add the mediaId to the toNext array
         const row = $(`#movieTable .previousPage-popup-` + index).closest("tr"); // Get the parent row
         row.hide(); // Hide the row
         updateRowIndices();
