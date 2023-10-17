@@ -126,7 +126,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
         // Add the genres filter
         if (genres!=null && !genres.isEmpty()) {
-            sql.append(" AND mediaId IN ( SELECT mediaId FROM genres WHERE "); // Start the OR conditions for genres
+            sql.append(" AND m.mediaId IN ( SELECT mediaId FROM genres WHERE "); // Start the OR conditions for genres
             for (String genre : genres) {
                 sql.append(" genre = ? OR "); // Replace 'genre_column' with your actual genre column name
                 args.add(genre);
@@ -139,7 +139,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
         // Add the providers filter
         if (providers!=null && !providers.isEmpty()) {
-            sql.append(" AND mediaId IN ( SELECT mediaId FROM providers WHERE "); // Start the OR conditions for genres
+            sql.append(" AND m.mediaId IN ( SELECT mediaId FROM providers WHERE "); // Start the OR conditions for genres
             for (String provider : providers) {
                 sql.append(" providername = ? OR "); // Replace 'genre_column' with your actual genre column name
                 args.add(provider);
