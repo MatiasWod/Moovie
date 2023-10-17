@@ -77,6 +77,7 @@
     </c:if>
     <div class="buttons">
         <div style="display: flex; justify-content: space-between; align-items: center;">
+            <c:if test="${moovieList.type==publicType}">
             <div class="d-flex flex-row justify-content-center">
                 <div>
                     <form action="${pageContext.request.contextPath}/like" method="POST">
@@ -111,7 +112,7 @@
                     </form>
                 </div>
             </div>
-
+            </c:if>
             <form id="sortForm" method="get">
                 <div style="display: flex; align-items: center;">
                     <h2 style="padding-right: 4px"><spring:message code="listExtract.sortBy"/></h2>

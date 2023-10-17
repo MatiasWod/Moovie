@@ -166,6 +166,7 @@ public class UserController {
                         mav.addObject("listOwner",watchedDetails.getCard().getUsername());
                         mav.addObject("orderBy", orderBy);
                         mav.addObject("order", order);
+                        mav.addObject("publicType",MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
                         break;
                     case "watchlist":
                             MoovieListDetails watchlistDetails = moovieListService.getMoovieListDetails(-1, "WATCHLIST" , username, orderBy, order,PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(),pageNumber-1);
@@ -183,6 +184,7 @@ public class UserController {
                         mav.addObject("listOwner",watchlistDetails.getCard().getUsername());
                         mav.addObject("orderBy", orderBy);
                         mav.addObject("order", order);
+                        mav.addObject("publicType",MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
 
                         break;
                     case "liked-lists":

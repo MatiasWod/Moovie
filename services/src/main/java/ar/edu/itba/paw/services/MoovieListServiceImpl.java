@@ -244,23 +244,25 @@ public class MoovieListServiceImpl implements MoovieListService{
     public void likeMoovieList(int moovieListId) {
         int userId = userService.getInfoOfMyUser().getUserId();
         MoovieListCard mlc = getMoovieListCardById(moovieListId);
-        if(mlc.isCurrentUserHasLiked()){
-            moovieListDao.removeLikeMoovieList(userId, moovieListId);
-        } else {
-            moovieListDao.likeMoovieList(userId, moovieListId);
-            int likeCountForMoovieList = mlc.getLikeCount();
-            if(likeCountForMoovieList != 0 && (likeCountForMoovieList % EVERY_THIS_AMOUNT_OF_LIKES_SEND_EMAIL) == 0){
-                MoovieList mvlAux = getMoovieListById(moovieListId);
-                User toUser = userService.findUserById(mvlAux.getUserId());
-                Map<String,Object> map = new HashMap<>();
-                map.put("username",toUser.getUsername());
-                map.put("likes", likeCountForMoovieList);
-                map.put("moovieListId",mvlAux.getMoovieListId());
-                map.put("moovieListName",mvlAux.getName());
-                emailService.sendEmail(toUser.getEmail(),
-                        "New like goal on your list!",
-                        "notificationLikeMilestoneMoovieList.html",
-                        map);
+        if(mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType()){
+            if(mlc.isCurrentUserHasLiked()){
+                moovieListDao.removeLikeMoovieList(userId, moovieListId);
+            } else {
+                moovieListDao.likeMoovieList(userId, moovieListId);
+                int likeCountForMoovieList = mlc.getLikeCount();
+                if(likeCountForMoovieList != 0 && (likeCountForMoovieList % EVERY_THIS_AMOUNT_OF_LIKES_SEND_EMAIL) == 0){
+                    MoovieList mvlAux = getMoovieListById(moovieListId);
+                    User toUser = userService.findUserById(mvlAux.getUserId());
+                    Map<String,Object> map = new HashMap<>();
+                    map.put("username",toUser.getUsername());
+                    map.put("likes", likeCountForMoovieList);
+                    map.put("moovieListId",mvlAux.getMoovieListId());
+                    map.put("moovieListName",mvlAux.getName());
+                    emailService.sendEmail(toUser.getEmail(),
+                            "New like goal on your list!",
+                            "notificationLikeMilestoneMoovieList.html",
+                            map);
+                }
             }
         }
     }
@@ -277,23 +279,25 @@ public class MoovieListServiceImpl implements MoovieListService{
     public void followMoovieList(int moovieListId) {
         int userId = userService.tryToGetCurrentUserId();
         MoovieListCard mlc = getMoovieListCardById(moovieListId);
-        if(mlc.isCurrentUserHasFollowed()){
-            moovieListDao.removeFollowMoovieList(userId, moovieListId);
-        } else {
-            moovieListDao.followMoovieList(userId, moovieListId);
-            int followCountForMoovieList = mlc.getFollowerCount();
-            if(followCountForMoovieList != 0 && (followCountForMoovieList % EVERY_THIS_AMOUNT_OF_FOLLOWS_SEND_EMAIL) == 0){
-                MoovieList mvlAux = getMoovieListById(moovieListId);
-                User toUser = userService.findUserById(mvlAux.getUserId());
-                Map<String,Object> map = new HashMap<>();
-                map.put("username",toUser.getUsername());
-                map.put("follows", followCountForMoovieList);
-                map.put("moovieListId",mvlAux.getMoovieListId());
-                map.put("moovieListName",mvlAux.getName());
-                emailService.sendEmail(toUser.getEmail(),
-                        "New follow goal on your list!",
-                        "notificationFollowMilestoneMoovieList.html",
-                        map);
+        if(mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType()) {
+            if (mlc.isCurrentUserHasFollowed()) {
+                moovieListDao.removeFollowMoovieList(userId, moovieListId);
+            } else {
+                moovieListDao.followMoovieList(userId, moovieListId);
+                int followCountForMoovieList = mlc.getFollowerCount();
+                if (followCountForMoovieList != 0 && (followCountForMoovieList % EVERY_THIS_AMOUNT_OF_FOLLOWS_SEND_EMAIL) == 0) {
+                    MoovieList mvlAux = getMoovieListById(moovieListId);
+                    User toUser = userService.findUserById(mvlAux.getUserId());
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("username", toUser.getUsername());
+                    map.put("follows", followCountForMoovieList);
+                    map.put("moovieListId", mvlAux.getMoovieListId());
+                    map.put("moovieListName", mvlAux.getName());
+                    emailService.sendEmail(toUser.getEmail(),
+                            "New follow goal on your list!",
+                            "notificationFollowMilestoneMoovieList.html",
+                            map);
+                }
             }
         }
     }
