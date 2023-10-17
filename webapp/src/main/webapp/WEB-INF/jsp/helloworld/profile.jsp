@@ -168,6 +168,16 @@
             </div>
         </div>
         </c:if>
+        <c:if test="${not empty param.error}">
+        <div class="alert alert-danger alert-dismissible fade show" id="errorAlert" role="alert">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <c:if test="${param.error == 'fileTooBig'}">Image size is too big</c:if>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+        </c:if>
         <c:if test="${not empty errorMessage}">
         <div class="alert alert-danger alert-dismissible fade show" id="errorAlert" role="alert">
             <div class="d-flex justify-content-between align-items-center">

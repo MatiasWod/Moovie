@@ -61,8 +61,10 @@ public class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public ModelAndView register(@ModelAttribute("registerForm") final RegisterForm form) {
-        return new ModelAndView("helloworld/register");
+        ModelAndView modelAndView = new ModelAndView("helloworld/register");
+        return modelAndView;
     }
+
 
     @RequestMapping(value = "/register/confirm")
     public ModelAndView confirmRegistration(@RequestParam("token") final String token, RedirectAttributes redirectAttributes) {

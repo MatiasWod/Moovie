@@ -111,8 +111,9 @@
                             </c:choose>
                         </form>
                     </div>
+                </c:if>
                 </div>
-            </c:if>
+
             <form id="sortForm" method="get">
                 <div style="display: flex; align-items: center;">
                     <h2 style="padding-right: 4px">Sort by</h2>

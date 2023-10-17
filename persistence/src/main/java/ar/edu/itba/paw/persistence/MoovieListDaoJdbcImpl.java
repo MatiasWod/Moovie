@@ -335,21 +335,24 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     @Override
     public List<MoovieListContent> getMoovieListContent(int moovieListId, int userid , String orderBy, String sortOrder ,int size, int pageNumber){
-        StringBuilder sql = new StringBuilder("SELECT *,  ");
+        StringBuilder sql = new StringBuilder("SELECT m.*, mlc.*,  ");
         ArrayList<Object> args = new ArrayList<>();
 
         //Add the part of the query that checks if its watched by its owner
         sql.append(" (CASE WHEN EXISTS ( SELECT 1 FROM moovielists ml INNER JOIN moovieListsContent mlc2 ON ml.moovielistid = mlc2.moovielistid  ");
         sql.append(" WHERE m.mediaId = mlc2.mediaId AND ml.name = 'Watched' AND ml.userid = ? ) THEN true ELSE false END) AS isWatched,");
         sql.append("(SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = m.mediaId) AS genres, ");
-        sql.append("(SELECT ARRAY_AGG(p) FROM providers p WHERE p.mediaId = m.mediaId) AS providers ");
+        sql.append("(SELECT ARRAY_AGG(p) FROM providers p WHERE p.mediaId = m.mediaId) AS providers, ");
+        sql.append("AVG(r.rating) AS totalRating, COUNT(r.rating) AS votecount ");
 
         sql.append(" FROM moovieListsContent mlc ");
         args.add(userid);
-        sql.append(" INNER JOIN media m ON mlc.mediaId = m.mediaId  ");
+        sql.append(" INNER JOIN media m ON mlc.mediaId = m.mediaId LEFT JOIN reviews r ON m.mediaid = r.mediaid ");
 
         sql.append(" WHERE mlc.moovielistid = ? ");
         args.add(moovieListId);
+
+        sql.append(" GROUP BY m.mediaId, mlc.moovielistid, mlc.mediaId, mlc.customorder ");
 
         if(orderBy!=null && !orderBy.isEmpty() ){
             sql.append(" ORDER BY ").append(orderBy).append(" ").append(sortOrder);
@@ -373,9 +376,10 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         sql.append(" (CASE WHEN EXISTS ( SELECT 1 FROM moovielists ml INNER JOIN moovieListsContent mlc2 ON ml.moovielistid = mlc2.moovielistid  ");
         sql.append(" WHERE m.mediaId = mlc2.mediaId AND ml.name = 'Watched' AND ml.userid = ? ) THEN true ELSE false END) AS isWatched, ");
         sql.append("(SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = m.mediaId) AS genres, ");
-        sql.append("(SELECT ARRAY_AGG(p) FROM providers p WHERE p.mediaId = m.mediaId) AS providers ");
+        sql.append("(SELECT ARRAY_AGG(p) FROM providers p WHERE p.mediaId = m.mediaId) AS providers, ");
+        sql.append("AVG(rating) AS totalRating, COUNT(rating) AS votecount ");
 
-        sql.append("FROM media m ");
+        sql.append("FROM media m LEFT JOIN reviews r ON m.mediaid = r.mediaid");
         args.add(userid);
         // If type is 0 or 1 it's specifically movies or TVs, else it's not restricted
         if (mediaType == MediaTypes.TYPE_MOVIE.getType() || mediaType == MediaTypes.TYPE_TVSERIE.getType()) {
@@ -384,6 +388,9 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         } else {
             sql.append(" WHERE type IS NOT NULL ");
         }
+
+        sql.append(" GROUP BY m.mediaid ");
+
         if(orderBy!=null && !orderBy.isEmpty() ){
             sql.append(" ORDER BY ").append(featuredListOrder).append(" DESC LIMIT 100) AS topRated ORDER BY ").append(orderBy).append(" ").append(sortOrder);
         }

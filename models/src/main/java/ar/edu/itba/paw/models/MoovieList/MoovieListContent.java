@@ -7,6 +7,7 @@ import java.util.Date;
 public class MoovieListContent extends Media {
     private boolean watched;
 
+
     public MoovieListContent(int mediaId, boolean type, String name, String originalLanguage,
                              boolean adult, Date releaseDate, String overview, String backdropPath,
                              String posterPath, String trailerLink, float tmdbRating, int totalRating,
