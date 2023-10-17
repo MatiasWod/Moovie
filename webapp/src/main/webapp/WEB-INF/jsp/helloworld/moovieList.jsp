@@ -22,7 +22,9 @@
 <c:import url="/WEB-INF/jsp/helloworld/listExtract.jsp">
     <c:param name="publicList" value="true"/>
 </c:import>
-<c:if test="${moovieList.type==publicType}}">
+<c:out value="${moovieList.type}"/>
+<c:out value="${publicType}"/>
+<c:if test="${moovieList.type==publicType}">
 <hr>
 <div class="d-flex flex-column align-items-center" style="margin-bottom: 20px">
     <h2><spring:message code="moovieList.recommendations"/></h2>
