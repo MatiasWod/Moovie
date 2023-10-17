@@ -153,6 +153,7 @@ public class ListController {
             User currentUser=userService.getInfoOfMyUser();
             mav.addObject("watchedCount",myList.getCard().getCurrentUserWatchAmount());
             mav.addObject("watchedListId",moovieListService.getMoovieListCards("Watched",currentUser.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId());
+            mav.addObject("isOwner", currentUser.getUsername().equals(moovieListCard.getUsername()));
         }catch (Exception e){
             mav.addObject("watchedCount",0);
         }
@@ -173,6 +174,24 @@ public class ListController {
         queries.put("order", order);
         String urlBase = UriComponentsBuilder.newInstance().path("/list/{id}").query("orderBy={orderBy}&order={order}").buildAndExpand(queries).toUriString();
         mav.addObject("urlBase", urlBase);
+        return mav;
+    }
+
+    @RequestMapping(value = "/editList/{id:\\d+}")
+    public ModelAndView editList(@PathVariable("id") final int moovieListId, @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
+        try {
+            User currentUser = userService.getInfoOfMyUser();
+            if (!currentUser.getUsername().equals(moovieListService.getMoovieListCardById(moovieListId).getUsername())) {
+                return new ModelAndView("helloworld/404");
+            }
+        } catch (Exception e) {
+            return new ModelAndView("helloworld/404");
+        }
+        final ModelAndView mav = new ModelAndView("helloworld/editList");
+        int pagesSize = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
+        MoovieListDetails myList = moovieListService.getMoovieListDetails(moovieListId, null, null, "name", "asc", pagesSize, pageNumber - 1);
+        mav.addObject("moovieList", myList.getCard());
+        mav.addObject("mediaList", myList.getContent());
         return mav;
     }
 

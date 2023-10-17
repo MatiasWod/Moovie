@@ -54,6 +54,17 @@
                 </div>
             </sec:authorize>
         </c:if>
+        <c:if test="${isOwner}">
+            <div style="position: relative;" class="d-flex">
+                <div style="position: absolute; top: 0; right: 0;">
+                    <a href="${pageContext.request.contextPath}/editList/${moovieList.moovieListId}">
+                        <button class="btn btn-primary btn-sm">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </c:if>
     </div>
     <c:if test="${param.publicList == 'true'}">
         <c:if test="${not empty errorMessage}">
