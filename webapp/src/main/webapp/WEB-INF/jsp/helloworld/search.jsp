@@ -120,9 +120,13 @@
                     <div class="card-img-container"> <!-- Add a container for the image -->
                         <img class=" cropCenter"  src="${pageContext.request.contextPath}/resources/logo.png"/>
                         <div class="card-img-overlay" style="opacity: 1; background-color: rgba(255,255,255,0.1);">
-                            <c:if test="${user.role == 2 || user.role == -102}">
-                                <img class="cropCenter" style="height:50px;width:50px" src="${pageContext.request.contextPath}/resources/moderator_logo.png" alt="moderator profile pic">
-                            </c:if>
+                            <div class="d-flex">
+                                <c:if test="${user.role == 2 || user.role == -102}">
+                                    <img class="cropCenter" style="height:50px;width:50px" src="${pageContext.request.contextPath}/resources/moderator_logo.png" alt="moderator profile pic">
+                                </c:if>
+                                <img id="profile-image-${user.username}" style="height: 50px; width: 50px; border:solid black; border-radius: 50%; margin-left: auto" class="cropCenter special-pfp-class" src="${pageContext.request.contextPath}/profile/image/${user.username}" alt=""/>
+                            </div>
+
                             <h3 class="card-title text-center">${user.username}</h3>
                             <div class="d-flex align-items-center">
                                 <div class="m-1 d-flex align-items-center">
@@ -170,5 +174,7 @@
         localStorage.removeItem("searchValue");
 
     }
+
+
 </script>
 </html>

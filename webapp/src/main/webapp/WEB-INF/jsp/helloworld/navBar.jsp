@@ -59,6 +59,13 @@
                 profileImage.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
             }
         });
+
+        const profileImagesSearch = document.querySelectorAll(".special-pfp-class");
+        profileImagesSearch.forEach(profileImage => {
+            profileImage.onerror = function() {
+                profileImage.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
+            }
+        });
     });
 </script>
 
