@@ -246,9 +246,9 @@
         }
     }
 
-    let toPrev = new Array(25);    // Initialize an array with 25 undefined elements
-    let current = new Array(25);
-    let toNext = new Array(25);
+    let toPrev  = [];
+    let current  = [];
+    let toNext  = [];
 
     function moveRowToNextPage(index, mediaId) {
         toNext.push(mediaId); // Add the row to the toNext array
