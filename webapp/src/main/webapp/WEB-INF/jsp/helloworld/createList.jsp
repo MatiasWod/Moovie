@@ -39,9 +39,9 @@
                         <input type="hidden"  id="selected-media-input" />
                         <div role="group" class="input-group d-flex flex-row m-1 me-3">
                             <select  name="m" class="form-select filter-width" aria-label="Filter!">
-                                <option ${'All' == param.m ? 'selected' : ''}><spring:message code="createList.allMedia"/></option>
-                                <option  ${'Movies' == param.m ? 'selected' : ''}><spring:message code="createList.movies"/></option>
-                                <option  ${'Series' == param.m ? 'selected' : ''}><spring:message code="createList.series"/></option>
+                                <option ${'All' == param.m ? 'selected' : ''} value="All"><spring:message code="createList.allMedia"/></option>
+                                <option  ${'Movies' == param.m ? 'selected' : ''} value="Movies"><spring:message code="createList.movies"/></option>
+                                <option  ${'Series' == param.m ? 'selected' : ''} value="Series"><spring:message code="createList.series"/></option>
                             </select>
 
                             <input type="hidden" name="g" id="hiddenGenreInput">

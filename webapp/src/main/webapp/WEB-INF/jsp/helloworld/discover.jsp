@@ -57,9 +57,9 @@
 
                     <div class="d-flex align-content-center  flex-row">
                         <select name="media" class="form-select filter-width" aria-label="Filter!">
-                            <option ${'All' == param.media ? 'selected' : ''}><spring:message code="discover.allMedia"/></option>
-                            <option  ${'Movies' == param.media ? 'selected' : ''}><spring:message code="discover.movies"/></option>
-                            <option  ${'Series' == param.media ? 'selected' : ''}><spring:message code="discover.series"/></option>
+                            <option ${'All' == param.media ? 'selected' : ''} value="All"><spring:message code="discover.allMedia"/></option>
+                            <option  ${'Movies' == param.media ? 'selected' : ''} value="Movies"><spring:message code="discover.movies"/></option>
+                            <option  ${'Series' == param.media ? 'selected' : ''} value="Series"><spring:message code="discover.series"/></option>
                         </select>
 
                         <input type="hidden" name="g" id="hiddenGenreInput">
