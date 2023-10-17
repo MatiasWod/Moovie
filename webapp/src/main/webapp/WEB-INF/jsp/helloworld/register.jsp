@@ -28,26 +28,26 @@
                 <div>
                     <form:input type="text" path="username"/>
                 </div>
-                <form:errors path="username" cssClass="formError" element="p"/>
+                <form:errors path="username" cssClass="error" element="p"/>
 
                 <form:label path="email"><spring:message code="register.email"/></form:label>
                 <div>
                     <form:input type="email" path="email"/>
                 </div>
-                <form:errors path="email" cssClass="formError" element="p"/>
+                <form:errors path="email" cssClass="error" element="p"/>
 
                 <form:label path="password"><spring:message code="register.password"/></form:label>
                 <div>
                     <form:input type="password" path="password" />
                 </div>
-                <form:errors path="password" cssClass="formError" element="p"/>
+                <form:errors path="password" cssClass="error" element="p"/>
 
                 <form:label path="repeatPassword"><spring:message code="register.repeatPassword"/></form:label>
                 <div>
                     <form:input type="password" path="repeatPassword"/>
                 </div>
-                <form:errors path="repeatPassword" cssClass="formError" element="p"/>
-
+                <form:errors path="repeatPassword" cssClass="error" element="p"/>
+                <form:errors path="passwordMatch" cssClass="error" element="p"/>
                 <div >
                     <input class="mt-2 btn btn-outline-success" type="submit" value="Register!"/>
                 </div>
