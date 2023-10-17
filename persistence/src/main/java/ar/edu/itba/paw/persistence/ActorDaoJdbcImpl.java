@@ -22,8 +22,6 @@ public class ActorDaoJdbcImpl implements ActorDao {
     );
 
 
-    private static final RowMapper<Integer> COUNT_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("count"));
-
     @Autowired
     public ActorDaoJdbcImpl(final DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);

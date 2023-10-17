@@ -19,10 +19,6 @@ import java.util.Optional;
 public class MediaDaoJdbcImpl implements MediaDao {
     private final JdbcTemplate jdbcTemplate;
 
-    static final int TYPE_MOVIE = 0;
-    static final int TYPE_TVSERIE = 1;
-    static final int TYPE_ALL = 2;
-
     private static final RowMapper<Media> MEDIA_ROW_MAPPER = (rs, rowNum) -> new Media(
             rs.getInt("mediaId"),
             rs.getBoolean("type"),
@@ -96,7 +92,6 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
     private static final RowMapper<Integer> COUNT_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("count"));
 
-    private static final RowMapper<Integer> MEDIA_ID_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("mediaId"));
 
     @Autowired
     public MediaDaoJdbcImpl(final DataSource dataSource) {

@@ -19,8 +19,6 @@ public class TVCreatorsDaoJdbcImpl implements TVCreatorsDao{
             rs.getString("creatorName")
     );
 
-    private static final RowMapper<Integer> COUNT_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("count"));
-
     @Autowired
     public TVCreatorsDaoJdbcImpl(final DataSource dataSource){
         jdbcTemplate = new JdbcTemplate(dataSource);

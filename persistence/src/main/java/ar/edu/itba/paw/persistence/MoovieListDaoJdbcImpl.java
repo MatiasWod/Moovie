@@ -26,7 +26,6 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     private final SimpleJdbcInsert moovieListLikesJdbcInsert;
     private final SimpleJdbcInsert moovieListFollowsJdbcInsert;
     private final SimpleJdbcCall moovieListContentUpdateCustomOrder;
-    private static final int INITIAL_LIKE_COUNT = 0;
 
     private static final RowMapper<MoovieList> MOOVIE_LIST_ROW_MAPPER = (rs, rowNum) -> new MoovieList(
             rs.getInt("moovieListId"),
@@ -36,16 +35,6 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
             rs.getInt("type")
     );
 
-
-    private static final RowMapper<MoovieListLikes> MOOVIE_LIST_LIKES_ROW_MAPPER = (rs, rowNum) -> new MoovieListLikes(
-            rs.getInt("moovielistid"),
-            rs.getInt("userId")
-    );
-
-    private static final RowMapper<MoovieListFollowers> MOOVIE_LIST_FOLLOWERS_ROW_MAPPER = (rs, rowNum) -> new MoovieListFollowers(
-            rs.getInt("moovielistid"),
-            rs.getInt("userId")
-    );
 
     private static final RowMapper<MoovieListCard> MOOVIE_LIST_CARD_ROW_MAPPER = (rs, rowNum) -> new MoovieListCard(
         rs.getInt("moovieListId"),
@@ -85,7 +74,6 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     private static final RowMapper<Integer> COUNT_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("count"));
 
-    private static final RowMapper<Integer> MEDIAID_LIST_ROWMAPPER = ((resultSet, i) -> resultSet.getInt("mediaId"));
 
 
     public MoovieListDaoJdbcImpl(final DataSource dataSource){

@@ -20,8 +20,6 @@ public class ProviderDaoJdbcImpl implements ProviderDao{
             rs.getString("logoPath")
     );
 
-    private static final RowMapper<Integer> COUNT_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("count"));
-
     @Autowired
     public ProviderDaoJdbcImpl(final DataSource dataSource){
         jdbcTemplate = new JdbcTemplate(dataSource);
