@@ -289,10 +289,6 @@
         const currentArrayValue = current.join(',');
         const toNextArrayValue = toNext.join(',');
 
-        const toPrevArray = toPrevArrayValue.split(',').map(Number);
-        const currentArray = currentArrayValue.split(',').map(Number);
-        const toNextArray = toNextArrayValue.split(',').map(Number);
-
         // Set the values of the hidden input fields
         document.getElementById("toPrevArray").value = toPrevArrayValue;
         document.getElementById("currentArray").value = currentArrayValue;
