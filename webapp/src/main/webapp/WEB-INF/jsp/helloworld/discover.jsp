@@ -140,11 +140,29 @@
                     </div>
                 </form>
             </div>
-            <div class="container d-flex justify-content-left p-1" id="genre-chips">
+            <div class="container d-flex justify-content-left p-0" id="genre-chips">
+                <c:if test="${param.g != null && param.g.length() > 0}">
+                    <h4>
+                        <spring:message code="createList.displayGenres"/>
+                    </h4>
+                </c:if>
                 <c:forEach var="gen" items="${param.g}">
                     <div class="m-1 badge text-bg-dark">
                         <span class="text-bg-dark"> ${gen} </span>
-                        <i class="btn bi bi-trash-fill" onclick="deleteGenre(this)"></i>
+                        <i class="btn bi bi-trash-fill" onclick="deleteChip(this)"></i>
+                    </div>
+                </c:forEach>
+            </div>
+            <div class="container d-flex justify-content-left p-0" id="provider-chips">
+                <c:if test="${param.providers != null && param.providers.length() > 0}">
+                    <h4>
+                        <spring:message code="createList.displayProviders"/>
+                    </h4>
+                </c:if>
+                <c:forEach var="provider" items="${param.providers}">
+                    <div class="m-1 badge text-bg-dark">
+                        <span class="text-bg-dark">${provider}</span>
+                        <i class="btn bi bi-trash-fill" onclick="deleteChip(this)"></i>
                     </div>
                 </c:forEach>
             </div>
