@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
@@ -81,13 +82,13 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="text-center navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/discover">Discover</a>
+                        <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/discover"><spring:message code="navBar.discover"/></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/lists">Browse lists</a>
+                        <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/lists"><spring:message code="navBar.browseLists"/></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/createList">Create a list</a>
+                        <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/createList"><spring:message code="navBar.createList"/></a>
                     </li>
                     <li class="nav-item">
                         <div class="d-flex flex-row align-self-left">
@@ -95,12 +96,12 @@
                                 <ul class="navbar-nav">
                                     <li class="nav-item dropdown">
                                         <button class="btn bg-transparent dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                            Top rated
+                                            <spring:message code="navBar.topRated"/>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
-                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/topRatedMedia">Media</a></li>
-                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/topRatedMovies">Movies</a></li>
-                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/topRatedSeries">Series</a></li>
+                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/topRatedMedia"><spring:message code="navBar.media"/></a></li>
+                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/topRatedMovies"><spring:message code="navBar.movies"/></a></li>
+                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/topRatedSeries"><spring:message code="navBar.series"/></a></li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -112,12 +113,12 @@
                             <ul class="navbar-nav">
                                 <li class="nav-item dropdown">
                                     <button class="btn bg-transparent dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Most popular
+                                        <spring:message code="navBar.mostPopular"/>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
-                                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/mostPopularMedia">Media</a></li>
-                                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/mostPopularMovies">Movies</a></li>
-                                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/mostPopularSeries">Series</a></li>
+                                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/mostPopularMedia"><spring:message code="navBar.media"/></a></li>
+                                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/mostPopularMovies"><spring:message code="navBar.movies"/></a></li>
+                                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/featuredList/mostPopularSeries"><spring:message code="navBar.series"/></a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -133,7 +134,7 @@
                     <input id="searchInput" class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search" required>
                     <button class="btn btn-outline-success" type="submit">
                         <i class="bi bi-search"></i> <!-- Bootstrap search icon -->
-                        Search
+                        <spring:message code="navBar.search"/>
                     </button>
                 </div>
             </form>
@@ -147,18 +148,18 @@
                                         <sec:authorize access="hasRole('ROLE_MODERATOR')"><img src="${pageContext.request.contextPath}/resources/moderator_logo.png" height="50" alt="Moderator logo"></sec:authorize>
                                         <button class="btn bg-transparent dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                             <img id="profile-image" style="height: 50px; width: 50px; border:solid black; border-radius: 50%" class="cropCenter" src="${pageContext.request.contextPath}/profile/image/${username}" alt="profile picture"/>
-                                                ${username}
+                                                <c:url value="${username}"/>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
-                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/profile/${username}">Profile</a></li>
-                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/logout">Logout</a></li>
+                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/profile/${username}"><spring:message code="navBar.profile"/></a></li>
+                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/logout"><spring:message code="navBar.logout"/></a></li>
                                         </ul>
                                     </li>
                                 </ul>
                             </div>
                         </sec:authorize>
                         <sec:authorize access="!isAuthenticated()">
-                            <a href="${pageContext.request.contextPath}/login">Log In</a>
+                            <a href="${pageContext.request.contextPath}/login"><spring:message code="navBar.login"/></a>
                         </sec:authorize>
                 </div>
 

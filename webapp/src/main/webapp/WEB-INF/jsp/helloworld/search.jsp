@@ -7,6 +7,7 @@
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -16,7 +17,7 @@
     <link href="${pageContext.request.contextPath}/resources/main.css?version=82" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
-    <title>Search</title>
+    <title><spring:message code="search.title"/></title>
 </head>
 <body>
 <c:import url="navBar.jsp"/>
@@ -25,8 +26,8 @@
     <%--TODO: test="${nameMedia}"--%>
     <c:if test="${nameMediaFlag}">
         <div class="container d-flex justify-content-between mt-2 p-2">
-            <h3>Results for: ${param.query}</h3>
-            <a href="${pageContext.request.contextPath}/discover?query=${param.query}">see more</a>
+            <h3><spring:message code="search.results" arguments="${param.query}"/></h3>
+            <a href="${pageContext.request.contextPath}/discover?query=${param.query}"><spring:message code="search.seeMore"/></a>
         </div>
         <hr class="my-1">
         <div class="container d-flex overflow-hidden" style="max-height: 300px;"> <!-- Set a fixed maximum height for the container -->
@@ -68,8 +69,8 @@
     <%--TODO: test="${creditMedia}"--%>
     <c:if test="${creditMediaFlag}">
         <div class="container d-flex justify-content-between mt-2 p-2">
-            <h3>Credited media for: ${param.query}</h3>
-            <a href="${pageContext.request.contextPath}/discover?credit=${param.query}">see more</a>
+            <h3><spring:message code="search.credited" arguments="${param.query}"/></h3>
+            <a href="${pageContext.request.contextPath}/discover?credit=${param.query}"><spring:message code="search.seeMore"/></a>
         </div>
         <hr class="my-1">
         <div class="container d-flex overflow-hidden" style="max-height: 300px;"> <!-- Set a fixed maximum height for the container -->
@@ -110,7 +111,7 @@
 
     <c:if test="${usersFlag}">
         <div class="container d-flex justify-content-between mt-2 p-2">
-            <h3>Users for: ${param.query}</h3>
+            <h3><spring:message code="search.usersFor" arguments="${param.query}"/></h3>
 <%--            <a href="${pageContext.request.contextPath}/discover?credit=${param.query}">see more</a>--%>
         </div>
         <hr class="my-1">
@@ -160,9 +161,9 @@
         <div style="border: solid black; min-width: 40%; min-height: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 5%;" class="container-gray justify-content-center d-flex flex-column">
             <div class="text-center m-3">
                 <img style="height: 15vh" src="${pageContext.request.contextPath}/resources/logo.png" alt="logo">
-                <h3>No results for "${param.query}" were found</h3>
+                <h3><spring:message code="search.noResults" arguments="${param.query}"/></h3>
             </div>
-            <a class="btn mt-2 btn-outline-success align-bottom" href="#" onclick="history.back()">Go Back</a>
+            <a class="btn mt-2 btn-outline-success align-bottom" href="#" onclick="history.back()"><spring:message code="search.call_to_action"/></a>
         </div>
     </c:if>
 </div>

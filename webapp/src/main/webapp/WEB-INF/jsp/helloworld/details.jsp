@@ -3,6 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 
 <html>
@@ -14,7 +15,7 @@
     <link href="${pageContext.request.contextPath}/resources/main.css?version=55" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/resources/details.css?version=55" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/resources/buttonsStyle.css?version=1" rel="stylesheet"/>
-    <title>Moovie-${media.name}</title>
+    <title><spring:message code="details.title" arguments="${media.name}"/></title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
@@ -58,28 +59,28 @@
                     <c:when test="${media.type==false}">
                         ${media.runtime}m
                         <span style="margin: 0 5px;">•</span>
-                        Movie
+                        <spring:message code="details.movie"/>
                     </c:when>
                     <c:otherwise>
-                        TV Series
+                        <spring:message code="details.series"/>
                         <span style="margin: 0 5px;">•</span>
                         ${media.numberOfSeasons}
                         <c:choose>
                             <c:when test="${media.numberOfSeasons == 1}">
-                                Season
+                                <spring:message code="details.season"/>
                             </c:when>
                             <c:otherwise>
-                                Seasons
+                                <spring:message code="details.seasons"/>
                             </c:otherwise>
                         </c:choose>
                         <span style="margin: 0 5px;">•</span>
                         ${media.numberOfEpisodes}
                         <c:choose>
                             <c:when test="${media.numberOfEpisodes == 1}">
-                                Episode
+                                <spring:message code="details.episode"/>
                             </c:when>
                             <c:otherwise>
-                                Episodes
+                                <spring:message code="details.episodes"/>
                             </c:otherwise>
                         </c:choose>
                     </c:otherwise>
@@ -110,7 +111,7 @@
             <!-- Genres -->
             <div class="d-flex flex-row  align-items-center ">
                 <div style="margin-right: 10px">
-                    <h5>Genres:</h5>
+                    <h5><spring:message code="details.genres"/></h5>
                 </div>
                 <div>
                     <c:forEach var="genre" items="${genresList}">
@@ -126,7 +127,7 @@
                 <c:when test="${media.type==false}">
                     <div class="d-flex flex-row  align-items-center">
                         <div style="margin-right: 10px">
-                            <h5>Director:</h5>
+                            <h5><spring:message code="details.director"/></h5>
                         </div>
                         <div>
                             <a href="${pageContext.request.contextPath}/discover?credit=${media.director}">
@@ -137,7 +138,7 @@
                     <c:if test="${media.budget != 0}">
                         <div class="d-flex flex-row  align-items-center">
                             <div style="margin-right: 10px">
-                                <h5>Budget:</h5>
+                                <h5><spring:message code="details.budget"/></h5>
                             </div>
                             <div>
                                 <span class="badge text-bg-light border border-black" id="budget">${media.budget}</span>
@@ -147,7 +148,7 @@
                     <c:if test="${media.revenue != 0}">
                         <div class="d-flex flex-row  align-items-center">
                             <div style="margin-right: 10px">
-                                <h5>Revenue:</h5>
+                                <h5><spring:message code="details.revenue"/></h5>
                             </div>
                             <div>
                                 <span class="badge text-bg-light border border-black"
@@ -162,10 +163,10 @@
                             <div style="margin-right: 10px">
                                 <c:choose>
                                     <c:when test="${creators.size()>1}">
-                                        <h5>Creators:</h5>
+                                        <h5><spring:message code="details.creators"/></h5>
                                     </c:when>
                                     <c:otherwise>
-                                        <h5>Creator:</h5>
+                                        <h5><spring:message code="details.creator"/></h5>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
@@ -181,7 +182,7 @@
                     <c:if test="${media.lastAirDate != null}">
                         <div class="d-flex flex-row  align-items-center">
                             <div style="margin-right: 10px">
-                                <h5>Last Air Date:</h5>
+                                <h5><spring:message code="details.lastAirDate"/></h5>
                             </div>
                             <div>
                                 <span class="badge text-bg-light border border-black">${media.lastAirDate}</span>
@@ -191,7 +192,7 @@
                     <c:if test="${media.nextEpisodeToAir != null}">
                         <div class="d-flex flex-row  align-items-center">
                             <div style="margin-right: 10px">
-                                <h5>Next episode to air:</h5>
+                                <h5><spring:message code="details.nextEpisodeToAir"/></h5>
                             </div>
                             <div>
                                 <span class="badge text-bg-light border border-black">${media.nextEpisodeToAir}</span>
@@ -207,7 +208,7 @@
                 <div class="dropdown">
                     <div class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
                          style="margin-right: 10px"><i
-                            class="bi bi-plus-circle-fill"></i> Add to list
+                            class="bi bi-plus-circle-fill"></i> <spring:message code="details.addToList"/>
                     </div>
                     <ul class="dropdown-menu scrollable-menu">
                         <c:forEach var="privateList" items="${privateLists}">
@@ -231,11 +232,11 @@
                             </form>
                         </c:forEach>
                         <li><a class="dropdown-item" href="${pageContext.request.contextPath}/createList?s=${media.mediaId}"><i
-                                class="bi bi-plus-circle-fill"></i> Create new List</a></li>
+                                class="bi bi-plus-circle-fill"></i><spring:message code="details.createNewList"/></a></li>
                     </ul>
                 </div>
                 <button type="button" class="btn btn-light border border-black" onclick="openPopup('rate-popup')"><i
-                        class="bi bi-star-fill"></i> Rate
+                        class="bi bi-star-fill"></i> <spring:message code="details.rate"/>
                 </button>
             </div>
 
@@ -302,7 +303,7 @@
                 <c:if test="${fn:length(actorsList) > 4}">
                     <div class="p-2 align-items-center">
                         <button type="button" class="btn btn-dark show-more-button" onclick="showMoreActors()">
-                            See more
+                            <spring:message code="details.seeMore"/>
                         </button>
                     </div>
                 </c:if>
@@ -320,7 +321,7 @@
                     <i class="bi bi-star" onclick="rate(${reverseIndex})"></i>
                 </c:forEach>
             </div>
-            <h5>Your rating: <span id="selectedRating">Not selected</span></h5>
+            <h5>Your rating: <span id="selectedRating"><spring:message code="details.notSelected"/></span></h5>
 
             <form:form modelAttribute="detailsForm" action="${pageContext.request.contextPath}/createrating"
                        method="POST">
@@ -338,17 +339,17 @@
                 <div class="text-center" style="margin-top: 20px">
                     <button type="button" class="btn btn-danger" style="margin-inline: 10px"
                             onclick="closePopup('rate-popup')">
-                        Cancel
+                        <spring:message code="details.cancel"/>
                     </button>
                     <button type="submit" class="btn btn-dark" style="margin-inline: 10px" id="submitButton" disabled>
-                        Submit
+                        <spring:message code="details.submit"/>
                     </button>
                 </div>
             </form:form>
 
         </div>
         <!-- Reviews -->
-        <h2>Reviews</h2>
+        <h2><spring:message code="details.reviews"/></h2>
         <hr class="my-8">
         <c:choose>
             <c:when test="${fn:length(reviewsList)>0}">
@@ -386,15 +387,15 @@
                                             <div class="review${review.reviewId}-overlay popup-overlay" onclick="closePopup('review${review.reviewId}')"></div>
                                             <div style="background-color: transparent; box-shadow: none" class="popup review${review.reviewId}">
                                                 <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
-                                                    <h5 class="alert-heading">Confirm Review Deletion</h5>
-                                                    <p>Are you sure you want to delete this review? Once deleted, it cannot be recovered</p>
+                                                    <h5 class="alert-heading"><spring:message code="details.confirmReviewDeletion"/></h5>
+                                                    <p><spring:message code="details.confirmReviewDeletionPrompt"/></p>
                                                     <div class="d-flex justify-content-evenly">
                                                         <form class="m-0" action="${pageContext.request.contextPath}/deleteReview/${media.mediaId}" method="post">
                                                             <input type="hidden" name="reviewId" value="${review.reviewId}"/>
                                                             <input type="hidden" name="path" value="/details/${media.mediaId}"/>
-                                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                                            <button type="submit" class="btn btn-danger"><spring:message code="details.delete"/></button>
                                                         </form>
-                                                        <button type="button" onclick="closePopup('review${review.reviewId}')" class="btn btn-secondary" id="cancelModButton">Cancel</button>
+                                                        <button type="button" onclick="closePopup('review${review.reviewId}')" class="btn btn-secondary" id="cancelModButton"><spring:message code="details.cancel"/></button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -416,7 +417,7 @@
                                          <i class="bi bi-hand-thumbs-up-fill"></i>
                                         ${review.reviewLikes}
                                         </span>
-                                                    Liked
+                                                    <spring:message code="details.liked"/>
                                                 </button>
                                             </form>
                                         </c:when>
@@ -429,7 +430,7 @@
                                     <i class="bi bi-hand-thumbs-up"></i>
                                         ${review.reviewLikes}
                                     </span>
-                                                    Like
+                                                    <spring:message code="details.like"/>
                                                 </button>
                                             </form>
                                         </c:otherwise>
@@ -442,7 +443,7 @@
             </c:when>
             <c:otherwise>
                 <div class="text-center">
-                    <h3>No reviews yet</h3>
+                    <h3><spring:message code="details.noReviews"/></h3>
                 </div>
             </c:otherwise>
         </c:choose>

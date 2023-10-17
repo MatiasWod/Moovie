@@ -11,38 +11,38 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
-    <title>Moovie - Sign Up!</title>
+    <title><spring:message code="register.title"/></title>
 </head>
 
 <body style="background: whitesmoke">
     <c:import url="navBar.jsp"/>
     <div style="border: solid black; width: fit-content" class="container-gray container d-flex flex-column p-3 mt-5">
-        <h1>Sign Up</h1>
+        <h1><spring:message code="register.signUp"/></h1>
         <div class="alert alert-danger" id="errorAlert" style="display: none;">
-            <c:if test="${param.error == 'email_taken'}">Email is already registered </c:if>
-            <c:if test="${param.error == 'username_taken'}">Username is already registered </c:if>
+            <c:if test="${param.error == 'email_taken'}"><spring:message code="register.emailAlreadyRegistered"/></c:if>
+            <c:if test="${param.error == 'username_taken'}"><spring:message code="register.usernameAlreadyRegistered"/></c:if>
         </div>
         <form:form modelAttribute="registerForm" action="${pageContext.request.contextPath}/register" method="post" class="">
             <div class="me-5 d-flex flex-column">
-                <form:label path="username">Username: </form:label>
+                <form:label path="username"><spring:message code="register.username"/></form:label>
                 <div>
                     <form:input type="text" path="username"/>
                 </div>
                 <form:errors path="username" cssClass="formError" element="p"/>
 
-                <form:label path="email">Email: </form:label>
+                <form:label path="email"><spring:message code="register.email"/></form:label>
                 <div>
                     <form:input type="email" path="email"/>
                 </div>
                 <form:errors path="email" cssClass="formError" element="p"/>
 
-                <form:label path="password">Password: </form:label>
+                <form:label path="password"><spring:message code="register.password"/></form:label>
                 <div>
                     <form:input type="password" path="password" />
                 </div>
                 <form:errors path="password" cssClass="formError" element="p"/>
 
-                <form:label path="repeatPassword">Repeat password: </form:label>
+                <form:label path="repeatPassword"><spring:message code="register.repeatPassword"/></form:label>
                 <div>
                     <form:input type="password" path="repeatPassword"/>
                 </div>
@@ -53,12 +53,12 @@
                 </div>
 
                 <div>
-                    Already have an account?
-                    <a href="${pageContext.request.contextPath}/login"> Log In!</a>
+                    <spring:message code="register.hasAccount"/>
+                    <a href="${pageContext.request.contextPath}/login"><spring:message code="register.login"/></a>
                 </div>
                 <div>
-                    Continue
-                    <a href="#" onclick="history.back()"> without logging in</a>
+                    <spring:message code="register.continue"/>
+                    <a href="#" onclick="history.back()"><spring:message code="register.without"/></a>
                 </div>
             </div>
         </form:form>

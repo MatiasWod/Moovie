@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -42,28 +43,17 @@
                 <div class="popup-overlay" onclick="closePopup('popup')"></div>
                 <div style="background-color: transparent; box-shadow: none" class="popup">
                     <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
-                        <h5 class="alert-heading">Confirm List Deletion</h5>
-                        <p>Are you sure you want to delete this list? Once deleted, it cannot be recovered</p>
+                        <h5 class="alert-heading"><spring:message code="listExtract.confirmListDeletion"/></h5>
+                        <p><spring:message code="listExtract.confirmListDeletionPrompt"/></p>
                         <div class="d-flex justify-content-evenly">
                             <form class="m-0" action="${pageContext.request.contextPath}/deleteList/${moovieList.moovieListId}" method="post">
-                                <button type="submit" class="btn btn-danger">Delete</button>
+                                <button type="submit" class="btn btn-danger"><spring:message code="listExtract.delete"/></button>
                             </form>
-                            <button type="button" onclick="closePopup('popup')" class="btn btn-secondary" id="cancelModButton">Cancel</button>
+                            <button type="button" onclick="closePopup('popup')" class="btn btn-secondary" id="cancelModButton"><spring:message code="listExtract.cancel"/></button>
                         </div>
                     </div>
                 </div>
             </sec:authorize>
-        </c:if>
-        <c:if test="${isOwner}">
-            <div style="position: relative;" class="d-flex">
-                <div style="position: absolute; top: 0; right: 0;">
-                    <a href="${pageContext.request.contextPath}/editList/${moovieList.moovieListId}">
-                        <button class="btn btn-primary btn-sm">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                    </a>
-                </div>
-            </div>
         </c:if>
     </div>
     <c:if test="${param.publicList == 'true'}">
@@ -78,59 +68,56 @@
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <div class="d-flex flex-row justify-content-center">
                 <div>
-                <c:if test="${param.publicList == 'true'}">
                     <form action="${pageContext.request.contextPath}/like" method="POST">
-                            <input type="hidden" name="listId" value="${moovieList.moovieListId}"/>
-                            <c:choose>
-                                <c:when test="${isLiked}">
-                                    <button type="submit" class="btn btn-style"><i
-                                            class="bi bi-hand-thumbs-up-fill"></i>${likedCount} Liked
-                                    </button>
-                                </c:when>
-                                <c:otherwise>
-                                    <button type="submit" class="btn btn-style"><i
-                                            class="bi bi-hand-thumbs-up"></i>${likedCount}
-                                        Like
-                                    </button>
-                                </c:otherwise>
-                            </c:choose>
-                        </form>
-                    </div>
-                    <div>
-                        <form action="${pageContext.request.contextPath}/followList" method="POST">
-                            <input type="hidden" name="listId" value="${moovieList.moovieListId}"/>
-                            <c:choose>
-                                <c:when test="${isFollowed}">
-                                    <button type="submit" class="btn btn-style2"><i class="bi bi-bell-fill"></i> Following
-                                    </button>
-                                </c:when>
-                                <c:otherwise>
-                                    <button type="submit" class="btn btn-style2"><i class="bi bi-bell"></i> Follow
-                                    </button>
-                                </c:otherwise>
-                            </c:choose>
-                        </form>
-                    </div>
-                </c:if>
+                        <input type="hidden" name="listId" value="${moovieList.moovieListId}"/>
+                        <c:choose>
+                            <c:when test="${isLiked}">
+                                <button type="submit" class="btn btn-style"><i
+                                        class="bi bi-hand-thumbs-up-fill"></i><spring:message code="listExtract.liked" arguments="${likedCount}"/>
+                                </button>
+                            </c:when>
+                            <c:otherwise>
+                                <button type="submit" class="btn btn-style"><i
+                                        class="bi bi-hand-thumbs-up"></i><spring:message code="listExtract.like" arguments="${likedCount}"/>
+                                </button>
+                            </c:otherwise>
+                        </c:choose>
+                    </form>
                 </div>
+                <div>
+                    <form action="${pageContext.request.contextPath}/followList" method="POST">
+                        <input type="hidden" name="listId" value="${moovieList.moovieListId}"/>
+                        <c:choose>
+                            <c:when test="${isFollowed}">
+                                <button type="submit" class="btn btn-style2"><i class="bi bi-bell-fill"></i> <spring:message code="listExtract.following"/>
+                                </button>
+                            </c:when>
+                            <c:otherwise>
+                                <button type="submit" class="btn btn-style2"><i class="bi bi-bell"></i> <spring:message code="listExtract.follow"/>
+                                </button>
+                            </c:otherwise>
+                        </c:choose>
+                    </form>
+                </div>
+            </div>
 
             <form id="sortForm" method="get">
                 <div style="display: flex; align-items: center;">
-                    <h2 style="padding-right: 4px">Sort by</h2>
+                    <h2 style="padding-right: 4px"><spring:message code="listExtract.sortBy"/></h2>
                     <c:if test="${param.listType != null}">
                         <input style="display: none" name="list" value="${param.listType}"/>
                     </c:if>
                     <select name="orderBy" class="form-select filter-width" aria-label="Filter!" id="sortSelect">
-                        <option ${'name' == param.orderBy ? 'selected' : ''} value="name">Title</option>
-                        <option ${'type' == param.orderBy ? 'selected' : ''} value="type">Type</option>
-                        <option ${'tmdbrating' == param.orderBy ? 'selected' : ''} value="tmdbrating">Score</option>
-                        <option ${'releasedate' == param.orderBy ? 'selected' : ''} value="releasedate">Release Date</option>
+                        <option ${'name' == param.orderBy ? 'selected' : ''} value="name"><spring:message code="listExtract.orderByTitle"/></option>
+                        <option ${'type' == param.orderBy ? 'selected' : ''} value="type"><spring:message code="listExtract.orderByType"/></option>
+                        <option ${'tmdbrating' == param.orderBy ? 'selected' : ''} value="tmdbrating"><spring:message code="listExtract.orderByScore"/></option>
+                        <option ${'releasedate' == param.orderBy ? 'selected' : ''} value="releasedate"><spring:message code="listExtract.orderByReleaseDate"/></option>
                     </select>
                     <input type="hidden" name="order" id="sortOrderInput" value="${param.order =='desc'? 'desc':'asc'}">
                     <div style="margin: 0;" class="btn btn-style" id="sortButton" onclick="changeSortOrder('sortOrderInput', 'sortIcon', '${param.orderBy}')">
                         <i id="sortIcon" class="bi bi-arrow-${param.order == 'desc' ? 'down' : 'up'}-circle-fill"></i>
                     </div>
-                    <button type="submit" id="applyButton" class="btn btn-style2">Apply</button>
+                    <button type="submit" id="applyButton" class="btn btn-style2"><spring:message code="listExtract.apply"/></button>
                 </div>
             </form>
         </div>
@@ -154,7 +141,7 @@
         </c:if>
     </div>
     <div>
-        <h4>List progress</h4>
+        <h4><spring:message code="listExtract.listProgress"/></h4>
         <div class="progress">
             <div class="progress-bar" role="progressbar" style="width: ${(watchedCount*100)/listCount}%;"
                  id="progressBar"
@@ -165,23 +152,23 @@
     </div>
     <div style="display: flex; align-items: center;justify-content: center">
         <c:if test="${moviesCount > 0}">
-            <h4>${moviesCount} Movies</h4>
+            <h4><spring:message code="listExtract.moviesCount" arguments="${moviesCount}"/></h4>
         </c:if>
         <c:if test="${moviesCount > 0 && tvSeriesCount > 0}">
-            <h4 style="margin-right: 5px;margin-left: 5px">and</h4>
+            <h4 style="margin-right: 5px;margin-left: 5px"><spring:message code="listExtract.and"/></h4>
         </c:if>
         <c:if test="${tvSeriesCount > 0}">
-            <h4>${tvSeriesCount} Series</h4>
+            <h4><spring:message code="listExtract.seriesCount" arguments="${tvSeriesCount}"/></h4>
         </c:if>
     </div>
     <table class="table table-striped" id="movieTable">
         <thead>
         <tr>
             <th scope="col"></th>
-            <th scope="col">Title</th>
-            <th scope="col">Type</th>
-            <th scope="col">Score</th>
-            <th scope="col">Release Date</th>
+            <th scope="col"><spring:message code="listExtract.orderByTitle"/></th>
+            <th scope="col"><spring:message code="listExtract.orderByType"/></th>
+            <th scope="col"><spring:message code="listExtract.orderByScore"/></th>
+            <th scope="col"><spring:message code="listExtract.orderByReleaseDate"/></th>
             <th scope="col" style="width: 50px"></th>
         </tr>
         </thead>
@@ -212,10 +199,10 @@
 <td>
     <c:choose>
         <c:when test="${mediaList[loop.index].type}">
-            Tv Series
+            <spring:message code="listExtract.series"/>
         </c:when>
         <c:otherwise>
-            Movie
+            <spring:message code="listExtract.movies"/>
         </c:otherwise>
     </c:choose>
 </td>
@@ -250,30 +237,30 @@
     <div class="popup-overlay remove-watch-popup-${loop.index}-overlay"
          onclick="closePopup('remove-watch-popup-${loop.index}')"></div>
     <div class="popup remove-watch-popup-${loop.index}">
-        <h2>Remove "${mediaList[loop.index].name}" from Watched?</h2>
+        <h2><spring:message code="listExtract.removeFromWatched" arguments="${mediaList[loop.index].name}"/></h2>
         <div class="text-center" style="margin-top: 20px">
             <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">
                 <button type="button" class="btn btn-danger" style="margin-inline: 10px"
-                        onclick="closePopup('remove-watch-popup-${loop.index}')">No
+                        onclick="closePopup('remove-watch-popup-${loop.index}')"><spring:message code="listExtract.no"/>
                 </button>
                 <input type="hidden" name="listId" value="${watchedListId}"/>
                 <input type="hidden" name="mediaId" value="${mediaList[loop.index].mediaId}"/>
-                <button type="submit" class="btn btn-dark" style="margin-inline: 10px">Yes</button>
+                <button type="submit" class="btn btn-dark" style="margin-inline: 10px"><spring:message code="listExtract.yes"/></button>
             </form>
         </div>
     </div>
     <div class="popup-overlay add-watch-popup-${loop.index}-overlay"
          onclick="closePopup('add-watch-popup-${loop.index}')"></div>
     <div class="popup add-watch-popup-${loop.index}">
-        <h2>Add "${mediaList[loop.index].name}" to Watched?</h2>
+        <h2><spring:message code="listExtract.addToWatched" arguments="${mediaList[loop.index].name}"/></h2>
         <div class="text-center" style="margin-top: 20px">
             <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
                 <button type="button" class="btn btn-danger" style="margin-inline: 10px"
-                        onclick="closePopup('add-watch-popup-${loop.index}')">No
+                        onclick="closePopup('add-watch-popup-${loop.index}')"><spring:message code="listExtract.no"/>
                 </button>
                 <input type="hidden" name="listId" value="${watchedListId}"/>
                 <input type="hidden" name="mediaId" value="${mediaList[loop.index].mediaId}"/>
-                <button type="submit" class="btn btn-dark" style="margin-inline: 10px">Yes</button>
+                <button type="submit" class="btn btn-dark" style="margin-inline: 10px"><spring:message code="listExtract.yes"/></button>
             </form>
         </div>
     </div>

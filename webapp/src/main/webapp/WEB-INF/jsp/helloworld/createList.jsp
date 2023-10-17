@@ -10,6 +10,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <html>
 <head>
     <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/resources/logo.png" />
@@ -20,7 +21,7 @@
     <link href="${pageContext.request.contextPath}/resources/details.css?version=55" rel="stylesheet"/>
 
 
-    <title>Share your favorite media</title>
+    <title><spring:message code="createList.title"/></title>
     <script src="${pageContext.request.contextPath}/resources/createListFunctions.js?version=82"></script>
     <script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=82"></script>
     <link href="${pageContext.request.contextPath}/resources/buttonsStyle.css?version=1" rel="stylesheet"/>
@@ -38,15 +39,15 @@
                         <input type="hidden"  id="selected-media-input" />
                         <div role="group" class="input-group d-flex flex-row m-1 me-3">
                             <select  name="m" class="form-select filter-width" aria-label="Filter!">
-                                <option ${'All' == param.m ? 'selected' : ''}>All media</option>
-                                <option  ${'Movies' == param.m ? 'selected' : ''}>Movies</option>
-                                <option  ${'Series' == param.m ? 'selected' : ''}>Series</option>
+                                <option ${'All' == param.m ? 'selected' : ''}><spring:message code="createList.allMedia"/></option>
+                                <option  ${'Movies' == param.m ? 'selected' : ''}><spring:message code="createList.movies"/></option>
+                                <option  ${'Series' == param.m ? 'selected' : ''}><spring:message code="createList.series"/></option>
                             </select>
 
                             <input type="hidden" name="g" id="hiddenGenreInput">
                             <div class="dropdown">
                                 <button style="height:100%;width: 100px;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                                    Genres
+                                    <spring:message code="createList.genres"/>
                                 </button>
                                 <c:set var="isChecked" value="" />
                                 <div style="height: 50vh" class="dropdown-menu scrollableDiv flex-wrap p-4">
@@ -104,9 +105,9 @@
                             </div>
 
                             <select name="orderBy" class="form-select filter-width" aria-label="Filter!">
-                                <option ${'name' == param.orderBy ? 'selected' : ''} value="name">Title</option>
-                                <option ${('tmdbrating' == param.orderBy || param.orderBy == null) ? 'selected' : ''} value="tmdbrating">Score</option>
-                                <option ${'releasedate' == param.orderBy ? 'selected' : ''} value="releasedate">Release Date</option>
+                                <option ${'name' == param.orderBy ? 'selected' : ''} value="name"><spring:message code="createList.orderByTitle"/></option>
+                                <option ${('tmdbrating' == param.orderBy || param.orderBy == null) ? 'selected' : ''} value="tmdbrating"><spring:message code="createList.orderByScore"/></option>
+                                <option ${'releasedate' == param.orderBy ? 'selected' : ''} value="releasedate"><spring:message code="createList.orderByReleaseDate"/></option>
                             </select>
                                 <%--                PARA TENER EN CUENTA --> MIRAR EL DEFAULT sort y orderBy en el controller para settear los valores iniciales de las labels/iconos--%>
                             <input type="hidden" name="order" id="sortOrderInput" value="${param.order =='asc'? 'asc':'desc'}">
@@ -115,9 +116,9 @@
                             </div>
 
                             <input class="form-control me-2" type="search" name="q" value="${param.q}" placeholder="Search" aria-label="Search">
-                            <button class="btn btn-outline-success me-1" type="submit" >Apply</button>
+                            <button class="btn btn-outline-success me-1" type="submit" ><spring:message code="createList.apply"/></button>
                             <a style="height: 100%;" class="btn btn-outline-success align-bottom" href="${pageContext.request.contextPath}/createList">
-                                Reset
+                                <spring:message code="createList.reset"/>
                             </a>
                         </div>
                     </form>
@@ -133,8 +134,8 @@
                 <div class="scrollableDiv flex-wrap d-flex">
                     <c:if test="${fn:length(mediaList) == 0 }">
                         <div class="d-flex m-2 flex-column">
-                            No media was found.
-                            <a class="btn mt-2 btn-outline-success align-bottom" href="${pageContext.request.contextPath}/createList">Go Back</a>
+                            <spring:message code="createList.noResults"/>
+                            <a class="btn mt-2 btn-outline-success align-bottom" href="${pageContext.request.contextPath}/createList"><spring:message code="createList.call_to_action"/></a>
                         </div>
                     </c:if>
                     <c:forEach var="movie" items="${mediaList}" end="24">
@@ -182,8 +183,8 @@
                 <div style="position: absolute;top: 0;left: 0;height: 100%;overflow: hidden" class="d-flex p-4 container flex-column">
 
                     <div class="d-flex justify-content-between">
-                        <h2 class="m-2">List Name:</h2>
-                        <button class="btn btn-danger m-2" onclick="deleteStorage()">Clear all</button>
+                        <h2 class="m-2"><spring:message code="createList.listName"/></h2>
+                        <button class="btn btn-danger m-2" onclick="deleteStorage()"><spring:message code="createList.clearAll"/></button>
                     </div>
                     <c:if test="${not empty errorMessage}">
                         <div class="alert alert-danger alert-dismissible fade show" id="errorAlert" role="alert">
@@ -200,7 +201,7 @@
                                         class="form-control me-2 createListInput" maxlength="50"/>
                             <span id="listNameCharCount" class="text-muted"><span id="listNameRemainingChars">0</span>/50</span>
                             <form:errors path="listName" cssClass="error"/>
-                            <h3 class="m-2" >Description:</h3>
+                            <h3 class="m-2" ><spring:message code="createList.description"/></h3>
                             <form:textarea path="listDescription" id="list-description" class="review-textarea" rows="3" name="listDescription"
                                            placeholder="Your description..." maxlength="255" />
                             <span id="listDescriptionCharCount" class="text-muted"><span id="listDescriptionRemainingChars">0</span>/255</span>
@@ -214,13 +215,12 @@
                                     </div>
                                 </c:forEach>
                             </div>
-                            <button id="preview-details" type="submit" class="btn btn-lg btn-outline-success mt-4">Create List</button>
+                            <button id="preview-details" type="submit" class="btn btn-lg btn-outline-success mt-4"><spring:message code="createList.createList"/></button>
                         </form:form>
                     </div>
 
                     <div>
-                        <h6>Feel free to use other features on the website!
-                        We will keep your list progress.</h6>
+                        <h6><spring:message code="createList.keepProgressMessage"/></h6>
                     </div>
                     <div class="d-flex" id="preview-list"></div>
                 </div>

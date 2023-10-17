@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
-    <title>Moovie - Login!</title>
+    <title><spring:message code="login.title"/></title>
 </head>
 <body style="background: whitesmoke">
 <c:url value="/login" var="loginUrl"/>
@@ -21,23 +21,23 @@
     <form action="${loginUrl}" method="post" enctype="application/x-www-form-urlencoded" >
         <h1>Login</h1>
         <div class="alert alert-danger" id="errorAlert" style="display: none;">
-            <c:if test="${param.error == 'locked'}">Account was banned</c:if>
-            <c:if test="${param.error == 'disabled'}">Email verification pending</c:if>
-            <c:if test="${param.error == 'bad_credentials'}">Password doesn't match username</c:if>
-            <c:if test="${param.error == 'unknown_user'}">Username not verified</c:if>
-            <c:if test="${param.error == 'unknown_error'}">Login Failed</c:if>
+            <c:if test="${param.error == 'locked'}"><spring:message code="login.banned"/></c:if>
+            <c:if test="${param.error == 'disabled'}"><spring:message code="login.emailVerificationPending"/></c:if>
+            <c:if test="${param.error == 'bad_credentials'}"><spring:message code="login.passwordDoesNotMatchUsername"/></c:if>
+            <c:if test="${param.error == 'unknown_user'}"><spring:message code="login.usernameNotVerified"/></c:if>
+            <c:if test="${param.error == 'unknown_error'}"><spring:message code="login.loginFailed"/></c:if>
         </div>
         <div class="alignt-items-left text-left">
             <div style="margin: 5px; width: 35%">
-                <label for="username">Username: </label>
+                <label for="username"><spring:message code="login.username"/></label>
                 <input required id="username" name="username" type="text"/></div>
             <div style="margin: 5px; width: 35%">
-                <label for="password">Password: </label>
+                <label for="password"><spring:message code="login.password"/></label>
                 <input required id="password" name="password" type="password"/>
             </div>
             <div>
                 <label class="m-1">
-                    <input name="rememberme" type="checkbox"/> Remember Me
+                    <input name="rememberme" type="checkbox"/> <spring:message code="login.rememberMe"/>
                 </label>
             </div>
         </div>
@@ -46,13 +46,13 @@
             <input class="btn btn-outline-success align-bottom" type="submit" value="Login!"/>
         </div>
         <div style="margin-top: 20px; margin-bottom: 2px">
-            Don't have an account?
-            <a href="${pageContext.request.contextPath}/register"> Sign Up!</a>
+            <spring:message code="login.noAccount"/>
+            <a href="${pageContext.request.contextPath}/register"><spring:message code="login.signUp"/></a>
 
         </div>
         <div>
-            Continue
-            <a href="#" onclick="history.back()"> without logging in</a>
+            <spring:message code="login.continue"/>
+            <a href="#" onclick="history.back()"><spring:message code="login.without"/></a>
         </div>
     </form>
 

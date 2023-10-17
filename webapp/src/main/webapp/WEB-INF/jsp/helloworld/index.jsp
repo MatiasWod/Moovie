@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <!DOCTYPE html>
 <html>
@@ -9,7 +10,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link href="${pageContext.request.contextPath}/resources/main.css?version=79" rel="stylesheet"/>
-    <title>Moovie</title>
+    <title><spring:message code="index.title"/></title>
 </head>
 <body style="background: whitesmoke;">
     <c:import url="navBar.jsp"/>
@@ -20,14 +21,14 @@
         <div style="position: page;" class="d-flex flex-column align-items-center justify-content-center">
             <div class="container d-flex flex-column justify-content-end">
                 <div class="container d-flex justify-content-center p-4">
-                    <h1 class="text-center">Immerse Yourself in Movies and Series, <br> Discover Your Next Favorite Experience.</h1>
+                    <h1 class="text-center"><spring:message code="index.immerse"/><br><spring:message code="index.discover"/></h1>
                 </div>
                 <%--<div class="d-flex justify-content-center">
                     <button class="btn btn-success btn-lg">GET STARTED - SIGN IN</button>
                 </div>--%>
                 <div class="container d-flex justify-content-between p-2">
-                    <h3>Top Rated Movies</h3>
-                    <a href="${pageContext.request.contextPath}/featuredList/topRatedMovies">see more</a>
+                    <h3><spring:message code="index.topRatedMovies"/></h3>
+                    <a href="${pageContext.request.contextPath}/featuredList/topRatedMovies"><spring:message code="index.seeMore"/></a>
                 </div>
                 <hr class="my-1">
                 <div class="container d-flex scrollableDiv">
@@ -65,8 +66,8 @@
                 </div>
 
                 <div class="container d-flex justify-content-between mt-2 p-2">
-                    <h3>Top Rated Series</h3>
-                    <a href="${pageContext.request.contextPath}/featuredList/topRatedSeries">see more</a>
+                    <h3><spring:message code="index.topRatedSeries"/></h3>
+                    <a href="${pageContext.request.contextPath}/featuredList/topRatedSeries"><spring:message code="index.seeMore"/></a>
                 </div>
                 <hr class="my-1">
                 <div class="container d-flex overflow-hidden" style="max-height: 300px;"> <!-- Set a fixed maximum height for the container -->

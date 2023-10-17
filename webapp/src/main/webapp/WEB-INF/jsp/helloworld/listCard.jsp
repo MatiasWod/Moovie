@@ -1,3 +1,4 @@
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <link href="${pageContext.request.contextPath}/resources/lists.css?version=60" rel="stylesheet"/>
 
 <div class="list-card card"
@@ -29,7 +30,7 @@
             </div>
             <div style="display: flex;">
                 <c:if test="${cardList.moviesAmount > 0}">
-                    <p>${cardList.moviesAmount} Movies</p>
+                    <p>${cardList.moviesAmount} <spring:message code="listCard.movies"/></p>
                 </c:if>
 
                 <c:if test="${cardList.moviesAmount > 0 && (cardList.size - cardList.moviesAmount) > 0}">
@@ -40,11 +41,10 @@
                     </style>
                 </c:if>
                 <c:if test="${(cardList.size - cardList.moviesAmount) > 0}">
-                    <p>${(cardList.size - cardList.moviesAmount)} Series</p>
+                    <p>${(cardList.size - cardList.moviesAmount)} <spring:message code="listCard.series"/></p>
                 </c:if>
             </div>
-            <p style="max-height: 4.5rem" class="card-text overflow-hidden text-muted">by <c:out
-                    value="${cardList.username}"/>
+            <p style="max-height: 4.5rem" class="card-text overflow-hidden text-muted"><spring:message code="listCard.by" arguments="${cardList.username}"/>
             </p>
             <p style="max-height: 3.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" class="card-text">
                 <c:out value="${cardList.description}"/>

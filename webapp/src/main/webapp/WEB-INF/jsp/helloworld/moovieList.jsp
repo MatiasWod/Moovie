@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -11,7 +12,7 @@
     <link href="${pageContext.request.contextPath}/resources/main.css?version=55" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/resources/details.css?version=87" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <title>Moovie List</title>
+    <title><spring:message code="moovieList.title"/></title>
     <link href="${pageContext.request.contextPath}/resources/moovieList.css?version=65" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/resources/buttonsStyle.css?version=1" rel="stylesheet"/>
     <script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=87"></script>
@@ -23,7 +24,7 @@
 </c:import>
 <hr>
 <div class="d-flex flex-column align-items-center" style="margin-bottom: 20px">
-    <h2>If you liked this one, you may also like...</h2>
+    <h2><spring:message code="moovieList.recommendations"/></h2>
     <div class="d-flex flex-row">
         <c:forEach var="cardList" items="${RecomendedListsCards}">
         <%@include file="listCard.jsp"%>

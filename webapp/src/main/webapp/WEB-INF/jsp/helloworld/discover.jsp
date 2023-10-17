@@ -3,6 +3,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <%--
   Created by IntelliJ IDEA.
@@ -20,7 +21,7 @@
     <link href="${pageContext.request.contextPath}/resources/main.css?version=82" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
-    <title>Discover your next favorite experience</title>
+    <title><spring:message code="discover.title"/></title>
     <script src="${pageContext.request.contextPath}/resources/discoverFunctions.js?version=81"></script>
     <script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=82"></script>
     <link href="${pageContext.request.contextPath}/resources/buttonsStyle.css?version=1" rel="stylesheet"/>
@@ -41,7 +42,7 @@
             <c:if test="${searchMode}">
                 <div class="m-2">
                     <h1>
-                        Results for: <c:out value="${param.query}"/>
+                        <spring:message code="discover.results" arguments="${param.query}"/>
                     </h1>
                 </div>
             </c:if>
@@ -56,15 +57,15 @@
 
                     <div class="d-flex align-content-center  flex-row">
                         <select name="media" class="form-select filter-width" aria-label="Filter!">
-                            <option ${'All' == param.media ? 'selected' : ''}>All media</option>
-                            <option  ${'Movies' == param.media ? 'selected' : ''}>Movies</option>
-                            <option  ${'Series' == param.media ? 'selected' : ''}>Series</option>
+                            <option ${'All' == param.media ? 'selected' : ''}><spring:message code="discover.allMedia"/></option>
+                            <option  ${'Movies' == param.media ? 'selected' : ''}><spring:message code="discover.movies"/></option>
+                            <option  ${'Series' == param.media ? 'selected' : ''}><spring:message code="discover.series"/></option>
                         </select>
 
                         <input type="hidden" name="g" id="hiddenGenreInput">
                         <div class="dropdown">
                             <button style="height:100%;width: 150px;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                                Genres
+                                <spring:message code="discover.genres"/>
                             </button>
                             <c:set var="isChecked" value="" />
                             <div style="height: 50vh" class="dropdown-menu scrollableDiv flex-wrap p-4">
@@ -93,7 +94,7 @@
                         <input type="hidden" name="providers" id="hiddenProviderInput">
                         <div class="dropdown">
                             <button style="height:100%;width: 150px;margin-right: 5px;" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                                Providers
+                                <spring:message code="discover.providers"/>
                             </button>
                             <c:set var="isChecked" value="" />
                             <div style="height: 50vh" class="dropdown-menu scrollableDiv flex-wrap p-4">
@@ -123,11 +124,11 @@
                         </div>
 
 
-                        <button class="btn btn-outline-success me-1" type="submit">Apply filters</button>
+                        <button class="btn btn-outline-success me-1" type="submit"><spring:message code="discover.applyFilters"/></button>
                         <select name="orderBy" class="form-select filter-width" aria-label="Filter!">
-                            <option ${'name' == param.orderBy ? 'selected' : ''} value="name">Title</option>
-                            <option ${('tmdbrating' == param.orderBy || param.orderBy == null) ? 'selected' : ''} value="tmdbrating">Score</option>
-                            <option ${'releasedate' == param.orderBy ? 'selected' : ''} value="releasedate">Release Date</option>
+                            <option ${'name' == param.orderBy ? 'selected' : ''} value="name"><spring:message code="discover.orderByTitle"/></option>
+                            <option ${('tmdbrating' == param.orderBy || param.orderBy == null) ? 'selected' : ''} value="tmdbrating"><spring:message code="discover.orderByScore"/></option>
+                            <option ${'releasedate' == param.orderBy ? 'selected' : ''} value="releasedate"><spring:message code="discover.orderByReleaseDate"/></option>
                         </select>
                         <%--                PARA TENER EN CUENTA --> MIRAR EL DEFAULT sort y orderBy en el controller para settear los valores iniciales de las labels/iconos--%>
                         <input type="hidden" name="order" id="sortOrderInput" value="${param.order =='asc'? 'asc':'desc'}">
@@ -137,7 +138,7 @@
                     </div>
                     <div >
                         <a style="height: 100%;" class="btn btn-outline-success align-bottom" href="${pageContext.request.contextPath}/discover">
-                            Reset Filters
+                            <spring:message code="discover.resetFilters"/>
                         </a>
                     </div>
                 </form>
@@ -153,8 +154,8 @@
             <div class="scrollableDiv flex-wrap d-flex justify-space-between">
                 <c:if test="${fn:length(mediaList) == 0 }">
                     <div class="d-flex m-2 flex-column">
-                        No media was found.
-                        <a class="btn mt-2 btn-outline-success align-bottom" href="${pageContext.request.contextPath}/discover">Discover other content</a>
+                        <spring:message code="discover.noResults"/>
+                        <a class="btn mt-2 btn-outline-success align-bottom" href="${pageContext.request.contextPath}/discover"><spring:message code="discover.prompt"/></a>
                     </div>
                 </c:if>
                 <c:forEach var="movie" items="${mediaList}" varStatus="loop">

@@ -4,6 +4,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <html>
 <head>
@@ -20,7 +21,7 @@
     <script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=87"></script>
     <script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=87"></script>
 
-    <title>Moovie ${profile.username}</title>
+    <title><spring:message code="profile.title"/></title>
 </head>
 <body id="grad">
 <c:import url="navBar.jsp"/>
@@ -38,7 +39,7 @@
                 <div class="popup image-popup">
                     <div class="p-1 container d-flex flex-column justify-content-center">
                         <div class="d-flex justify-content-between">
-                            <h1 class="m-1">Change Profile Picture</h1>
+                            <h1 class="m-1"><spring:message code="profile.changeProfilePicture"/></h1>
                             <button class="btn" onclick="closePopup('popup')">
                                 <i class="bi bi-x"></i>
                             </button>
@@ -73,15 +74,15 @@
                                     <c:choose>
                                         <c:when test="${profile.role != -2 && profile.role != -101 }">
                                             <li>
-                                                <button class="dropdown-item" onclick="openPopup('ban-popup')">Ban User</button>
+                                                <button class="dropdown-item" onclick="openPopup('ban-popup')"><spring:message code="profile.banUser"/></button>
                                             </li>
                                             <li>
-                                                <button class="dropdown-item" onclick="openPopup('mod-popup')">Make User Mod</button>
+                                                <button class="dropdown-item" onclick="openPopup('mod-popup')"><spring:message code="profile.makeMod"/></button>
                                             </li>
                                         </c:when>
                                         <c:when test="${profile.role == -2 || profile.role == -101}">
                                             <li>
-                                                <button class="dropdown-item" onclick="openPopup('unban-popup')">Unban User</button>
+                                                <button class="dropdown-item" onclick="openPopup('unban-popup')"><spring:message code="profile.unbanUser"/></button>
                                             </li>
                                         </c:when>
                                     </c:choose>
@@ -120,15 +121,15 @@
         <div class="popup-overlay ban-popup-overlay" onclick="closePopup('ban-popup')"></div>
         <div style="background-color: transparent; box-shadow: none" class="popup ban-popup">
             <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-warning" role="alert">
-                <h5 class="alert-heading">Confirm User Ban</h5>
-                <p>Are you sure you want to ban this user? Once banned, they will no longer have access to the app and their account will be suspended indefinitely.</p>
+                <h5 class="alert-heading"><spring:message code="profile.confirmUserBan"/></h5>
+                <p><spring:message code="profile.banPrompt"/></p>
 
                 <form class="m-0" action="${pageContext.request.contextPath}/banUser/${profile.userId}" method="post">
                     <textarea name="message" id="message" rows="6" cols="50"
                               placeholder="Explain why the user is being banned" maxlength="500"></textarea>
                     <div class="d-flex justify-content-evenly">
-                        <button type="submit" class="btn btn-danger" id="banUserButton">Ban User</button>
-                        <button type="button" onclick="closePopup('ban-popup')" class="btn btn-secondary" id="cancelBanButton">Cancel</button>
+                        <button type="submit" class="btn btn-danger" id="banUserButton"><spring:message code="profile.banUser"/></button>
+                        <button type="button" onclick="closePopup('ban-popup')" class="btn btn-secondary" id="cancelBanButton"><spring:message code="profile.cancel"/></button>
                     </div>
                 </form>
             </div>
@@ -136,26 +137,26 @@
         <div class="popup-overlay unban-popup-overlay" onclick="closePopup('unban-popup')"></div>
         <div style="background-color: transparent; box-shadow: none" class="popup unban-popup">
             <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-success" role="alert">
-                <h5 class="alert-heading">Confirm User Unban</h5>
-                <p>Are you sure you want to unban this user? Once unbanned, they will regain access to the app.</p>
+                <h5 class="alert-heading"><spring:message code="profile.confirmUserUnban"/></h5>
+                <p><spring:message code="profile.unbanPrompt"/></p>
                 <div class="d-flex justify-content-evenly">
                     <form class="m-0" action="${pageContext.request.contextPath}/unbanUser/${profile.userId}" method="post">
-                        <button type="submit" class="btn btn-success" id="unbanUserButton">Unban User</button>
+                        <button type="submit" class="btn btn-success" id="unbanUserButton"><spring:message code="profile.unbanUser"/></button>
                     </form>
-                    <button type="button" onclick="closePopup('unban-popup')" class="btn btn-secondary" id="cancelUnbanButton">Cancel</button>
+                    <button type="button" onclick="closePopup('unban-popup')" class="btn btn-secondary" id="cancelUnbanButton"><spring:message code="profile.cancel"/></button>
                 </div>
             </div>
         </div>
         <div class="popup-overlay mod-popup-overlay" onclick="closePopup('mod-popup')"></div>
         <div style="background-color: transparent; box-shadow: none" class="popup mod-popup">
             <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-info" role="alert">
-                <h5 class="alert-heading">Confirm User Promotion</h5>
-                <p>Are you sure you want to make this user a moderator? Once promoted, they will have additional privileges in the app.</p>
+                <h5 class="alert-heading"><spring:message code="profile.confirmMakeMod"/></h5>
+                <p><spring:message code="profile.makeModPrompt"/></p>
                 <div class="d-flex justify-content-evenly">
                     <form class="m-0" action="${pageContext.request.contextPath}/makeUserMod/${profile.userId}" method="post">
-                        <button type="submit" class="btn btn-info" id="makeUserModButton">Make Moderator</button>
+                        <button type="submit" class="btn btn-info" id="makeUserModButton"><spring:message code="profile.makeModerator"/></button>
                     </form>
-                    <button type="button" onclick="closePopup('mod-popup')" class="btn btn-secondary" id="cancelModButton">Cancel</button>
+                    <button type="button" onclick="closePopup('mod-popup')" class="btn btn-secondary" id="cancelModButton"><spring:message code="profile.cancel"/></button>
                 </div>
             </div>
         </div>
@@ -164,19 +165,6 @@
         <div class="alert alert-success alert-dismissible fade show" id="errorAlert" role="alert">
             <div class="d-flex justify-content-between align-items-center">
                 <div>${successMessage}</div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </div>
-        </c:if>
-        <c:if test="${not empty param.error}">
-        <div class="alert alert-danger alert-dismissible fade show" id="errorAlert" role="alert">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <c:choose>
-                        <c:when test="${param.error == 'fileTooBig'}">Image size is too big</c:when>
-                        <c:otherwise>${param.error}</c:otherwise>
-                    </c:choose>
-                </div>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
@@ -194,28 +182,28 @@
         <div class="btn-group m-2" role="group" aria-label="Basic radio toggle button group">
             <c:if test="${isMe}">
                 <input type="radio" class="btn-check" name="btnradio" id="btnradio-watched-list" autocomplete="off" ${(param.list != null && param.list == 'watched-list')? 'checked':''}>
-                <label class="btn btn-outline-success" for="btnradio-watched-list">Watched</label>
+                <label class="btn btn-outline-success" for="btnradio-watched-list"><spring:message code="profile.watched"/></label>
             </c:if>
 
             <input type="radio" class="btn-check" name="btnradio" id="btnradio-user-lists" autocomplete="off" ${(param.list == null || param.list == '' || param.list == 'user-lists')? 'checked':''}>
-            <label class="btn btn-outline-success" for="btnradio-user-lists">User Lists</label>
+            <label class="btn btn-outline-success" for="btnradio-user-lists"><spring:message code="profile.userLists"/></label>
 
             <input type="radio" class="btn-check" name="btnradio" id="btnradio-liked-lists" autocomplete="off" ${(param.list != null && param.list == 'liked-lists')? 'checked':''}>
-            <label class="btn btn-outline-success" for="btnradio-liked-lists">Liked Lists</label>
+            <label class="btn btn-outline-success" for="btnradio-liked-lists"><spring:message code="profile.likedLists"/></label>
 
             <input type="radio" class="btn-check" name="btnradio" id="btnradio-followed" autocomplete="off" ${(param.list != null && param.list == 'followed')? 'checked':''}>
-            <label class="btn btn-outline-success" for="btnradio-followed">Followed Lists</label>
+            <label class="btn btn-outline-success" for="btnradio-followed"><spring:message code="profile.followedLists"/></label>
 
             <form id="selected-radio" action="${pageContext.request.contextPath}/profile/${profile.username}">
                 <input type="hidden" name="list" id="listField">
             </form>
 
             <input type="radio" class="btn-check" name="btnradio" id="btnradio-reviews" autocomplete="off" ${(param.list != null && param.list == 'reviews')? 'checked':''}>
-            <label class="btn btn-outline-success" for="btnradio-reviews">Reviews</label>
+            <label class="btn btn-outline-success" for="btnradio-reviews"><spring:message code="profile.reviews"/></label>
 
             <c:if test="${isMe}">
                 <input type="radio" class="btn-check" name="btnradio" id="btnradio-watchlist" autocomplete="off" ${(param.list != null && param.list == 'watchlist')? 'checked':''}>
-                <label class="btn btn-outline-success" for="btnradio-watchlist">Watchlist</label>
+                <label class="btn btn-outline-success" for="btnradio-watchlist"><spring:message code="profile.watchlist"/></label>
             </c:if>
         </div>
 
@@ -233,7 +221,7 @@
                 <c:if test="${showLists.size()==0}">
                     <div class="d-flex flex-column text-center justify-content-center">
                         <h4>No lists found</h4>
-                        <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/lists">Discover your next favorite list!</a>
+                        <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/lists"><spring:message code="profile.noLists"/></a>
                     </div>
                 </c:if>
 
@@ -289,15 +277,15 @@
                                                     <div class="review${review.reviewId}-overlay popup-overlay" onclick="closePopup('review${review.reviewId}')"></div>
                                                     <div style="background-color: transparent; box-shadow: none" class="popup review${review.reviewId}">
                                                         <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
-                                                            <h5 class="alert-heading">Confirm Review Deletion</h5>
-                                                            <p>Are you sure you want to delete this review? Once deleted, it cannot be recovered</p>
+                                                            <h5 class="alert-heading"><spring:message code="profile.confirmReviewDeletion"/></h5>
+                                                            <p><spring:message code="profile.reviewDeletionPrompt"/></p>
                                                             <div class="d-flex justify-content-evenly">
                                                                 <form class="m-0" action="${pageContext.request.contextPath}/deleteReview/${review.mediaId}" method="post">
                                                                     <input type="hidden" name="reviewId" value="${review.reviewId}"/>
                                                                     <input type="hidden" name="path" value="/profile/${username}"/>
-                                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                                    <button type="submit" class="btn btn-danger"><spring:message code="profile.delete"/></button>
                                                                 </form>
-                                                                <button type="button" onclick="closePopup('review${review.reviewId}')" class="btn btn-secondary">Cancel</button>
+                                                                <button type="button" onclick="closePopup('review${review.reviewId}')" class="btn btn-secondary" id="cancelModButton"><spring:message code="profile.cancel"/></button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -315,7 +303,7 @@
                     </c:when>
                     <c:otherwise>
                         <div class="text-center">
-                            <h3>No reviews yet</h3>
+                            <h3><spring:message code="profile.noReviews"/></h3>
                         </div>
                     </c:otherwise>
                 </c:choose>
