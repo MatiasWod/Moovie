@@ -368,7 +368,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     @Override
     public List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, int userid ,String featuredListOrder, String orderBy, String sortOrder ,int size, int pageNumber){
-        StringBuilder sql = new StringBuilder("SELECT * FROM (SELECT *,  ");
+        StringBuilder sql = new StringBuilder("SELECT * FROM (SELECT m.*,  ");
 
         ArrayList<Object> args = new ArrayList<>();
 
@@ -389,7 +389,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
             sql.append(" WHERE type IS NOT NULL ");
         }
 
-        sql.append(" GROUP BY m.mediaid ");
+        sql.append(" GROUP BY m.mediaId ");
 
         if(orderBy!=null && !orderBy.isEmpty() ){
             sql.append(" ORDER BY ").append(featuredListOrder).append(" DESC LIMIT 100) AS topRated ORDER BY ").append(orderBy).append(" ").append(sortOrder);
