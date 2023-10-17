@@ -57,6 +57,7 @@
             <input type="hidden" name="toPrevArray" id="toPrevArray" value="">
             <input type="hidden" name="currentArray" id="currentArray" value="">
             <input type="hidden" name="toNextArray" id="toNextArray" value="">
+            <input type="hidden" name="currentPageNumber" value="${currentPage}">
             <button type="submit" class="btn btn-style"><spring:message code="editList.applyNewOrder"/></button>
         </form>
     </div>

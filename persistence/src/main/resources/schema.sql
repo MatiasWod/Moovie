@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS moovieListsContent(
     moovieListId                        INTEGER NOT NULL,
     mediaId                            INTEGER NOT NULL,
     customOrder                         INTEGER NOT NULL,
-    UNIQUE(moovieListId,mediaid,customOrder),
+    UNIQUE(moovieListId,mediaid),
     FOREIGN KEY(moovieListId) REFERENCES moovieLists(moovieListId) ON DELETE CASCADE,
     FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE
 );
@@ -228,7 +228,7 @@ Hay que modificar el reviews que tiene el like ahi, pero en realidad es un count
 ALTER TABLE reviews DROP COLUMN reviewlikes;
 
 --MoovieLists changes
-ALTER TABLE moovielistscontent DROP COLUMN status
+ALTER TABLE moovielistscontent DROP COLUMN status;
 
 ALTER TABLE moovieListsContent ADD COLUMN customOrder INTEGER;
 
@@ -257,8 +257,7 @@ SELECT initcustomorder();
 --END FUNCTION
 
 ALTER TABLE moovieListsContent ALTER COLUMN customOrder SET NOT NULL;
-ALTER TABLE moovieListsContent ADD CONSTRAINT unique_moovieList_media_customOrder UNIQUE (moovieListId, mediaId, customOrder);
-
+ALTER TABLE moovieListsContent ADD CONSTRAINT unique_moovieList_media UNIQUE (moovieListId, mediaId)
 
 ALTER TABLE media DROP COLUMN totalrating;
 ALTER TABLE media DROP COLUMN votecount;

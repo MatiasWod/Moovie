@@ -52,7 +52,7 @@ public interface MoovieListService {
     void deleteMoovieList(int moovieListId);
 
     //Receives three arrays of mediaid, one taht will got o next page, previous page and current page in order
-    void updateMoovieListOrder(int moovieListId,  int[] toPrevPage, int[] currentPage, int[] toNextPage);
+    void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrevPage, int[] currentPage, int[] toNextPage);
 
     //Likes functions
     void likeMoovieList( int moovieListId);

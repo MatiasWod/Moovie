@@ -234,8 +234,8 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
     @Override
-    public void updateMoovieListOrder(int moovieListId, int[] toPrevPage, int[] currentPage, int[] toNextPage) {
-        moovieListDao.updateMoovieListOrder(moovieListId, toPrevPage, currentPage, toNextPage);
+    public void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrevPage, int[] currentPage, int[] toNextPage) {
+        moovieListDao.updateMoovieListOrder(moovieListId,currentPageNumber, toPrevPage, currentPage, toNextPage);
     }
 
 

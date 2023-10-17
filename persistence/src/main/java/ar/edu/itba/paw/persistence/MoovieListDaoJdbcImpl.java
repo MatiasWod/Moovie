@@ -3,14 +3,19 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.*;
+import ar.edu.itba.paw.models.PagingSizes;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.SqlParameter;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.Types;
 import java.util.*;
 
 @Repository
@@ -20,6 +25,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     private final SimpleJdbcInsert moovieListContentJdbcInsert;
     private final SimpleJdbcInsert moovieListLikesJdbcInsert;
     private final SimpleJdbcInsert moovieListFollowsJdbcInsert;
+    private final SimpleJdbcCall moovieListContentUpdateCustomOrder;
     private static final int INITIAL_LIKE_COUNT = 0;
 
     private static final RowMapper<MoovieList> MOOVIE_LIST_ROW_MAPPER = (rs, rowNum) -> new MoovieList(
@@ -88,6 +94,15 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         moovieListContentJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("moovieListsContent");
         moovieListLikesJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("moovieListsLikes");
         moovieListFollowsJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("moovieListsFollows");
+        moovieListContentUpdateCustomOrder = new SimpleJdbcCall(dataSource).withProcedureName("updatecustomOrder").withoutProcedureColumnMetaDataAccess()
+                .declareParameters(
+                        new SqlParameter("mlid", Types.INTEGER),
+                        new SqlParameter("firstPosition", Types.INTEGER),
+                        new SqlParameter("pageSize", Types.INTEGER),
+                        new SqlParameter("toPrev", Types.ARRAY),
+                        new SqlParameter("currentPage", Types.ARRAY),
+                        new SqlParameter("toNext", Types.ARRAY)
+                        );
     }
 
     @Override
@@ -488,9 +503,40 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     }
 
     @Override
-    public void updateMoovieListOrder(int moovieListId, int[] toPrevPage, int[] currentPage, int[] toNextPage) {
-        return;
+    public void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrevPage, int[] currentPage, int[] toNextPage) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("mlid", moovieListId);
+        params.put("firstPosition", currentPageNumber * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize() + 1);
+        params.put("pageSize", PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize());
+        params.put("toPrev", toPrevPage);
+        params.put("currentPage", currentPage);
+        params.put("toNext", toNextPage);
+
+        moovieListContentUpdateCustomOrder.execute(new MapSqlParameterSource(params));
     }
+
+/*
+--START FUNCTION
+CREATE OR REPLACE FUNCTION initcustomorder() RETURNS VOID AS $$
+DECLARE
+    idx int;
+    med int;
+    ord int;
+BEGIN
+    ord := 1;
+
+    -- Loop for moovielistid
+    FOR idx IN (SELECT moovielistid FROM moovielists) LOOP
+        -- Loop through the content media with id = idx
+        FOR med IN (SELECT mediaid FROM moovielistscontent WHERE moovielistid = idx) LOOP
+            UPDATE moovielistscontent SET customorder = ord WHERE moovielistid = idx AND mediaid = med;
+            ord := ord + 1;
+        END LOOP;
+		ord := 1;
+    END LOOP;
+END;
+$$LANGUAGE plpgsql;
+*/
 
     @Override
     public void deleteMoovieList(int moovieListId) {
