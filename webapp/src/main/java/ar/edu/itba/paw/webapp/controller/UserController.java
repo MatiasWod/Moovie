@@ -10,7 +10,6 @@ import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.MoovieUserDetailsService;
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
 import ar.edu.itba.paw.webapp.form.RegisterForm;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
@@ -134,7 +132,7 @@ public class UserController {
     public ModelAndView profilePage(@PathVariable String username,
                                     @RequestParam( value = "list", required = false) String list,
                                     @RequestParam(value = "page",defaultValue = "1") final int pageNumber,
-                                    @RequestParam(value="orderBy", defaultValue = "name") final String orderBy,
+                                    @RequestParam(value="orderBy", defaultValue = "customorder") final String orderBy,
                                     @RequestParam(value="order", defaultValue = "asc") final String order
                                     ){
         try{
@@ -153,7 +151,7 @@ public class UserController {
             if (list != null){
                 switch (list) {
                     case "watched-list":
-                        MoovieListDetails watchedDetails = moovieListService.getMoovieListDetails( -1 , "WATCHED" , username,null, "asc",PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(),pageNumber-1);
+                        MoovieListDetails watchedDetails = moovieListService.getMoovieListDetails( -1 , "WATCHED" , username,orderBy, order,PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(),pageNumber-1);
                         listCount = watchedDetails.getCard().getSize();
                         queries.put("list","watched-list");
                         numberOfPages = (int) Math.ceil(listCount * 1.0 / PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize());
@@ -170,7 +168,7 @@ public class UserController {
                         mav.addObject("order", order);
                         break;
                     case "watchlist":
-                        MoovieListDetails watchlistDetails = moovieListService.getMoovieListDetails(-1, "WATCHLIST" , username, null, "asc",PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(),pageNumber-1);
+                            MoovieListDetails watchlistDetails = moovieListService.getMoovieListDetails(-1, "WATCHLIST" , username, orderBy, order,PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(),pageNumber-1);
                         listCount = watchlistDetails.getCard().getSize();
                         queries.put("list","watchlist");
                         numberOfPages = (int) Math.ceil(listCount * 1.0 / PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize());
@@ -185,6 +183,7 @@ public class UserController {
                         mav.addObject("listOwner",watchlistDetails.getCard().getUsername());
                         mav.addObject("orderBy", orderBy);
                         mav.addObject("order", order);
+
                         break;
                     case "liked-lists":
                         mav.addObject("showLists",moovieListService.getLikedMoovieListCards(requestedProfile.getUserId(), MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
@@ -222,11 +221,12 @@ public class UserController {
                 //Obtener la cantidad de listas creadas por el usuario
             }
 
-
+            queries.put("orderBy",orderBy);
+            queries.put("order",order);
             mav.addObject("numberOfPages",numberOfPages);
             mav.addObject("currentPage",pageNumber - 1);
 
-            String urlBase = UriComponentsBuilder.newInstance().path("/profile/{username}").query("list={list}").buildAndExpand(queries).toUriString();
+            String urlBase = UriComponentsBuilder.newInstance().path("/profile/{username}").query("list={list}&orderBy={orderBy}&order={order}").buildAndExpand(queries).toUriString();
             mav.addObject("urlBase", urlBase);
 
             return mav;
