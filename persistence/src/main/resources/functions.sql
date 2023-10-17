@@ -2,14 +2,14 @@
 --FUNCTIONS THAT MODIFIES THE ORDER OF THE CUSTOM ORDER IN THE ML CONTENT TABLE
 
 CREATE OR REPLACE FUNCTION
---Integer arrays are all mediaid's
-    updatecustomOrder(mlid INTEGER , firstPosition INTEGER, pageSize INTEGER, toPrev INTEGER[], currentPage INTEGER[], toNext INTEGER[])
-    RETURNS VOID AS $$
+--Integer arrays are all mediaid
+updatecustomOrder(mlid INTEGER , firstPosition INTEGER, pageSize INTEGER, toPrev INTEGER[], currentPage INTEGER[], toNext INTEGER[])
+RETURNS VOID AS $$
 DECLARE
     currentPos INTEGER;
     toMove	   INTEGER;
 BEGIN
-    --Correct the positions in the currentPage, iteration begins in currentPos
+--Correct the positions in the currentPage, iteration begins in currentPos
 --leaving space for the ones in the previous page that will come in this one
 
     IF ARRAY_LENGTH(toPrev, 1) > 0 THEN

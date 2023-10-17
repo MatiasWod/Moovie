@@ -41,6 +41,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Value("classpath:media.sql")
     private Resource mediaSql;
 
+    @Value("classpath:functions.sql")
+    private Resource functions;
+
     @Bean
     public ViewResolver viewResolver() {
         final InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
@@ -76,6 +79,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         final ResourceDatabasePopulator dbp =  new ResourceDatabasePopulator();
         dbp.addScript(schemaSql);
         //dbp.addScript(mediaSql);
+        //dbp.addScript(functions);
         return dbp;
     }
 
@@ -105,7 +109,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public DataSource dataSource(){
         final SimpleDriverDataSource ds = new SimpleDriverDataSource();
         ds.setDriverClass(org.postgresql.Driver.class);
-        ds.setUrl("jdbc:postgresql://localhost:5432/paw");
+        ds.setUrl("jdbc:postgresql://localhost:5433/paw");
         ds.setUsername("postgres");
         ds.setPassword("admin");
         return ds;
