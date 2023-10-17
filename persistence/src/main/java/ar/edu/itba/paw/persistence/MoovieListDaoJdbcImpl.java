@@ -515,29 +515,6 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         moovieListContentUpdateCustomOrder.execute(new MapSqlParameterSource(params));
     }
 
-/*
---START FUNCTION
-CREATE OR REPLACE FUNCTION initcustomorder() RETURNS VOID AS $$
-DECLARE
-    idx int;
-    med int;
-    ord int;
-BEGIN
-    ord := 1;
-
-    -- Loop for moovielistid
-    FOR idx IN (SELECT moovielistid FROM moovielists) LOOP
-        -- Loop through the content media with id = idx
-        FOR med IN (SELECT mediaid FROM moovielistscontent WHERE moovielistid = idx) LOOP
-            UPDATE moovielistscontent SET customorder = ord WHERE moovielistid = idx AND mediaid = med;
-            ord := ord + 1;
-        END LOOP;
-		ord := 1;
-    END LOOP;
-END;
-$$LANGUAGE plpgsql;
-*/
-
     @Override
     public void deleteMoovieList(int moovieListId) {
         String sqlDel = "DELETE FROM moovieLists WHERE moovieListId = " + moovieListId;
