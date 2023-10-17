@@ -69,7 +69,9 @@
         <th scope="col"><spring:message code="editList.type"/></th>
         <th scope="col"><spring:message code="editList.score"/></th>
         <th scope="col"><spring:message code="editList.releaseDate"/></th>
-        <th scope="col" style="width: 50px"></th>
+<c:if test="${numberOfPages>1}">
+<th scope="col" style="width: 50px"></th>
+</c:if>
         <th scope="col" style="width: 100px"></th>
     </tr>
     </thead>
@@ -112,6 +114,7 @@
                     <td>
                         <span>${mediaList[loop.index].releaseDate}</span>
                     </td>
+<c:if test="${numberOfPages>1}">
 <td>
     <div class="dropdown">
         <div class="col-auto text-center" data-bs-toggle="dropdown" aria-expanded="false">
@@ -158,6 +161,7 @@
         </div>
     </div>
 </td>
+</c:if>
     <td>
         <div class="popup-overlay remove-popup-overlay" onclick="closePopup('remove-popup-${loop.index}')"></div>
         <div class="col-auto text-center">
