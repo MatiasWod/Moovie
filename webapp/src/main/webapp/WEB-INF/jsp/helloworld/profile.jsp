@@ -220,7 +220,7 @@
 
                 <c:if test="${showLists.size()==0}">
                     <div class="d-flex flex-column text-center justify-content-center">
-                        <h4>No lists found</h4>
+                        <h4><spring:message code="profile.noLists"/></h4>
                         <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/lists"><spring:message code="profile.noLists"/></a>
                     </div>
                 </c:if>
