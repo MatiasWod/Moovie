@@ -205,8 +205,16 @@ public class ListController {
                                      @RequestParam(value = "toPrevArray") final int[] toPrevArray,
                                      @RequestParam(value = "currentArray") final int[] currentArray,
                                      @RequestParam(value = "toNextArray") final int[] toNextArray){
+        try {
+            User currentUser = userService.getInfoOfMyUser();
+            if (!currentUser.getUsername().equals(moovieListService.getMoovieListCardById(listId).getUsername())) {
+                return new ModelAndView("helloworld/404");
+            }
+        } catch (Exception e) {
+            return new ModelAndView("helloworld/404");
+        }
         moovieListService.updateMoovieListOrder(listId,toPrevArray,currentArray,toNextArray);
-        return new ModelAndView("helloworld/list");
+        return new ModelAndView("redirect:/list/" + listId);
     }
 
 

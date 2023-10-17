@@ -52,7 +52,12 @@
     </div>
     <div class="justify-content-between d-flex flex-row" style="margin: 10px">
         <h2><strong>Editing mode</strong> </h2>
-        <button class="btn btn-style">Apply new order</button>
+        <form action="${pageContext.request.contextPath}/updateMoovieListOrder/${moovieList.moovieListId}" method="POST" onsubmit="beforeSubmit()">
+            <input type="hidden" name="toPrevArray" id="toPrevArray" value="">
+            <input type="hidden" name="currentArray" id="currentArray" value="">
+            <input type="hidden" name="toNextArray" id="toNextArray" value="">
+            <button type="submit" class="btn btn-style">Apply new order</button>
+        </form>
     </div>
 <table class="table table-striped" id="movieTable">
     <thead>
@@ -63,6 +68,7 @@
         <th scope="col">Type</th>
         <th scope="col">Score</th>
         <th scope="col">Release Date</th>
+        <th scope="col" style="width: 50px"></th>
         <th scope="col" style="width: 100px"></th>
     </tr>
     </thead>
@@ -70,11 +76,11 @@
         <c:when test="${not empty mediaList}">
             <tbody>
             <c:forEach var="index" items="${mediaList}" varStatus="loop">
-                <tr class="draggable-row" style="cursor: pointer;"  onmousedown="changeCursor(this)"  onmouseup="resetCursor(this)">
+                <tr class="draggable-row" style="cursor: pointer;"  onmousedown="changeCursor(this)"  onmouseup="resetCursor(this)" data-mediaId="${mediaList[loop.index].mediaId}">
                     <!-- Title -->
                     <td class="position-td">
                         <div class="col-auto" style="text-align: center">
-                            <span>${loop.index + 1}</span>
+                            <span>${(loop.index + 1)+(pagingSize*currentPage)}</span>
                         </div>
                     </td>
                     <td>
@@ -105,6 +111,52 @@
                     <td>
                         <span>${mediaList[loop.index].releaseDate}</span>
                     </td>
+<td>
+    <div class="dropdown">
+        <div class="col-auto text-center" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-three-dots-vertical"></i>
+        </div>
+        <ul class="dropdown-menu">
+            <!-- Dropdown menu items go here -->
+            <c:if test="${(currentPage+1)!=numberOfPages}">
+                <li><a class="dropdown-item" onclick="openPopup('nextPage-popup-${loop.index}')"><i
+                        class="bi bi-caret-right-fill"></i> Next page</a></li>
+            </c:if>
+            <c:if test="${currentPage>0}">
+                <li><a class="dropdown-item" onclick="openPopup('previousPage-popup-${loop.index}')"><i
+                        class="bi bi-caret-left-fill"></i> Previous page</a></li>
+            </c:if>
+        </ul>
+    </div>
+    <div class="popup-overlay nextPage-popup-${loop.index}-overlay"
+         onclick="closePopup('nextPage-popup-${loop.index}')"></div>
+    <div class="popup nextPage-popup-${loop.index}">
+        <h2>Send "${mediaList[loop.index].name}" to the next page?</h2>
+        <div class="text-center" style="margin-top: 20px">
+            <button type="button" class="btn btn-danger" style="margin-inline: 10px"
+                    onclick="closePopup('nextPage-popup-${loop.index}')">No
+            </button>
+            <button class="btn btn-dark" style="margin-inline: 10px"
+                    onclick="moveRowToNextPage(${loop.index},${mediaList[loop.index].mediaId})">Yes
+            </button>
+        </div>
+    </div>
+
+
+    <div class="popup-overlay previousPage-popup-${loop.index}-overlay"
+         onclick="closePopup('previousPage-popup-${loop.index}')"></div>
+    <div class="popup previousPage-popup-${loop.index}">
+        <h2>Send "${mediaList[loop.index].name}" to the previous page?</h2>
+        <div class="text-center" style="margin-top: 20px">
+            <button type="button" class="btn btn-danger" style="margin-inline: 10px"
+                    onclick="closePopup('previousPage-popup-${loop.index}')">No
+            </button>
+            <button class="btn btn-dark" style="margin-inline: 10px"
+                    onclick="moveRowToPreviousPage(${loop.index},${mediaList[loop.index].mediaId})">Yes
+            </button>
+        </div>
+    </div>
+</td>
     <td>
         <div class="popup-overlay remove-popup-overlay" onclick="closePopup('remove-popup-${loop.index}')"></div>
         <div class="col-auto text-center">
@@ -129,7 +181,6 @@
     </div>
 </div>
 </tr>
-
             </c:forEach>
             </tbody>
         </c:when>
@@ -142,50 +193,33 @@
         </c:otherwise>
     </c:choose>
 </table>
+</div>
 <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
     <c:param name="mediaPages" value="${numberOfPages}"/>
     <c:param name="currentPage" value="${currentPage + 1}"/>
-    <c:param name="url" value="${urlBase}"/>
+    <c:param name="url" value="/editList/${moovieList.moovieListId}"/>
 </c:import>
-</div>
+
 </body>
 <script>
     $(document).ready(function() {
         // Enable drag-and-drop functionality for the table rows
         $("#movieTable tbody").sortable({
-            handle: "td.position-td", // Use the position-td as the handle for dragging.
+            handle: "td", // Use the position-td as the handle for   dragging.
+            placeholder: "sortable-placeholder", // Add the CSS class for the placeholder
+            forcePlaceholderSize: true, // Ensure that the placeholder size matches the dragged item
+            start: function (event, ui) {
+                ui.placeholder.height(ui.item.height()); // Set the placeholder height to match the row height
+            },
             update: function(event, ui) {
                 // This function is removed
             },
             stop: function(event, ui) {
-                // Update position numbers when a row is moved
-                $("#movieTable tbody tr").each(function(index) {
-                    const newIndex = index + 1;
-                    $(this).find("td.position-td span").text(newIndex);
-                    $(this).attr("data-index", newIndex - 1);
-                });
+                updateRowIndices()
             }
         });
     });
-    $(document).ready(function() {
-        $("#movieTable tbody").sortable({
-            handle: "td",
-            update: function(event, ui) {
-                // Get the new order of rows
-                var newOrder = $("#movieTable tbody").sortable("toArray", { attribute: "data-media-id" });
 
-                // Send the new order to the server using AJAX
-                $.ajax({
-                    type: "POST",
-                    url: "${pageContext.request.contextPath}/updateOrder.jsp", // Update with your endpoint
-                    data: { order: newOrder },
-                    success: function(response) {
-                        // Handle the server response here
-                    }
-                });
-            }
-        });
-    });
     function changeCursor(row) {
         row.style.cursor = 'grabbing';
     }
@@ -211,5 +245,68 @@
             overlay.style.display = "none";
         }
     }
+
+    let toPrev = new Array(25);    // Initialize an array with 25 undefined elements
+    let current = new Array(25);
+    let toNext = new Array(25);
+
+    function moveRowToNextPage(index, mediaId) {
+        toNext.push(mediaId); // Add the row to the toNext array
+        const row = $(`#movieTable .nextPage-popup-` + index).closest("tr"); // Get the parent row
+        row.hide(); // Hide the row
+        closePopup(`nextPage-popup-` + index); // Close the popup
+        updateRowIndices();
+    }
+
+    function moveRowToPreviousPage(index, mediaId) {
+        toNext.push(mediaId); // Add the mediaId to the toNext array
+        const row = $(`#movieTable .previousPage-popup-` + index).closest("tr"); // Get the parent row
+        row.hide(); // Hide the row
+        updateRowIndices();
+        closePopup(`previousPage-popup-` + index); // Close the popup
+    }
+
+    function updateRowIndices() {
+        $("#movieTable tbody tr:visible").each(function (index) {
+            let newIndex = (${currentPage} *
+            ${pagingSize})
+            +(index + 1);
+            $(this).find("td.position-td span").text(newIndex);
+            $(this).attr("data-index", newIndex - 1);
+        });
+    }
+
+    function beforeSubmit() {
+        // Convert the arrays to comma-separated strings
+        $("#movieTable tbody tr:visible").each(function (index) {
+            const mediaId = $(this).attr("data-mediaId");
+            if (mediaId) {
+                current.push(mediaId);
+            }
+        });
+
+        const toPrevArrayValue = toPrev.join(',');
+        const currentArrayValue = current.join(',');
+        const toNextArrayValue = toNext.join(',');
+
+        // Set the values of the hidden input fields
+        document.getElementById("toPrevArray").value = toPrevArrayValue;
+        document.getElementById("currentArray").value = currentArrayValue;
+        document.getElementById("toNextArray").value = toNextArrayValue;
+
+        // Submit the form
+        return true; // Allow the form to be submitted
+    }
+
+
 </script>
+<style>
+    .sortable-placeholder {
+        border: 2px solid blue; /* Set the desired border style and color */
+        background-color: #f0f0f0; /* Set the background color for the placeholder */
+        height: 100px; /* Set the height to match your row height */
+        margin: 0; /* Reset margin to prevent unwanted spacing */
+    }
+</style>
+
 </html>
