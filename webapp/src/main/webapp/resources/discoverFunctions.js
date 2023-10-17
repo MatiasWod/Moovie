@@ -1,20 +1,9 @@
 window.onload = function() {
     localStorage.removeItem("searchValue");
 };
-function deleteGenre(element) {
-    console.log("discover deleteGenre");
-    document.querySelectorAll('.form-check-input:checked').forEach(function(checkbox) {
-        console.log('checkbox elem: '+checkbox.id);
-    });
+function deleteChip(element) {
     let aux = document.getElementById("dropdownCheck" + element.previousElementSibling.innerText.trim());
-    console.log(aux.checked);
     aux.checked = false;
-    console.log(aux);
-    console.log(aux.id);
-    console.log(aux.checked);
-    document.querySelectorAll('.form-check-input:checked').forEach(function(checkbox) {
-        console.log('checkbox elem: '+checkbox.id);
-    });
     element.parentElement.remove();
     beforeSubmit();
     document.getElementById("filter-form").submit();

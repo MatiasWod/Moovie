@@ -1,16 +1,15 @@
 let selectedMedia = [];
 let selectedMediaId = [];
 
-function deleteGenre(element) {
-    console.log("createList deleteGenre");
+function deleteChip(element) {
     let aux = document.getElementById("dropdownCheck" + element.previousElementSibling.innerText.trim());
     aux.checked = false;
-    console.log(aux);
-    console.log(aux.innerHTML);
     element.parentElement.remove();
     beforeSubmit();
     document.getElementById("filter-form").submit();
 }
+
+
 
 function displayMediaName(name, id) {
 
