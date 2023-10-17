@@ -203,7 +203,7 @@
                             <form:errors path="listName" cssClass="error"/>
                             <h3 class="m-2" ><spring:message code="createList.description"/></h3>
                             <form:textarea path="listDescription" id="list-description" class="review-textarea" rows="3" name="listDescription"
-                                           placeholder="Your description..." maxlength="255" />
+                                            maxlength="255" />
                             <span id="listDescriptionCharCount" class="text-muted"><span id="listDescriptionRemainingChars">0</span>/255</span>
                             <form:errors path="listDescription" cssClass="error"/>
                             <form:input path="mediaIdsList" type="hidden"  name="mediaIds" id="selected-create-media"/>

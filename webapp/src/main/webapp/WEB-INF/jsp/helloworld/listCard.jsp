@@ -20,7 +20,7 @@
                         <c:if test="${cardList.currentUserWatchAmount == cardList.size }">             <span
                                 class="d-inline-block"
                                 data-bs-toggle="popover" data-bs-trigger="hover"
-                                data-bs-content="You have watched all the medias in this list">
+                                data-bs-content="<spring:message code="listCard.allMediasWatched"/>">
                 <i class="bi bi-check-circle-fill" style="color: green"></i>
             </span></c:if></h5>
                 </div>
