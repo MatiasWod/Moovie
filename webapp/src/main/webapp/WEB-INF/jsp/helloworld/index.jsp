@@ -13,6 +13,9 @@
 </head>
 <body style="background: whitesmoke;">
     <c:import url="navBar.jsp"/>
+    <%--<form action="${pageContext.request.contextPath}/mandarMail">
+        <button type="submit">mandar mail</button>
+    </form>--%>
     <div class="container d-flex flex-column" style="margin-bottom: 50px">
         <div style="position: page;" class="d-flex flex-column align-items-center justify-content-center">
             <div class="container d-flex flex-column justify-content-end">

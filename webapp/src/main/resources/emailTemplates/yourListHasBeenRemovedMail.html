@@ -1,10 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Your List Has Been Deleted</title>
 </head>
-<body>
+<body th:style="'font-family: Arial, sans-serif; background-color: #f4f4f4;'">
+
+<div th:style="'max-width: 600px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);'">
+    <img th:src="@{https://pawserver.it.itba.edu.ar/paw-2023b-06/resources/logo.png}" alt="Logo" th:style="'max-width: 100%; height: auto;'">
+
+    <h1 th:text="#{email.listDeletedTitle}"></h1>
+
+    <p th:text="#{email.welcomeBack(${username})}"/>
+
+    <p th:text="#{email.listDeletedReason(${moovieListName})}"/>
+
+    <p th:text="#{email.thanks}"/>
+
+    <p th:text="#{email.regards}"/>
+
+    <a th:href="@{http://localhost:8080/createList}" th:text="#{email.listDeletedCta}" th:style="'display: inline-block; padding: 10px 20px; background-color: green; color: #fff; text-decoration: none; border-radius: 5px; margin-top: 10px;'"></a>
+</div>
 
 </body>
 </html>

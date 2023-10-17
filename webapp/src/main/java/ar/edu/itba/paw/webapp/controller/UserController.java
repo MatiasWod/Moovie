@@ -6,13 +6,11 @@ import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.Token;
-import ar.edu.itba.paw.services.MoovieListService;
-import ar.edu.itba.paw.services.ReviewService;
-import ar.edu.itba.paw.services.UserService;
-import ar.edu.itba.paw.services.VerificationTokenService;
+import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.MoovieUserDetailsService;
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
 import ar.edu.itba.paw.webapp.form.RegisterForm;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +52,8 @@ public class UserController {
     @Autowired
     MoovieUserDetailsService moovieUserDetailsService;
 
+    @Autowired
+    EmailService emailService;
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
@@ -64,6 +64,14 @@ public class UserController {
         ModelAndView modelAndView = new ModelAndView("helloworld/register");
         return modelAndView;
     }
+
+    /*@RequestMapping("/mandarMail")
+    public ModelAndView mandarmail(){
+        final Map<String,Object> mailMap = new HashMap<>();
+        emailService.sendEmail("iarnott@itba.edu.ar","Your moovie list"+ "LIST" + " has been deleted", "confirmationMail.html", mailMap);
+        emailService.sendEmail("jurosauer@itba.edu.ar","Your moovie list"+ "LIST" + " has been deleted", "confirmationMail.html", mailMap);
+        return new ModelAndView("redirect:/");
+    }*/
 
 
     @RequestMapping(value = "/register/confirm")
@@ -277,14 +285,14 @@ public class UserController {
         try {
             userService.setProfilePicture(picture);
         } catch (InvalidTypeException e) {
-            redirectAttributes.addAttribute("error", "invalidType");
+            redirectAttributes.addAttribute("error", "The file was not an image");
         } catch (NoFileException e) {
-            redirectAttributes.addAttribute("error", "noFile");
+            redirectAttributes.addAttribute("error", "No file was chosen");
         } catch (FailedToSetProfilePictureException e) {
-            redirectAttributes.addAttribute("error", "failedSetProfilePicture");
+            redirectAttributes.addAttribute("error", "An error occurred while updating your profile picture");
         } catch (Exception e) {
             // Handle other exceptions if needed
-            redirectAttributes.addAttribute("error", "error");
+            redirectAttributes.addAttribute("error", "An error occurred");
         }
 
         return "redirect:" + referer;

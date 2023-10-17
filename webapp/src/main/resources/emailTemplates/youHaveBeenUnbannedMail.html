@@ -3,12 +3,14 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-<body>
-<div>
-    <!--<img style="max-width: 300px;" class="textlogo" src="/logo.png"/>!-->
-    <div>
-        <p th:text="#{email.unbannedStartingMessage (${username})}"></p>
-        <p th:text="#{email.unbannedFollowingMessage}"></p>
-    </div>
+<body th:style="'font-family: Arial, sans-serif; background-color: #f4f4f4;'">
+<div th:style="'max-width: 600px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);'">
+    <img th:src="@{https://pawserver.it.itba.edu.ar/paw-2023b-06/resources/logo.png}" alt="Logo" th:style="'max-width: 100%; height: auto;'">
+
+    <p th:text="#{email.unbannedStartingMessage (${username})}"></p>
+
+    <p th:text="#{email.unbannedFollowingMessage}"></p>
+
+    <p th:text="#{email.regards}"/>
 </div>
 </body>
