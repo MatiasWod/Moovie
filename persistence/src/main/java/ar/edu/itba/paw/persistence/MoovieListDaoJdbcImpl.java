@@ -173,7 +173,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         }
 
         sql.append(" GROUP BY ml.moovielistid, u.userid ");
-        if(orderBy != null && orderBy.length() > 0){
+        if(isOrderValid(orderBy) && isSortOrderValid(order)){
             sql.append(" ORDER BY ").append(orderBy).append(" ").append(order);
         }
         sql.append(" LIMIT ? OFFSET ? ;");
@@ -374,9 +374,10 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
         sql.append(" GROUP BY m.mediaId, mlc.moovielistid, mlc.mediaId, mlc.customorder ");
 
-        if(orderBy!=null && !orderBy.isEmpty() ){
+        if(isOrderValid(orderBy) && isSortOrderValid(sortOrder)){
             sql.append(" ORDER BY ").append(orderBy).append(" ").append(sortOrder);
         }
+
         sql.append(" LIMIT ? OFFSET ? ;");
         args.add(size);
         args.add(pageNumber*size);
@@ -412,11 +413,11 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
         sql.append(" GROUP BY m.mediaId ");
         sql.append(" ORDER BY ").append(featuredListOrder);
-        if(orderBy!=null && !orderBy.isEmpty() && !orderBy.equals("customorder")){
+        if(isOrderValid(orderBy) && isSortOrderValid(sortOrder) && !orderBy.equals("customorder")){
             sql.append(" DESC LIMIT 100) AS topRated ORDER BY ").append(orderBy).append(" ").append(sortOrder);
             sql.append(" LIMIT ? OFFSET ? ;");
         }
-        else if(orderBy!=null && !orderBy.isEmpty() && orderBy.equals("customorder")){
+        else if(isOrderValid(orderBy) && isSortOrderValid(sortOrder) && orderBy.equals("customorder")){
             sql.append(" ").append(sortOrder).append(" LIMIT 100) as aux LIMIT ? OFFSET ? ");
         }
         else {
@@ -452,12 +453,12 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         }
         sql.append(" GROUP BY m.mediaId, r.reviewid ");
         sql.append(" ORDER BY ").append(featuredListOrder);
-        if(orderBy!=null && !orderBy.isEmpty() && !orderBy.equals("customorder")){
-             sql.append(" DESC LIMIT 100) AS topRated ORDER BY ").append(orderBy).append(" ").append(sortOrder);
-             sql.append(" LIMIT ? OFFSET ?) AS featured WHERE featured.isWatched = true ");
+        if(isOrderValid(orderBy) && isSortOrderValid(sortOrder) && !orderBy.equals("customorder")){
+            sql.append(" DESC LIMIT 100) AS topRated ORDER BY ").append(orderBy).append(" ").append(sortOrder);
+            sql.append(" LIMIT ? OFFSET ? ;");
         }
-        else if(orderBy!=null && !orderBy.isEmpty() && orderBy.equals("customorder")){
-            sql.append(" ").append(sortOrder).append(" LIMIT 100) AS topRated LIMIT ? OFFSET ?) AS featured WHERE featured.isWatched = true ;");
+        else if(isOrderValid(orderBy) && isSortOrderValid(sortOrder) && orderBy.equals("customorder")){
+            sql.append(" ").append(sortOrder).append(" LIMIT 100) as aux LIMIT ? OFFSET ? ");
         }
         else {
             sql.append(" DESC LIMIT 100) AS topRated LIMIT ? OFFSET ?) AS featured WHERE featured.isWatched = true ;");
@@ -571,6 +572,23 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         args.put("userId", userId);
 
         moovieListFollowsJdbcInsert.execute(args);
+    }
+
+    //Following functions needed in order to be safe of sql injection
+    private boolean isOrderValid( String order) {
+        String[] validOrders = {"name", "tmdbrating", "likeCount", "customorder", "moovielistid", "releasedate", "type", "totalrating"};
+        for (String element : validOrders) {
+            if (element.equals(order.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    private boolean isSortOrderValid(String so){
+        if(so.toLowerCase().equals("asc") || so.toLowerCase().equals("desc")){
+            return true;
+        }
+        return false;
     }
 }
 
