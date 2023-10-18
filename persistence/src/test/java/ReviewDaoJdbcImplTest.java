@@ -29,9 +29,6 @@ public class ReviewDaoJdbcImplTest {
 
     private static final int EXISTING_REVIEW_ID = 1;
     private static final int EXISTING_REVIEW_MEDIA_ID = 1;
-
-
-
     @Autowired
     private DataSource ds;
 
@@ -60,11 +57,20 @@ public class ReviewDaoJdbcImplTest {
     @Test
     public void testGetReviewsByUser(){
         List<Review> reviewList = reviewDao.getMovieReviewsFromUser(VALUE_NOT_LOGGED, EXISTING_USER_ID, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), 0);
-
         assertEquals(reviewList.size(), 2);
         assertEquals(reviewList.get(0).getMediaId(), EXISTING_REVIEW_MEDIA_ID);
     }
 
+    @Test
+    public void testLikeReview(){
 
+    }
+
+    @Test
+    public void testDeleteReview(){
+        assertTrue(reviewDao.getReviewById(EXISTING_USER_ID,EXISTING_REVIEW_ID).isPresent());
+        reviewDao.deleteReview(EXISTING_REVIEW_ID);
+        assertFalse(reviewDao.getReviewById(EXISTING_USER_ID,EXISTING_REVIEW_ID).isPresent());
+    }
 
 }
