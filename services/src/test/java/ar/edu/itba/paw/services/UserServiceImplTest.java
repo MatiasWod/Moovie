@@ -15,8 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 
@@ -29,8 +28,6 @@ public class UserServiceImplTest {
     private static final String PASSWORD = "pass123";
     private static final int ROLE = 1;
 
-    private static final String TOKEN = "Token";
-
     private User user;
 
     @InjectMocks
@@ -38,12 +35,9 @@ public class UserServiceImplTest {
 
     @Mock
     private UserDao mockUserDao;
-    @Mock
-    private EmailService mockEmailService;
+
     @Mock
     private PasswordEncoder mockPasswordEncoder;
-    @Mock
-    private VerificationTokenService mockVerificationTokenService;
 
     @Before
     public void setup(){
@@ -55,9 +49,6 @@ public class UserServiceImplTest {
         when(mockUserDao.createUserFromUnregistered(eq(EMAIL), eq(USERNAME), eq(PASSWORD)))
                 .thenReturn(user);
         when(mockPasswordEncoder.encode(Mockito.anyString())).thenReturn(PASSWORD);
-        when(mockVerificationTokenService.createVerificationToken(UID))
-                .thenReturn(TOKEN);
-        doNothing().when(mockEmailService).sendEmail(anyString(), anyString(), anyString(), anyMap());
 
         User user = userService.createUserFromUnregistered(EMAIL, USERNAME, PASSWORD);
         Assert.assertNotNull(user);
