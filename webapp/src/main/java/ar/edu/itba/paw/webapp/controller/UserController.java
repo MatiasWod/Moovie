@@ -102,7 +102,6 @@ public class UserController {
 
 
 
-    //TODO
     @RequestMapping(value = "/register/tokentimedout")
     public ModelAndView tokenTimedOut(@RequestParam("token") final String token) {
         ModelAndView mav = new ModelAndView("helloworld/tokenTimedOut");
