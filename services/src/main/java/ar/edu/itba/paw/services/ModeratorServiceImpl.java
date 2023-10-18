@@ -113,13 +113,13 @@ public class ModeratorServiceImpl implements ModeratorService{
         amIModerator();
         User u = userDao.findUserById(userId).orElseThrow(() -> new UnableToFindUserException("No user for the id = " + userId ));
 
-        if(u.getRole() != UserRoles.UNREGISTERED.getRole() && u.getRole() != UserRoles.USER.getRole() ){
+        if(u.getRole() == UserRoles.UNREGISTERED.getRole() || u.getRole() == UserRoles.USER.getRole() || u.getRole() == UserRoles.NOT_AUTHENTICATED.getRole() ){
             throw new UnableToChangeRoleException("Cant unban if its not banned");
         }
 
-        if(u.getRole() == UserRoles.UNREGISTERED.getRole()){
-            userDao.changeUserRole(userId, UserRoles.NOT_AUTHENTICATED.getRole());
-        } else{
+        if(u.getRole() == UserRoles.BANNED_NOT_REGISTERED.getRole()){
+            userDao.changeUserRole(userId, UserRoles.UNREGISTERED.getRole());
+        } else if (u.getRole() == UserRoles.BANNED.getRole()){
             userDao.changeUserRole(userId, UserRoles.USER.getRole());
         }
         bannedDao.deleteBannedMessage(userId);
@@ -146,8 +146,6 @@ public class ModeratorServiceImpl implements ModeratorService{
         } else if(u.getRole() == UserRoles.USER.getRole()){
             userDao.changeUserRole(userId, UserRoles.MODERATOR.getRole());
         }
-
-        throw new UnableToChangeRoleException("Unable to change role");
     }
 
     private void amIModerator(){
