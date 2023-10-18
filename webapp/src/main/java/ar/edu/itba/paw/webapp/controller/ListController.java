@@ -23,8 +23,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Controller
 public class ListController {
@@ -40,9 +38,6 @@ public class ListController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private EmailService emailService;
 
     @Autowired
     private ProviderService providerService;
@@ -72,17 +67,6 @@ public class ListController {
         String urlBase = UriComponentsBuilder.newInstance().path("/lists").query("orderBy={orderBy}&order={order}&search={search}").buildAndExpand(queries).toUriString();
         mav.addObject("urlBase", urlBase);
         return mav;
-    }
-
-    private String extractNumericPart(String input) {
-        Pattern pattern = Pattern.compile("\\d+");
-        Matcher matcher = pattern.matcher(input);
-
-        if (matcher.find()) {
-            return matcher.group();
-        } else {
-            return null;
-        }
     }
 
     @RequestMapping("/createList")
@@ -159,17 +143,14 @@ public class ListController {
 
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
-        mav.addObject("isFollowed",moovieListCard.isCurrentUserHasFollowed());
-        mav.addObject("isLiked",myList.getCard().isCurrentUserHasLiked());
         mav.addObject("likedCount",moovieListCard.getLikeCount());
         mav.addObject("listOwner",moovieListCard.getUsername());
         mav.addObject("orderBy", orderBy);
         mav.addObject("publicType",MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
         mav.addObject("RecomendedListsCards",moovieListService.getRecommendedMoovieListCards(moovieListId,4,0));
 
-        Integer id = moovieListId;
         final Map<String, String> queries = new HashMap<>();
-        queries.put("id",id.toString());
+        queries.put("id", Integer.toString(moovieListId));
         queries.put("orderBy", orderBy);
         queries.put("order", order);
         String urlBase = UriComponentsBuilder.newInstance().path("/list/{id}").query("orderBy={orderBy}&order={order}").buildAndExpand(queries).toUriString();
@@ -254,8 +235,6 @@ public class ListController {
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
         mav.addObject("isLiked",moovieListCard.isCurrentUserHasLiked());
-        mav.addObject("isFollowed",moovieListCard.isCurrentUserHasFollowed());
-        mav.addObject("likedCount",moovieListCard.getLikeCount());
         mav.addObject("listOwner",moovieListCard.getUsername());
         mav.addObject("orderBy", orderBy);
         mav.addObject("publicType",MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());

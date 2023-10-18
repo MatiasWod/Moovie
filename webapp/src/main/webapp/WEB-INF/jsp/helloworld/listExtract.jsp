@@ -83,7 +83,7 @@
                     <form action="${pageContext.request.contextPath}/like" method="POST">
                         <input type="hidden" name="listId" value="${moovieList.moovieListId}"/>
                         <c:choose>
-                            <c:when test="${isLiked}">
+                            <c:when test="${moovieList.currentUserHasLiked}">
                                 <button type="submit" class="btn btn-style"><i
                                         class="bi bi-hand-thumbs-up-fill"></i><spring:message code="listExtract.liked" arguments="${likedCount}"/>
                                 </button>
@@ -100,7 +100,7 @@
                     <form action="${pageContext.request.contextPath}/followList" method="POST">
                         <input type="hidden" name="listId" value="${moovieList.moovieListId}"/>
                         <c:choose>
-                            <c:when test="${isFollowed}">
+                            <c:when test="${moovieList.currentUserHasFollowed}">
                                 <button type="submit" class="btn btn-style2"><i class="bi bi-bell-fill"></i> <spring:message code="listExtract.following"/>
                                 </button>
                             </c:when>
