@@ -61,7 +61,7 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
 
     @Override
     public List<Review> getReviewsByMediaId(int currentUserId, int mediaId, int size, int pageNumber) {
-        StringBuilder sql = new StringBuilder("SELECT *, ");
+        StringBuilder sql = new StringBuilder("SELECT r.*,media.name,media.posterpath,users.username, ");
         ArrayList<Object> args = new ArrayList<>();
 
         sql.append(" (SELECT COUNT(*) FROM reviewsLikes rl WHERE r.reviewid = rl.reviewid) AS reviewLikes, ");
