@@ -88,10 +88,25 @@
             </h5>
 
             <!-- Ratings -->
-            <h1>
-                <i class="bi bi-star-fill"></i>
-                ${media.tmdbRating}
+            <div>
+
+                <h1 class="d-flex flex-row align-items-center">
+                    <div data-bs-toggle="popover" data-bs-trigger="hover"
+                         data-bs-content="<spring:message code="details.popoverMoovieRating"/>">
+                        <i class="bi bi-star-fill"></i>
+                        ${media.tmdbRating}
+                    </div>
+                    <c:if test="${media.voteCount > 0}">
+                        <div data-bs-toggle="popover" data-bs-trigger="hover"
+                             data-bs-content="<spring:message code="details.popoverUserRating"/>">
+                            <span style="margin: 0 5px;">•</span>
+                            <i class="bi bi-star"></i>${media.totalRating}
+                        </div>
+                    </c:if>
             </h1>
+
+
+            </div>
             <!-- Watch it on -->
             <div class="d-flex flex-row align-items-center">
                 <div class="providers-container" style="max-width: 80%; overflow-x: auto; max-height: 200px;">
@@ -460,3 +475,7 @@
 </html>
 
 <script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=84"></script>
+<script>
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+</script>

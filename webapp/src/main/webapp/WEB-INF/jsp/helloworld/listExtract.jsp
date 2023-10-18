@@ -2,6 +2,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="sprng" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -123,6 +124,7 @@
                         <option ${'name' == param.orderBy ? 'selected' : ''} value="name"><spring:message code="listExtract.orderByTitle"/></option>
                         <option ${'type' == param.orderBy ? 'selected' : ''} value="type"><spring:message code="listExtract.orderByType"/></option>
                         <option ${'tmdbrating' == param.orderBy ? 'selected' : ''} value="tmdbrating"><spring:message code="listExtract.orderByScore"/></option>
+                        <option ${'totalrating' == param.orderBy ? 'selected' : ''} value="totalrating"><spring:message code="listExtract.orderByUsersScore"/> </option>
                         <option ${'releasedate' == param.orderBy ? 'selected' : ''} value="releasedate"><spring:message code="listExtract.orderByReleaseDate"/></option>
                     </select>
                     <input type="hidden" name="order" id="sortOrderInput" value="${param.order =='desc'? 'desc':'asc'}">
@@ -180,6 +182,7 @@
             <th scope="col"><spring:message code="listExtract.orderByTitle"/></th>
             <th scope="col"><spring:message code="listExtract.orderByType"/></th>
             <th scope="col"><spring:message code="listExtract.orderByScore"/></th>
+            <th scope="col"><spring:message code="listExtract.orderByUsersScore"/></th>
             <th scope="col"><spring:message code="listExtract.orderByReleaseDate"/></th>
             <th scope="col" style="width: 50px"></th>
         </tr>
@@ -220,6 +223,19 @@
 </td>
 <!-- Score -->
 <td>${mediaList[loop.index].tmdbRating}<i class="bi bi-star-fill" style="margin-left: 5px"></i>
+</td>
+<!--User Score -->
+<td>
+    <c:choose>
+<c:when test="${mediaList[loop.index].voteCount>0}">
+${mediaList[loop.index].totalRating}<i class="bi bi-star" style="margin-left: 5px"></i>
+</c:when>
+        <c:otherwise>
+            <span data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.noUsersRatingsMessage"/>">
+            N/A<i class="bi bi-star" style="margin-left: 5px"></i>
+                </span>
+        </c:otherwise>
+    </c:choose>
 </td>
 <td>
     <span>${mediaList[loop.index].releaseDate}</span>
