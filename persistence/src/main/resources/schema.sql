@@ -4,9 +4,8 @@ CREATE TABLE IF NOT EXISTS users (
     email                           VARCHAR(255) UNIQUE NOT NULL,
     username                        VARCHAR(30) UNIQUE NOT NULL,
     password                        TEXT NOT NULL,
-    role                            INTEGER NOT NULL,
+    role                            INTEGER NOT NULL
 
-    CONSTRAINT valid_email_address  CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[A-Za-z]{2,}$')
 );
 
 --MoovieLists

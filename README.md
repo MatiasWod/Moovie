@@ -18,6 +18,7 @@ Java 8 y la metodologia Scrum
 - Moderador:
   - username: pawmod
   - password: pass12
-- Cuenta Banneada:
-  - username:
-  - password:
+
+Actualizar la bd descomentando
+en el WebConfig la linea 79 (dbp.addScript(mediaSql);)
+o correr el archivo media.sql
