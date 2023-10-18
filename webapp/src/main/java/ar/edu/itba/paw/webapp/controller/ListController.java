@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 
+import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.*;
@@ -11,6 +12,7 @@ import ar.edu.itba.paw.webapp.form.CreateListForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -154,6 +156,7 @@ public class ListController {
             mav.addObject("watchedCount",0);
         }
         mav.addObject("listCount",mediaCountForMoovieList);
+
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
         mav.addObject("isFollowed",moovieListCard.isCurrentUserHasFollowed());
@@ -205,15 +208,13 @@ public class ListController {
                                               @RequestParam(value="currentPageNumber") final int currentPageNumber){
 
         try {
-            User currentUser = userService.getInfoOfMyUser();
-            if (!currentUser.getUsername().equals(moovieListService.getMoovieListCardById(listId).getUsername())) {
-                return new ModelAndView("helloworld/404");
-            }
+            moovieListService.updateMoovieListOrder(listId,currentPageNumber,toPrevArray,currentArray,toNextArray);
+            return new ModelAndView("redirect:/list/" + listId);
+        }catch (InvalidAccessToResourceException e){
+            return new ModelAndView("helloworld/404").addObject("extrainfo", "Can't modify list that are not your own");
         } catch (Exception e) {
             return new ModelAndView("helloworld/404");
         }
-        moovieListService.updateMoovieListOrder(listId,currentPageNumber,toPrevArray,currentArray,toNextArray);
-        return new ModelAndView("redirect:/list/" + listId);
     }
 
 
@@ -275,26 +276,39 @@ public class ListController {
         if (errors.hasErrors()) {
             return createList(null, null, null, null, null, null, 1, form);
         }
-        MoovieList list = null;
+
         try {
-            list = moovieListService.createMoovieListWithContent(form.getListName(), MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), form.getListDescription(), form.getMediaIdsList());
+            int listId = moovieListService.createMoovieListWithContent(form.getListName(), MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), form.getListDescription(), form.getMediaIdsList()).getMoovieListId();
+            return new ModelAndView("redirect:/list/" + listId);
+        }catch (DuplicateKeyException e){
+            redirectAttributes.addFlashAttribute("errorMessage", "Error creating list, already have a list with same name");
+            return new ModelAndView("redirect:/createList");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error creating list");
             return new ModelAndView("redirect:/createList");
         }
-        int id = list.getMoovieListId();
-        return new ModelAndView("redirect:/list/" + id);
+
     }
 
     @RequestMapping(value = "/like", method = RequestMethod.POST)
     public ModelAndView putLike(@RequestParam("listId") int listId) {
-        moovieListService.likeMoovieList(listId);
+        try{
+            moovieListService.likeMoovieList(listId);
+        } catch(Exception e){
+            //Just reload the page
+            return new ModelAndView("redirect:/list/" + listId);
+        }
         return new ModelAndView("redirect:/list/" + listId);
     }
 
     @RequestMapping(value = "/followList", method = RequestMethod.POST)
     public ModelAndView followList(@RequestParam("listId") int listId) {
-        moovieListService.followMoovieList(listId);
+        try{
+            moovieListService.followMoovieList(listId);
+        } catch(Exception e){
+            //Just reload the page
+            return new ModelAndView("redirect:/list/" + listId);
+        }
         return new ModelAndView("redirect:/list/" + listId);
     }
 

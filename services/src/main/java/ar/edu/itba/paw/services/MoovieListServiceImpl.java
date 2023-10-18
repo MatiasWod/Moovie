@@ -11,6 +11,7 @@ import ar.edu.itba.paw.persistence.MoovieListDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -107,7 +108,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     public List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , String orderBy, String order, int size, int pageNumber) {
         if(type == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.getType() || type == MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType()){
             if(!userService.getInfoOfMyUser().getUsername().equals(ownerUsername)){
-                throw new InvalidAccessToResourceException("Need to be owner to acces thr private list of this user");
+                throw new InvalidAccessToResourceException("Need to be owner to acces the private list of this user");
             }
         }
         return moovieListDao.getMoovieListCards(search, ownerUsername, type,orderBy,order, size, pageNumber, userService.tryToGetCurrentUserId());
@@ -245,6 +246,11 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Override
     public void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrevPage, int[] currentPage, int[] toNextPage) {
+        User currentUser = userService.getInfoOfMyUser();
+        if (!currentUser.getUsername().equals(getMoovieListCardById(moovieListId).getUsername())) {
+            throw new InvalidAccessToResourceException("User is not owner of the list");
+        }
+
         moovieListDao.updateMoovieListOrder(moovieListId,currentPageNumber, toPrevPage, currentPage, toNextPage);
     }
 
@@ -289,6 +295,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     public void followMoovieList(int moovieListId) {
         int userId = userService.tryToGetCurrentUserId();
         MoovieListCard mlc = getMoovieListCardById(moovieListId);
+
         if(mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType()) {
             if (mlc.isCurrentUserHasFollowed()) {
                 moovieListDao.removeFollowMoovieList(userId, moovieListId);
