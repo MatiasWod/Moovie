@@ -30,7 +30,7 @@ public class EmailConfig {
         javaMailSender.setPort(587);//ver qué puerto usamos
 
         javaMailSender.setUsername("pawmoovie@gmail.com");
-        javaMailSender.setPassword("vkzg wmga omhq gead");//TODO cambiar
+        javaMailSender.setPassword("vkzg wmga omhq gead");
 
         Properties properties = javaMailSender.getJavaMailProperties();
         properties.put("mail.transport.protocol", "smtp");
