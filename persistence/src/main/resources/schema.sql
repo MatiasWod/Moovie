@@ -33,8 +33,6 @@ CREATE TABLE IF NOT EXISTS media(
     posterPath                     VARCHAR(255),
     trailerLink                    VARCHAR(255),
     tmdbRating                     FLOAT NOT NULL,
-    totalRating                    INTEGER NOT NULL,
-    voteCount                      INTEGER NOT NULL,
     status                         VARCHAR(20) NOT NULL
 );
 

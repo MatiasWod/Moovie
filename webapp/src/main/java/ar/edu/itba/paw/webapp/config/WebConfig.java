@@ -82,7 +82,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         final ResourceDatabasePopulator dbp =  new ResourceDatabasePopulator();
         dbp.addScript(schemaSql);
         dbp.addScript(mediaSql);
-        dbp.addScript(corrections);
         dbp.addScript(functions);
         return dbp;
     }
@@ -113,7 +112,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public DataSource dataSource(){
         final SimpleDriverDataSource ds = new SimpleDriverDataSource();
         ds.setDriverClass(org.postgresql.Driver.class);
-        ds.setUrl("jdbc:postgresql://localhost:5432/paw");
+        ds.setUrl("jdbc:postgresql://localhost:5433/paw");
         ds.setUsername("postgres");
         ds.setPassword("admin");
         return ds;
