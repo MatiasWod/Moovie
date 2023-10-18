@@ -72,7 +72,6 @@ public class UserController {
 
     @RequestMapping(value = "/register/confirm")
     public ModelAndView confirmRegistration(@RequestParam("token") final String token, RedirectAttributes redirectAttributes) {
-        LOGGER.info("Attempting to auto-login.");
         try {
             Token verificationToken = null;
             if (verificationTokenService.getToken(token).isPresent()){
@@ -103,7 +102,6 @@ public class UserController {
 
 
 
-    //TODO
     @RequestMapping(value = "/register/tokentimedout")
     public ModelAndView tokenTimedOut(@RequestParam("token") final String token) {
         ModelAndView mav = new ModelAndView("helloworld/tokenTimedOut");

@@ -9,6 +9,8 @@ import ar.edu.itba.paw.models.User.UserRoles;
 import ar.edu.itba.paw.persistence.MoovieListDao;
 import ar.edu.itba.paw.persistence.UserDao;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -38,6 +40,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private VerificationTokenService verificationTokenService;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+
 
     //REGSITRATION
 
@@ -46,6 +50,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String createUser(String username, String email, String password){
         if(userDao.findUserByUsername(username).isPresent()){
+            LOGGER.info("Failed to created user with username: {}", username);
             throw new UnableToCreateUserException("username_taken");
         }
         Optional<User> aux = userDao.findUserByEmail(email);
@@ -55,12 +60,14 @@ public class UserServiceImpl implements UserService {
                 User user = createUserFromUnregistered(username, email, password);
                 String token = verificationTokenService.createVerificationToken(user.getUserId());
                 sendVerificationEmail(email,username,token);
+                LOGGER.info("Succesfuly created user with username: {}", username);
                 return token;
             } else{
                 throw new UnableToCreateUserException("email_taken");
             }
         }
         User user = userDao.createUser(username, email, passwordEncoder.encode(password));
+        LOGGER.info("Succesfuly created user with username: {}", username);
         String token = verificationTokenService.createVerificationToken(user.getUserId());
         sendVerificationEmail(email,username,token);
         return token;
@@ -92,6 +99,8 @@ public class UserServiceImpl implements UserService {
         }
         moovieListDao.createMoovieList(token.getUserId(), "Watched" , MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType() , "" );
         moovieListDao.createMoovieList(token.getUserId(), "Watchlist", MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),  "" );
+
+        LOGGER.info("Succesfuly confirmed user with userid: {}", token.getUserId());
         return isValidToken;
     }
 
@@ -172,6 +181,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void setProfilePicture(MultipartFile picture) {
         int uid = getInfoOfMyUser().getUserId();
+
         if(!picture.isEmpty()){
             if (!(picture.getContentType() != null && picture.getContentType().startsWith("image/"))) {
                 throw new InvalidTypeException("File is not of type image");
@@ -180,8 +190,10 @@ public class UserServiceImpl implements UserService {
                 byte[] image = IOUtils.toByteArray(picture.getInputStream());
                 if(userDao.hasProfilePicture(uid)){
                     userDao.updateProfilePicture( getInfoOfMyUser().getUserId() , image);
+                    LOGGER.info("Succesfully set the profile picture for user with userid : {} ", uid);
                     return;
                 }
+                LOGGER.info("Succesfully set the profile picture for user with userid : {} ", uid);
                 userDao.setProfilePicture( getInfoOfMyUser().getUserId() , image);
             }
             catch (IOException e){
