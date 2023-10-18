@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS media(
     name                           VARCHAR(255) NOT NULL,
     originalLanguage               VARCHAR(2),
     adult                          BOOLEAN NOT NULL,
-    releaseDate                    DATE NOT NULL,
+    releaseDate                    DATE,
     overview                       TEXT NOT NULL,
     backdropPath                   VARCHAR(255),
     posterPath                     VARCHAR(255),
