@@ -1,3 +1,4 @@
+import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.UserDaoJdbcImpl;
 import config.TestConfig;
@@ -8,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -54,6 +57,24 @@ public class UserDaoJdbcImplTest {
         assertTrue(user.isPresent());
         assertEquals(user.get().getUsername(), EXISTING_USERNAME);
         assertEquals(user.get().getEmail(), EXISTING_EMAIL);
+    }
+
+    @Test
+    public void testGetProfileByUsername(){
+        final Optional<Profile> profile = userDaoJdbc.getProfileByUsername(EXISTING_USERNAME);
+
+        assertTrue(profile.isPresent());
+        assertEquals(profile.get().getUsername(),EXISTING_USERNAME);
+        assertEquals(profile.get().getEmail(),EXISTING_EMAIL);
+    }
+
+    @Test
+    public void testChangeUserRole(){
+        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"users",String.format("userId = %d AND role = %d",
+                EXISTING_USER_ID,1)));
+        userDaoJdbc.changeUserRole(EXISTING_USER_ID,2);
+        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"users",String.format("userId = %d AND role = %d",
+                EXISTING_USER_ID,2)));
     }
 
 }

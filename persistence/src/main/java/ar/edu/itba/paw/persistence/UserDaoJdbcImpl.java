@@ -128,7 +128,7 @@ public class UserDaoJdbcImpl implements UserDao{
 
     @Override
     public Optional<Profile> getProfileByUsername(String username) {
-        StringBuilder sql = new StringBuilder("SELECT * , ");
+        StringBuilder sql = new StringBuilder("SELECT u.userid,u.email,u.username,u.role, ");
         ArrayList<Object> args = new ArrayList<>();
 
         sql.append(" (SELECT COUNT(*) FROM moovieLists ml WHERE ml.userId = u.userId AND ml.type = 1) AS moovieListCount, ");
