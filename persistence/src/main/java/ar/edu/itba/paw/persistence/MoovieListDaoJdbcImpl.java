@@ -387,7 +387,8 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
 
     @Override
-    public List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, int userid ,String featuredListOrder, String orderBy, String sortOrder ,int size, int pageNumber){
+    public List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, int userid ,String featuredListOrder, String orderBy,
+                                                                String sortOrder ,int size, int pageNumber){
         StringBuilder sql = new StringBuilder("SELECT * FROM (SELECT m.*,  ");
 
         ArrayList<Object> args = new ArrayList<>();
@@ -410,14 +411,19 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         }
 
         sql.append(" GROUP BY m.mediaId ");
-
-        if(orderBy!=null && !orderBy.isEmpty() ){
-            sql.append(" ORDER BY ").append(featuredListOrder).append(" DESC LIMIT 100) AS topRated ORDER BY ").append(orderBy).append(" ").append(sortOrder);
+        sql.append(" ORDER BY ").append(featuredListOrder);
+        if(orderBy!=null && !orderBy.isEmpty() && !orderBy.equals("customorder")){
+            sql.append(" DESC LIMIT 100) AS topRated ORDER BY ").append(orderBy).append(" ").append(sortOrder);
+            sql.append(" LIMIT ? OFFSET ? ;");
         }
-        sql.append(" LIMIT ? OFFSET ? ;");
+        else if(orderBy!=null && !orderBy.isEmpty() && orderBy.equals("customorder")){
+            sql.append(" ").append(sortOrder).append(" LIMIT 100) as aux LIMIT ? OFFSET ? ");
+        }
+        else {
+            sql.append(" DESC LIMIT 100) as aux LIMIT ? OFFSET ? ;");
+        }
         args.add(size);
-        args.add(pageNumber*size);
-
+        args.add(pageNumber * size);
         // Execute the query
         return jdbcTemplate.query(sql.toString(), args.toArray(), MOOVIE_LIST_CONTENT_ROW_MAPPER);
     }
@@ -431,10 +437,11 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         //Add the part of the query that checks if its watched by its owner
         sql.append(" (CASE WHEN EXISTS ( SELECT 1 FROM moovielists ml INNER JOIN moovieListsContent mlc2 ON ml.moovielistid = mlc2.moovielistid  ");
         sql.append(" WHERE m.mediaId = mlc2.mediaId AND ml.name = 'Watched' AND ml.userid = ? ) THEN true ELSE false END) AS isWatched, ");
-        sql.append("(SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = m.mediaId) AS genres, ");
-        sql.append("(SELECT ARRAY_AGG(p.providerName) FROM providers p WHERE p.mediaId = m.mediaId) AS providerNames, ");
-        sql.append("(SELECT ARRAY_AGG(p.logoPath) FROM providers p WHERE p.mediaId = m.mediaId) AS providerLogos ");
-        sql.append("FROM media m ");
+        sql.append(" (SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = m.mediaId) AS genres, ");
+        sql.append(" (SELECT ARRAY_AGG(p.providerName) FROM providers p WHERE p.mediaId = m.mediaId) AS providerNames, ");
+        sql.append(" (SELECT ARRAY_AGG(p.logoPath) FROM providers p WHERE p.mediaId = m.mediaId) AS providerLogos, ");
+        sql.append(" AVG(rating) AS totalRating, COUNT(rating) AS votecount ");
+        sql.append(" FROM media m LEFT JOIN reviews r ON m.mediaid = r.mediaid");
         args.add(userid);
         // If type is 0 or 1 it's specifically movies or TVs, else it's not restricted
         if (mediaType == MediaTypes.TYPE_MOVIE.getType() || mediaType == MediaTypes.TYPE_TVSERIE.getType()) {
@@ -443,10 +450,18 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         } else {
             sql.append(" WHERE type IS NOT NULL ");
         }
-        if(orderBy!=null && !orderBy.isEmpty() ){
-            sql.append(" ORDER BY ").append(featuredListOrder).append(" DESC LIMIT 100) AS topRated ORDER BY ").append(orderBy).append(" ").append(sortOrder);
+        sql.append(" GROUP BY m.mediaId, r.reviewid ");
+        sql.append(" ORDER BY ").append(featuredListOrder);
+        if(orderBy!=null && !orderBy.isEmpty() && !orderBy.equals("customorder")){
+             sql.append(" DESC LIMIT 100) AS topRated ORDER BY ").append(orderBy).append(" ").append(sortOrder);
+             sql.append(" LIMIT ? OFFSET ?) AS featured WHERE featured.isWatched = true ");
         }
-        sql.append(" LIMIT ? OFFSET ?) AS featured WHERE featured.isWatched = true ;");
+        else if(orderBy!=null && !orderBy.isEmpty() && orderBy.equals("customorder")){
+            sql.append(" ").append(sortOrder).append(" LIMIT 100) AS topRated LIMIT ? OFFSET ?) AS featured WHERE featured.isWatched = true ;");
+        }
+        else {
+            sql.append(" DESC LIMIT 100) AS topRated LIMIT ? OFFSET ?) AS featured WHERE featured.isWatched = true ;");
+        }
         args.add(size);
         args.add(pageNumber*size);
 

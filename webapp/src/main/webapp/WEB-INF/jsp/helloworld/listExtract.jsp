@@ -26,7 +26,7 @@
             <h1 style="font-size: 60px; font-weight: bold;"><c:out value="${moovieList.name}"/></h1>
             <h3><c:out value="${moovieList.description}"/></h3>
             <c:if test="${param.publicList == 'true'}">
-                <h4 style="color: ghostwhite;">by
+                <h4 style="color: ghostwhite;"><spring:message code="listExtract.by"/>
                     <a style="text-decoration: none; color: inherit;" href="${pageContext.request.contextPath}/profile/${listOwner}">
                         <c:out value="${listOwner}"/>
                     </a>

@@ -11,6 +11,7 @@ import ar.edu.itba.paw.persistence.UserDao;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -205,7 +206,7 @@ public class UserServiceImpl implements UserService {
         final Map<String,Object> mailMap = new HashMap<>();
         mailMap.put("username",username);
         mailMap.put("token",token);
-        final String subject = messageSource.getMessage("email.confirmation.subject",null, Locale.getDefault());
+        final String subject = messageSource.getMessage("email.confirmation.subject",null, LocaleContextHolder.getLocale());
         emailService.sendEmail(email,subject,"confirmationMail.html",mailMap);
     }
 

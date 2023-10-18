@@ -221,8 +221,8 @@ public class ListController {
     @RequestMapping(value = "/featuredList/{list}")
     public ModelAndView featuredList(
                                      @PathVariable("list") final String list,
-                                     @RequestParam(value="orderBy", defaultValue = "tmdbRating") final String orderBy,
-                                     @RequestParam(value="order", defaultValue = "desc") final String order,
+                                     @RequestParam(value="orderBy",required = false) final String orderBy,
+                                     @RequestParam(value="order",required = false) final String order,
                                      @RequestParam(value = "page",defaultValue = "1") final int pageNumber){
         final ModelAndView mav = new ModelAndView("helloworld/moovieList");
         int pagesSize= PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
