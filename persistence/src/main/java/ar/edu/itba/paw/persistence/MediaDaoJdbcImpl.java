@@ -316,6 +316,9 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
     //Following functions needed in order to be safe of sql injection
     private boolean isOrderValid( String order) {
+        if(order==null || order.isEmpty()){
+            return false;
+        }
         String[] validOrders = {"name", "tmdbrating", "releasedate", "type", "totalrating"};
         for (String element : validOrders) {
             if (element.toLowerCase().equals(order)) {
@@ -325,6 +328,9 @@ public class MediaDaoJdbcImpl implements MediaDao {
         return false;
     }
     private boolean isSortOrderValid(String so){
+        if(so==null || so.isEmpty()){
+            return false;
+        }
         if(so.toLowerCase().equals("asc") || so.toLowerCase().equals("desc")){
             return true;
         }

@@ -452,9 +452,12 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
             sql.append(" WHERE type IS NOT NULL ");
         }
         sql.append(" GROUP BY m.mediaId, r.reviewid ");
-        sql.append(" ORDER BY ").append(featuredListOrder);
+
+        if(isOrderValid(featuredListOrder)){
+            sql.append(" ORDER BY ").append(featuredListOrder).append(" DESC LIMIT 100) ");
+        }
         if(isOrderValid(orderBy) && isSortOrderValid(sortOrder) && !orderBy.equals("customorder")){
-            sql.append(" DESC LIMIT 100) AS topRated ORDER BY ").append(orderBy).append(" ").append(sortOrder);
+            sql.append(" AS topRated ORDER BY ").append(orderBy).append(" ").append(sortOrder);
             sql.append(" LIMIT ? OFFSET ? ;");
         }
         else if(isOrderValid(orderBy) && isSortOrderValid(sortOrder) && orderBy.equals("customorder")){
@@ -518,9 +521,8 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     @Override
     public void deleteMediaFromMoovieList(int moovieListId, int mediaId){
-        String sqlDel = "DELETE FROM moovieListsContent " +
-                " WHERE moovieListId = " + moovieListId + " AND moovieListsContent.mediaId = " + mediaId ;
-        jdbcTemplate.execute(sqlDel);
+        String sqlDel = "DELETE FROM moovieListsContent  WHERE moovieListId = ? AND moovieListsContent.mediaId = ?" ;
+        jdbcTemplate.update(sqlDel, moovieListId, mediaId);
     }
 
     @Override
@@ -538,8 +540,8 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     @Override
     public void deleteMoovieList(int moovieListId) {
-        String sqlDel = "DELETE FROM moovieLists WHERE moovieListId = " + moovieListId;
-        jdbcTemplate.execute(sqlDel);
+        String sqlDel = "DELETE FROM moovieLists WHERE moovieListId = ?" ;
+        jdbcTemplate.update(sqlDel, moovieListId);
     }
 
     @Override
@@ -554,7 +556,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     @Override
     public void removeLikeMoovieList(int userId, int moovieListId) {
-        String sql = "DELETE FROM moovielistslikes WHERE userid=? AND moovieListId = ?";
+        String sql = "DELETE FROM moovielistslikes WHERE userid= ? AND moovieListId = ?";
         jdbcTemplate.update( sql , new Object[]{userId, moovieListId} );
     }
 
@@ -562,7 +564,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     @Override
     public void removeFollowMoovieList(int userId, int moovieListId) {
         String sql = "DELETE FROM moovielistsfollows WHERE userid=? AND moovieListId = ?";
-        jdbcTemplate.update( sql , new Object[]{userId, moovieListId} );
+        jdbcTemplate.update( sql , userId, moovieListId );
     }
 
     @Override
@@ -576,6 +578,9 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     //Following functions needed in order to be safe of sql injection
     private boolean isOrderValid( String order) {
+        if(order==null || order.isEmpty()){
+            return false;
+        }
         String[] validOrders = {"name", "tmdbrating", "likeCount", "customorder", "moovielistid", "releasedate", "type", "totalrating"};
         for (String element : validOrders) {
             if (element.equals(order.toLowerCase())) {
@@ -585,6 +590,9 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         return false;
     }
     private boolean isSortOrderValid(String so){
+        if(so==null || so.isEmpty()){
+            return false;
+        }
         if(so.toLowerCase().equals("asc") || so.toLowerCase().equals("desc")){
             return true;
         }
