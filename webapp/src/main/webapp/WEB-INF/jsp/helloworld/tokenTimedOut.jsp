@@ -11,7 +11,7 @@
             <div>
                 <p class="text"><spring:message code="email.timedOutToken"/></p>
                 <br>
-                <a href="<c:url value="/register/resendemail?token=${token}"/>"><spring:message
+                <a href="<c:url value="/register/resendEmail?token=${token}"/>"><spring:message
                         code="email.resendEmail"/></a>
             </div>
         </div>

@@ -28,6 +28,7 @@
     <commons-fileupload.version>1.4</commons-fileupload.version>
     <thymeleaf.version>3.0.11.RELEASE</thymeleaf.version>
     <javax-mail.version>1.4.7</javax-mail.version>
+    <javax-servlet.version>2.5</javax-servlet.version>
   </properties>
 
   <modules>
@@ -133,7 +134,7 @@
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>
-        <version>2.5</version>
+        <version>${javax-servlet.version}</version>
         <scope>provided</scope>
       </dependency>
       <dependency>

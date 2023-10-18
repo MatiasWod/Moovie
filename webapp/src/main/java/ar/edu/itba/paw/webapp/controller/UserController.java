@@ -63,15 +63,6 @@ public class UserController {
         return modelAndView;
     }
 
-    /*@RequestMapping("/mandarMail")
-    public ModelAndView mandarmail(){
-        final Map<String,Object> mailMap = new HashMap<>();
-        emailService.sendEmail("iarnott@itba.edu.ar","Your moovie list"+ "LIST" + " has been deleted", "confirmationMail.html", mailMap);
-        emailService.sendEmail("jurosauer@itba.edu.ar","Your moovie list"+ "LIST" + " has been deleted", "confirmationMail.html", mailMap);
-        return new ModelAndView("redirect:/");
-    }*/
-
-
     @RequestMapping(value = "/register/confirm")
     public ModelAndView confirmRegistration(@RequestParam("token") final String token, RedirectAttributes redirectAttributes) {
         try {

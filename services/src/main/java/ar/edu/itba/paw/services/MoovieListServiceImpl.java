@@ -3,6 +3,8 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
 import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.exceptions.UserNotLoggedException;
+import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.User.User;
@@ -200,6 +202,17 @@ public class MoovieListServiceImpl implements MoovieListService{
         MoovieList ml = getMoovieListById(moovieListId);
         User currentUser = userService.getInfoOfMyUser();
         if(ml.getUserId() == currentUser.getUserId()){
+            List<User> followers = moovieListDao.getMoovieListFollowers(moovieListId);
+            followers.forEach( user -> {
+                Map<String,Object> map = new HashMap<>();
+                map.put("username",user.getUsername());
+                map.put("moovieListId",moovieListId);
+                map.put("moovieListName",ml.getName());
+                emailService.sendEmail(user.getEmail(),
+                        "A Moovie List you follow has been Updated",
+                        "mediaAddedToFollowedList.html",
+                        map);
+            });
             return moovieListDao.insertMediaIntoMoovieList(moovieListId, mediaIdList);
         }
         else{

@@ -4,6 +4,7 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
+import ar.edu.itba.paw.models.User.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,7 @@ public interface MoovieListDao {
     Optional<MoovieListCard> getMoovieListCardById(int moovieListId, int currentUserId);
     List<MoovieListCard> getLikedMoovieListCards(int userId,int type, int size, int pageNumber, int currentUserId);
     List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber, int currentUserId);
+    List<User> getMoovieListFollowers(int moovieListId);
     int getFollowedMoovieListCardsCount(int userId, int type);
 
     List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber, int currentUserId);
