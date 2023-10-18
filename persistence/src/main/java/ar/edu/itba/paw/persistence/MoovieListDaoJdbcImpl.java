@@ -2,7 +2,9 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.MediaTypes;
-import ar.edu.itba.paw.models.MoovieList.*;
+import ar.edu.itba.paw.models.MoovieList.MoovieList;
+import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
+import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.User.User;
 import org.springframework.dao.DataIntegrityViolationException;

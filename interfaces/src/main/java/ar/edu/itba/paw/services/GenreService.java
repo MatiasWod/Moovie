@@ -1,7 +1,5 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.Genre.Genre;
-
 import java.util.List;
 
 public interface GenreService {

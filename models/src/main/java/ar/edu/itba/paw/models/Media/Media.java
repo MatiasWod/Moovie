@@ -2,8 +2,6 @@ package ar.edu.itba.paw.models.Media;
 
 import ar.edu.itba.paw.models.Provider.Provider;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;

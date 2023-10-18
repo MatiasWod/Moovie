@@ -1,8 +1,5 @@
 package ar.edu.itba.paw.models.MoovieList;
 
-import ar.edu.itba.paw.models.User.User;
-
-
 public class MoovieList {
     private final int moovieListId;
     private final int userId;

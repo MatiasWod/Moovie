@@ -1,11 +1,12 @@
 package ar.edu.itba.paw.webapp.form.annotations;
 
+import ar.edu.itba.paw.webapp.form.constraints.FieldsPasswordMustMatchConstraint;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import ar.edu.itba.paw.webapp.form.constraints.FieldsPasswordMustMatchConstraint;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;

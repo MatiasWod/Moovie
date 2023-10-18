@@ -1,7 +1,5 @@
 package ar.edu.itba.paw.models.MoovieList;
 
-import java.sql.Array;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
