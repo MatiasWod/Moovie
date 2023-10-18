@@ -361,9 +361,9 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         //Add the part of the query that checks if its watched by its owner
         sql.append(" (CASE WHEN EXISTS ( SELECT 1 FROM moovielists ml INNER JOIN moovieListsContent mlc2 ON ml.moovielistid = mlc2.moovielistid  ");
         sql.append(" WHERE m.mediaId = mlc2.mediaId AND ml.name = 'Watched' AND ml.userid = ? ) THEN true ELSE false END) AS isWatched,");
-        sql.append("(SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = m.mediaId) AS genres, ");
-        sql.append("(SELECT ARRAY_AGG(p) FROM providers p WHERE p.mediaId = m.mediaId) AS providers, ");
-        sql.append("AVG(r.rating) AS totalRating, COUNT(r.rating) AS votecount ");
+        sql.append(" (SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = m.mediaId) AS genres, ");
+        sql.append(" (SELECT ARRAY_AGG(p) FROM providers p WHERE p.mediaId = m.mediaId) AS providers, ");
+        sql.append(" COALESCE(AVG(r.rating),0) AS totalRating, COUNT(r.rating) AS votecount ");
 
         sql.append(" FROM moovieListsContent mlc ");
         args.add(userid);
@@ -396,9 +396,9 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         //Add the part of the query that checks if its watched by its owner
         sql.append(" (CASE WHEN EXISTS ( SELECT 1 FROM moovielists ml INNER JOIN moovieListsContent mlc2 ON ml.moovielistid = mlc2.moovielistid  ");
         sql.append(" WHERE m.mediaId = mlc2.mediaId AND ml.name = 'Watched' AND ml.userid = ? ) THEN true ELSE false END) AS isWatched, ");
-        sql.append("(SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = m.mediaId) AS genres, ");
-        sql.append("(SELECT ARRAY_AGG(p) FROM providers p WHERE p.mediaId = m.mediaId) AS providers, ");
-        sql.append("AVG(rating) AS totalRating, COUNT(rating) AS votecount ");
+        sql.append(" (SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = m.mediaId) AS genres, ");
+        sql.append(" (SELECT ARRAY_AGG(p) FROM providers p WHERE p.mediaId = m.mediaId) AS providers, ");
+        sql.append(" COALESCE(AVG(rating),0) AS totalRating, COUNT(rating) AS votecount ");
 
         sql.append("FROM media m LEFT JOIN reviews r ON m.mediaid = r.mediaid");
         args.add(userid);
