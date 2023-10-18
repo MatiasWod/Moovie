@@ -127,8 +127,8 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
 
     @Override
     public void deleteReview(int reviewId) {
-        String sqlDel = "DELETE FROM reviews WHERE reviewId = " + reviewId;
-        jdbcTemplate.execute(sqlDel);
+        String sqlDel = "DELETE FROM reviews WHERE reviewId = ? " ;
+        jdbcTemplate.execute(sqlDel, reviewId);
     }
 
     @Override
@@ -146,11 +146,8 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
 
     @Override
     public void removeLikeReview(int userId, int reviewId) {
-        StringBuilder sqlDel = new StringBuilder( "DELETE FROM reviewsLikes WHERE reviewId = ");
-        sqlDel.append(reviewId);
-        sqlDel.append(" AND userId = ");
-        sqlDel.append(userId);
-        sqlDel.append(" ; ");
-        jdbcTemplate.execute(sqlDel.toString());
+        StringBuilder sqlDel = new StringBuilder( "DELETE FROM reviewsLikes WHERE reviewId = ? ");
+        sqlDel.append(" AND userId =  ?;");
+        jdbcTemplate.update(sqlDel.toString(),reviewId,userId);
     }
 }
