@@ -142,6 +142,8 @@ public class MediaController {
         mav.addObject("searchMode", (query != null && !query.isEmpty()));
         int mediaCount;
 
+
+
         if (media.equals("All")){
             mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, credit,  genres, providers,  orderBy, order,   PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
             mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query, credit, genres, providers);
