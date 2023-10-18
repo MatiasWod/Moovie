@@ -23,7 +23,6 @@
 <c:import url="navBar.jsp"/>
 
 <div class="container d-flex flex-column">
-    <%--TODO: test="${nameMedia}"--%>
     <c:if test="${nameMediaFlag}">
         <div class="container d-flex justify-content-between mt-2 p-2">
             <h3><spring:message code="search.results" arguments="${param.query}"/></h3>
@@ -66,7 +65,6 @@
 
     </c:if>
 
-    <%--TODO: test="${creditMedia}"--%>
     <c:if test="${creditMediaFlag}">
         <div class="container d-flex justify-content-between mt-2 p-2">
             <h3><spring:message code="search.credited" arguments="${param.query}"/></h3>
