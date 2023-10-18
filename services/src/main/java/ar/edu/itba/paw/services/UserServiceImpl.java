@@ -23,25 +23,19 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserDao userDao;
-    private final MoovieListDao moovieListDao;
-    private final EmailService emailService;
-
-    private final PasswordEncoder passwordEncoder;
-    private final MessageSource messageSource;
-    private final VerificationTokenService verificationTokenService;
+    @Autowired
+    private UserDao userDao;
+    @Autowired
+    private MoovieListDao moovieListDao;
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
-    public UserServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder, EmailService emailService,
-                           MessageSource messageSource, VerificationTokenService verificationTokenService, MoovieListDao moovieListDao) {
-        this.userDao = userDao;
-        this.passwordEncoder = passwordEncoder;
-        this.emailService = emailService;
-        this.messageSource = messageSource;
-        this.verificationTokenService = verificationTokenService;
-        this.moovieListDao = moovieListDao;
-    }
-
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private MessageSource messageSource;
+    @Autowired
+    private VerificationTokenService verificationTokenService;
 
 
     //REGSITRATION
