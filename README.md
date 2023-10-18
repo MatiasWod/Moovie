@@ -13,11 +13,11 @@ Java 8 y la metodologia Scrum
 ## Credenciales para cada tipo de Usuario
 
 - Usuario comun:
-  - username: 
-  - password:
+  - username: pawuser
+  - password: pass12
 - Moderador:
-  - username:
-  - password:
+  - username: pawmod
+  - password: pass12
 - Cuenta Banneada:
   - username:
   - password:
