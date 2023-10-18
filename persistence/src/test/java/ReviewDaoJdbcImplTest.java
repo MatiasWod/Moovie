@@ -54,7 +54,8 @@ public class ReviewDaoJdbcImplTest {
 
     @Test
     public void testCreateReview(){
-        assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"reviews",String.format("userId = %d AND mediaid = %d",SECOND_EXISTING_USER_ID,SECOND_EXISTING_MEDIA_ID)));
+        assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"reviews",String.format("userId = %d AND mediaid = %d",
+                SECOND_EXISTING_USER_ID,SECOND_EXISTING_MEDIA_ID)));
         reviewDao.createReview(SECOND_EXISTING_USER_ID,SECOND_EXISTING_MEDIA_ID,5,"Amazing movie.");
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"reviews",
                 String.format("userId = %d AND mediaid = %d",SECOND_EXISTING_USER_ID,SECOND_EXISTING_MEDIA_ID)));
