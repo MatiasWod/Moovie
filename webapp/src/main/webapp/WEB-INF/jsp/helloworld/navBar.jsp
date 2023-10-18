@@ -19,12 +19,12 @@
             localStorage.setItem("searchValue", searchInput.value);
         });
 
-        const profileImage = document.getElementById("profile-image");
-        if (profileImage) {
+        const profileImages = document.querySelectorAll(".profile-image");
+        profileImages.forEach(profileImage => {
             profileImage.onerror = function() {
                 profileImage.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
             }
-        }
+        });
 
         links.forEach(link => {
             const href = link.getAttribute("href");
@@ -33,40 +33,34 @@
             }
         });
 
-        const profileImageBig = document.getElementById("profile-image-big");
-        if (profileImageBig) {
-            profileImageBig.onerror = function() {
-                profileImageBig.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
-            }
+        function addHoverableDropdownStyle(dropdownId) {
+            var element = document.getElementById(dropdownId);
+
+            element.addEventListener("click", function() {
+                if (this.getAttribute("aria-expanded") === "true") {
+                    this.classList.add("expanded");
+                } else {
+                    this.classList.remove("expanded");
+                }
+            });
+
+            document.addEventListener("click", function(event) {
+                if (!element.contains(event.target)) {
+                    element.classList.remove("expanded");
+                    element.setAttribute("aria-expanded", "false");
+                }
+            });
         }
 
-        const profileImageAgain = document.getElementById("profile-image-");
-        if (profileImageAgain) {
-            profileImageAgain.onerror = function() {
-                profileImageAgain.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
-            }
+        addHoverableDropdownStyle("dropdownButtonRated");
+        addHoverableDropdownStyle("dropdownButtonPopular");
+        if (document.getElementById("dropdownButtonProfile")){
+            addHoverableDropdownStyle("dropdownButtonProfile");
         }
 
-        const profileImagePreview = document.getElementById("profile-image-preview");
-        if (profileImagePreview) {
-            profileImagePreview.onerror = function() {
-                profileImagePreview.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
-            }
-        }
 
-        const profileImages = document.querySelectorAll(".review-profile-image");
-        profileImages.forEach(profileImage => {
-            profileImage.onerror = function() {
-                profileImage.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
-            }
-        });
 
-        const profileImagesSearch = document.querySelectorAll(".special-pfp-class");
-        profileImagesSearch.forEach(profileImage => {
-            profileImage.onerror = function() {
-                profileImage.src = "${pageContext.request.contextPath}/resources/defaultProfile.jpg";
-            }
-        });
+
     });
 </script>
 
@@ -87,15 +81,17 @@
                     <li class="nav-item">
                         <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/lists"><spring:message code="navBar.browseLists"/></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/createList"><spring:message code="navBar.createList"/></a>
-                    </li>
+                    <sec:authorize access="isAuthenticated()">
+                        <li class="nav-item">
+                            <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/createList"><spring:message code="navBar.createList"/></a>
+                        </li>
+                    </sec:authorize>
                     <li class="nav-item">
                         <div class="d-flex flex-row align-self-left">
                             <div class="collapse navbar-collapse" id="navBarTopRatedDropdown">
                                 <ul class="navbar-nav">
                                     <li class="nav-item dropdown">
-                                        <button class="btn bg-transparent dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <button id="dropdownButtonRated" class="btn bg-transparent customDropdownButton dropdown-toggle" style="color: rgba(0, 0, 0, 0.65);" data-bs-toggle="dropdown" aria-expanded="false">
                                             <spring:message code="navBar.topRated"/>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
@@ -112,7 +108,7 @@
                         <div class="collapse navbar-collapse" id="navBarMostPopularDropdown">
                             <ul class="navbar-nav">
                                 <li class="nav-item dropdown">
-                                    <button class="btn bg-transparent dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <button id="dropdownButtonPopular" class="btn bg-transparent dropdown-toggle customDropdownButton" style="color: rgba(0, 0, 0, 0.65);" data-bs-toggle="dropdown" aria-expanded="false">
                                         <spring:message code="navBar.mostPopular"/>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
@@ -141,13 +137,13 @@
 
                 <div style="margin-left: 15px; margin-right:10px" class="d-flex nav-item justify-content-center">
                         <sec:authorize access="hasRole('ROLE_USER') || hasRole('ROLE_BANNED')">
-                            <sec:authentication property="name" var="username"></sec:authentication>
+                            <sec:authentication property="name" var="username"/>
                             <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
                                 <ul class="navbar-nav">
                                     <li class="nav-item dropdown">
                                         <sec:authorize access="hasRole('ROLE_MODERATOR')"><img src="${pageContext.request.contextPath}/resources/moderator_logo.png" height="50" alt="Moderator logo"></sec:authorize>
-                                        <button class="btn bg-transparent dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <img id="profile-image" style="height: 50px; width: 50px; border:solid black; border-radius: 50%" class="cropCenter" src="${pageContext.request.contextPath}/profile/image/${username}" alt="profile picture"/>
+                                        <button id="dropdownButtonProfile" class="btn bg-transparent dropdown-toggle customDropdownButton" style="color: rgba(0, 0, 0, 0.65);" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <img id="profile-image" style="height: 50px; width: 50px; border:solid black; border-radius: 50%" class="profile-image cropCenter" src="${pageContext.request.contextPath}/profile/image/${username}" alt="profile picture"/>
                                                 <c:url value="${username}"/>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
@@ -171,4 +167,13 @@
     .navbar-nav > .nav-item > .nav-link.active {
         color: green !important;
     }
+
+    .customDropdownButton:hover {
+        color: #000000 !important;
+    }
+
+    .customDropdownButton.expanded {
+        color: green !important;
+    }
+
 </style>

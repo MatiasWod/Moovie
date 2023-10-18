@@ -376,7 +376,7 @@
                                     <div class="d-flex align-items-center">
                                         <a href="${pageContext.request.contextPath}/profile/${review.username}"
                                            style="text-decoration: none; color: inherit;">
-                                            <img class="cropCenter mr-3 review-profile-image rounded-circle"
+                                            <img class="cropCenter mr-3 profile-image rounded-circle"
                                                  style="height:60px;width:60px;border: solid black; border-radius: 50%"
                                                  src="${pageContext.request.contextPath}/profile/image/${review.username}"
                                                  alt="${review.userId} Reviewer Profile"

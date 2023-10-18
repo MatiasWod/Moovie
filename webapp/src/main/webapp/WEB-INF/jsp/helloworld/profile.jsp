@@ -29,11 +29,11 @@
     <div style="align-items: center" class="d-flex flex-column">
         <div class="d-flex container justify-content-center">
             <c:if test="${!isMe}">
-                <img id="profile-image-big" class="cropCenter" style="height:100px;width:100px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/profile/image/${profile.username}" alt="profile pic">
+                <img id="profile-image-big" class="profile-image cropCenter" style="height:100px;width:100px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/profile/image/${profile.username}" alt="profile pic">
             </c:if>
             <c:if test="${isMe}">
                 <button style="background: none; border: none; padding: 0; cursor: pointer" onclick="openPopup('image-popup')">
-                    <img id="profile-image-" class="cropCenter" style="height:100px;width:100px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/profile/image/${profile.username}" alt="profile pic">
+                    <img class="profile-image cropCenter" style="height:100px;width:100px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/profile/image/${profile.username}" alt="profile pic">
                 </button>
                 <div class="popup-overlay image-popup-overlay" onclick="closePopup('popup')"></div>
                 <div class="popup image-popup">
@@ -45,7 +45,7 @@
                             </button>
                         </div>
                         <div class="m-3">
-                            <img id="profile-image-preview" class="m-2 cropCenter" style="height:300px;width:300px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/profile/image/${profile.username}" alt="preview">
+                            <img class="profile-image m-2 cropCenter" style="height:300px;width:300px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/profile/image/${profile.username}" alt="preview">
                             <form action="${pageContext.request.contextPath}/uploadProfilePicture" method="post" enctype="multipart/form-data">
                                 <input class="btn btn-success-outline" type="file" name="file" accept="image/*" onchange="previewImage(this)" />
                                 <input class="btn btn-success" type="submit" value="Submit" />

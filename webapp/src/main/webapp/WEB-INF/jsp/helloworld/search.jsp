@@ -125,7 +125,7 @@
                                 <c:if test="${user.role == 2 || user.role == -102}">
                                     <img class="cropCenter" style="height:50px;width:50px" src="${pageContext.request.contextPath}/resources/moderator_logo.png" alt="moderator profile pic">
                                 </c:if>
-                                <img id="profile-image-${user.username}" style="height: 50px; width: 50px; border:solid black; border-radius: 50%; margin-left: auto" class="cropCenter special-pfp-class" src="${pageContext.request.contextPath}/profile/image/${user.username}" alt=""/>
+                                <img id="profile-image-${user.username}" style="height: 50px; width: 50px; border:solid black; border-radius: 50%; margin-left: auto" class="cropCenter profile-image" src="${pageContext.request.contextPath}/profile/image/${user.username}" alt=""/>
                             </div>
 
                             <h3 class="card-title text-center">${user.username}</h3>
