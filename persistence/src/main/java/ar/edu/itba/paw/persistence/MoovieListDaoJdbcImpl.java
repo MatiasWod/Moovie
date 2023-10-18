@@ -457,16 +457,13 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
             sql.append(" WHERE type IS NOT NULL ");
         }
         sql.append(" GROUP BY m.mediaId, r.reviewid ");
-
-        if(isOrderValid(featuredListOrder)){
-            sql.append(" ORDER BY ").append(featuredListOrder).append(" DESC LIMIT 100) ");
+        sql.append(" ORDER BY ").append(featuredListOrder);
+        if(orderBy!=null && !orderBy.isEmpty() && !orderBy.equals("customorder")){
+            sql.append(" DESC LIMIT 100) AS topRated ORDER BY ").append(orderBy).append(" ").append(sortOrder);
+            sql.append(" LIMIT ? OFFSET ?) AS featured WHERE featured.isWatched = true ");
         }
-        if(isOrderValid(orderBy) && isSortOrderValid(sortOrder) && !orderBy.equals("customorder")){
-            sql.append(" AS topRated ORDER BY ").append(orderBy).append(" ").append(sortOrder);
-            sql.append(" LIMIT ? OFFSET ? ;");
-        }
-        else if(isOrderValid(orderBy) && isSortOrderValid(sortOrder) && orderBy.equals("customorder")){
-            sql.append(" ").append(sortOrder).append(" LIMIT 100) as aux LIMIT ? OFFSET ? ");
+        else if(orderBy!=null && !orderBy.isEmpty() && orderBy.equals("customorder")){
+            sql.append(" ").append(sortOrder).append(" LIMIT 100) AS topRated LIMIT ? OFFSET ?) AS featured WHERE featured.isWatched = true ;");
         }
         else {
             sql.append(" DESC LIMIT 100) AS topRated LIMIT ? OFFSET ?) AS featured WHERE featured.isWatched = true ;");
