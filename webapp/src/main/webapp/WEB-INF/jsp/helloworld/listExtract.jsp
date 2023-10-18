@@ -85,12 +85,12 @@
                         <c:choose>
                             <c:when test="${moovieList.currentUserHasLiked}">
                                 <button type="submit" class="btn btn-style"><i
-                                        class="bi bi-hand-thumbs-up-fill"></i><spring:message code="listExtract.liked" arguments="${likedCount}"/>
+                                        class="bi bi-hand-thumbs-up-fill"></i><spring:message code="listExtract.liked" arguments="${moovieList.likeCount}"/>
                                 </button>
                             </c:when>
                             <c:otherwise>
                                 <button type="submit" class="btn btn-style"><i
-                                        class="bi bi-hand-thumbs-up"></i><spring:message code="listExtract.like" arguments="${likedCount}"/>
+                                        class="bi bi-hand-thumbs-up"></i><spring:message code="listExtract.like" arguments="${moovieList.likeCount}"/>
                                 </button>
                             </c:otherwise>
                         </c:choose>

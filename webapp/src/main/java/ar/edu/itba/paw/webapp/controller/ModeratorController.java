@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.exceptions.UnableToBanUserException;
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
-import ar.edu.itba.paw.models.User.User;
-import ar.edu.itba.paw.persistence.UserDao;
 import ar.edu.itba.paw.services.ModeratorService;
 import ar.edu.itba.paw.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +18,6 @@ public class ModeratorController {
     private ModeratorService moderatorService;
     @Autowired
     private UserService userService;
-    @Autowired
-    private UserDao userDao;
 
     @RequestMapping(value = "/deleteReview/{mediaId:\\d+}", method = RequestMethod.POST)
     public ModelAndView deleteReview(@RequestParam("reviewId") int reviewId, @RequestParam("path") String path, RedirectAttributes redirectAttributes, @PathVariable int mediaId) {

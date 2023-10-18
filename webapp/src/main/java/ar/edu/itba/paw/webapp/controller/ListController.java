@@ -139,14 +139,7 @@ public class ListController {
         }catch (Exception e){
             mav.addObject("watchedCount",0);
         }
-        mav.addObject("listCount",mediaCountForMoovieList);
-
-        mav.addObject("numberOfPages",numberOfPages);
-        mav.addObject("currentPage",pageNumber - 1);
-        mav.addObject("likedCount",moovieListCard.getLikeCount());
-        mav.addObject("listOwner",moovieListCard.getUsername());
-        mav.addObject("orderBy", orderBy);
-        mav.addObject("publicType",MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
+        moovieListCard(orderBy, pageNumber, mav, moovieListCard, mediaCountForMoovieList, numberOfPages);
         mav.addObject("RecomendedListsCards",moovieListService.getRecommendedMoovieListCards(moovieListId,4,0));
 
         final Map<String, String> queries = new HashMap<>();
@@ -231,13 +224,7 @@ public class ListController {
         int numberOfPages = (int) Math.ceil(mediaCountForMoovieList * 1.0 / pagesSize);
         mav.addObject("moovieList",moovieListCard);
         mav.addObject("mediaList",moovieListContentList);
-        mav.addObject("listCount",mediaCountForMoovieList);
-        mav.addObject("numberOfPages",numberOfPages);
-        mav.addObject("currentPage",pageNumber - 1);
-        mav.addObject("isLiked",moovieListCard.isCurrentUserHasLiked());
-        mav.addObject("listOwner",moovieListCard.getUsername());
-        mav.addObject("orderBy", orderBy);
-        mav.addObject("publicType",MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
+        moovieListCard(orderBy, pageNumber, mav, moovieListCard, mediaCountForMoovieList, numberOfPages);
         final Map<String, String> queries = new HashMap<>();
         queries.put("list",list);
         queries.put("orderBy", orderBy);
@@ -247,6 +234,15 @@ public class ListController {
                 .buildAndExpand(queries).toUriString();
         mav.addObject("urlBase", urlBase);
         return mav;
+    }
+
+    private void moovieListCard(@RequestParam(value = "orderBy", required = false) String orderBy, @RequestParam(value = "page", defaultValue = "1") int pageNumber, ModelAndView mav, MoovieListCard moovieListCard, int mediaCountForMoovieList, int numberOfPages) {
+        mav.addObject("listCount",mediaCountForMoovieList);
+        mav.addObject("numberOfPages",numberOfPages);
+        mav.addObject("currentPage",pageNumber - 1);
+        mav.addObject("listOwner",moovieListCard.getUsername());
+        mav.addObject("orderBy", orderBy);
+        mav.addObject("publicType", MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
     }
 
 

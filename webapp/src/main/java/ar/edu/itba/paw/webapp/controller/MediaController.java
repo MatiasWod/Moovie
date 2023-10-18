@@ -169,12 +169,12 @@ public class MediaController {
     @RequestMapping(value = "/details/{id:\\d+}")
     public ModelAndView details(@PathVariable("id") final int mediaId,
                                 @RequestParam(value = "page",defaultValue = "1") final int pageNumber,
-                                @ModelAttribute("detailsForm") final CreateReviewForm form, RedirectAttributes redirectAttributes) {
+                                @ModelAttribute("detailsForm") final CreateReviewForm form) {
         boolean type;
         try{
             type = mediaService.getMediaById(mediaId).isType();
         } catch (MediaNotFoundException e){
-            final ModelAndView mav = new ModelAndView("helloworld/404.jsp");
+            final ModelAndView mav = new ModelAndView("helloworld/404");
             mav.addObject("extraInfo", e.getMessage());
             return mav;
         }
@@ -187,7 +187,7 @@ public class MediaController {
         } catch (Exception ignored) {
         }
 
-        Media media = null;
+        Media media;
 
         if(!type){
             media = mediaService.getMovieById(mediaId);
@@ -216,7 +216,7 @@ public class MediaController {
     @RequestMapping(value = "/createrating", method = RequestMethod.POST)
     public ModelAndView createReview(@Valid @ModelAttribute("detailsForm") final CreateReviewForm form, final BindingResult errors, RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
-            return details(form.getMediaId(),1, form,null);
+            return details(form.getMediaId(),1, form);
         }
         try{
             reviewService.createReview(form.getMediaId(), form.getRating(), form.getReviewContent());

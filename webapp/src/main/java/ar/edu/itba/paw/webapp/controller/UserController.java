@@ -63,16 +63,18 @@ public class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public ModelAndView register(@ModelAttribute("registerForm") final RegisterForm form) {
-        ModelAndView modelAndView = new ModelAndView("helloworld/register").
+        return new ModelAndView("helloworld/register").
                 addObject("mediaList",
-                mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null,null,null,null,"tmdbrating","desc",PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0));;
-        return modelAndView;
+                mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null,null,null,null,"tmdbrating","desc",PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0));
     }
 
     @RequestMapping(value = "/register/confirm")
     public ModelAndView confirmRegistration(@RequestParam("token") final String token, RedirectAttributes redirectAttributes) {
         try {
-            Token verificationToken = verificationTokenService.getToken(token).get();
+            Token verificationToken = null;
+            if (verificationTokenService.getToken(token).isPresent()){
+                verificationToken = verificationTokenService.getToken(token).get();
+            }
             if (userService.confirmRegister(verificationToken)) {
                 UserDetails userDetails = moovieUserDetailsService.loadUserByUsername(userService.findUserById(verificationToken.getUserId()).getUsername());
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
@@ -139,8 +141,8 @@ public class UserController {
 
             ModelAndView mav = new ModelAndView("helloworld/profile");
 
-            int listCount = 0;
-            int numberOfPages = 0;
+            int listCount;
+            int numberOfPages;
             final Map<String, String> queries = new HashMap<>();
             queries.put("username",username);
 
@@ -239,7 +241,7 @@ public class UserController {
     }
 
     @ControllerAdvice
-    public class FileUploadExceptionAdvice {
+    public static class FileUploadExceptionAdvice {
         @ExceptionHandler(MaxUploadSizeExceededException.class)
         public String handleMaxSizeException(
                 MaxUploadSizeExceededException exc,
