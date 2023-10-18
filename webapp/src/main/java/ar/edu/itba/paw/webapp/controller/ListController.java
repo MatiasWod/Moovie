@@ -79,7 +79,7 @@ public class ListController {
                                    @RequestParam(value = "m", required = false,defaultValue = "All") String media,
                                    @RequestParam(value = "q", required = false) String query,
                                    @RequestParam(value = "providers", required = false) List<String> providers,
-                                   @RequestParam(value="orderBy", defaultValue = "tmdbRating") final String orderBy,
+                                   @RequestParam(value="orderBy", defaultValue = "tmdbrating") final String orderBy,
                                    @RequestParam(value="order", defaultValue = "desc") final String order,
                                    @RequestParam(value = "page",defaultValue = "1") final int pageNumber,
                                    @ModelAttribute("ListForm") final CreateListForm form) {

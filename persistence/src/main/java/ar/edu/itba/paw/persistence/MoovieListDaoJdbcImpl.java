@@ -605,7 +605,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
             return false;
         }
         order = order.replaceAll(" ","");
-        String[] validOrders = {"name", "tmdbrating", "likeCount", "customorder", "moovielistid", "releasedate", "type", "totalrating", "random()"};
+        String[] validOrders = {"name", "tmdbrating", "likecount", "customorder", "moovielistid", "releasedate", "type", "totalrating", "random()"};
         for (String element : validOrders) {
             if (element.equals(order.toLowerCase())) {
                 return true;
