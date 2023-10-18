@@ -13,6 +13,8 @@ import ar.edu.itba.paw.persistence.BannedDao;
 import ar.edu.itba.paw.persistence.MoovieListDao;
 import ar.edu.itba.paw.persistence.ReviewDao;
 import ar.edu.itba.paw.persistence.UserDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +43,8 @@ public class ModeratorServiceImpl implements ModeratorService{
     @Autowired
     private BannedDao bannedDao;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+
 
     @Transactional
     @Override
@@ -58,6 +62,7 @@ public class ModeratorServiceImpl implements ModeratorService{
         emailService.sendEmail(u.getEmail(),"You review on " + m.getName() + " has been deleted", "yourReviewHasBeenRemovedEmail.html", mailMap);
 
         reviewDao.deleteReview(reviewId);
+        LOGGER.info("Succesfully removed review: {}. (by mod)", reviewId);
     }
 
     @Transactional
@@ -76,6 +81,7 @@ public class ModeratorServiceImpl implements ModeratorService{
         emailService.sendEmail(u.getEmail(),"Your moovie list" + m.getName() + " has been deleted", "yourListHasBeenRemovedMail.html", mailMap);
 
         moovieListDao.deleteMoovieList(moovieListId);
+        LOGGER.info("Succesfully removed list: {}. (by mod)", moovieListId);
     }
 
     @Transactional
@@ -99,6 +105,8 @@ public class ModeratorServiceImpl implements ModeratorService{
         }
 
         bannedDao.createBannedMessage(userId, userService.getInfoOfMyUser().getUserId(), message);
+        LOGGER.info("Succesfully banned user: {}.", userId);
+
 
         final Map<String,Object> mailMap = new HashMap<>();
         mailMap.put("username", u.getUsername());
@@ -124,6 +132,8 @@ public class ModeratorServiceImpl implements ModeratorService{
         }
         bannedDao.deleteBannedMessage(userId);
 
+        LOGGER.info("Succesfully unbanned user: {}.", userId);
+
         final Map<String,Object> mailMap = new HashMap<>();
         mailMap.put("username", u.getUsername());
         emailService.sendEmail(u.getEmail(),"You have been unbaned from Moovie", "youHaveBeenUnbannedMail.html", mailMap);
@@ -146,6 +156,9 @@ public class ModeratorServiceImpl implements ModeratorService{
         } else if(u.getRole() == UserRoles.USER.getRole()){
             userDao.changeUserRole(userId, UserRoles.MODERATOR.getRole());
         }
+
+        LOGGER.info("Succesfully made user: {} moderator.", userId);
+
     }
 
     private void amIModerator(){

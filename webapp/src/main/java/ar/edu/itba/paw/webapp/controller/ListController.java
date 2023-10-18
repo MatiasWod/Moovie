@@ -49,6 +49,8 @@ public class ListController {
                                 @RequestParam(value= "order", defaultValue = "desc") final String order,
                                 @RequestParam(value = "search", required = false) final String search,
                                 @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
+        LOGGER.info("Attempting to get lists for /lists.");
+
         final ModelAndView mav = new ModelAndView("helloworld/viewLists");
 
         mav.addObject("showLists", moovieListService.getMoovieListCards(search, null, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
@@ -57,6 +59,7 @@ public class ListController {
 
         int listCount = moovieListService.getMoovieListCardsCount(search,null,MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
                 PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), pageNumber - 1);
+
         int numberOfPages = (int) Math.ceil(listCount * 1.0 / PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize());
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
@@ -66,6 +69,8 @@ public class ListController {
         queries.put("search", search);
         String urlBase = UriComponentsBuilder.newInstance().path("/lists").query("orderBy={orderBy}&order={order}&search={search}").buildAndExpand(queries).toUriString();
         mav.addObject("urlBase", urlBase);
+
+        LOGGER.info("Returned lists for /lists.");
         return mav;
     }
 
@@ -78,7 +83,7 @@ public class ListController {
                                    @RequestParam(value="order", defaultValue = "desc") final String order,
                                    @RequestParam(value = "page",defaultValue = "1") final int pageNumber,
                                    @ModelAttribute("ListForm") final CreateListForm form) {
-
+        LOGGER.info("Attempting to get lists for /createLists.");
         final ModelAndView mav = new ModelAndView("helloworld/createList");
         int numberOfPages;
         int mediaCount;
@@ -100,18 +105,24 @@ public class ListController {
         mav.addObject("currentPage",pageNumber - 1);
         mav.addObject("genresList", genreService.getAllGenres());
         mav.addObject("providersList", providerService.getAllProviders());
+
+        LOGGER.info("Returned lists for /createLists.");
         return mav;
     }
 
     @RequestMapping("/profile/{username}/watchedList")
     public ModelAndView watchedlist(@PathVariable("username") final String username) {
+        LOGGER.info("Attempting to get WatchedLists for /profile");
         final List<MoovieListCard> moovieListCards = moovieListService.getMoovieListCards("Watched",username,MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),0);
+        LOGGER.info("Returned WatchedLists for /profile");
         return list(moovieListCards.get(0).getMoovieListId(),null,null,1);
     }
 
     @RequestMapping("/profile/{username}/watchList")
     public ModelAndView watchlist(@PathVariable("username") final String username) {
+        LOGGER.info("Attempting to get WatchLists for /profile");
         final List<MoovieListCard> moovieListCards = moovieListService.getMoovieListCards("Watchlist",username,MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),0);
+        LOGGER.info("Returned WatchList for /profile");
         return list(moovieListCards.get(0).getMoovieListId(),null,null,1);
     }
 
@@ -120,45 +131,56 @@ public class ListController {
                              @RequestParam(value="orderBy", defaultValue = "customorder") final String orderBy,
                              @RequestParam(value="order", defaultValue = "asc") final String order,
                              @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
+        LOGGER.info("Attempting to get list with id: {} for /list.", moovieListId);
 
         final ModelAndView mav = new ModelAndView("helloworld/moovieList");
         int pagesSize= PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
-        MoovieListDetails myList=moovieListService.getMoovieListDetails(moovieListId,null,null,orderBy,order,pagesSize,pageNumber - 1);
+        try{
+            MoovieListDetails myList=moovieListService.getMoovieListDetails(moovieListId,null,null,orderBy,order,pagesSize,pageNumber - 1);
 
-        final MoovieListCard moovieListCard = myList.getCard();
-        int mediaCountForMoovieList =moovieListCard.getSize();
-        int numberOfPages = (int) Math.ceil(mediaCountForMoovieList * 1.0 / pagesSize);
+            final MoovieListCard moovieListCard = myList.getCard();
+            int mediaCountForMoovieList =moovieListCard.getSize();
+            int numberOfPages = (int) Math.ceil(mediaCountForMoovieList * 1.0 / pagesSize);
 
-        mav.addObject("moovieList",moovieListCard);
-        mav.addObject("mediaList",myList.getContent());
-        try {
-            User currentUser=userService.getInfoOfMyUser();
-            mav.addObject("watchedCount",myList.getCard().getCurrentUserWatchAmount());
-            mav.addObject("watchedListId",moovieListService.getMoovieListCards("Watched",currentUser.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId());
-            mav.addObject("isOwner", currentUser.getUsername().equals(moovieListCard.getUsername()));
-        }catch (Exception e){
-            mav.addObject("watchedCount",0);
+            mav.addObject("moovieList",moovieListCard);
+            mav.addObject("mediaList",myList.getContent());
+            try {
+                User currentUser=userService.getInfoOfMyUser();
+                mav.addObject("watchedCount",myList.getCard().getCurrentUserWatchAmount());
+                mav.addObject("watchedListId",moovieListService.getMoovieListCards("Watched",currentUser.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId());
+                mav.addObject("isOwner", currentUser.getUsername().equals(moovieListCard.getUsername()));
+            }catch (Exception e){
+                mav.addObject("watchedCount",0);
+            }
+            moovieListCard(orderBy, pageNumber, mav, moovieListCard, mediaCountForMoovieList, numberOfPages);
+            mav.addObject("RecomendedListsCards",moovieListService.getRecommendedMoovieListCards(moovieListId,4,0));
+
+            final Map<String, String> queries = new HashMap<>();
+            queries.put("id", Integer.toString(moovieListId));
+            queries.put("orderBy", orderBy);
+            queries.put("order", order);
+            String urlBase = UriComponentsBuilder.newInstance().path("/list/{id}").query("orderBy={orderBy}&order={order}").buildAndExpand(queries).toUriString();
+            mav.addObject("urlBase", urlBase);
+
+            LOGGER.info("Returned list with id: {} for /list.", moovieListId);
+            return mav;
+        } catch (Exception e){
+            LOGGER.info("Failed to return list with id: {} for /list.", moovieListId);
+            return new ModelAndView("helloworld/404").addObject("extrainfo", "Error retrieving list, no list for id: "+ moovieListId);
         }
-        moovieListCard(orderBy, pageNumber, mav, moovieListCard, mediaCountForMoovieList, numberOfPages);
-        mav.addObject("RecomendedListsCards",moovieListService.getRecommendedMoovieListCards(moovieListId,4,0));
-
-        final Map<String, String> queries = new HashMap<>();
-        queries.put("id", Integer.toString(moovieListId));
-        queries.put("orderBy", orderBy);
-        queries.put("order", order);
-        String urlBase = UriComponentsBuilder.newInstance().path("/list/{id}").query("orderBy={orderBy}&order={order}").buildAndExpand(queries).toUriString();
-        mav.addObject("urlBase", urlBase);
-        return mav;
     }
 
     @RequestMapping(value = "/editList/{id:\\d+}")
     public ModelAndView editList(@PathVariable("id") final int moovieListId, @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
+        LOGGER.info("Attempting to get list with id: {} , for /editList", moovieListId);
         try {
             User currentUser = userService.getInfoOfMyUser();
             if (!currentUser.getUsername().equals(moovieListService.getMoovieListCardById(moovieListId).getUsername())) {
+                LOGGER.info("Failed to get list with id: {} , for /editList", moovieListId);
                 return new ModelAndView("helloworld/404");
             }
         } catch (Exception e) {
+            LOGGER.info("Failed to get list with id: {} , for /editList", moovieListId);
             return new ModelAndView("helloworld/404");
         }
         final ModelAndView mav = new ModelAndView("helloworld/editList");
@@ -171,6 +193,8 @@ public class ListController {
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("moovieList", myList.getCard());
         mav.addObject("mediaList", myList.getContent());
+
+        LOGGER.info("Returned list with id: {} for /editList.", moovieListId);
         return mav;
     }
 
@@ -180,7 +204,6 @@ public class ListController {
                                               @RequestParam(value = "currentArray") final int[] currentArray,
                                               @RequestParam(value = "toNextArray") final int[] toNextArray,
                                               @RequestParam(value="currentPageNumber") final int currentPageNumber){
-
         try {
             moovieListService.updateMoovieListOrder(listId,currentPageNumber,toPrevArray,currentArray,toNextArray);
             return new ModelAndView("redirect:/list/" + listId);
@@ -198,6 +221,8 @@ public class ListController {
                                      @RequestParam(value="orderBy",required = false) final String orderBy,
                                      @RequestParam(value="order",required = false) final String order,
                                      @RequestParam(value = "page",defaultValue = "1") final int pageNumber){
+        LOGGER.info("Attempting to get featured list : {} for /featuredlist.", list);
+
         final ModelAndView mav = new ModelAndView("helloworld/moovieList");
         int pagesSize= PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
         MoovieListCard moovieListCard;
@@ -212,6 +237,7 @@ public class ListController {
                     order,100,0));
         }
         else {
+            LOGGER.info("Failed to return featured list : {} for /featuredlist.", list);
             return new ModelAndView("helloworld/404");
         }
         try {
@@ -233,6 +259,8 @@ public class ListController {
                 .query("orderBy={orderBy}&order={order}")
                 .buildAndExpand(queries).toUriString();
         mav.addObject("urlBase", urlBase);
+
+        LOGGER.info("Returned featured list: {} for /featuredlist.", list);
         return mav;
     }
 
@@ -289,6 +317,7 @@ public class ListController {
 
     @RequestMapping(value = "/insertMediaToList", method = RequestMethod.POST)
     public ModelAndView insertMediaToList(@RequestParam("listId") int listId, @RequestParam("mediaId") int mediaId, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        LOGGER.info("Attempting to insert media: {} to list with id: {}.",mediaId,listId);
         try {
             moovieListService.insertMediaIntoMoovieList(listId, Collections.singletonList(mediaId));
             redirectAttributes.addFlashAttribute("successMessage", "Media has been successfully added to ");
@@ -314,9 +343,10 @@ public class ListController {
             redirectAttributes.addFlashAttribute("successMessage", "Media has been successfully deleted from ");
         } catch (Exception e){
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete media from the list ");
-    }
+        }
         String referer = request.getHeader("Referer");
         redirectAttributes.addFlashAttribute("insertedMooovieList", moovieListService.getMoovieListCardById(listId));
+
         return new ModelAndView("redirect:" + referer);
     }
 }

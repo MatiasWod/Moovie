@@ -8,10 +8,11 @@ import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.User.UserRoles;
 import ar.edu.itba.paw.persistence.MoovieListDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +32,9 @@ public class MoovieListServiceImpl implements MoovieListService{
     private static final int EVERY_THIS_AMOUNT_OF_LIKES_SEND_EMAIL = 5;
 
     private static final int EVERY_THIS_AMOUNT_OF_FOLLOWS_SEND_EMAIL = 5;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+
 
     @Transactional(readOnly = true)
     @Override
@@ -192,7 +196,9 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public MoovieList createMoovieListWithContent(String name, int type, String description, List<Integer> mediaIdList) {
         MoovieList ml =  moovieListDao.createMoovieList(userService.getInfoOfMyUser().getUserId(), name, type, description);
-        return insertMediaIntoMoovieList(ml.getMoovieListId(), mediaIdList);
+        MoovieList mlRet = insertMediaIntoMoovieList(ml.getMoovieListId(), mediaIdList);
+        LOGGER.info("Succesfully created list: {}: with media: {}.", mlRet.getMoovieListId(), mediaIdList);
+        return mlRet;
     }
 
     @Transactional
@@ -212,7 +218,9 @@ public class MoovieListServiceImpl implements MoovieListService{
                         "mediaAddedToFollowedList.html",
                         map);
             });
-            return moovieListDao.insertMediaIntoMoovieList(moovieListId, mediaIdList);
+            MoovieList mlRet = moovieListDao.insertMediaIntoMoovieList(moovieListId, mediaIdList);
+            LOGGER.info("Succesfully inserted media: {} in list: {}.", mediaIdList,moovieListId);
+            return mlRet;
         }
         else{
             throw new InvalidAccessToResourceException("User is not owner of the list");
@@ -226,6 +234,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         User currentUser = userService.getInfoOfMyUser();
         if(ml.getUserId() == currentUser.getUserId()){
             moovieListDao.deleteMediaFromMoovieList(moovieListId, mediaId);
+            LOGGER.info("Succesfully deleted media: {} from list: {}.", mediaId,moovieListId);
         }
         else{
             throw new InvalidAccessToResourceException("User is not owner of the list");
@@ -239,19 +248,24 @@ public class MoovieListServiceImpl implements MoovieListService{
         User currentUser = userService.getInfoOfMyUser();
         if(currentUser.getRole() == UserRoles.MODERATOR.getRole() || currentUser.getUserId() == ml.getUserId()){
             deleteMoovieList(moovieListId);
+            LOGGER.info("Succesfully deleted list: {}.",moovieListId);
+
         }else{
             throw new InvalidAccessToResourceException("You are not the user of this list, so you can't delete it");
         }
     }
 
+    @Transactional
     @Override
     public void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrevPage, int[] currentPage, int[] toNextPage) {
         User currentUser = userService.getInfoOfMyUser();
         if (!currentUser.getUsername().equals(getMoovieListCardById(moovieListId).getUsername())) {
-            throw new InvalidAccessToResourceException("User is not owner of the list");
+            throw new InvalidAccessToResourceException("User is not owner of the list.");
         }
 
         moovieListDao.updateMoovieListOrder(moovieListId,currentPageNumber, toPrevPage, currentPage, toNextPage);
+        LOGGER.info("Succesfully updated list content order for list: {}.",moovieListId);
+
     }
 
 
@@ -263,6 +277,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         if(mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType()){
             if(mlc.isCurrentUserHasLiked()){
                 moovieListDao.removeLikeMoovieList(userId, moovieListId);
+                LOGGER.info("Succesfully liked list: {}, user: {}.",moovieListId,userService.tryToGetCurrentUserId());
             } else {
                 moovieListDao.likeMoovieList(userId, moovieListId);
                 int likeCountForMoovieList = mlc.getLikeCount();
@@ -278,6 +293,7 @@ public class MoovieListServiceImpl implements MoovieListService{
                             "New like goal on your list!",
                             "notificationLikeMilestoneMoovieList.html",
                             map);
+                    LOGGER.info("notificationLikeMilestoneMoovieList mail was sent to user : {} for the list: {}.", toUser.getUsername(), moovieListId);
                 }
             }
         }
@@ -288,6 +304,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public void removeLikeMoovieList(int moovieListId) {
         moovieListDao.removeLikeMoovieList(userService.getInfoOfMyUser().getUserId(), moovieListId);
+        LOGGER.info("Succesfully removed like in list: {}, user: {}.",moovieListId,userService.tryToGetCurrentUserId());
     }
 
     @Transactional
@@ -299,6 +316,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         if(mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType()) {
             if (mlc.isCurrentUserHasFollowed()) {
                 moovieListDao.removeFollowMoovieList(userId, moovieListId);
+                LOGGER.info("Succesfully followed list: {}, user: {}.",moovieListId,userService.tryToGetCurrentUserId());
             } else {
                 moovieListDao.followMoovieList(userId, moovieListId);
                 int followCountForMoovieList = mlc.getFollowerCount();
@@ -314,6 +332,7 @@ public class MoovieListServiceImpl implements MoovieListService{
                             "New follow goal on your list!",
                             "notificationFollowMilestoneMoovieList.html",
                             map);
+                    LOGGER.info("notificationFollowMilestoneMoovieList mail was sent to user : {} for the list: {}.", toUser.getUsername(), moovieListId);
                 }
             }
         }
@@ -323,5 +342,6 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public void removeFollowMoovieList(int moovieListId) {
         moovieListDao.removeFollowMoovieList(userService.tryToGetCurrentUserId(), moovieListId);
+        LOGGER.info("Succesfully unfollowed list: {}, user: {}.",moovieListId,userService.tryToGetCurrentUserId());
     }
 }

@@ -3,6 +3,8 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.exceptions.ReviewNotFoundException;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.persistence.ReviewDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,8 @@ public class ReviewServiceImpl implements ReviewService{
     private ReviewDao reviewDao;
     @Autowired
     private UserService userService;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
 
     @Transactional(readOnly = true)
@@ -46,12 +50,14 @@ public class ReviewServiceImpl implements ReviewService{
     public void likeReview(int reviewId) {
         getReviewById(reviewId);
         reviewDao.likeReview(userService.getInfoOfMyUser().getUserId(),reviewId);
+        LOGGER.info("Succesfully liked review: {}, user: {}.", reviewId, userService.getInfoOfMyUser().getUserId());
     }
 
     @Transactional
     @Override
     public void removeLikeReview(int reviewId) {
         reviewDao.removeLikeReview(userService.getInfoOfMyUser().getUserId(),reviewId);
+        LOGGER.info("Succesfully removed like in review: {}, user: {}.", reviewId, userService.getInfoOfMyUser().getUserId());
     }
 
     @Transactional
@@ -59,5 +65,7 @@ public class ReviewServiceImpl implements ReviewService{
     public void createReview(int mediaId, int rating, String reviewContent) {
         int userId = userService.getInfoOfMyUser().getUserId();
         reviewDao.createReview(userId, mediaId, rating, reviewContent);
+        LOGGER.info("Succesfully created review in media: {}, user: {}.", mediaId , userService.getInfoOfMyUser().getUserId());
+
     }
 }

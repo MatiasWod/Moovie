@@ -54,6 +54,7 @@ public class MediaController {
 
     @RequestMapping("/")
     public ModelAndView home() {
+        LOGGER.info("Attempting to get media for /.");
         final ModelAndView mav = new ModelAndView("helloworld/index");
         List<Media> movieList = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
                 null, null, "tmdbrating", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
@@ -61,38 +62,14 @@ public class MediaController {
         List<Media> tvSerieList = mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), null, null,
                 null, null, "tmdbrating", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("tvList", tvSerieList);
+        LOGGER.info("Returned media for /.");
         return mav;
     }
 
-//    @RequestMapping("/discover")
-//    public ModelAndView discover(@RequestParam(value = "media", required = false, defaultValue = "Movies and Series") String media,
-//                                 @RequestParam(value = "g", required = false) List<String> genres,
-//                                 @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
-//        final ModelAndView mav = new ModelAndView("helloworld/discover");
-//        int numberOfPages;
-//        int mediaCount;
-//        mav.addObject("searchMode",false);
-//        if (media.equals("Movies and Series")){
-//            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null, genres,null,   PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
-//            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), null,genres);
-//        }
-//        else if (media.equals("Movies")){
-//            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null,genres,null,   PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
-//            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_MOVIE.getType(), null,genres);
-//        }
-//        else{
-//            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), null,genres,null,  PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
-//            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_TVSERIE.getType(), null,genres);
-//        }
-//        numberOfPages = (int) Math.ceil(mediaCount * 1.0 / PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize());
-//        mav.addObject("numberOfPages",numberOfPages);
-//        mav.addObject("currentPage",pageNumber - 1);
-//        mav.addObject("genresList", genreService.getAllGenres());
-//        return mav;
-//    }
-
     @RequestMapping("/search")
     public ModelAndView search(@RequestParam(value = "query") String query){
+        LOGGER.info("Attempting to get media for /search.");
+
         final ModelAndView mav = new ModelAndView("helloworld/search");
         // Aca se realizan 3 queries. Para poder notificar correctamente al JSP de las listas que va a recibir, primero se corre el getMediaCount
         int nameMediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query, null, null, null);
@@ -125,6 +102,8 @@ public class MediaController {
             mav.addObject("usersFlag",false);
         }
         // if (usersCount > 0) --> mav.addObject(userList, userService.searchUsers(query,...))
+
+        LOGGER.info("Returned media for /search.");
         return mav;
     }
 
@@ -137,6 +116,7 @@ public class MediaController {
                                  @RequestParam(value="orderBy", defaultValue = "tmdbRating") final String orderBy,
                                  @RequestParam(value="order", defaultValue = "desc") final String order,
                                @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
+        LOGGER.info("Attempting to get media for /discover.");
         final ModelAndView mav = new ModelAndView("helloworld/discover");
 
         mav.addObject("searchMode", (query != null && !query.isEmpty()));
@@ -162,6 +142,8 @@ public class MediaController {
         mav.addObject("currentPage",pageNumber - 1);
         mav.addObject("genresList", genreService.getAllGenres());
         mav.addObject("providersList", providerService.getAllProviders());
+
+        LOGGER.info("Returned media for /discover.");
         return mav;
 
     }
@@ -170,10 +152,13 @@ public class MediaController {
     public ModelAndView details(@PathVariable("id") final int mediaId,
                                 @RequestParam(value = "page",defaultValue = "1") final int pageNumber,
                                 @ModelAttribute("detailsForm") final CreateReviewForm form) {
+        LOGGER.info("Attempting to get media with id: {} for /details.", mediaId);
+
         boolean type;
         try{
             type = mediaService.getMediaById(mediaId).isType();
         } catch (MediaNotFoundException e){
+            LOGGER.info("Failed to get media with id: {} for /details.", mediaId);
             final ModelAndView mav = new ModelAndView("helloworld/404");
             mav.addObject("extraInfo", e.getMessage());
             return mav;
@@ -210,6 +195,7 @@ public class MediaController {
         int numberOfPages = (int) Math.ceil(totalReviewsForMedia * 1.0 / PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize());
         mav.addObject("numberOfPages",numberOfPages);
 
+        LOGGER.info("Returned media with id: {} for /details.", mediaId);
         return mav;
     }
 

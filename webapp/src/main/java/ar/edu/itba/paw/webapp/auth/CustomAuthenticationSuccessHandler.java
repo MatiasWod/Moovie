@@ -14,16 +14,12 @@ import java.util.Collection;
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        String targetUrl = determineTargetUrl(authentication);
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+        String targetUrl = determineTargetUrl();
         response.sendRedirect(request.getContextPath() + targetUrl);
     }
 
-    private String determineTargetUrl(Authentication authentication) {
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        if (authorities.stream().anyMatch(auth -> "ROLE_BANNED".equals(auth.getAuthority()))) {
-            return "/bannedMessage";
-        }
+    private String determineTargetUrl() {
         return "/";
     }
 
