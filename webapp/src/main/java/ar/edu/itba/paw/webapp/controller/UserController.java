@@ -63,6 +63,8 @@ public class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public ModelAndView register(@ModelAttribute("registerForm") final RegisterForm form) {
+        LOGGER.info("Attempting to get /register");
+        LOGGER.info("Returned /register");
         return new ModelAndView("helloworld/register").
                 addObject("mediaList",
                 mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null,null,null,null,"tmdbrating","desc",PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0));
@@ -70,6 +72,7 @@ public class UserController {
 
     @RequestMapping(value = "/register/confirm")
     public ModelAndView confirmRegistration(@RequestParam("token") final String token, RedirectAttributes redirectAttributes) {
+        LOGGER.info("Attempting to auto-login.");
         try {
             Token verificationToken = null;
             if (verificationTokenService.getToken(token).isPresent()){
@@ -83,13 +86,16 @@ public class UserController {
                 if (usernamePasswordAuthenticationToken.isAuthenticated()) {
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 }
+                LOGGER.info("Auto-login succesful for {}.",userDetails.getUsername());
                 return new ModelAndView("redirect:/");
             } else {
                 redirectAttributes.addAttribute("token", token);
                 redirectAttributes.addAttribute("message", "The verification token had expired. A new email was sent!");
+                LOGGER.info("Auto-login failed.");
                 return new ModelAndView("redirect:/register/resendEmail");
             }
         } catch (VerificationTokenNotFoundException e) {
+            LOGGER.info("Auto-login failed.");
             return new ModelAndView("helloworld/404");
         }
     }
@@ -109,6 +115,7 @@ public class UserController {
     public ModelAndView resendEmail(@RequestParam("token") final String token,
                                     @RequestParam(value = "message", required = false) final String message,
                                     RedirectAttributes redirectAttributes) {
+        LOGGER.info("Attempting to resend confirmation email.");
         redirectAttributes.addAttribute("token", token);
         if (message == null || message.isEmpty()) {
             redirectAttributes.addAttribute("message", "Verification email has been resent successfully.");
@@ -117,6 +124,7 @@ public class UserController {
         }
         ModelAndView mav = new ModelAndView("redirect:/register/sentEmail");
         userService.resendVerificationEmail(token);
+        LOGGER.info("Confirmation email was resent.");
         return mav;
     }
 
@@ -124,6 +132,8 @@ public class UserController {
 
     @RequestMapping("/login")
     public ModelAndView login() {
+        LOGGER.info("Attempting to get /register");
+        LOGGER.info("Returned /register");
         return new ModelAndView("helloworld/login")
                 .addObject("mediaList",
                         mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null,null,null,null,"tmdbrating","desc",PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0));
@@ -136,6 +146,7 @@ public class UserController {
                                     @RequestParam(value="orderBy", defaultValue = "customorder") final String orderBy,
                                     @RequestParam(value="order", defaultValue = "asc") final String order
                                     ){
+        LOGGER.info("Attempting to get user with username: {} for /profile.", username);
         try{
             Profile requestedProfile = userService.getProfileByUsername(username);
 
@@ -232,9 +243,11 @@ public class UserController {
             String urlBase = UriComponentsBuilder.newInstance().path("/profile/{username}").query("list={list}&orderBy={orderBy}&order={order}").buildAndExpand(queries).toUriString();
             mav.addObject("urlBase", urlBase);
 
+            LOGGER.info("Returned user with username: {} for /profile.", username);
             return mav;
 
         }catch (UnableToFindUserException e){
+            LOGGER.info("Failed to return user with username: {} for /profile.", username);
             return new ModelAndView("helloworld/404");
         }
 
@@ -278,13 +291,13 @@ public class UserController {
 
     @RequestMapping(value = "/register/sentEmail")
     public ModelAndView sentEmail() {
+        LOGGER.info("Confirmation email was sent.");
         return new ModelAndView("helloworld/sentEmail");
     }
 
     @RequestMapping(value = "/uploadProfilePicture", method = {RequestMethod.POST})
     public String uploadProfilePicture(@RequestParam("file") MultipartFile picture, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         String referer = request.getHeader("referer");
-
         try {
             userService.setProfilePicture(picture);
         } catch (InvalidTypeException e) {
