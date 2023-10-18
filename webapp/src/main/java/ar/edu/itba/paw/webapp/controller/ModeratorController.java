@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.UnableToBanUserException;
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.UserDao;
@@ -52,53 +53,43 @@ public class ModeratorController {
     @RequestMapping(value = "/banUser/{userId:\\d+}", method = RequestMethod.POST)
     public ModelAndView banUser(@PathVariable int userId, RedirectAttributes redirectAttributes,
                                 @RequestParam(value = "message", required = false) String message ) {
-        User user;
-        try {
-            user = userService.findUserById(userId);
-        } catch (UnableToFindUserException e) {
-            return new ModelAndView("helloworld/404");
-        }
+
         try {
             moderatorService.banUser(userId, message);
             redirectAttributes.addFlashAttribute("successMessage", "User successfully banned");
-        } catch (Exception e) {
+        } catch (UnableToFindUserException e) {
+            return new ModelAndView("helloworld/404").addObject("extrainfo", "Error banning user, cant find user");
+        }  catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error banning user");
         }
-        return new ModelAndView("redirect:/profile/" + user.getUsername());
+        return new ModelAndView("redirect:/profile/" + userService.findUserById(userId).getUsername());
     }
 
     @RequestMapping(value = "/unbanUser/{userId:\\d+}", method = RequestMethod.POST)
     public ModelAndView unbanUser(@PathVariable int userId, RedirectAttributes redirectAttributes) {
-        User user;
-        try {
-            user = userService.findUserById(userId);
-        } catch (UnableToFindUserException e) {
-            return new ModelAndView("helloworld/404");
-        }
         try {
             moderatorService.unbanUser(userId);
             redirectAttributes.addFlashAttribute("successMessage", "User successfully unbanned");
+        } catch (UnableToFindUserException e) {
+            return new ModelAndView("helloworld/404").addObject("extrainfo", "Error unbanning user, cant find user");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error unbanning user");
         }
-        return new ModelAndView("redirect:/profile/" + user.getUsername());
+        return new ModelAndView("redirect:/profile/" + userService.findUserById(userId).getUsername());
+
     }
 
 
     @RequestMapping(value = "/makeUserMod/{userId:\\d+}", method = RequestMethod.POST)
     public ModelAndView makeUserMod(@PathVariable int userId, RedirectAttributes redirectAttributes) {
-        User user;
-        try {
-            user = userService.findUserById(userId);
-        } catch (UnableToFindUserException e) {
-            return new ModelAndView("helloworld/404");
-        }
         try {
             moderatorService.makeUserModerator(userId);
             redirectAttributes.addFlashAttribute("successMessage", "User successfully promoted to moderator");
+        } catch (UnableToFindUserException e) {
+            return new ModelAndView("helloworld/404");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error promoting user to moderator");
         }
-        return new ModelAndView("redirect:/profile/" + user.getUsername());
+        return new ModelAndView("redirect:/profile/" + userService.findUserById(userId).getUsername());
     }
 }

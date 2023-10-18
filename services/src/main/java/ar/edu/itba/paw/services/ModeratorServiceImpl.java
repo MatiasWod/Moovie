@@ -87,6 +87,10 @@ public class ModeratorServiceImpl implements ModeratorService{
             throw new UnableToBanUserException("Cannot ban another moderator");
         }
 
+        if(u.getRole() == UserRoles.NOT_AUTHENTICATED.getRole()){
+            throw new UnableToBanUserException("Cannot ban an unantheuticated user.");
+        }
+
         if(u.getRole() == UserRoles.UNREGISTERED.getRole()){
             userDao.changeUserRole(userId, UserRoles.BANNED_NOT_REGISTERED.getRole());
         }
@@ -109,6 +113,10 @@ public class ModeratorServiceImpl implements ModeratorService{
         amIModerator();
         User u = userDao.findUserById(userId).orElseThrow(() -> new UnableToFindUserException("No user for the id = " + userId ));
 
+        if(u.getRole() != UserRoles.UNREGISTERED.getRole() && u.getRole() != UserRoles.USER.getRole() ){
+            throw new UnableToChangeRoleException("Cant unban if its not banned");
+        }
+
         if(u.getRole() == UserRoles.UNREGISTERED.getRole()){
             userDao.changeUserRole(userId, UserRoles.NOT_AUTHENTICATED.getRole());
         } else{
@@ -127,15 +135,19 @@ public class ModeratorServiceImpl implements ModeratorService{
     public void makeUserModerator(int userId) {
         amIModerator();
         User u = userDao.findUserById(userId).orElseThrow(() -> new UnableToFindUserException("No user for the id = " + userId ));
+
         if(u.getRole() == UserRoles.MODERATOR.getRole() || u.getRole() == UserRoles.MODERATOR_NOT_REGISTERED.getRole()){
             throw new UnableToChangeRoleException("Unable to change role of uid: " + userId + ", user must not be ROLE_MODERATOR");
         }
 
         if(u.getRole() == UserRoles.UNREGISTERED.getRole()){
             userDao.changeUserRole(userId, UserRoles.MODERATOR_NOT_REGISTERED.getRole());
-        } else{
+            return;
+        } else if(u.getRole() == UserRoles.USER.getRole()){
             userDao.changeUserRole(userId, UserRoles.MODERATOR.getRole());
         }
+
+        throw new UnableToChangeRoleException("Unable to change role");
     }
 
     private void amIModerator(){
