@@ -89,7 +89,7 @@ public class MoovieListDaoJdbcImplTest {
     @Test
     public void testInsertToMoovieList() {
         moovieListDaoJdbc.insertMediaIntoMoovieList(EXISTING_MOOVIE_LIST_ID, EXISTING_MEDIA_ID_LIST);
-        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "moovieListsContent", "moovieListId = " + EXISTING_MOOVIE_LIST_ID));
+        assertEquals(2, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "moovieListsContent", "moovieListId = " + EXISTING_MOOVIE_LIST_ID));
     }
 
     @Rollback
