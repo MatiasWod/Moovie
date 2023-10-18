@@ -7,6 +7,8 @@ import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.User.User;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,6 +18,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.FileCopyUtils;
 
 import javax.sql.DataSource;
 import java.sql.Types;
@@ -527,8 +530,26 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         jdbcTemplate.update(sqlDel, moovieListId, mediaId);
     }
 
+    @Value("classpath:functions.sql")
+    private Resource functions;
+
+    public void executeFunctionScript() {
+        try {
+            // Read the SQL script from the functions.sql file
+            byte[] scriptBytes = FileCopyUtils.copyToByteArray(functions.getInputStream());
+            String scriptContent = new String(scriptBytes);
+
+            // Execute the script using JdbcTemplate
+            jdbcTemplate.execute(scriptContent);
+        } catch (Exception e) {
+            // Handle any exceptions
+        }
+    }
+
     @Override
     public void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrevPage, int[] currentPage, int[] toNextPage) {
+        executeFunctionScript();
+
         Map<String, Object> params = new HashMap<>();
         params.put("mlid", moovieListId);
         params.put("firstPosition", currentPageNumber * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize() + 1);
