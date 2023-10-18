@@ -14,5 +14,11 @@ INSERT INTO reviews(userid, mediaid, rating, reviewcontent) VALUES (1, 1, 5, 'Bu
 INSERT INTO reviews(userid, mediaid, rating, reviewcontent) VALUES (2, 1, 2, 'No me gusto');
 INSERT INTO reviews(userid, mediaid, rating, reviewcontent) VALUES (1, 2, 2, 'Aguante Ken');
 
+INSERT INTO moovielists(userid, name, description, type) VALUES (1, 'CavaniList', 'CavaniListDescription', 1);
+INSERT INTO moovielists(userid, name, description, type) VALUES (1, 'CavaniListToDelete', 'CavaniListDescription', 1);
 
+INSERT INTO moovielistscontent(moovielistid, mediaid, customorder) VALUES (1, 1, 1);
 
+INSERT INTO moovielistslikes(userid, moovielistid) VALUES (1, 2);
+
+INSERT INTO moovielistsfollows(userid, moovielistid) VALUES (1, 2);
