@@ -21,7 +21,7 @@
     <script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=87"></script>
     <script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=87"></script>
 
-    <title><spring:message code="profile.title"/></title>
+    <title><spring:message code="profile.title" arguments="${username}"/></title>
 </head>
 <body id="grad">
 <c:import url="navBar.jsp"/>
