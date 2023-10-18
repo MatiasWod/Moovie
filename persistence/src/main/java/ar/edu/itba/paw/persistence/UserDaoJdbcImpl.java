@@ -179,4 +179,27 @@ public class UserDaoJdbcImpl implements UserDao{
     public void changeUserRole(int userId, int role) {
         jdbcTemplate.update("UPDATE users SET role = ? WHERE userId = ?", new Object[]{role, userId});
     }
+
+    //Following functions needed in order to be safe of sql injection
+    private boolean isOrderValid( String order) {
+        if(order==null || order.isEmpty()){
+            return false;
+        }
+        String[] validOrders = {"username", "userid", "role", "moovieListCount", "likedMoovieListCount", "reviewCount"};
+        for (String element : validOrders) {
+            if (element.toLowerCase().equals(order)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    private boolean isSortOrderValid(String so){
+        if(so==null || so.isEmpty()){
+            return false;
+        }
+        if(so.toLowerCase().equals("asc") || so.toLowerCase().equals("desc")){
+            return true;
+        }
+        return false;
+    }
 }

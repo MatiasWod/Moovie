@@ -173,7 +173,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         }
 
         sql.append(" GROUP BY ml.moovielistid, u.userid ");
-        if(orderBy != null && orderBy.length() > 0){
+        if(isOrderValid(orderBy) && isSortOrderValid(order)){
             sql.append(" ORDER BY ").append(orderBy).append(" ").append(order);
         }
         sql.append(" LIMIT ? OFFSET ? ;");
@@ -374,9 +374,10 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
         sql.append(" GROUP BY m.mediaId, mlc.moovielistid, mlc.mediaId, mlc.customorder ");
 
-        if(orderBy!=null && !orderBy.isEmpty() ){
+        if(isOrderValid(orderBy) && isSortOrderValid(sortOrder)){
             sql.append(" ORDER BY ").append(orderBy).append(" ").append(sortOrder);
         }
+
         sql.append(" LIMIT ? OFFSET ? ;");
         args.add(size);
         args.add(pageNumber*size);
@@ -412,11 +413,11 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
         sql.append(" GROUP BY m.mediaId ");
         sql.append(" ORDER BY ").append(featuredListOrder);
-        if(orderBy!=null && !orderBy.isEmpty() && !orderBy.equals("customorder")){
+        if(isOrderValid(orderBy) && isSortOrderValid(sortOrder) && !orderBy.equals("customorder")){
             sql.append(" DESC LIMIT 100) AS topRated ORDER BY ").append(orderBy).append(" ").append(sortOrder);
             sql.append(" LIMIT ? OFFSET ? ;");
         }
-        else if(orderBy!=null && !orderBy.isEmpty() && orderBy.equals("customorder")){
+        else if(isOrderValid(orderBy) && isSortOrderValid(sortOrder) && orderBy.equals("customorder")){
             sql.append(" ").append(sortOrder).append(" LIMIT 100) as aux LIMIT ? OFFSET ? ");
         }
         else {
@@ -451,13 +452,16 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
             sql.append(" WHERE type IS NOT NULL ");
         }
         sql.append(" GROUP BY m.mediaId, r.reviewid ");
-        sql.append(" ORDER BY ").append(featuredListOrder);
-        if(orderBy!=null && !orderBy.isEmpty() && !orderBy.equals("customorder")){
-             sql.append(" DESC LIMIT 100) AS topRated ORDER BY ").append(orderBy).append(" ").append(sortOrder);
-             sql.append(" LIMIT ? OFFSET ?) AS featured WHERE featured.isWatched = true ");
+
+        if(isOrderValid(featuredListOrder)){
+            sql.append(" ORDER BY ").append(featuredListOrder).append(" DESC LIMIT 100) ");
         }
-        else if(orderBy!=null && !orderBy.isEmpty() && orderBy.equals("customorder")){
-            sql.append(" ").append(sortOrder).append(" LIMIT 100) AS topRated LIMIT ? OFFSET ?) AS featured WHERE featured.isWatched = true ;");
+        if(isOrderValid(orderBy) && isSortOrderValid(sortOrder) && !orderBy.equals("customorder")){
+            sql.append(" AS topRated ORDER BY ").append(orderBy).append(" ").append(sortOrder);
+            sql.append(" LIMIT ? OFFSET ? ;");
+        }
+        else if(isOrderValid(orderBy) && isSortOrderValid(sortOrder) && orderBy.equals("customorder")){
+            sql.append(" ").append(sortOrder).append(" LIMIT 100) as aux LIMIT ? OFFSET ? ");
         }
         else {
             sql.append(" DESC LIMIT 100) AS topRated LIMIT ? OFFSET ?) AS featured WHERE featured.isWatched = true ;");
@@ -517,9 +521,8 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     @Override
     public void deleteMediaFromMoovieList(int moovieListId, int mediaId){
-        String sqlDel = "DELETE FROM moovieListsContent " +
-                " WHERE moovieListId = " + moovieListId + " AND moovieListsContent.mediaId = " + mediaId ;
-        jdbcTemplate.execute(sqlDel);
+        String sqlDel = "DELETE FROM moovieListsContent  WHERE moovieListId = ? AND moovieListsContent.mediaId = ?" ;
+        jdbcTemplate.update(sqlDel, moovieListId, mediaId);
     }
 
     @Override
@@ -537,8 +540,8 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     @Override
     public void deleteMoovieList(int moovieListId) {
-        String sqlDel = "DELETE FROM moovieLists WHERE moovieListId = " + moovieListId;
-        jdbcTemplate.execute(sqlDel);
+        String sqlDel = "DELETE FROM moovieLists WHERE moovieListId = ?" ;
+        jdbcTemplate.update(sqlDel, moovieListId);
     }
 
     @Override
@@ -553,7 +556,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
 
     @Override
     public void removeLikeMoovieList(int userId, int moovieListId) {
-        String sql = "DELETE FROM moovielistslikes WHERE userid=? AND moovieListId = ?";
+        String sql = "DELETE FROM moovielistslikes WHERE userid= ? AND moovieListId = ?";
         jdbcTemplate.update( sql , new Object[]{userId, moovieListId} );
     }
 
@@ -561,7 +564,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
     @Override
     public void removeFollowMoovieList(int userId, int moovieListId) {
         String sql = "DELETE FROM moovielistsfollows WHERE userid=? AND moovieListId = ?";
-        jdbcTemplate.update( sql , new Object[]{userId, moovieListId} );
+        jdbcTemplate.update( sql , userId, moovieListId );
     }
 
     @Override
@@ -571,6 +574,29 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         args.put("userId", userId);
 
         moovieListFollowsJdbcInsert.execute(args);
+    }
+
+    //Following functions needed in order to be safe of sql injection
+    private boolean isOrderValid( String order) {
+        if(order==null || order.isEmpty()){
+            return false;
+        }
+        String[] validOrders = {"name", "tmdbrating", "likeCount", "customorder", "moovielistid", "releasedate", "type", "totalrating"};
+        for (String element : validOrders) {
+            if (element.equals(order.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    private boolean isSortOrderValid(String so){
+        if(so==null || so.isEmpty()){
+            return false;
+        }
+        if(so.toLowerCase().equals("asc") || so.toLowerCase().equals("desc")){
+            return true;
+        }
+        return false;
     }
 }
 

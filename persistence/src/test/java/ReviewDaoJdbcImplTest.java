@@ -4,13 +4,17 @@ import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.ReviewDaoJdbcImpl;
 import config.TestConfig;
 import javafx.scene.control.Pagination;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
 
@@ -29,6 +33,12 @@ public class ReviewDaoJdbcImplTest {
 
     private static final int EXISTING_REVIEW_ID = 1;
     private static final int EXISTING_REVIEW_MEDIA_ID = 1;
+    private static final int EXISTING_MEDIA_ID = 1;
+
+    private static final int SECOND_EXISTING_USER_ID = 2;
+    private static final int SECOND_EXISTING_MEDIA_ID = 2;
+    private static final int SECOND_EXISTING_REVIEW_ID = 2;
+
     @Autowired
     private DataSource ds;
 
@@ -41,17 +51,27 @@ public class ReviewDaoJdbcImplTest {
     public void setUp(){
         jdbcTemplate = new JdbcTemplate(ds);
     }
- /*
+
     @Test
     public void testCreateReview(){
-        reviewDao.createReview();
+        assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"reviews",String.format("userId = %d AND mediaid = %d",SECOND_EXISTING_USER_ID,SECOND_EXISTING_MEDIA_ID)));
+        reviewDao.createReview(SECOND_EXISTING_USER_ID,SECOND_EXISTING_MEDIA_ID,5,"Amazing movie.");
+        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"reviews",
+                String.format("userId = %d AND mediaid = %d",SECOND_EXISTING_USER_ID,SECOND_EXISTING_MEDIA_ID)));
     }
-*/
+
     @Test
     public void testGetReview(){
         Optional<Review> review = reviewDao.getReviewById(EXISTING_USER_ID, EXISTING_REVIEW_ID);
         assertTrue(review.isPresent());
         assertEquals(EXISTING_REVIEW_MEDIA_ID,review.get().getReviewId());
+    }
+
+    @Test
+    public void testGetReviewById(){
+        List<Review> review = reviewDao.getReviewsByMediaId(EXISTING_USER_ID,EXISTING_MEDIA_ID,10,0);
+        assertEquals(review.size(),2);
+        assertEquals(EXISTING_REVIEW_ID,review.get(0).getReviewId());
     }
 
     @Test
@@ -63,14 +83,17 @@ public class ReviewDaoJdbcImplTest {
 
     @Test
     public void testLikeReview(){
-
+        assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"reviewslikes",String.format("reviewId = %d AND userid = %d",EXISTING_REVIEW_ID,EXISTING_USER_ID)));
+        reviewDao.likeReview(EXISTING_USER_ID,EXISTING_REVIEW_ID);
+        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"reviews",
+                String.format("reviewId = %d AND userid = %d",EXISTING_REVIEW_ID,EXISTING_USER_ID)));
     }
 
     @Test
     public void testDeleteReview(){
-        assertTrue(reviewDao.getReviewById(EXISTING_USER_ID,EXISTING_REVIEW_ID).isPresent());
-        reviewDao.deleteReview(EXISTING_REVIEW_ID);
-        assertFalse(reviewDao.getReviewById(EXISTING_USER_ID,EXISTING_REVIEW_ID).isPresent());
+        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"reviews",String.format("reviewId = %d",SECOND_EXISTING_REVIEW_ID)));
+        reviewDao.deleteReview(SECOND_EXISTING_REVIEW_ID);
+        assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"reviews",String.format("reviewId = %d",SECOND_EXISTING_REVIEW_ID)));
     }
 
 }

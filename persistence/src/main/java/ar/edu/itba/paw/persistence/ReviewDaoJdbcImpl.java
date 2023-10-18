@@ -61,7 +61,7 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
 
     @Override
     public List<Review> getReviewsByMediaId(int currentUserId, int mediaId, int size, int pageNumber) {
-        StringBuilder sql = new StringBuilder("SELECT *, ");
+        StringBuilder sql = new StringBuilder("SELECT r.*,media.name,media.posterpath,users.username, ");
         ArrayList<Object> args = new ArrayList<>();
 
         sql.append(" (SELECT COUNT(*) FROM reviewsLikes rl WHERE r.reviewid = rl.reviewid) AS reviewLikes, ");
@@ -83,15 +83,6 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
         return jdbcTemplate.query("SELECT COUNT(*) FROM reviews WHERE mediaId = ?",new Object[]{mediaId},COUNT_ROW_MAPPER).stream().findFirst().get().intValue();
     }
 
-
-//    @Override
-//    public List<Review> getMovieReviewsFromUser(int userId) {
-//        String sql = "SELECT reviews.* FROM reviews " +
-//                "JOIN media ON reviews.mediaId = media.mediaId " +
-//                "WHERE reviews.userId = ?";
-//        return jdbcTemplate.query(sql, new Object[]{userId}, REVIEW_ROW_MAPPER);
-//    }
-//      FALTABAN LOS JOINS CON LAS OTRAS TABLAS, SE PODRIA HACER MEJOR? LIT COPIE LA OTRAS QUERIES
 
     @Override
     public List<Review> getMovieReviewsFromUser(int currentUserId, int userId, int size, int pageNumber) {

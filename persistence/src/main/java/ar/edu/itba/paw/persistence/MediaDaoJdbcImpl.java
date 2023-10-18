@@ -89,7 +89,6 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
     private static final String tvQueryParams = " media.mediaId, type, name, originalLanguage, adult, releaseDate, overview, backdropPath, posterPath, trailerLink, tmdbRating, status, lastAirDate, nextEpisodeToAir, numberOfEpisodes, numberOfSeasons ";
 
-
     private static final RowMapper<Integer> COUNT_ROW_MAPPER = ((resultSet, i) -> resultSet.getInt("count"));
 
 
@@ -174,7 +173,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
         sql.append("GROUP BY m.mediaid ");
 
         // Order by
-        if (orderBy!=null && !orderBy.isEmpty()) {
+        if (isOrderValid(orderBy) && isSortOrderValid(sortOrder)) {
             sql.append(" ORDER BY ").append(orderBy);
             sql.append(" ").append(sortOrder);
         }
@@ -315,4 +314,26 @@ public class MediaDaoJdbcImpl implements MediaDao {
         return jdbcTemplate.query(sql.toString(), args.toArray(), COUNT_ROW_MAPPER).stream().findFirst().get().intValue();
     }
 
+    //Following functions needed in order to be safe of sql injection
+    private boolean isOrderValid( String order) {
+        if(order==null || order.isEmpty()){
+            return false;
+        }
+        String[] validOrders = {"name", "tmdbrating", "releasedate", "type", "totalrating"};
+        for (String element : validOrders) {
+            if (element.toLowerCase().equals(order)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    private boolean isSortOrderValid(String so){
+        if(so==null || so.isEmpty()){
+            return false;
+        }
+        if(so.toLowerCase().equals("asc") || so.toLowerCase().equals("desc")){
+            return true;
+        }
+        return false;
+    }
 }
