@@ -116,24 +116,6 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/css/**",	"/js/**",	"/img/**");
     }
 
-    /*
-    @Bean
-    public AuthenticationFailureHandler authenticationFailureHandler() {
-        return (request, response, exception) -> {
-            response.sendRedirect("/baobao");
-            if (exception instanceof UsernameNotFoundException) {
-                response.sendRedirect("/login?error=usernameNotFound");
-            } else if (exception instanceof UserNotVerifiedException) {
-                response.sendRedirect("/login?error=userNotVerified");
-            } else if (exception instanceof UserIsBannedException) {
-                response.sendRedirect("/login?error=banned");
-            } else {
-                response.sendRedirect("/login?error=generic");
-            }
-        };
-    }*/
-
-
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
