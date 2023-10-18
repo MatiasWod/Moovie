@@ -141,14 +141,14 @@ public class MoovieListServiceImpl implements MoovieListService{
     public List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber){
         List<MoovieListCard> mlc =  moovieListDao.getRecommendedMoovieListCards(moovieListId, size, pageNumber, userService.tryToGetCurrentUserId());
         if(mlc.size()<size){
-            // 4 are searched in order to be 100% sure there wont be repeating elements
-            List<MoovieListCard> aux =  moovieListDao.getMoovieListCards(null, null, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), " random() "," asc ", size, pageNumber, userService.tryToGetCurrentUserId());
+            // 5 are searched in order to be 100% sure there wont be repeating elements
+            List<MoovieListCard> aux =  moovieListDao.getMoovieListCards(null, null, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), "random()","asc", size + 1, 0, userService.tryToGetCurrentUserId());
             // A check is needed so as no to add duplicates
             boolean flag;
             for(MoovieListCard mlcAux : aux ){
                 flag = true;
                 for(MoovieListCard mlcOriginal : mlc){
-                    if(mlcOriginal.getMoovieListId() == mlcAux.getMoovieListId()){
+                    if(mlcOriginal.getMoovieListId() == mlcAux.getMoovieListId() || moovieListId == mlcAux.getMoovieListId()){
                         flag = false;
                     }
                 }

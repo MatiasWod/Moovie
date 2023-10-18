@@ -185,6 +185,7 @@ public class UserDaoJdbcImpl implements UserDao{
         if(order==null || order.isEmpty()){
             return false;
         }
+        order = order.replaceAll(" ","");
         String[] validOrders = {"username", "userid", "role", "moovieListCount", "likedMoovieListCount", "reviewCount"};
         for (String element : validOrders) {
             if (element.toLowerCase().equals(order)) {
@@ -197,6 +198,7 @@ public class UserDaoJdbcImpl implements UserDao{
         if(so==null || so.isEmpty()){
             return false;
         }
+        so = so.replaceAll(" ","");
         if(so.toLowerCase().equals("asc") || so.toLowerCase().equals("desc")){
             return true;
         }

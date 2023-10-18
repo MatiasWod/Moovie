@@ -581,7 +581,8 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         if(order==null || order.isEmpty()){
             return false;
         }
-        String[] validOrders = {"name", "tmdbrating", "likeCount", "customorder", "moovielistid", "releasedate", "type", "totalrating"};
+        order = order.replaceAll(" ","");
+        String[] validOrders = {"name", "tmdbrating", "likeCount", "customorder", "moovielistid", "releasedate", "type", "totalrating", "random()"};
         for (String element : validOrders) {
             if (element.equals(order.toLowerCase())) {
                 return true;
@@ -593,6 +594,7 @@ public class MoovieListDaoJdbcImpl implements MoovieListDao{
         if(so==null || so.isEmpty()){
             return false;
         }
+        so = so.replaceAll(" ","");
         if(so.toLowerCase().equals("asc") || so.toLowerCase().equals("desc")){
             return true;
         }
