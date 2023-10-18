@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.*;
+import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.MoovieListDetails;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
@@ -53,13 +54,18 @@ public class UserController {
     @Autowired
     EmailService emailService;
 
+    @Autowired
+    MediaService mediaService;
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
 
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public ModelAndView register(@ModelAttribute("registerForm") final RegisterForm form) {
-        ModelAndView modelAndView = new ModelAndView("helloworld/register");
+        ModelAndView modelAndView = new ModelAndView("helloworld/register").
+                addObject("mediaList",
+                mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null,null,null,null,"tmdbrating","desc",PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0));;
         return modelAndView;
     }
 
@@ -116,7 +122,9 @@ public class UserController {
 
     @RequestMapping("/login")
     public ModelAndView login() {
-        return new ModelAndView("helloworld/login");
+        return new ModelAndView("helloworld/login")
+                .addObject("mediaList",
+                        mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null,null,null,null,"tmdbrating","desc",PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0));
     }
 
     @RequestMapping("/profile/{username:.+}")

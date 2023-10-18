@@ -12,12 +12,15 @@
             crossorigin="anonymous"></script>
     <title><spring:message code="login.title"/></title>
 </head>
-<body style="background: whitesmoke">
+<body style="background: whitesmoke; overflow: hidden">
 <c:url value="/login" var="loginUrl"/>
 <c:url value="/register" var="registerUrl"/>
 <c:url value="/" var="homeUrl"/>
 <c:import url="navBar.jsp"/>
 <div style="border:solid black;width: fit-content; min-height: 60%; padding: 5%; margin-top: 5%" class="container container-gray align-items-center justify-content-center d-flex flex-column">
+
+    <c:import url="backgroundPosters.jsp"/>
+
     <form action="${loginUrl}" method="post" enctype="application/x-www-form-urlencoded" >
         <h1>Login</h1>
         <div class="alert alert-danger" id="errorAlert" style="display: none;">

@@ -14,8 +14,9 @@
     <title><spring:message code="register.title"/></title>
 </head>
 
-<body style="background: whitesmoke">
+<body style="background: whitesmoke; overflow: hidden">
     <c:import url="navBar.jsp"/>
+    <c:import url="backgroundPosters.jsp"/>
     <div style="border: solid black; width: fit-content" class="container-gray container d-flex flex-column p-3 mt-5">
         <h1><spring:message code="register.signUp"/></h1>
         <div class="alert alert-danger" id="errorAlert" style="display: none;">
