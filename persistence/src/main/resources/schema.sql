@@ -16,7 +16,6 @@ CREATE TABLE IF NOT EXISTS moovieLists(
     name                                VARCHAR(255) NOT NULL,
     description                         TEXT,
     type                                INTEGER NOT NULL,
---     customOrder                        INTEGER NOT NULL,
     FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE,
     UNIQUE(userId,name)
 );
