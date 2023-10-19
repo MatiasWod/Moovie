@@ -254,7 +254,7 @@
                                 <%--                            profile.noUserListsMessageGuest--%>
                                 <%--                            profile.noUserListsButtonGuest--%>
                             </c:if>
-                            <c:if test="${param.lists == 'followed'}">
+                            <c:if test="${param.list == 'followed'}">
                                 <h4><spring:message code="profile.noFollowedListsMessageGuest"/></h4>
                                 <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/lists"><spring:message code="profile.noFollowedListsButtonGuest"/></a>
                                 <%--                            profile.noFollowedListsMessageGuest--%>
