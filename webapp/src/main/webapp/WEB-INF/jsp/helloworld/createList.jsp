@@ -36,6 +36,11 @@
     <div class="container d-flex flex-column">
         <div class="container d-flex flex-row ">
             <div class="container d-flex flex-column">
+                <c:if test="${param.q != null && param.q.length() > 0}">
+                    <h3>
+                        <spring:message code="discover.results" arguments="${param.q}"/>
+                    </h3>
+                </c:if>
                 <c:import url="filterButtons.jsp">
                     <c:param name="g" value="${param.g}"/>
                     <c:param name="providers" value="${param.providers}"/>

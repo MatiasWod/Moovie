@@ -11,6 +11,12 @@
 <c:set var="selectedProviders" value="${fn:split(param.providers, ',')}" />
 <div style="z-index: 1;">
     <form id="filter-form" class="mb-2 d-flex flex-row justify-content-between" action="${pageContext.request.contextPath}/${param.url}" method="get" onsubmit="beforeSubmit()">
+        <c:if test="${param.query != null  && param.query.length() > 0}">
+            <input type="hidden" name="query" value="${param.query}">
+        </c:if>
+        <c:if test="${param.credit != null && param.credit.length() > 0}">
+            <input type="hidden" name="credit" value="${param.credit}">
+        </c:if>
         <input type="hidden" id="selected-media-input" />
         <div role="group" class="input-group d-flex flex-row m-1 me-3">
             <select  name="m" class="form-select filter-width" aria-label="Filter!">

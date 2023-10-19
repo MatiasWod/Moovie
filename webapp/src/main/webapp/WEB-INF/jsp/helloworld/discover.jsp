@@ -37,14 +37,24 @@
     <div class="container d-flex flex-row ">
         <%--        FILTROS y PELIS    --%>
 
+
+
         <div class="container d-flex flex-column">
+            <c:if test="${param.query != null && param.query.length() > 0}">
+                <h3>
+                    <spring:message code="discover.results" arguments="${param.query}"/>
+                </h3>
+            </c:if>
             <c:import url="filterButtons.jsp">
+                <c:param name="query" value="${param.query}"/>
+                <c:param name="credit" value="${param.credit}"/>
                 <c:param name="g" value="${param.g}"/>
                 <c:param name="providers" value="${param.providers}"/>
                 <c:param name="url" value="discover"/>
                 <c:param name="searchBar" value="false"/>
             </c:import>
             <div class="scrollableDiv flex-wrap d-flex justify-space-between">
+
                 <c:if test="${fn:length(mediaList) == 0 }">
                     <div class="d-flex m-2 flex-column">
                         <spring:message code="discover.noResults"/>
