@@ -219,7 +219,7 @@
             <div class="container lists-container" id="liked-lists" style="margin-top: 30px">
 
                 <c:if test="${showLists.size()==0}">
-                    <div class="d-flex flex-column text-center justify-content-center">
+                    <div class=" text-center ">
 
                         <c:if test="${isMe}">
                             <c:if test="${param.list == 'liked-lists'}">
@@ -234,7 +234,7 @@
                                 <%--                            profile.noUserListsMessagePersonal--%>
                                 <%--                            profile.noUserListsButtonPersonal--%>
                             </c:if>
-                            <c:if test="${param.lists == 'followed'}">
+                            <c:if test="${param.list == 'followed'}">
                                 <h4><spring:message code="profile.noFollowedListsMessagePersonal"/></h4>
                                 <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/lists"><spring:message code="profile.noFollowedListsButtonPersonal"/></a>
                                 <%--                            profile.noFollowedListsMessagePersonal--%>
@@ -345,11 +345,11 @@
                     <c:otherwise>
                         <div class="text-center">
                             <c:if test="${isMe}">
-                                <h3><spring:message code="profile.noReviewsMessagePersonal"/></h3>
+                                <h4><spring:message code="profile.noReviewsMessagePersonal"/></h4>
                                 <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/discover"><spring:message code="profile.noReviewsButtonPersonal"/></a>
                             </c:if>
                             <c:if test="${!isMe}">
-                                <h3><spring:message code="profile.noReviewsMessageGuest"/></h3>
+                                <h4><spring:message code="profile.noReviewsMessageGuest"/></h4>
                                 <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/discover"><spring:message code="profile.noReviewsButtonGuest"/></a>
                             </c:if>
 
