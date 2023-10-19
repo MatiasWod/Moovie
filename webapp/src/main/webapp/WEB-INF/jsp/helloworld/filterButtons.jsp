@@ -91,7 +91,7 @@
                 <input class="form-control me-2" type="search" name="q" value="${param.q}" placeholder="<spring:message code="createList.searchBar"/>" aria-label="Search">
             </c:if>
             <button class="btn btn-outline-success me-1" type="submit" ><spring:message code="createList.apply"/></button>
-            <a style="height: 100%;" class="btn btn-outline-success align-bottom" href="${pageContext.request.contextPath}/createList">
+            <a style="height: 100%;" class="btn btn-outline-success align-bottom" href="${pageContext.request.contextPath}/${param.url}">
                 <spring:message code="createList.reset"/>
             </a>
         </div>

@@ -220,8 +220,49 @@
 
                 <c:if test="${showLists.size()==0}">
                     <div class="d-flex flex-column text-center justify-content-center">
-                        <h4><spring:message code="profile.noLists"/></h4>
-                        <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/lists"><spring:message code="profile.noLists"/></a>
+
+                        <c:if test="${isMe}">
+                            <c:if test="${param.list == 'liked-lists'}">
+                                <h4><spring:message code="profile.noLikedListsMessagePersonal"/></h4>
+                                <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/lists"><spring:message code="profile.noLikedListsButtonPersonal"/></a>
+                                <%--                            profile.noLikedListsMessagePersonal--%>
+                                <%--                            profile.noLikedListsButtonPersonal--%>
+                            </c:if>
+                            <c:if test="${param.list == null || param.list == 'user-lists'}">
+                                <h4><spring:message code="profile.noUserListsMessagePersonal"/></h4>
+                                <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/createList"><spring:message code="profile.noUserListsButtonPersonal"/></a>
+                                <%--                            profile.noUserListsMessagePersonal--%>
+                                <%--                            profile.noUserListsButtonPersonal--%>
+                            </c:if>
+                            <c:if test="${param.lists == 'followed'}">
+                                <h4><spring:message code="profile.noFollowedListsMessagePersonal"/></h4>
+                                <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/lists"><spring:message code="profile.noFollowedListsButtonPersonal"/></a>
+                                <%--                            profile.noFollowedListsMessagePersonal--%>
+                                <%--                            profile.noFollowedListsButtonPersonal--%>
+                            </c:if>
+                        </c:if>
+                        <c:if test="${!isMe}">
+                            <c:if test="${param.list == 'liked-lists'}">
+                                <h4><spring:message code="profile.noLikedListsMessageGuest"/></h4>
+                                <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/lists"><spring:message code="profile.noLikedListsButtonGuest"/></a>
+                                <%--                            profile.noLikedListsMessageGuest--%>
+                                <%--                            profile.noLikedListsButtonGuest--%>
+                            </c:if>
+                            <c:if test="${param.list == null || param.list == 'user-lists'}">
+                                <h4><spring:message code="profile.noUserListsMessageGuest"/></h4>
+                                <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/lists"><spring:message code="profile.noUserListsButtonGuest"/></a>
+                                <%--                            profile.noUserListsMessageGuest--%>
+                                <%--                            profile.noUserListsButtonGuest--%>
+                            </c:if>
+                            <c:if test="${param.lists == 'followed'}">
+                                <h4><spring:message code="profile.noFollowedListsMessageGuest"/></h4>
+                                <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/lists"><spring:message code="profile.noFollowedListsButtonGuest"/></a>
+                                <%--                            profile.noFollowedListsMessageGuest--%>
+                                <%--                            profile.noFollowedListsButtonGuest--%>
+                            </c:if>
+                        </c:if>
+
+
                     </div>
                 </c:if>
 
@@ -303,7 +344,15 @@
                     </c:when>
                     <c:otherwise>
                         <div class="text-center">
-                            <h3><spring:message code="profile.noReviews"/></h3>
+                            <c:if test="${isMe}">
+                                <h3><spring:message code="profile.noReviewsMessagePersonal"/></h3>
+                                <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/discover"><spring:message code="profile.noReviewsButtonPersonal"/></a>
+                            </c:if>
+                            <c:if test="${!isMe}">
+                                <h3><spring:message code="profile.noReviewsMessageGuest"/></h3>
+                                <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/discover"><spring:message code="profile.noReviewsButtonGuest"/></a>
+                            </c:if>
+
                         </div>
                     </c:otherwise>
                 </c:choose>

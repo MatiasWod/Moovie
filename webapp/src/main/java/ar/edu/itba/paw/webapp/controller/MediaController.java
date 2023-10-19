@@ -83,14 +83,14 @@ public class MediaController {
         // Name media query
         if (nameMediaCount > 0){
             mav.addObject("nameMediaFlag", true);
-            mav.addObject("nameMedia", mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null, null, null, null, null,PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),0 ));
+            mav.addObject("nameMedia", mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null, null, null, "tmdbrating", "desc",PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),0 ));
         }else{
             mav.addObject("nameMediaFlag",false);
         }
         // Credited media query
         if (creditMediaCount > 0){
             mav.addObject("creditMediaFlag", true);
-            mav.addObject("creditMedia", mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null, query, null, null, null, null,PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),0 ));
+            mav.addObject("creditMedia", mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null, query, null, null, "tmdbrating", "desc",PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),0 ));
         }else{
             mav.addObject("creditMediaFlag",false);
         }

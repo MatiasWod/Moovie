@@ -108,6 +108,36 @@ function formatElementValue(element) {
     }
 }
 
+function setCreateListContent(name,id){
+
+    let selectedMediaId = [];
+    let selectedMedia = [];
+
+    const storedMediaIds = localStorage.getItem("selectedMediaIds");
+    if (storedMediaIds) {
+        const mediaIdArray = storedMediaIds.replaceAll("\"","").split(",").map(Number);
+        selectedMediaId = [...selectedMediaId, ...mediaIdArray];
+    }
+
+    const storedMediaNames = localStorage.getItem("mediaNames");
+    if (storedMediaNames) {
+        const mediaArray = storedMediaNames.split(",").map(String);
+        selectedMedia = [...selectedMedia, ...mediaArray];
+    }
+
+    if (!selectedMediaId.includes(id)){
+
+        selectedMedia.push(name.replaceAll(",",""));
+        selectedMediaId.push(id);
+
+        console.log(selectedMedia)
+
+        localStorage.setItem("mediaNames",JSON.stringify(selectedMedia).replaceAll('"','').replaceAll(']','').replaceAll('[',''))
+        localStorage.setItem("selectedMediaIds",JSON.stringify(selectedMediaId).replaceAll(']','').replaceAll('[',''))
+
+    }
+}
+
 // Call the function to format revenue and budget when the page loads
 window.addEventListener("load", formatRevenueAndBudget);
 

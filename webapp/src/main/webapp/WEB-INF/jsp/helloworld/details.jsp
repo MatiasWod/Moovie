@@ -246,7 +246,7 @@
                                 </li>
                             </form>
                         </c:forEach>
-                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/createList?s=${media.mediaId}"><i
+                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/createList" onclick="setCreateListContent('${media.name}',${media.mediaId})"><i
                                 class="bi bi-plus-circle-fill"></i><spring:message code="details.createNewList"/></a></li>
                     </ul>
                 </div>
