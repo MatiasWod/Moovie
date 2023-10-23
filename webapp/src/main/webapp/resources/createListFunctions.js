@@ -134,6 +134,18 @@ document.addEventListener("DOMContentLoaded", function() {
         localStorage.setItem('formSubmitted', 'true');
     });
 
+    const toggleButton = document.getElementById('toggle-button');
+    const toggleIcon = document.getElementById('toggle-icon');
+    const toggleStateInput = document.getElementById('toggle-state');
+
+    toggleButton.addEventListener("click", function() {
+        console.log("click!")
+        let state = !(toggleStateInput.getAttribute('value') === 'true')
+
+        toggleStateInput.setAttribute('value',state.toString())
+        toggleIcon.className = state ? 'bi bi-eye-fill' : 'bi bi-eye-slash-fill';
+    });
+
 //     SEARCH FUNCTIONALITY
     function addSearchFunctionality(searchBoxId, formCheckClass) {
         var searchBox = document.getElementById(searchBoxId);

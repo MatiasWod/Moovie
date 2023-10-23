@@ -18,6 +18,8 @@ public class CreateListForm {
     @Size(max = 255, message = "List description must be less than 255 characters")
     private String listDescription;
 
+    private Boolean privateList;
+
     public void setListName(String listName) {
         this.listName = listName;
     }
@@ -30,6 +32,9 @@ public class CreateListForm {
         this.mediaIdsList = mediaIdsList;
     }
 
+    public void setPrivateList(Boolean privateList) {
+        this.privateList = privateList;
+    }
 
     public String getListName() {
         return listName;
@@ -41,5 +46,9 @@ public class CreateListForm {
 
     public List<Integer> getMediaIdsList() {
         return mediaIdsList;
+    }
+
+    public Boolean getPrivateList() {
+        return privateList;
     }
 }

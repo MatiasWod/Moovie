@@ -21,7 +21,7 @@ document.getElementById('sortSelectWatchlist').addEventListener('change', functi
 
 document.addEventListener('DOMContentLoaded', () => {
     const radioButtons = document.querySelectorAll('[name="btnradio"]');
-    const divs = document.querySelectorAll('#user-lists, #liked-lists, #reviews, #watched-list, #watchlist');
+    const divs = document.querySelectorAll('#user-lists,#user-private-lists, #liked-lists, #reviews, #watched-list, #watchlist');
 
     console.log(divs)
 
