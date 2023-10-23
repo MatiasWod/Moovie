@@ -219,8 +219,13 @@
 
 <%--            ACA agregar el link del trailer al source. Se puede usar un c:if para solo mostrar cuando hay trailer
                 incluso se puede hacer un boton extendible, y que el embed aparezca solo al apretar "See trailer"--%>
-            <iframe width="400" height="300" src="https://www.youtube.com/embed/bMCiAKNUpTY" title="Ólafur Arnalds live from Hafursey, in Iceland for Cercle" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-
+            <c:if test="${media.trailerLink != null && media.trailerLink != 'None'}">
+                <iframe width="400" height="300"
+<%--                        hay que modificar el link por funcionamiento de los endpoints de Youtube para embeds--%>
+                        src="${media.trailerLink.replace("watch?v=","embed/")}"
+                        title="${media.name}"
+                        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </c:if>
             <!-- Description and Buttons-->
             <p>${media.overview}</p>
             <div class="flex-row d-flex">
