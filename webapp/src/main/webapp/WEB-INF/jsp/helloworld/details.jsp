@@ -217,6 +217,10 @@
                 </c:otherwise>
             </c:choose>
 
+<%--            ACA agregar el link del trailer al source. Se puede usar un c:if para solo mostrar cuando hay trailer
+                incluso se puede hacer un boton extendible, y que el embed aparezca solo al apretar "See trailer"--%>
+            <iframe width="400" height="300" src="https://www.youtube.com/embed/bMCiAKNUpTY" title="Ólafur Arnalds live from Hafursey, in Iceland for Cercle" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
             <!-- Description and Buttons-->
             <p>${media.overview}</p>
             <div class="flex-row d-flex">
