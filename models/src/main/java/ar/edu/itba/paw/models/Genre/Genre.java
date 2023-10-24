@@ -1,16 +1,25 @@
 package ar.edu.itba.paw.models.Genre;
 
-public class Genre {
-    private final int mediaId;
-    private final String genre;
+import javax.persistence.*;
 
-    public Genre(int mediaId, String genre) {
-        this.mediaId = mediaId;
-        this.genre = genre;
+@Entity
+@Table(name = "genres")
+public class Genre {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "mediaid")
+    private Integer id;
+
+    @Column(name = "genre", length = 100, nullable = false)
+    private String genre;
+
+    /* Just for Hibernate*/
+    Genre(){
+
     }
 
-    public int getMediaId() {
-        return mediaId;
+    public Genre( final String genre) {
+        this.genre = genre;
     }
 
     public String getGenre() {

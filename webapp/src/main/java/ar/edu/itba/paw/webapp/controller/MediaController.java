@@ -54,6 +54,7 @@ public class MediaController {
 
     @RequestMapping("/")
     public ModelAndView home() {
+        /*
         LOGGER.info("Attempting to get media for /.");
         final ModelAndView mav = new ModelAndView("helloworld/index");
         List<Media> movieList = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
@@ -63,6 +64,11 @@ public class MediaController {
                 null, null, "tmdbrating", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("tvList", tvSerieList);
         LOGGER.info("Returned media for /.");
+        return mav;
+        */
+        Media media = mediaService.getMediaById(1);
+        final ModelAndView mav = new ModelAndView("helloworld/test");
+        mav.addObject("media", media);
         return mav;
     }
 

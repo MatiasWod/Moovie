@@ -13,43 +13,31 @@
 <body>
 
 <div class="col-8 offset-2">
-    <br>
-    <h4>Recently Added Films</h4>
-    <div class="container-fluid">
-        <div class="row flex-row flex-nowrap overflow-auto">
-            <c:forEach var="movie" items="${movieList}">
-                <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
-                    <jsp:include page="/WEB-INF/jsp/helloworld/card.jsp">
-                        <jsp:param name="posterPath" value="${movie.posterPath}"/>
-                        <jsp:param name="mediaName" value="${movie.movieName}"/>
-                        <jsp:param name="releaseDate" value="${movie.releaseDate}"/>
-                        <jsp:param name="mediaId" value="${movie.movieId}"/>
-                    </jsp:include>
-                </div>
-            </c:forEach>
-        </div>
-    </div>
     <h4>Recently Added TV Shows</h4>
     <div class="container-fluid">
         <div class="row flex-row flex-nowrap overflow-auto">
-            <c:forEach var="tv" items="${tvList}">
-                <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
-                    <jsp:include page="/WEB-INF/jsp/helloworld/card.jsp">
-                        <jsp:param name="posterPath" value="${tv.posterPath}"/>
-                        <jsp:param name="mediaName" value="${tv.tvName}"/>
-                        <jsp:param name="releaseDate" value="${tv.releaseDate}"/>
-                        <jsp:param name="mediaId" value="${tv.tvId}"/>
-                    </jsp:include>
-                </div>
-            </c:forEach>
+            <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                <a href="${pageContext.request.contextPath}/details/${media.mediaId}" class="poster card text-bg-dark m-1">
+                    <div class="card-img-container"> <!-- Add a container for the image -->
+                        <img class="cropCenter" src="${media.posterPath}" alt="media poster">
+                        <div class="card-img-overlay">
+                            <h6 class="card-title text-center">${media.name}</h6>
+                            <div class="d-flex justify-content-evenly">
+                                <p class="card-text">
+                                    <i class="bi bi-star-fill"></i>
+                                    ${media.tmdbRating}
+                                </p>
+                                <p class="card-text">
+                                    <fmt:formatDate value="${media.releaseDate}" pattern="YYYY"/>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
-    <br>
 </div>
-<%--<script>--%>
-<%--    $(function () {--%>
-<%--        $('[data-toggle="tooltip"]').tooltip();--%>
-<%--    });--%>
-<%--</script>--%>
+
 </body>
 </html>

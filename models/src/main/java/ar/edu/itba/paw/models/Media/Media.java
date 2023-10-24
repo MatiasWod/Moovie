@@ -1,35 +1,84 @@
 package ar.edu.itba.paw.models.Media;
 
+import ar.edu.itba.paw.models.Genre.Genre;
 import ar.edu.itba.paw.models.Provider.Provider;
+import org.hibernate.annotations.Formula;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+@Entity
+@Table(name = "media")
 public class Media {
-    private final int mediaId;
-    private final boolean type;
-    private final String name;
-    private final String originalLanguage;
-    private final boolean adult;
-    private final Date releaseDate;
+
+    //TODO checkear si no es public.media_mediaid_seq
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "media_mediaid_seq")
+    @SequenceGenerator(sequenceName = "media_mediaid_seq", name = "media_mediaid_seq", allocationSize = 1)
+    @Column(name = "mediaId")
+    private int mediaId;
+
+
+    @Column(nullable = false)
+    private boolean type;
+
+    @Column(length = 255, nullable = false)
+    private String name;
+
+    @Column(length = 2)
+    private String originalLanguage;
+
+    @Column(nullable = false)
+    private boolean adult;
+
+    @Column
+    private Date releaseDate;
+
+    @Column(nullable = false)
     private String overview;
-    private final String backdropPath;
-    private final String posterPath;
-    private final String trailerLink;
-    private final float tmdbRating;
-    private final int totalRating;//total de todas las ratings
-    private final int voteCount;//cantidad de gente que votó
-    private final String status;
-    private final List<String> genres;
 
-    private final List<Provider> providers;
+    @Column(length = 255)
+    private String backdropPath;
 
+    @Column(length = 255)
+    private String posterPath;
 
-    public Media(int mediaId, boolean type, String name, String originalLanguage, boolean adult, Date releaseDate, String overview,
-                 String backdropPath, String posterPath, String trailerLink, float tmdbRating, int totalRating, int voteCount, String status,
-                 String genres, String providers) {
+    @Column(length = 255)
+    private String trailerLink;
+
+    @Column(nullable = false)
+    private float tmdbRating;
+
+    @Column(length = 20, nullable = false)
+    private String status;
+
+    @Formula("(SELECT AVG(r.rating) FROM reviews r WHERE mediaid = r.mediaid)")
+    private Float totalRating;
+
+    @Formula("(SELECT COUNT(r.rating) FROM reviews r WHERE mediaid = r.mediaid)")
+    private int voteCount;
+
+    @ElementCollection
+    @CollectionTable(name = "genres", joinColumns = @JoinColumn(name = "mediaId"))
+    @Column(name = "genre", nullable = false)
+    private List<String> genres;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "providers",
+            joinColumns = {@JoinColumn(name="mediaid")},
+            inverseJoinColumns = {@JoinColumn(name= "providerid")}
+    )
+    private List<Provider> providers;
+
+    /* Just for Hibernate*/
+    Media(){
+
+    }
+
+    public Media(final int mediaId, final boolean type, final String name, final String originalLanguage, final boolean adult, final Date releaseDate, final String overview,
+                 final String backdropPath, final String posterPath, final String trailerLink, final float tmdbRating, final float totalRating, final int voteCount, final String status,
+                 final List<String> genres, final List<Provider> providers) {
         this.mediaId = mediaId;
         this.type = type;
         this.name = name;
@@ -44,24 +93,8 @@ public class Media {
         this.totalRating = totalRating;
         this.voteCount = voteCount;
         this.status = status;
-
-        if(genres!=null){
-            String[] aux = genres.replaceAll("[{}]","").split(",");
-            this.genres = new ArrayList<>(Arrays.asList(aux));
-        }else{
-            this.genres = new ArrayList<>();
-        }
-
-        if(providers!=null){
-            this.providers = new ArrayList<Provider>();
-            String[] aux = providers.replaceAll("[({\"\\\\})]","").split(",");
-            for(int i=0 ; i  < aux.length ; i+=4 ){
-                this.providers.add(new Provider( Integer.parseInt(aux[i+1]) , aux[i+2], aux[i+3]));
-            }
-        }else{
-            this.providers = new ArrayList<>();
-        }
-
+        this.genres = genres;
+        this.providers = providers;
     }
 
     public int getMediaId() {
@@ -108,7 +141,7 @@ public class Media {
         return tmdbRating;
     }
 
-    public int getTotalRating() {
+    public float getTotalRating() {
         return totalRating;
     }
 

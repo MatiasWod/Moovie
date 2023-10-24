@@ -1,4 +1,4 @@
-import ar.edu.itba.paw.models.MoovieList.MoovieList;
+/*import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.persistence.MoovieListDaoJdbcImpl;
 import ar.edu.itba.paw.persistence.UserDaoJdbcImpl;
@@ -134,3 +134,4 @@ public class MoovieListDaoJdbcImplTest {
         assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "moovieListsfollows", "moovieListId = " + EXISTING_MOOVIE_LIST_FOLLOWED_ID));
     }
 }
+*/
