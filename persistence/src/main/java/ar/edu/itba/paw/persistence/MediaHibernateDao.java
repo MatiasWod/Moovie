@@ -36,7 +36,6 @@ public class MediaHibernateDao implements MediaDao{
     @Override
     public Optional<Media> getMediaById(int mediaId) {
         return Optional.ofNullable(em.find(Media.class, mediaId));
-
     }
 
     @Override

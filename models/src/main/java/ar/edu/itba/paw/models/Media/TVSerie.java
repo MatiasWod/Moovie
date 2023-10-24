@@ -9,19 +9,10 @@ import javax.persistence.Table;
 import java.util.Date;
 import java.util.List;
 
-@Entity
-@Table(name="movies")
 public class TVSerie extends Media{
-    @Column
     private final Date lastAirDate;
-
-    @Column
     private final Date nextEpisodeToAir;
-
-    @Column
     private final int numberOfEpisodes;
-
-    @Column
     private final int numberOfSeasons;
 
     public TVSerie(int mediaId, boolean type, String name, String originalLanguage, boolean adult, Date releaseDate, String overview, String backdropPath, String posterPath, String trailerLink, float tmdbRating, float totalRating, int voteCount, String status, List<String> genres, List<Provider> providers, Date lastAirDate, Date nextEpisodeToAir, int numberOfEpisodes, int numberOfSeasons) {

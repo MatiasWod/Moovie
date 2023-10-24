@@ -12,7 +12,6 @@ import java.util.List;
 @Table(name = "media")
 public class Media {
 
-    //TODO checkear si no es public.media_mediaid_seq
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "media_mediaid_seq")
     @SequenceGenerator(sequenceName = "media_mediaid_seq", name = "media_mediaid_seq", allocationSize = 1)
