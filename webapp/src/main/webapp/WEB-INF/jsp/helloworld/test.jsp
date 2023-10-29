@@ -25,7 +25,7 @@
                             <div class="d-flex justify-content-evenly">
                                 <p class="card-text">
                                     <i class="bi bi-star-fill"></i>
-                                    ${media.tmdbRating}
+                                    ${media.providers.get(1).providerName}
                                 </p>
                                 <p class="card-text">
                                     <fmt:formatDate value="${media.releaseDate}" pattern="YYYY"/>

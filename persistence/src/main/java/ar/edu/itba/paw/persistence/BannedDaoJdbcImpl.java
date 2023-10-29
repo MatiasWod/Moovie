@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.persistence;
+/*package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.BannedMessage.BannedMessage;
@@ -57,3 +57,4 @@ public class BannedDaoJdbcImpl implements BannedDao{
         jdbcTemplate.update( sql , new Object[]{bannedUserId} );
     }
 }
+*/

@@ -1,9 +1,29 @@
 package ar.edu.itba.paw.models.BannedMessage;
 
+
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "bannedmessage")
 public class BannedMessage {
-    private final int modUserId;
-    private final String modUsername;
-    private final String message;
+
+    @Id
+    @Column(name = "modUserId")
+    private int modUserId;
+
+    @Column(nullable = false, length = 100)
+    private String modUsername;
+
+    @Column(length = 250)
+    private String message;
+
+    public BannedMessage(){
+
+    }
 
     public BannedMessage(int modUserId, String modUsername, String message) {
         this.modUserId = modUserId;
