@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.jws.WebParam;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -51,6 +52,13 @@ public class MediaController {
     private static final Logger LOGGER = LoggerFactory.getLogger(MediaController.class);
 
 
+
+    @RequestMapping("/testing")
+    public ModelAndView test(){
+        final ModelAndView mav = new ModelAndView("helloworld/adolfoTesting");
+        mav.addObject("tvCreator", tvCreatorsService.getTvCreatorsByMediaId(203));
+        return mav;
+    }
 
     @RequestMapping("/")
     public ModelAndView home() {
