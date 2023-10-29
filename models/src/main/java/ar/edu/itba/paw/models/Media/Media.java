@@ -52,23 +52,25 @@ public class Media {
     @Column(length = 20, nullable = false)
     private String status;
 
-    @Formula("(SELECT AVG(r.rating) FROM reviews r WHERE mediaid = r.mediaid)")
-    private Float totalRating;
+    @Formula("(SELECT COALESCE(AVG(r.rating), 0) FROM reviews r WHERE mediaid = r.mediaid)")
+    private float totalRating;
 
     @Formula("(SELECT COUNT(r.rating) FROM reviews r WHERE mediaid = r.mediaid)")
     private int voteCount;
 
-    @ElementCollection
-    @CollectionTable(name = "genres", joinColumns = @JoinColumn(name = "mediaId"))
-    @Column(name = "genre", nullable = false)
-    private List<String> genres;
-
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "providers",
             joinColumns = {@JoinColumn(name="mediaid")},
-            inverseJoinColumns = {@JoinColumn(name= "providerid")}
+            inverseJoinColumns = {@JoinColumn(name= "mediaid")}
     )
     private List<Provider> providers;
+
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "genres")
+    private List<Genre> genres;
+
+
 
     /* Just for Hibernate*/
     Media(){
@@ -77,7 +79,7 @@ public class Media {
 
     public Media(final int mediaId, final boolean type, final String name, final String originalLanguage, final boolean adult, final Date releaseDate, final String overview,
                  final String backdropPath, final String posterPath, final String trailerLink, final float tmdbRating, final float totalRating, final int voteCount, final String status,
-                 final List<String> genres, final List<Provider> providers) {
+                 final List<Genre> genres, final List<Provider> providers) {
         this.mediaId = mediaId;
         this.type = type;
         this.name = name;
@@ -156,7 +158,7 @@ public class Media {
         this.overview = overview;
     }
 
-    public List<String> getGenres() {
+    public List<Genre> getGenres() {
         return genres;
     }
 
