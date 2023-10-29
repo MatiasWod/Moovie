@@ -1,11 +1,15 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.TV.TVCreators;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
+@Primary
+@Repository
 public class TvCreatorsHibernateDao implements TVCreatorsDao{
     @PersistenceContext
     private EntityManager em;

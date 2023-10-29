@@ -16,8 +16,22 @@
 
 </div>
 <c:forEach items="${tvCreator}" var="creator">
-    ${creator.creatorName} -- ${creator.mediaId} -- ${creator.creatorId}
-</c:forEach>
+    <div>
+            ${creator.creatorName} -- ${creator.mediaId} -- ${creator.creatorId}
+    </div>
 
+</c:forEach>
+<h1>All genres:</h1>
+<c:forEach items="${allGenres}" var="genre">
+    <div>
+        ${genre}
+    </div>
+</c:forEach>
+<h1>Now for mediaId = 1:</h1>
+<c:forEach items="${genresForMedia}" var="genre">
+    <div>
+            ${genre}
+    </div>
+</c:forEach>
 </body>
 </html>
