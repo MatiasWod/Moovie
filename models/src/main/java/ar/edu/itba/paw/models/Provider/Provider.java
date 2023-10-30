@@ -5,29 +5,30 @@ import javax.persistence.*;
 @Entity
 @Table(name = "providers")
 public class Provider {
+    @Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "providerId")
-    private int providerId;
+    private Integer providerId;
 
-    @Column(length = 100, name = "providerName")
+    @Column(name = "providerName", length = 100, nullable = false)
     private String providerName;
 
-    @Column(length = 100, name = "logopath")
+    @Column(name = "logoPath", length = 100, nullable = false)
     private String logoPath;
 
-    @Id
-    @Column
-    private int mediaId;
+    @Column(name = "mediaid")
+    private int mediaid;
 
     /* Just for Hibernate*/
     Provider(){
 
     }
 
-    public Provider(final int mediaId,final int providerId, final String providerName, final String logoPath) {
-        this.mediaId = mediaId;
+    public Provider(final int mediaId,final int providerId, final String providerName, final String logoPath, int mediaid) {
         this.providerId = providerId;
         this.providerName = providerName;
         this.logoPath = logoPath;
+        this.mediaid = mediaid;
     }
 
 

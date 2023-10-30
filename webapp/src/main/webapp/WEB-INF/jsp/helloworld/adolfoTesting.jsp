@@ -17,7 +17,7 @@
 </div>
 <c:forEach items="${tvCreator}" var="creator">
     <div>
-            ${creator.creatorName} -- ${creator.mediaId} -- ${creator.creatorId}
+            ${creator.creatorName} --
     </div>
 
 </c:forEach>
@@ -37,8 +37,9 @@
 <c:forEach items="${actors}" var="actor">
     <div>
         <img width="20" height="20" src="${actor.profilePath}" alt="logo">
-            ${actor.mediaId}
-            ${actor.actorId}
+<%--            ${actor.id.mediaId}--%>
+<%--        POR ALGUNA RAZON LA VISIBILITY NO ANDA CON LA IMPLEMENTACION DE LOS EMBEDABBLE IDs
+            los embedable serializable IDs son necesarios para multiples IDs en un modelo--%>
             ${actor.actorName}
             ${actor.characterName}
     </div>

@@ -14,29 +14,25 @@
 
 <div class="col-8 offset-2">
     <h4>Recently Added TV Shows</h4>
-    <div class="container-fluid">
-        <div class="row flex-row flex-nowrap overflow-auto">
-            <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
-                <a href="${pageContext.request.contextPath}/details/${media.mediaId}" class="poster card text-bg-dark m-1">
-                    <div class="card-img-container"> <!-- Add a container for the image -->
-                        <img class="cropCenter" src="${media.posterPath}" alt="media poster">
-                        <div class="card-img-overlay">
-                            <h6 class="card-title text-center">${media.name}</h6>
-                            <div class="d-flex justify-content-evenly">
-                                <p class="card-text">
-                                    <i class="bi bi-star-fill"></i>
-                                    ${media.providers.get(1).providerName}
-                                </p>
-                                <p class="card-text">
-                                    <fmt:formatDate value="${media.releaseDate}" pattern="YYYY"/>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
+
+
+    <c:if test="${not empty media}">
+        <c:forEach var="med" items="${media}">
+            <h1>${med.name}</h1>
+            <c:if test="${not empty med.providers}">
+            <c:forEach var="prov" items="${med.providers}">
+                <h2>${prov.providerName}</h2>
+            </c:forEach>
+        </c:if>
+            <c:if test="${not empty med.genres}">
+                <c:forEach var="gen" items="${med.genres}">
+                    <h2>${gen.genre}</h2>
+                </c:forEach>
+            </c:if>
+        </c:forEach>
+
+    </c:if>
+
 </div>
 
 </body>

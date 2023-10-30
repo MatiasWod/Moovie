@@ -16,7 +16,7 @@ public class TvCreatorsHibernateDao implements TVCreatorsDao{
 
     @Override
     public List<TVCreators> getTvCreatorsByMediaId(int mediaId) {
-        return em.createQuery("FROM TVCreators tv WHERE tv.mediaId = :mediaId", TVCreators.class)
+        return em.createQuery("FROM TVCreators tv WHERE tv.id.mediaId = :mediaId", TVCreators.class)
                 .setParameter("mediaId", mediaId)
                 .getResultList();
     }

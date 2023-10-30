@@ -18,7 +18,7 @@ public class ActorHibernateDao implements ActorDao{
 
     @Override
     public List<Actor> getAllActorsForMedia(int mediaId) {
-        return em.createQuery("SELECT DISTINCT a FROM Actor a INNER JOIN Media m ON m.mediaId = a.mediaId WHERE m.mediaId = :mediaId", Actor.class)
+        return em.createQuery("SELECT DISTINCT a FROM Actor a WHERE a.id.mediaId = :mediaId", Actor.class)
                 .setParameter("mediaId", mediaId)
                 .getResultList();
     }
