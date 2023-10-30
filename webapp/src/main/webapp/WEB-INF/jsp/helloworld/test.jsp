@@ -19,13 +19,19 @@
             <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
                 <a href="${pageContext.request.contextPath}/details/${media.mediaId}" class="poster card text-bg-dark m-1">
                     <div class="card-img-container"> <!-- Add a container for the image -->
-                        <img class="cropCenter" src="${media.posterPath}" alt="media poster">
                         <div class="card-img-overlay">
                             <h6 class="card-title text-center">${media.name}</h6>
                             <div class="d-flex justify-content-evenly">
                                 <p class="card-text">
                                     <i class="bi bi-star-fill"></i>
-                                    ${media.providers.get(1).providerName}
+                                    <c:if test="${not empty media}">
+                                        <c:if test="${not empty media.providers}">
+                                            <c:forEach var="prov" items="${media.providers}" varStatus="loop">
+                                                ${prov.providerName}
+                                            </c:forEach>
+                                        </c:if>
+                                    </c:if>
+
                                 </p>
                                 <p class="card-text">
                                     <fmt:formatDate value="${media.releaseDate}" pattern="YYYY"/>
