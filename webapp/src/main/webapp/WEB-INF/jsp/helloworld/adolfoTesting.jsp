@@ -41,5 +41,15 @@
         ${provider.providerName}
     </div>
 </c:forEach>
+<h1>cast for media id 203</h1>
+<c:forEach items="${actors}" var="actor">
+    <div>
+        <img width="20" height="20" src="${actor.profilePath}" alt="logo">
+            ${actor.mediaId}
+            ${actor.actorId}
+            ${actor.actorName}
+        ${actor.characterName}
+    </div>
+</c:forEach>
 </body>
 </html>
