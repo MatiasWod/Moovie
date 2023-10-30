@@ -17,6 +17,8 @@
     <h5 class="text-center m-2"><spring:message code="signUpAlert.prompt"/></h5>
     <a class="btn btn-success" href="${pageContext.request.contextPath}/register"><spring:message code="signUpAlert.signUp"/></a>
     <a class="btn btn-outline-success mt-2" href="${pageContext.request.contextPath}/login"><spring:message code="signUpAlert.login"/></a>
+    <h5 class="text-center m-2"><spring:message code="signUpAlert.or"/></h5>
+    <a class="btn btn-dark mt-2"  href="${pageContext.request.contextPath}/discover"><spring:message code="signUpAlert.goToDiscover"/></a>
 </div>
 
 </html>
