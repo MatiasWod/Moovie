@@ -1,11 +1,34 @@
 package ar.edu.itba.paw.models.Cast;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "actors")
 public class Actor {
-    private final int mediaId;
-    private final int actorId;
-    private final String actorName;
-    private final String characterName;
-    private final String profilePath;
+    @Id
+    @Column(name = "mediaId")
+    private int mediaId;
+
+    // @Id
+    @Column(name = "actorId")
+    private int actorId;
+
+    @Column(length = 100, name = "actorName")
+    private String actorName;
+
+    @Column(length = 100, name = "characterName")
+    private String characterName;
+
+    @Column(length = 100, name = "profilePath")
+    private String profilePath;
+
+    /* Just for Hibernate*/
+    Actor() {
+
+    }
 
     public Actor(int mediaId, int actorId, String actorName, String characterName, String profilePath) {
         this.mediaId = mediaId;

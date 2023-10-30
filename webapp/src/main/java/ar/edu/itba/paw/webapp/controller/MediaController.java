@@ -59,6 +59,8 @@ public class MediaController {
         mav.addObject("allGenres", genreService.getAllGenres());
         mav.addObject("genresForMedia", genreService.getGenresForMedia(1));
         mav.addObject("tvCreator", tvCreatorsService.getTvCreatorsByMediaId(203));
+        mav.addObject("providers", providerService.getAllProviders());
+        mav.addObject("actors", actorService.getAllActorsForMedia(203));
         return mav;
     }
 
