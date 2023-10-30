@@ -18,7 +18,7 @@ public class ProviderHibernateDao implements ProviderDao{
 
     @Override
     public List<Provider> getAllProviders() {
-        return em.createQuery("SELECT p.providerId, p.providerName, p.logoPath FROM Provider p GROUP BY p.providerId, p.providerName, p.logoPath ORDER BY COUNT(*) DESC", Provider.class)
+        return em.createQuery("SELECT p FROM Provider p GROUP BY p.providerId, p.providerName, p.logoPath, p.mediaId ORDER BY COUNT(*) DESC", Provider.class)
                 .getResultList();
     }
 }

@@ -33,22 +33,22 @@
             ${genre}
     </div>
 </c:forEach>
-<h1>Providers:</h1>
-<c:forEach items="${providers}" var="provider">
-    <div>
-        <img width="20" height="20" src="${provider.logoPath}" alt="logo">
-        ${provider.providerId}
-        ${provider.providerName}
-    </div>
-</c:forEach>
-<h1>cast for media id 203</h1>
+<h1>cast for media id 1</h1>
 <c:forEach items="${actors}" var="actor">
     <div>
         <img width="20" height="20" src="${actor.profilePath}" alt="logo">
             ${actor.mediaId}
             ${actor.actorId}
             ${actor.actorName}
-        ${actor.characterName}
+            ${actor.characterName}
+    </div>
+</c:forEach>
+<h1>Providers:</h1>
+<c:forEach items="${providers}" var="provider">
+    <div>
+        <img width="20" height="20" src="${provider.logoPath}" alt="logo">
+        ${provider.providerId}
+        ${provider.providerName}
     </div>
 </c:forEach>
 </body>

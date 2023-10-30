@@ -1,14 +1,12 @@
 package ar.edu.itba.paw.models.Cast;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "actors")
 public class Actor {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mediaId")
     private int mediaId;
 
@@ -24,6 +22,8 @@ public class Actor {
 
     @Column(length = 100, name = "profilePath")
     private String profilePath;
+
+
 
     /* Just for Hibernate*/
     Actor() {
