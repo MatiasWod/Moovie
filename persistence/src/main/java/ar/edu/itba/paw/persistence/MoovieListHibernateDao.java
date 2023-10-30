@@ -27,7 +27,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public Optional<MoovieListCard> getMoovieListCardById(int moovieListId, int currentUserId) {
-        return Optional.empty();
+        return Optional.ofNullable(em.find(MoovieListCard.class, moovieListId));
     }
 
     @Override
