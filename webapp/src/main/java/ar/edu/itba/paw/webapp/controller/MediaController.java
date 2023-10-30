@@ -179,6 +179,7 @@ public class MediaController {
         final ModelAndView mav = new ModelAndView("helloworld/details");
         try{
             String username =  userService.getInfoOfMyUser().getUsername();
+            mav.addObject("currentUsername", username);
             mav.addObject("publicLists", moovieListService.getMoovieListCards(null, username, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),null,null, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), 0));
             mav.addObject("privateLists", moovieListService.getMoovieListCards(null, username, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), 0));
         } catch (Exception ignored) {
@@ -219,11 +220,15 @@ public class MediaController {
         try{
             reviewService.createReview(form.getMediaId(), form.getRating(), form.getReviewContent());
             redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully created.");
-
         } catch(UnableToInsertIntoDatabase e) {
+            //TODO! ESTO ESTA TERRIBLEMENTE MAL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            try {
+                reviewService.editReview(form.getMediaId(), form.getRating(), form.getReviewContent());
+                redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully edited.");
+            } catch (Exception e2) {
             redirectAttributes.addFlashAttribute("errorMessage", "Couldn't create review, you already have a review for this media.");
         }
-
+        }
         return new ModelAndView("redirect:/details/" + form.getMediaId());
     }
 

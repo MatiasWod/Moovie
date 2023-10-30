@@ -19,4 +19,6 @@ public interface ReviewService {
 
     //Creates review
     void createReview( int mediaId, int rating, String reviewContent);
+
+    void editReview( int mediaId, int rating, String reviewContent);
 }
