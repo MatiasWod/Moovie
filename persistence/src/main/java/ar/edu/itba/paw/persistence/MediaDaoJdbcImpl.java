@@ -99,7 +99,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
 
     @Override
-    public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, String orderBy, String sortOrder, int size, int pageNumber){
+    public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber){
         StringBuilder sql = new StringBuilder("SELECT m.*, ");
         ArrayList<Object> args = new ArrayList<>();
 
@@ -167,6 +167,36 @@ public class MediaDaoJdbcImpl implements MediaDao {
                 args.add('%' + participant + '%');
             }
 
+            sql.append(" ) ");
+        }
+
+        // Add the status filter
+        if (status != null && !status.isEmpty()){
+            sql.append(" AND ");
+            sql.append("( ");
+            for ( String stat : status ){
+                sql.append( "status = ? OR ");
+                args.add(stat);
+            }
+            // delete last OR
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.append(" ) ");
+        }
+
+        //Add the lang filter
+        if (lang != null && !lang.isEmpty()){
+            sql.append(" AND ");
+            sql.append("( ");
+            for ( String stat : lang ){
+                sql.append( "originallanguage = ? OR ");
+                args.add(stat);
+            }
+            // delete last OR
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
             sql.append(" ) ");
         }
 

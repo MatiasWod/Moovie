@@ -44,10 +44,10 @@
         </div>
         <div class="col">
             <!-- Title and Details -->
-            <h1>${media.name} <sup class="badge text-bg-light border border-black"
-                                   style="font-size: 14px;">${media.status}</sup>
-                <sup class="badge text-bg-light border border-black"
-                     style="font-size: 14px;">${media.originalLanguage}</sup>
+            <h1>${media.name} <a href="${pageContext.request.contextPath}/discover?status=${media.status}"><sup class="badge text-bg-light border border-black"
+                                      style="font-size: 14px;">${media.status}</sup></a>
+                <a href="${pageContext.request.contextPath}/discover?lang=${media.originalLanguage}"><sup class="badge text-bg-light border border-black"
+                        style="font-size: 14px;">${media.originalLanguage}</sup></a>
             </h1>
 
             <h5 style="display: flex; align-items: center">
