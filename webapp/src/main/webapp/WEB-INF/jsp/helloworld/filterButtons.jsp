@@ -85,8 +85,8 @@
 
             <select name="orderBy" class="form-select filter-width" aria-label="Filter!">
                 <option ${'name' == param.orderBy ? 'selected' : ''} value="name"><spring:message code="createList.orderByTitle"/></option>
-                <option ${('totalrating' == param.orderBy || param.orderBy == null) ? 'selected' : ''} value="totalrating"><spring:message code="createList.orderByMoovieScore"/></option>
-                <option ${('tmdbrating' == param.orderBy || param.orderBy == null) ? 'selected' : ''} value="tmdbrating"><spring:message code="createList.orderByTmdbScore"/></option>
+                <option ${('totalrating' == param.orderBy || param.orderBy == null) ? 'selected' : ''} value="totalrating"><spring:message code="createList.orderByUserScore"/></option>
+                <option ${('tmdbrating' == param.orderBy || param.orderBy == null) ? 'selected' : ''} value="tmdbrating"><spring:message code="createList.orderByMoovieScore"/></option>
                 <option ${'releasedate' == param.orderBy ? 'selected' : ''} value="releasedate"><spring:message code="createList.orderByReleaseDate"/></option>
             </select>
             <%--                PARA TENER EN CUENTA --> MIRAR EL DEFAULT sort y orderBy en el controller para settear los valores iniciales de las labels/iconos--%>
