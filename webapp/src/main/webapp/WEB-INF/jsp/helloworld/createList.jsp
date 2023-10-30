@@ -8,6 +8,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
@@ -56,8 +57,10 @@
                     </c:if>
                     <c:forEach var="movie" items="${mediaList}" end="24">
                         <div onclick="displayMediaName('${(fn:replace(fn:replace(movie.name,"'", "\\'"), "\"", "&quot;"))}',${movie.mediaId})" class="poster card text-bg-dark m-1">
-                            <div class="card-img-container"> <!-- Add a container for the image -->
+                            <div id="${movie.mediaId}" class="card-img-container"> <!-- Add a container for the image -->
+
                                 <img class="cropCenter" src="${movie.posterPath}" alt="media poster">
+
                                 <div class="card-img-overlay">
                                     <h6 class="card-title text-center">${movie.name}</h6>
                                     <div class="d-flex justify-content-evenly">

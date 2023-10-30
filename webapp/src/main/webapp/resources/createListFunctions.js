@@ -30,6 +30,17 @@ function displayMediaName(name, id) {
             '</a>' +
             '<i class="btn bi bi-trash" onclick="deleteMedia(this)"></i>';
         selectedMediaDiv.appendChild(newElement);
+
+        const poster = document.getElementById(id);
+        if (poster){
+            const checkedElem = document.createElement('h4');
+            checkedElem.className = 'special-checked-indicator-class';
+            checkedElem.id = 'checked-indicator-' + id;
+            checkedElem.innerHTML = '<i style="position: absolute; right: 0; color: green; z-index: 2" class="m-2 bi bi-check-circle-fill"></i>';
+            poster.insertBefore(checkedElem, poster.firstChild);
+
+        }
+
         updateSelectedMediaInput();
     }
 }
@@ -47,7 +58,21 @@ function displayAllMediaNames(){
             '</a>' +
             '<i class="btn bi bi-trash" onclick="deleteMedia(this)"></i>';
         selectedMediaDiv.appendChild(newElement);
+
+        // <h4>
+        //     <i style="position: absolute; right: 0; color: green; z-index: 2" className="m-2 bi bi-check-circle-fill"></i>
+        // </h4>
+        const poster = document.getElementById(selectedMediaId[i]);
+        if (poster){
+            const checkedElem = document.createElement('h4');
+            checkedElem.className = 'special-checked-indicator-class';
+            checkedElem.id = 'checked-indicator-' + selectedMediaId[i];
+            checkedElem.innerHTML = '<i style="position: absolute; right: 0; color: green; z-index: 2" class="m-2 bi bi-check-circle-fill"></i>';
+            poster.insertBefore(checkedElem, poster.firstChild);
+
+        }
     }
+
 }
 
 function updateSelectedMediaInput() {
@@ -62,6 +87,10 @@ function updateSelectedMediaInput() {
 function deleteMedia(element) {
     const name = element.previousElementSibling.innerText;
     const index = selectedMedia.indexOf(name);
+
+    const posterCheck = document.getElementById('checked-indicator-'+selectedMediaId[index])
+    posterCheck.remove();
+
     if (index !== -1) {
         selectedMedia.splice(index, 1);
         selectedMediaId.splice(index, 1);
@@ -70,6 +99,9 @@ function deleteMedia(element) {
 
     }
     element.parentElement.remove();
+
+
+
     updateSelectedMediaInput();
 }
 
@@ -98,7 +130,6 @@ window.onload = function() {
 
     console.log("onload selectedMediaId: "+selectedMediaId)
     console.log("onload selectedMedia: "+selectedMedia)
-
 
     updateSelectedMediaInput();
     displayAllMediaNames();
@@ -193,6 +224,11 @@ function deleteStorage() {
 
     const formIdInput = document.getElementById("selected-create-media")
     formIdInput.value = null;
+    const aux = document.querySelectorAll('.special-checked-indicator-class')
+    aux.forEach(elem => {
+        elem.remove();
+    })
+
 }
 
 function beforeSubmit() {
