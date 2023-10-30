@@ -429,7 +429,8 @@
                                 <p>
                                     <c:out value="${review.reviewContent}"/>
                                 </p>
-                                <div class="d-flex align-items-center justify-content-start">
+                                <div class="d-flex align-items-center justify-content-start ">
+                                    <div>
                                     <c:choose>
                                         <c:when test="${review.currentUserHasLiked}">
                                             <form action="${pageContext.request.contextPath}/unlikeReview"
@@ -459,8 +460,18 @@
                                             </form>
                                         </c:otherwise>
                                     </c:choose>
+                                    </div>
+                                    <c:if test="${currentUsername==review.username}">
+                                        <div style="margin-bottom: 15px">
+                                            <button class="btn btn-primary" style="font-size: 14px;margin-left: 10px;"  onclick="openPopup('rate-popup')">
+                                        <span>
+                                           <i class="bi bi-pencil" ></i>
+                                        </span>
+                                                Edit review
+                                            </button>
+                                        </div>
+                                    </c:if>
                                 </div>
-                            </div>
                         </div>
                     </c:forEach>
                 </div>

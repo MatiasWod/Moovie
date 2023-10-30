@@ -68,4 +68,13 @@ public class ReviewServiceImpl implements ReviewService{
         LOGGER.info("Succesfully created review in media: {}, user: {}.", mediaId , userService.getInfoOfMyUser().getUserId());
 
     }
+
+    @Transactional
+    @Override
+    public void editReview( int mediaId, int rating, String reviewContent){
+        int userId = userService.getInfoOfMyUser().getUserId();
+        reviewDao.editReview(userId, mediaId, rating, reviewContent);
+        LOGGER.info("Succesfully edited review in media: {}, user: {}.", mediaId , userService.getInfoOfMyUser().getUserId());
+    }
+
 }

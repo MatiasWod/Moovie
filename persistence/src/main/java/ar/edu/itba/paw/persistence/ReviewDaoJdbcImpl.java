@@ -126,6 +126,26 @@ public class ReviewDaoJdbcImpl implements ReviewDao {
     }
 
     @Override
+    public void editReview(int userId,int mediaId,int rating,String reviewContent){
+        if (reviewContent.isEmpty()) {
+            reviewContent = null;
+        }
+        final Map<String, Object> args = new HashMap<>();
+        args.put("userId", userId);
+        args.put("mediaId", mediaId);
+        args.put("rating", rating);
+
+        args.put("reviewContent", reviewContent);
+        try{
+            String sqlUpdate="UPDATE reviews SET rating = ?, reviewContent = ? WHERE userId = ? AND mediaId = ?";
+            jdbcTemplate.update(sqlUpdate, rating, reviewContent, userId, mediaId);
+        } catch(Exception e){
+            throw new UnableToInsertIntoDatabase("Update review failed");
+        }
+    }
+
+
+    @Override
     public void deleteReview(int reviewId) {
         String sqlDel = "DELETE FROM reviews WHERE reviewId = ? " ;
         jdbcTemplate.update(sqlDel, reviewId);
