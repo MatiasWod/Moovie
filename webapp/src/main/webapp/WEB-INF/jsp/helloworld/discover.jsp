@@ -45,6 +45,11 @@
                     <spring:message code="discover.results" arguments="${param.query}"/>
                 </h3>
             </c:if>
+            <c:if test="${param.credit != null && param.credit.length() > 0}">
+                <h3>
+                    <spring:message code="discover.credit" arguments="${param.credit}"/>
+                </h3>
+            </c:if>
             <c:import url="filterButtons.jsp">
                 <c:param name="query" value="${param.query}"/>
                 <c:param name="credit" value="${param.credit}"/>
