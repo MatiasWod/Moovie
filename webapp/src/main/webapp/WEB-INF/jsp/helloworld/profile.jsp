@@ -184,9 +184,13 @@
                 <input type="radio" class="btn-check" name="btnradio" id="btnradio-watched-list" autocomplete="off" ${(param.list != null && param.list == 'watched-list')? 'checked':''}>
                 <label class="btn btn-outline-success" for="btnradio-watched-list"><spring:message code="profile.watched"/></label>
             </c:if>
-
             <input type="radio" class="btn-check" name="btnradio" id="btnradio-user-lists" autocomplete="off" ${(param.list == null || param.list == '' || param.list == 'user-lists')? 'checked':''}>
             <label class="btn btn-outline-success" for="btnradio-user-lists"><spring:message code="profile.userLists"/></label>
+
+            <c:if test="${isMe}">
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio-user-private-lists" autocomplete="off" ${(param.list != null && param.list == 'private-user-lists')? 'checked':''}>
+                <label class="btn btn-outline-success" for="btnradio-user-private-lists"><spring:message code="profile.privateUserLists"/></label>
+            </c:if>
 
             <input type="radio" class="btn-check" name="btnradio" id="btnradio-liked-lists" autocomplete="off" ${(param.list != null && param.list == 'liked-lists')? 'checked':''}>
             <label class="btn btn-outline-success" for="btnradio-liked-lists"><spring:message code="profile.likedLists"/></label>
@@ -215,7 +219,7 @@
             </div>
         </c:if>
 
-        <c:if test="${param.list == 'liked-lists' || param.list == 'followed' || param.list == null || param.list == '' || param.list == 'user-lists'}">
+        <c:if test="${param.list == 'liked-lists' || param.list == 'user-private-lists' || param.list == 'followed' || param.list == null || param.list == '' || param.list == 'user-lists'}">
             <div class="container lists-container" id="liked-lists" style="margin-top: 30px">
 
                 <c:if test="${showLists.size()==0}">
@@ -228,7 +232,7 @@
                                 <%--                            profile.noLikedListsMessagePersonal--%>
                                 <%--                            profile.noLikedListsButtonPersonal--%>
                             </c:if>
-                            <c:if test="${param.list == null || param.list == 'user-lists'}">
+                            <c:if test="${param.list == null || param.list == 'user-lists' || param.list == 'user-private-lists'}">
                                 <h4><spring:message code="profile.noUserListsMessagePersonal"/></h4>
                                 <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/createList"><spring:message code="profile.noUserListsButtonPersonal"/></a>
                                 <%--                            profile.noUserListsMessagePersonal--%>
@@ -237,7 +241,7 @@
                             <c:if test="${param.list == 'followed'}">
                                 <h4><spring:message code="profile.noFollowedListsMessagePersonal"/></h4>
                                 <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/lists"><spring:message code="profile.noFollowedListsButtonPersonal"/></a>
-                                <%--                            profile.noFollowedListsMessagePersonal--%>
+                                <%--                same, no carga profile.noFollowedListsMessagePersonal--%>
                                 <%--                            profile.noFollowedListsButtonPersonal--%>
                             </c:if>
                         </c:if>

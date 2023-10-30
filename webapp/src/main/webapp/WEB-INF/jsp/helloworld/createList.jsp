@@ -22,7 +22,7 @@
 
 
     <title><spring:message code="createList.title"/></title>
-    <script src="${pageContext.request.contextPath}/resources/createListFunctions.js?version=82"></script>
+    <script src="${pageContext.request.contextPath}/resources/createListFunctions.js?version=83"></script>
     <script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=82"></script>
     <link href="${pageContext.request.contextPath}/resources/buttonsStyle.css?version=1" rel="stylesheet"/>
 
@@ -131,13 +131,17 @@
                                     </div>
                                 </c:forEach>
                             </div>
-                            <button id="preview-details" type="submit" class="btn btn-lg btn-outline-success mt-4"><spring:message code="createList.createList"/></button>
+                            <div class="d-flex justify-content-between">
+                                <button id="preview-details" type="submit" class="btn btn-lg btn-outline-success mt-4"><spring:message code="createList.createList"/></button>
+                                <button id="toggle-button" type="button" class="btn btn-outline-secondary mt-4">
+                                    <i id="toggle-icon" class="bi bi-eye-fill"></i>
+                                </button>
+                                <form:input type="hidden" id="toggle-state" name="toggleState" value="true" path="privateList"/>
+                            </div>
                         </form:form>
                     </div>
-
                     <div>
                         <h6><spring:message code="createList.keepProgressMessage"/></h6>
-
                     </div>
                     <div class="d-flex" id="preview-list"></div>
                 </div>
