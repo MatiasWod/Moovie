@@ -33,5 +33,13 @@
             ${genre}
     </div>
 </c:forEach>
+<h1>Providers:</h1>
+<c:forEach items="${providers}" var="provider">
+    <div>
+        <img width="20" height="20" src="${provider.logoPath}" alt="logo">
+        ${provider.providerId}
+        ${provider.providerName}
+    </div>
+</c:forEach>
 </body>
 </html>
