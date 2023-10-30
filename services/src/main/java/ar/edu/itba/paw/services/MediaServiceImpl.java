@@ -20,8 +20,8 @@ public class MediaServiceImpl implements MediaService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, String orderBy, String sortOrder, int size, int pageNumber){
-        return mediaDao.getMedia(type, search, participant,  genres, providers, orderBy, sortOrder, size, pageNumber);
+    public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber){
+        return mediaDao.getMedia(type, search, participant,  genres, providers, status, lang, orderBy, sortOrder, size, pageNumber);
     }
 
     @Transactional(readOnly = true)

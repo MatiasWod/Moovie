@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -99,7 +101,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
 
 
     @Override
-    public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, String orderBy, String sortOrder, int size, int pageNumber){
+    public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber){
         StringBuilder sql = new StringBuilder("SELECT m.*, ");
         ArrayList<Object> args = new ArrayList<>();
 
@@ -148,25 +150,57 @@ public class MediaDaoJdbcImpl implements MediaDao {
         if(search!=null && search.length()>0){
             sql.append(" AND " );
             sql.append(" name ILIKE ? ");
-            args.add('%' + search + '%');
+            String toSearch = search.replaceAll("[%]","\\\\%");
+            args.add('%' + toSearch + '%');
         }
 
         // Input its participants in actors, media.name, creators and directors
         if (participant!=null && participant.length()>0) {
             sql.append(" AND  " );
             sql.append(" (  m.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE ?) ");
-            args.add('%' + participant + '%');
+            String toSearchParticipant = participant.replaceAll("[%]","\\\\%");
+            args.add('%' + toSearchParticipant + '%');
 
             if(type != MediaTypes.TYPE_TVSERIE.getType()){
                 sql.append(" OR m.mediaId IN (SELECT mediaid FROM movies m WHERE director ILIKE ? ) ");
-                args.add('%' + participant + '%');
+                args.add('%' + toSearchParticipant + '%');
             }
 
             if(type != MediaTypes.TYPE_MOVIE.getType()){
                 sql.append(" OR m.mediaId IN (SELECT mediaid FROM creators c WHERE creatorname ILIKE ? ) ");
-                args.add('%' + participant + '%');
+                args.add('%' + toSearchParticipant + '%');
             }
 
+            sql.append(" ) ");
+        }
+
+        // Add the status filter
+        if (status != null && !status.isEmpty()){
+            sql.append(" AND ");
+            sql.append("( ");
+            for ( String stat : status ){
+                sql.append( "status = ? OR ");
+                args.add(stat);
+            }
+            // delete last OR
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.append(" ) ");
+        }
+
+        //Add the lang filter
+        if (lang != null && !lang.isEmpty()){
+            sql.append(" AND ");
+            sql.append("( ");
+            for ( String stat : lang ){
+                sql.append( "originallanguage = ? OR ");
+                args.add(stat);
+            }
+            // delete last OR
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
             sql.append(" ) ");
         }
 
