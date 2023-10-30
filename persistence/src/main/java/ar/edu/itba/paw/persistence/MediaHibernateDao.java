@@ -245,8 +245,6 @@ public class MediaHibernateDao implements MediaDao{
 
         sql.append("GROUP BY m.mediaid ");
 
-
-
         Query nq = em.createNativeQuery(sql.toString());
 
         for(int i=0; i<args.size() ; i++){

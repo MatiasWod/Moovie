@@ -15,8 +15,11 @@
 <div class="col-8 offset-2">
     <h4>Recently Added TV Shows</h4>
 
+    <a>${ml.name}</a>
+    <a>${ml.userId}</a>
+    <a>${ml.description}</a>
 
-    <c:if test="${not empty media}">
+    <%-- c:if test="${not empty media}">
         <c:forEach var="med" items="${media}">
             <h1>${med.name}</h1>
             <c:if test="${not empty med.providers}">
@@ -31,9 +34,8 @@
             </c:if>
         </c:forEach>
 
-    </c:if>
-
-</div>
+    </c:if >
+    </div--%>
 
 </body>
 </html>

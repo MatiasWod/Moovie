@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
@@ -7,15 +8,21 @@ import ar.edu.itba.paw.models.User.User;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
 @Primary
 @Repository
 public class MoovieListHibernateDao implements MoovieListDao{
+
+    @PersistenceContext
+    private EntityManager em;
+
     @Override
     public Optional<MoovieList> getMoovieListById(int moovieListId) {
-        return Optional.empty();
+        return Optional.ofNullable(em.find(MoovieList.class, moovieListId));
     }
 
     @Override

@@ -1,14 +1,32 @@
 package ar.edu.itba.paw.models.MoovieList;
 
+import javax.persistence.*;
 
+@Entity
+@Table(name="moovielists")
 public class MoovieList {
-    private final int moovieListId;
-    private final int userId;
-    private final String name;
-    private final String description;
-    private final int type;
 
-    public MoovieList(int moovieListId, int userId, String name, String description, int type) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "moovielists_moovielistid_seq")
+    @SequenceGenerator(sequenceName = "moovielists_moovielistid_seq", name = "moovielists_moovielistid_seq", allocationSize = 1)
+    @Column(name = "moovielistId")
+    private int moovieListId;
+
+    @Column(nullable = false)
+    private int userId;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = true, columnDefinition = "TEXT")
+    private String description;
+
+    @Column(nullable = false)
+    private int type;
+
+    public MoovieList(){}
+
+    public MoovieList(final int moovieListId, final int userId, final String name, final String description, final int type) {
         this.moovieListId = moovieListId;
         this.userId = userId;
         this.name = name;
