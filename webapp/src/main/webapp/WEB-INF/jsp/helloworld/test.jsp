@@ -14,35 +14,20 @@
 
 <div class="col-8 offset-2">
     <h4>Recently Added TV Shows</h4>
-    <div class="container-fluid">
-        <div class="row flex-row flex-nowrap overflow-auto">
-            <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
-                <a href="${pageContext.request.contextPath}/details/${media.mediaId}" class="poster card text-bg-dark m-1">
-                    <div class="card-img-container"> <!-- Add a container for the image -->
-                        <div class="card-img-overlay">
-                            <h6 class="card-title text-center">${media.name}</h6>
-                            <div class="d-flex justify-content-evenly">
-                                <p class="card-text">
-                                    <i class="bi bi-star-fill"></i>
-                                    <c:if test="${not empty media}">
-                                        <c:if test="${not empty media.providers}">
-                                            <c:forEach var="prov" items="${media.providers}" varStatus="loop">
-                                                ${prov.providerName}
-                                            </c:forEach>
-                                        </c:if>
-                                    </c:if>
+    <h1>${media.name}</h1>
+    <c:if test="${not empty media}">
+        <c:if test="${not empty media.providers}">
+            <c:forEach var="prov" items="${media.providers}">
+                <h2>${prov.providerName}</h2>
+            </c:forEach>
+        </c:if>
+        <c:if test="${not empty media.genres}">
+            <c:forEach var="gen" items="${media.genres}">
+                <h2>${gen.genre}</h2>
+            </c:forEach>
+        </c:if>
+    </c:if>
 
-                                </p>
-                                <p class="card-text">
-                                    <fmt:formatDate value="${media.releaseDate}" pattern="YYYY"/>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
 </div>
 
 </body>

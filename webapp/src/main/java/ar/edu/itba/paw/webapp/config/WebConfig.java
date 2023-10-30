@@ -150,6 +150,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         final Properties properties = new Properties();
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL92Dialect");
         properties.setProperty("hibernate.hbm2ddl.auto", "update");
+        properties.setProperty("hibernate.enable_lazy_load_no_trans", "true");
+
 
         factoryBean.setJpaProperties(properties);
 
