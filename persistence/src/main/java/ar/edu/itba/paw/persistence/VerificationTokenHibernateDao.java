@@ -26,7 +26,7 @@ public class VerificationTokenHibernateDao implements VerificationTokenDao{
 
     @Override
     public Optional<Token> getToken(String token) {
-        final TypedQuery<Token> query = entityManager.createQuery("from verificationtokens where token = :token", Token.class);
+        final TypedQuery<Token> query = entityManager.createQuery("from Token where token = :token", Token.class);
         query.setParameter("token",token);
         return query.getResultList().stream().findFirst();
     }

@@ -1,11 +1,31 @@
 package ar.edu.itba.paw.models.User;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "users")
 public class User {
-    private final int userId;
-    private final String username;
-    private final String email;
-    private final String password;
-    private final int role;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_userid_seq")
+    @SequenceGenerator(sequenceName = "users_userid_seq", name = "users_userid_seq", allocationSize = 1)
+    private int userId;
+
+    @Column(length = 30, nullable = false, unique = true)
+    private String username;
+
+    @Column(length = 255, nullable = false, unique = true)
+    private String email;
+
+    @Column(length = 100, nullable = false)
+    private String password;
+
+    @Column(nullable = false)
+    private int role;
+
+    //Para hibernate
+    public User(){
+
+    }
 
     public User(int userId, String username, String email, String password, int role) {
         this.userId = userId;
@@ -34,4 +54,5 @@ public class User {
     public int getRole() {
         return role;
     }
+
 }
