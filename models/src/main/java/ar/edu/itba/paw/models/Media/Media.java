@@ -3,8 +3,10 @@ package ar.edu.itba.paw.models.Media;
 import ar.edu.itba.paw.models.Genre.Genre;
 import ar.edu.itba.paw.models.Provider.Provider;
 import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.WhereJoinTable;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -58,16 +60,15 @@ public class Media {
     @Formula("(SELECT COUNT(r.rating) FROM reviews r WHERE mediaid = r.mediaid)")
     private int voteCount;
 
-    @ManyToMany( fetch = FetchType.LAZY)
-    @JoinTable(name = "providers",
-            joinColumns = {@JoinColumn(name="mediaid")},
-            inverseJoinColumns = {@JoinColumn(name = "providerid")})
-    private List<Provider> providers;
+    @Transient
+    private List<Provider> providers = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "genres")
-    private List<Genre> genres;
+    @Transient
+    private List<Genre> genres = new ArrayList<>();
 
+    public void setProviders(List<Provider> providers) {
+        this.providers = providers;
+    }
 
 
     /* Just for Hibernate*/

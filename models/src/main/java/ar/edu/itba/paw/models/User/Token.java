@@ -8,9 +8,9 @@ import java.util.Date;
 public class Token {
 
     //Ver cómo traer el userId
+    @Id
     private int userId;
 
-    @Id
     @Column(length = 100, nullable = false)
     private String token;
 

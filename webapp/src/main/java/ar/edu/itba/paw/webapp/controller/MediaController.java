@@ -78,7 +78,7 @@ public class MediaController {
         LOGGER.info("Returned media for /.");
         return mav;
         */
-        Media media = mediaService.getMediaById(10);
+        List<Media> media = mediaService.getMedia(1,null,null,null,null,null,null,20,0);
         final ModelAndView mav = new ModelAndView("helloworld/test");
         mav.addObject("media", media);
         return mav;

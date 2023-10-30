@@ -14,18 +14,23 @@
 
 <div class="col-8 offset-2">
     <h4>Recently Added TV Shows</h4>
-    <h1>${media.name}</h1>
+
+
     <c:if test="${not empty media}">
-        <c:if test="${not empty media.providers}">
-            <c:forEach var="prov" items="${media.providers}">
+        <c:forEach var="med" items="${media}">
+            <h1>${med.name}</h1>
+            <c:if test="${not empty med.providers}">
+            <c:forEach var="prov" items="${med.providers}">
                 <h2>${prov.providerName}</h2>
             </c:forEach>
         </c:if>
-        <c:if test="${not empty media.genres}">
-            <c:forEach var="gen" items="${media.genres}">
-                <h2>${gen.genre}</h2>
-            </c:forEach>
-        </c:if>
+            <c:if test="${not empty med.genres}">
+                <c:forEach var="gen" items="${med.genres}">
+                    <h2>${gen.genre}</h2>
+                </c:forEach>
+            </c:if>
+        </c:forEach>
+
     </c:if>
 
 </div>

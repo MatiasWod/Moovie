@@ -91,9 +91,9 @@ public class MediaHibernateDao implements MediaDao{
 
         // Add type filter
         if (type == 0) {
-            predicates.add(criteriaBuilder.equal(mediaRoot.get("type"), 0)); // Assuming '0' represents movies
+            predicates.add(criteriaBuilder.equal(mediaRoot.get("type"), false)); // Assuming '0' represents movies
         } else if (type == 1) {
-            predicates.add(criteriaBuilder.equal(mediaRoot.get("type"), 1)); // Assuming '1' represents TV shows
+            predicates.add(criteriaBuilder.equal(mediaRoot.get("type"), true)); // Assuming '1' represents TV shows
         }
 
         // Add genres filter
@@ -137,7 +137,7 @@ public class MediaHibernateDao implements MediaDao{
         TypedQuery<Media> query = em.createQuery(criteriaQuery);
 
         // Set paging
-        query.setFirstResult((pageNumber - 1) * size);
+        query.setFirstResult((pageNumber ) * size);
         query.setMaxResults(size);
 
         return query.getResultList();
