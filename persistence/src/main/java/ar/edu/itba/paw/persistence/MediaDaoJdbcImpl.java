@@ -354,7 +354,7 @@ public class MediaDaoJdbcImpl implements MediaDao {
             return false;
         }
         order = order.replaceAll(" ","");
-        String[] validOrders = {"name", "tmdbrating", "releasedate", "type", "totalrating"};
+        String[] validOrders = {"name", "tmdbrating", "releasedate", "type", "totalrating", "votecount"};
         for (String element : validOrders) {
             if (element.toLowerCase().equals(order)) {
                 return true;
