@@ -58,8 +58,10 @@ public class Media {
     @Formula("(SELECT COUNT(r.rating) FROM reviews r WHERE mediaid = r.mediaid)")
     private int voteCount;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "providers")
+    @ManyToMany( fetch = FetchType.LAZY)
+    @JoinTable(name = "providers",
+            joinColumns = {@JoinColumn(name="mediaid")},
+            inverseJoinColumns = {@JoinColumn(name = "providerid")})
     private List<Provider> providers;
 
     @OneToMany(fetch = FetchType.EAGER)
