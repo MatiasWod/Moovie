@@ -59,12 +59,8 @@ public class Media {
     private int voteCount;
 
     @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "providers",
-            joinColumns = {@JoinColumn(name="mediaid")},
-            inverseJoinColumns = {@JoinColumn(name= "mediaid")}
-    )
+    @JoinColumn(name = "providers")
     private List<Provider> providers;
-
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "genres")

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -23,6 +24,8 @@ public class MediaHibernateDao implements MediaDao{
 
     @PersistenceContext
     private EntityManager em;
+
+    private static final String moviesQueryParams = " media.mediaId, type, name, originalLanguage, adult, releaseDate, overview, backdropPath, posterPath, trailerLink, tmdbRating, status, runtime, budget, revenue, directorId, director ";
 
     @Override
     public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, String orderBy, String sortOrder, int size, int pageNumber) {
@@ -152,7 +155,15 @@ public class MediaHibernateDao implements MediaDao{
 
     @Override
     public Optional<Movie> getMovieById(int mediaId) {
-        return Optional.empty();
+        final Query baseQuery = em.createNativeQuery("SELECT " + moviesQueryParams +
+                ",(SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = media.mediaId) AS genres, "
+                + "(SELECT ARRAY_AGG(p) FROM providers p WHERE p.mediaId = media.mediaId) AS providers, "
+                + "AVG(rating) AS totalrating, COUNT(rating) AS votecount  "
+                + "FROM Media media LEFT JOIN Reviews r ON media.mediaId = r.mediaId WHERE media.mediaId = :mediaId "
+                + "GROUP BY media.mediaId, "
+                + moviesQueryParams);
+        Movie movie= (Movie) baseQuery.getSingleResult();
+        return Optional.ofNullable(movie);
     }
 
     @Override

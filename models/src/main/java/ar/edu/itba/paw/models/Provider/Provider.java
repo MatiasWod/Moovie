@@ -1,14 +1,10 @@
 package ar.edu.itba.paw.models.Provider;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "providers")
 public class Provider {
-    @Id
     @Column(name = "providerId")
     private int providerId;
 
@@ -18,12 +14,17 @@ public class Provider {
     @Column(length = 100, name = "logopath")
     private String logoPath;
 
+    @Id
+    @Column
+    private int mediaId;
+
     /* Just for Hibernate*/
     Provider(){
 
     }
 
-    public Provider(final int providerId, final String providerName, final String logoPath) {
+    public Provider(final int mediaId,final int providerId, final String providerName, final String logoPath) {
+        this.mediaId = mediaId;
         this.providerId = providerId;
         this.providerName = providerName;
         this.logoPath = logoPath;

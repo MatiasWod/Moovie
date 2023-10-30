@@ -15,6 +15,7 @@ public class ProviderDaoJdbcImpl implements ProviderDao{
     private final JdbcTemplate jdbcTemplate;
 
     private static final RowMapper<Provider> PROVIDER_ROW_MAPPER = (rs, rowNum) -> new Provider(
+            rs.getInt("mediaId"),
             rs.getInt("providerId"),
             rs.getString("providerName"),
             rs.getString("logoPath")
