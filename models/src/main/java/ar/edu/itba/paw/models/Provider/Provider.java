@@ -1,14 +1,13 @@
 package ar.edu.itba.paw.models.Provider;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "providers")
 public class Provider {
-    @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "providerId")
-    private Integer providerId;
+    @EmbeddedId
+    private ProviderId id;
 
     @Column(name = "providerName", length = 100, nullable = false)
     private String providerName;
@@ -16,24 +15,21 @@ public class Provider {
     @Column(name = "logoPath", length = 100, nullable = false)
     private String logoPath;
 
-    @Column(name = "mediaid")
-    private int mediaid;
-
     /* Just for Hibernate*/
     Provider(){
 
     }
 
     public Provider(final int mediaId,final int providerId, final String providerName, final String logoPath, int mediaid) {
-        this.providerId = providerId;
+        this.id = new ProviderId(mediaId, providerId);
         this.providerName = providerName;
         this.logoPath = logoPath;
-        this.mediaid = mediaid;
+
     }
 
 
-    public int getProviderId() {
-        return providerId;
+    public ProviderId getId() {
+        return id;
     }
 
     public String getProviderName() {
@@ -42,5 +38,31 @@ public class Provider {
 
     public String getLogoPath() {
         return logoPath;
+    }
+}
+
+@Embeddable
+class ProviderId implements Serializable {
+    @Column(name = "mediaid")
+    private int mediaId;
+
+    @Column(name = "providerId")
+    private int providerId;
+
+    public ProviderId(final int mediaId, final int providerId){
+        this.mediaId = mediaId;
+        this.providerId = providerId;
+    }
+
+    ProviderId(){
+
+    }
+
+    public int getProviderId() {
+        return providerId;
+    }
+
+    public int getMediaId() {
+        return mediaId;
     }
 }
