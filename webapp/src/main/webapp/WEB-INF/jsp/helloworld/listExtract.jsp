@@ -155,14 +155,16 @@
         </c:if>
     </div>
     <div>
+        <c:if test="${moovieList.name!='Watched'}">
         <h4><spring:message code="listExtract.listProgress"/></h4>
         <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: ${(watchedCount*100)/listCount}%;"
+            <div class="progress-bar" role="progressbar" style="width: ${listCount==0 ? 0:(watchedCount*100)/listCount}%;"
                  id="progressBar"
-                 aria-valuenow="${(watchedCount*100)/listCount}" aria-valuemin="0" aria-valuemax="100">
+                 aria-valuenow="${listCount==0 ? 0:(watchedCount*100)/listCount}" aria-valuemin="0" aria-valuemax="100">
                 ${(watchedCount*100)/listCount}%
             </div>
         </div>
+        </c:if>
     </div>
     <div style="display: flex; align-items: center;justify-content: center">
         <c:if test="${moviesCount > 0}">
@@ -301,7 +303,7 @@ ${mediaList[loop.index].totalRating}<i class="bi bi-star" style="margin-left: 5p
 <c:otherwise>
     <tbody>
     <tr>
-        <td colspan="5">List is empty</td>
+        <td colspan="10" style="text-align: center">List is empty</td>
     </tr>
     </tbody>
 </c:otherwise>
