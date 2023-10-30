@@ -468,6 +468,9 @@
             <c:otherwise>
                 <div class="text-center">
                     <h3><spring:message code="details.noReviews"/></h3>
+                    <button type="button" class="btn btn-light border border-black" onclick="openPopup('rate-popup')"><i
+                            class="bi bi-star-fill"></i> <spring:message code="details.addReview"/>
+                    </button>
                 </div>
             </c:otherwise>
         </c:choose>
