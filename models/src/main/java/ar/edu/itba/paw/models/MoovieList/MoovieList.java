@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.models.MoovieList;
 
+
 public class MoovieList {
     private final int moovieListId;
     private final int userId;

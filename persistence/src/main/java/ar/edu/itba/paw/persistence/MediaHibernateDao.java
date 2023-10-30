@@ -1,19 +1,20 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Cast.Actor;
 import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,116 +30,108 @@ public class MediaHibernateDao implements MediaDao{
 
     @Override
     public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, String orderBy, String sortOrder, int size, int pageNumber) {
-//        final Query nativeQuery=em.createNativeQuery("SELECT * FROM media");
-//
-//        //TODO fijarese si esto esta bien aca o va al final
-//        nativeQuery.setMaxResults(size).setFirstResult((pageNumber-1)*size);
-//
-//        @SuppressWarnings("unchecked")
-//        final List<Media> result = (List<Media>) nativeQuery.getResultList().stream().map(Object::toString).collect(Collectors.toList());
-//
-//        TypedQuery<Media> query = em.createQuery("from Media where mediaId in :mediaids", Media.class);
-//        query.setParameter("mediaids", result);
-//
-//        // If type is 0 or 1 it's specifically movies or TVs, else it's not restricted
-//        if (type != 0) {
-//            TypedQuery<Media> query2 = em.createQuery("from Media where type = :types", Media.class);
-//            query.setParameter("type", type);
-//        }else{
-//            TypedQuery<Media> query2 = em.createQuery("from Media where type IS NOT NULL", Media.class);
-//        }
-//
-//        // Add the genres filter
-//        if(genres!=null && !genres.isEmpty()){
-//            TypedQuery<Media> query3 = em.createQuery("from Media where genre in :genres", Media.class);
-//            query.setParameter("genres", genres);
-//        }
-//
-//        // Add the providers filter
-//        if(providers!=null && !providers.isEmpty()){
-//            TypedQuery<Media> query4 = em.createQuery("from Media where provider in :providers", Media.class);
-//            query.setParameter("providers", providers);
-//        }
-//
-//        //Input the search
-//        if(search!=null && !search.isEmpty()){
-//            TypedQuery<Media> query5 = em.createQuery("from Media where name like :search", Media.class);
-//            query.setParameter("search", search);
-//        }
-//
-//        // Input its participants in actors, media.name, creators and directors
-//        if(participant!=null && !participant.isEmpty()){
-//            TypedQuery<Media> query6 = em.createQuery("from Media where participant like :participant", Media.class);
-//            query.setParameter("participant", participant);
-//        }
-//
-//        // Order by
-//        if(isOrderValid(orderBy) && isSortOrderValid(sortOrder)){
-//            TypedQuery<Media> query7 = em.createQuery("from Media order by :orderBy :sortOrder", Media.class);
-//            query.setParameter("orderBy", orderBy);
-//            query.setParameter("sortOrder", sortOrder);
-//        }
-//
-//
-//        return query.getResultList();
+        StringBuilder sql = new StringBuilder("SELECT m.mediaid ");
+        ArrayList<String> argtype = new ArrayList<>();
+        ArrayList<Object> args = new ArrayList<>();
 
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<Media> criteriaQuery = criteriaBuilder.createQuery(Media.class);
-        Root<Media> mediaRoot = criteriaQuery.from(Media.class);
+        sql.append("FROM media m LEFT JOIN reviews r ON m.mediaid = r.mediaid ");
 
-        // Create a list to store predicates for filtering
-        List<Predicate> predicates = new ArrayList<>();
-
-        // Add type filter
-        if (type == 0) {
-            predicates.add(criteriaBuilder.equal(mediaRoot.get("type"), false)); // Assuming '0' represents movies
-        } else if (type == 1) {
-            predicates.add(criteriaBuilder.equal(mediaRoot.get("type"), true)); // Assuming '1' represents TV shows
+        // If type is 0 or 1 it's specifically movies or TVs, else it's not restricted
+        if (type == 0 || type == 1) {
+            sql.append(" WHERE type = :type ");
+            argtype.add("type");
+            args.add(type == 1);
+        } else {
+            sql.append(" WHERE type IS NOT NULL ");
         }
 
-        // Add genres filter
-        if (genres != null && !genres.isEmpty()) {
-            predicates.add(mediaRoot.get("genre").in(genres));
-        }
-
-        // Add providers filter
-        if (providers != null && !providers.isEmpty()) {
-            predicates.add(mediaRoot.get("provider").in(providers));
-        }
-
-        // Add search filter
-        if (search != null && !search.isEmpty()) {
-            predicates.add(criteriaBuilder.like(mediaRoot.get("name"), "%" + search + "%"));
-        }
-
-        // Add participant filter (assuming 'participant' is a column in the Media table)
-        if (participant != null && !participant.isEmpty()) {
-            predicates.add(criteriaBuilder.or(
-                    criteriaBuilder.like(mediaRoot.get("actors"), "%" + participant + "%"),
-                    criteriaBuilder.like(mediaRoot.get("creators"), "%" + participant + "%"),
-                    criteriaBuilder.like(mediaRoot.get("directors"), "%" + participant + "%")
-            ));
-        }
-
-        // Apply all predicates as an 'AND' operation
-        if (!predicates.isEmpty()) {
-            criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
-        }
-
-        // Apply sorting
-        if (isOrderValid(orderBy) && isSortOrderValid(sortOrder)) {
-            if ("asc".equalsIgnoreCase(sortOrder)) {
-                criteriaQuery.orderBy(criteriaBuilder.asc(mediaRoot.get(orderBy)));
-            } else if ("desc".equalsIgnoreCase(sortOrder)) {
-                criteriaQuery.orderBy(criteriaBuilder.desc(mediaRoot.get(orderBy)));
+        // Add the genres filter
+        if (genres!=null && !genres.isEmpty()) {
+            sql.append(" AND m.mediaId IN ( SELECT mediaId FROM genres WHERE "); // Start the OR conditions for genres
+            int i = 0;
+            for (String genre : genres) {
+                sql.append(" genre = :genre"+i+" OR "); // Replace 'genre_column' with your actual genre column name
+                argtype.add("genre"+i);
+                args.add(genre);
+                i++;
             }
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.append(" ) ");
         }
 
-        TypedQuery<Media> query = em.createQuery(criteriaQuery);
+        // Add the providers filter
+        if (providers!=null && !providers.isEmpty()) {
+            sql.append(" AND m.mediaId IN ( SELECT mediaId FROM providers WHERE "); // Start the OR conditions for genres
+            int i = 0;
+            for (String provider : providers) {
+                sql.append(" providername = :provider"+i+" OR "); // Replace 'genre_column' with your actual genre column name
+                args.add(provider);
+                argtype.add("provider"+i);
+                i++;
+            }
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.append(" ) ");
+        }
 
-        // Set paging
-        query.setFirstResult((pageNumber ) * size);
-        query.setMaxResults(size);
+        //Input the search
+        if(search!=null && search.length()>0){
+            sql.append(" AND " );
+            sql.append(" name ILIKE :name ");
+            argtype.add("name");
+            args.add('%' + search + '%');
+        }
+
+        // Input its participants in actors, media.name, creators and directors
+        if (participant!=null && participant.length()>0) {
+            sql.append(" AND  " );
+            sql.append(" (  m.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE :actor ) ");
+            args.add('%' + participant + '%');
+            argtype.add("actor");
+
+            if(type != MediaTypes.TYPE_TVSERIE.getType()){
+                sql.append(" OR m.mediaId IN (SELECT mediaid FROM movies m WHERE director ILIKE :director ) ");
+                args.add('%' + participant + '%');
+                argtype.add("director");
+            }
+
+            if(type != MediaTypes.TYPE_MOVIE.getType()){
+                sql.append(" OR m.mediaId IN (SELECT mediaid FROM creators c WHERE creatorname ILIKE :creator ) ");
+                args.add('%' + participant + '%');
+                argtype.add("creator");
+            }
+
+            sql.append(" ) ");
+        }
+
+        sql.append("GROUP BY m.mediaid ");
+
+        // Order by
+        if (isOrderValid(orderBy) && isSortOrderValid(sortOrder)) {
+            sql.append(" ORDER BY ").append(orderBy);
+            sql.append(" ").append(sortOrder);
+        }
+
+        // Pagination
+        sql.append(" LIMIT :size OFFSET :page "); // Add LIMIT and OFFSET clauses
+        argtype.add("size");
+        args.add(size);
+        argtype.add("page");
+        args.add(pageNumber * size);
+
+        Query nq = em.createNativeQuery(sql.toString());
+
+        for(int i=0; i<args.size() ; i++){
+            nq.setParameter(argtype.get(i), args.get(i));
+        }
+
+        List<Integer> ids = nq.getResultList();
+
+        final TypedQuery<Media> query = em.createQuery("from Media where mediaid in (:ids)", Media.class);
+        query.setParameter("ids", ids);
 
         return query.getResultList();
     }
@@ -172,8 +165,95 @@ public class MediaHibernateDao implements MediaDao{
     }
 
     @Override
-    public int getMediaCount(int type, String search, String participantSearch, List<String> genres, List<String> providers) {
-        return 0;
+    public int getMediaCount(int type, String search, String participant, List<String> genres, List<String> providers){
+        StringBuilder sql = new StringBuilder("SELECT m.mediaid ");
+        ArrayList<String> argtype = new ArrayList<>();
+        ArrayList<Object> args = new ArrayList<>();
+
+        sql.append("FROM media m LEFT JOIN reviews r ON m.mediaid = r.mediaid ");
+
+        // If type is 0 or 1 it's specifically movies or TVs, else it's not restricted
+        if (type == 0 || type == 1) {
+            sql.append(" WHERE type = :type ");
+            argtype.add("type");
+            args.add(type == 1);
+        } else {
+            sql.append(" WHERE type IS NOT NULL ");
+        }
+
+        // Add the genres filter
+        if (genres!=null && !genres.isEmpty()) {
+            sql.append(" AND m.mediaId IN ( SELECT mediaId FROM genres WHERE "); // Start the OR conditions for genres
+            int i = 0;
+            for (String genre : genres) {
+                sql.append(" genre = :genre"+i+" OR "); // Replace 'genre_column' with your actual genre column name
+                argtype.add("genre"+i);
+                args.add(genre);
+                i++;
+            }
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.append(" ) ");
+        }
+
+        // Add the providers filter
+        if (providers!=null && !providers.isEmpty()) {
+            sql.append(" AND m.mediaId IN ( SELECT mediaId FROM providers WHERE "); // Start the OR conditions for genres
+            int i = 0;
+            for (String provider : providers) {
+                sql.append(" providername = :provider"+i+" OR "); // Replace 'genre_column' with your actual genre column name
+                args.add(provider);
+                argtype.add("provider"+i);
+                i++;
+            }
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.deleteCharAt(sql.length() - 1);
+            sql.append(" ) ");
+        }
+
+        //Input the search
+        if(search!=null && search.length()>0){
+            sql.append(" AND " );
+            sql.append(" name ILIKE :name ");
+            argtype.add("name");
+            args.add('%' + search + '%');
+        }
+
+        // Input its participants in actors, media.name, creators and directors
+        if (participant!=null && participant.length()>0) {
+            sql.append(" AND  " );
+            sql.append(" (  m.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE :actor ) ");
+            args.add('%' + participant + '%');
+            argtype.add("actor");
+
+            if(type != MediaTypes.TYPE_TVSERIE.getType()){
+                sql.append(" OR m.mediaId IN (SELECT mediaid FROM movies m WHERE director ILIKE :director ) ");
+                args.add('%' + participant + '%');
+                argtype.add("director");
+            }
+
+            if(type != MediaTypes.TYPE_MOVIE.getType()){
+                sql.append(" OR m.mediaId IN (SELECT mediaid FROM creators c WHERE creatorname ILIKE :creator ) ");
+                args.add('%' + participant + '%');
+                argtype.add("creator");
+            }
+
+            sql.append(" ) ");
+        }
+
+        sql.append("GROUP BY m.mediaid ");
+
+
+
+        Query nq = em.createNativeQuery(sql.toString());
+
+        for(int i=0; i<args.size() ; i++){
+            nq.setParameter(argtype.get(i), args.get(i));
+        }
+
+        return nq.getResultList().size();
     }
 
     //Following functions needed in order to be safe of sql injection
