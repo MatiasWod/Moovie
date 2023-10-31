@@ -4,11 +4,8 @@ import ar.edu.itba.paw.exceptions.MediaNotFoundException;
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
-import ar.edu.itba.paw.models.MoovieList.MoovieList;
-import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
-import ar.edu.itba.paw.persistence.DatabaseSchemaModifierDao;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.CreateReviewForm;
 import org.slf4j.Logger;
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.jws.WebParam;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -82,19 +78,20 @@ public class MediaController {
                 null, null, "tmdbrating", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("tvList", tvSerieList);
         LOGGER.info("Returned media for /.");
-        return mav;
-
-        /*
         Media ml = mediaService.getMediaById(10);
         mav.addObject("ml", ml);
-       */
+        return mav;
 
 
-//        final ModelAndView mav = new ModelAndView("helloworld/test");
-//
-//        dmsService.updateGenres();
-//        dmsService.updateProviders();
-//        return mav;
+
+
+        
+        /*
+        final ModelAndView mav = new ModelAndView("helloworld/test");
+
+        dmsService.updateGenres();
+        dmsService.updateProviders();
+        return mav;*/
     }
 
     @RequestMapping("/search")

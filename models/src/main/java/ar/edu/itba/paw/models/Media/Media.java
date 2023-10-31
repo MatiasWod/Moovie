@@ -3,7 +3,6 @@ package ar.edu.itba.paw.models.Media;
 import ar.edu.itba.paw.models.Genre.Genre;
 import ar.edu.itba.paw.models.Provider.Provider;
 import org.hibernate.annotations.Formula;
-import org.hibernate.annotations.WhereJoinTable;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -60,10 +59,16 @@ public class Media {
     @Formula("(SELECT COUNT(r.rating) FROM reviews r WHERE mediaid = r.mediaid)")
     private int voteCount;
 
-    @Transient
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "mediaproviders",
+            joinColumns = @JoinColumn(name = "mediaId"),
+            inverseJoinColumns = @JoinColumn(name = "providerId"))
     private List<Provider> providers = new ArrayList<>();
 
-    @Transient
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "mediagenres",
+            joinColumns = @JoinColumn(name = "mediaId"),
+            inverseJoinColumns = @JoinColumn(name = "genreId"))
     private List<Genre> genres = new ArrayList<>();
 
     public void setProviders(List<Provider> providers) {
@@ -157,7 +162,11 @@ public class Media {
         this.overview = overview;
     }
 
-    public List<Genre> getGenres() {
+    public List<String> getGenres() {
+        List<String> genres = new ArrayList<>();
+        for (Genre genre : this.genres) {
+            genres.add(genre.getGenre());
+        }
         return genres;
     }
 
