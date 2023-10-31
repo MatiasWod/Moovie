@@ -13,15 +13,14 @@
 <body>
 
 <div class="col-8 offset-2">
-    <h4>Recently Added TV Shows</h4>
 
-    <a>${ml.name}</a>
+    <%--a>${ml.name}</a>
     <a>${ml.description}</a>
     <a>${ml.likeCount}</a>
     <a>${ml.username}</a>
-    <a>${ml.size}</a>
+    <a>${ml.size}</a--%>
 
-<%-- c:if test="${not empty media}">
+< c:if test="${not empty media}">
         <c:forEach var="med" items="${media}">
             <h1>${med.name}</h1>
             <c:if test="${not empty med.providers}">

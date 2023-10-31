@@ -82,11 +82,21 @@ CREATE TABLE IF NOT EXISTS tv(
 
 --Genres
 CREATE TABLE IF NOT EXISTS genres(
-    mediaId                    INTEGER NOT NULL,
-    genre                      VARCHAR(100) NOT NULL,
-    UNIQUE(mediaId,genre),
-    FOREIGN KEY(mediaId)       REFERENCES media(mediaId) ON DELETE CASCADE
+    genreid                 INTEGER NOT NULL ,
+    genrename               VARCHAR(100) NOT NULL,
+    PRIMARY KEY(genreid)
 );
+
+
+--MediaGenres
+CREATE TABLE IF NOT EXISTS mediagenres(
+    mediaId                    INTEGER NOT NULL,
+    genreId                    INTEGER NOT NULL,
+    UNIQUE(mediaId,genre),
+    FOREIGN KEY(mediaId)       REFERENCES media(mediaId) ON DELETE CASCADE,
+    FOREIGN KEY(genreid)       REFERENCES genres(genreId) ON DELETE CASCADE
+);
+
 
 --Actors
 CREATE TABLE IF NOT EXISTS actors(
@@ -110,12 +120,19 @@ CREATE TABLE IF NOT EXISTS creators(
 
 --Providers
 CREATE TABLE IF NOT EXISTS providers(
-    mediaId                        INTEGER NOT NULL,
     providerId                     INTEGER NOT NULL,
     providerName                   VARCHAR(100) NOT NULL,
     logoPath                       VARCHAR(100) NOT NULL,
-    UNIQUE(mediaId,providerId),
-    FOREIGN KEY(mediaId)       REFERENCES media(mediaId) ON DELETE CASCADE
+    PRIMARY KEY(providerid)
+);
+
+--MediaProviders
+CREATE TABLE IF NOT EXISTS mediaproviders (
+    mediaid   INTEGER NOT NULL,
+    providerid INTEGER NOT NULL,
+    PRIMARY KEY(mediaid, providerid),
+    FOREIGN KEY(mediaId)       REFERENCES media(mediaId) ON DELETE CASCADE,
+    FOREIGN KEY(providerid)    REFERENCES providers(providerid) ON DELETE CASCADE
 );
 
 --MODIFICATIONS FOR SPRINT 2

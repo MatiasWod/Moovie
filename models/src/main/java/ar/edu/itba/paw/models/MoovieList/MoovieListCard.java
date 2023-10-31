@@ -52,7 +52,6 @@ public class MoovieListCard {
     @Transient
     private List<String> images;
 
-
     public MoovieListCard(){}
 
     public MoovieListCard(int moovieListId, String name,  int userid , String username, String description, int likeCount,  boolean currentUserHasLiked, int followerCount, boolean currentUserHasFollowed, int type, int size, int moviesAmount, int currentUserWatchAmount, String images) {
