@@ -72,7 +72,7 @@ public class MediaController {
 
     @RequestMapping("/")
     public ModelAndView home() {
-        /*
+
         LOGGER.info("Attempting to get media for /.");
         final ModelAndView mav = new ModelAndView("helloworld/index");
         List<Media> movieList = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
@@ -82,20 +82,19 @@ public class MediaController {
                 null, null, "tmdbrating", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("tvList", tvSerieList);
         LOGGER.info("Returned media for /.");
-        return mav;*/
+        return mav;
 
         /*
         Media ml = mediaService.getMediaById(10);
         mav.addObject("ml", ml);
        */
 
-        
-        /*
-        final ModelAndView mav = new ModelAndView("helloworld/test");
 
-        dmsService.updateGenres();
-        dmsService.updateProviders();
-        return mav;*/
+//        final ModelAndView mav = new ModelAndView("helloworld/test");
+//
+//        dmsService.updateGenres();
+//        dmsService.updateProviders();
+//        return mav;
     }
 
     @RequestMapping("/search")

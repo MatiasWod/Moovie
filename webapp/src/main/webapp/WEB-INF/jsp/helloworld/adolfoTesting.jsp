@@ -25,6 +25,7 @@
 <c:forEach items="${allGenres}" var="genre">
     <div>
         ${genre}
+        <c:forEach items="${}"></c:forEach>
     </div>
 </c:forEach>
 <h1>Now for mediaId = 1:</h1>

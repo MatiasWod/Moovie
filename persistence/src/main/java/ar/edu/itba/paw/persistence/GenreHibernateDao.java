@@ -17,14 +17,16 @@ public class GenreHibernateDao implements GenreDao{
 
     @Override
     public List<String> getAllGenres() {
-        return em.createQuery("SELECT DISTINCT g.genre FROM Genre g ORDER BY g.genre", String.class)
+        return em.createQuery("SELECT g.genre FROM Genre g ORDER BY g.genre", String.class)
                 .getResultList();
     }
 
     @Override
     public List<String> getGenresForMedia(int mediaId) {
-        return em.createQuery("SELECT g.genre FROM Genre g INNER JOIN Media m ON m.mediaId = g.id WHERE m.mediaId = :mediaId", String.class)
+        return em.createQuery(
+                        "SELECT g.genre FROM Genre g JOIN g.medias m WHERE m.id = :mediaId", String.class)
                 .setParameter("mediaId", mediaId)
                 .getResultList();
     }
+
 }
