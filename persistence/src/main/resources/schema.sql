@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS genres(
 CREATE TABLE IF NOT EXISTS mediagenres(
     mediaId                    INTEGER NOT NULL,
     genreId                    INTEGER NOT NULL,
-    UNIQUE(mediaId,genre),
+    PRIMARY KEY(mediaId,genreId),
     FOREIGN KEY(mediaId)       REFERENCES media(mediaId) ON DELETE CASCADE,
     FOREIGN KEY(genreid)       REFERENCES genres(genreId) ON DELETE CASCADE
 );
