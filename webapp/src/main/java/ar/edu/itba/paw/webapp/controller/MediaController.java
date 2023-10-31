@@ -4,8 +4,11 @@ import ar.edu.itba.paw.exceptions.MediaNotFoundException;
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
+import ar.edu.itba.paw.models.MoovieList.MoovieList;
+import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
+import ar.edu.itba.paw.persistence.DatabaseSchemaModifierDao;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.CreateReviewForm;
 import org.slf4j.Logger;
@@ -48,6 +51,9 @@ public class MediaController {
     @Autowired
     private ProviderService providerService;
 
+    @Autowired
+    private DatabaseModifierService dmsService;
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MediaController.class);
 
@@ -76,12 +82,20 @@ public class MediaController {
                 null, null, "tmdbrating", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("tvList", tvSerieList);
         LOGGER.info("Returned media for /.");
-        return mav;
-        */
-        List<Media> media = mediaService.getMedia(1,null,null,null,null,null,null,20,0);
+        return mav;*/
+
+        /*
+        Media ml = mediaService.getMediaById(10);
+        mav.addObject("ml", ml);
+       */
+
+        
+        /*
         final ModelAndView mav = new ModelAndView("helloworld/test");
-        mav.addObject("media", media);
-        return mav;
+
+        dmsService.updateGenres();
+        dmsService.updateProviders();
+        return mav;*/
     }
 
     @RequestMapping("/search")
