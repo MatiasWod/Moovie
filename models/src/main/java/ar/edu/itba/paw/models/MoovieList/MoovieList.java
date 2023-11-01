@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.models.MoovieList;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name="moovielists")
@@ -24,14 +26,27 @@ public class MoovieList {
     @Column(nullable = false)
     private int type;
 
+    @OneToMany(mappedBy = "moovieList")
+    final private Set<MoovieListLikes> likes = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    final private Set<MoovieListFollowers> followers = new HashSet<>();
+
     public MoovieList(){}
 
-    public MoovieList(final int moovieListId, final int userId, final String name, final String description, final int type) {
-        this.moovieListId = moovieListId;
+    public MoovieList(int userId, String name, String description, int type) {
         this.userId = userId;
         this.name = name;
         this.description = description;
         this.type = type;
+    }
+
+    public Set<MoovieListFollowers> getFollowers() {
+        return followers;
+    }
+
+    public Set<MoovieListLikes> getLikes() {
+        return likes;
     }
 
     public int getMoovieListId() {

@@ -1,12 +1,14 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
+import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.User.User;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.Transformers;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -24,6 +26,8 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @PersistenceContext
     private EntityManager em;
+
+
 
     @Override
     public Optional<MoovieList> getMoovieListById(int moovieListId) {
@@ -60,17 +64,71 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public List<MoovieListCard> getLikedMoovieListCards(int userId, int type, int size, int pageNumber, int currentUserId) {
-        return null;
+        String jpql = "SELECT mlcE, " +
+                "(SELECT COUNT(mlc2) FROM MoovieListContentEntity mlc2 INNER JOIN MoovieList ml ON mlc2.moovieListId = ml.moovieListId WHERE mlc2.moovieListId = mlcE.id AND ml.name = 'Watched' AND ml.userId = :userId), " +
+                "(SELECT COUNT(mll2) > 0 FROM MoovieListLikes mll2 WHERE mll2.moovieList.id = mlcE.id), " + // ACA BORRE LOS  AND mlf.user.id = :userId  me parece que no es por ahi
+                "(SELECT COUNT(mlf2) > 0 FROM MoovieListFollowers mlf2 WHERE mlf2.moovieList.id = mlcE.id) " +
+                "FROM MoovieListCardEntity mlcE JOIN MoovieListLikes mll " +
+                "ON mlcE.moovieListId = mll.moovieList.moovieListId " +
+                "WHERE mll.user.userId = :userId";
+
+        List<Object[]> results = em.createQuery(jpql)
+                .setParameter("userId", userId)
+                .getResultList();
+
+        List<MoovieListCard> cards = new ArrayList<>();
+        for (Object[] result : results) {
+            MoovieListCardEntity mlcE = (MoovieListCardEntity) result[0];
+            int currentUserWatchAmount = (int) result[1];
+            boolean currentUserHasLiked = (boolean) result[2];
+            boolean currentUserHasFollowed = (boolean) result[3];
+
+            MoovieListCardUserStatus mlcUS = new MoovieListCardUserStatus(currentUserWatchAmount, currentUserHasLiked, currentUserHasFollowed);
+            MoovieListCard card = new MoovieListCard(mlcE, mlcUS);
+            cards.add(card);
+        }
+
+        return cards;
+
     }
 
     @Override
     public List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber, int currentUserId) {
-        return null;
+        String jpql = "SELECT mlcE, " +
+                "(SELECT COUNT(mlc2) FROM MoovieListContentEntity mlc2 INNER JOIN MoovieList ml ON mlc2.moovieListId = ml.moovieListId WHERE mlc2.moovieListId = mlcE.id AND ml.name = 'Watched' AND ml.userId = :userId), " +
+                "(SELECT COUNT(mll2) > 0 FROM MoovieListLikes mll2 WHERE mll2.moovieList.id = mlcE.id), " + // ACA BORRE LOS  AND mlf.user.id = :userId  me parece que no es por ahi
+                "(SELECT COUNT(mlf2) > 0 FROM MoovieListFollowers mlf2 WHERE mlf2.moovieList.id = mlcE.id) " +
+                "FROM MoovieListCardEntity mlcE JOIN MoovieListFollowers mll " +
+                "ON mlcE.moovieListId = mll.moovieList.moovieListId " +
+                "WHERE mll.user.userId = :userId";
+
+        List<Object[]> results = em.createQuery(jpql)
+                .setParameter("userId", userId)
+                .getResultList();
+
+        List<MoovieListCard> cards = new ArrayList<>();
+        for (Object[] result : results) {
+            MoovieListCardEntity mlcE = (MoovieListCardEntity) result[0];
+            int currentUserWatchAmount = (int) result[1];
+            boolean currentUserHasLiked = (boolean) result[2];
+            boolean currentUserHasFollowed = (boolean) result[3];
+
+            MoovieListCardUserStatus mlcUS = new MoovieListCardUserStatus(currentUserWatchAmount, currentUserHasLiked, currentUserHasFollowed);
+            MoovieListCard card = new MoovieListCard(mlcE, mlcUS);
+            cards.add(card);
+        }
+
+        return cards;
     }
 
     @Override
     public List<User> getMoovieListFollowers(int moovieListId) {
-        return null;
+        return em.createQuery("SELECT mlf.user " +
+                        "FROM MoovieListFollowers mlf " +
+                        "WHERE mlf.moovieList.moovieListId = :moovieListId"
+                        , User.class)
+                .setParameter("moovieListId", moovieListId)
+                .getResultList();
     }
 
     @Override
@@ -164,12 +222,37 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public MoovieList createMoovieList(int userId, String name, int type, String description) {
-        return null;
+        MoovieList newMoovieList = new MoovieList(userId, name, description, type);
+        try{
+            em.persist(newMoovieList);
+            return newMoovieList;
+        } catch(DuplicateKeyException e){
+            throw new UnableToInsertIntoDatabase("Create MoovieList failed, already have a table with the given name");
+        }
+
     }
+
 
     @Override
     public MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList) {
-        return null;
+        MoovieList updatedMoovieList = em.find(MoovieList.class, moovieListid);
+        if (updatedMoovieList != null){
+            Object[] returned = (Object[]) em.createQuery("SELECT MAX(mlcE.customOrder) FROM MoovieListContentEntity mlcE WHERE mlcE.moovieListId = :moovieListId").setParameter("moovieListId", moovieListid).getSingleResult();
+            int maxCustomOrder = (int) returned[0];
+            for ( Integer mediaId : mediaIdList ){
+                maxCustomOrder++;
+                Media mediaToAdd = em.find(Media.class, mediaId);
+                MoovieListContentEntity toAdd = new MoovieListContentEntity(mediaToAdd.getMediaId(),mediaToAdd.isType(),
+                        mediaToAdd.getName(),mediaToAdd.getOriginalLanguage(),mediaToAdd.isAdult(),
+                        mediaToAdd.getReleaseDate(),mediaToAdd.getOverview(),mediaToAdd.getBackdropPath(),
+                        mediaToAdd.getPosterPath(),mediaToAdd.getTrailerLink(),mediaToAdd.getTmdbRating(),
+                        mediaToAdd.getTotalRating(),mediaToAdd.getVoteCount(),mediaToAdd.getStatus(),mediaToAdd.getGenresModels(),
+                        mediaToAdd.getProviders(), moovieListid, maxCustomOrder);
+                em.persist(toAdd);
+            }
+        }
+
+        return updatedMoovieList;
     }
 
     @Override
@@ -179,7 +262,9 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public void deleteMoovieList(int moovieListId) {
-
+        MoovieList toRemove = em.find(MoovieList.class, moovieListId);
+        if (toRemove != null )
+            em.remove(toRemove);
     }
 
     @Override
@@ -189,21 +274,67 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public void removeLikeMoovieList(int userId, int moovieListId) {
+        MoovieListLikes like = em.createQuery("SELECT mll" +
+                        " FROM MoovieListLikes mll" +
+                        " WHERE mll.user.id = :userId AND mll.moovieList.id = :moovieListId"
+                        , MoovieListLikes.class)
+                .setParameter("userId", userId)
+                .setParameter("moovieListId", moovieListId)
+                .getSingleResult();
 
+        // Si la entidad existe, eliminar el like
+        if (like != null) {
+            em.remove(like);
+        }
     }
 
     @Override
     public void likeMoovieList(int userId, int moovieListId) {
+        // Verificar si ya existe el 'like'
+        MoovieListLikes existingLike = em.createQuery("SELECT mll FROM MoovieListLikes mll WHERE mll.user.id = :userId AND mll.moovieList.id = :moovieListId", MoovieListLikes.class)
+                .setParameter("userId", userId)
+                .setParameter("moovieListId", moovieListId)
+                .getSingleResult();
 
+        // Si el 'like' no existe, persistir uno nuevo
+        if (existingLike == null) {
+            User user = em.find(User.class, userId);
+            MoovieList moovieList = em.find(MoovieList.class, moovieListId);
+            MoovieListLikes newLike = new MoovieListLikes(moovieList, user);
+            em.persist(newLike);
+        }
     }
 
     @Override
     public void removeFollowMoovieList(int userId, int moovieListId) {
+        MoovieListFollowers follow = em.createQuery("SELECT mll" +
+                                " FROM MoovieListFollowers mll" +
+                                " WHERE mll.user.id = :userId AND mll.moovieList.id = :moovieListId"
+                        , MoovieListFollowers.class)
+                .setParameter("userId", userId)
+                .setParameter("moovieListId", moovieListId)
+                .getSingleResult();
 
+        // Si la entidad existe, eliminar el follow
+        if (follow != null) {
+            em.remove(follow);
+        }
     }
 
     @Override
     public void followMoovieList(int userId, int moovieListId) {
+        // Verificar si ya existe el 'like'
+        MoovieListFollowers existingFollow = em.createQuery("SELECT mll FROM MoovieListFollowers mll WHERE mll.user.id = :userId AND mll.moovieList.id = :moovieListId", MoovieListFollowers.class)
+                .setParameter("userId", userId)
+                .setParameter("moovieListId", moovieListId)
+                .getSingleResult();
 
+        // Si el 'like' no existe, persistir uno nuevo
+        if (existingFollow == null) {
+            User user = em.find(User.class, userId);
+            MoovieList moovieList = em.find(MoovieList.class, moovieListId);
+            MoovieListFollowers newFollow = new MoovieListFollowers(moovieList, user);
+            em.persist(newFollow);
+        }
     }
 }

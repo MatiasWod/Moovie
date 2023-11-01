@@ -128,7 +128,12 @@ public class MediaHibernateDao implements MediaDao{
 
     @Override
     public List<Media> getMediaInMoovieList(int moovieListId, int size, int pageNumber) {
-        return null;
+
+        return em.createQuery("SELECT m FROM MoovieListContentEntity mlcE INNER JOIN Media m ON mlcE.mediaId = m.mediaId " +
+                        "WHERE mlcE.moovieListId = :moovieListId", Media.class)
+                .setParameter("moovieListId", moovieListId)
+                .setFirstResult(size*pageNumber).setMaxResults(size)
+                .getResultList();
     }
 
     @Override
