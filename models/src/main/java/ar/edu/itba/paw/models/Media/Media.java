@@ -11,6 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "media")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Media {
 
     @Id

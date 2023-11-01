@@ -46,35 +46,25 @@ public class MediaHibernateDao implements MediaDao{
         }
 
         // Add the genres filter
-        if (genres!=null && !genres.isEmpty()) {
-            sql.append(" AND m.mediaId IN ( SELECT mediaId FROM genres WHERE "); // Start the OR conditions for genres
-            int i = 0;
-            for (String genre : genres) {
-                sql.append(" genre = :genre"+i+" OR "); // Replace 'genre_column' with your actual genre column name
-                argtype.add("genre"+i);
-                args.add(genre);
-                i++;
-            }
-            sql.deleteCharAt(sql.length() - 1);
-            sql.deleteCharAt(sql.length() - 1);
-            sql.deleteCharAt(sql.length() - 1);
+        if (genres != null && !genres.isEmpty()) {
+            sql.append(" AND m.mediaId IN (");
+            sql.append(" SELECT mg.mediaId FROM mediagenres mg");
+            sql.append(" JOIN genres g ON g.genreId = mg.genreId");
+            sql.append(" WHERE g.genreName IN (:genres)");
             sql.append(" ) ");
+            argtype.add("genres");
+            args.add(genres);
         }
 
         // Add the providers filter
         if (providers!=null && !providers.isEmpty()) {
-            sql.append(" AND m.mediaId IN ( SELECT mediaId FROM providers WHERE "); // Start the OR conditions for genres
-            int i = 0;
-            for (String provider : providers) {
-                sql.append(" providername = :provider"+i+" OR "); // Replace 'genre_column' with your actual genre column name
-                args.add(provider);
-                argtype.add("provider"+i);
-                i++;
-            }
-            sql.deleteCharAt(sql.length() - 1);
-            sql.deleteCharAt(sql.length() - 1);
-            sql.deleteCharAt(sql.length() - 1);
+            sql.append(" AND m.mediaId IN (");
+            sql.append(" SELECT mp.mediaId FROM mediaproviders mp");
+            sql.append(" JOIN providers p ON p.providerId = mp.providerId");
+            sql.append(" WHERE p.providerName IN (:providers)");
             sql.append(" ) ");
+            argtype.add("providers");
+            args.add(providers);
         }
 
         //Input the search
@@ -107,7 +97,7 @@ public class MediaHibernateDao implements MediaDao{
             sql.append(" ) ");
         }
 
-        sql.append("GROUP BY m.mediaid ");
+        sql.append("GROUP BY m.mediaId ");
 
         // Order by
         if (isOrderValid(orderBy) && isSortOrderValid(sortOrder)) {
@@ -130,7 +120,7 @@ public class MediaHibernateDao implements MediaDao{
 
         List<Integer> ids = nq.getResultList();
 
-        final TypedQuery<Media> query = em.createQuery("from Media where mediaid in (:ids)", Media.class);
+        final TypedQuery<Media> query = em.createQuery("from Media m where m.mediaId in (:ids)", Media.class);
         query.setParameter("ids", ids);
 
         return query.getResultList();
@@ -148,20 +138,27 @@ public class MediaHibernateDao implements MediaDao{
 
     @Override
     public Optional<Movie> getMovieById(int mediaId) {
-        final Query baseQuery = em.createNativeQuery("SELECT " + moviesQueryParams +
-                ",(SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = media.mediaId) AS genres, "
-                + "(SELECT ARRAY_AGG(p) FROM providers p WHERE p.mediaId = media.mediaId) AS providers, "
-                + "AVG(rating) AS totalrating, COUNT(rating) AS votecount  "
-                + "FROM Media media LEFT JOIN Reviews r ON media.mediaId = r.mediaId WHERE media.mediaId = :mediaId "
-                + "GROUP BY media.mediaId, "
-                + moviesQueryParams);
-        Movie movie= (Movie) baseQuery.getSingleResult();
-        return Optional.ofNullable(movie);
+//        final Query baseQuery = em.createNativeQuery("SELECT " + moviesQueryParams +
+//                ",(SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = media.mediaId) AS genres, "
+//                + "(SELECT ARRAY_AGG(p) FROM providers p WHERE p.mediaId = media.mediaId) AS providers, "
+//                + "AVG(rating) AS totalrating, COUNT(rating) AS votecount  "
+//                + "FROM Media media LEFT JOIN Reviews r ON media.mediaId = r.mediaId WHERE media.mediaId = :mediaId "
+//                + "GROUP BY media.mediaId, "
+//                + moviesQueryParams).setParameter("mediaId",mediaId);
+//        Movie movie= (Movie) baseQuery.getSingleResult();
+        final Movie aux = em.createQuery("SELECT m FROM Movie m WHERE m.mediaId = :mediaId", Movie.class)
+                .setParameter("mediaId",mediaId)
+                .getSingleResult();
+        return Optional.ofNullable(aux);
     }
 
     @Override
     public Optional<TVSerie> getTvById(int mediaId) {
-        return Optional.empty();
+
+        final TVSerie aux = em.createQuery("SELECT tv FROM TVSerie tv WHERE tv.mediaId = :mediaId", TVSerie.class)
+                .setParameter("mediaId",mediaId)
+                .getSingleResult();
+        return Optional.ofNullable(aux);
     }
 
     @Override
@@ -182,35 +179,25 @@ public class MediaHibernateDao implements MediaDao{
         }
 
         // Add the genres filter
-        if (genres!=null && !genres.isEmpty()) {
-            sql.append(" AND m.mediaId IN ( SELECT mediaId FROM genres WHERE "); // Start the OR conditions for genres
-            int i = 0;
-            for (String genre : genres) {
-                sql.append(" genre = :genre"+i+" OR "); // Replace 'genre_column' with your actual genre column name
-                argtype.add("genre"+i);
-                args.add(genre);
-                i++;
-            }
-            sql.deleteCharAt(sql.length() - 1);
-            sql.deleteCharAt(sql.length() - 1);
-            sql.deleteCharAt(sql.length() - 1);
+        if (genres != null && !genres.isEmpty()) {
+            sql.append(" AND m.mediaId IN (");
+            sql.append(" SELECT mg.mediaId FROM mediagenres mg");
+            sql.append(" JOIN genres g ON g.genreId = mg.genreId");
+            sql.append(" WHERE g.genreName IN (:genres)");
             sql.append(" ) ");
+            argtype.add("genres");
+            args.add(genres);
         }
 
         // Add the providers filter
         if (providers!=null && !providers.isEmpty()) {
-            sql.append(" AND m.mediaId IN ( SELECT mediaId FROM providers WHERE "); // Start the OR conditions for genres
-            int i = 0;
-            for (String provider : providers) {
-                sql.append(" providername = :provider"+i+" OR "); // Replace 'genre_column' with your actual genre column name
-                args.add(provider);
-                argtype.add("provider"+i);
-                i++;
-            }
-            sql.deleteCharAt(sql.length() - 1);
-            sql.deleteCharAt(sql.length() - 1);
-            sql.deleteCharAt(sql.length() - 1);
+            sql.append(" AND m.mediaId IN (");
+            sql.append(" SELECT mp.mediaId FROM mediaproviders mp");
+            sql.append(" JOIN providers p ON p.providerId = mp.providerId");
+            sql.append(" WHERE p.providerName IN (:providers)");
             sql.append(" ) ");
+            argtype.add("providers");
+            args.add(providers);
         }
 
         //Input the search
