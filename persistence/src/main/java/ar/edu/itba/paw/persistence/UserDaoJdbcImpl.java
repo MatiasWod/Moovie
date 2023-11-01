@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.persistence;
+/*package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.User.Image;
 import ar.edu.itba.paw.models.User.Profile;
@@ -174,7 +174,7 @@ public class UserDaoJdbcImpl implements UserDao{
     /**
      * USER STATUS
      */
-
+/*
     @Override
     public void changeUserRole(int userId, int role) {
         jdbcTemplate.update("UPDATE users SET role = ? WHERE userId = ?", new Object[]{role, userId});
@@ -205,3 +205,4 @@ public class UserDaoJdbcImpl implements UserDao{
         return false;
     }
 }
+*/

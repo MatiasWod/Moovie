@@ -1,13 +1,28 @@
 package ar.edu.itba.paw.models.User;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "profile")
 public class Profile {
-    private final int userId;
-    private final String username;
-    private final String email;
-    private final int role;
-    private final int moovieListCount;
-    private final int likedMoovieListCount;
-    private final int reviewsCount;
+    @Id
+    private int userId;
+    @Column
+    private String username;
+    @Column
+    private String email;
+    @Column
+    private int role;
+    @Transient
+    private int moovieListCount;
+    @Transient
+    private int likedMoovieListCount;
+    @Transient
+    private int reviewsCount;
+
+    public Profile(){
+
+    }
 
     public Profile(int userId, String username, String email, int role, int moovieListCount, int likedMoovieListCount, int reviewsCount) {
         this.userId = userId;

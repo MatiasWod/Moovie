@@ -8,7 +8,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_userid_seq")
     @SequenceGenerator(sequenceName = "users_userid_seq", name = "users_userid_seq", allocationSize = 1)
-    private int userId;
+    private Integer userId;
 
     @Column(length = 30, nullable = false, unique = true)
     private String username;
@@ -35,6 +35,14 @@ public class User {
         this.role = role;
     }
 
+    public User(Builder builder) {
+        this.userId = builder.userId;
+        this.email = builder.email;
+        this.username = builder.username;
+        this.password = builder.password;
+        this.role =  builder.role;
+    }
+
     public int getUserId() {
         return userId;
     }
@@ -53,6 +61,30 @@ public class User {
 
     public int getRole() {
         return role;
+    }
+
+    public static class Builder {
+        private final String email;
+        private final String username;
+        private final String password;
+        private final int role;
+        private Integer userId = null;
+
+        public Builder(String username, String email, String password, int role) {
+            this.username = username;
+            this.email = email;
+            this.password = password;
+            this.role = role;
+        }
+
+        public Builder userId(int userId) {
+            this.userId = userId;
+            return this;
+        }
+
+        public User build() {
+            return new User(this);
+        }
     }
 
 }

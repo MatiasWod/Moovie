@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.persistence;
+/*package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.User.Token;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,3 +55,4 @@ public class VerificationTokenDaoJdbcImpl implements VerificationTokenDao{
         jdbcTemplate.update("UPDATE verificationTokens SET expirationDate = ? WHERE token = ?",newExpirationDate,token);
     }
 }
+*/
