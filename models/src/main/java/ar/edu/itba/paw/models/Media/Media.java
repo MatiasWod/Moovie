@@ -78,7 +78,7 @@ public class Media {
 
 
     /* Just for Hibernate*/
-    Media(){
+    public Media(){
 
     }
 
@@ -169,6 +169,10 @@ public class Media {
             genres.add(genre.getGenre());
         }
         return genres;
+    }
+
+    public List<Genre> getGenresModels(){
+        return this.genres;
     }
 
     public List<Provider> getProviders() {

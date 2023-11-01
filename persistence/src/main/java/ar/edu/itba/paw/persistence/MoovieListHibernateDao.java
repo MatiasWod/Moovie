@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -88,8 +89,35 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public List<MoovieListContent> getMoovieListContent(int moovieListId, int userid, String orderBy, String sortOrder, int size, int pageNumber) {
-        return null;
+        // Asumiendo que orderBy y sortOrder son seguros y validados para evitar inyección SQL
+
+//        (CASE WHEN EXISTS ( SELECT 1 FROM moovielists ml INNER JOIN moovieListsContent mlc2 ON ml.moovielistid = mlc2.moovielistid
+//        WHERE m.mediaId = mlc2.mediaId AND ml.name = 'Watched' AND ml.userid = ? ) THEN true ELSE false END) AS isWatched,
+
+//        String jpql = "SELECT new ar.edu.itba.paw.models.MoovieList.MoovieListContent(" +
+//                "mlc, " +
+//                "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END " +
+//                "FROM MoovieList wl INNER JOIN MoovieListContentEntity mlc2 ON wl.moovieListId = mlc2.moovieListId " +
+//                "WHERE mlc.mediaId = mlc2.mediaId AND wl.name = 'Watched' AND wl.userId = :userid)) " +
+//                "FROM MoovieListContentEntity mlc " +
+//                "WHERE mlc.moovieListId = :moovieListId " +
+//                "ORDER BY mlc." + orderBy + " " + sortOrder;
+
+        String jpql = "SELECT new ar.edu.itba.paw.models.MoovieList.MoovieListContent(mlc, true) " +
+                "FROM MoovieListContentEntity mlc "+
+                "WHERE mlc.moovieListId = :moovieListId ";
+
+        TypedQuery<MoovieListContent> query = em.createQuery(jpql, MoovieListContent.class);
+        query.setParameter("moovieListId", moovieListId);
+//        query.setParameter("userid", userid);
+        query.setFirstResult(pageNumber * size);
+        query.setMaxResults(size);
+
+        return query.getResultList();
     }
+
+
+
 
     @Override
     public List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, int userid, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {

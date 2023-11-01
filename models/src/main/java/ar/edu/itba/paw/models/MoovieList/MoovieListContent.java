@@ -4,17 +4,30 @@ import ar.edu.itba.paw.models.Genre.Genre;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Provider.Provider;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
 import java.util.Date;
 import java.util.List;
 
-public class MoovieListContent extends Media {
+
+public class MoovieListContent extends MoovieListContentEntity {
+
     private boolean watched;
 
-
-    public MoovieListContent(int mediaId, boolean type, String name, String originalLanguage, boolean adult, Date releaseDate, String overview, String backdropPath, String posterPath, String trailerLink, float tmdbRating, float totalRating, int voteCount, String status, List<Genre> genres, List<Provider> providers, boolean watched) {
-        super(mediaId, type, name, originalLanguage, adult, releaseDate, overview, backdropPath, posterPath, trailerLink, tmdbRating, totalRating, voteCount, status, genres, providers);
+    public MoovieListContent(MoovieListContentEntity mlc,
+                             boolean watched) {
+        super(mlc.getMediaId(), mlc.isType(), mlc.getName(), mlc.getOriginalLanguage(),
+                mlc.isAdult(), mlc.getReleaseDate(), mlc.getOverview(), mlc.getBackdropPath(),
+                mlc.getPosterPath(), mlc.getTrailerLink(), mlc.getTmdbRating(), mlc.getTotalRating(),
+                mlc.getVoteCount(), mlc.getStatus(), mlc.getGenresModels(), mlc.getProviders(),
+                mlc.getMoovieListId(), mlc.getCustomOrder());
         this.watched = watched;
     }
+
+//    MoovieListContent(){}
+
 
     public boolean isWatched() {
         return watched;
