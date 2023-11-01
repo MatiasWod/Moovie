@@ -1,6 +1,6 @@
 import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.User;
-import ar.edu.itba.paw.persistence.UserDaoJdbcImpl;
+import ar.edu.itba.paw.persistence.UserHibernateDao;
 import config.TestConfig;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +32,7 @@ public class UserDaoJdbcImplTest {
     private DataSource ds;
 
     @Autowired
-    private UserDaoJdbcImpl userDaoJdbc;
+    private UserHibernateDao userDaoJdbc;
 
     private JdbcTemplate jdbcTemplate;
 

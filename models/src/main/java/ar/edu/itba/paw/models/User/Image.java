@@ -1,9 +1,18 @@
 package ar.edu.itba.paw.models.User;
 
-public class Image {
-    private final int userId;
-    private final byte[] image;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "userimages")
+public class Image {
+    @Id
+    private int userId;
+    @Column(name = "image")
+    private byte[] image;
+
+    public Image(){
+
+    }
 
     public Image(int userId, byte[] image) {
         this.userId = userId;

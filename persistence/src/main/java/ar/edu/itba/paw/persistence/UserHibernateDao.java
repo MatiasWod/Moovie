@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 import java.util.*;
@@ -32,14 +33,8 @@ public class UserHibernateDao implements UserDao{
         args.put("password",password);
         args.put("role", UserRoles.NOT_AUTHENTICATED.getRole());
 
-        final User toCreateUser = new User(-1,username,email,password,UserRoles.NOT_AUTHENTICATED.getRole());
+        final User toCreateUser = new User.Builder(username,email,password,UserRoles.NOT_AUTHENTICATED.getRole()).build();
         entityManager.persist(toCreateUser);
-        entityManager.createNativeQuery("INSERT INTO users(email,username,password,role) VALUES (:email,:username,:passwordd,:role)")
-                .setParameter("email",email)
-                .setParameter("username",username)
-                .setParameter("password",password)
-                .setParameter("role",UserRoles.NOT_AUTHENTICATED.getRole())
-                .executeUpdate();
 
         return toCreateUser;
     }
@@ -72,14 +67,14 @@ public class UserHibernateDao implements UserDao{
 
     @Override
     public Optional<User> findUserByEmail(String email) {
-        final TypedQuery<User> query = entityManager.createQuery("from User where email ILIKE :email",User.class);
+        final TypedQuery<User> query = entityManager.createQuery("from User where email = :email",User.class);
         query.setParameter("email",email);
         return query.getResultList().stream().findFirst();
     }
 
     @Override
     public Optional<User> findUserByUsername(String username) {
-        final TypedQuery<User> query = entityManager.createQuery("from User where username ILIKE :username",User.class);
+        final TypedQuery<User> query = entityManager.createQuery("from User where username = (:username)",User.class);
         query.setParameter("username",username);
         return query.getResultList().stream().findFirst();
     }
@@ -98,7 +93,7 @@ public class UserHibernateDao implements UserDao{
 
         sql.append(" LIMIT :limit OFFSET :offset ");
 
-        TypedQuery<Profile> query = entityManager.createQuery(sql.toString(),Profile.class)
+        Query query = entityManager.createNativeQuery(sql.toString(),Profile.class)
                 .setParameter("username",'%' + username + '%')
                 .setParameter("limit",size)
                 .setParameter("offset",size * pageNumber);
@@ -120,9 +115,9 @@ public class UserHibernateDao implements UserDao{
         sql.append(" (SELECT COUNT(*) FROM moovieLists ml WHERE ml.userId = u.userId AND ml.type = 1) AS moovieListCount, ");
         sql.append(" (SELECT COUNT(*) FROM moovieListsLikes l WHERE l.userId = u.userId) AS likedMoovieListCount, ");
         sql.append(" (SELECT COUNT(*) FROM reviews r WHERE r.userId = u.userId) AS reviewCount ");
-        sql.append(" FROM users u WHERE username = :username; ");
+        sql.append(" FROM users u WHERE username = :username ");
 
-        TypedQuery<Profile> query = entityManager.createQuery(sql.toString(),Profile.class).setParameter("username",username);
+        Query query = entityManager.createNativeQuery(sql.toString(),Profile.class).setParameter("username",username);
 
         return query.getResultList().stream().findFirst();
     }
@@ -137,9 +132,9 @@ public class UserHibernateDao implements UserDao{
 
     @Override
     public boolean hasProfilePicture(int userId) {
-        int aux = ((Number) entityManager.createNativeQuery("SELECT COUNT(*) AS count FROM userImages WHERE userid = :username")
-                .setParameter("userid",userId)
-                .getSingleResult()).intValue();
+        int aux = entityManager.createQuery("FROM Image WHERE userId = :userId")
+                .setParameter("userId",userId)
+                .getResultList().size();
         if (aux >= 1 ){
             return true;
         }

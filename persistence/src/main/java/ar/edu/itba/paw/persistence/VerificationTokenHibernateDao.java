@@ -33,7 +33,7 @@ public class VerificationTokenHibernateDao implements VerificationTokenDao{
 
     @Override
     public void deleteToken(Token token) {
-        entityManager.remove(token);
+        entityManager.remove(entityManager.contains(token) ? token : entityManager.merge(token));
     }
 
     @Override
