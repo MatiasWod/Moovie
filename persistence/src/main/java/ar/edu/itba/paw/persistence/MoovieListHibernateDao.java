@@ -36,7 +36,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
                 " (SELECT COUNT(*) FROM moovielistsContent mlc " +
                 " INNER JOIN moovielistscontent mlc2 ON mlc.mediaid = mlc2.mediaid " +
                 " JOIN moovieLists ml ON mlc2.moovieListId = ml.moovieListId " +
-                " WHERE mlc.moovieListId = :moovieListId AND ml.name = 'Watched' AND ml.userId = :userId) as isWatched, " +
+                " WHERE mlc.moovieListId = :moovieListId AND ml.name = 'Watched' AND ml.userId = :userId) as currentUserWatchAmount, " +
                 " (CASE WHEN EXISTS (SELECT 1 FROM moovielistslikes mll WHERE mll.moovieListId = :moovieListId AND mll.userId = :userId) THEN true ELSE false END ) as currentUserHasLiked, " +
                 " (CASE WHEN EXISTS (SELECT 1 FROM moovielistsfollows mlf WHERE mlf.moovieListId = :moovieListId AND mlf.userId = :userId) THEN true ELSE false END ) as currentUserHasFollowed";
 
@@ -44,11 +44,15 @@ public class MoovieListHibernateDao implements MoovieListDao{
         query.setParameter("moovieListId", moovieListId);
         query.setParameter("userId", currentUserId);
 
-        query.unwrap(SQLQuery.class).setResultTransformer(Transformers.aliasToBean(MoovieListCardUserStatus.class));
-        MoovieListCardUserStatus mlcUS = (MoovieListCardUserStatus) query.getSingleResult();
+        query.unwrap(SQLQuery.class);
 
-        return new MoovieListCard(mlcE, mlcUS);
+        Object[] obj = (Object[]) query.getSingleResult();
 
+        MoovieListCardUserStatus userStatus = new MoovieListCardUserStatus(((Number)obj[0]).intValue(),(boolean)obj[1],(boolean)obj[2]);
+
+
+
+        return new MoovieListCard(mlcE, userStatus );
     }
 
     @Override
