@@ -57,7 +57,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public MoovieListCard getMoovieListCardById(int moovieListId) {
         int currentUserId = userService.tryToGetCurrentUserId();
-        MoovieListCard mlc = moovieListDao.getMoovieListCardById(moovieListId, currentUserId).orElseThrow( () -> new MoovieListNotFoundException("Moovie list by id: " + moovieListId + " not found"));
+        MoovieListCard mlc = moovieListDao.getMoovieListCardById(moovieListId, currentUserId);
         if( mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.getType() || mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType()){
             try {
                 User currentUser = userService.getInfoOfMyUser();
@@ -185,7 +185,7 @@ public class MoovieListServiceImpl implements MoovieListService{
              content = getMoovieListContent(card.getMoovieListId(),orderBy,sortOrder,size,pageNumber);
         }
         else{
-            card = moovieListDao.getMoovieListCardById(moovieListId, currentUserId).get();
+            card = moovieListDao.getMoovieListCardById(moovieListId, currentUserId);
             content = getMoovieListContent(moovieListId,orderBy,sortOrder,size,pageNumber);
         }
         return new MoovieListDetails(card,content);

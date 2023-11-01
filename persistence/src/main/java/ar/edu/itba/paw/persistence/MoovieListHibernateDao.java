@@ -1,15 +1,17 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.models.Media.Media;
-import ar.edu.itba.paw.models.MoovieList.MoovieList;
-import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
-import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
+import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.User.User;
+import org.hibernate.SQLQuery;
+import org.hibernate.transform.Transformers;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,8 +28,27 @@ public class MoovieListHibernateDao implements MoovieListDao{
     }
 
     @Override
-    public Optional<MoovieListCard> getMoovieListCardById(int moovieListId, int currentUserId) {
-        return Optional.ofNullable(em.find(MoovieListCard.class, moovieListId));
+    public MoovieListCard getMoovieListCardById(int moovieListId, int currentUserId) {
+
+        MoovieListCardEntity mlcE = Optional.ofNullable(em.find(MoovieListCardEntity.class, moovieListId)).orElseThrow( () -> new MoovieListNotFoundException("Moovie list by id: " + moovieListId + " not found") );
+
+        String sqlQuery = "SELECT " +
+                " (SELECT COUNT(*) FROM moovielistsContent mlc " +
+                " INNER JOIN moovielistscontent mlc2 ON mlc.mediaid = mlc2.mediaid " +
+                " JOIN moovieLists ml ON mlc2.moovieListId = ml.moovieListId " +
+                " WHERE mlc.moovieListId = :moovieListId AND ml.name = 'Watched' AND ml.userId = :userId) as isWatched, " +
+                " (CASE WHEN EXISTS (SELECT 1 FROM moovielistslikes mll WHERE mll.moovieListId = :moovieListId AND mll.userId = :userId) THEN true ELSE false END ) as currentUserHasLiked, " +
+                " (CASE WHEN EXISTS (SELECT 1 FROM moovielistsfollows mlf WHERE mlf.moovieListId = :moovieListId AND mlf.userId = :userId) THEN true ELSE false END ) as currentUserHasFollowed";
+
+        Query query = em.createNativeQuery(sqlQuery);
+        query.setParameter("moovieListId", moovieListId);
+        query.setParameter("userId", currentUserId);
+
+        query.unwrap(SQLQuery.class).setResultTransformer(Transformers.aliasToBean(MoovieListCardUserStatus.class));
+        MoovieListCardUserStatus mlcUS = (MoovieListCardUserStatus) query.getSingleResult();
+
+        return new MoovieListCard(mlcE, mlcUS);
+
     }
 
     @Override

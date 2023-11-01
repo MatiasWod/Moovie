@@ -57,12 +57,8 @@ public class MediaController {
 
     @RequestMapping("/testing")
     public ModelAndView test(){
-        final ModelAndView mav = new ModelAndView("helloworld/adolfoTesting");
-        mav.addObject("allGenres", genreService.getAllGenres());
-        mav.addObject("genresForMedia", genreService.getGenresForMedia(1));
-        mav.addObject("tvCreator", tvCreatorsService.getTvCreatorsByMediaId(203));
-        mav.addObject("providers", providerService.getAllProviders());
-        mav.addObject("actors", actorService.getAllActorsForMedia(1));
+        final ModelAndView mav = new ModelAndView("helloworld/test");
+        mav.addObject("ml", moovieListService.getMoovieListCardById(1));
         return mav;
     }
 

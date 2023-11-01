@@ -20,7 +20,9 @@
     <a>${ml.username}</a>
     <a>${ml.size}</a>
 
-<c:if test="${not empty media}">
+</div>
+
+<%--c:if test="${not empty media}">
         <c:forEach var="med" items="${media}">
             <h1>${med.name}</h1>
             <c:if test="${not empty med.providers}">
@@ -35,8 +37,8 @@
             </c:if>
         </c:forEach>
 
-    </c:if >
-    </div>
+</c:if --%>
+
 
 </body>
 </html>
