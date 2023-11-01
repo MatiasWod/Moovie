@@ -13,8 +13,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Primary
 @Repository
@@ -94,29 +96,56 @@ public class MoovieListHibernateDao implements MoovieListDao{
     @Override
     public List<MoovieListContent> getMoovieListContent(int moovieListId, int userid, String orderBy, String sortOrder, int size, int pageNumber) {
         // Asumiendo que orderBy y sortOrder son seguros y validados para evitar inyección SQL
+        // TODO: hacer un previo check de orderBy y sortOrder
+//        List<MoovieListContentEntity> content = em.createQuery("SELECT mlc FROM MoovieListContentEntity mlc"
+//                + " WHERE mlc.moovieListId = :moovieListId" +
+//                " ORDER BY mlc."+orderBy+" " +sortOrder
+//                        , MoovieListContentEntity.class)
+//                .setParameter("moovieListId", moovieListId)
+//                .setFirstResult(pageNumber * size).setMaxResults(size)
+//                .getResultList();
+//
+//        String sqlQuery = "SELECT (CASE WHEN EXISTS (SELECT 1 FROM moovielists ml INNER JOIN moovieListsContent mlc2 ON ml.moovielistid = mlc2.moovielistid " +
+//                "WHERE m.mediaId = mlc2.mediaId AND ml.name = 'Watched' AND ml.userid = :userId) THEN TRUE ELSE FALSE END) " +
+//                "FROM media m JOIN moovielistscontent mlc ON m.mediaid = mlc.mediaid " +
+//                "WHERE mlc.moovielistid = :moovieListId " +
+//                "ORDER BY " + orderBy + " " + sortOrder;
+//
+//        List<Object> watchedObjects = em.createNativeQuery(sqlQuery)
+//                .setParameter("userId", userid).setParameter("moovieListId", moovieListId)
+//                .setFirstResult(size * pageNumber).setMaxResults(size)
+//                .getResultList();
+//
+//        List<Boolean> watched = watchedObjects.stream()
+//                .map(result -> (Boolean) result)
+//                .collect(Collectors.toList());
+//
+//
+//        List<MoovieListContent> toReturn = new ArrayList<>();
+//        int i = 0;
+//
+//        for (MoovieListContentEntity mlc : content){
+//            MoovieListContent aux = new MoovieListContent(mlc, watched.get(i++));
+//            toReturn.add(aux);
+//        }
+//
+//        return toReturn;
 
-//        (CASE WHEN EXISTS ( SELECT 1 FROM moovielists ml INNER JOIN moovieListsContent mlc2 ON ml.moovielistid = mlc2.moovielistid
-//        WHERE m.mediaId = mlc2.mediaId AND ml.name = 'Watched' AND ml.userid = ? ) THEN true ELSE false END) AS isWatched,
+        String jpql = "SELECT new ar.edu.itba.paw.models.MoovieList.MoovieListContent(" +
+                "mlc, " +
+                "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END " +
+                "FROM MoovieList wl INNER JOIN MoovieListContentEntity mlc2 ON wl.moovieListId = mlc2.moovieListId " +
+                "WHERE mlc.mediaId = mlc2.mediaId AND wl.name = 'Watched' AND wl.userId = :userid)) " +
+                "FROM MoovieListContentEntity mlc " +
+                "WHERE mlc.moovieListId = :moovieListId " +
+                "ORDER BY mlc." + orderBy + " " + sortOrder;
 
-//        String jpql = "SELECT new ar.edu.itba.paw.models.MoovieList.MoovieListContent(" +
-//                "mlc, " +
-//                "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END " +
-//                "FROM MoovieList wl INNER JOIN MoovieListContentEntity mlc2 ON wl.moovieListId = mlc2.moovieListId " +
-//                "WHERE mlc.mediaId = mlc2.mediaId AND wl.name = 'Watched' AND wl.userId = :userid)) " +
-//                "FROM MoovieListContentEntity mlc " +
-//                "WHERE mlc.moovieListId = :moovieListId " +
-//                "ORDER BY mlc." + orderBy + " " + sortOrder;
-
-        String jpql = "SELECT new ar.edu.itba.paw.models.MoovieList.MoovieListContent(mlc, true) " +
-                "FROM MoovieListContentEntity mlc "+
-                "WHERE mlc.moovieListId = :moovieListId ";
 
         TypedQuery<MoovieListContent> query = em.createQuery(jpql, MoovieListContent.class);
         query.setParameter("moovieListId", moovieListId);
-//        query.setParameter("userid", userid);
+        query.setParameter("userid", userid);
         query.setFirstResult(pageNumber * size);
         query.setMaxResults(size);
-
         return query.getResultList();
     }
 

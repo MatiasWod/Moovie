@@ -18,9 +18,10 @@
 ${mlc}
 <c:forEach items="${mlc}" var="cont">
     <div>
-        ${mlc}
         algo:
         ${cont.name}
+        ${cont.customOrder}
+        ${cont.watched}
     </div>
 </c:forEach>
 </body>
