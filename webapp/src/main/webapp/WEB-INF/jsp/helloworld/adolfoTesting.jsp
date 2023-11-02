@@ -24,5 +24,15 @@ ${mlc}
         ${cont.watched}
     </div>
 </c:forEach>
+<h2>Prueba de MoovieListCards:</h2>
+${browseLists}
+<c:forEach items="${browseLists}" var="list">
+    <div>
+        ${list}
+        ${list.images}
+        ${list.username}
+        ${list.name}
+    </div>
+</c:forEach>
 </body>
 </html>

@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -138,6 +139,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber, int currentUserId) {
+        // TODO: implementar algoritmo para la recomendacion
         return getLikedMoovieListCards(currentUserId,1,25,0,currentUserId);
     }
 
@@ -147,26 +149,44 @@ public class MoovieListHibernateDao implements MoovieListDao{
                 "(SELECT COUNT(mlc2) FROM MoovieListContentEntity mlc2 INNER JOIN MoovieList ml ON mlc2.moovieListId = ml.moovieListId WHERE mlc2.moovieListId = mlcE.id AND ml.name = 'Watched' AND ml.userId = :currentUserId), " +
                 "(SELECT COUNT(mll2) > 0 FROM MoovieListLikes mll2 WHERE mll2.moovieList.id = mlcE.id), " + // ACA BORRE LOS  AND mlf.user.id = :userId  me parece que no es por ahi
                 "(SELECT COUNT(mlf2) > 0 FROM MoovieListFollowers mlf2 WHERE mlf2.moovieList.id = mlcE.id) " +
-                "FROM MoovieListCardEntity mlcE " +
-                "WHERE LOWER(mlcE.name) LIKE LOWER(:search) AND mlcE.username = :ownerUsername "
-//                +"ORDER BY mlcE."+orderBy+" :order "
-                ;
+                "FROM MoovieListCardEntity mlcE "
+                +"WHERE mlcE.type = :type ";
 
-        List<Object[]> results = em.createQuery(jpql)
+        boolean searchFlag = search != null && !search.isEmpty();
+        boolean usernameFlag = ownerUsername != null && !ownerUsername.isEmpty();
+        boolean orderFlag = order != null && !order.isEmpty();
+
+        if (searchFlag) {
+            jpql += "AND mlcE.name LIKE :search ";
+        }
+
+        if (usernameFlag){
+            jpql += "AND mlcE.username = :ownerUsername ";
+        }
+
+
+        Query query = em.createQuery(jpql)
                 .setParameter("currentUserId",currentUserId)
-                .setParameter("search", "%"+search+"%").setParameter("ownerUsername",ownerUsername)
-//                .setParameter("orderBy", orderBy)
-//                .setParameter("order", order)
+                .setParameter("type", type);
+
+        if (searchFlag){
+            query.setParameter("search", "%"+search+"%");
+        }
+        if (usernameFlag){
+            query.setParameter("ownerUsername", ownerUsername);
+        }
+
+        List<Object[]> results = query.setFirstResult(pageNumber*size).setMaxResults(size)
                 .getResultList();
 
         List<MoovieListCard> cards = new ArrayList<>();
         for (Object[] result : results) {
             MoovieListCardEntity mlcE = (MoovieListCardEntity) result[0];
-            int currentUserWatchAmount = (int) result[1];
+            Long currentUserWatchAmount = (Long) result[1];
             boolean currentUserHasLiked = (boolean) result[2];
             boolean currentUserHasFollowed = (boolean) result[3];
 
-            MoovieListCardUserStatus mlcUS = new MoovieListCardUserStatus(currentUserWatchAmount, currentUserHasLiked, currentUserHasFollowed);
+            MoovieListCardUserStatus mlcUS = new MoovieListCardUserStatus(currentUserWatchAmount.intValue(), currentUserHasLiked, currentUserHasFollowed);
             MoovieListCard card = new MoovieListCard(mlcE, mlcUS);
             cards.add(card);
         }
@@ -176,7 +196,33 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public int getMoovieListCardsCount(String search, String ownerUsername, int type, int size, int pageNumber) {
-        return 0;
+        String jpql = "SELECT COUNT(mlcE) " +
+                "FROM MoovieListCardEntity mlcE "
+                +"WHERE mlcE.type = :type ";
+
+        boolean searchFlag = search != null && !search.isEmpty();
+        boolean usernameFlag = ownerUsername != null && !ownerUsername.isEmpty();
+
+        if (searchFlag) {
+            jpql += "AND mlcE.name LIKE :search ";
+        }
+
+        if (usernameFlag){
+            jpql += "AND mlcE.username = :ownerUsername ";
+        }
+        Query query = em.createQuery(jpql)
+                .setParameter("type", type);
+
+        if (searchFlag){
+            query.setParameter("search", "%"+search+"%");
+        }
+        if (usernameFlag){
+            query.setParameter("ownerUsername", ownerUsername);
+        }
+
+        Long toReturn = (Long) query.getSingleResult();
+
+        return toReturn.intValue();
     }
 
     @Override
