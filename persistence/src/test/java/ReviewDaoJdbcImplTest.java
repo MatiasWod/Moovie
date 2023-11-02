@@ -1,6 +1,6 @@
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.Review.Review;
-import ar.edu.itba.paw.persistence.ReviewDaoJdbcImpl;
+import ar.edu.itba.paw.persistence.ReviewHibernateDao;
 import config.TestConfig;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class ReviewDaoJdbcImplTest {
     private DataSource ds;
 
     @Autowired
-    private ReviewDaoJdbcImpl reviewDao;
+    private ReviewHibernateDao reviewDao;
 
     private JdbcTemplate jdbcTemplate;
 
