@@ -65,7 +65,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
     @Override
     public List<MoovieListCard> getLikedMoovieListCards(int userId, int type, int size, int pageNumber, int currentUserId) {
         String jpql = "SELECT mlcE, " +
-                "(SELECT COUNT(mlc2) FROM MoovieListContentEntity mlc2 INNER JOIN MoovieList ml ON mlc2.moovieListId = ml.moovieListId WHERE mlc2.moovieListId = mlcE.id AND ml.name = 'Watched' AND ml.userId = :userId), " +
+                "(SELECT COUNT(mlc2) FROM MoovieListContentEntity mlc2 INNER JOIN MoovieList ml ON mlc2.moovieListId = ml.moovieListId WHERE mlc2.moovieListId = mlcE.id AND ml.name = 'Watched' AND ml.userId = :currentUserId), " +
                 "(SELECT COUNT(mll2) > 0 FROM MoovieListLikes mll2 WHERE mll2.moovieList.id = mlcE.id), " + // ACA BORRE LOS  AND mlf.user.id = :userId  me parece que no es por ahi
                 "(SELECT COUNT(mlf2) > 0 FROM MoovieListFollowers mlf2 WHERE mlf2.moovieList.id = mlcE.id) " +
                 "FROM MoovieListCardEntity mlcE JOIN MoovieListLikes mll " +
@@ -73,7 +73,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
                 "WHERE mll.user.userId = :userId";
 
         List<Object[]> results = em.createQuery(jpql)
-                .setParameter("userId", userId)
+                .setParameter("userId", userId).setParameter("currentUserId",currentUserId)
                 .getResultList();
 
         List<MoovieListCard> cards = new ArrayList<>();
@@ -95,7 +95,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
     @Override
     public List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber, int currentUserId) {
         String jpql = "SELECT mlcE, " +
-                "(SELECT COUNT(mlc2) FROM MoovieListContentEntity mlc2 INNER JOIN MoovieList ml ON mlc2.moovieListId = ml.moovieListId WHERE mlc2.moovieListId = mlcE.id AND ml.name = 'Watched' AND ml.userId = :userId), " +
+                "(SELECT COUNT(mlc2) FROM MoovieListContentEntity mlc2 INNER JOIN MoovieList ml ON mlc2.moovieListId = ml.moovieListId WHERE mlc2.moovieListId = mlcE.id AND ml.name = 'Watched' AND ml.userId = :currentUserId), " +
                 "(SELECT COUNT(mll2) > 0 FROM MoovieListLikes mll2 WHERE mll2.moovieList.id = mlcE.id), " + // ACA BORRE LOS  AND mlf.user.id = :userId  me parece que no es por ahi
                 "(SELECT COUNT(mlf2) > 0 FROM MoovieListFollowers mlf2 WHERE mlf2.moovieList.id = mlcE.id) " +
                 "FROM MoovieListCardEntity mlcE JOIN MoovieListFollowers mll " +
@@ -103,7 +103,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
                 "WHERE mll.user.userId = :userId";
 
         List<Object[]> results = em.createQuery(jpql)
-                .setParameter("userId", userId)
+                .setParameter("userId", userId).setParameter("currentUserId",currentUserId)
                 .getResultList();
 
         List<MoovieListCard> cards = new ArrayList<>();
@@ -138,12 +138,40 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber, int currentUserId) {
-        return null;
+        return getLikedMoovieListCards(currentUserId,1,25,0,currentUserId);
     }
 
     @Override
     public List<MoovieListCard> getMoovieListCards(String search, String ownerUsername, int type, String orderBy, String order, int size, int pageNumber, int currentUserId) {
-        return null;
+        String jpql = "SELECT mlcE, " +
+                "(SELECT COUNT(mlc2) FROM MoovieListContentEntity mlc2 INNER JOIN MoovieList ml ON mlc2.moovieListId = ml.moovieListId WHERE mlc2.moovieListId = mlcE.id AND ml.name = 'Watched' AND ml.userId = :currentUserId), " +
+                "(SELECT COUNT(mll2) > 0 FROM MoovieListLikes mll2 WHERE mll2.moovieList.id = mlcE.id), " + // ACA BORRE LOS  AND mlf.user.id = :userId  me parece que no es por ahi
+                "(SELECT COUNT(mlf2) > 0 FROM MoovieListFollowers mlf2 WHERE mlf2.moovieList.id = mlcE.id) " +
+                "FROM MoovieListCardEntity mlcE " +
+                "WHERE LOWER(mlcE.name) LIKE LOWER(:search) AND mlcE.username = :ownerUsername "
+//                +"ORDER BY mlcE."+orderBy+" :order "
+                ;
+
+        List<Object[]> results = em.createQuery(jpql)
+                .setParameter("currentUserId",currentUserId)
+                .setParameter("search", "%"+search+"%").setParameter("ownerUsername",ownerUsername)
+//                .setParameter("orderBy", orderBy)
+//                .setParameter("order", order)
+                .getResultList();
+
+        List<MoovieListCard> cards = new ArrayList<>();
+        for (Object[] result : results) {
+            MoovieListCardEntity mlcE = (MoovieListCardEntity) result[0];
+            int currentUserWatchAmount = (int) result[1];
+            boolean currentUserHasLiked = (boolean) result[2];
+            boolean currentUserHasFollowed = (boolean) result[3];
+
+            MoovieListCardUserStatus mlcUS = new MoovieListCardUserStatus(currentUserWatchAmount, currentUserHasLiked, currentUserHasFollowed);
+            MoovieListCard card = new MoovieListCard(mlcE, mlcUS);
+            cards.add(card);
+        }
+
+        return cards;
     }
 
     @Override
@@ -195,8 +223,9 @@ public class MoovieListHibernateDao implements MoovieListDao{
                 "FROM MoovieList wl INNER JOIN MoovieListContentEntity mlc2 ON wl.moovieListId = mlc2.moovieListId " +
                 "WHERE mlc.mediaId = mlc2.mediaId AND wl.name = 'Watched' AND wl.userId = :userid)) " +
                 "FROM MoovieListContentEntity mlc " +
-                "WHERE mlc.moovieListId = :moovieListId " +
-                "ORDER BY mlc." + orderBy + " " + sortOrder;
+                "WHERE mlc.moovieListId = :moovieListId "
+//              +  "ORDER BY mlc." + orderBy + " " + sortOrder;
+                ;
 
 
         TypedQuery<MoovieListContent> query = em.createQuery(jpql, MoovieListContent.class);
@@ -261,6 +290,10 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public void deleteMediaFromMoovieList(int moovieListId, int mediaId) {
+        MoovieListContentEntity toRemove = em.createQuery("SELECT mlc FROM MoovieListContentEntity mlc WHERE mlc.moovieListId = :moovieListId AND mlc.mediaId = :mediaId", MoovieListContentEntity.class).setParameter("moovieListId", moovieListId).setParameter("mediaId",mediaId).getSingleResult();
+        if (toRemove != null){
+            em.remove(toRemove);
+        }
 
     }
 

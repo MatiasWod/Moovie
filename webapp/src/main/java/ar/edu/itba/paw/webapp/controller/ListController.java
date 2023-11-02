@@ -165,7 +165,7 @@ public class ListController {
             LOGGER.info("Returned list with id: {} for /list.", moovieListId);
             return mav;
         } catch (Exception e){
-            LOGGER.info("Failed to return list with id: {} for /list.", moovieListId);
+            LOGGER.info("Failed to return list with id: {} for /list. {} ", moovieListId, e);
             return new ModelAndView("helloworld/404").addObject("extrainfo", "Error retrieving list, no list for id: "+ moovieListId);
         }
     }
