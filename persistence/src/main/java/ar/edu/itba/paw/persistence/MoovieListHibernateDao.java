@@ -80,11 +80,12 @@ public class MoovieListHibernateDao implements MoovieListDao{
         List<MoovieListCard> cards = new ArrayList<>();
         for (Object[] result : results) {
             MoovieListCardEntity mlcE = (MoovieListCardEntity) result[0];
-            int currentUserWatchAmount = (int) result[1];
+            mlcE.setImages(getImagesForMoovieList(mlcE.getMoovieListId()));
+            Long currentUserWatchAmount = (Long) result[1];
             boolean currentUserHasLiked = (boolean) result[2];
             boolean currentUserHasFollowed = (boolean) result[3];
 
-            MoovieListCardUserStatus mlcUS = new MoovieListCardUserStatus(currentUserWatchAmount, currentUserHasLiked, currentUserHasFollowed);
+            MoovieListCardUserStatus mlcUS = new MoovieListCardUserStatus(currentUserWatchAmount.intValue(), currentUserHasLiked, currentUserHasFollowed);
             MoovieListCard card = new MoovieListCard(mlcE, mlcUS);
             cards.add(card);
         }
@@ -124,11 +125,12 @@ public class MoovieListHibernateDao implements MoovieListDao{
         List<MoovieListCard> cards = new ArrayList<>();
         for (Object[] result : results) {
             MoovieListCardEntity mlcE = (MoovieListCardEntity) result[0];
-            int currentUserWatchAmount = (int) result[1];
+            mlcE.setImages(getImagesForMoovieList(mlcE.getMoovieListId()));
+            Long currentUserWatchAmount = (Long) result[1];
             boolean currentUserHasLiked = (boolean) result[2];
             boolean currentUserHasFollowed = (boolean) result[3];
 
-            MoovieListCardUserStatus mlcUS = new MoovieListCardUserStatus(currentUserWatchAmount, currentUserHasLiked, currentUserHasFollowed);
+            MoovieListCardUserStatus mlcUS = new MoovieListCardUserStatus(currentUserWatchAmount.intValue(), currentUserHasLiked, currentUserHasFollowed);
             MoovieListCard card = new MoovieListCard(mlcE, mlcUS);
             cards.add(card);
         }
@@ -388,19 +390,11 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public void likeMoovieList(int userId, int moovieListId) {
-        // Verificar si ya existe el 'like'
-        MoovieListLikes existingLike = em.createQuery("SELECT mll FROM MoovieListLikes mll WHERE mll.user.id = :userId AND mll.moovieList.id = :moovieListId", MoovieListLikes.class)
-                .setParameter("userId", userId)
-                .setParameter("moovieListId", moovieListId)
-                .getSingleResult();
 
-        // Si el 'like' no existe, persistir uno nuevo
-        if (existingLike == null) {
-            User user = em.find(User.class, userId);
-            MoovieList moovieList = em.find(MoovieList.class, moovieListId);
-            MoovieListLikes newLike = new MoovieListLikes(moovieList, user);
-            em.persist(newLike);
-        }
+        User user = em.find(User.class, userId);
+        MoovieList moovieList = em.find(MoovieList.class, moovieListId);
+        MoovieListLikes newLike = new MoovieListLikes(moovieList, user);
+        em.persist(newLike);
     }
 
     @Override
@@ -421,18 +415,10 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public void followMoovieList(int userId, int moovieListId) {
-        // Verificar si ya existe el 'like'
-        MoovieListFollowers existingFollow = em.createQuery("SELECT mll FROM MoovieListFollowers mll WHERE mll.user.id = :userId AND mll.moovieList.id = :moovieListId", MoovieListFollowers.class)
-                .setParameter("userId", userId)
-                .setParameter("moovieListId", moovieListId)
-                .getSingleResult();
 
-        // Si el 'like' no existe, persistir uno nuevo
-        if (existingFollow == null) {
-            User user = em.find(User.class, userId);
-            MoovieList moovieList = em.find(MoovieList.class, moovieListId);
-            MoovieListFollowers newFollow = new MoovieListFollowers(moovieList, user);
-            em.persist(newFollow);
-        }
+        User user = em.find(User.class, userId);
+        MoovieList moovieList = em.find(MoovieList.class, moovieListId);
+        MoovieListFollowers newFollow = new MoovieListFollowers(moovieList, user);
+        em.persist(newFollow);
     }
 }

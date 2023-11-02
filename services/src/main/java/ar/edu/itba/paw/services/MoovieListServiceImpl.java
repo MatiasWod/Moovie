@@ -277,6 +277,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     public void likeMoovieList(int moovieListId) {
         int userId = userService.getInfoOfMyUser().getUserId();
         MoovieListCard mlc = getMoovieListCardById(moovieListId);
+        LOGGER.info("userID: {} -- will like {}  -- likestate is: {}",userId,mlc.getName(), mlc.isCurrentUserHasLiked());
         if(mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType()){
             if(mlc.isCurrentUserHasLiked()){
                 moovieListDao.removeLikeMoovieList(userId, moovieListId);

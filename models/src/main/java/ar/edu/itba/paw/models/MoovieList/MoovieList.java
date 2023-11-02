@@ -26,11 +26,11 @@ public class MoovieList {
     @Column(nullable = false)
     private int type;
 
-    @OneToMany(mappedBy = "moovieList")
-    final private Set<MoovieListLikes> likes = new HashSet<>();
-
-    @OneToMany(mappedBy = "user")
-    final private Set<MoovieListFollowers> followers = new HashSet<>();
+//    @OneToMany(mappedBy = "moovieList")
+//    final private Set<MoovieListLikes> likes = new HashSet<>();
+//
+//    @OneToMany(mappedBy = "user")
+//    final private Set<MoovieListFollowers> followers = new HashSet<>();
 
     public MoovieList(){}
 
@@ -41,13 +41,13 @@ public class MoovieList {
         this.type = type;
     }
 
-    public Set<MoovieListFollowers> getFollowers() {
-        return followers;
-    }
-
-    public Set<MoovieListLikes> getLikes() {
-        return likes;
-    }
+//    public Set<MoovieListFollowers> getFollowers() {
+//        return followers;
+//    }
+//
+//    public Set<MoovieListLikes> getLikes() {
+//        return likes;
+//    }
 
     public int getMoovieListId() {
         return moovieListId;

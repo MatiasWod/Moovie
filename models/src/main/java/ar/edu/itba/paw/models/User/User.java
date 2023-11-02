@@ -27,11 +27,11 @@ public class User {
     @Column(nullable = false)
     private int role;
 
-    @OneToMany(mappedBy = "user")
-    final private Set<MoovieListLikes> likes = new HashSet<>();
-
-    @OneToMany(mappedBy = "user")
-    final private Set<MoovieListFollowers> followers = new HashSet<>();
+//    @OneToMany(mappedBy = "user")
+//    final private Set<MoovieListLikes> likes = new HashSet<>();
+//
+//    @OneToMany(mappedBy = "user")
+//    final private Set<MoovieListFollowers> followers = new HashSet<>();
 
     //Para hibernate
     public User(){
@@ -54,13 +54,13 @@ public class User {
         this.role =  builder.role;
     }
 
-    public Set<MoovieListFollowers> getFollowers() {
-        return followers;
-    }
-
-    public Set<MoovieListLikes> getLikes() {
-        return likes;
-    }
+//    public Set<MoovieListFollowers> getFollowers() {
+//        return followers;
+//    }
+//
+//    public Set<MoovieListLikes> getLikes() {
+//        return likes;
+//    }
 
     public int getUserId() {
         return userId;
