@@ -4,17 +4,18 @@ import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.MoovieList.*;
+import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.User.User;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.Transformers;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.FileCopyUtils;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import org.springframework.core.io.Resource;
+import javax.persistence.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -367,9 +368,58 @@ public class MoovieListHibernateDao implements MoovieListDao{
             em.remove(toRemove);
     }
 
+    @Value("classpath:functions.sql")
+    private Resource functions;
+    public void executeFunctionScript() {
+        try {
+            // Read the SQL script from the functions.sql file
+            byte[] scriptBytes = FileCopyUtils.copyToByteArray(functions.getInputStream());
+            String scriptContent = new String(scriptBytes);
+
+            // Execute the script using JdbcTemplate
+            em.createNativeQuery(scriptContent).executeUpdate();
+
+
+
+        } catch (Exception e) {
+            String lets = e.getMessage();
+            // Handle any exceptions
+        }
+    }
+
     @Override
     public void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrevPage, int[] currentPage, int[] toNextPage) {
+        executeFunctionScript();
+        // la ejecucion/creacion de la function en base de datos parece funcionar, pero no puedo hacer la ejecucion en Hibernate
+//        StoredProcedureQuery storedProcedure = em.createStoredProcedureQuery("updatecustomOrder");
+//        storedProcedure.registerStoredProcedureParameter("mlid", Integer.class, ParameterMode.IN);
+//        storedProcedure.registerStoredProcedureParameter("firstPosition", Integer.class, ParameterMode.IN);
+//        storedProcedure.registerStoredProcedureParameter("pageSize", Integer.class, ParameterMode.IN);
+//        storedProcedure.registerStoredProcedureParameter("toPrev", Integer[].class, ParameterMode.IN);
+//        storedProcedure.registerStoredProcedureParameter("currentPage", Integer[].class, ParameterMode.IN);
+//        storedProcedure.registerStoredProcedureParameter("toNext", Integer[].class, ParameterMode.IN);
+//
+//        storedProcedure.setParameter("mlid", moovieListId);
+//        storedProcedure.setParameter("firstPosition", currentPageNumber * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize() + 1);
+//        storedProcedure.setParameter("pageSize", PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize());
+//        storedProcedure.setParameter("toPrev", toPrevPage);
+//        storedProcedure.setParameter("currentPage", currentPage);
+//        storedProcedure.setParameter("toNext", toNextPage);
+//
+//        storedProcedure.execute();
 
+
+//          el principal problema es que Hibernate manda los parametros como 'bytea' segun lee la consola de la ejecucion SQL
+//        pero no se puede hacer un CAST de bytea -> integer[] en SQL. Por lo tanto habria que poder setParameter ya casteado al tipo correcto
+//        pero en Java ya son int[] . asi que ni idea ¯\_(ツ)_/¯
+        em.createNativeQuery("CALL updatecustomorder(:mlid, :firstPos, :size, CAST(:prev AS integer[]), CAST(:current AS integer[]), CAST(:next AS integer[]))")
+                .setParameter("mlid", moovieListId)
+                .setParameter("firstPos", currentPageNumber * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize() + 1 )
+                .setParameter("size", PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize() )
+                .setParameter("prev", toPrevPage)
+                .setParameter("current", currentPage)
+                .setParameter("next", toNextPage)
+                .executeUpdate();
     }
 
     @Override
