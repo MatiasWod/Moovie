@@ -109,8 +109,6 @@ public class ReviewHibernateDao implements ReviewDao {
 
     @Override
     public void likeReview(int userId, int reviewId) {
-        Review review = em.find(Review.class, reviewId);
-        review.raiseLikeAmount();
         Query query = em.createNativeQuery("INSERT INTO reviewslikes (userid, reviewid) VALUES (:userId, :reviewId)");
         query.setParameter("userId", userId);
         query.setParameter("reviewId", reviewId);
@@ -120,8 +118,6 @@ public class ReviewHibernateDao implements ReviewDao {
 
     @Override
     public void removeLikeReview(int userId, int reviewId) {
-        Review review = em.find(Review.class, reviewId);
-        review.lowerLikeAmount();
         Query query = em.createNativeQuery("DELETE FROM reviewslikes WHERE userid = :userId AND reviewid = :reviewId");
         query.setParameter("userId", userId);
         query.setParameter("reviewId", reviewId);
