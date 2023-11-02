@@ -101,12 +101,4 @@ public class Review {
     public void setReviewContent(String reviewContent) {
         this.reviewContent = reviewContent;
     }
-
-    public void raiseLikeAmount() {
-        this.reviewLikes++;
-    }
-
-    public void lowerLikeAmount() {
-        this.reviewLikes--;
-    }
 }

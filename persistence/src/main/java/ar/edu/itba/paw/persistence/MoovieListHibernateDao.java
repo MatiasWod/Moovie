@@ -236,24 +236,28 @@ public class MoovieListHibernateDao implements MoovieListDao{
     @Override
     public MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList) {
         MoovieList updatedMoovieList = em.find(MoovieList.class, moovieListid);
-        if (updatedMoovieList != null){
-            Object[] returned = (Object[]) em.createQuery("SELECT MAX(mlcE.customOrder) FROM MoovieListContentEntity mlcE WHERE mlcE.moovieListId = :moovieListId").setParameter("moovieListId", moovieListid).getSingleResult();
-            int maxCustomOrder = (int) returned[0];
-            for ( Integer mediaId : mediaIdList ){
+        if (updatedMoovieList != null) {
+            Integer maxCustomOrder = (Integer) em.createQuery("SELECT MAX(mlcE.customOrder) FROM MoovieListContentEntity mlcE WHERE mlcE.moovieListId = :moovieListId")
+                    .setParameter("moovieListId", moovieListid)
+                    .getSingleResult();
+
+            if (maxCustomOrder == null) {
+                maxCustomOrder = 0;
+            }
+
+            for (Integer mediaId : mediaIdList) {
                 maxCustomOrder++;
-                Media mediaToAdd = em.find(Media.class, mediaId);
-                MoovieListContentEntity toAdd = new MoovieListContentEntity(mediaToAdd.getMediaId(),mediaToAdd.isType(),
-                        mediaToAdd.getName(),mediaToAdd.getOriginalLanguage(),mediaToAdd.isAdult(),
-                        mediaToAdd.getReleaseDate(),mediaToAdd.getOverview(),mediaToAdd.getBackdropPath(),
-                        mediaToAdd.getPosterPath(),mediaToAdd.getTrailerLink(),mediaToAdd.getTmdbRating(),
-                        mediaToAdd.getTotalRating(),mediaToAdd.getVoteCount(),mediaToAdd.getStatus(),mediaToAdd.getGenresModels(),
-                        mediaToAdd.getProviders(), moovieListid, maxCustomOrder);
-                em.persist(toAdd);
+                em.createNativeQuery("INSERT INTO moovielistscontent (mediaid, moovielistid, customorder) VALUES (:mediaId, :moovielistid, :customorder)")
+                        .setParameter("mediaId", mediaId)
+                        .setParameter("moovielistid", moovieListid)
+                        .setParameter("customorder", maxCustomOrder)
+                        .executeUpdate();
             }
         }
 
         return updatedMoovieList;
     }
+
 
     @Override
     public void deleteMediaFromMoovieList(int moovieListId, int mediaId) {
