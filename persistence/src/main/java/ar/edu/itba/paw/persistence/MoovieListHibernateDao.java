@@ -93,6 +93,20 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     }
 
+    public List<String> getImagesForMoovieList(int moovieListId) {
+        String sql = "SELECT m.posterPath " +
+                "FROM moovielistscontent mlc INNER JOIN media m ON mlc.mediaid = m.mediaid " +
+                "WHERE mlc.moovieListId = :moovieListId " +
+                "ORDER BY mlc.customOrder ASC LIMIT 4";
+
+        List<String> images = em.createNativeQuery(sql)
+                .setParameter("moovieListId", moovieListId)
+                .getResultList();
+
+        return images;
+    }
+
+
     @Override
     public List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber, int currentUserId) {
         String jpql = "SELECT mlcE, " +
@@ -182,6 +196,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
         List<MoovieListCard> cards = new ArrayList<>();
         for (Object[] result : results) {
             MoovieListCardEntity mlcE = (MoovieListCardEntity) result[0];
+            mlcE.setImages(getImagesForMoovieList(mlcE.getMoovieListId()));
             Long currentUserWatchAmount = (Long) result[1];
             boolean currentUserHasLiked = (boolean) result[2];
             boolean currentUserHasFollowed = (boolean) result[3];

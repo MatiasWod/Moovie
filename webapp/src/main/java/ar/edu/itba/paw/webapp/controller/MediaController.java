@@ -65,7 +65,6 @@ public class MediaController {
     @RequestMapping("/adolfoTest")
     public ModelAndView adolfoTest(){
         final ModelAndView mav = new ModelAndView("helloworld/adolfoTesting");
-        mav.addObject("mlc", moovieListService.getMoovieListContent(1,"customOrder","desc",25,0));
         mav.addObject("browseLists", moovieListService.getMoovieListCards(null,null, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), null, null, 25, 0));
         return mav;
     }

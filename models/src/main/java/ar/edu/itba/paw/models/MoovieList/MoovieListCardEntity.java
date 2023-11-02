@@ -97,4 +97,8 @@ public class MoovieListCardEntity {
     public List<String> getImages() {
         return images;
     }
+
+    public void setImages(List<String> images){
+        this.images = images;
+    }
 }
