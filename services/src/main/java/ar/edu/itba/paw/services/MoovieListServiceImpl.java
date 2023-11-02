@@ -195,7 +195,9 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Transactional
     @Override
     public MoovieList createMoovieListWithContent(String name, int type, String description, List<Integer> mediaIdList) {
+        LOGGER.info("About to create empty list {}", name);
         MoovieList ml =  moovieListDao.createMoovieList(userService.getInfoOfMyUser().getUserId(), name, type, description);
+        LOGGER.info("About to insert media into empty list {} with ID: {}", ml.getName(), ml.getMoovieListId());
         MoovieList mlRet = insertMediaIntoMoovieList(ml.getMoovieListId(), mediaIdList);
         LOGGER.info("Succesfully created list: {}: with media: {}.", mlRet.getMoovieListId(), mediaIdList);
         return mlRet;
@@ -218,6 +220,7 @@ public class MoovieListServiceImpl implements MoovieListService{
                         "mediaAddedToFollowedList.html",
                         map);
             });
+            LOGGER.info("About to insert media into empty list {}", moovieListId);
             MoovieList mlRet = moovieListDao.insertMediaIntoMoovieList(moovieListId, mediaIdList);
             LOGGER.info("Succesfully inserted media: {} in list: {}.", mediaIdList,moovieListId);
             return mlRet;

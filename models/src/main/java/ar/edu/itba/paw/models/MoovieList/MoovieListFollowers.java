@@ -1,19 +1,46 @@
 package ar.edu.itba.paw.models.MoovieList;
 
-public class MoovieListFollowers {
-    private final int moovieListId;
-    private final int userId;
+import ar.edu.itba.paw.models.User.User;
 
-    public MoovieListFollowers(int moovieListId, int userId) {
-        this.moovieListId = moovieListId;
-        this.userId = userId;
+import javax.persistence.*;
+import java.io.Serializable;
+
+@Entity
+@Table(name = "moovielistsfollows")
+public class MoovieListFollowers implements Serializable {
+
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "moovieListId", referencedColumnName = "moovieListId")
+    private MoovieList moovieList;
+
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "userId", referencedColumnName = "userId")
+    private User user;
+
+    public MoovieListFollowers() {
     }
 
-    public int getMoovieListId() {
-        return moovieListId;
+    public MoovieListFollowers(MoovieList moovieList, User user) {
+        this.moovieList = moovieList;
+        this.user = user;
     }
 
-    public int getUserId() {
-        return userId;
+    // Getters and setters
+    public MoovieList getMoovieList() {
+        return moovieList;
+    }
+
+    public void setMoovieList(MoovieList moovieList) {
+        this.moovieList = moovieList;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
