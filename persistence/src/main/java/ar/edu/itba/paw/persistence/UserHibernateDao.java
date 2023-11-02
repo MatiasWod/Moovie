@@ -27,15 +27,8 @@ public class UserHibernateDao implements UserDao{
     //Revisar, está mal así
     @Override
     public User createUser(String username, String email, String password) {
-        final Map<String, Object> args = new HashMap<>();
-        args.put("username",username);
-        args.put("email", email);
-        args.put("password",password);
-        args.put("role", UserRoles.NOT_AUTHENTICATED.getRole());
-
         final User toCreateUser = new User.Builder(username,email,password,UserRoles.NOT_AUTHENTICATED.getRole()).build();
         entityManager.persist(toCreateUser);
-
         return toCreateUser;
     }
 
