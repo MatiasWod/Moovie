@@ -59,8 +59,6 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
         MoovieListCardUserStatus userStatus = new MoovieListCardUserStatus(((Number)obj[0]).intValue(),(boolean)obj[1],(boolean)obj[2]);
 
-
-
         return new MoovieListCard(mlcE, userStatus );
     }
 
@@ -151,7 +149,17 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public int getFollowedMoovieListCardsCount(int userId, int type) {
-        return 0;
+        String jpql = "SELECT COUNT(mlcE) " +
+                "FROM MoovieListCardEntity mlcE JOIN MoovieListFollowers mlf " +
+                "ON mlcE.moovieListId = mlf.moovieList.moovieListId " +
+                "WHERE mlf.user.userId = :userId AND type = :type";
+
+        Number result = (Number) em.createQuery(jpql)
+                .setParameter("userId", userId)
+                .setParameter("type", type)
+                .getSingleResult();
+
+        return result.intValue();
     }
 
     @Override
