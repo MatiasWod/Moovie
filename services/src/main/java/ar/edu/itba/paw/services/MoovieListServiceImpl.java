@@ -87,24 +87,14 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Transactional(readOnly = true)
     @Override
     public List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
-        //If the previous didnt throw exception, we have the permissions needed to perform the next action
-        try{
-            int userid = userService.getInfoOfMyUser().getUserId();
-            return moovieListDao.getFeaturedMoovieListContent(moovieListId,mediaType, userid ,featuredListOrder, orderBy,sortOrder ,size, pageNumber);
-        } catch(UserNotLoggedException e){
-            return moovieListDao.getFeaturedMoovieListContent(moovieListId,mediaType, -1 , featuredListOrder, orderBy,sortOrder ,size, pageNumber);
-        }
+        int userId = userService.tryToGetCurrentUserId();
+        return moovieListDao.getFeaturedMoovieListContent(moovieListId,mediaType, userId, featuredListOrder, orderBy,sortOrder ,size, pageNumber);
     }
 
     @Transactional(readOnly = true)
     @Override
     public int countWatchedFeaturedMoovieListContent(int moovieListId, int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
-        try{
-            int userid = userService.getInfoOfMyUser().getUserId();
-            return moovieListDao.countWatchedFeaturedMoovieListContent(moovieListId,mediaType, userid ,featuredListOrder, orderBy,sortOrder ,size, pageNumber);
-        } catch(UserNotLoggedException e){
-            return moovieListDao.countWatchedFeaturedMoovieListContent(moovieListId,mediaType, -1 , featuredListOrder, orderBy,sortOrder ,size, pageNumber);
-        }
+        return moovieListDao.countWatchedFeaturedMoovieListContent(moovieListId,mediaType, userService.tryToGetCurrentUserId(), featuredListOrder, orderBy,sortOrder ,size, pageNumber);
     }
 
     @Transactional(readOnly = true)

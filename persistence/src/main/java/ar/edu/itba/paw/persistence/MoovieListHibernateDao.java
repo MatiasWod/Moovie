@@ -3,9 +3,11 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.User.User;
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +18,7 @@ import org.springframework.util.FileCopyUtils;
 
 import org.springframework.core.io.Resource;
 import javax.persistence.*;
+import java.awt.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -164,8 +167,27 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber, int currentUserId) {
-        // TODO: implementar algoritmo para la recomendacion
-        return getLikedMoovieListCards(currentUserId,1,25,0,currentUserId);
+        StringBuilder jpql = new StringBuilder("SELECT MoovieListCardEntity ");
+
+        jpql.append(" FROM MoovieListCardEntity ml LEFT JOIN users u ON ml.userid = u.userid LEFT JOIN moovieListsLikes l ON ml.moovielistid = l.moovielistid ");
+        jpql.append(" LEFT JOIN moovielistsfollows mlf ON mlf.moovielistid = ml.moovielistid ");
+        jpql.append(" WHERE type = 1  AND l.userid IN (SELECT userid FROM moovielistslikes WHERE moovielistid = :moovielistId) AND ml.moovielistid <> :moovielistId ");
+
+        jpql.append(" GROUP BY ml.moovielistid, u.userid  ORDER BY ml.totallikes DESC ");
+
+
+        TypedQuery<MoovieListCardEntity> query = em.createQuery(jpql.toString(), MoovieListCardEntity.class).setParameter("moovielistId", moovieListId);
+
+        query.setFirstResult(pageNumber * size);
+        query.setMaxResults(size);
+
+        List<MoovieListCard> toRet = new ArrayList<>();
+        MoovieListCardUserStatus aux = new MoovieListCardUserStatus(0,false,false);
+        for (MoovieListCardEntity mlce : query.getResultList() ){
+            toRet.add(new MoovieListCard(mlce,aux));
+        }
+
+        return toRet;
     }
 
     @Override
@@ -313,13 +335,77 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, int userid, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
-        return null;
+        StringBuilder firstQuery = new StringBuilder("SELECT mediaID FROM media");
+
+        if (mediaType != MediaTypes.TYPE_ALL.getType()) {
+            firstQuery.append(" WHERE media.type = :type");
+        }
+
+        firstQuery.append(" ORDER BY media.").append(featuredListOrder).append(" DESC");
+
+        Query q1 = em.createNativeQuery(firstQuery.toString());
+
+        if (mediaType != MediaTypes.TYPE_ALL.getType()) {
+            q1 = q1.setParameter("type", mediaType==1 );
+        }
+
+        List<Integer> ids = q1.setFirstResult(0)
+                .setMaxResults(100).getResultList();
+
+        StringBuilder jpql = new StringBuilder("FROM Media m WHERE m.mediaId IN (:ids)");
+
+        if (orderBy != null) {
+            jpql.append(" ORDER BY m.").append(orderBy);
+
+            if (sortOrder != null) {
+                jpql.append(" ").append(sortOrder);
+            }
+        }
+
+        TypedQuery<Media> query = em.createQuery(jpql.toString(), Media.class).setParameter("ids", ids);
+
+        List<Media> results = query.setFirstResult(pageNumber * size)
+                .setMaxResults(size).setFirstResult(size*pageNumber)
+                .getResultList();
+
+        List<MoovieListContent> toRet = new ArrayList<>();
+
+        for (Media med : results) {
+            toRet.add(new MoovieListContent(med, -1, -1,false));
+        }
+        return toRet;
     }
+
 
     @Override
     public int countWatchedFeaturedMoovieListContent(int moovieListId, int mediaType, int userid, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
-        return 0;
+        StringBuilder query = new StringBuilder("SELECT COUNT(*) FROM ( SELECT * FROM media ");
+        query.append(" WHERE mediaid IN(SELECT mediaid FROM media m2 ");
+
+        if(mediaType!=MediaTypes.TYPE_ALL.getType()){
+            query.append("WHERE type = :type ");
+        }
+
+        query.append("ORDER BY m2.tmdbrating DESC LIMIT 100) AND ");
+        query.append(" mediaid IN (SELECT mediaid FROM moovielists ml LEFT JOIN moovielistscontent mlc ON ml.moovielistid = mlc.moovielistid ");
+        query.append(" WHERE ml.name = 'Watched' AND userid = :userid) ) AS totalWatched");
+
+
+        Query q1 = em.createNativeQuery(query.toString()).setParameter("userid", userid);
+
+        if (mediaType != MediaTypes.TYPE_ALL.getType()) {
+            q1 = q1.setParameter("type", mediaType==1 );
+        }
+
+        Number toReturn = (Number) q1.getSingleResult();
+
+        return toReturn.intValue();
     }
+/*
+    SELECT COUNT(*) FROM moovielistsContent mlc " +
+            " INNER JOIN moovielistscontent mlc2 ON mlc.mediaid = mlc2.mediaid " +
+            " JOIN moovieLists ml ON mlc2.moovieListId = ml.moovieListId " +
+            " WHERE mlc.moovieListId = :moovieListId AND ml.name = 'Watched' AND ml.userId = :userId) as currentUserWatchAmount*/
 
     @Override
     public MoovieList createMoovieList(int userId, String name, int type, String description) {

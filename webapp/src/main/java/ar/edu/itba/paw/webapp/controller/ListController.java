@@ -150,7 +150,7 @@ public class ListController {
                 mav.addObject("watchedListId",moovieListService.getMoovieListCards("Watched",currentUser.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId());
                 mav.addObject("isOwner", currentUser.getUsername().equals(moovieListCard.getUsername()));
             }catch (Exception e){
-                mav.addObject("watchedCount",0);
+                mav.addObject("watchedCount",moovieListService);
             }
             moovieListCard(orderBy, pageNumber, mav, moovieListCard, mediaCountForMoovieList, numberOfPages);
             mav.addObject("RecomendedListsCards",moovieListService.getRecommendedMoovieListCards(moovieListId,4,0));
@@ -233,7 +233,7 @@ public class ListController {
                     1,0).get(0); //Solo hay una lista de Moovie con ese nombre, entonces solo traigo esa lista
             moovieListContentList = moovieListService.getFeaturedMoovieListContent(moovieListCard.getMoovieListId(),topRatedMoovieLists.get().getType(), topRatedMoovieLists.get().getOrder() ,orderBy,
                     order,pagesSize,pageNumber - 1);
-            mav.addObject("watchedCount",moovieListService.countWatchedFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_MOVIE.getType(), topRatedMoovieLists.get().getOrder() ,orderBy,
+            mav.addObject("watchedCount",moovieListService.countWatchedFeaturedMoovieListContent(moovieListCard.getMoovieListId(),topRatedMoovieLists.get().getType(), topRatedMoovieLists.get().getOrder() ,orderBy,
                     order,100,0));
         }
         else {

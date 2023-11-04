@@ -26,7 +26,16 @@ public class MoovieListContent extends MoovieListContentEntity {
         this.watched = watched;
     }
 
-//    MoovieListContent(){}
+    public MoovieListContent(Media media, int moovieListId, int customOrder, boolean watched){
+        super(media.getMediaId(), media.isType(), media.getName(), media.getOriginalLanguage(),
+                media.isAdult(), media.getReleaseDate(), media.getOverview(), media.getBackdropPath(),
+                media.getPosterPath(), media.getTrailerLink(), media.getTmdbRating(), media.getTotalRating(),
+                media.getVoteCount(), media.getStatus(), media.getGenresModels(), media.getProviders(),
+                moovieListId, customOrder);
+        this.watched = watched;
+    }
+
+   MoovieListContent(){}
 
 
     public boolean isWatched() {
