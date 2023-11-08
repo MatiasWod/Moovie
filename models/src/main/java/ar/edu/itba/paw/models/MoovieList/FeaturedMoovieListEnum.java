@@ -9,12 +9,12 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toMap;
 
 public enum FeaturedMoovieListEnum {
-    topRatedMovies("Top Rated Movies",MediaTypes.TYPE_MOVIE.getType(),"tmdbrating"),
-    topRatedSeries("Top Rated TV Series",MediaTypes.TYPE_TVSERIE.getType(),"tmdbrating"),
-    topRatedMedia("Top Rated Media",MediaTypes.TYPE_ALL.getType(),"tmdbrating"),
-    mostPopularMovies("Most Popular Movies",MediaTypes.TYPE_MOVIE.getType(),"votecount"),
-    mostPopularSeries("Most Popular TV Series",MediaTypes.TYPE_TVSERIE.getType(),"votecount"),
-    mostPopularMedia("Most Popular Media",MediaTypes.TYPE_ALL.getType(),"votecount");
+    topRatedMovies("Top Rated Movies",MediaTypes.TYPE_MOVIE.getType(),"tmdbRating"),
+    topRatedSeries("Top Rated TV Series",MediaTypes.TYPE_TVSERIE.getType(),"tmdbRating"),
+    topRatedMedia("Top Rated Media",MediaTypes.TYPE_ALL.getType(),"tmdbRating"),
+    mostPopularMovies("Most Popular Movies",MediaTypes.TYPE_MOVIE.getType(),"voteCount"),
+    mostPopularSeries("Most Popular TV Series",MediaTypes.TYPE_TVSERIE.getType(),"voteCount"),
+    mostPopularMedia("Most Popular Media",MediaTypes.TYPE_ALL.getType(),"voteCount");
 
     private final String name;
     private final int type;

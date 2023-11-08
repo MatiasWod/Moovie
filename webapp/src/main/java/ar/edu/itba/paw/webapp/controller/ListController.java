@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 
 import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
+import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.*;
@@ -150,7 +151,7 @@ public class ListController {
                 mav.addObject("watchedListId",moovieListService.getMoovieListCards("Watched",currentUser.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId());
                 mav.addObject("isOwner", currentUser.getUsername().equals(moovieListCard.getUsername()));
             }catch (Exception e){
-                mav.addObject("watchedCount",moovieListService);
+                mav.addObject("watchedCount",0);
             }
             moovieListCard(orderBy, pageNumber, mav, moovieListCard, mediaCountForMoovieList, numberOfPages);
             mav.addObject("RecomendedListsCards",moovieListService.getRecommendedMoovieListCards(moovieListId,4,0));
@@ -164,7 +165,7 @@ public class ListController {
 
             LOGGER.info("Returned list with id: {} for /list.", moovieListId);
             return mav;
-        } catch (Exception e){
+        } catch (MoovieListNotFoundException e){
             LOGGER.info("Failed to return list with id: {} for /list. {} ", moovieListId, e);
             return new ModelAndView("helloworld/404").addObject("extrainfo", "Error retrieving list, no list for id: "+ moovieListId);
         }
