@@ -239,8 +239,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
             query.setParameter("ownerUsername", ownerUsername);
         }
 
-        List<Object[]> results = query.setFirstResult(pageNumber*size).setMaxResults(size)
-                .getResultList();
+        List<Object[]> results = query.setFirstResult(pageNumber*size).setMaxResults(size).getResultList();
 
         List<MoovieListCard> cards = new ArrayList<>();
         for (Object[] result : results) {

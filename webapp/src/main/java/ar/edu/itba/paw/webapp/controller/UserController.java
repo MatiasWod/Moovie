@@ -161,7 +161,7 @@ public class UserController {
             if (list != null){
                 switch (list) {
                     case "watched-list":
-                        MoovieListDetails watchedDetails = moovieListService.getMoovieListDetails( -1 , "WATCHED" , username,orderBy, order,PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(),pageNumber-1);
+                        MoovieListDetails watchedDetails = moovieListService.getMoovieListDetails( -1 , "Watched" , username,orderBy, order,PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(),pageNumber-1);
                         listCount = watchedDetails.getCard().getSize();
                         queries.put("list","watched-list");
                         numberOfPages = (int) Math.ceil(listCount * 1.0 / PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize());
@@ -179,7 +179,7 @@ public class UserController {
                         mav.addObject("publicType",MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
                         break;
                     case "watchlist":
-                            MoovieListDetails watchlistDetails = moovieListService.getMoovieListDetails(-1, "WATCHLIST" , username, orderBy, order,PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(),pageNumber-1);
+                            MoovieListDetails watchlistDetails = moovieListService.getMoovieListDetails(-1, "Watchlist" , username, orderBy, order,PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(),pageNumber-1);
                         listCount = watchlistDetails.getCard().getSize();
                         queries.put("list","watchlist");
                         numberOfPages = (int) Math.ceil(listCount * 1.0 / PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize());
