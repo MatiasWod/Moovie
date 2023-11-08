@@ -191,12 +191,16 @@ public class MoovieListHibernateDao implements MoovieListDao{
         List<MoovieListCard> toRet = new ArrayList<>();
         MoovieListCardUserStatus aux = new MoovieListCardUserStatus(0,false,false);
 
-        List<MoovieListCardEntity> recommendedResultCards = recommended.getResultList() ;
+
+        try{
+            List<MoovieListCardEntity> recommendedResultCards = recommended.getResultList() ;
 
 
-        for (MoovieListCardEntity mlce : recommendedResultCards ){
-            toRet.add(new MoovieListCard(mlce,aux));
-        }
+            for (MoovieListCardEntity mlce : recommendedResultCards ){
+                toRet.add(new MoovieListCard(mlce,aux));
+            }
+        }catch(Exception e){}
+
 
 
         return toRet;

@@ -282,7 +282,8 @@ public class ListController {
         }
 
         try {
-            int listId = moovieListService.createMoovieListWithContent(form.getListName(), MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), form.getListDescription(), form.getMediaIdsList()).getMoovieListId();
+            MoovieList ml = moovieListService.createMoovieList(form.getListName(), MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), form.getListDescription());
+            int listId = moovieListService.insertMediaIntoMoovieList(ml.getMoovieListId(), form.getMediaIdsList()).getMoovieListId();
             return new ModelAndView("redirect:/list/" + listId);
         }catch (DuplicateKeyException e){
             redirectAttributes.addFlashAttribute("errorMessage", "Error creating list, already have a list with same name");
