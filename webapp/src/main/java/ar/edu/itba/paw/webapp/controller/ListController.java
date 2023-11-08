@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 
 import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
+import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.*;
@@ -89,15 +90,15 @@ public class ListController {
         int mediaCount;
         mav.addObject("searchMode",false);
         if (media.equals("All")){
-            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null, genres, providers, null,null,orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null, genres, providers, orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
             mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query,null,genres,null);
         }
         else if (media.equals("Movies")){
-            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), query, null,  genres, providers, null,null,orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), query, null,  genres, providers, orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
             mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_MOVIE.getType(), query, null, genres, null);
         }
         else{
-            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), query, null,  genres,  providers, null,null, orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), query, null,  genres,  providers,  orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
             mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_TVSERIE.getType(), query, null, genres, null);
         }
         numberOfPages = (int) Math.ceil(mediaCount * 1.0 / PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize());
@@ -164,8 +165,8 @@ public class ListController {
 
             LOGGER.info("Returned list with id: {} for /list.", moovieListId);
             return mav;
-        } catch (Exception e){
-            LOGGER.info("Failed to return list with id: {} for /list.", moovieListId);
+        } catch (MoovieListNotFoundException e){
+            LOGGER.info("Failed to return list with id: {} for /list. {} ", moovieListId, e);
             return new ModelAndView("helloworld/404").addObject("extrainfo", "Error retrieving list, no list for id: "+ moovieListId);
         }
     }
@@ -233,7 +234,7 @@ public class ListController {
                     1,0).get(0); //Solo hay una lista de Moovie con ese nombre, entonces solo traigo esa lista
             moovieListContentList = moovieListService.getFeaturedMoovieListContent(moovieListCard.getMoovieListId(),topRatedMoovieLists.get().getType(), topRatedMoovieLists.get().getOrder() ,orderBy,
                     order,pagesSize,pageNumber - 1);
-            mav.addObject("watchedCount",moovieListService.countWatchedFeaturedMoovieListContent(moovieListCard.getMoovieListId(),MediaTypes.TYPE_MOVIE.getType(), topRatedMoovieLists.get().getOrder() ,orderBy,
+            mav.addObject("watchedCount",moovieListService.countWatchedFeaturedMoovieListContent(moovieListCard.getMoovieListId(),topRatedMoovieLists.get().getType(), topRatedMoovieLists.get().getOrder() ,orderBy,
                     order,100,0));
         }
         else {
@@ -281,8 +282,8 @@ public class ListController {
         }
 
         try {
-            int type = !form.getPrivateList()? (MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.getType()):(MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
-            int listId = moovieListService.createMoovieListWithContent(form.getListName(), type, form.getListDescription(), form.getMediaIdsList()).getMoovieListId();
+            MoovieList ml = moovieListService.createMoovieList(form.getListName(), MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), form.getListDescription());
+            int listId = moovieListService.insertMediaIntoMoovieList(ml.getMoovieListId(), form.getMediaIdsList()).getMoovieListId();
             return new ModelAndView("redirect:/list/" + listId);
         }catch (DuplicateKeyException e){
             redirectAttributes.addFlashAttribute("errorMessage", "Error creating list, already have a list with same name");

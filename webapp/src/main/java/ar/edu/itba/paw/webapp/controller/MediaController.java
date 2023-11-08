@@ -47,13 +47,31 @@ public class MediaController {
     @Autowired
     private ProviderService providerService;
 
+    @Autowired
+    private DatabaseModifierService dmsService;
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MediaController.class);
 
 
 
+    @RequestMapping("/testing")
+    public ModelAndView test(){
+        final ModelAndView mav = new ModelAndView("helloworld/test");
+        mav.addObject("ml", moovieListService.getMoovieListCardById(1));
+        return mav;
+    }
+
+    @RequestMapping("/adolfoTest")
+    public ModelAndView adolfoTest(){
+        final ModelAndView mav = new ModelAndView("helloworld/adolfoTesting");
+        mav.addObject("browseLists", moovieListService.getMoovieListCards(null,null, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), null, null, 25, 0));
+        return mav;
+    }
+
     @RequestMapping("/")
     public ModelAndView home() {
+
         LOGGER.info("Attempting to get media for /.");
         final ModelAndView mav = new ModelAndView("helloworld/index");
         List<Media> movieList = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
@@ -73,7 +91,20 @@ public class MediaController {
         mav.addObject("movieListPopular", popularMovies);
 
         LOGGER.info("Returned media for /.");
+        Media ml = mediaService.getMediaById(10);
+        mav.addObject("ml", ml);
         return mav;
+
+
+
+
+        
+        /*
+        final ModelAndView mav = new ModelAndView("helloworld/test");
+
+        dmsService.updateGenres();
+        dmsService.updateProviders();
+        return mav;*/
     }
 
     @RequestMapping("/search")

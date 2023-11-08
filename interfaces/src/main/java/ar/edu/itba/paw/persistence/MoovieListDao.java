@@ -16,7 +16,7 @@ public interface MoovieListDao {
 
     Optional<MoovieList> getMoovieListById(int moovieListId);
 
-    Optional<MoovieListCard> getMoovieListCardById(int moovieListId, int currentUserId);
+    MoovieListCard getMoovieListCardById(int moovieListId, int currentUserId);
     List<MoovieListCard> getLikedMoovieListCards(int userId,int type, int size, int pageNumber, int currentUserId);
     List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber, int currentUserId);
     List<User> getMoovieListFollowers(int moovieListId);

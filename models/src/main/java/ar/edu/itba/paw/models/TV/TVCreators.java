@@ -1,14 +1,54 @@
 package ar.edu.itba.paw.models.TV;
 
-public class TVCreators {
-    private final int mediaId;
-    private final int creatorId;
-    private final String creatorName;
+import javax.persistence.*;
+import java.io.Serializable;
 
-    public TVCreators(int mediaId, int creatorId, String creatorName) {
+@Entity
+@Table(name = "creators")
+public class TVCreators {
+
+    @EmbeddedId
+    private TVCreatorId id;
+
+    @Column(name = "creatorName")
+    private String creatorName;
+
+    TVCreators(){
+
+    }
+
+    public TVCreators(final int mediaId, final int creatorId, final String creatorName) {
+        this.id = new TVCreatorId(mediaId,creatorId);
+        this.creatorName = creatorName;
+    }
+
+    public TVCreatorId getId() {
+        return id;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+}
+
+@Embeddable
+class TVCreatorId implements Serializable {
+
+    @Column(name = "mediaId")
+    private int mediaId;
+
+
+    @Column(name = "creatorId")
+    private int creatorId;
+
+    TVCreatorId(){
+
+    }
+
+    public TVCreatorId(final int mediaId, final int creatorId){
         this.mediaId = mediaId;
         this.creatorId = creatorId;
-        this.creatorName = creatorName;
     }
 
     public int getMediaId() {
@@ -18,9 +58,4 @@ public class TVCreators {
     public int getCreatorId() {
         return creatorId;
     }
-
-    public String getCreatorName() {
-        return creatorName;
-    }
-
 }

@@ -30,7 +30,7 @@ public class MediaServiceImpl implements MediaService{
         return mediaDao.getMediaInMoovieList(moovieListId, size, pageNumber);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
     public Media getMediaById(int mediaId) {
         return mediaDao.getMediaById(mediaId).orElseThrow(() -> new MediaNotFoundException("Media was not found for the id:" + mediaId));

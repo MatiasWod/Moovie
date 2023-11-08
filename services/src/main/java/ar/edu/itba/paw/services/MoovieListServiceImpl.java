@@ -57,7 +57,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public MoovieListCard getMoovieListCardById(int moovieListId) {
         int currentUserId = userService.tryToGetCurrentUserId();
-        MoovieListCard mlc = moovieListDao.getMoovieListCardById(moovieListId, currentUserId).orElseThrow( () -> new MoovieListNotFoundException("Moovie list by id: " + moovieListId + " not found"));
+        MoovieListCard mlc = moovieListDao.getMoovieListCardById(moovieListId, currentUserId);
         if( mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.getType() || mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType()){
             try {
                 User currentUser = userService.getInfoOfMyUser();
@@ -87,24 +87,14 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Transactional(readOnly = true)
     @Override
     public List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
-        //If the previous didnt throw exception, we have the permissions needed to perform the next action
-        try{
-            int userid = userService.getInfoOfMyUser().getUserId();
-            return moovieListDao.getFeaturedMoovieListContent(moovieListId,mediaType, userid ,featuredListOrder, orderBy,sortOrder ,size, pageNumber);
-        } catch(UserNotLoggedException e){
-            return moovieListDao.getFeaturedMoovieListContent(moovieListId,mediaType, -1 , featuredListOrder, orderBy,sortOrder ,size, pageNumber);
-        }
+        int userId = userService.tryToGetCurrentUserId();
+        return moovieListDao.getFeaturedMoovieListContent(moovieListId,mediaType, userId, featuredListOrder, orderBy,sortOrder ,size, pageNumber);
     }
 
     @Transactional(readOnly = true)
     @Override
     public int countWatchedFeaturedMoovieListContent(int moovieListId, int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
-        try{
-            int userid = userService.getInfoOfMyUser().getUserId();
-            return moovieListDao.countWatchedFeaturedMoovieListContent(moovieListId,mediaType, userid ,featuredListOrder, orderBy,sortOrder ,size, pageNumber);
-        } catch(UserNotLoggedException e){
-            return moovieListDao.countWatchedFeaturedMoovieListContent(moovieListId,mediaType, -1 , featuredListOrder, orderBy,sortOrder ,size, pageNumber);
-        }
+        return moovieListDao.countWatchedFeaturedMoovieListContent(moovieListId,mediaType, userService.tryToGetCurrentUserId(), featuredListOrder, orderBy,sortOrder ,size, pageNumber);
     }
 
     @Transactional(readOnly = true)
@@ -140,7 +130,6 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
 
-    @Transactional(readOnly = true)
     @Override
     public List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber){
         List<MoovieListCard> mlc =  moovieListDao.getRecommendedMoovieListCards(moovieListId, size, pageNumber, userService.tryToGetCurrentUserId());
@@ -164,7 +153,7 @@ public class MoovieListServiceImpl implements MoovieListService{
                 }
             }
         }
-        return mlc;
+        return null;
     }
 
 
@@ -185,7 +174,7 @@ public class MoovieListServiceImpl implements MoovieListService{
              content = getMoovieListContent(card.getMoovieListId(),orderBy,sortOrder,size,pageNumber);
         }
         else{
-            card = moovieListDao.getMoovieListCardById(moovieListId, currentUserId).get();
+            card = moovieListDao.getMoovieListCardById(moovieListId, currentUserId);
             content = getMoovieListContent(moovieListId,orderBy,sortOrder,size,pageNumber);
         }
         return new MoovieListDetails(card,content);
@@ -194,11 +183,8 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Transactional
     @Override
-    public MoovieList createMoovieListWithContent(String name, int type, String description, List<Integer> mediaIdList) {
-        MoovieList ml =  moovieListDao.createMoovieList(userService.getInfoOfMyUser().getUserId(), name, type, description);
-        MoovieList mlRet = insertMediaIntoMoovieList(ml.getMoovieListId(), mediaIdList);
-        LOGGER.info("Succesfully created list: {}: with media: {}.", mlRet.getMoovieListId(), mediaIdList);
-        return mlRet;
+    public MoovieList createMoovieList(String name, int type, String description){
+       return moovieListDao.createMoovieList(userService.getInfoOfMyUser().getUserId(), name, type, description);
     }
 
     @Transactional
@@ -218,6 +204,7 @@ public class MoovieListServiceImpl implements MoovieListService{
                         "mediaAddedToFollowedList.html",
                         map);
             });
+            LOGGER.info("About to insert media into empty list {}", moovieListId);
             MoovieList mlRet = moovieListDao.insertMediaIntoMoovieList(moovieListId, mediaIdList);
             LOGGER.info("Succesfully inserted media: {} in list: {}.", mediaIdList,moovieListId);
             return mlRet;
@@ -274,6 +261,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     public void likeMoovieList(int moovieListId) {
         int userId = userService.getInfoOfMyUser().getUserId();
         MoovieListCard mlc = getMoovieListCardById(moovieListId);
+        LOGGER.info("userID: {} -- will like {}  -- likestate is: {}",userId,mlc.getName(), mlc.isCurrentUserHasLiked());
         if(mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType()){
             if(mlc.isCurrentUserHasLiked()){
                 moovieListDao.removeLikeMoovieList(userId, moovieListId);

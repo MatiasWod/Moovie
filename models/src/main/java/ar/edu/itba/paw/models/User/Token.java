@@ -1,11 +1,27 @@
 package ar.edu.itba.paw.models.User;
 
+import javax.persistence.*;
 import java.util.Date;
 
+@Entity
+@Table(name = "verificationTokens")
 public class Token {
-    private final int userId;
-    private final String token;
-    private final Date expirationDate;
+
+    //Ver cómo traer el userId
+    @Id
+    private int userId;
+
+    @Column(length = 100, nullable = false)
+    private String token;
+
+    @Temporal(TemporalType.DATE)
+    @Column(nullable = false)
+    private Date expirationDate;
+
+    //Para hibernate
+    public Token(){
+
+    }
 
     public Token(int userId, String token, Date expirationDate) {
         this.userId = userId;

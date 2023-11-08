@@ -1,19 +1,53 @@
 package ar.edu.itba.paw.models.MoovieList;
 
-public class MoovieList {
-    private final int moovieListId;
-    private final int userId;
-    private final String name;
-    private final String description;
-    private final int type;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
-    public MoovieList(int moovieListId, int userId, String name, String description, int type) {
-        this.moovieListId = moovieListId;
+@Entity
+@Table(name="moovielists")
+public class MoovieList {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "moovielists_moovielistid_seq")
+    @SequenceGenerator(sequenceName = "moovielists_moovielistid_seq", name = "moovielists_moovielistid_seq", allocationSize = 1)
+    @Column(name = "moovielistId")
+    private int moovieListId;
+
+    @Column(nullable = false)
+    private int userId;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = true, columnDefinition = "TEXT")
+    private String description;
+
+    @Column(nullable = false)
+    private int type;
+
+//    @OneToMany(mappedBy = "moovieList")
+//    final private Set<MoovieListLikes> likes = new HashSet<>();
+//
+//    @OneToMany(mappedBy = "user")
+//    final private Set<MoovieListFollowers> followers = new HashSet<>();
+
+    public MoovieList(){}
+
+    public MoovieList(int userId, String name, String description, int type) {
         this.userId = userId;
         this.name = name;
         this.description = description;
         this.type = type;
     }
+
+//    public Set<MoovieListFollowers> getFollowers() {
+//        return followers;
+//    }
+//
+//    public Set<MoovieListLikes> getLikes() {
+//        return likes;
+//    }
 
     public int getMoovieListId() {
         return moovieListId;

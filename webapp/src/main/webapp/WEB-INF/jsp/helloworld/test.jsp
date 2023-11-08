@@ -13,43 +13,32 @@
 <body>
 
 <div class="col-8 offset-2">
-    <br>
-    <h4>Recently Added Films</h4>
-    <div class="container-fluid">
-        <div class="row flex-row flex-nowrap overflow-auto">
-            <c:forEach var="movie" items="${movieList}">
-                <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
-                    <jsp:include page="/WEB-INF/jsp/helloworld/card.jsp">
-                        <jsp:param name="posterPath" value="${movie.posterPath}"/>
-                        <jsp:param name="mediaName" value="${movie.movieName}"/>
-                        <jsp:param name="releaseDate" value="${movie.releaseDate}"/>
-                        <jsp:param name="mediaId" value="${movie.movieId}"/>
-                    </jsp:include>
-                </div>
-            </c:forEach>
-        </div>
-    </div>
-    <h4>Recently Added TV Shows</h4>
-    <div class="container-fluid">
-        <div class="row flex-row flex-nowrap overflow-auto">
-            <c:forEach var="tv" items="${tvList}">
-                <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
-                    <jsp:include page="/WEB-INF/jsp/helloworld/card.jsp">
-                        <jsp:param name="posterPath" value="${tv.posterPath}"/>
-                        <jsp:param name="mediaName" value="${tv.tvName}"/>
-                        <jsp:param name="releaseDate" value="${tv.releaseDate}"/>
-                        <jsp:param name="mediaId" value="${tv.tvId}"/>
-                    </jsp:include>
-                </div>
-            </c:forEach>
-        </div>
-    </div>
-    <br>
+
+    <a>${ml.name}</a>
+    <a>${ml.description}</a>
+    <a>${ml.likeCount}</a>
+    <a>${ml.username}</a>
+    <a>${ml.size}</a>
+
 </div>
-<%--<script>--%>
-<%--    $(function () {--%>
-<%--        $('[data-toggle="tooltip"]').tooltip();--%>
-<%--    });--%>
-<%--</script>--%>
+
+<%--c:if test="${not empty media}">
+        <c:forEach var="med" items="${media}">
+            <h1>${med.name}</h1>
+            <c:if test="${not empty med.providers}">
+            <c:forEach var="prov" items="${med.providers}">
+                <h2>${prov.providerName}</h2>
+            </c:forEach>
+        </c:if>
+            <c:if test="${not empty med.genres}">
+                <c:forEach var="gen" items="${med.genres}">
+                    <h2>${gen.genre}</h2>
+                </c:forEach>
+            </c:if>
+        </c:forEach>
+
+</c:if --%>
+
+
 </body>
 </html>
