@@ -130,7 +130,6 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
 
-    @Transactional(readOnly = true)
     @Override
     public List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber){
         List<MoovieListCard> mlc =  moovieListDao.getRecommendedMoovieListCards(moovieListId, size, pageNumber, userService.tryToGetCurrentUserId());
@@ -154,7 +153,7 @@ public class MoovieListServiceImpl implements MoovieListService{
                 }
             }
         }
-        return mlc;
+        return null;
     }
 
 
