@@ -337,7 +337,7 @@
         <div class="popup-overlay rate-popup-overlay" onclick="closePopup('rate-popup')"></div>
         <div class="popup rate-popup">
             <!-- Popup content goes here -->
-            <h2>Your rating of "${media.name}"</h2>
+            <h2><spring:message code="details.yourRatingForMedia" arguments="${media.name}"/></h2>
             <hr class="my-8">
             <div class="rating">
                 <c:forEach var="i" begin="1" end="5" varStatus="loopStatus">
@@ -345,7 +345,7 @@
                     <i class="bi bi-star" onclick="rate(${reverseIndex})"></i>
                 </c:forEach>
             </div>
-            <h5>Your rating: <span id="selectedRating"><spring:message code="details.notSelected"/></span></h5>
+            <h5><spring:message code="details.yourRating"/> <span id="selectedRating"><spring:message code="details.notSelected"/></span></h5>
 
             <form:form modelAttribute="detailsForm" action="${pageContext.request.contextPath}/createrating"
                        method="POST">
@@ -467,7 +467,7 @@
                                         <span>
                                            <i class="bi bi-pencil" ></i>
                                         </span>
-                                                Edit review
+                                                <spring:message code="details.editReview"/>
                                             </button>
                                         </div>
                                     </c:if>
