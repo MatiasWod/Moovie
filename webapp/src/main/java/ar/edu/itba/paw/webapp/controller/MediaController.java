@@ -75,19 +75,19 @@ public class MediaController {
         LOGGER.info("Attempting to get media for /.");
         final ModelAndView mav = new ModelAndView("helloworld/index");
         List<Media> movieList = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
-                null, null, null, null,"tmdbRating", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
+                null, null, null, null,"tmdbrating", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("movieList", movieList);
 
         List<Media> tvSerieList = mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), null, null,
-                null, null, null,null, "tmdbRating", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
+                null, null, null,null, "tmdbrating", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("tvList", tvSerieList);
 
         List<Media> popularTV = mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), null, null,
-                null, null, null,null, "voteCount", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
+                null, null, null,null, "votecount", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("tvListPopular", popularTV);
 
         List<Media> popularMovies = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
-                null, null, null,null, "voteCount", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
+                null, null, null,null, "votecount", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("movieListPopular", popularMovies);
 
         LOGGER.info("Returned media for /.");
@@ -116,6 +116,7 @@ public class MediaController {
         int nameMediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query, null, null, null);
         int creditMediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), null, query, null, null);
         int usersCount = userService.getSearchCount(query);
+        int moovieListCount = moovieListService.getMoovieListCardsCount(query,null,MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(),0);
 
         if (query.isEmpty()){
             return mav;
@@ -143,6 +144,15 @@ public class MediaController {
             mav.addObject("usersFlag",false);
         }
         // if (usersCount > 0) --> mav.addObject(userList, userService.searchUsers(query,...))
+
+        // Moovielist query
+        if(moovieListCount > 0){
+            mav.addObject("moovieListFlag",true);
+            mav.addObject("moovieListsList",moovieListService.getMoovieListCards(query,null,MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),null,null, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(), 0));
+        }
+        else {
+            mav.addObject("moovieListFlag",false);
+        }
 
         LOGGER.info("Returned media for /search.");
         return mav;
