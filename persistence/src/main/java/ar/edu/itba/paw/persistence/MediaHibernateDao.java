@@ -1,20 +1,16 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Cast.Actor;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
 import org.springframework.context.annotation.Primary;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +25,7 @@ public class MediaHibernateDao implements MediaDao{
     private static final String moviesQueryParams = " media.mediaId, type, name, originalLanguage, adult, releaseDate, overview, backdropPath, posterPath, trailerLink, tmdbRating, status, runtime, budget, revenue, directorId, director ";
 
     @Override
-    public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, String orderBy, String sortOrder, int size, int pageNumber) {
+    public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber) {
         StringBuilder sql = new StringBuilder("SELECT m.mediaid ");
         ArrayList<String> argtype = new ArrayList<>();
         ArrayList<Object> args = new ArrayList<>();

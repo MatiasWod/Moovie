@@ -102,6 +102,11 @@ public class ReviewHibernateDao implements ReviewDao {
     }
 
     @Override
+    public void editReview(int userId, int mediaId, int rating, String reviewContent) {
+        return;
+    }
+
+    @Override
     public void deleteReview(int reviewId) {
         Review review = em.find(Review.class, reviewId);
         em.remove(review);
