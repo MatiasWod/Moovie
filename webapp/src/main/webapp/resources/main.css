@@ -118,7 +118,7 @@
 
 .scrollableDiv {
     overflow-y: auto;
-    max-height: 74vh;  /* Ajustar según necesidades */
+    max-height: 82vh;  /* Ajustar según necesidades */
 }
 
 .fullHeightDiv {

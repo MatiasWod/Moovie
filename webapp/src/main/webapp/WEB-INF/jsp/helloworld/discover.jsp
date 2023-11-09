@@ -33,23 +33,9 @@
 <%--variables para el manejo de selected filters--%>
 <c:set var="selectedGenres" value="${fn:split(param.g, ',')}" />
 <c:set var="selectedProviders" value="${fn:split(param.providers, ',')}" />
-<div class="container d-flex flex-column">
-    <div class="container d-flex flex-row ">
-        <%--        FILTROS y PELIS    --%>
-
-
-
-        <div class="container d-flex flex-column">
-            <c:if test="${param.query != null && param.query.length() > 0}">
-                <h3>
-                    <spring:message code="discover.results" arguments="${param.query}"/>
-                </h3>
-            </c:if>
-            <c:if test="${param.credit != null && param.credit.length() > 0}">
-                <h3>
-                    <spring:message code="discover.credit" arguments="${param.credit}"/>
-                </h3>
-            </c:if>
+<div class="d-flex flex-column">
+    <div class=" d-flex flex-row ">
+        <div id="preview" class="fullHeightDiv" style="width: 13vw">
             <c:import url="filterButtons.jsp">
                 <c:param name="query" value="${param.query}"/>
                 <c:param name="credit" value="${param.credit}"/>
@@ -58,66 +44,86 @@
                 <c:param name="url" value="discover"/>
                 <c:param name="searchBar" value="false"/>
             </c:import>
-            <div class="scrollableDiv flex-wrap d-flex justify-space-between">
+        </div>
+        <div style="position: relative" class="container d-flex flex-row">
+            <%--        FILTROS y PELIS    --%>
 
-                <c:if test="${fn:length(mediaList) == 0 }">
-                    <div class="d-flex m-2 flex-column">
-                        <spring:message code="discover.noResults"/>
-                        <a class="btn mt-2 btn-outline-success align-bottom" href="${pageContext.request.contextPath}/discover"><spring:message code="discover.prompt"/></a>
-                    </div>
+
+
+            <div class="container d-flex flex-column">
+                <c:if test="${param.query != null && param.query.length() > 0}">
+                    <h3>
+                        <spring:message code="discover.results" arguments="${param.query}"/>
+                    </h3>
                 </c:if>
-                <c:forEach var="movie" items="${mediaList}" varStatus="loop">
-                    <a href="${pageContext.request.contextPath}/details/${movie.mediaId}" class="poster card text-bg-dark m-1">
-                        <div class="card-img-container"> <!-- Add a container for the image -->
-                            <img class="cropCenter" src="${movie.posterPath}" alt="media poster">
-                            <div class="card-img-overlay">
-                                <h6 class="card-title text-center">${movie.name}</h6>
-                                <div class="d-flex justify-content-evenly">
-                                    <p class="card-text">
-                                        <i class="bi bi-star-fill"></i>
-                                            ${movie.tmdbRating}
-                                    </p>
-                                    <p class="card-text">
-                                        <fmt:formatDate value="${movie.releaseDate}" pattern="YYYY"/>
-                                    </p>
-                                </div>
-                                <div class="d-flex justify-content-evenly flex-wrap">
-                                    <c:forEach var="genre" items="${movie.genres}" end="1">
-                                        <span class="mt-1 badge text-bg-dark">${fn:replace(genre,"\"" ,"" )}</span>
-                                    </c:forEach>
-                                </div>
-                                <div class="d-flex mt-3 justify-content-evenly flex-wrap">
-                                    <c:forEach var="provider" items="${movie.providers}" end="1">
+                <c:if test="${param.credit != null && param.credit.length() > 0}">
+                    <h3>
+                        <spring:message code="discover.credit" arguments="${param.credit}"/>
+                    </h3>
+                </c:if>
+
+                <div class="scrollableDiv flex-wrap d-flex justify-space-between">
+
+                    <c:if test="${fn:length(mediaList) == 0 }">
+                        <div class="d-flex m-2 flex-column">
+                            <spring:message code="discover.noResults"/>
+                            <a class="btn mt-2 btn-outline-success align-bottom" href="${pageContext.request.contextPath}/discover"><spring:message code="discover.prompt"/></a>
+                        </div>
+                    </c:if>
+                    <c:forEach var="movie" items="${mediaList}" varStatus="loop">
+                        <a href="${pageContext.request.contextPath}/details/${movie.mediaId}" class="poster card text-bg-dark m-1">
+                            <div class="card-img-container"> <!-- Add a container for the image -->
+                                <img class="cropCenter" src="${movie.posterPath}" alt="media poster">
+                                <div class="card-img-overlay">
+                                    <h6 class="card-title text-center">${movie.name}</h6>
+                                    <div class="d-flex justify-content-evenly">
+                                        <p class="card-text">
+                                            <i class="bi bi-star-fill"></i>
+                                                ${movie.tmdbRating}
+                                        </p>
+                                        <p class="card-text">
+                                            <fmt:formatDate value="${movie.releaseDate}" pattern="YYYY"/>
+                                        </p>
+                                    </div>
+                                    <div class="d-flex justify-content-evenly flex-wrap">
+                                        <c:forEach var="genre" items="${movie.genres}" end="1">
+                                            <span class="mt-1 badge text-bg-dark">${fn:replace(genre,"\"" ,"" )}</span>
+                                        </c:forEach>
+                                    </div>
+                                    <div class="d-flex mt-3 justify-content-evenly flex-wrap">
+                                        <c:forEach var="provider" items="${movie.providers}" end="1">
                                         <span class="mt-1 badge text-bg-light border border-black">
                                             <img src="${provider.logoPath}" alt="provider logo" style="height: 1.4em; margin-right: 5px;">
                                         </span>
-                                    </c:forEach>
+                                        </c:forEach>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </a>
-                </c:forEach>
+                        </a>
+                    </c:forEach>
+                </div>
+                <c:if test="${searchMode == false}">
+                    <div class="m-1">
+                        <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+                            <c:param name="mediaPages" value="${numberOfPages}"/>
+                            <c:param name="currentPage" value="${currentPage + 1}"/>
+                            <c:param name="url" value="/discover?media=${param.media}&g=${param.g}"/>
+                        </c:import>
+                    </div>
+                </c:if>
+                <c:if test="${searchMode == true}">
+                    <div class="m-1">
+                        <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+                            <c:param name="mediaPages" value="${numberOfPages}"/>
+                            <c:param name="currentPage" value="${currentPage + 1}"/>
+                            <c:param name="url" value="/discover?query=${param.query}&media=${param.media}&g=${param.g}"/>
+                        </c:import>
+                    </div>
+                </c:if>
             </div>
-            <c:if test="${searchMode == false}">
-                <div class="m-1">
-                    <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
-                        <c:param name="mediaPages" value="${numberOfPages}"/>
-                        <c:param name="currentPage" value="${currentPage + 1}"/>
-                        <c:param name="url" value="/discover?media=${param.media}&g=${param.g}"/>
-                    </c:import>
-                </div>
-            </c:if>
-            <c:if test="${searchMode == true}">
-                <div class="m-1">
-                    <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
-                        <c:param name="mediaPages" value="${numberOfPages}"/>
-                        <c:param name="currentPage" value="${currentPage + 1}"/>
-                        <c:param name="url" value="/discover?query=${param.query}&media=${param.media}&g=${param.g}"/>
-                    </c:import>
-                </div>
-            </c:if>
         </div>
     </div>
+
 </div>
 
 </body>
