@@ -171,7 +171,7 @@ public class MediaHibernateDao implements MediaDao{
         ArrayList<String> argtype = new ArrayList<>();
         ArrayList<Object> args = new ArrayList<>();
 
-        sql.append("FROM media m LEFT JOIN reviews r ON m.mediaid = r.mediaid ");
+        sql.append("FROM media m ");
 
         // If type is 0 or 1 it's specifically movies or TVs, else it's not restricted
         if (type == 0 || type == 1) {
