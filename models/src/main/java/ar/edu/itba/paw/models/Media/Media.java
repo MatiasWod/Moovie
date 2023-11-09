@@ -60,13 +60,13 @@ public class Media {
     @Formula("(SELECT COUNT(r.rating) FROM reviews r WHERE mediaid = r.mediaid)")
     private int voteCount;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "mediaproviders",
             joinColumns = @JoinColumn(name = "mediaId"),
             inverseJoinColumns = @JoinColumn(name = "providerId"))
     private List<Provider> providers = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "mediagenres",
             joinColumns = @JoinColumn(name = "mediaId"),
             inverseJoinColumns = @JoinColumn(name = "genreId"))

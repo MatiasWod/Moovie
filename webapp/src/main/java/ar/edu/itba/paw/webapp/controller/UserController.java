@@ -67,7 +67,7 @@ public class UserController {
         LOGGER.info("Returned /register");
         return new ModelAndView("helloworld/register").
                 addObject("mediaList",
-                mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null,null,null,null,null,null,"tmdbrating","desc",PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0));
+                mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null,null,null,null,null,null,"tmdbRating","desc",PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0));
     }
 
     @RequestMapping(value = "/register/confirm")
@@ -134,7 +134,7 @@ public class UserController {
         LOGGER.info("Returned /register");
         return new ModelAndView("helloworld/login")
                 .addObject("mediaList",
-                        mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null,null,null,null,null,null,"tmdbrating","desc",PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0));
+                        mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null,null,null,null,null,null,"tmdbRating","desc",PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0));
     }
 
     @RequestMapping("/profile/{username:.+}")

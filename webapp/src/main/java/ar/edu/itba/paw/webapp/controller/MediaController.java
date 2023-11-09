@@ -75,19 +75,19 @@ public class MediaController {
         LOGGER.info("Attempting to get media for /.");
         final ModelAndView mav = new ModelAndView("helloworld/index");
         List<Media> movieList = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
-                null, null, null, null,"tmdbrating", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
+                null, null, null, null,"tmdbRating", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("movieList", movieList);
 
         List<Media> tvSerieList = mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), null, null,
-                null, null, null,null, "tmdbrating", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
+                null, null, null,null, "tmdbRating", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("tvList", tvSerieList);
 
         List<Media> popularTV = mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), null, null,
-                null, null, null,null, "votecount", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
+                null, null, null,null, "voteCount", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("tvListPopular", popularTV);
 
         List<Media> popularMovies = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
-                null, null, null,null, "votecount", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
+                null, null, null,null, "voteCount", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("movieListPopular", popularMovies);
 
         LOGGER.info("Returned media for /.");
@@ -124,14 +124,14 @@ public class MediaController {
         // Name media query
         if (nameMediaCount > 0){
             mav.addObject("nameMediaFlag", true);
-            mav.addObject("nameMedia", mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null, null, null, null, null,"tmdbrating", "desc",PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),0 ));
+            mav.addObject("nameMedia", mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null, null, null, null, null,"tmdbRating", "desc",PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),0 ));
         }else{
             mav.addObject("nameMediaFlag",false);
         }
         // Credited media query
         if (creditMediaCount > 0){
             mav.addObject("creditMediaFlag", true);
-            mav.addObject("creditMedia", mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null, query, null, null,null,null, "tmdbrating", "desc",PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),0 ));
+            mav.addObject("creditMedia", mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null, query, null, null,null,null, "tmdbRating", "desc",PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),0 ));
         }else{
             mav.addObject("creditMediaFlag",false);
         }
@@ -156,7 +156,7 @@ public class MediaController {
                                  @RequestParam(value = "providers", required = false) List<String> providers,
                                  @RequestParam(value = "lang", required = false) final List<String> lang,
                                  @RequestParam(value = "status", required = false) final List<String> status,
-                                 @RequestParam(value="orderBy", defaultValue = "tmdbrating") final String orderBy,
+                                 @RequestParam(value="orderBy", defaultValue = "tmdbRating") final String orderBy,
                                  @RequestParam(value="order", defaultValue = "desc") final String order,
                                @RequestParam(value = "page", defaultValue = "1") final int pageNumber){
         LOGGER.info("Attempting to get media for /discover.");

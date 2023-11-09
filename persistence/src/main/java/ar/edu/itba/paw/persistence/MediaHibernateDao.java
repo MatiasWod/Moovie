@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
+import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
@@ -26,19 +27,19 @@ public class MediaHibernateDao implements MediaDao{
 
     @Override
     public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber) {
-        StringBuilder sql = new StringBuilder("SELECT m.mediaid ");
+        StringBuilder sql = new StringBuilder("SELECT m ");
         ArrayList<String> argtype = new ArrayList<>();
         ArrayList<Object> args = new ArrayList<>();
 
-        sql.append("FROM media m LEFT JOIN reviews r ON m.mediaid = r.mediaid ");
+        sql.append("FROM Media m ");
 
         // If type is 0 or 1 it's specifically movies or TVs, else it's not restricted
         if (type == 0 || type == 1) {
-            sql.append(" WHERE type = :type ");
+            sql.append(" WHERE m.type = :type ");
             argtype.add("type");
             args.add(type == 1);
         } else {
-            sql.append(" WHERE type IS NOT NULL ");
+            sql.append(" WHERE m.type IS NOT NULL ");
         }
 
         // Add the genres filter
@@ -66,7 +67,7 @@ public class MediaHibernateDao implements MediaDao{
         //Input the search
         if(search!=null && search.length()>0){
             sql.append(" AND " );
-            sql.append(" name ILIKE :name ");
+            sql.append(" m.name LIKE :name ");
             argtype.add("name");
             args.add('%' + search + '%');
         }
@@ -74,12 +75,12 @@ public class MediaHibernateDao implements MediaDao{
         // Input its participants in actors, media.name, creators and directors
         if (participant!=null && participant.length()>0) {
             sql.append(" AND  " );
-            sql.append(" (  m.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE :actor ) ");
+            sql.append(" (  m.mediaId IN (SELECT mediaId FROM actors a WHERE actorname LIKE :actor ) ");
             args.add('%' + participant + '%');
             argtype.add("actor");
 
             if(type != MediaTypes.TYPE_TVSERIE.getType()){
-                sql.append(" OR m.mediaId IN (SELECT mediaid FROM movies m WHERE director ILIKE :director ) ");
+                sql.append(" OR m.mediaId IN (SELECT mediaId FROM movies m WHERE director ILIKE :director ) ");
                 args.add('%' + participant + '%');
                 argtype.add("director");
             }
@@ -93,8 +94,6 @@ public class MediaHibernateDao implements MediaDao{
             sql.append(" ) ");
         }
 
-        sql.append("GROUP BY m.mediaId ");
-
         // Order by
         if (isOrderValid(orderBy) && isSortOrderValid(sortOrder)) {
             sql.append(" ORDER BY ").append(orderBy);
@@ -102,24 +101,28 @@ public class MediaHibernateDao implements MediaDao{
         }
 
         // Pagination
+        /*
         sql.append(" LIMIT :size OFFSET :page "); // Add LIMIT and OFFSET clauses
         argtype.add("size");
         args.add(size);
         argtype.add("page");
         args.add(pageNumber * size);
+        */
 
-        Query nq = em.createNativeQuery(sql.toString());
+        TypedQuery<Media> query = em.createQuery(sql.toString(), Media.class);
 
         for(int i=0; i<args.size() ; i++){
-            nq.setParameter(argtype.get(i), args.get(i));
+            query.setParameter(argtype.get(i), args.get(i));
         }
 
+        /*
         List<Integer> ids = nq.getResultList();
 
         final TypedQuery<Media> query = em.createQuery("from Media m where m.mediaId in (:ids)", Media.class);
         query.setParameter("ids", ids);
+        */
 
-        return query.getResultList();
+        return query.setFirstResult(pageNumber * size).setMaxResults(size).getResultList();
     }
 
     @Override
