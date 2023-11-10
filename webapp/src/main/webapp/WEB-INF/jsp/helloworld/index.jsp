@@ -67,7 +67,7 @@
 
                 <div class="container d-flex justify-content-between p-2">
                     <h3><spring:message code="index.mostPopularMovies"/></h3>
-                    <a href="${pageContext.request.contextPath}/featuredList/mostPopularMoives"><spring:message code="index.seeMore"/></a>
+                    <a href="${pageContext.request.contextPath}/featuredList/mostPopularMovies"><spring:message code="index.seeMore"/></a>
                 </div>
                 <hr class="my-1">
                 <div class="container d-flex scrollableDiv">
