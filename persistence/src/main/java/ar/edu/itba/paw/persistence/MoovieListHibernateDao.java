@@ -335,11 +335,8 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
         return toReturn.intValue();
     }
-/*
-    SELECT COUNT(*) FROM moovielistsContent mlc " +
-            " INNER JOIN moovielistscontent mlc2 ON mlc.mediaid = mlc2.mediaid " +
-            " JOIN moovieLists ml ON mlc2.moovieListId = ml.moovieListId " +
-            " WHERE mlc.moovieListId = :moovieListId AND ml.name = 'Watched' AND ml.userId = :userId) as currentUserWatchAmount*/
+
+
 
     @Override
     public MoovieList createMoovieList(int userId, String name, int type, String description) {

@@ -141,7 +141,7 @@ public class UserController {
     public ModelAndView profilePage(@PathVariable String username,
                                     @RequestParam( value = "list", required = false) String list,
                                     @RequestParam(value = "page",defaultValue = "1") final int pageNumber,
-                                    @RequestParam(value="orderBy", defaultValue = "customorder") final String orderBy,
+                                    @RequestParam(value="orderBy", defaultValue = "customOrder") final String orderBy,
                                     @RequestParam(value="order", defaultValue = "asc") final String order
                                     ){
         LOGGER.info("Attempting to get user with username: {} for /profile.", username);
