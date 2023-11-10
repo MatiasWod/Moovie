@@ -391,8 +391,7 @@
                                             <img class="cropCenter mr-3 profile-image rounded-circle"
                                                  style="height:60px;width:60px;border: solid black; border-radius: 50%"
                                                  src="${pageContext.request.contextPath}/profile/image/${review.username}"
-                                                 alt="${review.userId} Reviewer Profile"
-                                            >
+                                                 alt="${review.userId} Reviewer Profile">
                                         </a>
                                         <div class="mt-0" style="margin-left: 15px">
                                             <a href="${pageContext.request.contextPath}/profile/${review.username}"
@@ -434,47 +433,75 @@
                                 </p>
                                 <div class="d-flex align-items-center justify-content-start ">
                                     <div>
-                                    <c:choose>
-                                        <c:when test="${review.currentUserHasLiked}">
-                                            <form action="${pageContext.request.contextPath}/unlikeReview"
-                                                  method="post">
-                                                <input type="hidden" name="reviewId" value="${review.reviewId}"/>
-                                                <input type="hidden" name="mediaId" value="${media.mediaId}"/>
-                                                <button class="btn btn-style" style="font-size: 14px">
-                                        <span>
-                                         <i class="bi bi-hand-thumbs-up-fill"></i>
-                                        ${review.reviewLikes}
-                                        </span>
-                                                    <spring:message code="details.liked"/>
-                                                </button>
-                                            </form>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <form action="${pageContext.request.contextPath}/likeReview" method="post">
-                                                <input type="hidden" name="reviewId" value="${review.reviewId}"/>
-                                                <input type="hidden" name="mediaId" value="${media.mediaId}"/>
-                                                <button class="btn btn-style" style="font-size: 14px">
-                                        <span>
-                                    <i class="bi bi-hand-thumbs-up"></i>
-                                        ${review.reviewLikes}
-                                    </span>
-                                                    <spring:message code="details.like"/>
-                                                </button>
-                                            </form>
-                                        </c:otherwise>
-                                    </c:choose>
+                                        <c:choose>
+                                            <c:when test="${review.currentUserHasLiked}">
+                                                <form action="${pageContext.request.contextPath}/unlikeReview"
+                                                      method="post">
+                                                    <input type="hidden" name="reviewId" value="${review.reviewId}"/>
+                                                    <input type="hidden" name="mediaId" value="${media.mediaId}"/>
+                                                    <button class="btn btn-style" style="font-size: 14px">
+                                                        <span>
+                                                            <i class="bi bi-hand-thumbs-up-fill"></i>
+                                                                ${review.reviewLikes}
+                                                        </span>
+                                                        <spring:message code="details.liked"/>
+                                                    </button>
+                                                </form>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <form action="${pageContext.request.contextPath}/likeReview" method="post">
+                                                    <input type="hidden" name="reviewId" value="${review.reviewId}"/>
+                                                    <input type="hidden" name="mediaId" value="${media.mediaId}"/>
+                                                    <button class="btn btn-style" style="font-size: 14px">
+                                                        <span>
+                                                            <i class="bi bi-hand-thumbs-up"></i>
+                                                                ${review.reviewLikes}
+                                                        </span>
+                                                        <spring:message code="details.like"/>
+                                                    </button>
+                                                </form>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </div>
                                     <c:if test="${currentUsername==review.username}">
                                         <div style="margin-bottom: 15px">
                                             <button class="btn btn-primary" style="font-size: 14px;margin-left: 10px;"  onclick="openPopup('rate-popup')">
-                                        <span>
-                                           <i class="bi bi-pencil" ></i>
-                                        </span>
+                                                <span>
+                                                   <i class="bi bi-pencil" ></i>
+                                                </span>
                                                 <spring:message code="details.editReview"/>
                                             </button>
                                         </div>
                                     </c:if>
+
                                 </div>
+                                    <%--<c:if test="${review.hasComments}">--%>
+                                <a class="ms-1" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                    View Comments (review.commentsCount)
+                                </a>
+                                <div class="collapse" id="collapseExample">
+                                    <c:forEach begin="1" end="5">
+                                        <div class="mb-2 mt-2 card card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <h5 class="card-title">Username (agregar href)</h5>
+                                                <div class="d-flex">
+                                                    <a class="me-1 btn-sm btn btn-outline-success">
+                                                        <i class="m-1 bi bi-hand-thumbs-up"></i>
+                                                    </a>
+                                                    <a class="btn btn-sm btn-outline-danger">
+                                                        <i class="m-1 bi bi-hand-thumbs-down"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <p class="card-text">Comment Commetn Commetn</p>
+
+                                        </div>
+                                    </c:forEach>
+                                        <%--<c:if test="${comments > 5}">--%>
+                                    <a class="ms-1" href="/review/id">See more</a>
+                                        <%--</c:if>--%>
+                                </div>
+                                    <%--</c:if>--%>
                         </div>
                     </c:forEach>
                 </div>
