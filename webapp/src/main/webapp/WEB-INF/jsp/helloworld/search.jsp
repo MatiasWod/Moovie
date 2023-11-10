@@ -155,7 +155,15 @@
 
     </c:if>
 
-    <c:if test="${!(creditMediaFlag||nameMediaFlag||usersFlag)}">
+    <c:if test="${moovieListFlag}">
+        <div class="container d-flex justify-content-between mt-2 p-2">
+            <h3><spring:message code="search.lists" arguments="${param.query}"/></h3>
+            <a href="${pageContext.request.contextPath}/discover?credit=${param.query}"><spring:message code="search.seeMore"/></a>
+        </div>
+        <hr class="my-1">
+    </c:if>
+
+    <c:if test="${!(creditMediaFlag||nameMediaFlag||usersFlag||moovieListFlag)}">
         <div style="border: solid black; min-width: 40%; min-height: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 5%;" class="container-gray justify-content-center d-flex flex-column">
             <div class="text-center m-3">
                 <img style="height: 15vh" src="${pageContext.request.contextPath}/resources/logo.png" alt="logo">
