@@ -326,7 +326,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
                 "FROM Media m " +
                 "WHERE m.mediaId IN (:medias) ORDER BY ";
 
-        if((orderBy!=null && sortOrder != null) && !orderBy.equals("customOrder") ){
+        if((orderBy!=null && sortOrder != null) && (!orderBy.isEmpty() && !sortOrder.isEmpty()) && !orderBy.equals("customOrder") ){
             jpql += " m." + orderBy + " " + sortOrder;
         } else{
             jpql += " m." + featuredListOrder + " " + "DESC";
