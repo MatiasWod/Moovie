@@ -284,7 +284,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
 
     @Override
-    public List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, int userid, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
+    public List<MoovieListContent> getFeaturedMoovieListContent( int mediaType, int userid, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
         StringBuilder firstQuery = new StringBuilder("SELECT m.mediaId FROM Media m ");
 
         if (mediaType != MediaTypes.TYPE_ALL.getType()) {
@@ -324,7 +324,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
 
     @Override
-    public int countWatchedFeaturedMoovieListContent(int moovieListId, int mediaType, int userid, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
+    public int countWatchedFeaturedMoovieListContent(int mediaType, int userid, String featuredListOrder) {
         StringBuilder query = new StringBuilder("SELECT COUNT(*) FROM ( SELECT * FROM media ");
         query.append(" WHERE mediaid IN(SELECT mediaid FROM media m2 ");
 
@@ -332,7 +332,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
             query.append("WHERE type = :type ");
         }
 
-        query.append("ORDER BY m2.tmdbrating DESC LIMIT 100) AND ");
+        query.append("ORDER BY m2." + featuredListOrder + " DESC LIMIT 100) AND ");
         query.append(" mediaid IN (SELECT mediaid FROM moovielists ml LEFT JOIN moovielistscontent mlc ON ml.moovielistid = mlc.moovielistid ");
         query.append(" WHERE ml.name = 'Watched' AND userid = :userid) ) AS totalWatched");
 

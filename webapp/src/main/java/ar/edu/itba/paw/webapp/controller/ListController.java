@@ -232,10 +232,9 @@ public class ListController {
         if(topRatedMoovieLists.isPresent()){
             moovieListCard = moovieListService.getMoovieListCards(topRatedMoovieLists.get().getName(),"Moovie",MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PUBLIC.getType(),null,null,
                     1,0).get(0); //Solo hay una lista de Moovie con ese nombre, entonces solo traigo esa lista
-            moovieListContentList = moovieListService.getFeaturedMoovieListContent(moovieListCard.getMoovieListId(),topRatedMoovieLists.get().getType(), topRatedMoovieLists.get().getOrder() ,orderBy,
+            moovieListContentList = moovieListService.getFeaturedMoovieListContent(topRatedMoovieLists.get().getType(), topRatedMoovieLists.get().getOrder() ,orderBy,
                     order,pagesSize,pageNumber - 1);
-            mav.addObject("watchedCount",moovieListService.countWatchedFeaturedMoovieListContent(moovieListCard.getMoovieListId(),topRatedMoovieLists.get().getType(), topRatedMoovieLists.get().getOrder() ,orderBy,
-                    order,100,0));
+            mav.addObject("watchedCount",moovieListService.countWatchedFeaturedMoovieListContent(topRatedMoovieLists.get().getType(), topRatedMoovieLists.get().getOrder()));
         }
         else {
             LOGGER.info("Failed to return featured list : {} for /featuredlist.", list);

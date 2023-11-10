@@ -86,15 +86,15 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
+    public List<MoovieListContent> getFeaturedMoovieListContent( int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
         int userId = userService.tryToGetCurrentUserId();
-        return moovieListDao.getFeaturedMoovieListContent(moovieListId,mediaType, userId, featuredListOrder, orderBy,sortOrder ,size, pageNumber);
+        return moovieListDao.getFeaturedMoovieListContent(mediaType, userId, featuredListOrder, orderBy,sortOrder ,size, pageNumber);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public int countWatchedFeaturedMoovieListContent(int moovieListId, int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
-        return moovieListDao.countWatchedFeaturedMoovieListContent(moovieListId,mediaType, userService.tryToGetCurrentUserId(), featuredListOrder, orderBy,sortOrder ,size, pageNumber);
+    public int countWatchedFeaturedMoovieListContent(int mediaType, String featuredListOrder){
+        return moovieListDao.countWatchedFeaturedMoovieListContent(mediaType, userService.tryToGetCurrentUserId(), featuredListOrder);
     }
 
     @Transactional(readOnly = true)

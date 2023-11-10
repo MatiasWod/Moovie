@@ -42,8 +42,9 @@ public interface MoovieListService {
     List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy,String sortOrder, int size, int pageNumber);
 
     //Featured List Functions
-    List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber);
-    int countWatchedFeaturedMoovieListContent(int moovieListId, int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber);
+    List<MoovieListContent> getFeaturedMoovieListContent( int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber);
+    int countWatchedFeaturedMoovieListContent(int mediaType, String featuredListOrder);
+
 
     //Create or insert into moovieList
     MoovieList createMoovieList(String name, int type, String description);
