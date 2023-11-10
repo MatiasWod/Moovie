@@ -100,12 +100,27 @@ public class MediaHibernateDao implements MediaDao{
             sql.append(" ").append(sortOrder);
         }
 
+        // Pagination
+        /*
+        sql.append(" LIMIT :size OFFSET :page "); // Add LIMIT and OFFSET clauses
+        argtype.add("size");
+        args.add(size);
+        argtype.add("page");
+        args.add(pageNumber * size);
+        */
 
         TypedQuery<Media> query = em.createQuery(sql.toString(), Media.class);
 
         for(int i=0; i<args.size() ; i++){
             query.setParameter(argtype.get(i), args.get(i));
         }
+
+        /*
+        List<Integer> ids = nq.getResultList();
+
+        final TypedQuery<Media> query = em.createQuery("from Media m where m.mediaId in (:ids)", Media.class);
+        query.setParameter("ids", ids);
+        */
 
         return query.setFirstResult(pageNumber * size).setMaxResults(size).getResultList();
     }

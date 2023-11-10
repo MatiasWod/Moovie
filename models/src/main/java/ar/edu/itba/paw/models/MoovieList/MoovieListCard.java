@@ -89,7 +89,6 @@ public class MoovieListCard {
         this.currentUserHasFollowed = currentUserHasFollowed;
     }
 
-
     public int getMoovieListId() {
         return moovieListId;
     }

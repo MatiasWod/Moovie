@@ -1,8 +1,8 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
-import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.MoovieList.MoovieListDetails;
 
 import java.util.List;
@@ -39,10 +39,10 @@ public interface MoovieListService {
 
     //Get the content of media of some moovieList by its id
     //The isWatched is returned as false (in every element) if the user who makes the query is not the owner
-    List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy,String sortOrder, int size, int pageNumber);
+    List<Media> getMoovieListContent(int moovieListId, String orderBy, String sortOrder, int size, int pageNumber);
 
     //Featured List Functions
-    List<MoovieListContent> getFeaturedMoovieListContent( int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber);
+    List<Media> getFeaturedMoovieListContent( int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber);
     int countWatchedFeaturedMoovieListContent(int mediaType, String featuredListOrder);
 
 
