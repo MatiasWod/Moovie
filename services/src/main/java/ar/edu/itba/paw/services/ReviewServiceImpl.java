@@ -1,7 +1,9 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
 import ar.edu.itba.paw.exceptions.ReviewNotFoundException;
 import ar.edu.itba.paw.models.Review.Review;
+import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.ReviewDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class ReviewServiceImpl implements ReviewService{
@@ -75,6 +78,19 @@ public class ReviewServiceImpl implements ReviewService{
         int userId = userService.getInfoOfMyUser().getUserId();
         reviewDao.editReview(userId, mediaId, rating, reviewContent);
         LOGGER.info("Succesfully edited review in media: {}, user: {}.", mediaId , userService.getInfoOfMyUser().getUserId());
+    }
+
+    @Transactional
+    @Override
+    public void deleteReview(int reviewId){
+        User currentUser = userService.getInfoOfMyUser();
+        Review review = reviewDao.getReviewById(currentUser.getUserId(), reviewId)
+                .orElseThrow(() -> new NoSuchElementException("Review not found"));
+        if (currentUser.getUserId()!=review.getUserId()) {
+            throw new InvalidAccessToResourceException("User is not owner of the Review.");
+        }
+        reviewDao.deleteReview(reviewId);
+        LOGGER.info("Succesfully deleted review: {}, user: {}.", reviewId , userService.getInfoOfMyUser().getUserId());
     }
 
 }

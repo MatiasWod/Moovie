@@ -293,6 +293,17 @@ public class MediaController {
         return new ModelAndView("redirect:/details/" + mediaId);
     }
 
+    @RequestMapping(value = "/deleteUserReview/{mediaId:\\d+}", method = RequestMethod.POST)
+    public ModelAndView deleteReview(@RequestParam("reviewId") int reviewId,RedirectAttributes redirectAttributes, @PathVariable int mediaId) {
+        try {
+            reviewService.deleteReview(reviewId);
+            redirectAttributes.addFlashAttribute("successMessage", "Review successfully deleted");
+        }catch (Exception e){
+            redirectAttributes.addFlashAttribute("errorMessage", "Error deleting review");
+        }
+        return new ModelAndView("redirect:/details/" + mediaId);
+    }
+
     @RequestMapping("/review/id")
     public ModelAndView review() {
         final ModelAndView mav = new ModelAndView("helloworld/review");

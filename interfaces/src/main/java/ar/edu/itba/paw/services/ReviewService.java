@@ -21,4 +21,6 @@ public interface ReviewService {
     void createReview( int mediaId, int rating, String reviewContent);
 
     void editReview( int mediaId, int rating, String reviewContent);
+
+    void deleteReview(int reviewId);
 }
