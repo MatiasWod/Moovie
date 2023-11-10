@@ -33,6 +33,7 @@ public class Media {
     @Column(nullable = false)
     private boolean adult;
 
+    @Temporal(TemporalType.DATE)
     @Column
     private Date releaseDate;
 
