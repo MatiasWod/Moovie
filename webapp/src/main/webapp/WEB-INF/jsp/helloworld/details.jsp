@@ -36,8 +36,7 @@
                             style="max-width: 100%; height: 400px; border-radius: 5px;">
                 </c:when>
                 <c:otherwise>
-                    <img src="${media.posterPath}"
-                         alt="${media.name} poster" class="img-fluid" width="300" height="300">
+                    <img src="${media.posterPath}" alt="${media.name} poster" class="img-fluid" style="width: 70%; height: 70%;">
                 </c:otherwise>
             </c:choose>
 
@@ -216,17 +215,21 @@
                     </c:if>
                 </c:otherwise>
             </c:choose>
-
-<%--            ACA agregar el link del trailer al source. Se puede usar un c:if para solo mostrar cuando hay trailer
-                incluso se puede hacer un boton extendible, y que el embed aparezca solo al apretar "See trailer"--%>
-            <c:if test="${media.trailerLink != null && media.trailerLink != 'None'}">
-                <iframe width="400" height="300"
-<%--                        hay que modificar el link por funcionamiento de los endpoints de Youtube para embeds--%>
-                        src="${media.trailerLink.replace("watch?v=","embed/")}"
-                        title="${media.name}"
-                        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-            </c:if>
             <!-- Description and Buttons-->
+            <c:if test="${media.trailerLink != null && media.trailerLink != 'None'}">
+                <div style="margin-bottom: 5px; margin-top: 5px;">
+                    <!-- Iframe for the trailer (initially hidden) -->
+                    <iframe id="trailerIframe" style="width:85% ; height: 315px "
+                        <%-- Replace "watch?v=" with "embed/" in the YouTube link for proper embedding --%>
+                            src="${media.trailerLink.replace("watch?v=", "embed/")}"
+                            title="${media.name}"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen
+                    ></iframe>
+                </div>
+            </c:if>
+
             <p>${media.overview}</p>
             <div class="flex-row d-flex">
                 <div class="dropdown">
