@@ -75,6 +75,9 @@ public class Media {
     @Transient
     private boolean watched;
 
+    @Transient
+    private boolean watchlist;
+
 
 
     /* Just for Hibernate*/
@@ -105,7 +108,7 @@ public class Media {
 
     public Media(final int mediaId, final boolean type, final String name, final String originalLanguage, final boolean adult, final Date releaseDate, final String overview,
                  final String backdropPath, final String posterPath, final String trailerLink, final float tmdbRating, final float totalRating, final int voteCount, final String status,
-                 final List<Genre> genres, final List<Provider> providers, boolean watched) {
+                 final List<Genre> genres, final List<Provider> providers, boolean watched, boolean watchlist) {
         this.mediaId = mediaId;
         this.type = type;
         this.name = name;
@@ -123,9 +126,10 @@ public class Media {
         this.genres = genres;
         this.providers = providers;
         this.watched = watched;
+        this.watchlist = watchlist;
     }
 
-    public Media(Media media, boolean watched){
+    public Media(Media media, boolean watched, boolean watchlist){
         this.mediaId = media.mediaId;
         this.type = media.type;
         this.name = media.name;
@@ -143,6 +147,7 @@ public class Media {
         this.genres = media.genres;
         this.providers = media.providers;
         this.watched = watched;
+        this.watchlist = watchlist;
     }
 
     @Override
@@ -242,11 +247,19 @@ public class Media {
         return watched;
     }
 
+    public boolean isWatchlist() {
+        return watchlist;
+    }
+
     public void setProviders(List<Provider> providers) {
         this.providers = providers;
     }
 
     public void setWatched(boolean watched) {
         this.watched = watched;
+    }
+
+    public void setWatchlist(boolean watchlist) {
+        this.watchlist = watchlist;
     }
 }
