@@ -73,6 +73,14 @@
                     <c:forEach var="movie" items="${mediaList}" varStatus="loop">
                         <a href="${pageContext.request.contextPath}/details/${movie.mediaId}" class="poster card text-bg-dark m-1">
                             <div class="card-img-container"> <!-- Add a container for the image -->
+                                <c:choose>
+                                    <c:when test="${movie.watched}">
+                                        <div><i class="bi bi-check-circle-fill" style="color: green"></i></div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div>No la viste</div>
+                                    </c:otherwise>
+                                </c:choose>
                                 <img class="cropCenter" src="${movie.posterPath}" alt="media poster">
                                 <div class="card-img-overlay">
                                     <h6 class="card-title text-center">${movie.name}</h6>
