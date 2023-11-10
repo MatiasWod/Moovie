@@ -187,7 +187,7 @@ public class ListController {
         }
         final ModelAndView mav = new ModelAndView("helloworld/editList");
         int pagesSize = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
-        MoovieListDetails myList = moovieListService.getMoovieListDetails(moovieListId, null, null, "customorder", "asc", pagesSize, pageNumber - 1);
+        MoovieListDetails myList = moovieListService.getMoovieListDetails(moovieListId, null, null, "customOrder", "asc", pagesSize, pageNumber - 1);
         int mediaCountForMoovieList =myList.getCard().getSize();
         int numberOfPages = (int) Math.ceil(mediaCountForMoovieList * 1.0 / pagesSize);
         mav.addObject("pagingSize",pagesSize);
@@ -212,7 +212,7 @@ public class ListController {
         }catch (InvalidAccessToResourceException e){
             return new ModelAndView("helloworld/404").addObject("extrainfo", "Can't modify list that are not your own");
         } catch (Exception e) {
-            return new ModelAndView("helloworld/404");
+            return new ModelAndView("helloworld/404").addObject("extrainfo", "Failed updating order");
         }
     }
 

@@ -344,16 +344,17 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public int countWatchedFeaturedMoovieListContent(int mediaType, int userid, String featuredListOrder) {
-        StringBuilder query = new StringBuilder("SELECT COUNT(*) FROM ( SELECT * FROM media ");
-        query.append(" WHERE mediaid IN(SELECT mediaid FROM media m2 ");
+        StringBuilder query = new StringBuilder("SELECT COUNT(*) FROM ( ");
+        query.append(" SELECT * FROM media WHERE ");
 
         if(mediaType!=MediaTypes.TYPE_ALL.getType()){
-            query.append("WHERE type = :type ");
+            query.append(" type = :type AND ");
         }
 
-        query.append("ORDER BY m2." + featuredListOrder + " DESC LIMIT 100) AND ");
-        query.append(" mediaid IN (SELECT mediaid FROM moovielists ml LEFT JOIN moovielistscontent mlc ON ml.moovielistid = mlc.moovielistid ");
-        query.append(" WHERE ml.name = 'Watched' AND userid = :userid) ) AS totalWatched");
+        query.append("  mediaid IN ( SELECT mediaid FROM ( SELECT m2.mediaid, COUNT(r.rating) AS votecount ");
+        query.append(" FROM media m2 LEFT JOIN reviews r ON m2.mediaid = r.mediaid GROUP BY m2.mediaid ORDER BY votecount DESC LIMIT 100) sq1 ) ");
+        query.append(" AND mediaid IN ( SELECT mlc.mediaid FROM moovielists ml LEFT JOIN moovielistscontent mlc ON ml.moovielistid = mlc.moovielistid ");
+        query.append(" WHERE ml.name = 'Watched' AND userid = :userid )) AS sq2; ");
 
 
         Query q1 = em.createNativeQuery(query.toString()).setParameter("userid", userid);
@@ -443,10 +444,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
         }
     }
 
-    @Override
-    public void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrevPage, int[] currentPage, int[] toNextPage) {
-        executeFunctionScript();
-        // la ejecucion/creacion de la function en base de datos parece funcionar, pero no puedo hacer la ejecucion en Hibernate
+    // la ejecucion/creacion de la function en base de datos parece funcionar, pero no puedo hacer la ejecucion en Hibernate
 //        StoredProcedureQuery storedProcedure = em.createStoredProcedureQuery("updatecustomOrder");
 //        storedProcedure.registerStoredProcedureParameter("mlid", Integer.class, ParameterMode.IN);
 //        storedProcedure.registerStoredProcedureParameter("firstPosition", Integer.class, ParameterMode.IN);
@@ -465,10 +463,15 @@ public class MoovieListHibernateDao implements MoovieListDao{
 //        storedProcedure.execute();
 
 
-//          el principal problema es que Hibernate manda los parametros como 'bytea' segun lee la consola de la ejecucion SQL
+    //          el principal problema es que Hibernate manda los parametros como 'bytea' segun lee la consola de la ejecucion SQL
 //        pero no se puede hacer un CAST de bytea -> integer[] en SQL. Por lo tanto habria que poder setParameter ya casteado al tipo correcto
 //        pero en Java ya son int[] . asi que ni idea ¯\_(ツ)_/¯
-        em.createNativeQuery("CALL updatecustomorder(:mlid, :firstPos, :size, CAST(:prev AS integer[]), CAST(:current AS integer[]), CAST(:next AS integer[]))")
+
+    @Override
+    public void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrevPage, int[] currentPage, int[] toNextPage) {
+        executeFunctionScript();
+
+        em.createNativeQuery("SELECT updatecustomorder(:mlid, :firstPos, :size, :prev::integer[], :current::integer[], :next::integer[])")
                 .setParameter("mlid", moovieListId)
                 .setParameter("firstPos", currentPageNumber * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize() + 1 )
                 .setParameter("size", PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize() )
