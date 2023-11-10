@@ -100,22 +100,35 @@ CREATE TABLE IF NOT EXISTS mediagenres(
 
 --Actors
 CREATE TABLE IF NOT EXISTS actors(
-    mediaId                 INTEGER NOT NULL,
     actorId                 INTEGER NOT NULL,
     actorName               VARCHAR(100) NOT NULL,
-    characterName           VARCHAR(100),
     profilePath             VARCHAR(255),
-    UNIQUE(mediaId,actorId),
-    FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE
+    PRIMARY KEY (actorid)
+);
+
+--MediaActors
+CREATE TABLE IF NOT EXISTS mediaactors (
+    mediaid   INTEGER NOT NULL,
+    actorid INTEGER NOT NULL,
+    charactername VARCHAR(100),
+    PRIMARY KEY(mediaid, actorid),
+    FOREIGN KEY(mediaId)       REFERENCES media(mediaId) ON DELETE CASCADE,
+    FOREIGN KEY(actorid)    REFERENCES actors(actorid) ON DELETE CASCADE
 );
 
 --Creators
 CREATE TABLE IF NOT EXISTS creators(
-    mediaId                            INTEGER NOT NULL,
     creatorId                          INTEGER NOT NULL,
     creatorName                        VARCHAR(100) NOT NULL,
-    UNIQUE(mediaId,creatorId),
-    FOREIGN KEY(mediaId)       REFERENCES media(mediaId) ON DELETE CASCADE
+    PRIMARY KEY (creatorid)
+);
+
+CREATE TABLE IF NOT EXISTS mediacreators (
+    mediaid   INTEGER NOT NULL,
+    creatorid INTEGER NOT NULL,
+    PRIMARY KEY(mediaid, creatorid),
+    FOREIGN KEY(mediaId)       REFERENCES media(mediaId) ON DELETE CASCADE,
+    FOREIGN KEY(creatorid)    REFERENCES creators(creatorid) ON DELETE CASCADE
 );
 
 --Providers

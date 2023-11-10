@@ -356,7 +356,6 @@ public class MoovieListHibernateDao implements MoovieListDao{
         query.append(" AND mediaid IN ( SELECT mlc.mediaid FROM moovielists ml LEFT JOIN moovielistscontent mlc ON ml.moovielistid = mlc.moovielistid ");
         query.append(" WHERE ml.name = 'Watched' AND userid = :userid )) AS sq2; ");
 
-
         Query q1 = em.createNativeQuery(query.toString()).setParameter("userid", userid);
 
         if (mediaType != MediaTypes.TYPE_ALL.getType()) {

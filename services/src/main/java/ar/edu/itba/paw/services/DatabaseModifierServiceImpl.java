@@ -21,4 +21,16 @@ public class DatabaseModifierServiceImpl implements DatabaseModifierService{
     public void updateProviders() {
         dsmDao.updateProviders();
     }
+
+    @Override
+    @Transactional
+    public void updateActors() {
+        dsmDao.updateActors();
+    }
+
+    @Override
+    @Transactional
+    public void updateCreators() {
+        dsmDao.updateCreators();
+    }
 }

@@ -57,6 +57,9 @@ public class UserController {
     @Autowired
     MediaService mediaService;
 
+    @Autowired
+    DatabaseModifierService dmsService;
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
 
@@ -318,5 +321,14 @@ public class UserController {
         return "redirect:" + referer;
     }
 
+    //TODO DELETE AFTER UPDATING
+    /*
+    @RequestMapping(value = "/updateDatabaseSchema")
+    public ModelAndView updateDatabaseSchema() {
+        dmsService.updateActors();
+        dmsService.updateCreators();
+        return new ModelAndView("helloworld/403");
+    }
+    */
 
 }
