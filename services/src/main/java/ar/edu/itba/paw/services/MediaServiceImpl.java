@@ -18,10 +18,13 @@ public class MediaServiceImpl implements MediaService{
     @Autowired
     private MediaDao mediaDao;
 
+    @Autowired
+    private UserService userService;
+
     @Transactional(readOnly = true)
     @Override
     public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber){
-        return mediaDao.getMedia(type, search, participant,  genres, providers, status, lang, orderBy, sortOrder, size, pageNumber);
+        return mediaDao.getMedia(type, search, participant,  genres, providers, status, lang, orderBy, sortOrder, size, pageNumber, userService.tryToGetCurrentUserId());
     }
 
     @Transactional(readOnly = true)

@@ -26,10 +26,16 @@ public class MediaHibernateDao implements MediaDao{
     private static final String moviesQueryParams = " media.mediaId, type, name, originalLanguage, adult, releaseDate, overview, backdropPath, posterPath, trailerLink, tmdbRating, status, runtime, budget, revenue, directorId, director ";
 
     @Override
-    public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber) {
-        StringBuilder sql = new StringBuilder("SELECT m ");
+    public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber, int currentUserId) {
+        StringBuilder sql = new StringBuilder("SELECT new ar.edu.itba.paw.models.Media.Media ( m , ");
         ArrayList<String> argtype = new ArrayList<>();
         ArrayList<Object> args = new ArrayList<>();
+
+        sql.append("(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId WHERE m.mediaId = mlc2.media.mediaId AND wl.name = 'Watched' AND wl.userId = :userid), ");
+        sql.append("(SELECT CASE WHEN COUNT(wl3) > 0 THEN true ELSE false END FROM MoovieList wl3 INNER JOIN MoovieListContent mlc3 ON wl3.moovieListId = mlc3.moovieList.moovieListId WHERE m.mediaId = mlc3.media.mediaId AND wl3.name = 'Watchlist' AND wl3.userId = :userid) ) ");
+        argtype.add("userid");
+        args.add(currentUserId);
+
 
         sql.append("FROM Media m ");
 
@@ -100,27 +106,12 @@ public class MediaHibernateDao implements MediaDao{
             sql.append(" ").append(sortOrder);
         }
 
-        // Pagination
-        /*
-        sql.append(" LIMIT :size OFFSET :page "); // Add LIMIT and OFFSET clauses
-        argtype.add("size");
-        args.add(size);
-        argtype.add("page");
-        args.add(pageNumber * size);
-        */
-
         TypedQuery<Media> query = em.createQuery(sql.toString(), Media.class);
 
         for(int i=0; i<args.size() ; i++){
             query.setParameter(argtype.get(i), args.get(i));
         }
 
-        /*
-        List<Integer> ids = nq.getResultList();
-
-        final TypedQuery<Media> query = em.createQuery("from Media m where m.mediaId in (:ids)", Media.class);
-        query.setParameter("ids", ids);
-        */
 
         return query.setFirstResult(pageNumber * size).setMaxResults(size).getResultList();
     }

@@ -268,7 +268,10 @@ public class MoovieListHibernateDao implements MoovieListDao{
                 "m, " +
                 "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END " +
                 "FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId " +
-                "WHERE mlc.media.mediaId = mlc2.media.mediaId AND wl.name = 'Watched' AND wl.userId = :userid)) " +
+                "WHERE mlc.media.mediaId = mlc2.media.mediaId AND wl.name = 'Watched' AND wl.userId = :userid),  " +
+                "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END " +
+                "FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId " +
+                "WHERE mlc.media.mediaId = mlc2.media.mediaId AND wl.name = 'Watchlist' AND wl.userId = :userid))  " +
                 "FROM MoovieListContent mlc LEFT JOIN Media m ON mlc.media.mediaId = m.mediaId " +
                 "WHERE mlc.moovieList.moovieListId = :moovieListId " +
                 "ORDER BY ";
@@ -316,7 +319,10 @@ public class MoovieListHibernateDao implements MoovieListDao{
                 "m, " +
                 "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END " +
                 "FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId " +
-                "WHERE m.mediaId = mlc2.media.mediaId AND wl.name = 'Watched' AND wl.userId = :userid)) " +
+                "WHERE m.mediaId = mlc2.media.mediaId AND wl.name = 'Watched' AND wl.userId = :userid), " +
+                "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END " +
+                "FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId " +
+                "WHERE m.mediaId = mlc2.media.mediaId AND wl.name = 'Watched' AND wl.userId = :userid))" +
                 "FROM Media m " +
                 "WHERE m.mediaId IN (:medias) ORDER BY ";
 
