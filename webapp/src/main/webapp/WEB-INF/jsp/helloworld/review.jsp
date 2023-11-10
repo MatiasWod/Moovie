@@ -21,7 +21,7 @@
 <body>
 <c:import url="navBar.jsp"/>
 <div class="d-flex justify-content-center">
-    <div class="d-flex flex-column flex-grow-1 m-3">
+    <div class="d-flex flex-column flex-grow-1 m-3" >
         <div class="card">
             <div class="card-body">
                 <div class="d-flex align-self-center">
@@ -97,6 +97,46 @@
                 </c:forEach>
             </div>
             <%--</c:if>--%>
+        </div>
+    </div>
+    <div class="d-flex flex-column m-3" style="max-width: 20vw">
+        <div class="card">
+            <div class="card-body">
+                <a href="${pageContext.request.contextPath}/featuredList/topRatedMovies" class="mb-1 card-title">
+                    <spring:message code="review.recommended"/>
+                </a>
+                <c:forEach var="movie" items="${movieList}" end="5">
+                    <a href="${pageContext.request.contextPath}/details/${movie.mediaId}" class="card text-bg-dark m-1">
+                        <div class="card-img-container">
+                            <img class="cropCenter" src="${movie.posterPath}" alt="media poster">
+                            <div class="card-img-overlay">
+                                <h6 class="card-title text-center">${movie.name}</h6>
+                                <div class="d-flex justify-content-evenly">
+                                    <p class="card-text">
+                                        <i class="bi bi-star-fill"></i>
+                                            ${movie.tmdbRating}
+                                    </p>
+                                    <p class="card-text">
+                                        <fmt:formatDate value="${movie.releaseDate}" pattern="YYYY"/>
+                                    </p>
+                                </div>
+                                <div class="d-flex justify-content-evenly flex-wrap">
+                                    <c:forEach var="genre" items="${movie.genres}" end="1">
+                                        <span class="mt-1 badge text-bg-dark">${fn:replace(genre,"\"" ,"" )}</span>
+                                    </c:forEach>
+                                </div>
+                                <div class="d-flex mt-3 justify-content-evenly flex-wrap">
+                                    <c:forEach var="provider" items="${movie.providers}" end="1">
+                                        <span class="mt-1 badge text-bg-light border border-black">
+                                            <img src="${provider.logoPath}" alt="provider logo" style="height: 1.4em; margin-right: 5px;">
+                                        </span>
+                                    </c:forEach>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </c:forEach>
+            </div>
         </div>
     </div>
 </div>

@@ -295,7 +295,12 @@ public class MediaController {
 
     @RequestMapping("/review/id")
     public ModelAndView review() {
-        return new ModelAndView("helloworld/review");
+        final ModelAndView mav = new ModelAndView("helloworld/review");
+        List<Media> movieList = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
+                null, null, null, null,"tmdbrating", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
+        mav.addObject("movieList", movieList);
+
+        return mav;
     }
 }
 
