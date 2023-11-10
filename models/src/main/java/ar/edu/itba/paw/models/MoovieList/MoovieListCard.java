@@ -16,6 +16,9 @@ public class MoovieListCard {
     @Column(name = "moovielistId")
     private int moovieListId;
 
+    @Column
+    private int userId;
+
     @Column(nullable = false)
     private String name;
 
@@ -54,8 +57,9 @@ public class MoovieListCard {
 
     public MoovieListCard(){}
 
-    public MoovieListCard(int moovieListId, String name, String username, String description, int likeCount, int followerCount, int type, int size, int moviesAmount, String images) {
+    public MoovieListCard(int moovieListId, int userId, String name, String username, String description, int likeCount, int followerCount, int type, int size, int moviesAmount, String images) {
         this.moovieListId = moovieListId;
+        this.userId = userId;
         this.name = name;
         this.type = type;
         this.description = description;
@@ -67,9 +71,10 @@ public class MoovieListCard {
         this.images = images;
     }
 
-    public MoovieListCard(int moovieListId, String name, String username, String description, int likeCount, int followerCount, int type, int size, int moviesAmount,
+    public MoovieListCard(int moovieListId, int userId, String name, String username, String description, int likeCount, int followerCount, int type, int size, int moviesAmount,
                           String images, int currentUserWatchAmount, boolean currentUserHasLiked, boolean currentUserHasFollowed) {
         this.moovieListId = moovieListId;
+        this.userId = userId;
         this.name = name;
         this.type = type;
         this.description = description;
@@ -87,6 +92,10 @@ public class MoovieListCard {
 
     public int getMoovieListId() {
         return moovieListId;
+    }
+
+    public int getUserId() {
+        return userId;
     }
 
     public String getName() {
@@ -146,6 +155,10 @@ public class MoovieListCard {
 
     public void setMoovieListId(int moovieListId) {
         this.moovieListId = moovieListId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public void setName(String name) {

@@ -62,6 +62,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
         Object[] obj = (Object[]) query.getSingleResult();
 
+        //Fill the current user status
         mlc.setUserStatus(((Number)obj[0]).intValue(), (boolean)obj[1], (boolean)obj[2]);
 
         return mlc;
@@ -82,13 +83,12 @@ public class MoovieListHibernateDao implements MoovieListDao{
                 .getResultList();
 
         List<MoovieListCard> cards = new ArrayList<>();
+
+        //Fill the current user status
         for (Object[] result : results) {
             MoovieListCard mlc = (MoovieListCard) result[0];
-            Long currentUserWatchAmount = (Long) result[1];
-            boolean currentUserHasLiked = (boolean) result[2];
-            boolean currentUserHasFollowed = (boolean) result[3];
 
-            mlc.setUserStatus(currentUserWatchAmount.intValue(), currentUserHasLiked, currentUserHasFollowed );
+            mlc.setUserStatus(((Long) result[1]).intValue(),(boolean) result[2], (boolean) result[3] );
 
             cards.add(mlc);
         }
@@ -110,16 +110,13 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
         List<Object[]> results = em.createQuery(jpql)
                 .setParameter("userId", userId).setParameter("currentUserId",currentUserId)
-                .getResultList();
+                .setFirstResult(size*pageNumber).setMaxResults(size).getResultList();
 
+        //Set the current user status
         List<MoovieListCard> cards = new ArrayList<>();
         for (Object[] result : results) {
             MoovieListCard mlc = (MoovieListCard) result[0];
-            Long currentUserWatchAmount = (Long) result[1];
-            boolean currentUserHasLiked = (boolean) result[2];
-            boolean currentUserHasFollowed = (boolean) result[3];
-
-            mlc.setUserStatus(currentUserWatchAmount.intValue(), currentUserHasLiked, currentUserHasFollowed );
+            mlc.setUserStatus(((Long) result[1]).intValue(), (boolean) result[2], (boolean) result[3] );
             cards.add(mlc);
         }
 
@@ -153,38 +150,33 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber, int currentUserId) {
-        StringBuilder jpql = new StringBuilder("SELECT ml.moovieListId ");
 
-        jpql.append(" FROM moovielists ml LEFT JOIN users u ON ml.userid = u.userid LEFT JOIN moovieListsLikes l ON ml.moovieListId = l.moovielistid ");
-        jpql.append(" LEFT JOIN moovielistsfollows mlf ON mlf.moovielistid = ml.moovieListId ");
-        jpql.append(" WHERE type = 1  AND l.userid IN (SELECT userid FROM moovielistslikes WHERE moovielistid = :moovieListId) AND ml.moovieListId <> :moovieListId ");
+        String jpql = "SELECT mlc, " +
+                "(SELECT COUNT(mlc2) FROM MoovieListContent mlc2 INNER JOIN MoovieList ml ON mlc2.moovieListId = ml.moovieListId WHERE mlc2.moovieListId = mlc.id AND ml.name = 'Watched' AND ml.userId = :currentUserId), " +
+                "(SELECT COUNT(mll2) > 0 FROM MoovieListLikes mll2 WHERE mll2.moovieList.id = mlc.id), " +
+                "(SELECT COUNT(mlf2) > 0 FROM MoovieListFollowers mlf2 WHERE mlf2.moovieList.id = mlc.id), " +
+                "COUNT(l) AS totallikes" +
+                " FROM MoovieListCard mlc LEFT JOIN User u ON mlc.userId = u.userId LEFT JOIN MoovieListLikes l ON mlc.moovieListId = l.moovieList.moovieListId " +
+                " LEFT JOIN MoovieListFollowers mlf ON mlf.moovieList.moovieListId = mlc.moovieListId " +
+                " WHERE type = 1  AND l.user.userId IN (SELECT user.userId FROM MoovieListLikes WHERE moovieList.moovieListId = :moovieListId) AND mlc.moovieListId <> :moovieListId " +
+                " GROUP BY mlc.moovieListId, u.userId ORDER BY totallikes ";
 
-        jpql.append(" GROUP BY ml.moovieListId, u.userid ");
 
+        List<Object[]> results = em.createQuery(jpql)
+                .setParameter("moovieListId", moovieListId).setParameter("currentUserId",currentUserId)
+                .setFirstResult(pageNumber * size).setMaxResults(size).getResultList();
 
-        //Aca tira el error de NULL POINTER
-        Query query = em.createNativeQuery(jpql.toString());
+        //Set the current user status
+        List<MoovieListCard> cards = new ArrayList<>();
+        for (Object[] result : results) {
+            MoovieListCard mlc = (MoovieListCard) result[0];
+            mlc.setUserStatus(((Long) result[1]).intValue(), (boolean) result[2], (boolean) result[3] );
+            cards.add(mlc);
+        }
 
-        query.setParameter("moovieListId", moovieListId);
-        query.setFirstResult(pageNumber * size);
-        query.setMaxResults(size);
-
-        List<Integer> ids = query.getResultList();
-
-        final TypedQuery<MoovieListCard> recommended = em.createQuery("from MoovieListCard m where m.moovieListId in (:ids)", MoovieListCard.class);
-        recommended.setParameter("ids", ids);
-
-        List<MoovieListCard> toRet = new ArrayList<>();
-
-        try{
-            List<MoovieListCard> recommendedResultCards = recommended.getResultList() ;
-            for (MoovieListCard mlc : recommendedResultCards ){
-                toRet.add(mlc);
-            }
-        }catch(Exception e){}
-
-        return toRet;
+        return cards;
     }
+
 
     @Override
     public List<MoovieListCard> getMoovieListCards(String search, String ownerUsername, int type, String orderBy, String order, int size, int pageNumber, int currentUserId) {
@@ -192,8 +184,8 @@ public class MoovieListHibernateDao implements MoovieListDao{
                 "(SELECT COUNT(mlc2) FROM MoovieListContent mlc2 INNER JOIN MoovieList ml ON mlc2.moovieListId = ml.moovieListId WHERE mlc2.moovieListId = mlc.id AND ml.name = 'Watched' AND ml.userId = :currentUserId), " +
                 "(SELECT COUNT(mll2) > 0 FROM MoovieListLikes mll2 WHERE mll2.moovieList.id = mlc.id), " + // ACA BORRE LOS  AND mlf.user.id = :userId  me parece que no es por ahi
                 "(SELECT COUNT(mlf2) > 0 FROM MoovieListFollowers mlf2 WHERE mlf2.moovieList.id = mlc.id) " +
-                "FROM MoovieListCard mlc "
-                +"WHERE mlc.type = :type ";
+                "FROM MoovieListCard mlc " +
+                "WHERE mlc.type = :type ";
 
         boolean searchFlag = search != null && !search.isEmpty();
         boolean usernameFlag = ownerUsername != null && !ownerUsername.isEmpty();
@@ -205,6 +197,10 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
         if (usernameFlag){
             jpql += "AND mlc.username = :ownerUsername ";
+        }
+
+        if(orderFlag){
+            jpql += "ORDER BY " + orderBy + " " + order;
         }
 
 
@@ -224,11 +220,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
         List<MoovieListCard> cards = new ArrayList<>();
         for (Object[] result : results) {
             MoovieListCard mlc = (MoovieListCard) result[0];
-            Long currentUserWatchAmount = (Long) result[1];
-            boolean currentUserHasLiked = (boolean) result[2];
-            boolean currentUserHasFollowed = (boolean) result[3];
-
-            mlc.setUserStatus(currentUserWatchAmount.intValue(), currentUserHasLiked, currentUserHasFollowed );
+            mlc.setUserStatus(((Long) result[1]).intValue(), (boolean) result[2], (boolean) result[3] );
             cards.add(mlc);
         }
 
@@ -275,9 +267,8 @@ public class MoovieListHibernateDao implements MoovieListDao{
                 "FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieListId " +
                 "WHERE mlc.mediaId = mlc2.mediaId AND wl.name = 'Watched' AND wl.userId = :userid)) " +
                 "FROM MoovieListContent mlc " +
-                "WHERE mlc.moovieListId = :moovieListId "
-//              +  "ORDER BY mlc." + orderBy + " " + sortOrder;
-                ;
+                "WHERE mlc.moovieListId = :moovieListId " +
+                "ORDER BY mlc." + orderBy + " " + sortOrder;
 
 
         TypedQuery<MoovieListContent> query = em.createQuery(jpql, MoovieListContent.class);
