@@ -1,61 +1,48 @@
 package ar.edu.itba.paw.models.TV;
 
+import ar.edu.itba.paw.models.Media.Media;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "creators")
 public class TVCreators {
+    @Id
+    private int creatorId;
 
-    @EmbeddedId
-    private TVCreatorId id;
-
-    @Column(name = "creatorName")
+    @Column(length = 100, nullable = false)
     private String creatorName;
 
+
+    @ManyToMany
+    @JoinTable(
+            name = "mediacreators",
+            joinColumns = @JoinColumn(name = "creatorId"),
+            inverseJoinColumns = @JoinColumn(name = "mediaId")
+    )
+    private List<Media> medias;
+
+    /* Just for Hibernate*/
     TVCreators(){
 
     }
 
-    public TVCreators(final int mediaId, final int creatorId, final String creatorName) {
-        this.id = new TVCreatorId(mediaId,creatorId);
+    public TVCreators(int creatorId, String creatorName) {
+        this.creatorId = creatorId;
         this.creatorName = creatorName;
     }
 
-    public TVCreatorId getId() {
-        return id;
+    public int getCreatorId() {
+        return creatorId;
     }
 
     public String getCreatorName() {
         return creatorName;
     }
 
-}
-
-@Embeddable
-class TVCreatorId implements Serializable {
-
-    @Column(name = "mediaId")
-    private int mediaId;
-
-
-    @Column(name = "creatorId")
-    private int creatorId;
-
-    TVCreatorId(){
-
-    }
-
-    public TVCreatorId(final int mediaId, final int creatorId){
-        this.mediaId = mediaId;
-        this.creatorId = creatorId;
-    }
-
-    public int getMediaId() {
-        return mediaId;
-    }
-
-    public int getCreatorId() {
-        return creatorId;
+    public List<Media> getMedias() {
+        return medias;
     }
 }

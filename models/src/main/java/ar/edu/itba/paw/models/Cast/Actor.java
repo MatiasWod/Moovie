@@ -1,77 +1,67 @@
 package ar.edu.itba.paw.models.Cast;
 
+import ar.edu.itba.paw.models.Media.Media;
+
 import javax.persistence.*;
-import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "actors")
 public class Actor {
-    @EmbeddedId
-    private ActorId id;
 
-    @Column(length = 100, name = "actorName")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "actorId")
+    private Long actorId;
+
+    @Column(name = "actorName", nullable = false)
     private String actorName;
 
-    @Column(length = 100, name = "characterName")
-    private String characterName;
-
-    @Column(length = 100, name = "profilePath")
+    @Column(name = "profilePath")
     private String profilePath;
 
 
+    @ManyToMany
+    @JoinTable(
+            name = "mediaactors",
+            joinColumns = @JoinColumn(name = "actorId"),
+            inverseJoinColumns = @JoinColumn(name = "mediaId")
+    )
+    private List<Media> medias;
 
-    /* Just for Hibernate*/
-    Actor() {
+    @Transient
+    private String characterName;
 
-    }
-
-    public Actor(final int mediaId, final int actorId, final String actorName, final String characterName, final String profilePath) {
-        this.id = new ActorId(mediaId,actorId);
+    public Actor(Long actorId, String actorName, String profilePath, String characterName) {
+        this.actorId = actorId;
         this.actorName = actorName;
-        this.characterName = characterName;
         this.profilePath = profilePath;
+        this.characterName = characterName;
     }
 
-    public ActorId getId() {
-        return id;
+    public Actor(Actor actor, String characterName) {
+        this.actorId = actor.actorId;
+        this.actorName = actor.actorName;
+        this.profilePath = actor.profilePath;
+        this.characterName = characterName;
+    }
+
+    public Actor(){}
+
+    public Long getActorId() {
+        return actorId;
     }
 
     public String getActorName() {
         return actorName;
     }
 
-    public String getCharacterName() {
-        return characterName;
-    }
-
     public String getProfilePath() {
         return profilePath;
     }
-}
 
-@Embeddable
-class ActorId implements Serializable{
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "mediaId")
-    private int mediaId;
-
-    @Column(name = "actorId")
-    private int actorId;
-
-    ActorId(){
-
-    }
-
-    public ActorId(final int mediaId, final int actorId){
-        this.actorId = actorId;
-        this.mediaId = mediaId;
-    }
-
-    public int getMediaId() {
-        return mediaId;
-    }
-
-    public int getActorId() {
-        return actorId;
+    public String getCharacterName() {
+        return characterName;
     }
 }
+

@@ -21,8 +21,8 @@ public class Provider {
 
     @ManyToMany
     @JoinTable(
-            name = "mediaproviders",
-            joinColumns = @JoinColumn(name = "providerId"),
+            name = "mediacreators",
+            joinColumns = @JoinColumn(name = "creatorId"),
             inverseJoinColumns = @JoinColumn(name = "mediaId")
     )
     private List<Media> medias;

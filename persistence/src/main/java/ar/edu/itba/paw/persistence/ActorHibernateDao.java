@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Cast.Actor;
+import ar.edu.itba.paw.models.Provider.Provider;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
@@ -18,8 +19,10 @@ public class ActorHibernateDao implements ActorDao{
 
     @Override
     public List<Actor> getAllActorsForMedia(int mediaId) {
-        return em.createQuery("SELECT DISTINCT a FROM Actor a WHERE a.id.mediaId = :mediaId", Actor.class)
+        return em.createQuery("SELECT new Actor( a , (SELECT ma.characterName FROM MediaActors ma WHERE ma.media.mediaId = :mediaId AND ma.actor.actorId = a.actorId ) ) " +
+                        " FROM MediaActors ma LEFT JOIN ma.actor a WHERE ma.media.mediaId = :mediaId", Actor.class)
                 .setParameter("mediaId", mediaId)
                 .getResultList();
     }
+
 }
