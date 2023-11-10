@@ -225,7 +225,7 @@ public class DatabaseSchemaModifier implements DatabaseSchemaModifierDao{
         jdbcTemplate = new JdbcTemplate(dataSource);
         MediaProvidersJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("mediaproviders");
         MediaCreatorsJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("mediacreators");
-        MediaActorsJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("mediactors");
+        MediaActorsJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("mediaactors");
         MediaGenresJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("mediagenres");
         GenresJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("genres");
     }
