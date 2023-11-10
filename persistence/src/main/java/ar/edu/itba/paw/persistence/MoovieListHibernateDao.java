@@ -311,7 +311,14 @@ public class MoovieListHibernateDao implements MoovieListDao{
                 "WHERE mlc.mediaId = mlc2.mediaId AND wl.name = 'Watched' AND wl.userId = :userid)) " +
                 "FROM MoovieListContent mlc " +
                 "WHERE mlc.mediaId IN (:medias) " +
-                "ORDER BY mlc." + orderBy + " " + sortOrder;
+                "ORDER BY mlc.";
+
+
+        if(orderBy !=null && sortOrder != null) {
+            jpql +=  orderBy + " " + sortOrder;
+        }else{
+            jpql += featuredListOrder + " " + "DESC";
+        }
 
 
         TypedQuery<MoovieListContent> query = em.createQuery(jpql, MoovieListContent.class);
