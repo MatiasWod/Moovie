@@ -4,6 +4,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
 import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
+import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.PagingSizes;
@@ -227,7 +228,7 @@ public class ListController {
         final ModelAndView mav = new ModelAndView("helloworld/moovieList");
         int pagesSize= PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
         MoovieListCard moovieListCard;
-        List<MoovieListContent> moovieListContentList;
+        List<Media> moovieListContentList;
         Optional<FeaturedMoovieListEnum> topRatedMoovieLists = FeaturedMoovieListEnum.fromString(list);
         if(topRatedMoovieLists.isPresent()){
             moovieListCard = moovieListService.getMoovieListCards(topRatedMoovieLists.get().getName(),"Moovie",MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PUBLIC.getType(),null,null,

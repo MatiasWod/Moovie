@@ -74,7 +74,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
     @Override
     public List<MoovieListCard> getLikedMoovieListCards(int userId, int type, int size, int pageNumber, int currentUserId) {
         String jpql = "SELECT mlc, " +
-                "(SELECT COUNT(mlc2) FROM MoovieListContent mlc2 INNER JOIN MoovieList ml ON mlc2.moovieListId = ml.moovieListId WHERE mlc2.moovieListId = mlc.id AND ml.name = 'Watched' AND ml.userId = :currentUserId), " +
+                "(SELECT COUNT(mlc2) FROM MoovieListContent mlc2 INNER JOIN MoovieList ml ON mlc2.moovieList.moovieListId = ml.moovieListId WHERE mlc2.moovieList.moovieListId = mlc.id AND ml.name = 'Watched' AND ml.userId = :currentUserId), " +
                 "(SELECT COUNT(mll2) > 0 FROM MoovieListLikes mll2 WHERE mll2.moovieList.id = mlc.id), " + // ACA BORRE LOS  AND mlf.user.id = :userId  me parece que no es por ahi
                 "(SELECT COUNT(mlf2) > 0 FROM MoovieListFollowers mlf2 WHERE mlf2.moovieList.id = mlc.id) " +
                 "FROM MoovieListCard mlc JOIN MoovieListLikes mll " +
@@ -155,7 +155,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
     public List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber, int currentUserId) {
 
         String jpql = "SELECT mlc, " +
-                "(SELECT COUNT(mlc2) FROM MoovieListContent mlc2 INNER JOIN MoovieList ml ON mlc2.moovieListId = ml.moovieListId WHERE mlc2.moovieListId = mlc.id AND ml.name = 'Watched' AND ml.userId = :currentUserId), " +
+                "(SELECT COUNT(mlc2) FROM MoovieListContent mlc2 INNER JOIN MoovieList ml ON mlc2.moovieList.moovieListId = ml.moovieListId WHERE mlc2.moovieList.moovieListId = mlc.id AND ml.name = 'Watched' AND ml.userId = :currentUserId), " +
                 "(SELECT COUNT(mll2) > 0 FROM MoovieListLikes mll2 WHERE mll2.moovieList.id = mlc.id), " +
                 "(SELECT COUNT(mlf2) > 0 FROM MoovieListFollowers mlf2 WHERE mlf2.moovieList.id = mlc.id), " +
                 "COUNT(l) AS totallikes" +
@@ -184,7 +184,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
     @Override
     public List<MoovieListCard> getMoovieListCards(String search, String ownerUsername, int type, String orderBy, String order, int size, int pageNumber, int currentUserId) {
         String jpql = "SELECT mlc, " +
-                "(SELECT COUNT(mlc2) FROM MoovieListContent mlc2 INNER JOIN MoovieList ml ON mlc2.moovieListId = ml.moovieListId WHERE mlc2.moovieListId = mlc.id AND ml.name = 'Watched' AND ml.userId = :currentUserId), " +
+                "(SELECT COUNT(mlc2) FROM MoovieListContent mlc2 INNER JOIN MoovieList ml ON mlc2.moovieList.moovieListId = ml.moovieListId WHERE mlc2.moovieList.moovieListId = mlc.id AND ml.name = 'Watched' AND ml.userId = :currentUserId), " +
                 "(SELECT COUNT(mll2) > 0 FROM MoovieListLikes mll2 WHERE mll2.moovieList.id = mlc.id), " + // ACA BORRE LOS  AND mlf.user.id = :userId  me parece que no es por ahi
                 "(SELECT COUNT(mlf2) > 0 FROM MoovieListFollowers mlf2 WHERE mlf2.moovieList.id = mlc.id) " +
                 "FROM MoovieListCard mlc " +
@@ -262,19 +262,25 @@ public class MoovieListHibernateDao implements MoovieListDao{
     }
 
     @Override
-    public List<MoovieListContent> getMoovieListContent(int moovieListId, int userid, String orderBy, String sortOrder, int size, int pageNumber) {
+    public List<Media> getMoovieListContent(int moovieListId, int userid, String orderBy, String sortOrder, int size, int pageNumber) {
 
-        String jpql = "SELECT new ar.edu.itba.paw.models.MoovieList.MoovieListContent(" +
-                "mlc, " +
+        String jpql = "SELECT new ar.edu.itba.paw.models.Media.Media(" +
+                "m, " +
                 "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END " +
-                "FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieListId " +
-                "WHERE mlc.mediaId = mlc2.mediaId AND wl.name = 'Watched' AND wl.userId = :userid)) " +
-                "FROM MoovieListContent mlc " +
-                "WHERE mlc.moovieListId = :moovieListId " +
-                "ORDER BY mlc." + orderBy + " " + sortOrder;
+                "FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId " +
+                "WHERE mlc.media.mediaId = mlc2.media.mediaId AND wl.name = 'Watched' AND wl.userId = :userid)) " +
+                "FROM MoovieListContent mlc LEFT JOIN Media m ON mlc.media.mediaId = m.mediaId " +
+                "WHERE mlc.moovieList.moovieListId = :moovieListId " +
+                "ORDER BY ";
+
+        if(orderBy.equals("customOrder")){
+            jpql += " mlc." + orderBy + " " + sortOrder;
+        } else{
+            jpql += " m." + orderBy + " " + sortOrder;
+        }
 
 
-        TypedQuery<MoovieListContent> query = em.createQuery(jpql, MoovieListContent.class);
+        TypedQuery<Media> query = em.createQuery(jpql, Media.class);
         query.setParameter("moovieListId", moovieListId);
         query.setParameter("userid", userid);
         query.setFirstResult(pageNumber * size);
@@ -284,7 +290,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
 
     @Override
-    public List<MoovieListContent> getFeaturedMoovieListContent( int mediaType, int userid, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
+    public List<Media> getFeaturedMoovieListContent( int mediaType, int userid, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
         StringBuilder firstQuery = new StringBuilder("SELECT m.mediaId FROM Media m ");
 
         if (mediaType != MediaTypes.TYPE_ALL.getType()) {
@@ -304,24 +310,24 @@ public class MoovieListHibernateDao implements MoovieListDao{
                 .setMaxResults(100).getResultList();
 
 
-        String jpql = "SELECT new ar.edu.itba.paw.models.MoovieList.MoovieListContent(" +
-                "mlc, " +
+        //Two queryes are needed in order to make a LIMIT 25 inside the LIMI 100
+
+        String jpql = "SELECT new ar.edu.itba.paw.models.Media.Media(" +
+                "m, " +
                 "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END " +
-                "FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieListId " +
-                "WHERE mlc.mediaId = mlc2.mediaId AND wl.name = 'Watched' AND wl.userId = :userid)) " +
-                "FROM MoovieListContent mlc " +
-                "WHERE mlc.mediaId IN (:medias) " +
-                "ORDER BY mlc.";
+                "FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId " +
+                "WHERE m.mediaId = mlc2.media.mediaId AND wl.name = 'Watched' AND wl.userId = :userid)) " +
+                "FROM Media m " +
+                "WHERE m.mediaId IN (:medias) ORDER BY ";
 
-
-        if(orderBy !=null && sortOrder != null) {
-            jpql +=  orderBy + " " + sortOrder;
-        }else{
-            jpql += featuredListOrder + " " + "DESC";
+        if((orderBy!=null && sortOrder != null) && !orderBy.equals("customOrder") ){
+            jpql += " m." + orderBy + " " + sortOrder;
+        } else{
+            jpql += " m." + featuredListOrder + " " + "DESC";
         }
 
 
-        TypedQuery<MoovieListContent> query = em.createQuery(jpql, MoovieListContent.class);
+        TypedQuery<Media> query = em.createQuery(jpql, Media.class);
         query.setParameter("medias", medias).setParameter("userid", userid)
                 .setFirstResult(pageNumber * size).setMaxResults(size);
         return query.getResultList();
@@ -374,7 +380,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
     public MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList) {
         MoovieList updatedMoovieList = em.find(MoovieList.class, moovieListid);
         if (updatedMoovieList != null) {
-            Integer maxCustomOrder = (Integer) em.createQuery("SELECT MAX(mlc.customOrder) FROM MoovieListContent mlc WHERE mlc.moovieListId = :moovieListId")
+            Integer maxCustomOrder = (Integer) em.createQuery("SELECT MAX(mlc.customOrder) FROM MoovieListContent mlc WHERE mlc.moovieList.moovieListId = :moovieListId")
                     .setParameter("moovieListId", moovieListid)
                     .getSingleResult();
 
@@ -398,7 +404,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public void deleteMediaFromMoovieList(int moovieListId, int mediaId) {
-        MoovieListContent toRemove = em.createQuery("SELECT mlc FROM MoovieListContent mlc WHERE mlc.moovieListId = :moovieListId AND mlc.mediaId = :mediaId", MoovieListContent.class).setParameter("moovieListId", moovieListId).setParameter("mediaId",mediaId).getSingleResult();
+        MoovieListContent toRemove = em.createQuery("SELECT mlc FROM MoovieListContent mlc WHERE mlc.moovieList.moovieListId = :moovieListId AND mlc.media.mediaId = :mediaId", MoovieListContent.class).setParameter("moovieListId", moovieListId).setParameter("mediaId",mediaId).getSingleResult();
         if (toRemove != null){
             em.remove(toRemove);
         }

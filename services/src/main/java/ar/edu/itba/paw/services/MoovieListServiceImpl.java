@@ -3,6 +3,7 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
 import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.exceptions.UserNotLoggedException;
+import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.User.User;
@@ -73,7 +74,7 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<MoovieListContent> getMoovieListContent(int moovieListId, String orderBy,String sortOrder, int size, int pageNumber) {
+    public List<Media> getMoovieListContent(int moovieListId, String orderBy, String sortOrder, int size, int pageNumber) {
         MoovieList ml = getMoovieListById(moovieListId);
         //If the previous didnt throw exception, we have the permissions needed to perform the next action
         try{
@@ -86,7 +87,7 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<MoovieListContent> getFeaturedMoovieListContent( int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
+    public List<Media> getFeaturedMoovieListContent( int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
         int userId = userService.tryToGetCurrentUserId();
         return moovieListDao.getFeaturedMoovieListContent(mediaType, userId, featuredListOrder, orderBy,sortOrder ,size, pageNumber);
     }
@@ -161,7 +162,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public MoovieListDetails getMoovieListDetails(int moovieListId, String name, String ownerUsername, String orderBy, String sortOrder, int size, int pageNumber) {
         MoovieListCard card = null;
-        List<MoovieListContent> content = null;
+        List<Media> content = null;
 
         int currentUserId = userService.tryToGetCurrentUserId();
 

@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "media")
@@ -19,7 +20,6 @@ public class Media {
     @SequenceGenerator(sequenceName = "media_mediaid_seq", name = "media_mediaid_seq", allocationSize = 1)
     @Column(name = "mediaId")
     private int mediaId;
-
 
     @Column(nullable = false)
     private boolean type;
@@ -72,9 +72,9 @@ public class Media {
             inverseJoinColumns = @JoinColumn(name = "genreId"))
     private List<Genre> genres = new ArrayList<>();
 
-    public void setProviders(List<Provider> providers) {
-        this.providers = providers;
-    }
+    @Transient
+    private boolean watched;
+
 
 
     /* Just for Hibernate*/
@@ -101,6 +101,65 @@ public class Media {
         this.status = status;
         this.genres = genres;
         this.providers = providers;
+    }
+
+    public Media(final int mediaId, final boolean type, final String name, final String originalLanguage, final boolean adult, final Date releaseDate, final String overview,
+                 final String backdropPath, final String posterPath, final String trailerLink, final float tmdbRating, final float totalRating, final int voteCount, final String status,
+                 final List<Genre> genres, final List<Provider> providers, boolean watched) {
+        this.mediaId = mediaId;
+        this.type = type;
+        this.name = name;
+        this.originalLanguage = originalLanguage;
+        this.adult = adult;
+        this.releaseDate = releaseDate;
+        this.overview = overview;
+        this.backdropPath = backdropPath;
+        this.posterPath = posterPath;
+        this.trailerLink = trailerLink;
+        this.tmdbRating = tmdbRating/2;
+        this.totalRating = totalRating;
+        this.voteCount = voteCount;
+        this.status = status;
+        this.genres = genres;
+        this.providers = providers;
+        this.watched = watched;
+    }
+
+    public Media(Media media, boolean watched){
+        this.mediaId = media.mediaId;
+        this.type = media.type;
+        this.name = media.name;
+        this.originalLanguage = media.originalLanguage;
+        this.adult = media.adult;
+        this.releaseDate = media.releaseDate;
+        this.overview = media.overview;
+        this.backdropPath = media.backdropPath;
+        this.posterPath = media.posterPath;
+        this.trailerLink = media.trailerLink;
+        this.tmdbRating = media.tmdbRating/2;
+        this.totalRating = media.totalRating;
+        this.voteCount = media.voteCount;
+        this.status = media.status;
+        this.genres = media.genres;
+        this.providers = media.providers;
+        this.watched = watched;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Media that = (Media) obj;
+        return mediaId == that.mediaId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mediaId);
     }
 
     public int getMediaId() {
@@ -179,4 +238,15 @@ public class Media {
         return providers;
     }
 
+    public boolean isWatched() {
+        return watched;
+    }
+
+    public void setProviders(List<Provider> providers) {
+        this.providers = providers;
+    }
+
+    public void setWatched(boolean watched) {
+        this.watched = watched;
+    }
 }

@@ -43,7 +43,7 @@ public class MoovieListCard {
     @Formula("(SELECT COUNT(*) FROM moovielistsContent mlc INNER JOIN media m ON mlc.mediaid = m.mediaid WHERE m.type = false AND mlc.moovieListid = moovieListId)")
     private int moviesAmount;
 
-    @Formula("( SELECT ARRAY_AGG(m.posterPath) FROM moovielistscontent mlc INNER JOIN media m ON mlc.mediaId = m.mediaId WHERE mlc.moovielistId = moovieListId LIMIT 4 )")
+    @Formula("( SELECT ARRAY_AGG(m.posterPath) FROM moovielistscontent mlc INNER JOIN media m ON mlc.mediaId = m.mediaId WHERE mlc.moovielistId = moovieListId )")
     private String images;
 
     @Transient
@@ -89,7 +89,6 @@ public class MoovieListCard {
         this.currentUserHasFollowed = currentUserHasFollowed;
     }
 
-
     public int getMoovieListId() {
         return moovieListId;
     }
@@ -131,6 +130,20 @@ public class MoovieListCard {
     }
 
     public List<String> getImages() {
+        List<String> toRet = new ArrayList<>();
+        if(this.images!=null){
+            String[] aux = this.images.replaceAll("[{}]","").split(",");
+            toRet = new ArrayList<>(Arrays.asList(aux));
+            if (toRet.size() > 4) {
+                toRet = toRet.subList(0, 4);
+            }
+        }else{
+            toRet = new ArrayList<>();
+        }
+        return toRet;
+    }
+
+    public List<String> getAllImages(){
         List<String> toRet = new ArrayList<>();
         if(this.images!=null){
             String[] aux = this.images.replaceAll("[{}]","").split(",");
