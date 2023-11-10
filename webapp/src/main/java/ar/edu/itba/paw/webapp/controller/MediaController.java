@@ -292,5 +292,10 @@ public class MediaController {
         }
         return new ModelAndView("redirect:/details/" + mediaId);
     }
+
+    @RequestMapping("/review/id")
+    public ModelAndView review() {
+        return new ModelAndView("helloworld/review");
+    }
 }
 

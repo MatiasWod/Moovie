@@ -477,13 +477,16 @@
                                 </div>
                                     <%--<c:if test="${review.hasComments}">--%>
                                 <a class="ms-1" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                                    View Comments (review.commentsCount)
+                                    <spring:message code="details.comment"/> (review.commentsCount)
                                 </a>
                                 <div class="collapse" id="collapseExample">
+                                    <div class="input-group mt-2">
+                                        <textarea class="form-control" placeholder="<spring:message code="details.addComment"/>" aria-label="With textarea"></textarea>
+                                    </div>
                                     <c:forEach begin="1" end="5">
                                         <div class="mb-2 mt-2 card card-body">
                                             <div class="d-flex justify-content-between">
-                                                <h5 class="card-title">Username (agregar href)</h5>
+                                                <h6 class="card-title">Username (agregar href)</h6>
                                                 <div class="d-flex">
                                                     <a class="me-1 btn-sm btn btn-outline-success">
                                                         <i class="m-1 bi bi-hand-thumbs-up"></i>
@@ -494,11 +497,12 @@
                                                 </div>
                                             </div>
                                             <p class="card-text">Comment Commetn Commetn</p>
-
                                         </div>
                                     </c:forEach>
                                         <%--<c:if test="${comments > 5}">--%>
-                                    <a class="ms-1" href="/review/id">See more</a>
+                                    <a class="ms-1" href="${pageContext.request.contextPath}/review/id">
+                                        <spring:message code="details.seeMore"/>
+                                    </a>
                                         <%--</c:if>--%>
                                 </div>
                                     <%--</c:if>--%>
