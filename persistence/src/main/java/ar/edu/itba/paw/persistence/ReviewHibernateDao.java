@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
+import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Review.Review;
 import org.hibernate.SQLQuery;
 import org.springframework.context.annotation.Primary;
@@ -97,13 +98,25 @@ public class ReviewHibernateDao implements ReviewDao {
 
     @Override
     public void createReview(int userId, int mediaId, int rating, String reviewContent) {
-        Review review = new Review(userId, mediaId, rating, reviewContent);
-        em.persist(review);
+        try {
+            Review review = new Review(userId, mediaId, rating, reviewContent);
+            em.persist(review);
+        } catch (Exception e) {
+            throw new UnableToInsertIntoDatabase("An error occurred while creating the review.", e);
+        }
     }
 
     @Override
     public void editReview(int userId, int mediaId, int rating, String reviewContent) {
-        return;
+        Review review = em.createQuery("SELECT r FROM Review r WHERE r.userId = :userId AND r.mediaId = :mediaId", Review.class)
+                .setParameter("userId", userId)
+                .setParameter("mediaId", mediaId)
+                .getSingleResult();
+        if(review != null) {
+            review.setRating(rating);
+            review.setReviewContent(reviewContent);
+            em.merge(review);
+        }
     }
 
     @Override
@@ -128,5 +141,4 @@ public class ReviewHibernateDao implements ReviewDao {
         query.setParameter("reviewId", reviewId);
         query.executeUpdate();
     }
-
 }
