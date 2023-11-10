@@ -7,6 +7,7 @@ import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.User.User;
+import com.sun.javafx.image.IntPixelGetter;
 import com.sun.org.apache.bcel.internal.generic.RETURN;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.Transformers;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.FileCopyUtils;
 
 import org.springframework.core.io.Resource;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
 import javax.persistence.*;
 import java.awt.*;
 import java.lang.reflect.Type;
@@ -282,7 +285,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public List<MoovieListContent> getFeaturedMoovieListContent(int moovieListId, int mediaType, int userid, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
-        StringBuilder firstQuery = new StringBuilder("FROM Media m ");
+        StringBuilder firstQuery = new StringBuilder("SELECT m.mediaId FROM Media m ");
 
         if (mediaType != MediaTypes.TYPE_ALL.getType()) {
             firstQuery.append(" WHERE m.type = :type ");
@@ -290,22 +293,31 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
         firstQuery.append(" ORDER BY m.").append(featuredListOrder).append(" DESC");
 
-        TypedQuery<Media> q1 = em.createQuery(firstQuery.toString(), Media.class);
+        TypedQuery<Integer> q1 = em.createQuery(firstQuery.toString(), Integer.class);
 
         if (mediaType != MediaTypes.TYPE_ALL.getType()) {
             q1 = q1.setParameter("type", mediaType==1 );
         }
 
 
-        List<Media> medias = q1.setFirstResult(size*pageNumber)
-                .setMaxResults(size).getResultList();
+        List<Integer> medias = q1.setFirstResult(size*pageNumber)
+                .setMaxResults(100).getResultList();
 
-        List<MoovieListContent> toRet = new ArrayList<>();
 
-        for (Media med : medias) {
-            toRet.add(new MoovieListContent(med, -1, -1,false));
-        }
-        return toRet;
+        String jpql = "SELECT new ar.edu.itba.paw.models.MoovieList.MoovieListContent(" +
+                "mlc, " +
+                "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END " +
+                "FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieListId " +
+                "WHERE mlc.mediaId = mlc2.mediaId AND wl.name = 'Watched' AND wl.userId = :userid)) " +
+                "FROM MoovieListContent mlc " +
+                "WHERE mlc.mediaId IN (:medias) " +
+                "ORDER BY mlc." + orderBy + " " + sortOrder;
+
+
+        TypedQuery<MoovieListContent> query = em.createQuery(jpql, MoovieListContent.class);
+        query.setParameter("medias", medias).setParameter("userid", userid)
+                .setFirstResult(pageNumber * size).setMaxResults(size);
+        return query.getResultList();
     }
 
 

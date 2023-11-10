@@ -100,27 +100,12 @@ public class MediaHibernateDao implements MediaDao{
             sql.append(" ").append(sortOrder);
         }
 
-        // Pagination
-        /*
-        sql.append(" LIMIT :size OFFSET :page "); // Add LIMIT and OFFSET clauses
-        argtype.add("size");
-        args.add(size);
-        argtype.add("page");
-        args.add(pageNumber * size);
-        */
 
         TypedQuery<Media> query = em.createQuery(sql.toString(), Media.class);
 
         for(int i=0; i<args.size() ; i++){
             query.setParameter(argtype.get(i), args.get(i));
         }
-
-        /*
-        List<Integer> ids = nq.getResultList();
-
-        final TypedQuery<Media> query = em.createQuery("from Media m where m.mediaId in (:ids)", Media.class);
-        query.setParameter("ids", ids);
-        */
 
         return query.setFirstResult(pageNumber * size).setMaxResults(size).getResultList();
     }
@@ -142,14 +127,6 @@ public class MediaHibernateDao implements MediaDao{
 
     @Override
     public Optional<Movie> getMovieById(int mediaId) {
-//        final Query baseQuery = em.createNativeQuery("SELECT " + moviesQueryParams +
-//                ",(SELECT ARRAY_AGG(g.genre) FROM genres g WHERE g.mediaId = media.mediaId) AS genres, "
-//                + "(SELECT ARRAY_AGG(p) FROM providers p WHERE p.mediaId = media.mediaId) AS providers, "
-//                + "AVG(rating) AS totalrating, COUNT(rating) AS votecount  "
-//                + "FROM Media media LEFT JOIN Reviews r ON media.mediaId = r.mediaId WHERE media.mediaId = :mediaId "
-//                + "GROUP BY media.mediaId, "
-//                + moviesQueryParams).setParameter("mediaId",mediaId);
-//        Movie movie= (Movie) baseQuery.getSingleResult();
         final Movie aux = em.createQuery("SELECT m FROM Movie m WHERE m.mediaId = :mediaId", Movie.class)
                 .setParameter("mediaId",mediaId)
                 .getSingleResult();
