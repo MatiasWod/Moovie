@@ -214,11 +214,11 @@ public class MoovieListHibernateDao implements MoovieListDao{
         boolean orderFlag = order != null && !order.isEmpty();
 
         if (searchFlag) {
-            jpql += "AND mlc.name LIKE :search ";
+            jpql += "AND LOWER(mlc.name) LIKE :search ";
         }
 
         if (usernameFlag){
-            jpql += "AND mlc.username = :ownerUsername ";
+            jpql += "AND LOWER(mlc.username) = :ownerUsername ";
         }
 
         if(orderFlag){
@@ -231,10 +231,10 @@ public class MoovieListHibernateDao implements MoovieListDao{
                 .setParameter("type", type);
 
         if (searchFlag){
-            query.setParameter("search", "%"+search+"%");
+            query.setParameter("search", "%"+search.toLowerCase()+"%");
         }
         if (usernameFlag){
-            query.setParameter("ownerUsername", ownerUsername);
+            query.setParameter("ownerUsername", ownerUsername.toLowerCase());
         }
 
         List<Object[]> results = query.setFirstResult(pageNumber*size).setMaxResults(size).getResultList();
@@ -259,20 +259,20 @@ public class MoovieListHibernateDao implements MoovieListDao{
         boolean usernameFlag = ownerUsername != null && !ownerUsername.isEmpty();
 
         if (searchFlag) {
-            jpql += "AND mlc.name LIKE :search ";
+            jpql += "AND LOWER(mlc.name) LIKE :search ";
         }
 
         if (usernameFlag){
-            jpql += "AND mlc.username = :ownerUsername ";
+            jpql += "AND LOWER(mlc.username) = :ownerUsername ";
         }
         Query query = em.createQuery(jpql)
                 .setParameter("type", type);
 
         if (searchFlag){
-            query.setParameter("search", "%"+search+"%");
+            query.setParameter("search", "%"+search.toLowerCase()+"%");
         }
         if (usernameFlag){
-            query.setParameter("ownerUsername", ownerUsername);
+            query.setParameter("ownerUsername", ownerUsername.toLowerCase());
         }
 
         Long toReturn = (Long) query.getSingleResult();

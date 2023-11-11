@@ -121,17 +121,19 @@ public class MediaController {
             return mav;
         }
 
+        int resultSizeLimit = 6;
+
         // Name media query
         if (nameMediaCount > 0){
             mav.addObject("nameMediaFlag", true);
-            mav.addObject("nameMedia", mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null, null, null, null, null,"tmdbRating", "desc",PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),0 ));
+            mav.addObject("nameMedia", mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null, null, null, null, null,"tmdbRating", "desc",resultSizeLimit,0 ));
         }else{
             mav.addObject("nameMediaFlag",false);
         }
         // Credited media query
         if (creditMediaCount > 0){
             mav.addObject("creditMediaFlag", true);
-            mav.addObject("creditMedia", mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null, query, null, null,null,null, "tmdbRating", "desc",PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),0 ));
+            mav.addObject("creditMedia", mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null, query, null, null,null,null, "tmdbRating", "desc",resultSizeLimit,0 ));
         }else{
             mav.addObject("creditMediaFlag",false);
         }
@@ -147,7 +149,7 @@ public class MediaController {
         // Moovielist query
         if(moovieListCount > 0){
             mav.addObject("moovieListFlag",true);
-            mav.addObject("moovieListsList",moovieListService.getMoovieListCards(query,null,MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),null,null, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(), 0));
+            mav.addObject("moovieListsList",moovieListService.getMoovieListCards(query,null,MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),null,null, resultSizeLimit, 0));
         }
         else {
             mav.addObject("moovieListFlag",false);
