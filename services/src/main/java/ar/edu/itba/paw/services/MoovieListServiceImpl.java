@@ -157,6 +157,10 @@ public class MoovieListServiceImpl implements MoovieListService{
         return null;
     }
 
+    @Override
+    public List<Media> getRecommendedMediaToAdd(int moovieListId, int size) {
+        return moovieListDao.getRecommendedMediaToAdd(moovieListId, size);
+    }
 
     @Transactional(readOnly = true)
     @Override

@@ -23,6 +23,7 @@ public interface MoovieListDao {
     int getFollowedMoovieListCardsCount(int userId, int type);
 
     List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber, int currentUserId);
+    List<Media> getRecommendedMediaToAdd(int moovieListId, int size);
 
     List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , String orderBy, String order, int size, int pageNumber, int currentUserId);
     int getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber);

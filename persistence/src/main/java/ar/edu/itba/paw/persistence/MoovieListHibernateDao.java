@@ -182,6 +182,25 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
 
     @Override
+    public List<Media> getRecommendedMediaToAdd(int moovieListId, int size) {
+        String jpql = "SELECT m.mediaID FROM media m " +
+                "LEFT JOIN mediagenres g ON g.mediaid = m.mediaid " +
+                "WHERE g.genreid = (SELECT sq1.genreid FROM " +
+                "(SELECT mlc.moovielistid, mg.genreid, COUNT(mg.genreid) AS countGenres " +
+                "FROM moovielistscontent mlc INNER JOIN mediagenres mg ON mg.mediaid = mlc.mediaid " +
+                "WHERE mlc.moovielistid = :moovieListId GROUP BY mg.genreid, mlc.moovielistid " +
+                "ORDER BY countGenres DESC LIMIT 1) AS sq1) " +
+                "AND m.mediaID NOT IN (SELECT mlc2.mediaid FROM moovielistscontent mlc2 WHERE moovielistid = :moovieListId ) " +
+                "ORDER BY m.tmdbrating DESC";
+
+        List<Integer> ids = em.createNativeQuery(jpql).setParameter("moovieListId", moovieListId).setFirstResult(0).setMaxResults(size).getResultList();
+
+        TypedQuery<Media> query = em.createQuery("SELECT m FROM Media m WHERE m.mediaId in (:ids)", Media.class).setParameter("ids", ids);
+
+        return query.getResultList();
+    }
+
+    @Override
     public List<MoovieListCard> getMoovieListCards(String search, String ownerUsername, int type, String orderBy, String order, int size, int pageNumber, int currentUserId) {
         String jpql = "SELECT mlc, " +
                 "(SELECT COUNT(mlc2) FROM MoovieListContent mlc2 INNER JOIN MoovieList ml ON mlc2.moovieList.moovieListId = ml.moovieListId WHERE mlc2.moovieList.moovieListId = mlc.id AND ml.name = 'Watched' AND ml.userId = :currentUserId), " +
@@ -443,28 +462,6 @@ public class MoovieListHibernateDao implements MoovieListDao{
         }
     }
 
-    // la ejecucion/creacion de la function en base de datos parece funcionar, pero no puedo hacer la ejecucion en Hibernate
-//        StoredProcedureQuery storedProcedure = em.createStoredProcedureQuery("updatecustomOrder");
-//        storedProcedure.registerStoredProcedureParameter("mlid", Integer.class, ParameterMode.IN);
-//        storedProcedure.registerStoredProcedureParameter("firstPosition", Integer.class, ParameterMode.IN);
-//        storedProcedure.registerStoredProcedureParameter("pageSize", Integer.class, ParameterMode.IN);
-//        storedProcedure.registerStoredProcedureParameter("toPrev", Integer[].class, ParameterMode.IN);
-//        storedProcedure.registerStoredProcedureParameter("currentPage", Integer[].class, ParameterMode.IN);
-//        storedProcedure.registerStoredProcedureParameter("toNext", Integer[].class, ParameterMode.IN);
-//
-//        storedProcedure.setParameter("mlid", moovieListId);
-//        storedProcedure.setParameter("firstPosition", currentPageNumber * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize() + 1);
-//        storedProcedure.setParameter("pageSize", PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize());
-//        storedProcedure.setParameter("toPrev", toPrevPage);
-//        storedProcedure.setParameter("currentPage", currentPage);
-//        storedProcedure.setParameter("toNext", toNextPage);
-//
-//        storedProcedure.execute();
-
-
-    //          el principal problema es que Hibernate manda los parametros como 'bytea' segun lee la consola de la ejecucion SQL
-//        pero no se puede hacer un CAST de bytea -> integer[] en SQL. Por lo tanto habria que poder setParameter ya casteado al tipo correcto
-//        pero en Java ya son int[] . asi que ni idea ¯\_(ツ)_/¯
 
     @Override
     public void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrevPage, int[] currentPage, int[] toNextPage) {

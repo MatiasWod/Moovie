@@ -57,7 +57,7 @@ public class MediaController {
     @RequestMapping("/testing")
     public ModelAndView test(){
         final ModelAndView mav = new ModelAndView("helloworld/test");
-        mav.addObject("ml", moovieListService.getMoovieListCardById(1));
+        mav.addObject("ml", moovieListService.getRecommendedMediaToAdd(37,4));
         return mav;
     }
 

@@ -31,6 +31,10 @@ public interface MoovieListService {
     //Returns a list of recomended amount of moovie list, recomends are based on user who liked this list likes (if the return size < size its filled with random moovie lists)
     List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber);
 
+    //Returns a list of media of medias that could fit in the MoovieList provided.
+    //Its calculated based on the best rated media from the most repeated genre in the list
+    List<Media> getRecommendedMediaToAdd(int moovieListId, int size);
+
 
     //Get the MoovieListCard, which contains the element presented in searchs, has a lot of arguments for searchs/querys
     List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , String orderBy, String order, int size, int pageNumber);
