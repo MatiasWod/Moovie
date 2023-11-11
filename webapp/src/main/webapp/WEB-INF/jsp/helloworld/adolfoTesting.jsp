@@ -13,26 +13,24 @@
 </head>
 <body>
 
-
-<h2>Prueba de MoovieListContent:</h2>
-${mlc}
-<c:forEach items="${mlc}" var="cont">
-    <div>
-        algo:
-        ${cont.name}
-        ${cont.customOrder}
-        ${cont.watched}
-    </div>
+<h2>Status list:</h2>
+<c:forEach items="${statusList}" var="status">
+    <div>${status}</div>
 </c:forEach>
-<h2>Prueba de MoovieListCards:</h2>
-${browseLists}
-<c:forEach items="${browseLists}" var="list">
-    <div>
-        ${list}
-        ${list.images}
-        ${list.username}
-        ${list.name}
-    </div>
+
+<h2>Series status list:</h2>
+<c:forEach items="${seriesStatus}" var="status">
+    <div>${status}</div>
+</c:forEach>
+
+<h2>Language list</h2>
+<c:forEach items="${langList}" var="lang">
+    <div>${lang}</div>
+</c:forEach>
+
+<h2>Series language list:</h2>
+<c:forEach items="${seriesLangs}" var="status">
+    <div>${status}</div>
 </c:forEach>
 </body>
 </html>

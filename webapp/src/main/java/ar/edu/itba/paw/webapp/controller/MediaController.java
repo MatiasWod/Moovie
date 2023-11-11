@@ -8,6 +8,7 @@ import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.CreateReviewForm;
+import jdk.net.SocketFlow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,12 @@ public class MediaController {
     @Autowired
     private DatabaseModifierService dmsService;
 
+    @Autowired
+    private StatusService statusService;
+
+    @Autowired
+    private LanguageService languageService;
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MediaController.class);
 
@@ -65,7 +72,10 @@ public class MediaController {
     @RequestMapping("/adolfoTest")
     public ModelAndView adolfoTest(){
         final ModelAndView mav = new ModelAndView("helloworld/adolfoTesting");
-        mav.addObject("browseLists", moovieListService.getMoovieListCards(null,null, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), null, null, 25, 0));
+        mav.addObject("statusList",statusService.getAllStatus());
+        mav.addObject("seriesStatus",statusService.getAllStatus(MediaTypes.TYPE_TVSERIE.getType()));
+        mav.addObject("langList",languageService.getAllLanguages());
+        mav.addObject("seriesLangs",languageService.getAllLanguages(MediaTypes.TYPE_TVSERIE.getType()));
         return mav;
     }
 
