@@ -10,13 +10,15 @@
     <title>
         <spring:message code="review.title" arguments="hello"/>
     </title>
-    <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/resources/logo.png" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link href="${pageContext.request.contextPath}/resources/main.css?version=82" rel="stylesheet"/>
+    <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/resources/logo.png"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/main.css?version=55" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/details.css?version=55" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/resources/buttonsStyle.css?version=1" rel="stylesheet"/>
-    <script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=84"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
 <c:import url="navBar.jsp"/>
@@ -24,55 +26,89 @@
     <div class="d-flex flex-column flex-grow-1 m-3" >
         <div class="card">
             <div class="card-body">
-                <div class="d-flex align-self-center">
-                    <a href="${pageContext.request.contextPath}/profile/${review.username}" style="text-decoration: none; color: inherit;">
-                        <img class="cropCenter mr-3 profile-image rounded-circle"
-                             style="height:60px;width:60px;border: solid black; border-radius: 50%"
-                             src="${pageContext.request.contextPath}/profile/image/${review.username}"
-                             alt="${review.userId} Reviewer Profile">
-                    </a>
-                    <div class="ms-2 d-flex flex-column">
-                        <div class="d-flex justify-content-between">
-                            <h4 class="card-title">Username (agregar href)</h4>
-                            <h5 class="ms-4">
-                                <i class="bi bi-star-fill ml-2"></i> ${review.rating}/5
-                            </h5>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <a href="${pageContext.request.contextPath}/profile/${review.username}"
+                           style="text-decoration: none; color: inherit;">
+                            <img class="cropCenter mr-3 profile-image rounded-circle"
+                                 style="height:60px;width:60px;border: solid black; border-radius: 50%"
+                                 src="${pageContext.request.contextPath}/profile/image/${review.username}"
+                                 alt="${review.userId} Reviewer Profile">
+                        </a>
+                        <div class="mt-0" style="margin-left: 15px">
+                            <a href="${pageContext.request.contextPath}/profile/${review.username}"
+                               style="text-decoration: none; color: inherit;">
+                                <h5><c:out value="${review.username}"/> USER</h5>
+                            </a>
                         </div>
-                        <div class="d-flex">
-<%--                            <c:choose>--%>
-<%--                                <c:when test="${review.currentUserHasLiked}">--%>
-                                    <form action="${pageContext.request.contextPath}/unlikeReview" method="post">
-                                        <input type="hidden" name="reviewId" value="${review.reviewId}"/>
-                                        <input type="hidden" name="mediaId" value="${media.mediaId}"/>
-                                        <button class="btn btn-success">
-                                            <i class="bi bi-hand-thumbs-up-fill"></i>
-                                                ${review.reviewLikes}
-                                            <spring:message code="details.liked"/>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h5 class="m-0">
+                            <i class="bi bi-star-fill ml-2"></i> ${review.rating}/5
+                        </h5>
+                        <c:choose>
+                            <c:when test="${currentUsername==review.username}">
+                                <div class="text-center m-2">
+                                    <button onclick="openPopup('review${review.reviewId}')"
+                                            class="btn btn-danger btn-sm">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                                <div class="review${review.reviewId}-overlay popup-overlay"
+                                     onclick="closePopup('review${review.reviewId}')"></div>
+                                <div style="background-color: transparent; box-shadow: none"
+                                     class="popup review${review.reviewId}">
+                                    <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);"
+                                         class="alert alert-danger" role="alert">
+                                        <h5 class="alert-heading"><spring:message
+                                                code="details.confirmReviewDeletion"/></h5>
+                                        <p><spring:message
+                                                code="details.confirmReviewDeletionPrompt"/></p>
+                                        <div class="d-flex justify-content-evenly">
+                                            <form class="m-0"
+                                                  action="${pageContext.request.contextPath}/deleteUserReview/${media.mediaId}"
+                                                  method="post">
+                                                <input type="hidden" name="reviewId"
+                                                       value="${review.reviewId}"/>
+                                                <button type="submit" class="btn btn-danger">
+                                                    <spring:message code="details.delete"/></button>
+                                            </form>
+                                            <button type="button"
+                                                    onclick="closePopup('review${review.reviewId}')"
+                                                    class="btn btn-secondary" id="cancelButton">
+                                                <spring:message code="details.cancel"/></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <sec:authorize access="hasRole('ROLE_MODERATOR')">
+                                    <div class="text-center m-2" >
+                                        <button onclick="openPopup('review${review.reviewId}')" class="btn btn-danger btn-sm">
+                                            <i class="bi bi-trash"></i>
                                         </button>
-                                    </form>
-<%--                                </c:when>--%>
-<%--                                <c:otherwise>--%>
-<%--                                    <form action="${pageContext.request.contextPath}/likeReview" method="post">--%>
-<%--                                        <input type="hidden" name="reviewId" value="${review.reviewId}"/>--%>
-<%--                                        <input type="hidden" name="mediaId" value="${media.mediaId}"/>--%>
-<%--                                        <button class="btn btn-success">--%>
-<%--                                            <i class="bi bi-hand-thumbs-up"></i>--%>
-<%--                                                ${review.reviewLikes}--%>
-<%--                                            <spring:message code="details.like"/>--%>
-<%--                                        </button>--%>
-<%--                                    </form>--%>
-<%--                                </c:otherwise>--%>
-<%--                            </c:choose>--%>
-<%--                            <c:if test="${currentUsername==review.username}">--%>
-                                <button class="ms-1 btn btn-primary btn-sm" onclick="openPopup('rate-popup')">
-                                    <i class="bi bi-pencil"></i>
-                                    <spring:message code="details.editReview"/>
-                                </button>
-<%--                            </c:if>--%>
-                        </div>
-                        <p class="mt-2 card-text">Review review review </p>
+                                    </div>
+                                    <div class="review${review.reviewId}-overlay popup-overlay" onclick="closePopup('review${review.reviewId}')"></div>
+                                    <div style="background-color: transparent; box-shadow: none" class="popup review${review.reviewId}">
+                                        <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
+                                            <h5 class="alert-heading"><spring:message code="details.confirmReviewDeletion"/></h5>
+                                            <p><spring:message code="details.confirmReviewDeletionPrompt"/></p>
+                                            <div class="d-flex justify-content-evenly">
+                                                <form class="m-0" action="${pageContext.request.contextPath}/deleteReview/${media.mediaId}" method="post">
+                                                    <input type="hidden" name="reviewId" value="${review.reviewId}"/>
+                                                    <input type="hidden" name="path" value="/details/${media.mediaId}"/>
+                                                    <button type="submit" class="btn btn-danger"><spring:message code="details.delete"/></button>
+                                                </form>
+                                                <button type="button" onclick="closePopup('review${review.reviewId}')" class="btn btn-secondary" id="cancelModButton"><spring:message code="details.cancel"/></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </sec:authorize>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
+                <p class="m-1 card-text">Review</p>
             </div>
             <%--<c:if test="${review.hasComments}">--%>
             <div class="m-3">
