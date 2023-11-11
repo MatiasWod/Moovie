@@ -218,8 +218,8 @@ public class MediaHibernateDao implements MediaDao{
             query.setParameter(argtype.get(i), args.get(i));
         }
 
-
-        return query.getFirstResult();
+        Long toReturn = (Long) query.getSingleResult();
+        return toReturn.intValue();
     }
 
     //Following functions needed in order to be safe of sql injection
