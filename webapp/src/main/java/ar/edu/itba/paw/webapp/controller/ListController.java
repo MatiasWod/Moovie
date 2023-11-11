@@ -5,6 +5,7 @@ import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
 import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.Media.MediaFilters;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.PagingSizes;
@@ -81,7 +82,7 @@ public class ListController {
                                    @RequestParam(value = "m", required = false,defaultValue = "All") String media,
                                    @RequestParam(value = "q", required = false) String query,
                                    @RequestParam(value = "providers", required = false) List<String> providers,
-                                   @RequestParam(value="orderBy", defaultValue = "tmdbrating") final String orderBy,
+                                   @RequestParam(value="orderBy", defaultValue = "tmdbRating") final String orderBy,
                                    @RequestParam(value="order", defaultValue = "desc") final String order,
                                    @RequestParam(value = "page",defaultValue = "1") final int pageNumber,
                                    @ModelAttribute("ListForm") final CreateListForm form) {
@@ -187,7 +188,7 @@ public class ListController {
         }
         final ModelAndView mav = new ModelAndView("helloworld/editList");
         int pagesSize = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
-        MoovieListDetails myList = moovieListService.getMoovieListDetails(moovieListId, null, null, "customOrder", "asc", pagesSize, pageNumber - 1);
+        MoovieListDetails myList = moovieListService.getMoovieListDetails(moovieListId, null, null, MediaFilters.CUSTOM_ORDER.getFilter(), MediaFilters.ASC.getFilter(), pagesSize, pageNumber - 1);
         int mediaCountForMoovieList =myList.getCard().getSize();
         int numberOfPages = (int) Math.ceil(mediaCountForMoovieList * 1.0 / pagesSize);
         mav.addObject("pagingSize",pagesSize);
