@@ -15,7 +15,7 @@ public interface MediaService {
     List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber);
 
     //The amount of results that a query of getMedia will give
-    int getMediaCount(int type, String search, String participantSearch, List<String> genres, List<String> providers);
+    int getMediaCount(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang);
 
     //Return a list of media that are in a moovie list
     List<Media> getMediaInMoovieList(int moovieListId, int size, int pageNumber);

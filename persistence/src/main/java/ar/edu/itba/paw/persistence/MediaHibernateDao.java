@@ -27,86 +27,83 @@ public class MediaHibernateDao implements MediaDao{
 
     @Override
     public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber, int currentUserId) {
-        StringBuilder sql = new StringBuilder("SELECT new ar.edu.itba.paw.models.Media.Media ( m , ");
+
         ArrayList<String> argtype = new ArrayList<>();
         ArrayList<Object> args = new ArrayList<>();
 
-        sql.append("(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId WHERE m.mediaId = mlc2.media.mediaId AND wl.name = 'Watched' AND wl.userId = :userid), ");
-        sql.append("(SELECT CASE WHEN COUNT(wl3) > 0 THEN true ELSE false END FROM MoovieList wl3 INNER JOIN MoovieListContent mlc3 ON wl3.moovieListId = mlc3.moovieList.moovieListId WHERE m.mediaId = mlc3.media.mediaId AND wl3.name = 'Watchlist' AND wl3.userId = :userid) ) ");
+        String sql = "SELECT new ar.edu.itba.paw.models.Media.Media ( m , " +
+                "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId WHERE m.mediaId = mlc2.media.mediaId AND wl.name = 'Watched' AND wl.userId = :userid), " +
+                "(SELECT CASE WHEN COUNT(wl3) > 0 THEN true ELSE false END FROM MoovieList wl3 INNER JOIN MoovieListContent mlc3 ON wl3.moovieListId = mlc3.moovieList.moovieListId WHERE m.mediaId = mlc3.media.mediaId AND wl3.name = 'Watchlist' AND wl3.userId = :userid) ) ";
+
         argtype.add("userid");
         args.add(currentUserId);
 
+        sql += "FROM Media m ";
 
-        sql.append("FROM Media m ");
-
-        // If type is 0 or 1 it's specifically movies or TVs, else it's not restricted
         if (type == 0 || type == 1) {
-            sql.append(" WHERE m.type = :type ");
+            sql += " WHERE m.type = :type ";
             argtype.add("type");
             args.add(type == 1);
         } else {
-            sql.append(" WHERE m.type IS NOT NULL ");
+            sql += " WHERE m.type IS NOT NULL ";
         }
 
-        // Add the genres filter
+        if (status != null && !status.isEmpty()){
+            sql += " AND m.status IN (:status) ";
+            argtype.add("status");
+            args.add(status);
+        }
+
+        if (lang != null && !lang.isEmpty()){
+            sql += " AND m.originalLanguage IN (:lang) ";
+            argtype.add("lang");
+            args.add(lang);
+        }
+
         if (genres != null && !genres.isEmpty()) {
-            sql.append(" AND m.mediaId IN (");
-            sql.append(" SELECT mg.mediaId FROM mediagenres mg");
-            sql.append(" JOIN genres g ON g.genreId = mg.genreId");
-            sql.append(" WHERE g.genreName IN (:genres)");
-            sql.append(" ) ");
+            sql += " AND m IN (SELECT media FROM Media media JOIN media.genres genre WHERE genre.genre IN :genres) ";
             argtype.add("genres");
             args.add(genres);
         }
 
-        // Add the providers filter
-        if (providers!=null && !providers.isEmpty()) {
-            sql.append(" AND m.mediaId IN (");
-            sql.append(" SELECT mp.mediaId FROM mediaproviders mp");
-            sql.append(" JOIN providers p ON p.providerId = mp.providerId");
-            sql.append(" WHERE p.providerName IN (:providers)");
-            sql.append(" ) ");
+        if (providers != null && !providers.isEmpty()) {
+            sql += " AND m IN (SELECT media FROM Media media JOIN media.providers providers WHERE providers.providerName IN :providers) ";
             argtype.add("providers");
             args.add(providers);
         }
 
-        //Input the search
-        if(search!=null && search.length()>0){
-            sql.append(" AND " );
-            sql.append(" m.name LIKE :name ");
+        if (search != null && search.length() > 0) {
+            sql += " AND LOWER(m.name) LIKE :name ";
             argtype.add("name");
-            args.add('%' + search + '%');
+            args.add('%' + search.toLowerCase() + '%');
         }
 
-        // Input its participants in actors, media.name, creators and directors
-        if (participant!=null && participant.length()>0) {
-            sql.append(" AND  " );
-            sql.append(" (  m.mediaId IN (SELECT mediaId FROM actors a WHERE actorname LIKE :actor ) ");
-            args.add('%' + participant + '%');
+        if (participant != null && participant.length() > 0) {
+            sql += " AND ( m.mediaId IN (SELECT media.mediaId FROM Actor a JOIN a.medias media WHERE LOWER(actorname) LIKE :actor ) ";
+            args.add('%' + participant.toLowerCase() + '%');
             argtype.add("actor");
 
-            if(type != MediaTypes.TYPE_TVSERIE.getType()){
-                sql.append(" OR m.mediaId IN (SELECT mediaId FROM movies m WHERE director ILIKE :director ) ");
-                args.add('%' + participant + '%');
+            if (type != MediaTypes.TYPE_TVSERIE.getType()) {
+                sql += " OR m.mediaId IN (SELECT mediaId FROM Movie m WHERE LOWER(director) LIKE :director ) ";
+                args.add('%' + participant.toLowerCase() + '%');
                 argtype.add("director");
             }
 
-            if(type != MediaTypes.TYPE_MOVIE.getType()){
-                sql.append(" OR m.mediaId IN (SELECT mediaid FROM creators c WHERE creatorname ILIKE :creator ) ");
-                args.add('%' + participant + '%');
+            if (type != MediaTypes.TYPE_MOVIE.getType()) {
+                sql += " OR m.mediaId IN (SELECT m.mediaId FROM TVCreators c JOIN c.medias WHERE LOWER(creatorname) LIKE :creator ) ";
+                args.add('%' + participant.toLowerCase() + '%');
                 argtype.add("creator");
             }
 
-            sql.append(" ) ");
+            sql += " ) ";
         }
 
-        // Order by
         if (isOrderValid(orderBy) && isSortOrderValid(sortOrder)) {
-            sql.append(" ORDER BY ").append(orderBy);
-            sql.append(" ").append(sortOrder);
+            sql += " ORDER BY " + orderBy + " " + sortOrder;
         }
 
-        TypedQuery<Media> query = em.createQuery(sql.toString(), Media.class);
+
+        TypedQuery<Media> query = em.createQuery(sql, Media.class);
 
         for(int i=0; i<args.size() ; i++){
             query.setParameter(argtype.get(i), args.get(i));
@@ -149,83 +146,80 @@ public class MediaHibernateDao implements MediaDao{
     }
 
     @Override
-    public int getMediaCount(int type, String search, String participant, List<String> genres, List<String> providers){
-        StringBuilder sql = new StringBuilder("SELECT m.mediaid ");
+    public int getMediaCount(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang){
+//        (int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber, int currentUserId)
         ArrayList<String> argtype = new ArrayList<>();
         ArrayList<Object> args = new ArrayList<>();
 
-        sql.append("FROM media m ");
+        String sql = "SELECT COUNT(m) FROM Media m ";
 
-        // If type is 0 or 1 it's specifically movies or TVs, else it's not restricted
         if (type == 0 || type == 1) {
-            sql.append(" WHERE type = :type ");
+            sql += " WHERE m.type = :type ";
             argtype.add("type");
             args.add(type == 1);
         } else {
-            sql.append(" WHERE type IS NOT NULL ");
+            sql += " WHERE m.type IS NOT NULL ";
         }
 
-        // Add the genres filter
+        if (status != null && !status.isEmpty()){
+            sql += " AND m.status IN (:status) ";
+            argtype.add("status");
+            args.add(status);
+        }
+
+        if (lang != null && !lang.isEmpty()){
+            sql += " AND m.originalLanguage IN (:lang) ";
+            argtype.add("lang");
+            args.add(lang);
+        }
+
         if (genres != null && !genres.isEmpty()) {
-            sql.append(" AND m.mediaId IN (");
-            sql.append(" SELECT mg.mediaId FROM mediagenres mg");
-            sql.append(" JOIN genres g ON g.genreId = mg.genreId");
-            sql.append(" WHERE g.genreName IN (:genres)");
-            sql.append(" ) ");
+            sql += " AND m IN (SELECT media FROM Media media JOIN media.genres genre WHERE genre.genre IN :genres) ";
             argtype.add("genres");
             args.add(genres);
         }
 
-        // Add the providers filter
-        if (providers!=null && !providers.isEmpty()) {
-            sql.append(" AND m.mediaId IN (");
-            sql.append(" SELECT mp.mediaId FROM mediaproviders mp");
-            sql.append(" JOIN providers p ON p.providerId = mp.providerId");
-            sql.append(" WHERE p.providerName IN (:providers)");
-            sql.append(" ) ");
+        if (providers != null && !providers.isEmpty()) {
+            sql += " AND m IN (SELECT media FROM Media media JOIN media.providers providers WHERE providers.providerName IN :providers) ";
             argtype.add("providers");
             args.add(providers);
         }
 
-        //Input the search
-        if(search!=null && search.length()>0){
-            sql.append(" AND " );
-            sql.append(" name ILIKE :name ");
+        if (search != null && search.length() > 0) {
+            sql += " AND LOWER(m.name) LIKE :name ";
             argtype.add("name");
-            args.add('%' + search + '%');
+            args.add('%' + search.toLowerCase() + '%');
         }
 
-        // Input its participants in actors, media.name, creators and directors
-        if (participant!=null && participant.length()>0) {
-            sql.append(" AND  " );
-            sql.append(" (  m.mediaId IN (SELECT mediaid FROM actors a WHERE actorname ILIKE :actor ) ");
-            args.add('%' + participant + '%');
+        if (participant != null && participant.length() > 0) {
+            sql += " AND ( m.mediaId IN (SELECT media.mediaId FROM Actor a JOIN a.medias media WHERE LOWER(actorname) LIKE :actor ) ";
+            args.add('%' + participant.toLowerCase() + '%');
             argtype.add("actor");
 
-            if(type != MediaTypes.TYPE_TVSERIE.getType()){
-                sql.append(" OR m.mediaId IN (SELECT mediaid FROM movies m WHERE director ILIKE :director ) ");
-                args.add('%' + participant + '%');
+            if (type != MediaTypes.TYPE_TVSERIE.getType()) {
+                sql += " OR m.mediaId IN (SELECT mediaId FROM Movie m WHERE LOWER(director) LIKE :director ) ";
+                args.add('%' + participant.toLowerCase() + '%');
                 argtype.add("director");
             }
 
-            if(type != MediaTypes.TYPE_MOVIE.getType()){
-                sql.append(" OR m.mediaId IN (SELECT mediaid FROM creators c WHERE creatorname ILIKE :creator ) ");
-                args.add('%' + participant + '%');
+            if (type != MediaTypes.TYPE_MOVIE.getType()) {
+                sql += " OR m.mediaId IN (SELECT m.mediaId FROM TVCreators c JOIN c.medias WHERE LOWER(creatorname) LIKE :creator ) ";
+                args.add('%' + participant.toLowerCase() + '%');
                 argtype.add("creator");
             }
 
-            sql.append(" ) ");
+            sql += " ) ";
+
         }
 
-        sql.append("GROUP BY m.mediaid ");
+        Query query = em.createQuery(sql);
 
-        Query nq = em.createNativeQuery(sql.toString());
-
-        for(int i=0; i<args.size() ; i++){
-            nq.setParameter(argtype.get(i), args.get(i));
+        for (int i = 0; i < args.size(); i++) {
+            query.setParameter(argtype.get(i), args.get(i));
         }
 
-        return nq.getResultList().size();
+
+        return query.getFirstResult();
     }
 
     //Following functions needed in order to be safe of sql injection

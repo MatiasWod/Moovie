@@ -112,8 +112,8 @@ public class MediaController {
 
         final ModelAndView mav = new ModelAndView("helloworld/search");
         // Aca se realizan 3 queries. Para poder notificar correctamente al JSP de las listas que va a recibir, primero se corre el getMediaCount
-        int nameMediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query, null, null, null);
-        int creditMediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), null, query, null, null);
+        int nameMediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query, null, null, null, null, null);
+        int creditMediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), null, query, null, null, null, null);
         int usersCount = userService.getSearchCount(query);
         int moovieListCount = moovieListService.getMoovieListCardsCount(query,null,MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(),0);
 
@@ -178,15 +178,15 @@ public class MediaController {
 
         if (media.equals("All")){
             mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, credit,  genres, providers, status, lang, orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
-            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query, credit, genres, providers);
+            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query, credit, genres, providers, status, lang);
         }
         else if (media.equals("Movies")){
             mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), query, credit, genres, providers, status, lang, orderBy, order,   PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
-            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_MOVIE.getType(), query, credit, genres, providers);
+            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_MOVIE.getType(), query, credit, genres, providers, status, lang);
         }
         else{
             mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), query, credit, genres, providers, status, lang, orderBy, order,  PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
-            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_TVSERIE.getType(), query, credit, genres, providers);
+            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_TVSERIE.getType(), query, credit, genres, providers, status, lang);
         }
 
         int numberOfPages = (int) Math.ceil(mediaCount * 1.0 / PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize());

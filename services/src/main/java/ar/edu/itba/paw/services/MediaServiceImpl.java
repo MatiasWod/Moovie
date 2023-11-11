@@ -53,7 +53,7 @@ public class MediaServiceImpl implements MediaService{
 
     @Transactional(readOnly = true)
     @Override
-    public int getMediaCount(int type, String search, String participantSearch, List<String> genres, List<String> providers) {
-        return mediaDao.getMediaCount(type, search, participantSearch, genres, providers);
+    public int getMediaCount(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang) {
+        return mediaDao.getMediaCount(type, search, participant,  genres,  providers, status,  lang);
     }
 }
