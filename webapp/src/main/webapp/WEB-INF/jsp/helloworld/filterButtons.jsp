@@ -9,6 +9,8 @@
 <body>
 <c:set var="selectedGenres" value="${fn:split(param.g, ',')}" />
 <c:set var="selectedProviders" value="${fn:split(param.providers, ',')}" />
+<c:set var="selectedLanguages" value="${fn:split(param.l,',' )}" />
+<c:set var="selectedStatus" value="${fn:split(param.status,',' )}"/>
 <div>
 
 
@@ -125,6 +127,51 @@
                     <div class="form-check special-provider-class">
                         <input ${isChecked} type="checkbox" class="form-check-input special-provider-input" id="dropdownCheck${provider.providerName}">
                         <label class="form-check-label" for="dropdownCheck${providersList.indexOf(provider)}"><span class="mt-1 badge text-bg-light border border-black"><img src="${provider.logoPath}" alt="provider logo" style="height: 1.4em; margin-right: 5px;">${provider.providerName}</span></label>
+                    </div>
+                    <c:set var="isChecked" value="" />
+                </c:forEach>
+            </div>
+
+
+            <input type="hidden" name="l" id="hiddenLangInput">
+            <button class="btn btn-success m-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLanguages" aria-expanded="false" aria-controls="collapseLanguages">
+                <spring:message code="createList.genres"/><i class="bi bi-filter"></i>
+            </button>
+            <c:set var="isChecked" value="" />
+            <div style="max-height: 20vh;overflow: auto " class="collapse m-1" id="collapseLanguages">
+                <input type="text" id="searchBoxLanguage" placeholder="<spring:message code="createList.search"/>" class="form-control mb-3">
+                <c:forEach var="genre" items="${langList}">
+                    <c:forEach var="selectedGenre" items="${selectedLanguages}">
+                        <c:if test="${selectedGenre == genre}">
+                            <c:set var="isChecked" value="checked" />
+                        </c:if>
+                    </c:forEach>
+                    <div class="form-check special-language-class">
+                        <input ${isChecked} type="checkbox" class="form-check-input special-language-input" id="dropdownCheck${genre}">
+<%--                        <label class="form-check-label" for="dropdownCheck${langList.indexOf(genre)}">${genre}</label>--%>
+                        <label class="form-check-label" for="dropdownCheck${langList.indexOf(genre)}">${genre}</label>
+                    </div>
+                    <c:set var="isChecked" value="" />
+                </c:forEach>
+            </div>
+
+
+            <input type="hidden" name="status" id="hiddenStatusInput">
+            <button class="btn btn-success m-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">
+                <spring:message code="createList.genres"/><i class="bi bi-filter"></i>
+            </button>
+            <c:set var="isChecked" value="" />
+            <div style="max-height: 20vh;overflow: auto " class="collapse m-1" id="collapseStatus">
+                <input type="text" id="searchBoxStatus" placeholder="<spring:message code="createList.search"/>" class="form-control mb-3">
+                <c:forEach var="genre" items="${statusList}">
+                    <c:forEach var="selectedGenre" items="${selectedStatus}">
+                        <c:if test="${selectedGenre == genre}">
+                            <c:set var="isChecked" value="checked" />
+                        </c:if>
+                    </c:forEach>
+                    <div class="form-check special-status-class">
+                        <input ${isChecked} type="checkbox" class="form-check-input special-status-input" id="dropdownCheck${genre}">
+                        <label class="form-check-label" for="dropdownCheck${statusList.indexOf(genre)}">${genre}</label>
                     </div>
                     <c:set var="isChecked" value="" />
                 </c:forEach>

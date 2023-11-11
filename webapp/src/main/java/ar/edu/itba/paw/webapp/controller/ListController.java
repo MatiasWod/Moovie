@@ -45,6 +45,12 @@ public class ListController {
     @Autowired
     private ProviderService providerService;
 
+    @Autowired
+    private StatusService statusService;
+
+    @Autowired
+    private LanguageService languageService;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
 
     @RequestMapping("/lists")
@@ -81,6 +87,8 @@ public class ListController {
     public ModelAndView createList(@RequestParam(value = "g", required = false) List<String> genres,
                                    @RequestParam(value = "m", required = false,defaultValue = "All") String media,
                                    @RequestParam(value = "q", required = false) String query,
+                                   @RequestParam(value = "l", required = false) final List<String> lang,
+                                   @RequestParam(value = "status", required = false) final List<String> status,
                                    @RequestParam(value = "providers", required = false) List<String> providers,
                                    @RequestParam(value="orderBy", defaultValue = "tmdbRating") final String orderBy,
                                    @RequestParam(value="order", defaultValue = "desc") final String order,
@@ -92,22 +100,26 @@ public class ListController {
         int mediaCount;
         mav.addObject("searchMode",false);
         if (media.equals("All")){
-            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null, genres, providers,null, null,orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
-            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query,null,genres,null, null, null);
+            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null, genres, providers,status, lang,orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query,null,genres,null, providers,status);
         }
         else if (media.equals("Movies")){
-            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null, genres, providers,null, null,orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
-            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_MOVIE.getType(), query, null, genres, null, null, null);
+            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null, genres, providers,providers,status,orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_MOVIE.getType(), query, null, genres, null, providers,status);
         }
         else{
-            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null, genres, providers,null, null,orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
-            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_TVSERIE.getType(), query, null, genres, null, null, null);
+            mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null, genres, providers,providers,status,orderBy, order, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
+            mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_TVSERIE.getType(), query, null, genres, null, providers,status);
         }
         numberOfPages = (int) Math.ceil(mediaCount * 1.0 / PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize());
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
+
+        // filter buttons
         mav.addObject("genresList", genreService.getAllGenres());
         mav.addObject("providersList", providerService.getAllProviders());
+        mav.addObject("statusList",statusService.getAllStatus());
+        mav.addObject("langList",languageService.getAllLanguages());
 
         LOGGER.info("Returned lists for /createLists.");
         return mav;
@@ -279,7 +291,7 @@ public class ListController {
     @RequestMapping(value = "/createListAction", method = RequestMethod.POST)
     public ModelAndView createListAction(@Valid @ModelAttribute("ListForm") final CreateListForm form, final BindingResult errors, RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
-            return createList(null, null, null, null, null, null, 1, form);
+            return createList(null, null, null, null, null, null, null, null, 1, form);
         }
 
         try {

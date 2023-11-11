@@ -25,6 +25,20 @@ function beforeSubmit() {
         selectedProviders.push(checkbox.nextElementSibling.innerText);
     });
     document.getElementById('hiddenProviderInput').value = selectedProviders.join(",");
+
+    const selectedLanguages = [];
+    document.querySelectorAll('.special-language-input:checked').forEach(function(checkbox) {
+        console.log('checkbox elem: '+checkbox.id);
+        selectedLanguages.push(checkbox.nextElementSibling.innerText);
+    });
+    document.getElementById('hiddenLangInput').value = selectedLanguages.join(",");
+
+    const selectedStatus = [];
+    document.querySelectorAll('.special-status-input:checked').forEach(function(checkbox) {
+        console.log('checkbox elem: '+checkbox.id);
+        selectedStatus.push(checkbox.nextElementSibling.innerText);
+    });
+    document.getElementById('hiddenStatusInput').value = selectedStatus.join(",");
 };
 
 
@@ -63,5 +77,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Añadir funcionalidad de búsqueda al campo de proveedores
     addSearchFunctionality("searchBoxProvider", ".special-provider-class");
+
+    addSearchFunctionality("searchBoxLanguage", ".special-language-class");
+
+    addSearchFunctionality("searchBoxStatus", ".special-status-class");
 });
 

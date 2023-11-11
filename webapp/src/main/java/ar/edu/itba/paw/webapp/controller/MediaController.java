@@ -176,7 +176,7 @@ public class MediaController {
                                @RequestParam(value = "m", required = false, defaultValue = "All") String media,
                                @RequestParam(value = "g", required = false) List<String> genres,
                                  @RequestParam(value = "providers", required = false) List<String> providers,
-                                 @RequestParam(value = "lang", required = false) final List<String> lang,
+                                 @RequestParam(value = "l", required = false) final List<String> lang,
                                  @RequestParam(value = "status", required = false) final List<String> status,
                                  @RequestParam(value="orderBy", defaultValue = "tmdbRating") final String orderBy,
                                  @RequestParam(value="order", defaultValue = "desc") final String order,
@@ -205,8 +205,12 @@ public class MediaController {
         int numberOfPages = (int) Math.ceil(mediaCount * 1.0 / PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize());
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
+
+        // filter buttons
         mav.addObject("genresList", genreService.getAllGenres());
         mav.addObject("providersList", providerService.getAllProviders());
+        mav.addObject("statusList",statusService.getAllStatus());
+        mav.addObject("langList",languageService.getAllLanguages());
 
         LOGGER.info("Returned media for /discover.");
         return mav;
