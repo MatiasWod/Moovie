@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.MediaNotFoundException;
 import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.Media.MediaFilters;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
@@ -74,19 +75,19 @@ public class MediaController {
         LOGGER.info("Attempting to get media for /.");
         final ModelAndView mav = new ModelAndView("helloworld/index");
         List<Media> movieList = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
-                null, null, null, null,"tmdbrating", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
+                null, null, null, null, MediaFilters.TMDBRATING.getFilter(), MediaFilters.DESC.getFilter(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("movieList", movieList);
 
         List<Media> tvSerieList = mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), null, null,
-                null, null, null,null, "tmdbrating", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
+                null, null, null,null, MediaFilters.TMDBRATING.getFilter(), MediaFilters.DESC.getFilter(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("tvList", tvSerieList);
 
         List<Media> popularTV = mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), null, null,
-                null, null, null,null, "votecount", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
+                null, null, null,null, MediaFilters.VOTECOUNT.getFilter(), MediaFilters.DESC.getFilter(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("tvListPopular", popularTV);
 
         List<Media> popularMovies = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
-                null, null, null,null, "votecount", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
+                null, null, null,null, MediaFilters.VOTECOUNT.getFilter(), MediaFilters.DESC.getFilter(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("movieListPopular", popularMovies);
 
         LOGGER.info("Returned media for /.");
@@ -310,7 +311,7 @@ public class MediaController {
     public ModelAndView review() {
         final ModelAndView mav = new ModelAndView("helloworld/review");
         List<Media> movieList = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
-                null, null, null, null,"tmdbrating", "DESC", PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
+                null, null, null, null,MediaFilters.TMDBRATING.getFilter(), MediaFilters.DESC.getFilter(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("movieList", movieList);
 
         return mav;

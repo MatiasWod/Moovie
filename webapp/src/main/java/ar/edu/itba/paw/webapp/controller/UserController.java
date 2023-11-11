@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.*;
+import ar.edu.itba.paw.models.Media.MediaFilters;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.MoovieListDetails;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
@@ -70,7 +71,7 @@ public class UserController {
         LOGGER.info("Returned /register");
         return new ModelAndView("helloworld/register").
                 addObject("mediaList",
-                mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null,null,null,null,null,null,"tmdbRating","desc",PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0));
+                mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null,null,null,null,null,null,MediaFilters.TMDBRATING.getFilter(), MediaFilters.DESC.getFilter(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0));
     }
 
     @RequestMapping(value = "/register/confirm")
@@ -137,7 +138,7 @@ public class UserController {
         LOGGER.info("Returned /register");
         return new ModelAndView("helloworld/login")
                 .addObject("mediaList",
-                        mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null,null,null,null,null,null,"tmdbRating","desc",PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0));
+                        mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null,null,null,null,null,null, MediaFilters.TMDBRATING.getFilter(), MediaFilters.DESC.getFilter(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0));
     }
 
     @RequestMapping("/profile/{username:.+}")

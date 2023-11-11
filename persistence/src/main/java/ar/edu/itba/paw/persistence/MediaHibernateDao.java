@@ -228,9 +228,9 @@ public class MediaHibernateDao implements MediaDao{
             return false;
         }
         order = order.replaceAll(" ","");
-        String[] validOrders = {"name", "tmdbrating", "releasedate", "type", "totalrating"};
+        String[] validOrders = {"name", "tmdbRating", "releasedate", "type", "totalrating","voteCount"};
         for (String element : validOrders) {
-            if (element.toLowerCase().equals(order)) {
+            if (element.equals(order)) {
                 return true;
             }
         }
