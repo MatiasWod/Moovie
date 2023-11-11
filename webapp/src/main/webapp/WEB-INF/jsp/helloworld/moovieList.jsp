@@ -23,15 +23,41 @@
     <c:param name="publicList" value="true"/>
 </c:import>
 <c:if test="${moovieList.type==publicType}">
-<hr>
-<div class="d-flex flex-column align-items-center" style="margin-bottom: 20px">
-    <h2><spring:message code="moovieList.recommendations"/></h2>
-    <div class="d-flex flex-row flex-wrap">
-        <c:forEach var="cardList" items="${RecomendedListsCards}">
-        <%@include file="listCard.jsp"%>
-    </c:forEach>
+<hr/>
+<div class="d-flex">
+    <div class="d-flex flex-column flex-grow-1 m-3">
+        <%--<c:if test="${review.hasComments}">--%>
+            <div class="input-group mt-2 mb-3">
+                <textarea class="form-control" placeholder="<spring:message code="details.addComment"/>" aria-label="With textarea"></textarea>
+            </div>
+            <c:forEach begin="1" end="5">
+                <div class="mb-2 mt-2 card card-body">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title">Username (agregar href)</h6>
+                        <div class="d-flex">
+                            <a class="me-1 btn-sm btn btn-outline-success">
+                                <i class="m-1 bi bi-hand-thumbs-up"></i>
+                            </a>
+                            <a class="btn btn-sm btn-outline-danger">
+                                <i class="m-1 bi bi-hand-thumbs-down"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <p class="card-text">Comment Commetn Commetn</p>
+                </div>
+            </c:forEach>
+                <%--</c:if>--%>
     </div>
-</div>
+    <c:if test="${RecomendedListsCards}">
+        <div style="max-width: 30vw" class="d-flex flex-column align-items-center m-2">
+            <h4><spring:message code="moovieList.recommendations"/></h4>
+            <div class="d-flex flex-row flex-wrap">
+                <c:forEach var="cardList" items="${RecomendedListsCards}">
+                    <%@include file="listCard.jsp"%>
+                </c:forEach>
+            </div>
+        </div>
+    </c:if>
 </c:if>
 </body>
 </html>
