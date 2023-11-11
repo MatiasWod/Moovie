@@ -243,57 +243,35 @@ ${mediaList[loop.index].totalRating}<i class="bi bi-star" style="margin-left: 5p
     <span>${mediaList[loop.index].releaseDate}</span>
 </td>
 <td>
-    <div class="popup-overlay watch-popup-overlay" onclick="closePopup('remove-watch-popup-${loop.index}')"></div>
     <c:choose>
         <c:when test="${mediaList[loop.index].watched}">
             <div class="col-auto text-center">
-            <span class="d-inline-block" onclick="openPopup('remove-watch-popup-${loop.index}')" tabindex="0"
-                  data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
-                <i class="bi bi-eye-fill" style="color: green; cursor: pointer;"></i>
-            </span>
+                <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">
+                    <input type="hidden" name="listId" value="${watchedListId}"/>
+                    <input type="hidden" name="mediaId" value="${mediaList[loop.index].mediaId}"/>
+                    <button class="btn btn-lg" type="submit">
+                        <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
+                            <i class="bi bi-eye-fill" style="color: green; cursor: pointer;"></i>
+                        </span>
+                    </button>
+                </form>
             </div>
         </c:when>
         <c:otherwise>
             <div class="col-auto text-center">
-            <span class="d-inline-block" onclick="openPopup('add-watch-popup-${loop.index}')" tabindex="0"
-                  data-bs-toggle="popover" data-bs-trigger="hover"
-                  data-bs-content="<spring:message code="listExtract.notWatchedMessage"/>">
-                <i class="bi bi-eye" style="color: grey; cursor: pointer;"></i>
-            </span>
+                <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
+                    <input type="hidden" name="listId" value="${watchedListId}"/>
+                    <input type="hidden" name="mediaId" value="${mediaList[loop.index].mediaId}"/>
+                    <button class="btn btn-lg" type="submit">
+                        <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
+                            <i class="bi bi-eye-fill" style="color: gray; cursor: pointer;"></i>
+                        </span>
+                    </button>
+                </form>
             </div>
         </c:otherwise>
     </c:choose>
 
-    <div class="popup-overlay remove-watch-popup-${loop.index}-overlay"
-         onclick="closePopup('remove-watch-popup-${loop.index}')"></div>
-    <div class="popup remove-watch-popup-${loop.index}">
-        <h2><spring:message code="listExtract.removeFromWatched" arguments="${mediaList[loop.index].name}"/></h2>
-        <div class="text-center" style="margin-top: 20px">
-            <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">
-                <button type="button" class="btn btn-danger" style="margin-inline: 10px"
-                        onclick="closePopup('remove-watch-popup-${loop.index}')"><spring:message code="listExtract.no"/>
-                </button>
-                <input type="hidden" name="listId" value="${watchedListId}"/>
-                <input type="hidden" name="mediaId" value="${mediaList[loop.index].mediaId}"/>
-                <button type="submit" class="btn btn-dark" style="margin-inline: 10px"><spring:message code="listExtract.yes"/></button>
-            </form>
-        </div>
-    </div>
-    <div class="popup-overlay add-watch-popup-${loop.index}-overlay"
-         onclick="closePopup('add-watch-popup-${loop.index}')"></div>
-    <div class="popup add-watch-popup-${loop.index}">
-        <h2><spring:message code="listExtract.addToWatched" arguments="${mediaList[loop.index].name}"/></h2>
-        <div class="text-center" style="margin-top: 20px">
-            <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
-                <button type="button" class="btn btn-danger" style="margin-inline: 10px"
-                        onclick="closePopup('add-watch-popup-${loop.index}')"><spring:message code="listExtract.no"/>
-                </button>
-                <input type="hidden" name="listId" value="${watchedListId}"/>
-                <input type="hidden" name="mediaId" value="${mediaList[loop.index].mediaId}"/>
-                <button type="submit" class="btn btn-dark" style="margin-inline: 10px"><spring:message code="listExtract.yes"/></button>
-            </form>
-        </div>
-    </div>
 </td>
 </tr>
 </c:forEach>
