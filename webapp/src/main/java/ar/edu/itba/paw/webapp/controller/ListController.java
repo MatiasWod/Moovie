@@ -163,6 +163,7 @@ public class ListController {
                 User currentUser=userService.getInfoOfMyUser();
                 mav.addObject("watchedCount",myList.getCard().getCurrentUserWatchAmount());
                 mav.addObject("watchedListId",moovieListService.getMoovieListCards("Watched",currentUser.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId());
+                mav.addObject("watchlistId",moovieListService.getMoovieListCards("Watchlist",currentUser.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId());
                 mav.addObject("isOwner", currentUser.getUsername().equals(moovieListCard.getUsername()));
             }catch (Exception e){
                 mav.addObject("watchedCount",0);
