@@ -135,7 +135,7 @@
 
             <input type="hidden" name="l" id="hiddenLangInput">
             <button class="btn btn-success m-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLanguages" aria-expanded="false" aria-controls="collapseLanguages">
-                <spring:message code="createList.genres"/><i class="bi bi-filter"></i>
+                <spring:message code="createList.lang"/>
             </button>
             <c:set var="isChecked" value="" />
             <div style="max-height: 20vh;overflow: auto " class="collapse m-1" id="collapseLanguages">
@@ -158,7 +158,7 @@
 
             <input type="hidden" name="status" id="hiddenStatusInput">
             <button class="btn btn-success m-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">
-                <spring:message code="createList.genres"/><i class="bi bi-filter"></i>
+                <spring:message code="createList.status"/>
             </button>
             <c:set var="isChecked" value="" />
             <div style="max-height: 20vh;overflow: auto " class="collapse m-1" id="collapseStatus">
