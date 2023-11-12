@@ -45,7 +45,7 @@
             <!-- Title and Details -->
             <h1>${media.name} <a href="${pageContext.request.contextPath}/discover?status=${media.status}"><sup class="badge text-bg-light border border-black"
                                       style="font-size: 14px;">${media.status}</sup></a>
-                <a href="${pageContext.request.contextPath}/discover?lang=${media.originalLanguage}"><sup class="badge text-bg-light border border-black"
+                <a href="${pageContext.request.contextPath}/discover?l=${media.originalLanguage}"><sup class="badge text-bg-light border border-black"
                         style="font-size: 14px;">${media.originalLanguage}</sup></a>
             </h1>
 
