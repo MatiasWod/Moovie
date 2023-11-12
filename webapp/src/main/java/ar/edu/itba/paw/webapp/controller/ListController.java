@@ -210,6 +210,10 @@ public class ListController {
         mav.addObject("moovieList", myList.getCard());
         mav.addObject("mediaList", myList.getContent());
 
+        // TODO: cambiar por recomended
+        mav.addObject("recommendedList", mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
+                null, null, null, null, MediaFilters.TMDBRATING.getFilter(), MediaFilters.DESC.getFilter(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0));
+
         LOGGER.info("Returned list with id: {} for /editList.", moovieListId);
         return mav;
     }
@@ -345,7 +349,7 @@ public class ListController {
         String referer = request.getHeader("Referer");
         if (referer.contains("details")) {
             return new ModelAndView("redirect:/details/" + mediaId);
-        } else if (referer.contains("list") || referer.contains("featuredList") || referer.contains("discover")) {
+        } else if (referer.contains("editList")||referer.contains("list") || referer.contains("featuredList") || referer.contains("discover")) {
             return new ModelAndView("redirect:" + referer);
         } else {
             return new ModelAndView("redirect:/");

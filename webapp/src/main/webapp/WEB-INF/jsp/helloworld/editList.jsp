@@ -1,6 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -205,6 +207,63 @@
     <c:param name="currentPage" value="${currentPage + 1}"/>
     <c:param name="url" value="/editList/${moovieList.moovieListId}"/>
 </c:import>
+
+<hr/>
+<div class="d-flex flex-column justify-content-center m-2">
+    <div class="d-flex justify-content-center">
+        <h4><spring:message code="editList.recommended"/></h4>
+    </div>
+    <div class="d-flex m-2">
+        <c:forEach var="movie" items="${recommendedList}" end="8">
+            <a href="${pageContext.request.contextPath}/details/${movie.mediaId}" class="card text-bg-dark m-1">
+                <div class="card-img-container"> <!-- Add a container for the image -->
+                    <div style="position:absolute;bottom:0;left: 27%;z-index: 2" class="d-flex m-2">
+                        <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
+                            <input type="hidden" name="listId" value="${moovieList.moovieListId}"/>
+                            <input type="hidden" name="mediaId" value="hello"/>
+                            <button class="btn btn-secondary m-1" type="submit">
+                            <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
+                                <i class="bi bi-plus-circle-fill" style="cursor: pointer;"></i>
+                            </span>
+                            </button>
+                        </form>
+                    </div>
+                    <img class="cropCenter" src="${movie.posterPath}" alt="media poster">
+                    <div class="card-img-overlay">
+                        <h6 class="card-title text-center">${movie.name}</h6>
+                        <div class="d-flex justify-content-evenly">
+                            <p class="card-text">
+                                <i class="bi bi-star-fill"></i>
+                                    ${movie.tmdbRating}
+                            </p>
+                            <p class="card-text">
+                                <fmt:formatDate value="${movie.releaseDate}" pattern="YYYY"/>
+                            </p>
+                        </div>
+                        <div class="d-flex justify-content-evenly flex-wrap">
+                            <c:forEach var="genre" items="${movie.genres}" end="1">
+                                <span class="mt-1 badge text-bg-dark">${fn:replace(genre,"\"" ,"" )}</span>
+                            </c:forEach>
+                        </div>
+                        <div class="d-flex mt-3 justify-content-evenly flex-wrap">
+                            <c:forEach var="provider" items="${movie.providers}" end="1">
+                                        <span class="mt-1 badge text-bg-light border border-black">
+                                            <img src="${provider.logoPath}" alt="provider logo" style="height: 1.4em; margin-right: 5px;">
+                                        </span>
+                            </c:forEach>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </c:forEach>
+    </div>
+    <div class="d-flex justify-content-center">
+        <button class="btn btn-success">
+            <spring:message code="editList.seeMore"/>
+        </button>
+    </div>
+
+</div>
 
 </body>
 <script>
