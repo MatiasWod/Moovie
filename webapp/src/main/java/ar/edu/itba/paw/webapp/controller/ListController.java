@@ -345,7 +345,7 @@ public class ListController {
         String referer = request.getHeader("Referer");
         if (referer.contains("details")) {
             return new ModelAndView("redirect:/details/" + mediaId);
-        } else if (referer.contains("list") || referer.contains("featuredList")) {
+        } else if (referer.contains("list") || referer.contains("featuredList") || referer.contains("discover")) {
             return new ModelAndView("redirect:" + referer);
         } else {
             return new ModelAndView("redirect:/");

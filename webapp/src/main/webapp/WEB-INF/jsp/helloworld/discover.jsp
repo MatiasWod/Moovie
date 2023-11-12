@@ -47,9 +47,6 @@
         </div>
         <div style="position: relative" class="container d-flex flex-row">
             <%--        FILTROS y PELIS    --%>
-
-
-
             <div class="container d-flex flex-column">
                 <c:if test="${param.query != null && param.query.length() > 0}">
                     <h3>
@@ -63,7 +60,6 @@
                 </c:if>
 
                 <div class="scrollableDiv flex-wrap d-flex justify-space-between">
-
                     <c:if test="${fn:length(mediaList) == 0 }">
                         <div class="d-flex m-2 flex-column">
                             <spring:message code="discover.noResults"/>
@@ -73,14 +69,56 @@
                     <c:forEach var="movie" items="${mediaList}" varStatus="loop">
                         <a href="${pageContext.request.contextPath}/details/${movie.mediaId}" class="poster card text-bg-dark m-1">
                             <div class="card-img-container"> <!-- Add a container for the image -->
-                                <c:choose>
-                                    <c:when test="${movie.watched}">
-                                        <div><i class="bi bi-check-circle-fill" style="color: green"></i></div>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <div>No la viste</div>
-                                    </c:otherwise>
-                                </c:choose>
+                                <div style="position:absolute;bottom:0;left: 20%;z-index: 2" class="d-flex m-2">
+                                    <c:choose>
+                                        <c:when test="${movie.watched}">
+                                            <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">
+                                                <input type="hidden" name="listId" value="${watchedListId}"/>
+                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>
+                                                <button class="btn btn-secondary m-1" type="submit">
+                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
+                                                        <i class="bi bi-eye-fill" style="color: green; cursor: pointer;"></i>
+                                                    </span>
+                                                </button>
+                                            </form>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
+                                                <input type="hidden" name="listId" value="${watchedListId}"/>
+                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>
+                                                <button class="btn btn-secondary m-1" type="submit">
+                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
+                                                        <i class="bi bi-eye-fill" style="color: whitesmoke; cursor: pointer;"></i>
+                                                    </span>
+                                                </button>
+                                            </form>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <c:choose>
+                                        <c:when test="${movie.watchlist}">
+                                            <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">
+                                                <input type="hidden" name="listId" value="${watchlistId}"/>
+                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>
+                                                <button class="btn btn-secondary m-1" type="submit">
+                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
+                                                        <i class="bi bi-bookmark-check-fill" style="color: green; cursor: pointer;"></i>
+                                                    </span>
+                                                </button>
+                                            </form>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
+                                                <input type="hidden" name="listId" value="${watchlistId}"/>
+                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>
+                                                <button class="btn btn-secondary m-1" type="submit">
+                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
+                                                        <i class="bi bi-bookmark-check-fill" style="color: whitesmoke; cursor: pointer;"></i>
+                                                    </span>
+                                                </button>
+                                            </form>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
                                 <img class="cropCenter" src="${movie.posterPath}" alt="media poster">
                                 <div class="card-img-overlay">
                                     <h6 class="card-title text-center">${movie.name}</h6>

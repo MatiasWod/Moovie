@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Media.MediaFilters;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
+import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.CreateReviewForm;
 import jdk.net.SocketFlow;
@@ -200,6 +201,15 @@ public class MediaController {
         else{
             mav.addObject("mediaList",mediaService.getMedia(MediaTypes.TYPE_TVSERIE.getType(), query, credit, genres, providers, status, lang, orderBy, order,  PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
             mediaCount = mediaService.getMediaCount(MediaTypes.TYPE_TVSERIE.getType(), query, credit, genres, providers, status, lang);
+        }
+
+        try {
+            User currentUser=userService.getInfoOfMyUser();
+            mav.addObject("watchedListId",moovieListService.getMoovieListCards("Watched",currentUser.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId());
+            mav.addObject("watchlistId",moovieListService.getMoovieListCards("Watchlist",currentUser.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId());
+            mav.addObject("showWatched",true);
+        }catch (Exception e){
+            mav.addObject("showWatched",false);
         }
 
         int numberOfPages = (int) Math.ceil(mediaCount * 1.0 / PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize());
