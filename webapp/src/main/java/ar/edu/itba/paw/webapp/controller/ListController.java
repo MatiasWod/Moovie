@@ -395,22 +395,22 @@ public class ListController {
 
 
     @RequestMapping(value = "/MoovieListReview", method = RequestMethod.POST)
-    public ModelAndView createMoovieListReview(@Valid @ModelAttribute("detailsForm") final CreateReviewForm form, final BindingResult errors, RedirectAttributes redirectAttributes) {
+    public ModelAndView createMoovieListReview(@Valid @ModelAttribute("createReviewForm") final CreateReviewForm createReviewForm, final BindingResult errors, RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
-            return list(form.getMediaId(),"tmdbRating", "asc", 1);
+            return list(createReviewForm.getMediaId(),"tmdbRating", "asc", 1);
         }
         try{
-            reviewService.createReview(form.getMediaId(), form.getRating(), form.getReviewContent(), ReviewTypes.REVIEW_MOOVIE_LIST);
+            reviewService.createReview(createReviewForm.getMediaId(), createReviewForm.getRating(), createReviewForm.getReviewContent(), ReviewTypes.REVIEW_MOOVIE_LIST);
             redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully created.");
         } catch(Exception e1) {
             try {
-                reviewService.editReview(form.getMediaId(), form.getRating(), form.getReviewContent(), ReviewTypes.REVIEW_MOOVIE_LIST);
+                reviewService.editReview(createReviewForm.getMediaId(), createReviewForm.getRating(), createReviewForm.getReviewContent(), ReviewTypes.REVIEW_MOOVIE_LIST);
                 redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully edited.");
             } catch (Exception e2) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Couldn't create review, you already have a review for this media.");
             }
         }
-        return new ModelAndView("redirect:/list/" + form.getMediaId());
+        return new ModelAndView("redirect:/list/" + createReviewForm.getMediaId());
     }
 
     @RequestMapping(value= "/likeMoovieListReview", method = RequestMethod.POST)

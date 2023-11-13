@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -338,13 +339,14 @@ public class MediaController {
         return new ModelAndView("redirect:/details/" + mediaId);
     }
 
-    @RequestMapping("/review/id")
-    public ModelAndView review() {
+    @RequestMapping("/review/{id:\\d+}")
+    public ModelAndView review(@PathVariable int id, @ModelAttribute("commentForm") CommentForm commentForm) {
         final ModelAndView mav = new ModelAndView("helloworld/review");
         List<Media> movieList = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
                 null, null, null, null,MediaFilters.TMDBRATING.getFilter(), MediaFilters.DESC.getFilter(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("movieList", movieList);
-
+        mav.addObject("review", reviewService.getReviewById(id));
+        mav.addObject("currentUsername", userService.getInfoOfMyUser());
         return mav;
     }
 
@@ -372,9 +374,9 @@ public class MediaController {
 
     @RequestMapping(value = "/createcomment", method = RequestMethod.POST)
     public ModelAndView createComment(@ModelAttribute("detailsForm") final CreateReviewForm form,
-                                     @Valid @ModelAttribute("commentForm") final CommentForm commentForm,
-                                     final BindingResult errors,
-                                     RedirectAttributes redirectAttributes) {
+                                      @Valid @ModelAttribute("commentForm") final CommentForm commentForm,
+                                      final BindingResult errors, HttpServletRequest request,
+                                      RedirectAttributes redirectAttributes) {
 
         if (errors.hasErrors()) {
             return details(form.getMediaId(),1, form, commentForm);
@@ -386,7 +388,13 @@ public class MediaController {
             redirectAttributes.addFlashAttribute("errorMessage", "Couldn't create comment.");
         }
 
-        return new ModelAndView("redirect:/details/" + commentForm.getListMediaId());
+        String referer = request.getHeader("Referer");
+        if (referer.contains("details")) {
+            return new ModelAndView("redirect:/details/" + commentForm.getListMediaId());
+        } else if (referer.contains("review")) {
+            return new ModelAndView("redirect:/review/" + commentForm.getReviewId());
+        }
+        return new ModelAndView("helloworld/index");
     }
 }
 

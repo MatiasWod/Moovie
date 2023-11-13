@@ -8,7 +8,7 @@
 <html>
 <head>
     <title>
-        <spring:message code="review.title" arguments="hello"/>
+        <spring:message code="review.title" arguments="${review.username}"/>
     </title>
     <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/resources/logo.png"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -38,7 +38,7 @@
                         <div class="mt-0" style="margin-left: 15px">
                             <a href="${pageContext.request.contextPath}/profile/${review.username}"
                                style="text-decoration: none; color: inherit;">
-                                <h5><c:out value="${review.username}"/> USER</h5>
+                                <h5><c:out value="${review.username}"/></h5>
                             </a>
                         </div>
                     </div>
@@ -108,27 +108,58 @@
                         </c:choose>
                     </div>
                 </div>
-                <p class="m-1 card-text">Review</p>
+                <p class="m-1 card-text">${review.reviewContent}</p>
             </div>
             <%--<c:if test="${review.hasComments}">--%>
             <div class="m-3">
                 <div class="input-group mt-2 mb-3">
-                    <textarea class="form-control" placeholder="<spring:message code="details.addComment"/>" aria-label="With textarea"></textarea>
+                    <form:form modelAttribute="commentForm" action="${pageContext.request.contextPath}/createcomment" method="POST">
+                        <form:input path="reviewId" type="hidden" value="${review.reviewId}"/>
+                        <form:input path="listMediaId" type="hidden" value="${review.mediaId}"/>
+                        <form:input path="content" class="form-control" placeholder="Add comment..." aria-label="With textarea"/>
+                    </form:form>
                 </div>
-                <c:forEach begin="1" end="5">
+                <c:forEach items="${review.comments}" var="comment">
                     <div class="mb-2 mt-2 card card-body">
                         <div class="d-flex justify-content-between">
-                            <h6 class="card-title">Username (agregar href)</h6>
+                            <a href="/profile/${comment.username}">
+                                <h6 class="card-title">${comment.username}</h6>
+                            </a>
                             <div class="d-flex">
-                                <a class="me-1 btn-sm btn btn-outline-success">
-                                    <i class="m-1 bi bi-hand-thumbs-up"></i>
-                                </a>
-                                <a class="btn btn-sm btn-outline-danger">
-                                    <i class="m-1 bi bi-hand-thumbs-down"></i>
-                                </a>
+                                <p>${comment.commentLikes - comment.commentDislikes}  </p>
+                                <form action="${pageContext.request.contextPath}/likeComment" method="post">
+                                    <input hidden name="commentId" value="${comment.commentId}">
+                                    <input hidden name="mediaId" value="${media.mediaId}">
+                                    <c:if test="${!comment.currentUserHasLiked}">
+                                        <button type="submit" class="me-1 btn-sm btn btn-outline-success">
+                                            <i class="m-1 bi bi-hand-thumbs-up"></i>
+                                        </button>
+                                    </c:if>
+                                    <c:if test="${comment.currentUserHasLiked}">
+                                        <button type="submit" class="me-1 btn-sm btn btn-success">
+                                            <i class="m-1 bi bi-hand-thumbs-up"></i>
+                                        </button>
+                                    </c:if>
+
+                                </form>
+
+                                <form action="${pageContext.request.contextPath}/dislikeComment" method="post">
+                                    <input hidden name="commentId" value="${comment.commentId}">
+                                    <input hidden name="mediaId" value="${media.mediaId}">
+                                    <c:if test="${!comment.currentUserHasDisliked}">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="m-1 bi bi-hand-thumbs-down"></i>
+                                        </button>
+                                    </c:if>
+                                    <c:if test="${comment.currentUserHasDisliked}">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="m-1 bi bi-hand-thumbs-down"></i>
+                                        </button>
+                                    </c:if>
+                                </form>
                             </div>
                         </div>
-                        <p class="card-text">Comment Commetn Commetn</p>
+                        <p class="card-text">${comment.content}</p>
                     </div>
                 </c:forEach>
             </div>

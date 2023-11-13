@@ -2,6 +2,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -27,7 +28,12 @@
 <div class="d-flex">
     <div class="d-flex flex-column flex-grow-1 m-3">
             <div class="input-group mt-2 mb-3">
-                <textarea class="form-control" placeholder="<spring:message code="details.addComment"/>" aria-label="With textarea"></textarea>
+                <form:form modelAttribute="createReviewForm" action="${pageContext.request.contextPath}/MoovieListReview" method="POST">
+                    <form:input path="mediaId" type="hidden" value="${moovieList.moovieListId}"/>
+                    <form:input path="rating" type="hidden" value="0"/>
+                    <form:input path="reviewContent" class="form-control" placeholder="Add comment..." aria-label="With textarea"/>
+                </form:form>
+                
             </div>
             <c:forEach var="review" items="${reviews}">
                 <div class="card mb-3">
@@ -36,10 +42,10 @@
                         <div class="d-flex align-items-center">
                             <a href="${pageContext.request.contextPath}/profile/${review.username}"
                                style="text-decoration: none; color: inherit;">
-                                <img class="cropCenter mr-3 profile-image rounded-circle"
+                                <%--<img class="cropCenter mr-3 profile-image rounded-circle"
                                      style="height:60px;width:60px;border: solid black; border-radius: 50%"
                                      src="${pageContext.request.contextPath}/profile/image/${review.username}"
-                                     alt="${review.userId} Reviewer Profile">
+                                     alt="${review.userId} Reviewer Profile">--%>
                             </a>
                             <div class="mt-0" style="margin-left: 15px">
                                 <a href="${pageContext.request.contextPath}/profile/${review.username}"

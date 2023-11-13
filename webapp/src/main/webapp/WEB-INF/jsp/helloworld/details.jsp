@@ -513,10 +513,10 @@
                                     </c:if>
 
                                 </div>
-                                <a class="ms-1" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                <a class="ms-1" data-bs-toggle="collapse" href="#collapse${review.reviewId}" role="button" aria-expanded="false" aria-controls="collapse${review.reviewId}">
                                     <spring:message code="details.comment"/> (${review.commentCount})
                                 </a>
-                                <div class="collapse" id="collapseExample">
+                                <div class="collapse" id="collapse${review.reviewId}">
                                     <div class="input-group mt-2">
                                         <form:form modelAttribute="commentForm" action="${pageContext.request.contextPath}/createcomment" method="POST">
                                             <form:input path="reviewId" type="hidden" value="${review.reviewId}"/>
@@ -530,19 +530,36 @@
                                             <div class="d-flex justify-content-between">
                                                 <h6 class="card-title"><a href="${pageContext.request.contextPath}/profile/${comment.username}">${comment.username}</a></h6>
                                                 <div class="d-flex">
+                                                    <p>${comment.commentLikes - comment.commentDislikes}  </p>
                                                     <form action="${pageContext.request.contextPath}/likeComment" method="post">
                                                         <input hidden name="commentId" value="${comment.commentId}">
                                                         <input hidden name="mediaId" value="${media.mediaId}">
-                                                        <button type="submit" class="me-1 btn-sm btn btn-outline-success">
-                                                            <i class="m-1 bi bi-hand-thumbs-up"></i>
-                                                        </button>
+                                                        <c:if test="${!comment.currentUserHasLiked}">
+                                                            <button type="submit" class="me-1 btn-sm btn btn-outline-success">
+                                                                <i class="m-1 bi bi-hand-thumbs-up"></i>
+                                                            </button>
+                                                        </c:if>
+                                                        <c:if test="${comment.currentUserHasLiked}">
+                                                            <button type="submit" class="me-1 btn-sm btn btn-success">
+                                                                <i class="m-1 bi bi-hand-thumbs-up"></i>
+                                                            </button>
+                                                        </c:if>
+
                                                     </form>
+
                                                     <form action="${pageContext.request.contextPath}/dislikeComment" method="post">
                                                         <input hidden name="commentId" value="${comment.commentId}">
                                                         <input hidden name="mediaId" value="${media.mediaId}">
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                            <i class="m-1 bi bi-hand-thumbs-down"></i>
-                                                        </button>
+                                                        <c:if test="${!comment.currentUserHasDisliked}">
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                                <i class="m-1 bi bi-hand-thumbs-down"></i>
+                                                            </button>
+                                                        </c:if>
+                                                        <c:if test="${comment.currentUserHasDisliked}">
+                                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                                <i class="m-1 bi bi-hand-thumbs-down"></i>
+                                                            </button>
+                                                        </c:if>
                                                     </form>
                                                 </div>
                                             </div>
@@ -550,7 +567,7 @@
                                         </div>
                                     </c:forEach>
                                         <c:if test="${review.commentCount > 5}">
-                                    <a class="ms-1" href="${pageContext.request.contextPath}/review/id">
+                                    <a class="ms-1" href="${pageContext.request.contextPath}/review/${review.reviewId}">
                                         <spring:message code="details.seeMore"/>
                                     </a>
                                         </c:if>

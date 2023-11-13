@@ -52,6 +52,15 @@ public class Comment {
         this.content = content;
     }
 
+
+    public boolean isCurrentUserHasDisliked() {
+        return currentUserHasDisliked;
+    }
+
+    public boolean isCurrentUserHasLiked() {
+        return currentUserHasLiked;
+    }
+
     public void setCurrentUserHasLiked(boolean currentUserHasLiked) {
         this.currentUserHasLiked = currentUserHasLiked;
     }

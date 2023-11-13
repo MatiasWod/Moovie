@@ -104,7 +104,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
     @Override
     public List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber, int currentUserId) {
         String jpql = "SELECT mlc, " +
-                "(SELECT COUNT(mlc2) FROM MoovieListContent mlc2 INNER JOIN MoovieList ml ON mlc2.moovieListId = ml.moovieListId WHERE mlc2.moovieListId = mlc.id AND ml.name = 'Watched' AND ml.userId = :currentUserId), " +
+                "(SELECT COUNT(mlc2) FROM MoovieListContent mlc2 INNER JOIN MoovieList ml ON mlc2.moovieList.moovieListId = ml.moovieListId WHERE mlc2.moovieList.moovieListId = mlc.id AND ml.name = 'Watched' AND ml.userId = :currentUserId), " +
                 "(SELECT COUNT(mll2) > 0 FROM MoovieListLikes mll2 WHERE mll2.moovieList.id = mlc.id), " + // ACA BORRE LOS  AND mlf.user.id = :userId  me parece que no es por ahi
                 "(SELECT COUNT(mlf2) > 0 FROM MoovieListFollowers mlf2 WHERE mlf2.moovieList.id = mlc.id) " +
                 "FROM MoovieListCard mlc JOIN MoovieListFollowers mll " +

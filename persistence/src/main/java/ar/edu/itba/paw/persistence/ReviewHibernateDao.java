@@ -41,6 +41,7 @@ public class ReviewHibernateDao implements ReviewDao {
         Object obj = query.getSingleResult();
 
         review.setHasLiked((boolean) obj);
+        review.setComments(commentDao.getComments(review.getReviewId(),currentUserId,0,0));
 
         return Optional.of(review);
     }
@@ -68,7 +69,7 @@ public class ReviewHibernateDao implements ReviewDao {
             Object obj = query2.getSingleResult();
 
             review.setHasLiked((boolean) obj);
-            review.setComments(commentDao.getComments(review.getReviewId(),currentUserId,25,0));
+            review.setComments(commentDao.getComments(review.getReviewId(),currentUserId,0,0));
         }
 
         return reviews;
@@ -100,6 +101,7 @@ public class ReviewHibernateDao implements ReviewDao {
             Object obj = query2.getSingleResult();
 
             review.setHasLiked((boolean) obj);
+            review.setComments(commentDao.getComments(review.getReviewId(),currentUserId,0,0));
         }
 
         return reviews;
