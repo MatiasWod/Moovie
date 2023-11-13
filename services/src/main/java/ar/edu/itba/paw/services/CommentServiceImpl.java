@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.CommentDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,11 +20,13 @@ public class CommentServiceImpl implements CommentService{
     private CommentDao commentDao;
 
 
+    @Transactional(readOnly = true)
     @Override
     public List<Comment> getComments(int reviewId, int size, int pageNumber) {
         return commentDao.getComments(reviewId, userService.getInfoOfMyUser().getUserId(), size, pageNumber);
     }
 
+    @Transactional
     @Override
     public void likeComment(int commentId) {
         User currentUser = userService.getInfoOfMyUser();
@@ -39,11 +42,13 @@ public class CommentServiceImpl implements CommentService{
 
     }
 
+    @Transactional
     @Override
     public void removeLikeComment(int commentId) {
         commentDao.removeLikeComment(commentId, userService.getInfoOfMyUser().getUserId());
     }
 
+    @Transactional
     @Override
     public void dislikeComment(int commentId) {
         User currentUser = userService.getInfoOfMyUser();
@@ -58,16 +63,19 @@ public class CommentServiceImpl implements CommentService{
         }
     }
 
+    @Transactional
     @Override
     public void removeDislikeComment(int commentId) {
         commentDao.removeDislikeComment(commentId, userService.getInfoOfMyUser().getUserId());
     }
 
+    @Transactional
     @Override
     public void createComment(int reviewId, String content) {
         commentDao.createComment(reviewId, content, userService.getInfoOfMyUser().getUserId());
     }
 
+    @Transactional
     @Override
     public void deleteComment(int commentId) {
         commentDao.deleteComment(commentId);
