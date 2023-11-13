@@ -517,13 +517,16 @@
                                     <spring:message code="details.comment"/> (${review.commentCount})
                                 </a>
                                 <div class="collapse" id="collapse${review.reviewId}">
-                                    <div class="input-group mt-2">
-                                        <form:form modelAttribute="commentForm" action="${pageContext.request.contextPath}/createcomment" method="POST">
-                                            <form:input path="reviewId" type="hidden" value="${review.reviewId}"/>
-                                            <form:input path="listMediaId" type="hidden" value="${media.mediaId}"/>
-                                            <form:input path="content" class="form-control" placeholder="Add comment..." aria-label="With textarea"/>
-                                        </form:form>
-                                    </div>
+                                    <sec:authorize access="isAuthenticated()">
+                                        <div class="input-group mt-2">
+                                            <form:form modelAttribute="commentForm" action="${pageContext.request.contextPath}/createcomment" method="POST">
+                                                <form:input path="reviewId" type="hidden" value="${review.reviewId}"/>
+                                                <form:input path="listMediaId" type="hidden" value="${media.mediaId}"/>
+                                                <form:input path="content" class="form-control" placeholder="Add comment..." aria-label="With textarea"/>
+                                            </form:form>
+                                        </div>
+                                    </sec:authorize>
+
                                     <c:if test="${review.commentCount > 0}">
                                     <c:forEach items="${review.comments}" var="comment" end="4">
                                         <div class="mb-2 mt-2 card card-body">
@@ -531,36 +534,40 @@
                                                 <h6 class="card-title"><a href="${pageContext.request.contextPath}/profile/${comment.username}">${comment.username}</a></h6>
                                                 <div class="d-flex">
                                                     <p>${comment.commentLikes - comment.commentDislikes}  </p>
-                                                    <form action="${pageContext.request.contextPath}/likeComment" method="post">
-                                                        <input hidden name="commentId" value="${comment.commentId}">
-                                                        <input hidden name="mediaId" value="${media.mediaId}">
-                                                        <c:if test="${!comment.currentUserHasLiked}">
-                                                            <button type="submit" class="me-1 btn-sm btn btn-outline-success">
-                                                                <i class="m-1 bi bi-hand-thumbs-up"></i>
-                                                            </button>
-                                                        </c:if>
-                                                        <c:if test="${comment.currentUserHasLiked}">
-                                                            <button type="submit" class="me-1 btn-sm btn btn-success">
-                                                                <i class="m-1 bi bi-hand-thumbs-up"></i>
-                                                            </button>
-                                                        </c:if>
 
-                                                    </form>
+                                                    <sec:authorize access="isAuthenticated()">
+                                                        <form action="${pageContext.request.contextPath}/likeComment" method="post">
+                                                            <input hidden name="commentId" value="${comment.commentId}">
+                                                            <input hidden name="mediaId" value="${media.mediaId}">
+                                                            <c:if test="${!comment.currentUserHasLiked}">
+                                                                <button type="submit" class="me-1 btn-sm btn btn-outline-success">
+                                                                    <i class="m-1 bi bi-hand-thumbs-up"></i>
+                                                                </button>
+                                                            </c:if>
+                                                            <c:if test="${comment.currentUserHasLiked}">
+                                                                <button type="submit" class="me-1 btn-sm btn btn-success">
+                                                                    <i class="m-1 bi bi-hand-thumbs-up"></i>
+                                                                </button>
+                                                            </c:if>
 
-                                                    <form action="${pageContext.request.contextPath}/dislikeComment" method="post">
-                                                        <input hidden name="commentId" value="${comment.commentId}">
-                                                        <input hidden name="mediaId" value="${media.mediaId}">
-                                                        <c:if test="${!comment.currentUserHasDisliked}">
-                                                            <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                                <i class="m-1 bi bi-hand-thumbs-down"></i>
-                                                            </button>
-                                                        </c:if>
-                                                        <c:if test="${comment.currentUserHasDisliked}">
-                                                            <button type="submit" class="btn btn-sm btn-danger">
-                                                                <i class="m-1 bi bi-hand-thumbs-down"></i>
-                                                            </button>
-                                                        </c:if>
-                                                    </form>
+                                                        </form>
+
+                                                        <form action="${pageContext.request.contextPath}/dislikeComment" method="post">
+                                                            <input hidden name="commentId" value="${comment.commentId}">
+                                                            <input hidden name="mediaId" value="${media.mediaId}">
+                                                            <c:if test="${!comment.currentUserHasDisliked}">
+                                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                                    <i class="m-1 bi bi-hand-thumbs-down"></i>
+                                                                </button>
+                                                            </c:if>
+                                                            <c:if test="${comment.currentUserHasDisliked}">
+                                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                                    <i class="m-1 bi bi-hand-thumbs-down"></i>
+                                                                </button>
+                                                            </c:if>
+                                                        </form>
+                                                    </sec:authorize>
+
                                                 </div>
                                             </div>
                                             <p class="card-text">${comment.content}</p>

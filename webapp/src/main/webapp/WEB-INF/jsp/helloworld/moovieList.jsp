@@ -32,9 +32,9 @@
                     <form:input path="mediaId" type="hidden" value="${moovieList.moovieListId}"/>
                     <form:input path="rating" type="hidden" value="5"/>
                     <form:input path="reviewContent" class="form-control" placeholder="Add comment..." aria-label="With textarea"/>
-                    <button type="submit" class="btn btn-dark" style="margin-inline: 10px" id="submitButton">
-                        <spring:message code="details.submit"/>
-                    </button>
+<%--                    <button type="submit" class="btn btn-dark" style="margin-inline: 10px" id="submitButton">--%>
+<%--                        <spring:message code="details.submit"/>--%>
+<%--                    </button>--%>
                 </form:form>
                 
             </div>
@@ -43,6 +43,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
+                            <img src=""/>
                             <a href="${pageContext.request.contextPath}/profile/${review.username}"
                                style="text-decoration: none; color: inherit;">
                                 <%--<img class="cropCenter mr-3 profile-image rounded-circle"
@@ -78,7 +79,7 @@
                                                     code="details.confirmReviewDeletionPrompt"/></p>
                                             <div class="d-flex justify-content-evenly">
                                                 <form class="m-0"
-                                                      action="${pageContext.request.contextPath}/deleteUserReview/${moovieList.moovieListId}}"
+                                                      action="${pageContext.request.contextPath}/deleteUserMoovieListReview/${moovieList.moovieListId}"
                                                       method="post">
                                                     <input type="hidden" name="reviewId"
                                                            value="${review.moovieListReviewId}"/>
@@ -155,16 +156,16 @@
                                 </c:otherwise>
                             </c:choose>
                         </div>
-                        <c:if test="${currentUsername==review.username}">
-                            <div style="margin-bottom: 15px">
-                                <button class="btn btn-primary" style="font-size: 14px;margin-left: 10px;"  onclick="openPopup('rate-popup')">
-                                                <span>
-                                                   <i class="bi bi-pencil" ></i>
-                                                </span>
-                                    <spring:message code="details.editReview"/>
-                                </button>
-                            </div>
-                        </c:if>
+<%--                        <c:if test="${currentUsername==review.username}">--%>
+<%--                            <div style="margin-bottom: 15px">--%>
+<%--                                <button class="btn btn-primary" style="font-size: 14px;margin-left: 10px;"  onclick="openPopup('rate-popup')">--%>
+<%--                                                <span>--%>
+<%--                                                   <i class="bi bi-pencil" ></i>--%>
+<%--                                                </span>--%>
+<%--                                    <spring:message code="details.editReview"/>--%>
+<%--                                </button>--%>
+<%--                            </div>--%>
+<%--                        </c:if>--%>
 
                     </div>
                 </div>

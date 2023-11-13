@@ -403,13 +403,13 @@ public class ListController {
         }
         try{
             reviewService.createReview(createReviewForm.getMediaId(), createReviewForm.getRating(), createReviewForm.getReviewContent(), ReviewTypes.REVIEW_MOOVIE_LIST);
-            redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully created.");
+            redirectAttributes.addFlashAttribute("successMessage", "Comment has been successfully created.");
         } catch(Exception e1) {
             try {
                 reviewService.editReview(createReviewForm.getMediaId(), createReviewForm.getRating(), createReviewForm.getReviewContent(), ReviewTypes.REVIEW_MOOVIE_LIST);
-                redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully edited.");
+                redirectAttributes.addFlashAttribute("successMessage", "Comment has been successfully edited.");
             } catch (Exception e2) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Couldn't create review, you already have a review for this media.");
+                redirectAttributes.addFlashAttribute("errorMessage", "Couldn't create comment, you already have a review for this list.");
             }
         }
         return new ModelAndView("redirect:/list/" + createReviewForm.getMediaId());
