@@ -315,4 +315,44 @@ CREATE TABLE IF NOT EXISTS moovieListsReviewsLikes (
     UNIQUE(moovieListReviewId, userId)
 );
 
+--ReviewComments
+-- CREATE TABLE IF NOT EXISTS reviewComments(
+--     reviewId    INTEGER NOT NULL,
+--     commentId      INTEGER NOT NULL,
+--     FOREIGN KEY(commentId)     REFERENCES comments(commentId) ON DELETE CASCADE,
+--     FOREIGN KEY(reviewId)   REFERENCES reviews(reviewId) ON DELETE CASCADE,
+--     UNIQUE(reviewId, commentId)
+-- );
+
+--Comments
+CREATE TABLE IF NOT EXISTS comments(
+    commentId   SERIAL PRIMARY KEY,
+    reviewId    INTEGER NOT NULL,
+    userId      INTEGER NOT NULL,
+    content     TEXT,
+
+    FOREIGN KEY(reviewId)   REFERENCES reviews(reviewId) ON DELETE CASCADE,
+    FOREIGN KEY(userId)     REFERENCES users(userId) ON DELETE CASCADE
+);
+
+--CommentLikes
+CREATE TABLE IF NOT EXISTS commentLikes(
+    commentId   INTEGER NOT NULL,
+    userId      INTEGER NOT NULL,
+
+    FOREIGN KEY(userId)     REFERENCES users(userId) ON DELETE CASCADE,
+    FOREIGN KEY(commentId)  REFERENCES comments(commentId) ON DELETE CASCADE,
+    UNIQUE(userId, commentId)
+);
+
+--CommentDislikes
+CREATE TABLE IF NOT EXISTS commentDislikes(
+       commentId   INTEGER NOT NULL,
+       userId      INTEGER NOT NULL,
+
+       FOREIGN KEY(userId)     REFERENCES users(userId) ON DELETE CASCADE,
+       FOREIGN KEY(commentId)  REFERENCES comments(commentId) ON DELETE CASCADE,
+       UNIQUE(userId, commentId)
+);
+
 

@@ -513,37 +513,49 @@
                                     </c:if>
 
                                 </div>
-                                    <%--<c:if test="${review.hasComments}">--%>
                                 <a class="ms-1" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                                    <spring:message code="details.comment"/> (review.commentsCount)
+                                    <spring:message code="details.comment"/> (${review.commentCount})
                                 </a>
                                 <div class="collapse" id="collapseExample">
                                     <div class="input-group mt-2">
-                                        <textarea class="form-control" placeholder="<spring:message code="details.addComment"/>" aria-label="With textarea"></textarea>
+                                        <form:form modelAttribute="commentForm" action="${pageContext.request.contextPath}/createcomment" method="POST">
+                                            <form:input path="reviewId" type="hidden" value="${review.reviewId}"/>
+                                            <form:input path="mediaId" type="hidden" value="${media.mediaId}"/>
+                                            <form:input path="content" class="form-control" placeholder="Add comment..." aria-label="With textarea"/>
+                                        </form:form>
                                     </div>
-                                    <c:forEach begin="1" end="5">
+                                    <c:if test="${review.commentCount > 0}">
+                                    <c:forEach items="${review.comments}" var="comment" end="4">
                                         <div class="mb-2 mt-2 card card-body">
                                             <div class="d-flex justify-content-between">
-                                                <h6 class="card-title">Username (agregar href)</h6>
+                                                <h6 class="card-title"><a href="${pageContext.request.contextPath}/profile/${comment.username}">${comment.username}</a></h6>
                                                 <div class="d-flex">
-                                                    <a class="me-1 btn-sm btn btn-outline-success">
-                                                        <i class="m-1 bi bi-hand-thumbs-up"></i>
-                                                    </a>
-                                                    <a class="btn btn-sm btn-outline-danger">
-                                                        <i class="m-1 bi bi-hand-thumbs-down"></i>
-                                                    </a>
+                                                    <form action="${pageContext.request.contextPath}/likeComment" method="post">
+                                                        <input hidden name="commentId" value="${comment.commentId}">
+                                                        <input hidden name="mediaId" value="${media.mediaId}">
+                                                        <button type="submit" class="me-1 btn-sm btn btn-outline-success">
+                                                            <i class="m-1 bi bi-hand-thumbs-up"></i>
+                                                        </button>
+                                                    </form>
+                                                    <form action="${pageContext.request.contextPath}/dislikeComment" method="post">
+                                                        <input hidden name="commentId" value="${comment.commentId}">
+                                                        <input hidden name="mediaId" value="${media.mediaId}">
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                            <i class="m-1 bi bi-hand-thumbs-down"></i>
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </div>
-                                            <p class="card-text">Comment Commetn Commetn</p>
+                                            <p class="card-text">${comment.content}</p>
                                         </div>
                                     </c:forEach>
-                                        <%--<c:if test="${comments > 5}">--%>
+                                        <c:if test="${review.commentCount > 5}">
                                     <a class="ms-1" href="${pageContext.request.contextPath}/review/id">
                                         <spring:message code="details.seeMore"/>
                                     </a>
-                                        <%--</c:if>--%>
+                                        </c:if>
                                 </div>
-                                    <%--</c:if>--%>
+                                    </c:if>
                         </div>
                     </c:forEach>
                 </div>
@@ -564,6 +576,7 @@
             <c:param name="currentPage" value="${currentPage + 1}"/>
             <c:param name="url" value="/details/${media.mediaId}"/>
         </c:import>
+    </div>
     </div>
 </div>
 </body>

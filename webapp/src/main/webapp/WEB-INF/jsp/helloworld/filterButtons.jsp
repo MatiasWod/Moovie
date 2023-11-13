@@ -78,9 +78,9 @@
             <div class="d-flex flex-row m-1">
                 <select name="orderBy" class="form-select filter-width" aria-label="Filter!">
                     <option ${'name' == param.orderBy ? 'selected' : ''} value="name"><spring:message code="createList.orderByTitle"/></option>
-                    <option ${('totalrating' == param.orderBy || param.orderBy == null) ? 'selected' : ''} value="totalrating"><spring:message code="createList.orderByUserScore"/></option>
-                    <option ${('tmdbrating' == param.orderBy || param.orderBy == null) ? 'selected' : ''} value="tmdbrating"><spring:message code="createList.orderByMoovieScore"/></option>
-                    <option ${'releasedate' == param.orderBy ? 'selected' : ''} value="releasedate"><spring:message code="createList.orderByReleaseDate"/></option>
+                    <option ${('totalRating' == param.orderBy || param.orderBy == null) ? 'selected' : ''} value="totalRating"><spring:message code="createList.orderByUserScore"/></option>
+                    <option ${('tmdbRating' == param.orderBy || param.orderBy == null) ? 'selected' : ''} value="tmdbRating"><spring:message code="createList.orderByMoovieScore"/></option>
+                    <option ${'releaseDate' == param.orderBy ? 'selected' : ''} value="releaseDate"><spring:message code="createList.orderByReleaseDate"/></option>
                 </select>
                 <input type="hidden" name="order" id="sortOrderInput" value="${param.order =='asc'? 'asc':'desc'}">
                 <div class="btn btn-style me-1" id="sortButton" onclick="changeSortOrder('sortOrderInput', 'sortIcon', '${param.orderBy}')">
@@ -90,7 +90,7 @@
 
             <input type="hidden" name="g" id="hiddenGenreInput">
             <button class="btn btn-success m-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGenres" aria-expanded="false" aria-controls="collapseGenres">
-                <spring:message code="createList.genres"/><i class="bi bi-filter"></i>
+                <spring:message code="createList.genres"/>
             </button>
 
             <c:set var="isChecked" value="" />

@@ -2,6 +2,7 @@ package ar.edu.itba.paw.models.User;
 
 import ar.edu.itba.paw.models.MoovieList.MoovieListFollowers;
 import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -26,6 +27,9 @@ public class User {
 
     @Column(nullable = false)
     private int role;
+
+    @Formula("CASE WHEN EXISTS (SELECT 1 FROM userimages ui WHERE ui.userid = userId) THEN 1 ELSE 0 END")
+    private boolean hasPfp;
 
 //    @OneToMany(mappedBy = "user")
 //    final private Set<MoovieListLikes> likes = new HashSet<>();
@@ -81,6 +85,8 @@ public class User {
     public int getRole() {
         return role;
     }
+
+    public boolean getHasPfp(){ return hasPfp; }
 
     public static class Builder {
         private final String email;

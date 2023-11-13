@@ -9,6 +9,7 @@ import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
+import ar.edu.itba.paw.webapp.form.CommentForm;
 import ar.edu.itba.paw.webapp.form.CreateReviewForm;
 import jdk.net.SocketFlow;
 import org.slf4j.Logger;
@@ -59,6 +60,9 @@ public class MediaController {
     @Autowired
     private LanguageService languageService;
 
+    @Autowired
+    private CommentService commentService;
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MediaController.class);
 
@@ -74,10 +78,8 @@ public class MediaController {
     @RequestMapping("/adolfoTest")
     public ModelAndView adolfoTest(){
         final ModelAndView mav = new ModelAndView("helloworld/adolfoTesting");
-        mav.addObject("statusList",statusService.getAllStatus());
-        mav.addObject("seriesStatus",statusService.getAllStatus(MediaTypes.TYPE_TVSERIE.getType()));
-        mav.addObject("langList",languageService.getAllLanguages());
-        mav.addObject("seriesLangs",languageService.getAllLanguages(MediaTypes.TYPE_TVSERIE.getType()));
+        mav.addObject("providerList", providerService.getAllProviders());
+        mav.addObject("user", userService.getInfoOfMyUser());
         return mav;
     }
 
@@ -231,7 +233,8 @@ public class MediaController {
     @RequestMapping(value = "/details/{id:\\d+}")
     public ModelAndView details(@PathVariable("id") final int mediaId,
                                 @RequestParam(value = "page",defaultValue = "1") final int pageNumber,
-                                @ModelAttribute("detailsForm") final CreateReviewForm form) {
+                                @ModelAttribute("detailsForm") final CreateReviewForm form,
+                                @ModelAttribute("commentForm") final CommentForm commentForm) {
         LOGGER.info("Attempting to get media with id: {} for /details.", mediaId);
 
         boolean type;
@@ -281,9 +284,12 @@ public class MediaController {
     }
 
     @RequestMapping(value = "/createrating", method = RequestMethod.POST)
-    public ModelAndView createReview(@Valid @ModelAttribute("detailsForm") final CreateReviewForm form, final BindingResult errors, RedirectAttributes redirectAttributes) {
+    public ModelAndView createReview(@Valid @ModelAttribute("detailsForm") final CreateReviewForm form,
+                                     @ModelAttribute("commentForm") final CommentForm commentForm,
+                                     final BindingResult errors,
+                                     RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
-            return details(form.getMediaId(),1, form);
+            return details(form.getMediaId(),1, form, commentForm);
         }
         try{
             reviewService.createReview(form.getMediaId(), form.getRating(), form.getReviewContent(), ReviewTypes.REVIEW_MEDIA);
@@ -293,7 +299,7 @@ public class MediaController {
                 reviewService.editReview(form.getMediaId(), form.getRating(), form.getReviewContent(), ReviewTypes.REVIEW_MEDIA);
                 redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully edited.");
             } catch (Exception e2) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Couldn't create review, you already have a review for this media.");
+                redirectAttributes.addFlashAttribute("errorMessage", "Couldn't create review, you already reviewed this.");
             }
         }
         return new ModelAndView("redirect:/details/" + form.getMediaId());
@@ -340,6 +346,47 @@ public class MediaController {
         mav.addObject("movieList", movieList);
 
         return mav;
+    }
+
+    @RequestMapping(value= "/likeComment", method = RequestMethod.POST)
+    public ModelAndView likeComment(@RequestParam int commentId,@RequestParam int mediaId, RedirectAttributes redirectAttributes){
+        try {
+            commentService.likeComment(commentId);
+            redirectAttributes.addFlashAttribute("successMessage", "Comment has been successfully liked.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Couldn't like comment.");
+        }
+        return new ModelAndView("redirect:/details/" + mediaId);
+    }
+
+    @RequestMapping(value= "/dislikeComment", method = RequestMethod.POST)
+    public ModelAndView dislikeComment(@RequestParam int commentId,@RequestParam int mediaId, RedirectAttributes redirectAttributes){
+        try {
+            commentService.dislikeComment(commentId);
+            redirectAttributes.addFlashAttribute("successMessage", "Comment has been successfully disliked.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Couldn't dislike comment.");
+        }
+        return new ModelAndView("redirect:/details/" + mediaId);
+    }
+
+    @RequestMapping(value = "/createcomment", method = RequestMethod.POST)
+    public ModelAndView createComment(@ModelAttribute("detailsForm") final CreateReviewForm form,
+                                     @Valid @ModelAttribute("commentForm") final CommentForm commentForm,
+                                     final BindingResult errors,
+                                     RedirectAttributes redirectAttributes) {
+
+        if (errors.hasErrors()) {
+            return details(form.getMediaId(),1, form, commentForm);
+        }
+        try{
+            commentService.createComment(commentForm.getReviewId(),commentForm.getContent());
+            redirectAttributes.addFlashAttribute("successMessage", "Comment has been successfully created.");
+        } catch(Exception e1) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Couldn't create comment.");
+        }
+
+        return new ModelAndView("redirect:/details/" + commentForm.getMediaId());
     }
 }
 

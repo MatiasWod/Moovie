@@ -7,6 +7,7 @@ import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
 import org.hibernate.SQLQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
@@ -22,6 +23,9 @@ public class ReviewHibernateDao implements ReviewDao {
 
     @PersistenceContext
     private EntityManager em;
+
+    @Autowired
+    private CommentDao commentDao;
 
     @Override
     public Optional<Review> getReviewById(int currentUserId, int reviewId) {
@@ -64,6 +68,7 @@ public class ReviewHibernateDao implements ReviewDao {
             Object obj = query2.getSingleResult();
 
             review.setHasLiked((boolean) obj);
+            review.setComments(commentDao.getComments(review.getReviewId(),currentUserId,25,0));
         }
 
         return reviews;

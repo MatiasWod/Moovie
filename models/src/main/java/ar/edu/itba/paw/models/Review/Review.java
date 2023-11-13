@@ -1,8 +1,10 @@
 package ar.edu.itba.paw.models.Review;
 
+import ar.edu.itba.paw.models.Comments.Comment;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "reviews")
@@ -35,6 +37,12 @@ public class Review {
     @Column(columnDefinition = "TEXT")
     private String reviewContent;
 
+    @Formula("(SELECT COUNT(*) FROM comments c WHERE c.reviewid = reviewId)")
+    private Long commentCount;
+
+    @Transient
+    private List<Comment> comments;
+
     //hibernate
     Review() {
     }
@@ -44,6 +52,14 @@ public class Review {
         this.mediaId = mediaId;
         this.rating = rating;
         this.reviewContent = reviewContent;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public Long getCommentCount() {
+        return commentCount;
     }
 
     public int getReviewId() {
@@ -100,5 +116,9 @@ public class Review {
 
     public void setReviewContent(String reviewContent) {
         this.reviewContent = reviewContent;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

@@ -9,6 +9,7 @@ import ar.edu.itba.paw.models.Media.MediaFilters;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.PagingSizes;
+import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
@@ -157,15 +158,17 @@ public class ListController {
         int pagesSize= PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
         try{
             MoovieListDetails myList=moovieListService.getMoovieListDetails(moovieListId,null,null,orderBy,order,pagesSize,pageNumber - 1);
-
+            List<MoovieListReview> listReview = reviewService.getMoovieListReviewsByMoovieListId(moovieListId,PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), 0);
             final MoovieListCard moovieListCard = myList.getCard();
             int mediaCountForMoovieList =moovieListCard.getSize();
             int numberOfPages = (int) Math.ceil(mediaCountForMoovieList * 1.0 / pagesSize);
 
+            mav.addObject("listReview", listReview);
             mav.addObject("moovieList",moovieListCard);
             mav.addObject("mediaList",myList.getContent());
             try {
                 User currentUser=userService.getInfoOfMyUser();
+                mav.addObject("currentUsername", currentUser.getUsername());
                 mav.addObject("watchedCount",myList.getCard().getCurrentUserWatchAmount());
                 mav.addObject("watchedListId",moovieListService.getMoovieListCards("Watched",currentUser.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId());
                 mav.addObject("watchlistId",moovieListService.getMoovieListCards("Watchlist",currentUser.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId());

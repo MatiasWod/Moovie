@@ -13,24 +13,12 @@
 </head>
 <body>
 
-<h2>Status list:</h2>
-<c:forEach items="${statusList}" var="status">
-    <div>${status}</div>
-</c:forEach>
+<h2>My user:</h2>
+${user.hasPfp}
 
-<h2>Series status list:</h2>
-<c:forEach items="${seriesStatus}" var="status">
-    <div>${status}</div>
-</c:forEach>
-
-<h2>Language list</h2>
-<c:forEach items="${langList}" var="lang">
-    <div>${lang}</div>
-</c:forEach>
-
-<h2>Series language list:</h2>
-<c:forEach items="${seriesLangs}" var="status">
-    <div>${status}</div>
+<h2>Providers:</h2>
+<c:forEach items="${providerList}" var="prov">
+    <div>${prov}</div>
 </c:forEach>
 </body>
 </html>
