@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
+import ar.edu.itba.paw.models.Review.ReviewTypes;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,11 +13,17 @@ public interface ReviewDao {
     List<Review> getMovieReviewsFromUser(int currentUserId, int userId, int size, int pageNumber);
     int getReviewsByMediaIdCount(int mediaId);
 
-    void createReview(int userId, int mediaId, int rating, String reviewContent);
+    Optional<MoovieListReview> getMoovieListReviewById(int currentUserId, int moovieListReviewId);
+    List<MoovieListReview> getMoovieListReviewsByMoovieListId(int currentUserId, int moovieListId, int size, int pageNumber) ;
+    int getMoovieListReviewByMoovieListIdCount(int moovieListId);
+    List<MoovieListReview> getMoovieListReviewsFromUser(int currentUserId, int userId, int size, int pageNumber);
 
-    void editReview(int userId,int mediaId,int rating,String reviewContent);
-    void deleteReview(int reviewId);
 
-    void likeReview(int userId, int reviewId);
-    void removeLikeReview(int userId, int reviewId);
+    void createReview(int userId, int mediaId, int rating, String reviewContent, ReviewTypes type);
+
+    void editReview(int userId, int mediaId, int rating, String reviewContent, ReviewTypes type);
+    void deleteReview(int reviewId, ReviewTypes type);
+
+    void likeReview(int userId, int reviewId, ReviewTypes type);
+    void removeLikeReview(int userId, int reviewId, ReviewTypes type);
 }

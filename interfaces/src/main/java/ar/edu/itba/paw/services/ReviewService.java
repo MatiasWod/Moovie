@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
+import ar.edu.itba.paw.models.Review.ReviewTypes;
 
 import java.util.List;
 
@@ -12,15 +14,18 @@ public interface ReviewService {
     //Returns all the reviews a user has made, contains all nescesary data to display
     List<Review> getMovieReviewsFromUser(int userId, int size, int pageNumber);
 
-    //Likes a review
-    void likeReview(int reviewId);
-    //Removes like of a review
-    void removeLikeReview(int reviewId);
+    MoovieListReview getMoovieListReviewById(int moovieListReviewId);
+    List<MoovieListReview> getMoovieListReviewsByMoovieListId(int moovieListId, int size, int pageNumber) ;
+    int getMoovieListReviewByMoovieListIdCount(int moovieListId);
+    List<MoovieListReview> getMoovieListReviewsFromUser(int userId, int size, int pageNumber);
 
-    //Creates review
-    void createReview( int mediaId, int rating, String reviewContent);
 
-    void editReview( int mediaId, int rating, String reviewContent);
+    //The following work for both MoovieListsReviews and Reviews
+    void createReview(int mediaId, int rating, String reviewContent, ReviewTypes type);
 
-    void deleteReview(int reviewId);
+    void editReview(int mediaId, int rating, String reviewContent, ReviewTypes type);
+    void deleteReview(int reviewId, ReviewTypes type);
+
+    void likeReview(int reviewId, ReviewTypes type);
+    void removeLikeReview(int reviewId, ReviewTypes type);
 }

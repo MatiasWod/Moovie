@@ -1,5 +1,6 @@
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.Review.Review;
+import ar.edu.itba.paw.models.Review.ReviewTypes;
 import ar.edu.itba.paw.persistence.ReviewHibernateDao;
 import config.TestConfig;
 import org.junit.Before;
@@ -51,7 +52,7 @@ public class ReviewDaoJdbcImplTest {
     public void testCreateReview(){
         assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"reviews",String.format("userId = %d AND mediaid = %d",
                 SECOND_EXISTING_USER_ID,SECOND_EXISTING_MEDIA_ID)));
-        reviewDao.createReview(SECOND_EXISTING_USER_ID,SECOND_EXISTING_MEDIA_ID,5,"Amazing movie.");
+        reviewDao.createReview(SECOND_EXISTING_USER_ID,SECOND_EXISTING_MEDIA_ID,5,"Amazing movie.", ReviewTypes.REVIEW_MEDIA);
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"reviews",
                 String.format("userId = %d AND mediaid = %d",SECOND_EXISTING_USER_ID,SECOND_EXISTING_MEDIA_ID)));
     }
@@ -80,7 +81,7 @@ public class ReviewDaoJdbcImplTest {
     @Test
     public void testLikeReview(){
         assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"reviewslikes",String.format("reviewId = %d AND userid = %d",EXISTING_REVIEW_ID,EXISTING_USER_ID)));
-        reviewDao.likeReview(EXISTING_USER_ID,EXISTING_REVIEW_ID);
+        reviewDao.likeReview(EXISTING_USER_ID,EXISTING_REVIEW_ID,ReviewTypes.REVIEW_MEDIA);
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"reviews",
                 String.format("reviewId = %d AND userid = %d",EXISTING_REVIEW_ID,EXISTING_USER_ID)));
     }
@@ -88,7 +89,7 @@ public class ReviewDaoJdbcImplTest {
     @Test
     public void testDeleteReview(){
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"reviews",String.format("reviewId = %d",SECOND_EXISTING_REVIEW_ID)));
-        reviewDao.deleteReview(SECOND_EXISTING_REVIEW_ID);
+        reviewDao.deleteReview(SECOND_EXISTING_REVIEW_ID,ReviewTypes.REVIEW_MEDIA);
         assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"reviews",String.format("reviewId = %d",SECOND_EXISTING_REVIEW_ID)));
     }
 

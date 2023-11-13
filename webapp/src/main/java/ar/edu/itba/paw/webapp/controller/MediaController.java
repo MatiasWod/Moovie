@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Media.MediaFilters;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
+import ar.edu.itba.paw.models.Review.ReviewTypes;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.CreateReviewForm;
@@ -285,11 +286,11 @@ public class MediaController {
             return details(form.getMediaId(),1, form);
         }
         try{
-            reviewService.createReview(form.getMediaId(), form.getRating(), form.getReviewContent());
+            reviewService.createReview(form.getMediaId(), form.getRating(), form.getReviewContent(), ReviewTypes.REVIEW_MEDIA);
             redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully created.");
         } catch(Exception e1) {
             try {
-                reviewService.editReview(form.getMediaId(), form.getRating(), form.getReviewContent());
+                reviewService.editReview(form.getMediaId(), form.getRating(), form.getReviewContent(), ReviewTypes.REVIEW_MEDIA);
                 redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully edited.");
             } catch (Exception e2) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Couldn't create review, you already have a review for this media.");
@@ -301,7 +302,7 @@ public class MediaController {
     @RequestMapping(value= "/likeReview", method = RequestMethod.POST)
     public ModelAndView likeReview(@RequestParam int reviewId,@RequestParam int mediaId, RedirectAttributes redirectAttributes){
         try {
-            reviewService.likeReview(reviewId);
+            reviewService.likeReview(reviewId, ReviewTypes.REVIEW_MEDIA);
             redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully liked.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Couldn't like review.");
@@ -312,7 +313,7 @@ public class MediaController {
     @RequestMapping(value= "/unlikeReview", method = RequestMethod.POST)
     public ModelAndView unlikeReview(@RequestParam int reviewId,@RequestParam int mediaId, RedirectAttributes redirectAttributes){
         try {
-            reviewService.removeLikeReview(reviewId);
+            reviewService.removeLikeReview(reviewId, ReviewTypes.REVIEW_MEDIA);
             redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully unliked.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Couldn't unlike review.");
@@ -323,7 +324,7 @@ public class MediaController {
     @RequestMapping(value = "/deleteUserReview/{mediaId:\\d+}", method = RequestMethod.POST)
     public ModelAndView deleteReview(@RequestParam("reviewId") int reviewId,RedirectAttributes redirectAttributes, @PathVariable int mediaId) {
         try {
-            reviewService.deleteReview(reviewId);
+            reviewService.deleteReview(reviewId, ReviewTypes.REVIEW_MEDIA);
             redirectAttributes.addFlashAttribute("successMessage", "Review successfully deleted");
         }catch (Exception e){
             redirectAttributes.addFlashAttribute("errorMessage", "Error deleting review");

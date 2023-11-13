@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS reviews(
     reviewId                                    SERIAL PRIMARY KEY,
     userId                                      INTEGER NOT NULL,
     mediaId                                     INTEGER NOT NULL,
-    rating                                      INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 10),
+    rating                                      INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),
     reviewContent                               TEXT,
     FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE,
     FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE,
@@ -290,4 +290,29 @@ ALTER TABLE media DROP COLUMN votecount;
 
 
  */
+
+--MODIFICATIONS FOR SPRINT 5
+
+--MoovieListsReviews
+CREATE TABLE IF NOT EXISTS moovieListsReviews(
+    moovieListReviewId                          SERIAL PRIMARY KEY,
+    userId                                      INTEGER NOT NULL,
+    moovieListId                                INTEGER NOT NULL,
+    rating                                      INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),
+    reviewContent                               TEXT,
+    FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE,
+    FOREIGN KEY(moovieListId) REFERENCES moovieLists(moovieListId) ON DELETE CASCADE,
+    UNIQUE(userId,moovieListId)
+);
+
+
+--MoovieListsReviewsLikes
+CREATE TABLE IF NOT EXISTS moovieListsReviewsLikes (
+    moovieListReviewId 	                        INTEGER NOT NULL,
+    userId			                            INTEGER NOT NULL,
+    FOREIGN KEY(userId)                         REFERENCES users(userId) ON DELETE CASCADE,
+    FOREIGN KEY(moovieListReviewId)             REFERENCES moovieListsReviews(moovieListReviewId) ON DELETE CASCADE,
+    UNIQUE(moovieListReviewId, userId)
+);
+
 

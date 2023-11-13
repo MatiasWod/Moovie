@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
+import ar.edu.itba.paw.models.Review.ReviewTypes;
 import ar.edu.itba.paw.services.ModeratorService;
 import ar.edu.itba.paw.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class ModeratorController {
     @RequestMapping(value = "/deleteReview/{mediaId:\\d+}", method = RequestMethod.POST)
     public ModelAndView deleteReview(@RequestParam("reviewId") int reviewId, @RequestParam("path") String path, RedirectAttributes redirectAttributes, @PathVariable int mediaId) {
         try {
-            moderatorService.deleteReview(reviewId, mediaId);
+            moderatorService.deleteReview(reviewId, mediaId, ReviewTypes.REVIEW_MEDIA);
             redirectAttributes.addFlashAttribute("successMessage", "Review successfully deleted");
         }catch (Exception e){
 

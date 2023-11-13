@@ -7,6 +7,7 @@ import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.Review.Review;
+import ar.edu.itba.paw.models.Review.ReviewTypes;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.User.UserRoles;
 import ar.edu.itba.paw.persistence.BannedDao;
@@ -48,7 +49,7 @@ public class ModeratorServiceImpl implements ModeratorService{
 
     @Transactional
     @Override
-    public void deleteReview(int reviewId, int mediaId) {
+    public void deleteReview(int reviewId, int mediaId, ReviewTypes type) {
         amIModerator();
 
         Media m = mediaService.getMediaById(mediaId);
@@ -61,7 +62,7 @@ public class ModeratorServiceImpl implements ModeratorService{
 
         emailService.sendEmail(u.getEmail(),"You review on " + m.getName() + " has been deleted", "yourReviewHasBeenRemovedEmail.html", mailMap);
 
-        reviewDao.deleteReview(reviewId);
+        reviewDao.deleteReview(reviewId,type);
         LOGGER.info("Succesfully removed review: {}. (by mod)", reviewId);
     }
 

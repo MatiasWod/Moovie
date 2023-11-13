@@ -9,9 +9,11 @@ import ar.edu.itba.paw.models.Media.MediaFilters;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.PagingSizes;
+import ar.edu.itba.paw.models.Review.ReviewTypes;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.CreateListForm;
+import ar.edu.itba.paw.webapp.form.CreateReviewForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +52,9 @@ public class ListController {
 
     @Autowired
     private LanguageService languageService;
+
+    @Autowired
+    private ReviewService reviewService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
 
@@ -369,4 +374,58 @@ public class ListController {
 
         return new ModelAndView("redirect:" + referer);
     }
+
+
+    @RequestMapping(value = "/MoovieListReview", method = RequestMethod.POST)
+    public ModelAndView createMoovieListReview(@Valid @ModelAttribute("detailsForm") final CreateReviewForm form, final BindingResult errors, RedirectAttributes redirectAttributes) {
+        if (errors.hasErrors()) {
+            return list(form.getMediaId(),"tmdbRating", "asc", 1);
+        }
+        try{
+            reviewService.createReview(form.getMediaId(), form.getRating(), form.getReviewContent(), ReviewTypes.REVIEW_MOOVIE_LIST);
+            redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully created.");
+        } catch(Exception e1) {
+            try {
+                reviewService.editReview(form.getMediaId(), form.getRating(), form.getReviewContent(), ReviewTypes.REVIEW_MOOVIE_LIST);
+                redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully edited.");
+            } catch (Exception e2) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Couldn't create review, you already have a review for this media.");
+            }
+        }
+        return new ModelAndView("redirect:/details/" + form.getMediaId());
+    }
+
+    @RequestMapping(value= "/likeMoovieListReview", method = RequestMethod.POST)
+    public ModelAndView likeMoovieListReview(@RequestParam int reviewId,@RequestParam int mediaId, RedirectAttributes redirectAttributes){
+        try {
+            reviewService.likeReview(reviewId, ReviewTypes.REVIEW_MOOVIE_LIST);
+            redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully liked.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Couldn't like review.");
+        }
+        return new ModelAndView("redirect:/details/" + mediaId);
+    }
+
+    @RequestMapping(value= "/unlikeMoovieListReview", method = RequestMethod.POST)
+    public ModelAndView unlikeMoovieListReview(@RequestParam int reviewId,@RequestParam int mediaId, RedirectAttributes redirectAttributes){
+        try {
+            reviewService.removeLikeReview(reviewId, ReviewTypes.REVIEW_MOOVIE_LIST);
+            redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully unliked.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Couldn't unlike review.");
+        }
+        return new ModelAndView("redirect:/details/" + mediaId);
+    }
+
+    @RequestMapping(value = "/deleteUserMoovieListReview/{mediaId:\\d+}", method = RequestMethod.POST)
+    public ModelAndView deleteMoovieListReview(@RequestParam("reviewId") int reviewId,RedirectAttributes redirectAttributes, @PathVariable int mediaId) {
+        try {
+            reviewService.deleteReview(reviewId, ReviewTypes.REVIEW_MOOVIE_LIST);
+            redirectAttributes.addFlashAttribute("successMessage", "Review successfully deleted");
+        }catch (Exception e){
+            redirectAttributes.addFlashAttribute("errorMessage", "Error deleting review");
+        }
+        return new ModelAndView("redirect:/details/" + mediaId);
+    }
+
 }

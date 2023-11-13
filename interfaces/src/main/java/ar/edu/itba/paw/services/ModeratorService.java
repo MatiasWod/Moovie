@@ -1,8 +1,10 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.models.Review.ReviewTypes;
+
 public interface ModeratorService {
     //Deletes a Media Review
-    void deleteReview(int reviewId,int mediaId);
+    void deleteReview(int reviewId, int mediaId, ReviewTypes type);
     //Delete a Moovie List
     void deleteMoovieListList(int moovieListId);
 

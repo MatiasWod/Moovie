@@ -2,7 +2,9 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
 import ar.edu.itba.paw.exceptions.ReviewNotFoundException;
+import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
+import ar.edu.itba.paw.models.Review.ReviewTypes;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.ReviewDao;
 import org.slf4j.Logger;
@@ -48,48 +50,80 @@ public class ReviewServiceImpl implements ReviewService{
         return reviewDao.getMovieReviewsFromUser(userService.tryToGetCurrentUserId(), userId, size, pageNumber);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public MoovieListReview getMoovieListReviewById(int moovieListReviewId) {
+        return reviewDao.getMoovieListReviewById(userService.tryToGetCurrentUserId(), moovieListReviewId).orElseThrow( ()-> new ReviewNotFoundException("Review not found for id: " + moovieListReviewId));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<MoovieListReview> getMoovieListReviewsByMoovieListId(int moovieListId, int size, int pageNumber) {
+        return reviewDao.getMoovieListReviewsByMoovieListId(userService.tryToGetCurrentUserId(), moovieListId,size,pageNumber);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public int getMoovieListReviewByMoovieListIdCount(int moovieListId) {
+        return reviewDao.getMoovieListReviewByMoovieListIdCount(moovieListId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<MoovieListReview> getMoovieListReviewsFromUser(int userId, int size, int pageNumber) {
+        return reviewDao.getMoovieListReviewsFromUser(userService.tryToGetCurrentUserId(), userId,size,pageNumber);
+    }
+
     @Transactional
     @Override
-    public void likeReview(int reviewId) {
-        getReviewById(reviewId);
-        reviewDao.likeReview(userService.getInfoOfMyUser().getUserId(),reviewId);
+    public void likeReview(int reviewId, ReviewTypes type) {
+        reviewDao.likeReview(userService.getInfoOfMyUser().getUserId(),reviewId,type);
         LOGGER.info("Succesfully liked review: {}, user: {}.", reviewId, userService.getInfoOfMyUser().getUserId());
     }
 
     @Transactional
     @Override
-    public void removeLikeReview(int reviewId) {
-        reviewDao.removeLikeReview(userService.getInfoOfMyUser().getUserId(),reviewId);
+    public void removeLikeReview(int reviewId, ReviewTypes type) {
+        reviewDao.removeLikeReview(userService.getInfoOfMyUser().getUserId(),reviewId,type);
         LOGGER.info("Succesfully removed like in review: {}, user: {}.", reviewId, userService.getInfoOfMyUser().getUserId());
     }
 
     @Transactional
     @Override
-    public void createReview(int mediaId, int rating, String reviewContent) {
+    public void createReview(int mediaId, int rating, String reviewContent, ReviewTypes type) {
         int userId = userService.getInfoOfMyUser().getUserId();
-        reviewDao.createReview(userId, mediaId, rating, reviewContent);
+        reviewDao.createReview(userId, mediaId, rating, reviewContent,type);
         LOGGER.info("Succesfully created review in media: {}, user: {}.", mediaId , userService.getInfoOfMyUser().getUserId());
 
     }
 
     @Transactional
     @Override
-    public void editReview( int mediaId, int rating, String reviewContent){
+    public void editReview( int mediaId, int rating, String reviewContent, ReviewTypes type){
         int userId = userService.getInfoOfMyUser().getUserId();
-        reviewDao.editReview(userId, mediaId, rating, reviewContent);
+        reviewDao.editReview(userId, mediaId, rating, reviewContent,type);
         LOGGER.info("Succesfully edited review in media: {}, user: {}.", mediaId , userService.getInfoOfMyUser().getUserId());
     }
 
     @Transactional
     @Override
-    public void deleteReview(int reviewId){
+    public void deleteReview(int reviewId, ReviewTypes type){
         User currentUser = userService.getInfoOfMyUser();
-        Review review = reviewDao.getReviewById(currentUser.getUserId(), reviewId)
-                .orElseThrow(() -> new NoSuchElementException("Review not found"));
-        if (currentUser.getUserId()!=review.getUserId()) {
-            throw new InvalidAccessToResourceException("User is not owner of the Review.");
+        if(type.getType() == ReviewTypes.REVIEW_MEDIA.getType()){
+            Review review = reviewDao.getReviewById(currentUser.getUserId(), reviewId)
+                    .orElseThrow(() -> new NoSuchElementException("Review not found"));
+            if (currentUser.getUserId()!=review.getUserId()) {
+                throw new InvalidAccessToResourceException("User is not owner of the Review.");
+            }
+        } else{
+            MoovieListReview review = reviewDao.getMoovieListReviewById(currentUser.getUserId(), reviewId)
+                    .orElseThrow(() -> new NoSuchElementException("Review not found"));
+            if (currentUser.getUserId()!=review.getUserId()) {
+                throw new InvalidAccessToResourceException("User is not owner of the Review.");
+            }
         }
-        reviewDao.deleteReview(reviewId);
+
+        reviewDao.deleteReview(reviewId,type);
         LOGGER.info("Succesfully deleted review: {}, user: {}.", reviewId , userService.getInfoOfMyUser().getUserId());
     }
 
