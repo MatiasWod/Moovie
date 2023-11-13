@@ -407,7 +407,7 @@ public class ListController {
                 redirectAttributes.addFlashAttribute("errorMessage", "Couldn't create review, you already have a review for this media.");
             }
         }
-        return new ModelAndView("redirect:/details/" + form.getMediaId());
+        return new ModelAndView("redirect:/list/" + form.getMediaId());
     }
 
     @RequestMapping(value= "/likeMoovieListReview", method = RequestMethod.POST)
@@ -418,7 +418,7 @@ public class ListController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Couldn't like review.");
         }
-        return new ModelAndView("redirect:/details/" + mediaId);
+        return new ModelAndView("redirect:/list/" + mediaId);
     }
 
     @RequestMapping(value= "/unlikeMoovieListReview", method = RequestMethod.POST)
@@ -429,7 +429,7 @@ public class ListController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Couldn't unlike review.");
         }
-        return new ModelAndView("redirect:/details/" + mediaId);
+        return new ModelAndView("redirect:/list/" + mediaId);
     }
 
     @RequestMapping(value = "/deleteUserMoovieListReview/{mediaId:\\d+}", method = RequestMethod.POST)
@@ -440,7 +440,7 @@ public class ListController {
         }catch (Exception e){
             redirectAttributes.addFlashAttribute("errorMessage", "Error deleting review");
         }
-        return new ModelAndView("redirect:/details/" + mediaId);
+        return new ModelAndView("redirect:/list/" + mediaId);
     }
 
 }

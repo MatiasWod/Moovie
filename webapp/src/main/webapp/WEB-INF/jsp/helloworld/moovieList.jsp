@@ -26,7 +26,6 @@
 <hr/>
 <div class="d-flex">
     <div class="d-flex flex-column flex-grow-1 m-3">
-        <%--<c:if test="${review.hasComments}">--%>
             <div class="input-group mt-2 mb-3">
                 <textarea class="form-control" placeholder="<spring:message code="details.addComment"/>" aria-label="With textarea"></textarea>
             </div>
@@ -50,19 +49,18 @@
                             </div>
                         </div>
                         <div class="d-flex align-items-center justify-content-between">
-
                             <c:choose>
                                 <c:when test="${currentUsername==review.username}">
                                     <div class="text-center m-2">
-                                        <button onclick="openPopup('review${review.reviewId}')"
+                                        <button onclick="openPopup('review${review.moovieListReviewId}')"
                                                 class="btn btn-danger btn-sm">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
-                                    <div class="review${review.reviewId}-overlay popup-overlay"
-                                         onclick="closePopup('review${review.reviewId}')"></div>
+                                    <div class="review${review.moovieListReviewId}-overlay popup-overlay"
+                                         onclick="closePopup('review${review.moovieListReviewId}')"></div>
                                     <div style="background-color: transparent; box-shadow: none"
-                                         class="popup review${review.reviewId}">
+                                         class="popup review${review.moovieListReviewId}">
                                         <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);"
                                              class="alert alert-danger" role="alert">
                                             <h5 class="alert-heading"><spring:message
@@ -71,7 +69,7 @@
                                                     code="details.confirmReviewDeletionPrompt"/></p>
                                             <div class="d-flex justify-content-evenly">
                                                 <form class="m-0"
-                                                      action="${pageContext.request.contextPath}/deleteUserMoovieListReview/${moovieList.moovieListId}}"
+                                                      action="${pageContext.request.contextPath}/deleteUserReview/${moovieList.moovieListId}}"
                                                       method="post">
                                                     <input type="hidden" name="reviewId"
                                                            value="${review.moovieListReviewId}"/>
@@ -162,8 +160,7 @@
                     </div>
                 </div>
             </c:forEach>
-
-                <%--</c:if>--%>
+                </div>
     </div>
     <c:if test="${RecomendedListsCards}">
         <div style="max-width: 30vw" class="d-flex flex-column align-items-center m-2">
