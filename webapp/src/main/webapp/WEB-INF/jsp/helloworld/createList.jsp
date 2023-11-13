@@ -136,7 +136,7 @@
                             </div>
                             <div class="d-flex justify-content-between">
                                 <button id="preview-details" type="submit" class="btn btn-lg btn-outline-success mt-4"><spring:message code="createList.createList"/></button>
-                                <button id="toggle-button" type="button" class="btn btn-outline-secondary mt-4">
+                                <button id="toggle-button" type="button" data-bs-toggle="button" class="btn btn-outline-secondary mt-4">
                                     <i id="toggle-icon" class="bi bi-eye-fill"></i>
                                 </button>
                                 <form:input type="hidden" id="toggle-state" name="toggleState" value="true" path="privateList"/>
