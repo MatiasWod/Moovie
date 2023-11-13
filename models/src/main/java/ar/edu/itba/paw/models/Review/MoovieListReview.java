@@ -22,8 +22,6 @@ public class MoovieListReview {
     private String username;
     @Column(nullable = false)
     private int moovieListId;
-    @Column(nullable = false, columnDefinition = "SMALLINT")
-    private int rating;
 
     @Formula("(SELECT COUNT(*) FROM moovieListsReviewsLikes WHERE moovieListsReviewsLikes.moovieListReviewId = moovieListReviewId)")
     private int reviewLikes;
@@ -42,10 +40,9 @@ public class MoovieListReview {
     MoovieListReview() {
     }
 
-    public MoovieListReview(int userId, int moovieListId, int rating,String reviewContent) {
+    public MoovieListReview(int userId, int moovieListId, String reviewContent) {
         this.userId = userId;
         this.moovieListId = moovieListId;
-        this.rating = rating;
         this.reviewContent = reviewContent;
     }
 
@@ -65,9 +62,6 @@ public class MoovieListReview {
         this.moovieListId = mediaId;
     }
 
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
 
     public void setReviewLikes(int reviewLikes) {
         this.reviewLikes = reviewLikes;
@@ -103,10 +97,6 @@ public class MoovieListReview {
 
     public int getMoovieListId() {
         return moovieListId;
-    }
-
-    public int getRating() {
-        return rating;
     }
 
     public int getReviewLikes() {

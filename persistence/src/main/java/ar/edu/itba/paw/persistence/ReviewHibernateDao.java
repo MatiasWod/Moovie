@@ -120,7 +120,7 @@ public class ReviewHibernateDao implements ReviewDao {
 
     @Override
     public List<MoovieListReview> getMoovieListReviewsByMoovieListId(int currentUserId, int moovieListId, int size, int pageNumber) {
-        final Query query = em.createQuery("SELECT r FROM MoovieListReview r WHERE r.moovieListReviewId = :moovieListId");
+        final Query query = em.createQuery("SELECT r FROM MoovieListReview r WHERE r.moovieListId = :moovieListId");
         query.setParameter("moovieListId", moovieListId);
         query.setFirstResult(pageNumber * size);
         query.setMaxResults(size);
@@ -184,7 +184,7 @@ public class ReviewHibernateDao implements ReviewDao {
                 Review review = new Review(userId, mediaId, rating, reviewContent);
                 em.persist(review);
             }else{
-                MoovieListReview review = new MoovieListReview(userId, mediaId, rating, reviewContent);
+                MoovieListReview review = new MoovieListReview(userId, mediaId,  reviewContent);
                 em.persist(review);
             }
         } catch (Exception e) {
@@ -210,7 +210,6 @@ public class ReviewHibernateDao implements ReviewDao {
                     .setParameter("mediaId", mediaId)
                     .getSingleResult();
             if(review != null) {
-                review.setRating(rating);
                 review.setReviewContent(reviewContent);
                 em.merge(review);
             }

@@ -176,6 +176,21 @@ public class ListController {
             moovieListCard(orderBy, pageNumber, mav, moovieListCard, mediaCountForMoovieList, numberOfPages);
             mav.addObject("RecomendedListsCards",moovieListService.getRecommendedMoovieListCards(moovieListId,4,0));
 
+            try{
+                mav.addObject("currentUsername", userService.getInfoOfMyUser().getUsername());
+            }catch(Exception e){
+                mav.addObject("currentUsername", "?????");
+            }
+
+            //TODO correct pagination
+            int pagePending = 0;
+            mav.addObject("reviews", reviewService.getMoovieListReviewsByMoovieListId(moovieListId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), pagePending));
+            int numberOfReviews = reviewService.getMoovieListReviewByMoovieListIdCount(moovieListId);
+            mav.addObject("currentReviewPage", pagePending );
+            int numberOfReviewPages = (int) Math.ceil(numberOfReviews * 1.0 / PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize());
+            mav.addObject("numberOfPages",numberOfReviewPages);
+
+
             final Map<String, String> queries = new HashMap<>();
             queries.put("id", Integer.toString(moovieListId));
             queries.put("orderBy", orderBy);
