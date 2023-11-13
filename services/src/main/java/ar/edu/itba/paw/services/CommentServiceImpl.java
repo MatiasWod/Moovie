@@ -38,6 +38,9 @@ public class CommentServiceImpl implements CommentService{
             }else{
                 commentDao.removeLikeComment(commentId,currentUser.getUserId());
             }
+        }else{
+            removeDislikeComment(commentId);
+            likeComment(commentId);
         }
 
     }
@@ -60,6 +63,9 @@ public class CommentServiceImpl implements CommentService{
             }else{
                 commentDao.removeDislikeComment(commentId,currentUser.getUserId());
             }
+        }else{
+            removeLikeComment(commentId);
+            dislikeComment(commentId);
         }
     }
 

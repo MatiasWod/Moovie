@@ -520,7 +520,7 @@
                                     <div class="input-group mt-2">
                                         <form:form modelAttribute="commentForm" action="${pageContext.request.contextPath}/createcomment" method="POST">
                                             <form:input path="reviewId" type="hidden" value="${review.reviewId}"/>
-                                            <form:input path="mediaId" type="hidden" value="${media.mediaId}"/>
+                                            <form:input path="listMediaId" type="hidden" value="${media.mediaId}"/>
                                             <form:input path="content" class="form-control" placeholder="Add comment..." aria-label="With textarea"/>
                                         </form:form>
                                     </div>
