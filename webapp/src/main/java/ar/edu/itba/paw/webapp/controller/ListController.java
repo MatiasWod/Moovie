@@ -136,7 +136,7 @@ public class ListController {
         LOGGER.info("Attempting to get WatchedLists for /profile");
         final List<MoovieListCard> moovieListCards = moovieListService.getMoovieListCards("Watched",username,MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),0);
         LOGGER.info("Returned WatchedLists for /profile");
-        return list(moovieListCards.get(0).getMoovieListId(),null,null,1);
+        return list(moovieListCards.get(0).getMoovieListId(),null,null,1,null);
     }
 
     @RequestMapping("/profile/{username}/watchList")
@@ -144,14 +144,16 @@ public class ListController {
         LOGGER.info("Attempting to get WatchLists for /profile");
         final List<MoovieListCard> moovieListCards = moovieListService.getMoovieListCards("Watchlist",username,MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),0);
         LOGGER.info("Returned WatchList for /profile");
-        return list(moovieListCards.get(0).getMoovieListId(),null,null,1);
+        return list(moovieListCards.get(0).getMoovieListId(),null,null,1,null);
     }
 
     @RequestMapping("/list/{id:\\d+}")
     public ModelAndView list(@PathVariable("id") final int moovieListId,
                              @RequestParam(value="orderBy", defaultValue = "customOrder") final String orderBy,
                              @RequestParam(value="order", defaultValue = "asc") final String order,
-                             @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
+                             @RequestParam(value = "page", defaultValue = "1") final int pageNumber,
+                             @ModelAttribute("createReviewForm") final CreateReviewForm createReviewForm
+                             ) {
         LOGGER.info("Attempting to get list with id: {} for /list.", moovieListId);
 
         final ModelAndView mav = new ModelAndView("helloworld/moovieList");
@@ -397,7 +399,7 @@ public class ListController {
     @RequestMapping(value = "/MoovieListReview", method = RequestMethod.POST)
     public ModelAndView createMoovieListReview(@Valid @ModelAttribute("createReviewForm") final CreateReviewForm createReviewForm, final BindingResult errors, RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
-            return list(createReviewForm.getMediaId(),"tmdbRating", "asc", 1);
+            return list(createReviewForm.getMediaId(),"tmdbRating", "asc", 1,null);
         }
         try{
             reviewService.createReview(createReviewForm.getMediaId(), createReviewForm.getRating(), createReviewForm.getReviewContent(), ReviewTypes.REVIEW_MOOVIE_LIST);
