@@ -2,17 +2,9 @@ package ar.edu.itba.paw.webapp.form;
 
 public class CommentForm {
     private int reviewId;
-    private int mediaId;
+    private int listMediaId;
     private String content;
 
-
-    public int getMediaId() {
-        return mediaId;
-    }
-
-    public void setMediaId(int mediaId) {
-        this.mediaId = mediaId;
-    }
 
     public void setContent(String content) {
         this.content = content;
@@ -22,11 +14,19 @@ public class CommentForm {
         this.reviewId = reviewId;
     }
 
+    public void setListMediaId(int listMediaId) {
+        this.listMediaId = listMediaId;
+    }
+
     public String getContent() {
         return content;
     }
 
     public int getReviewId() {
         return reviewId;
+    }
+
+    public int getListMediaId() {
+        return listMediaId;
     }
 }

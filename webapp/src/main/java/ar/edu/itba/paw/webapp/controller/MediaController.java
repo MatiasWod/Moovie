@@ -386,7 +386,7 @@ public class MediaController {
             redirectAttributes.addFlashAttribute("errorMessage", "Couldn't create comment.");
         }
 
-        return new ModelAndView("redirect:/details/" + commentForm.getMediaId());
+        return new ModelAndView("redirect:/details/" + commentForm.getListMediaId());
     }
 }
 
