@@ -179,6 +179,21 @@ public class ListController {
             moovieListCard(orderBy, pageNumber, mav, moovieListCard, mediaCountForMoovieList, numberOfPages);
             mav.addObject("RecomendedListsCards",moovieListService.getRecommendedMoovieListCards(moovieListId,4,0));
 
+            try{
+                mav.addObject("currentUsername", userService.getInfoOfMyUser().getUsername());
+            }catch(Exception e){
+                mav.addObject("currentUsername", "?????");
+            }
+
+            //TODO correct pagination
+            int pagePending = 0;
+            mav.addObject("reviews", reviewService.getMoovieListReviewsByMoovieListId(moovieListId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), pagePending));
+            int numberOfReviews = reviewService.getMoovieListReviewByMoovieListIdCount(moovieListId);
+            mav.addObject("currentReviewPage", pagePending );
+            int numberOfReviewPages = (int) Math.ceil(numberOfReviews * 1.0 / PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize());
+            mav.addObject("numberOfPages",numberOfReviewPages);
+
+
             final Map<String, String> queries = new HashMap<>();
             queries.put("id", Integer.toString(moovieListId));
             queries.put("orderBy", orderBy);
@@ -395,7 +410,7 @@ public class ListController {
                 redirectAttributes.addFlashAttribute("errorMessage", "Couldn't create review, you already have a review for this media.");
             }
         }
-        return new ModelAndView("redirect:/details/" + form.getMediaId());
+        return new ModelAndView("redirect:/list/" + form.getMediaId());
     }
 
     @RequestMapping(value= "/likeMoovieListReview", method = RequestMethod.POST)
@@ -406,7 +421,7 @@ public class ListController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Couldn't like review.");
         }
-        return new ModelAndView("redirect:/details/" + mediaId);
+        return new ModelAndView("redirect:/list/" + mediaId);
     }
 
     @RequestMapping(value= "/unlikeMoovieListReview", method = RequestMethod.POST)
@@ -417,7 +432,7 @@ public class ListController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Couldn't unlike review.");
         }
-        return new ModelAndView("redirect:/details/" + mediaId);
+        return new ModelAndView("redirect:/list/" + mediaId);
     }
 
     @RequestMapping(value = "/deleteUserMoovieListReview/{mediaId:\\d+}", method = RequestMethod.POST)
@@ -428,7 +443,7 @@ public class ListController {
         }catch (Exception e){
             redirectAttributes.addFlashAttribute("errorMessage", "Error deleting review");
         }
-        return new ModelAndView("redirect:/details/" + mediaId);
+        return new ModelAndView("redirect:/list/" + mediaId);
     }
 
 }

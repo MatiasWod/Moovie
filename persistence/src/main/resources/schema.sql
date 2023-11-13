@@ -298,7 +298,6 @@ CREATE TABLE IF NOT EXISTS moovieListsReviews(
     moovieListReviewId                          SERIAL PRIMARY KEY,
     userId                                      INTEGER NOT NULL,
     moovieListId                                INTEGER NOT NULL,
-    rating                                      INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),
     reviewContent                               TEXT,
     FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE,
     FOREIGN KEY(moovieListId) REFERENCES moovieLists(moovieListId) ON DELETE CASCADE,

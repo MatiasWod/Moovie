@@ -26,27 +26,141 @@
 <hr/>
 <div class="d-flex">
     <div class="d-flex flex-column flex-grow-1 m-3">
-        <%--<c:if test="${review.hasComments}">--%>
             <div class="input-group mt-2 mb-3">
                 <textarea class="form-control" placeholder="<spring:message code="details.addComment"/>" aria-label="With textarea"></textarea>
             </div>
-            <c:forEach begin="1" end="5">
-                <div class="mb-2 mt-2 card card-body">
-                    <div class="d-flex justify-content-between">
-                        <h6 class="card-title">Username (agregar href)</h6>
-                        <div class="d-flex">
-                            <a class="me-1 btn-sm btn btn-outline-success">
-                                <i class="m-1 bi bi-hand-thumbs-up"></i>
+            <c:forEach var="review" items="${reviews}">
+                <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <a href="${pageContext.request.contextPath}/profile/${review.username}"
+                               style="text-decoration: none; color: inherit;">
+                                <img class="cropCenter mr-3 profile-image rounded-circle"
+                                     style="height:60px;width:60px;border: solid black; border-radius: 50%"
+                                     src="${pageContext.request.contextPath}/profile/image/${review.username}"
+                                     alt="${review.userId} Reviewer Profile">
                             </a>
-                            <a class="btn btn-sm btn-outline-danger">
-                                <i class="m-1 bi bi-hand-thumbs-down"></i>
-                            </a>
+                            <div class="mt-0" style="margin-left: 15px">
+                                <a href="${pageContext.request.contextPath}/profile/${review.username}"
+                                   style="text-decoration: none; color: inherit;">
+                                    <h5><c:out value="${review.username}"/></h5>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <c:choose>
+                                <c:when test="${currentUsername==review.username}">
+                                    <div class="text-center m-2">
+                                        <button onclick="openPopup('review${review.moovieListReviewId}')"
+                                                class="btn btn-danger btn-sm">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                    <div class="review${review.moovieListReviewId}-overlay popup-overlay"
+                                         onclick="closePopup('review${review.moovieListReviewId}')"></div>
+                                    <div style="background-color: transparent; box-shadow: none"
+                                         class="popup review${review.moovieListReviewId}">
+                                        <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);"
+                                             class="alert alert-danger" role="alert">
+                                            <h5 class="alert-heading"><spring:message
+                                                    code="details.confirmReviewDeletion"/></h5>
+                                            <p><spring:message
+                                                    code="details.confirmReviewDeletionPrompt"/></p>
+                                            <div class="d-flex justify-content-evenly">
+                                                <form class="m-0"
+                                                      action="${pageContext.request.contextPath}/deleteUserReview/${moovieList.moovieListId}}"
+                                                      method="post">
+                                                    <input type="hidden" name="reviewId"
+                                                           value="${review.moovieListReviewId}"/>
+                                                    <button type="submit" class="btn btn-danger">
+                                                        <spring:message code="details.delete"/></button>
+                                                </form>
+                                                <button type="button"
+                                                        onclick="closePopup('review${review.moovieListReviewId}')"
+                                                        class="btn btn-secondary" id="cancelButton">
+                                                    <spring:message code="details.cancel"/></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <sec:authorize access="hasRole('ROLE_MODERATOR')">
+                                        <div class="text-center m-2" >
+                                            <button onclick="openPopup('review${review.moovieListReviewId}')" class="btn btn-danger btn-sm">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                        <div class="review${review.moovieListReviewId}-overlay popup-overlay" onclick="closePopup('review${review.moovieListReviewId}')"></div>
+                                        <div style="background-color: transparent; box-shadow: none" class="popup review${review.moovieListReviewId}">
+                                            <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
+                                                <h5 class="alert-heading"><spring:message code="details.confirmReviewDeletion"/></h5>
+                                                <p><spring:message code="details.confirmReviewDeletionPrompt"/></p>
+                                                <div class="d-flex justify-content-evenly">
+                                                    <form class="m-0" action="${pageContext.request.contextPath}/deleteUserMoovieListReview/${moovieList.moovieListId}" method="post">
+                                                        <input type="hidden" name="reviewId" value="${review.moovieListReviewId}"/>
+                                                        <input type="hidden" name="path" value="/list/${moovieList.moovieListId}"/>
+                                                        <button type="submit" class="btn btn-danger"><spring:message code="details.delete"/></button>
+                                                    </form>
+                                                    <button type="button" onclick="closePopup('review${review.moovieListReviewId}')" class="btn btn-secondary" id="cancelModButton"><spring:message code="details.cancel"/></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </sec:authorize>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                     </div>
-                    <p class="card-text">Comment Commetn Commetn</p>
+                    <p>
+                        <c:out value="${review.reviewContent}"/>
+                    </p>
+                    <div class="d-flex align-items-center justify-content-start ">
+                        <div>
+                            <c:choose>
+                                <c:when test="${review.currentUserHasLiked}">
+                                    <form action="${pageContext.request.contextPath}/unlikeMoovieListReview"
+                                          method="post">
+                                        <input type="hidden" name="reviewId" value="${review.moovieListReviewId}"/>
+                                        <input type="hidden" name="mediaId" value="${moovieList.moovieListId}"/>
+                                        <button class="btn btn-style" style="font-size: 14px">
+                                                        <span>
+                                                            <i class="bi bi-hand-thumbs-up-fill"></i>
+                                                                ${review.reviewLikes}
+                                                        </span>
+                                            <spring:message code="details.liked"/>
+                                        </button>
+                                    </form>
+                                </c:when>
+                                <c:otherwise>
+                                    <form action="${pageContext.request.contextPath}/likeMoovieListReview" method="post">
+                                        <input type="hidden" name="reviewId" value="${review.moovieListReviewId}"/>
+                                        <input type="hidden" name="mediaId" value="${moovieList.moovieListId}"/>
+                                        <button class="btn btn-style" style="font-size: 14px">
+                                                        <span>
+                                                            <i class="bi bi-hand-thumbs-up"></i>
+                                                                ${review.reviewLikes}
+                                                        </span>
+                                            <spring:message code="details.like"/>
+                                        </button>
+                                    </form>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                        <c:if test="${currentUsername==review.username}">
+                            <div style="margin-bottom: 15px">
+                                <button class="btn btn-primary" style="font-size: 14px;margin-left: 10px;"  onclick="openPopup('rate-popup')">
+                                                <span>
+                                                   <i class="bi bi-pencil" ></i>
+                                                </span>
+                                    <spring:message code="details.editReview"/>
+                                </button>
+                            </div>
+                        </c:if>
+
+                    </div>
                 </div>
             </c:forEach>
-                <%--</c:if>--%>
+                </div>
     </div>
     <c:if test="${RecomendedListsCards}">
         <div style="max-width: 30vw" class="d-flex flex-column align-items-center m-2">
@@ -58,7 +172,9 @@
             </div>
         </div>
     </c:if>
+
 </div>
+
 </c:if>
 </body>
 </html>
