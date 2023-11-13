@@ -16,7 +16,6 @@
     <title><spring:message code="moovieList.title"/></title>
     <link href="${pageContext.request.contextPath}/resources/moovieList.css?version=65" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/resources/buttonsStyle.css?version=1" rel="stylesheet"/>
-    <script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=87"></script>
 </head>
 <body style="background: whitesmoke">
 <c:import url="navBar.jsp"/>

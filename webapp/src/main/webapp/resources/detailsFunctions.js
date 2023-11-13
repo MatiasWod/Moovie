@@ -1,9 +1,9 @@
-const initialCardsNumber = 4;
+const cardsNumber = 4;
 window.onload = function () {
     const actorCards = document.querySelectorAll(".actor-card");
 
     // Loop through all actor cards and toggle their display
-    for (let i = 0; i < initialCardsNumber; i++) {
+    for (let i = 0; i < cardsNumber; i++) {
         actorCards[i].style.display = "block";
     }
 };
@@ -12,7 +12,7 @@ function showMoreActors() {
     const actorCards = document.querySelectorAll(".actor-card");
 
     // Loop through all actor cards and toggle their display
-    for (let i = initialCardsNumber; i < actorCards.length; i++) {
+    for (let i = cardsNumber; i < actorCards.length; i++) {
         actorCards[i].style.display = "block";
 
     }
@@ -32,7 +32,7 @@ function showLessActors() {
     const actorCards = document.querySelectorAll(".actor-card");
 
     // Loop through all actor cards and toggle their display
-    for (let i = initialCardsNumber; i < actorCards.length; i++) {
+    for (let i = cardsNumber; i < actorCards.length; i++) {
         actorCards[i].style.display = "none";
     }
 
@@ -139,24 +139,29 @@ function setCreateListContent(name,id){
 }
 
 // Call the function to format revenue and budget when the page loads
-window.addEventListener("load", formatRevenueAndBudget);
+window.addEventListener("load", formatRevenueAndBudget)
+{
 
-const textarea = document.getElementById("reviewContent");
-const charCount = document.getElementById("charCount");
+    const textarea = document.getElementById("reviewContent");
+    const charCount = document.getElementById("charCount");
 
-textarea.addEventListener("input", function () {
-    const remainingChars = textarea.value.length;
-    charCount.textContent = `${remainingChars}`;
+    if (textarea) {
+        textarea.addEventListener("input", function () {
+            const remainingChars = textarea.value.length;
+            charCount.textContent = `${remainingChars}`;
 
-    if (remainingChars < 0) {
-        charCount.style.color = "red";
-        document.getElementById("submitButton").disabled = true;
-    } else {
-        charCount.style.color = "inherit";
-        document.getElementById("submitButton").disabled = false;
+            if (remainingChars < 0) {
+                charCount.style.color = "red";
+                document.getElementById("submitButton").disabled = true;
+            } else {
+                charCount.style.color = "inherit";
+                document.getElementById("submitButton").disabled = false;
+            }
+
+            // Remove line breaks from the textarea
+
+            textarea.value = textarea.value.replace(/\n/g, "");
+        });
     }
-
-    // Remove line breaks from the textarea
-    textarea.value = textarea.value.replace(/\n/g, "");
-});
+}
 
