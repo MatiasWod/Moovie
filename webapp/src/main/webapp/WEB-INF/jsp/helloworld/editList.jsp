@@ -258,9 +258,9 @@
         </c:forEach>
     </div>
     <div class="d-flex justify-content-center">
-        <button class="btn btn-success">
+        <a href="${pageContext.request.contextPath}/discover" class="btn btn-success">
             <spring:message code="editList.seeMore"/>
-        </button>
+        </a>
     </div>
 
 </div>
