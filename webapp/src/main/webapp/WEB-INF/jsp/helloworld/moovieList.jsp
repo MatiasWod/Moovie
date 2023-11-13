@@ -30,7 +30,7 @@
             <div class="input-group mt-2 mb-3">
                 <form:form modelAttribute="createReviewForm" action="${pageContext.request.contextPath}/MoovieListReview" method="POST">
                     <form:input path="mediaId" type="hidden" value="${moovieList.moovieListId}"/>
-                    <form:input path="rating" type="hidden" value="0"/>
+                    <form:input path="rating" type="hidden" value="5"/>
                     <form:input path="reviewContent" class="form-control" placeholder="Add comment..." aria-label="With textarea"/>
                 </form:form>
                 
