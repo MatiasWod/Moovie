@@ -32,6 +32,9 @@
                     <form:input path="mediaId" type="hidden" value="${moovieList.moovieListId}"/>
                     <form:input path="rating" type="hidden" value="5"/>
                     <form:input path="reviewContent" class="form-control" placeholder="Add comment..." aria-label="With textarea"/>
+                    <button type="submit" class="btn btn-dark" style="margin-inline: 10px" id="submitButton">
+                        <spring:message code="details.submit"/>
+                    </button>
                 </form:form>
                 
             </div>
