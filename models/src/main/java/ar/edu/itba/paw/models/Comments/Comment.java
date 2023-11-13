@@ -39,8 +39,8 @@ public class Comment {
     @Formula("(SELECT u.username FROM users u WHERE u.userid = userId)")
     private String username;
 
-    @Formula("(SELECT i.image FROM userimages i WHERE i.userid = userId)")
-    private byte[] userPfp;
+    @Formula("CASE WHEN EXISTS (SELECT 1 FROM userimages ui WHERE ui.userid = userId) THEN 1 ELSE 0 END")
+    private boolean hasPfp;
 
     Comment() {
 
@@ -69,8 +69,8 @@ public class Comment {
         this.currentUserHasDisliked = currentUserHasDisliked;
     }
 
-    public byte[] getUserPfp() {
-        return userPfp;
+    public boolean getUserPfp() {
+        return hasPfp;
     }
 
     public int getCommentDislikes() {
