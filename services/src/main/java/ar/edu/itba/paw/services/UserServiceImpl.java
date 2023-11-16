@@ -147,6 +147,11 @@ public class UserServiceImpl implements UserService {
         return userDao.getProfileByUsername(username).orElseThrow(() -> new UnableToFindUserException("No user with username: " + username));
     }
 
+    @Override
+    public List<Profile> getMilkyPointsLeaders(int size, int pageNumber) {
+        return userDao.getMilkyPointsLeaders(size,pageNumber);
+    }
+
     //AUTHENTICATION INFO
 
     @Override

@@ -29,6 +29,9 @@ public interface UserService {
     //Return the parameters needed to show in the profile page
     Profile getProfileByUsername(String username);
 
+    //Returns a list of the users with most milkyPoints
+    List<Profile> getMilkyPointsLeaders(int size, int pageNumber);
+
     //Auth info of users
     User getInfoOfMyUser();
     //Returns -1 if not authenticated
