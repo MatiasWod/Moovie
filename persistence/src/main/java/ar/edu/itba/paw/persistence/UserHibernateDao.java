@@ -14,6 +14,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
+import java.lang.reflect.Type;
 import java.util.*;
 
 @Primary
@@ -68,29 +69,14 @@ public class UserHibernateDao implements UserDao{
     @Override
     public Optional<User> findUserByUsername(String username) {
         final TypedQuery<User> query = entityManager.createQuery("from User where username = (:username)",User.class);
-        query.setParameter("username",username);
+        query.setParameter("username",username );
         return query.getResultList().stream().findFirst();
     }
 
     @Override
     public List<Profile> searchUsers(String username, String orderBy, String sortOrder, int size, int pageNumber) {
-        StringBuilder sql = new StringBuilder("SELECT * , ");
-        sql.append(" (SELECT COUNT(*) FROM moovieLists ml WHERE ml.userId = u.userId) AS moovieListCount, ");
-        sql.append(" (SELECT COUNT(*) FROM moovieListsLikes l WHERE l.userId = u.userId) AS likedMoovieListCount, ");
-        sql.append(" (SELECT COUNT(*) FROM reviews r WHERE r.userId = u.userId) AS reviewCount ");
-        sql.append(" FROM users u WHERE username ILIKE :username ");
-
-        if(orderBy!=null && orderBy.length()>0 && sortOrder!=null && sortOrder.length()>0){
-            sql.append(" ORDER BY ").append(orderBy).append(" ").append(sortOrder);
-        }
-
-        sql.append(" LIMIT :limit OFFSET :offset ");
-
-        Query query = entityManager.createNativeQuery(sql.toString(),Profile.class)
-                .setParameter("username",'%' + username + '%')
-                .setParameter("limit",size)
-                .setParameter("offset",size * pageNumber);
-
+        final TypedQuery<Profile> query = entityManager.createQuery("FROM Profile WHERE LOWER(username) LIKE :username ORDER BY " + orderBy + " " + sortOrder ,Profile.class);
+        query.setParameter("username",'%' + username.toLowerCase() + '%').setFirstResult(pageNumber*size).setMaxResults(size);
         return query.getResultList();
     }
 
@@ -103,15 +89,8 @@ public class UserHibernateDao implements UserDao{
 
     @Override
     public Optional<Profile> getProfileByUsername(String username) {
-
-        StringBuilder sql = new StringBuilder("SELECT u.userid,u.email,u.username,u.role, ");
-        sql.append(" (SELECT COUNT(*) FROM moovieLists ml WHERE ml.userId = u.userId AND ml.type = 1) AS moovieListCount, ");
-        sql.append(" (SELECT COUNT(*) FROM moovieListsLikes l WHERE l.userId = u.userId) AS likedMoovieListCount, ");
-        sql.append(" (SELECT COUNT(*) FROM reviews r WHERE r.userId = u.userId) AS reviewCount ");
-        sql.append(" FROM users u WHERE username = :username ");
-
-        Query query = entityManager.createNativeQuery(sql.toString(),Profile.class).setParameter("username",username);
-
+        final TypedQuery<Profile> query = entityManager.createQuery("FROM Profile where LOWER(username) LIKE :username",Profile.class);
+        query.setParameter("username",  username.toLowerCase() );
         return query.getResultList().stream().findFirst();
     }
 
@@ -161,6 +140,15 @@ public class UserHibernateDao implements UserDao{
                 .setParameter("userId",userId)
                 .executeUpdate();
     }
+
+
+    @Override
+    public List<Profile> getMilkyPointsLeaders(int size, int pageNumber){
+        TypedQuery<Profile> query = entityManager.createQuery("FROM Profile p ORDER BY p.milkyPoints DESC", Profile.class);
+        return query.setMaxResults(size).setFirstResult(pageNumber*size).getResultList();
+    }
+
+
 
     //Following functions needed in order to be safe of sql injection
     private boolean isOrderValid( String order) {

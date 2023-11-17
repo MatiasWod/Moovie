@@ -24,6 +24,8 @@ public interface UserDao {
 
     Optional<Profile> getProfileByUsername(String username);
 
+    List<Profile> getMilkyPointsLeaders(int size, int pageNumber);
+
     void setProfilePicture(int userId, byte[] image);
     void updateProfilePicture(int userId, byte[] image);
     Optional<Image> getProfilePicture(int id);

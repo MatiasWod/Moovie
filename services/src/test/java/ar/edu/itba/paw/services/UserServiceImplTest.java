@@ -41,7 +41,7 @@ public class UserServiceImplTest {
 
     @Before
     public void setup(){
-        user = new User(UID, USERNAME, EMAIL, PASSWORD, ROLE);
+        user = new User(UID, USERNAME, EMAIL, PASSWORD, ROLE, 0);
     }
 
     @Test

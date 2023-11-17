@@ -72,7 +72,7 @@ public class MediaController {
     @RequestMapping("/testing")
     public ModelAndView test(){
         final ModelAndView mav = new ModelAndView("helloworld/test");
-        mav.addObject("ml", moovieListService.getRecommendedMediaToAdd(37,4));
+        mav.addObject("ml", userService.getMilkyPointsLeaders(25,0));
         return mav;
     }
 

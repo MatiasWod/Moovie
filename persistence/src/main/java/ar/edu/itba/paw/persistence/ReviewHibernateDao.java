@@ -257,7 +257,7 @@ public class ReviewHibernateDao implements ReviewDao {
         if(type.getType() == ReviewTypes.REVIEW_MEDIA.getType()) {
             query = em.createNativeQuery("DELETE FROM reviewslikes WHERE userid = :userId AND reviewid = :reviewId");
         }else{
-            query = em.createNativeQuery("DELETE FROM moovieListsReviewsLikes WHERE userid = :userId AND reviewid = :reviewId");
+            query = em.createNativeQuery("DELETE FROM moovieListsReviewsLikes WHERE userid = :userId AND moovielistreviewid = :reviewId");
         }
         query.setParameter("userId", userId);
         query.setParameter("reviewId", reviewId);

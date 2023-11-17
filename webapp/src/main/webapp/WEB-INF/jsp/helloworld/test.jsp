@@ -14,11 +14,12 @@
 
 <div class="col-8 offset-2">
 
-    <a>${ml.name}</a>
-    <a>${ml.description}</a>
-    <a>${ml.likeCount}</a>
-    <a>${ml.username}</a>
-    <a>${ml.size}</a>
+    <c:forEach var="u" items="${ml}">
+        <a>${u.milkyPoints}</a>
+        <a>${u.username}</a>
+    </c:forEach>
+
+
 
 </div>
 
