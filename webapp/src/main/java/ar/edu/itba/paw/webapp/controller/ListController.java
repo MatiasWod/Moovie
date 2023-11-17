@@ -252,11 +252,12 @@ public class ListController {
         try {
             moovieListService.updateMoovieListOrder(listId,currentPageNumber,toPrevArray,currentArray,toNextArray);
             return new ModelAndView("redirect:/list/" + listId);
-        }catch (InvalidAccessToResourceException e){
+        }catch (InvalidAccessToResourceException e) {
             return new ModelAndView("helloworld/404").addObject("extrainfo", "Can't modify list that are not your own");
-        } catch (Exception e) {
-            return new ModelAndView("helloworld/404").addObject("extrainfo", "Failed updating order");
         }
+//        } catch (Exception e) {
+//            return new ModelAndView("helloworld/404").addObject("extrainfo", "Failed updating order");
+//        }
     }
 
 

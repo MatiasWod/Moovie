@@ -7,26 +7,22 @@ import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.User.User;
-import com.sun.javafx.image.IntPixelGetter;
-import com.sun.org.apache.bcel.internal.generic.RETURN;
 import org.hibernate.SQLQuery;
-import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.Resource;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.FileCopyUtils;
 
-import org.springframework.core.io.Resource;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-
-import javax.persistence.*;
-import java.awt.*;
-import java.lang.reflect.Type;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.SimpleTimeZone;
 import java.util.stream.Collectors;
 
 @Primary
@@ -466,14 +462,22 @@ public class MoovieListHibernateDao implements MoovieListDao{
     @Override
     public void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrevPage, int[] currentPage, int[] toNextPage) {
         executeFunctionScript();
-
-        em.createNativeQuery("SELECT updatecustomorder(:mlid, :firstPos, :size, :prev::integer[], :current::integer[], :next::integer[])")
+        List<Integer> toPrev = Arrays.stream(toPrevPage)
+                .boxed()
+                .collect(Collectors.toList());
+        List<Integer> toCurrent = Arrays.stream(currentPage)
+                .boxed()
+                .collect(Collectors.toList());
+        List<Integer> toNext = Arrays.stream(toNextPage)
+                .boxed()
+                .collect(Collectors.toList());
+        em.createNativeQuery("SELECT updatecustomorder(:mlid, :firstPos, :size, :prev, :current, :next)")
                 .setParameter("mlid", moovieListId)
                 .setParameter("firstPos", currentPageNumber * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize() + 1 )
                 .setParameter("size", PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize() )
-                .setParameter("prev", toPrevPage)
-                .setParameter("current", currentPage)
-                .setParameter("next", toNextPage)
+                .setParameter("prev", toPrev)
+                .setParameter("current", toCurrent)
+                .setParameter("next", toNext)
                 .executeUpdate();
     }
 
