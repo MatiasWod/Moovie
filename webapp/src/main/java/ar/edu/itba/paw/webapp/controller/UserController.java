@@ -261,6 +261,13 @@ public class UserController {
 
     }
 
+    @RequestMapping("/milkyLeaderboard")
+    public ModelAndView profilePage(@RequestParam(value = "page",defaultValue = "1") final int pageNumber){
+        ModelAndView mav = new ModelAndView("helloworld/milkyPointsLeaderBoard");
+        mav.addObject("profiles", userService.getMilkyPointsLeaders(pageNumber, PagingSizes.MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE.getSize()));
+        return mav;
+    }
+
     @ControllerAdvice
     public static class FileUploadExceptionAdvice {
         @ExceptionHandler(MaxUploadSizeExceededException.class)
