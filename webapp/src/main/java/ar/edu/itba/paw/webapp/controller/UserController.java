@@ -265,6 +265,15 @@ public class UserController {
     public ModelAndView profilePage(@RequestParam(value = "page",defaultValue = "1") final int pageNumber){
         ModelAndView mav = new ModelAndView("helloworld/milkyPointsLeaderboard");
         mav.addObject("profiles", userService.getMilkyPointsLeaders(PagingSizes.MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE.getSize(), pageNumber-1));
+
+        int usersCount = userService.getUserCount();
+        int pagesSize= PagingSizes.MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE.getSize();
+        int numberOfPages = (int) Math.ceil(usersCount * 1.0 / pagesSize);
+
+        mav.addObject("currentPage", pageNumber-1);
+        mav.addObject("numberOfPages",numberOfPages);
+
+        mav.addObject("urlBase", UriComponentsBuilder.newInstance().path("/milkyLeaderboard").toUriString());
         return mav;
     }
 

@@ -20,6 +20,8 @@
     <script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=82"></script>
 </head>
 <body>
+<c:import url="navBar.jsp"/>
+<h1 style="font-size: 60px; font-weight: bold;">Milky Points Leaderboard</h1>
 
 <table class="table table-striped" id="movieTable">
     <thead>
@@ -41,16 +43,18 @@
 
                     <!-- Profile Picture -->
                     <td>
-                        <a href="${pageContext.request.contextPath}/profile/${user.username}"
-                           style="text-decoration: none; color: inherit;">
-                            <img src="${pageContext.request.contextPath}/profile/image/${user.username}" class="img-fluid" width="100"
-                                 height="100" alt="${user.username} picture"/>
-                        </a>
+                        <div class="col-auto">
+                            <a href="${pageContext.request.contextPath}/profile/${user.username}"
+                               style="text-decoration: none; color: inherit;">
+                                <img src="${pageContext.request.contextPath}/profile/image/${user.username}" class="img-fluid" width="100"
+                                     height="100" alt="${mediaList[loop.index].name} poster"/>
+                            </a>
+                        </div>
                     </td>
 
                     <!-- Username -->
                     <td>
-                        <div class="col-auto">${user.username}</div>
+                        <div class="col-auto"><c:out value="${user.username}"/></div>
                     </td>
 
                     <!-- Moovie List Count -->
@@ -74,3 +78,9 @@
         </c:otherwise>
     </c:choose>
 </table>
+
+<c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+    <c:param name="mediaPages" value="${numberOfPages}"/>
+    <c:param name="currentPage" value="${currentPage + 1}"/>
+    <c:param name="url" value="${urlBase}"/>
+</c:import>

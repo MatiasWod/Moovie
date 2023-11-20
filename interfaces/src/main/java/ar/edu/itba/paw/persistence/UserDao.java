@@ -24,6 +24,8 @@ public interface UserDao {
 
     int getLikedMoovieListCountForUser(String username);
 
+    int getUserCount();
+
 
     Optional<Profile> getProfileByUsername(String username);
 

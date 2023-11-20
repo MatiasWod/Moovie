@@ -29,6 +29,9 @@ public interface UserService {
     //Liked amount lof list for a user
     int getLikedMoovieListCountForUser(String username);
 
+    //returns total user count
+    int getUserCount();
+
     //Return the parameters needed to show in the profile page
     Profile getProfileByUsername(String username);
 
