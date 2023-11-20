@@ -203,7 +203,7 @@ public class UserController {
                         break;
                     case "liked-lists":
                         mav.addObject("showLists",moovieListService.getLikedMoovieListCards(requestedProfile.getUserId(), MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
-                        listCount = requestedProfile.getLikedMoovieListCount();
+                        listCount = userService.getLikedMoovieListCountForUser(username);
                         queries.put("list","liked-lists");
                         numberOfPages = (int) Math.ceil(listCount * 1.0 / PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize());
                         //Obtener la cantidad de listas likeadas por el usuario
@@ -263,8 +263,8 @@ public class UserController {
 
     @RequestMapping("/milkyLeaderboard")
     public ModelAndView profilePage(@RequestParam(value = "page",defaultValue = "1") final int pageNumber){
-        ModelAndView mav = new ModelAndView("helloworld/milkyPointsLeaderBoard");
-        mav.addObject("profiles", userService.getMilkyPointsLeaders(pageNumber, PagingSizes.MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE.getSize()));
+        ModelAndView mav = new ModelAndView("helloworld/milkyPointsLeaderboard");
+        mav.addObject("profiles", userService.getMilkyPointsLeaders(PagingSizes.MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE.getSize(), pageNumber-1));
         return mav;
     }
 

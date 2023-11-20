@@ -17,9 +17,10 @@ public class Profile {
     private int role;
     @Formula("(SELECT COUNT(*) FROM moovieLists ml WHERE ml.userId = userId AND ml.type = 1)")
     private int moovieListCount;
-    @Formula("(SELECT COUNT(*) FROM moovieListsLikes l WHERE l.userId = userId)")
-    private int likedMoovieListCount;
-    @Formula("(SELECT COUNT(*) FROM reviews r WHERE r.userId = userId) ")
+
+    //ReviewsCount is the sum of reviews + moovielistreviews + comments
+    @Formula("( SELECT (SELECT COUNT(*) FROM reviews r WHERE r.userId = userId) + (SELECT COUNT(*) FROM moovielistsreviews mlr WHERE mlr.userId = userId) " +
+            " + (SELECT COUNT(*) FROM comments c WHERE c.userId = userId) )")
     private int reviewsCount;
 
     @Formula("(SELECT " +
@@ -33,13 +34,12 @@ public class Profile {
 
     }
 
-    public Profile(int userId, String username, String email, int role, int moovieListCount, int likedMoovieListCount, int reviewsCount, int milkyPoints) {
+    public Profile(int userId, String username, String email, int role, int moovieListCount, int reviewsCount, int milkyPoints) {
         this.userId = userId;
         this.username = username;
         this.email = email;
         this.role = role;
         this.moovieListCount = moovieListCount;
-        this.likedMoovieListCount = likedMoovieListCount;
         this.reviewsCount = reviewsCount;
         this.milkyPoints = milkyPoints;
     }
@@ -62,10 +62,6 @@ public class Profile {
 
     public int getMoovieListCount() {
         return moovieListCount;
-    }
-
-    public int getLikedMoovieListCount() {
-        return likedMoovieListCount;
     }
 
     public int getReviewsCount() {

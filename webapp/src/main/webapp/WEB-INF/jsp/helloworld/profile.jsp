@@ -98,21 +98,21 @@
                 </c:if>
                 <div class="d-flex align-items-center">
                     <div class="m-1 d-flex align-items-center">
-                        <img style="padding-bottom: 6px;" height="37" width="37" src="${pageContext.request.contextPath}/resources/logo.png" alt="moo">
+                        <i class="bi bi-list-ul"></i>
                         <h5>
                                 ${profile.moovieListCount}
                         </h5>
                     </div>
                     <div class="m-1 d-flex align-items-center">
                         <h5>
-                            <i class="bi-hand-thumbs-up"></i>
-                                ${profile.likedMoovieListCount}
+                            <i class="bi-star"></i>
+                                ${profile.reviewsCount}
                         </h5>
                     </div>
                     <div class="m-1 d-flex align-items-center">
                         <h5>
-                            <i class="bi-star"></i>
-                                ${profile.reviewsCount}
+                            <img style="padding-bottom: 6px;" height="37" width="37" src="${pageContext.request.contextPath}/resources/logo.png" alt="moo">
+                                ${profile.milkyPoints}
                         </h5>
                     </div>
                 </div>

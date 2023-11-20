@@ -22,6 +22,9 @@ public interface UserDao {
 
     int getSearchCount(String username);
 
+    int getLikedMoovieListCountForUser(String username);
+
+
     Optional<Profile> getProfileByUsername(String username);
 
     List<Profile> getMilkyPointsLeaders(int size, int pageNumber);

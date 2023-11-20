@@ -88,6 +88,13 @@ public class UserHibernateDao implements UserDao{
     }
 
     @Override
+    public int getLikedMoovieListCountForUser(String username) {
+        return ((Number) entityManager.createNativeQuery("SELECT COUNT(*) AS count FROM moovieListsLikes mll LEFT JOIN users u ON mll.userid = u.userid WHERE username ILIKE :username")
+                .setParameter("username",'%' + username + '%')
+                .getSingleResult()).intValue();
+    }
+
+    @Override
     public Optional<Profile> getProfileByUsername(String username) {
         final TypedQuery<Profile> query = entityManager.createQuery("FROM Profile where LOWER(username) LIKE :username",Profile.class);
         query.setParameter("username",  username.toLowerCase() );

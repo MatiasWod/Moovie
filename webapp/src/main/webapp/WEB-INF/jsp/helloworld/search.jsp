@@ -141,21 +141,21 @@
                             <h3 class="card-title text-center">${user.username}</h3>
                             <div class="d-flex align-items-center">
                                 <div class="m-1 d-flex align-items-center">
-                                    <img style="padding-bottom: 6px;" height="37" width="37" src="${pageContext.request.contextPath}/resources/logo.png" alt="moo">
+                                    <i class="bi bi-list-ul"></i>
                                     <h5>
                                             ${user.moovieListCount}
                                     </h5>
                                 </div>
                                 <div class="m-1 d-flex align-items-center">
                                     <h5>
-                                        <i class="bi-hand-thumbs-up"></i>
-                                            ${user.likedMoovieListCount}
+                                        <i class="bi-star"></i>
+                                            ${user.reviewsCount}
                                     </h5>
                                 </div>
                                 <div class="m-1 d-flex align-items-center">
                                     <h5>
-                                        <i class="bi-star"></i>
-                                            ${user.reviewsCount}
+                                        <img style="padding-bottom: 6px;" height="37" width="37" src="${pageContext.request.contextPath}/resources/logo.png" alt="moo">
+                                            ${user.milkyPoints}
                                     </h5>
                                 </div>
                             </div>

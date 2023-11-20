@@ -141,6 +141,11 @@ public class UserServiceImpl implements UserService {
         return userDao.getSearchCount(username);
     }
 
+    @Override
+    public int getLikedMoovieListCountForUser(String username) {
+        return userDao.getLikedMoovieListCountForUser(username);
+    }
+
     @Transactional(readOnly = true)
     @Override
     public Profile getProfileByUsername(String username) {

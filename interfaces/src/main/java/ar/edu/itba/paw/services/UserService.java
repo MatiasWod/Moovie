@@ -26,6 +26,9 @@ public interface UserService {
     //Search user count for pagination in searchUsers cases
     int getSearchCount(String username);
 
+    //Liked amount lof list for a user
+    int getLikedMoovieListCountForUser(String username);
+
     //Return the parameters needed to show in the profile page
     Profile getProfileByUsername(String username);
 
