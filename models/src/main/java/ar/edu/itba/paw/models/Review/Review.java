@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.models.Review;
 
 import ar.edu.itba.paw.models.Comments.Comment;
+import ar.edu.itba.paw.models.User.User;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
@@ -26,8 +27,10 @@ public class Review {
 
     @Formula("(SELECT COUNT(*) FROM reviewslikes WHERE reviewslikes.reviewid = reviewid)")
     private int reviewLikes;
+
     @Transient
     private boolean currentUserHasLiked = false;
+
     @Formula("(SELECT m.posterPath FROM media m WHERE m.mediaId = mediaId)")
     private String mediaPosterPath;
 
@@ -47,11 +50,41 @@ public class Review {
     Review() {
     }
 
-    public Review(int userId, int mediaId, int rating,String reviewContent) {
+    public Review(int userId, int mediaId, int rating, String reviewContent) {
         this.userId = userId;
         this.mediaId = mediaId;
         this.rating = rating;
         this.reviewContent = reviewContent;
+    }
+
+    public Review(int reviewId, int userId, String username, int mediaId, int rating, int reviewLikes, String mediaPosterPath, String mediaTitle, String reviewContent, Long commentCount, List<Comment> comments) {
+        this.reviewId = reviewId;
+        this.userId = userId;
+        this.username = username;
+        this.mediaId = mediaId;
+        this.rating = rating;
+        this.reviewLikes = reviewLikes;
+        this.mediaPosterPath = mediaPosterPath;
+        this.mediaTitle = mediaTitle;
+        this.reviewContent = reviewContent;
+        this.commentCount = commentCount;
+        this.comments = comments;
+    }
+
+
+    public Review(Review r, int currentUserHasLiked){
+        this.reviewId = r.reviewId;
+        this.userId = r.userId;
+        this.username = r.username;
+        this.mediaId = r.mediaId;
+        this.rating = r.rating;
+        this.reviewLikes = r.reviewLikes;
+        this.mediaPosterPath = r.mediaPosterPath;
+        this.mediaTitle = r.mediaTitle;
+        this.reviewContent = r.reviewContent;
+        this.commentCount = r.commentCount;
+        this.comments = r.comments;
+        r.currentUserHasLiked = currentUserHasLiked==1;
     }
 
     public List<Comment> getComments() {

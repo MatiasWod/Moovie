@@ -46,6 +46,43 @@ public class MoovieListReview {
         this.reviewContent = reviewContent;
     }
 
+    public MoovieListReview(int moovieListReviewId, int userId, String username, int moovieListId, int reviewLikes, boolean currentUserHasLiked, String moovieListImages, String moovieListTitle, String reviewContent) {
+        this.moovieListReviewId = moovieListReviewId;
+        this.userId = userId;
+        this.username = username;
+        this.moovieListId = moovieListId;
+        this.reviewLikes = reviewLikes;
+        this.currentUserHasLiked = currentUserHasLiked;
+        this.moovieListImages = moovieListImages;
+        this.moovieListTitle = moovieListTitle;
+        this.reviewContent = reviewContent;
+    }
+
+    public MoovieListReview(int moovieListReviewId, int userId, String username, int moovieListId, int reviewLikes, String moovieListImages, String moovieListTitle, String reviewContent) {
+        this.moovieListReviewId = moovieListReviewId;
+        this.userId = userId;
+        this.username = username;
+        this.moovieListId = moovieListId;
+        this.reviewLikes = reviewLikes;
+        this.moovieListImages = moovieListImages;
+        this.moovieListTitle = moovieListTitle;
+        this.reviewContent = reviewContent;
+    }
+
+    public MoovieListReview(MoovieListReview m, int currentUserHasLiked){
+        this.moovieListReviewId = m.moovieListReviewId;
+        this.userId = m.userId;
+        this.username = m.username;
+        this.moovieListId = m.moovieListId;
+        this.reviewLikes = m.reviewLikes;
+        this.currentUserHasLiked = currentUserHasLiked == 1;
+        this.moovieListImages = m.moovieListImages;
+        this.moovieListTitle = m.moovieListTitle;
+        this.reviewContent = m.reviewContent;
+    }
+
+
+
     public void setMoovieListReviewId(int moovieListReviewId) {
         this.moovieListReviewId = moovieListReviewId;
     }
@@ -106,6 +143,8 @@ public class MoovieListReview {
     public boolean isCurrentUserHasLiked() {
         return currentUserHasLiked;
     }
+
+
 
     public List<String> getMoovieListImages() {
         List<String> toRet = new ArrayList<>();

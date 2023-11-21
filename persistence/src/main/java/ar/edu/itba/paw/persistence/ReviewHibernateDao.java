@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,29 +51,14 @@ public class ReviewHibernateDao implements ReviewDao {
 
     @Override
     public List<Review> getReviewsByMediaId(int currentUserId, int mediaId, int size, int pageNumber) {
-        final Query query = em.createQuery("SELECT r FROM Review r WHERE r.mediaId = :mediaId");
-        query.setParameter("mediaId", mediaId);
-        query.setFirstResult(pageNumber * size);
-        query.setMaxResults(size);
+        final String jpql = "SELECT new ar.edu.itba.paw.models.Review.Review ( " +
+                " r , COALESCE((SELECT 1 FROM ReviewsLikes rl WHERE rl.review.reviewId = r.reviewId AND rl.user.userId = :currentUserId), 0) ) " +
+                " FROM Review r WHERE r.mediaId = :mediaId";
 
-        @SuppressWarnings("unchecked")
-        List<Review> reviews = query.getResultList();
+        TypedQuery<Review> query = em.createQuery(jpql, Review.class)
+                .setParameter("mediaId", mediaId).setParameter("currentUserId", currentUserId);
 
-        for (Review review : reviews) {
-            String sqlQuery = "SELECT CASE WHEN EXISTS (SELECT 1 FROM reviewslikes rl WHERE rl.reviewid= :reviewId  AND rl.userid = :userId) THEN true ELSE false END";
-            Query query2 = em.createNativeQuery(sqlQuery);
-            query2.setParameter("reviewId", review.getReviewId());
-            query2.setParameter("userId", currentUserId);
-
-            query2.unwrap(SQLQuery.class);
-
-            Object obj = query2.getSingleResult();
-
-            review.setHasLiked((boolean) obj);
-            review.setComments(commentDao.getComments(review.getReviewId(),currentUserId,0,0));
-        }
-
-        return reviews;
+        return query.setFirstResult(pageNumber*size).setMaxResults(size).getResultList();
     }
 
     public int getReviewsByMediaIdCount(int mediaId) {
@@ -82,29 +68,14 @@ public class ReviewHibernateDao implements ReviewDao {
 
     @Override
     public List<Review> getMovieReviewsFromUser(int currentUserId, int userId, int size, int pageNumber) {
-        final Query query = em.createQuery("SELECT r FROM Review r WHERE r.userId = :userId");
-        query.setParameter("userId", userId);
-        query.setFirstResult(pageNumber * size);
-        query.setMaxResults(size);
+        final String jpql = "SELECT new ar.edu.itba.paw.models.Review.Review ( " +
+                " r , COALESCE((SELECT 1 FROM ReviewsLikes rl WHERE rl.review.reviewId = r.reviewId AND rl.user.userId = :currentUserId), 0) ) " +
+                " FROM Review r WHERE r.userId = :userId";
 
-        @SuppressWarnings("unchecked")
-        List<Review> reviews = query.getResultList();
+        TypedQuery<Review> query = em.createQuery(jpql, Review.class)
+                .setParameter("userId", userId).setParameter("currentUserId", currentUserId);
 
-        for (Review review : reviews) {
-            String sqlQuery = "SELECT CASE WHEN EXISTS (SELECT 1 FROM reviewslikes rl WHERE rl.reviewid= :reviewId  AND rl.userid = :userId) THEN true ELSE false END";
-            Query query2 = em.createNativeQuery(sqlQuery);
-            query2.setParameter("reviewId", review.getReviewId());
-            query2.setParameter("userId", currentUserId);
-
-            query2.unwrap(SQLQuery.class);
-
-            Object obj = query2.getSingleResult();
-
-            review.setHasLiked((boolean) obj);
-            review.setComments(commentDao.getComments(review.getReviewId(),currentUserId,0,0));
-        }
-
-        return reviews;
+        return query.setFirstResult(pageNumber*size).setMaxResults(size).getResultList();
     }
 
     @Override
@@ -125,30 +96,18 @@ public class ReviewHibernateDao implements ReviewDao {
         return Optional.of(review);
     }
 
+
+
     @Override
     public List<MoovieListReview> getMoovieListReviewsByMoovieListId(int currentUserId, int moovieListId, int size, int pageNumber) {
-        final Query query = em.createQuery("SELECT r FROM MoovieListReview r WHERE r.moovieListId = :moovieListId");
-        query.setParameter("moovieListId", moovieListId);
-        query.setFirstResult(pageNumber * size);
-        query.setMaxResults(size);
+        final String jpql = "SELECT new ar.edu.itba.paw.models.Review.MoovieListReview ( " +
+                " r , COALESCE((SELECT 1 FROM MoovieListsReviewsLikes rl WHERE rl.moovieListReview.moovieListReviewId = r.moovieListReviewId AND rl.user.userId = :currentUserId), 0) ) " +
+                " FROM MoovieListReview r WHERE r.moovieListId = :moovieListId";
 
-        @SuppressWarnings("unchecked")
-        List<MoovieListReview> reviews = query.getResultList();
+        TypedQuery<MoovieListReview> query = em.createQuery(jpql, MoovieListReview.class)
+                .setParameter("moovieListId", moovieListId).setParameter("currentUserId", currentUserId);
 
-        for (MoovieListReview review : reviews) {
-            String sqlQuery = "SELECT CASE WHEN EXISTS (SELECT 1 FROM moovieListsReviewsLikes rl WHERE rl.moovieListReviewId= :reviewId  AND rl.userid = :userId) THEN true ELSE false END";
-            Query query2 = em.createNativeQuery(sqlQuery);
-            query2.setParameter("reviewId", review.getMoovieListReviewId());
-            query2.setParameter("userId", currentUserId);
-
-            query2.unwrap(SQLQuery.class);
-
-            Object obj = query2.getSingleResult();
-
-            review.setCurrentUserHasLiked((boolean) obj);
-        }
-
-        return reviews;
+        return query.setFirstResult(pageNumber*size).setMaxResults(size).getResultList();
     }
 
     @Override
@@ -158,28 +117,14 @@ public class ReviewHibernateDao implements ReviewDao {
 
     @Override
     public List<MoovieListReview> getMoovieListReviewsFromUser(int currentUserId, int userId, int size, int pageNumber) {
-        final Query query = em.createQuery("SELECT r FROM MoovieListReview r WHERE r.userId = :userId");
-        query.setParameter("userId", userId);
-        query.setFirstResult(pageNumber * size);
-        query.setMaxResults(size);
+        final String jpql = "SELECT new ar.edu.itba.paw.models.Review.MoovieListReview ( " +
+                            " r , COALESCE((SELECT 1 FROM MoovieListsReviewsLikes rl WHERE rl.moovieListReview.moovieListReviewId = r.moovieListReviewId AND rl.user.userId = :currentUserId), 0)  ) " +
+                            " FROM MoovieListReview r WHERE r.userId = :userId ";
 
-        @SuppressWarnings("unchecked")
-        List<MoovieListReview> reviews = query.getResultList();
+        TypedQuery<MoovieListReview> query = em.createQuery(jpql, MoovieListReview.class)
+                .setParameter("userId", userId).setParameter("currentUserId", currentUserId);
 
-        for (MoovieListReview review : reviews) {
-            String sqlQuery = "SELECT CASE WHEN EXISTS (SELECT 1 FROM moovieListsReviewsLikes rl WHERE rl.moovieListReviewId= :moovieListReviewId  AND rl.userid = :userId) THEN true ELSE false END";
-            Query query2 = em.createNativeQuery(sqlQuery);
-            query2.setParameter("moovieListReviewId", review.getMoovieListReviewId());
-            query2.setParameter("userId", currentUserId);
-
-            query2.unwrap(SQLQuery.class);
-
-            Object obj = query2.getSingleResult();
-
-            review.setCurrentUserHasLiked((boolean) obj);
-        }
-
-        return reviews;
+        return query.setFirstResult(pageNumber*size).setMaxResults(size).getResultList();
     }
 
 
