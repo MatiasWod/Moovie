@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.ActorNotFoundException;
 import ar.edu.itba.paw.exceptions.MediaNotFoundException;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaFilters;
@@ -337,6 +338,38 @@ public class MediaController {
             redirectAttributes.addFlashAttribute("errorMessage", "Error deleting review");
         }
         return new ModelAndView("redirect:/details/" + mediaId);
+    }
+
+    @RequestMapping(value = "/cast/{type}/{id:\\d+}")
+    public ModelAndView actor(@PathVariable String type, @PathVariable int id){
+        final ModelAndView mav = new ModelAndView("helloworld/cast");
+        switch(type){
+            case "actor" :
+                try{
+                    mav.addObject("type", type);
+                    mav.addObject("cast", actorService.getActorById(id));
+                    return mav;
+                } catch(ActorNotFoundException e){
+                    return new ModelAndView("helloword/404");
+                }
+            case "creator" :
+                try{
+                    mav.addObject("type", type);
+                    mav.addObject("cast", tvCreatorsService.getTvCreatorById(id));
+                    return mav;
+                } catch(ActorNotFoundException e){
+                    return new ModelAndView("helloword/404");
+                }
+            case "director" :
+                try{
+                    mav.addObject("type", type);
+                    mav.addObject("cast", mediaService.getMediaForDirectorId(id));
+                    return mav;
+                } catch(ActorNotFoundException e){
+                    return new ModelAndView("helloword/404");
+                }
+        }
+        return new ModelAndView("helloword/404");
     }
 
     @RequestMapping("/review/{id:\\d+}")

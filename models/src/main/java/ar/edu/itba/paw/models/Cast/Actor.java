@@ -12,7 +12,7 @@ public class Actor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "actorId")
-    private Long actorId;
+    private int actorId;
 
     @Column(name = "actorName", nullable = false)
     private String actorName;
@@ -32,7 +32,7 @@ public class Actor {
     @Transient
     private String characterName;
 
-    public Actor(Long actorId, String actorName, String profilePath, String characterName) {
+    public Actor(int actorId, String actorName, String profilePath, String characterName) {
         this.actorId = actorId;
         this.actorName = actorName;
         this.profilePath = profilePath;
@@ -48,7 +48,7 @@ public class Actor {
 
     public Actor(){}
 
-    public Long getActorId() {
+    public int getActorId() {
         return actorId;
     }
 
@@ -62,6 +62,10 @@ public class Actor {
 
     public String getCharacterName() {
         return characterName;
+    }
+
+    public List<Media> getMedias() {
+        return medias;
     }
 }
 

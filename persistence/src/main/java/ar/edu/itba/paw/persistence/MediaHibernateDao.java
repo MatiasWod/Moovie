@@ -124,6 +124,12 @@ public class MediaHibernateDao implements MediaDao{
     }
 
     @Override
+    public List<Movie> getMediaForDirectorId(int directorId) {
+        final TypedQuery<Movie> query = em.createQuery("FROM Movie WHERE directorId = :directorId ", Movie.class).setParameter("directorId", directorId);
+        return query.getResultList();
+    }
+
+    @Override
     public Optional<Media> getMediaById(int mediaId) {
         return Optional.ofNullable(em.find(Media.class, mediaId));
     }

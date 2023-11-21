@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.exceptions.ActorNotFoundException;
 import ar.edu.itba.paw.models.Cast.Actor;
+import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.persistence.ActorDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,4 +20,11 @@ public class ActorServiceImpl implements ActorService{
     public List<Actor> getAllActorsForMedia(int mediaId) {
         return actorDao.getAllActorsForMedia(mediaId);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Actor getActorById(int actorId) {
+        return actorDao.getActorById(actorId).orElseThrow( () -> new ActorNotFoundException("Actor was not found for the id: " + actorId));
+    }
+
 }

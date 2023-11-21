@@ -20,6 +20,10 @@ public interface MediaService {
     //Return a list of media that are in a moovie list
     List<Media> getMediaInMoovieList(int moovieListId, int size, int pageNumber);
 
+    //Returns a list of all media for a director
+    List<Movie> getMediaForDirectorId(int directorId);
+
+
     //Get the Tv or Movie details data
     Media getMediaById(int mediaId);
     Movie getMovieById(int mediaId);

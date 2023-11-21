@@ -57,4 +57,10 @@ public class MediaServiceImpl implements MediaService{
     public int getMediaCount(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang) {
         return mediaDao.getMediaCount(type, search, participant,  genres,  providers, status,  lang);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Movie> getMediaForDirectorId(int directorId) {
+        return mediaDao.getMediaForDirectorId(directorId);
+    }
 }
