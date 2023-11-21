@@ -8,6 +8,7 @@ import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.persistence.MediaDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class MediaServiceImpl implements MediaService{
     @Autowired
     private UserService userService;
 
-    @Transactional(readOnly = true)
+    @Transactional(propagation= Propagation.REQUIRED, readOnly = true)
     @Override
     public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber){
         return mediaDao.getMedia(type, search, participant,  genres, providers, status, lang, orderBy, sortOrder, size, pageNumber, userService.tryToGetCurrentUserId());

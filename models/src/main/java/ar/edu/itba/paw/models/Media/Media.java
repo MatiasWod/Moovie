@@ -67,6 +67,7 @@ public class Media {
             inverseJoinColumns = @JoinColumn(name = "providerId"))
     private List<Provider> providers = new ArrayList<>();
 
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "mediagenres",
             joinColumns = @JoinColumn(name = "mediaId"),

@@ -87,6 +87,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     //    ds.setUrl("jdbc:postgresql://localhost:5432/paw");
     //        ds.setUsername("postgres");
+    //        ds.setUsername("postgres");
     //        ds.setPassword("admin");
 
     //    ds.setUrl("jdbc:postgresql://localhost/paw-2023b-06");
@@ -150,8 +151,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         final Properties properties = new Properties();
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL92Dialect");
         properties.setProperty("hibernate.hbm2ddl.auto", "update");
-        properties.setProperty("hibernate.enable_lazy_load_no_trans", "true");
-
 
         factoryBean.setJpaProperties(properties);
 
