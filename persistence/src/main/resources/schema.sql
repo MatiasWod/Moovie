@@ -354,4 +354,62 @@ CREATE TABLE IF NOT EXISTS commentDislikes(
        UNIQUE(userId, commentId)
 );
 
+/*
+ --MODIFICATIONS FOR SPRINT 5
+ */
+
+--REPORTS
+
+--ReportsComments
+CREATE TABLE IF NOT EXISTS reportsComments (
+         reportId           SERIAL PRIMARY KEY,
+         type               VARCHAR(50) NOT NULL,
+         content            TEXT,
+         reportedBy         INTEGER NOT NULL,
+         commentId          INTEGER NOT NULL,
+         report_date        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+         resolved           BOOLEAN DEFAULT FALSE,
+         FOREIGN KEY(reportedBy)     REFERENCES users(userId) ON DELETE CASCADE,
+         FOREIGN KEY(commentId)     REFERENCES comments(commentId) ON DELETE CASCADE
+);
+
+--ReportsReviews
+CREATE TABLE IF NOT EXISTS reportsReviews (
+         reportId           SERIAL PRIMARY KEY,
+         type               VARCHAR(50) NOT NULL,
+         content            TEXT,
+         reportedBy         INTEGER NOT NULL,
+         reviewId           INTEGER NOT NULL,
+         report_date        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+         resolved           BOOLEAN DEFAULT FALSE,
+         FOREIGN KEY(reportedBy)     REFERENCES users(userId) ON DELETE CASCADE,
+         FOREIGN KEY(reviewId)     REFERENCES reviews(reviewId) ON DELETE CASCADE
+);
+
+--ReportsMoovieListReviews
+CREATE TABLE IF NOT EXISTS reportsMoovieListReviews (
+         reportId           SERIAL PRIMARY KEY,
+         type               VARCHAR(50) NOT NULL,
+         content            TEXT,
+         reportedBy         INTEGER NOT NULL,
+         moovieListReviewId        INTEGER NOT NULL,
+         report_date        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+         resolved           BOOLEAN DEFAULT FALSE,
+         FOREIGN KEY(reportedBy)     REFERENCES users(userId) ON DELETE CASCADE,
+         FOREIGN KEY(moovieListReviewId)     REFERENCES moovieListsReviews(moovieListReviewId) ON DELETE CASCADE
+);
+
+--ReportsMoovieLists
+CREATE TABLE IF NOT EXISTS reportsMoovieLists (
+          reportId           SERIAL PRIMARY KEY,
+          type               VARCHAR(50) NOT NULL,
+          content            TEXT,
+          reportedBy         INTEGER NOT NULL,
+          moovieListId       INTEGER NOT NULL,
+          report_date        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          resolved           BOOLEAN DEFAULT FALSE,
+          FOREIGN KEY(reportedBy)     REFERENCES users(userId) ON DELETE CASCADE,
+          FOREIGN KEY(moovieListId)     REFERENCES moovieLists(moovieListId) ON DELETE CASCADE
+);
+
 
