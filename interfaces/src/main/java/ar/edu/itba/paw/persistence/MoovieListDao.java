@@ -4,6 +4,7 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
+import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.User.User;
 
 import java.util.List;
@@ -30,6 +31,11 @@ public interface MoovieListDao {
 
     List<Media> getMoovieListContent(int moovieListId, int userid, String orderBy, String sortOrder, int size, int pageNumber);
 
+
+    List<MoovieListContent> getMoovieListContentModel(int moovieListId, int size, int pageNumber);
+    void updateMoovieListOrder(List<MoovieListContent> moovieListContents);
+
+
     List<Media> getFeaturedMoovieListContent( int mediaType, int userid, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber);
     int countWatchedFeaturedMoovieListContent(int mediaType, int userid, String featuredListOrder);
 
@@ -38,7 +44,6 @@ public interface MoovieListDao {
     MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList);
     void deleteMediaFromMoovieList(int moovieListId, int mediaId);
     void deleteMoovieList(int moovieListId);
-    void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrevPage, int[] currentPage, int[] toNextPage);
 
 
     void removeLikeMoovieList(int userId, int moovieListId);

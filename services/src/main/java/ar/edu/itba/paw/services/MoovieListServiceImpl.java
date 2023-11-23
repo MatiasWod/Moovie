@@ -247,17 +247,52 @@ public class MoovieListServiceImpl implements MoovieListService{
         }
     }
 
+
     @Transactional
     @Override
-    public void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrevPage, int[] currentPage, int[] toNextPage) {
-        User currentUser = userService.getInfoOfMyUser();
-        if (!currentUser.getUsername().equals(getMoovieListCardById(moovieListId).getUsername())) {
-            throw new InvalidAccessToResourceException("User is not owner of the list.");
+    public void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrev, int[] currentPage, int[] toNext) {
+        int pageSize = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize();
+        int firstPosition = currentPageNumber * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize() + 1;
+        int currentPos = (toPrev.length > 0) ? firstPosition + toPrev.length : firstPosition;
+
+        List<MoovieListContent> currentPageMedia = moovieListDao.getMoovieListContentModel(moovieListId, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(), currentPageNumber);
+
+
+        if (currentPage.length > 0) {
+            for (int i = 0; i < currentPage.length; i++) {
+                currentPageMedia.get(i).setCustomOrder(currentPos);
+                System.out.println("Update mediaid " + currentPage[i] + " with customorder " + currentPos);
+                currentPos++;
+            }
         }
 
-        moovieListDao.updateMoovieListOrder(moovieListId,currentPageNumber, toPrevPage, currentPage, toNextPage);
-        LOGGER.info("Succesfully updated list content order for list: {}.",moovieListId);
+        /*
+        if (toPrev.length > 0) {
+            int prevPos = firstPosition - toPrev.length;
+            for (int i = 1; i <= toPrev.length; i++) {
+                System.out.println("Update customorder " + (currentPos + toPrev.length) + " where customorder " + prevPos);
+                System.out.println("Update mediaid " + toPrev[i - 1] + " with customorder " + currentPos);
+                currentPos++;
+                prevPos++;
+            }
+        }
 
+        if (toNext.length > 0) {
+            int toMove = Math.min(toNext.length, pageSize);
+
+            for (int i = 0; i < toNext.length; i++) {
+                if (i < toMove) {
+                    System.out.println("Update customorder " + currentPos + " where customorder " + (firstPosition + pageSize + i));
+                    System.out.println("Update mediaid " + toNext[i] + " with customorder " + (firstPosition + pageSize + i));
+                } else {
+                    System.out.println("Update mediaid " + toNext[i] + " with customorder " + currentPos);
+                }
+                currentPos++;
+            }
+        }*/
+
+        moovieListDao.updateMoovieListOrder(currentPageMedia);
+        return;
     }
 
 

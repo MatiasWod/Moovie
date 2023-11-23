@@ -19,10 +19,8 @@ public class MoovieListContent implements Serializable {
     @JoinColumn(name = "moovieListId", referencedColumnName = "moovieListId")
     private MoovieList moovieList;
 
-    @Id
-    @ManyToOne
-    @JoinColumn(name = "mediaId", referencedColumnName = "mediaId")
-    private Media media;
+    @Column
+    private int mediaId;
 
     @Column
     private int customOrder;
@@ -32,9 +30,9 @@ public class MoovieListContent implements Serializable {
 
     MoovieListContent(){}
 
-    public MoovieListContent(MoovieList moovieList, Media media, int customOrder, boolean watched) {
+    public MoovieListContent(MoovieList moovieList, Media media, int mediaId, int customOrder, boolean watched) {
         this.moovieList = moovieList;
-        this.media = media;
+        this.mediaId = mediaId;
         this.customOrder = customOrder;
         this.watched = watched;
     }
@@ -43,8 +41,12 @@ public class MoovieListContent implements Serializable {
         this.moovieList = moovieList;
     }
 
-    public void setMedia(Media media) {
-        this.media = media;
+    public int getMediaId() {
+        return mediaId;
+    }
+
+    public void setMediaId(int mediaId) {
+        this.mediaId = mediaId;
     }
 
     public void setCustomOrder(int customOrder) {
@@ -59,9 +61,6 @@ public class MoovieListContent implements Serializable {
         return moovieList;
     }
 
-    public Media getMedia() {
-        return media;
-    }
 
     public int getCustomOrder() {
         return customOrder;
