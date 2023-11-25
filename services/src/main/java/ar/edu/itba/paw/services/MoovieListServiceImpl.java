@@ -205,7 +205,7 @@ public class MoovieListServiceImpl implements MoovieListService{
                 map.put("moovieListId",moovieListId);
                 map.put("moovieListName",ml.getName());
                 emailService.sendEmail(user.getEmail(),
-                        "A Moovie List you follow has been Updated",
+                        "email.newMediaAddedSubject",
                         "mediaAddedToFollowedList.html",
                         map);
             });
@@ -283,7 +283,7 @@ public class MoovieListServiceImpl implements MoovieListService{
                     map.put("moovieListId",mvlAux.getMoovieListId());
                     map.put("moovieListName",mvlAux.getName());
                     emailService.sendEmail(toUser.getEmail(),
-                            "New like goal on your list!",
+                            "email.notificationLikeMilestoneMoovieListSubject",
                             "notificationLikeMilestoneMoovieList.html",
                             map);
                     LOGGER.info("notificationLikeMilestoneMoovieList mail was sent to user : {} for the list: {}.", toUser.getUsername(), moovieListId);
@@ -322,7 +322,7 @@ public class MoovieListServiceImpl implements MoovieListService{
                     map.put("moovieListId", mvlAux.getMoovieListId());
                     map.put("moovieListName", mvlAux.getName());
                     emailService.sendEmail(toUser.getEmail(),
-                            "New follow goal on your list!",
+                            "email.notificationFollowMilestoneMoovieListSubject",
                             "notificationFollowMilestoneMoovieList.html",
                             map);
                     LOGGER.info("notificationFollowMilestoneMoovieList mail was sent to user : {} for the list: {}.", toUser.getUsername(), moovieListId);
