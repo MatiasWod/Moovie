@@ -21,17 +21,23 @@
 </head>
 <body>
 <c:import url="navBar.jsp"/>
-<h1 style="font-size: 60px; font-weight: bold;">Milky Points Leaderboard</h1>
+<h1 style="font-size: 60px; font-weight: bold;"><spring:message
+        code="mpl.title"/></h1>
 
 <table class="table table-striped" id="movieTable">
     <thead>
     <tr>
         <th scope="col"></th>
-        <th scope="col">Picture</th>
-        <th scope="col">Username</th>
-        <th scope="col">Moovie List Count</th>
-        <th scope="col">Reviews Count</th>
-        <th scope="col">Points</th>
+        <th scope="col"><spring:message
+                code="mpl.picture"/></th>
+        <th scope="col"><spring:message
+                code="mpl.username"/></th>
+        <th scope="col"><spring:message
+                code="mpl.moovieListCount"/></th>
+        <th scope="col"><spring:message
+                code="mpl.reviewsCount"/></th>
+        <th scope="col"><spring:message
+                code="mpl.points"/></th>
     </tr>
     </thead>
     <c:choose>
@@ -72,7 +78,8 @@
         <c:otherwise>
             <tbody>
             <tr>
-                <td colspan="4" style="text-align: center">User list is empty</td>
+                <td colspan="4" style="text-align: center"><spring:message
+                        code="mpl.userListIsEmpty"/></td>
             </tr>
             </tbody>
         </c:otherwise>

@@ -30,9 +30,11 @@
             <a href="${pageContext.request.contextPath}/lists?query=${param.query}"><spring:message code="search.seeMore"/></a>
         </div>
         <hr class="my-1">
+        <div class="d-flex flex-row flex-wrap justify-content-center">
         <c:forEach items="${moovieListsList}" var="cardList">
             <%@include file="listCard.jsp"%>
         </c:forEach>
+        </div>
     </c:if>
 
     <c:if test="${nameMediaFlag}">

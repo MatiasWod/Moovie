@@ -102,7 +102,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests()
                     .antMatchers("/login", "/register").anonymous()
                     .antMatchers( "/createreview", "/uploadProfilePicture","/createrating","/insertMediaToList","/like", "/createlist", "/profile/**"
-                            ,"/createListAction","/deleteMediaFromList","/likeReview","/unlikeReview","/editList/**", "/updateMoovieListOrder/**", "/followList").hasRole( "USER")
+                            ,"/createListAction","/deleteMediaFromList","/likeReview","/unlikeReview","/editList/**", "/updateMoovieListOrder/**", "/followList","/likeMoovieListReview","/unlikeMoovieListReview","/MoovieListReview",
+                            "/likeComment","/dislikeComment","/createcomment").hasRole( "USER")
                     .antMatchers( "/deleteReview/**", "/deleteList/**","/banUser/**","/unbanUser/**","/makeUserMod/**").hasRole("MODERATOR")
                     .antMatchers("/**").permitAll()
                 .and().exceptionHandling()
