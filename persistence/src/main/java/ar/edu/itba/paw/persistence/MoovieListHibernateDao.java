@@ -336,7 +336,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
                 "m, " +
                 "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END " +
                 "FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId " +
-                "WHERE m.mediaId = mlc2. AND wl.name = 'Watched' AND wl.userId = :userid), " +
+                "WHERE m.mediaId = mlc2.mediaId AND wl.name = 'Watched' AND wl.userId = :userid), " +
                 "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END " +
                 "FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId " +
                 "WHERE m.mediaId = mlc2.mediaId AND wl.name = 'Watched' AND wl.userId = :userid))" +
