@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS moovieListsContent(
     moovieListId                        INTEGER NOT NULL,
     mediaId                            INTEGER NOT NULL,
     customOrder                         INTEGER NOT NULL,
-    UNIQUE(moovieListId,mediaid),
+    id SERIAL PRIMARY KEY,
     FOREIGN KEY(moovieListId) REFERENCES moovieLists(moovieListId) ON DELETE CASCADE,
     FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE
 );
@@ -412,4 +412,9 @@ CREATE TABLE IF NOT EXISTS reportsMoovieLists (
           FOREIGN KEY(moovieListId)     REFERENCES moovieLists(moovieListId) ON DELETE CASCADE
 );
 
+/*
+ALTER TABLE moovielistscontent DROP CONSTRAINT unique
+ALTER TABLE moovielistscontent ADD COLUMN id SERIAL PRIMARY KEY;
+UPDATE moovielistscontent mlc SET id = DEFAULT;
 
+ */

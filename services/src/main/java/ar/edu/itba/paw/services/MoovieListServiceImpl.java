@@ -253,46 +253,59 @@ public class MoovieListServiceImpl implements MoovieListService{
     public void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrev, int[] currentPage, int[] toNext) {
         int pageSize = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize();
         int firstPosition = currentPageNumber * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize() + 1;
-        int currentPos = (toPrev.length > 0) ? firstPosition + toPrev.length : firstPosition;
+        int currentPos = (toPrev.length > 0 && currentPageNumber > 0) ? firstPosition - toPrev.length : firstPosition;
 
         List<MoovieListContent> currentPageMedia = moovieListDao.getMoovieListContentModel(moovieListId, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(), currentPageNumber);
+        int i = 0;
 
+
+        if(currentPageNumber > 0 && toPrev.length > 0){
+            List<MoovieListContent> prevPageMedia = moovieListDao.getMoovieListContentModel(moovieListId, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(), currentPageNumber - 1);
+
+            for(  ; currentPos  < firstPosition  ; i++ ){
+
+                int mediaId = prevPageMedia.get(currentPos - i - 1 ).getMediaId();
+                prevPageMedia.get(currentPos - i - 1 ).setMediaId(toPrev[i]);
+                currentPageMedia.get(i).setMediaId(mediaId);
+
+                currentPos ++;
+            }
+            moovieListDao.updateMoovieListOrder(prevPageMedia);
+
+        }
+
+        //Iterates in currentPageMedia
+        int j = 0;
 
         if (currentPage.length > 0) {
-            for (int i = 0; i < currentPage.length; i++) {
-                currentPageMedia.get(i).setCustomOrder(currentPos);
-                System.out.println("Update mediaid " + currentPage[i] + " with customorder " + currentPos);
+            for (; j < currentPage.length - i ; j++) {
+                currentPageMedia.get(j+i).setMediaId(currentPage[j]);
+                System.out.println("Update mediaid " + currentPage[j] + " with customorder " + currentPos);
                 currentPos++;
             }
         }
 
-        /*
-        if (toPrev.length > 0) {
-            int prevPos = firstPosition - toPrev.length;
-            for (int i = 1; i <= toPrev.length; i++) {
-                System.out.println("Update customorder " + (currentPos + toPrev.length) + " where customorder " + prevPos);
-                System.out.println("Update mediaid " + toPrev[i - 1] + " with customorder " + currentPos);
+        if(toNext.length > 0){
+            List<MoovieListContent> nextPageMedia = moovieListDao.getMoovieListContentModel(moovieListId, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(), currentPageNumber + 1);
+
+            int numberToNext = Math.min(nextPageMedia.size(), toNext.length);
+
+            int k = 0;
+            for(  ; k < numberToNext ; k++ ){
+                currentPageMedia.get(currentPos-1).setMediaId(nextPageMedia.get(k).getMediaId());
+                nextPageMedia.get(k).setMediaId(toNext[k]);
                 currentPos++;
-                prevPos++;
             }
-        }
-
-        if (toNext.length > 0) {
-            int toMove = Math.min(toNext.length, pageSize);
-
-            for (int i = 0; i < toNext.length; i++) {
-                if (i < toMove) {
-                    System.out.println("Update customorder " + currentPos + " where customorder " + (firstPosition + pageSize + i));
-                    System.out.println("Update mediaid " + toNext[i] + " with customorder " + (firstPosition + pageSize + i));
-                } else {
-                    System.out.println("Update mediaid " + toNext[i] + " with customorder " + currentPos);
+            if(numberToNext != toNext.length){
+                for( ; k < toNext.length ;  ){
+                    currentPageMedia.get(currentPos-1).setMediaId(toNext[k]);
+                    currentPos++;
                 }
-                currentPos++;
-            }
-        }*/
 
+            }
+            moovieListDao.updateMoovieListOrder(nextPageMedia);
+        }
         moovieListDao.updateMoovieListOrder(currentPageMedia);
-        return;
     }
 
 

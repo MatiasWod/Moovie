@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
 
 import javax.persistence.EntityManager;
@@ -464,32 +465,23 @@ public class MoovieListHibernateDao implements MoovieListDao{
     }
 
 
+
     @Override
     public void updateMoovieListOrder(List<MoovieListContent> moovieListContents) {
-        for (int i = 0; i < moovieListContents.size(); i++) {
-            MoovieListContent entity = moovieListContents.get(i);
-            entity.setCustomOrder(i + 1); // Adjust as needed
-        }
-
-        int batchSize = 10; // Set your desired batch size
+        final int batchSize = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(); // Set your desired batch size
         for (int i = 0; i < moovieListContents.size(); i += batchSize) {
             int endIndex = Math.min(i + batchSize, moovieListContents.size());
             List<MoovieListContent> batch = moovieListContents.subList(i, endIndex);
 
+            // Update the batch of entities
             for (MoovieListContent entity : batch) {
-                int customOrder = entity.getCustomOrder();
-
-                // Use native SQL update to explicitly set the customOrder based on the entity identifier
-                Query query = em.createNativeQuery("UPDATE moovielistscontent SET customorder = :customOrder WHERE id = :entityId");
-                query.setParameter("customOrder", customOrder);
-                query.setParameter("entityId", entityId);
+                // Ensure the entity is in the persistent state
+                Query query = em.createNativeQuery("UPDATE moovielistscontent SET customorder = :customOrder WHERE id = :entityId").setParameter("customOrder", entity.getCustomOrder()).setParameter("entityId",entity.getId());
                 query.executeUpdate();
             }
-
-            em.flush();
-            em.clear();
         }
     }
+
 
     @Override
     public void removeLikeMoovieList(int userId, int moovieListId) {

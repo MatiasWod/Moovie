@@ -15,6 +15,9 @@ import java.util.List;
 public class MoovieListContent implements Serializable {
 
     @Id
+    @Column
+    private int id;
+
     @ManyToOne
     @JoinColumn(name = "moovieListId", referencedColumnName = "moovieListId")
     private MoovieList moovieList;
@@ -30,11 +33,23 @@ public class MoovieListContent implements Serializable {
 
     MoovieListContent(){}
 
+    public MoovieListContent(int id, MoovieList moovieList, int mediaId, int customOrder, boolean watched) {
+        this.id = id;
+        this.moovieList = moovieList;
+        this.mediaId = mediaId;
+        this.customOrder = customOrder;
+        this.watched = watched;
+    }
+
     public MoovieListContent(MoovieList moovieList, Media media, int mediaId, int customOrder, boolean watched) {
         this.moovieList = moovieList;
         this.mediaId = mediaId;
         this.customOrder = customOrder;
         this.watched = watched;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public void setMoovieList(MoovieList moovieList) {
