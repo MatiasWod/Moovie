@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.models.User;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -14,16 +15,15 @@ public class Token {
     @Column(length = 100, nullable = false)
     private String token;
 
-    @Temporal(TemporalType.DATE)
     @Column(nullable = false)
-    private Date expirationDate;
+    private LocalDateTime expirationDate;
 
     //Para hibernate
     public Token(){
 
     }
 
-    public Token(int userId, String token, Date expirationDate) {
+    public Token(int userId, String token, LocalDateTime expirationDate) {
         this.userId = userId;
         this.token = token;
         this.expirationDate = expirationDate;
@@ -37,7 +37,11 @@ public class Token {
         return token;
     }
 
-    public Date getExpirationDate() {
+    public LocalDateTime getExpirationDate() {
         return expirationDate;
+    }
+
+    public void setExpirationDate(LocalDateTime expirationDate) {
+        this.expirationDate = expirationDate;
     }
 }

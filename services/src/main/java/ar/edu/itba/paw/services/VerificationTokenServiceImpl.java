@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @Service
 public class VerificationTokenServiceImpl implements VerificationTokenService{
     private final VerificationTokenDao verificationTokenDao;
-    private static final int EXPIRATION = 60 * 24;
+    private static final int EXPIRATION = 1; //days
 
     @Autowired
     public VerificationTokenServiceImpl(VerificationTokenDao verificationTokenDao) {
@@ -26,15 +27,12 @@ public class VerificationTokenServiceImpl implements VerificationTokenService{
     @Override
     public String createVerificationToken(int userId) {
         String token = UUID.randomUUID().toString();
-        verificationTokenDao.createVerificationToken(userId,token,calculateExpirationDate());
+        verificationTokenDao.createVerificationToken(userId,token,calculateExpirationDate(EXPIRATION));
         return token;
     }
 
-    private Date calculateExpirationDate(){
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Timestamp(calendar.getTime().getTime()));
-        calendar.add(Calendar.MINUTE, VerificationTokenServiceImpl.EXPIRATION);
-        return new Date(calendar.getTime().getTime());
+    private LocalDateTime calculateExpirationDate(int expirationTimeInDays){
+        return LocalDateTime.now().plusDays(expirationTimeInDays);
     }
 
     @Transactional(readOnly = true)
@@ -51,15 +49,12 @@ public class VerificationTokenServiceImpl implements VerificationTokenService{
 
     @Override
     public boolean isValidToken(Token token) {
-        Calendar calendar = Calendar.getInstance();
-        long aux1 = token.getExpirationDate().getTime() ;
-        long aux2 = calendar.getTime().getTime();
-        return aux1 > aux2;
+        return token.getExpirationDate().isAfter(LocalDateTime.now());
     }
 
     @Transactional
     @Override
-    public void renewToken(String token) {
-        verificationTokenDao.renewToken(token,calculateExpirationDate());
+    public void renewToken(Token token) {
+        token.setExpirationDate(calculateExpirationDate(EXPIRATION));
     }
 }
