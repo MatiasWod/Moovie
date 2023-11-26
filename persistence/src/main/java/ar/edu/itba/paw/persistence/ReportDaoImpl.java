@@ -24,6 +24,24 @@ public class ReportDaoImpl implements ReportDao{
     private EntityManager em;
 
     @Override
+    public int getTotalReports() {
+        String sql = "SELECT " +
+                "(SELECT COUNT(*) FROM reportsreviews) + " +
+                "(SELECT COUNT(*) FROM reportsmoovielistreviews) + " +
+                "(SELECT COUNT(*) FROM reportsmoovielists) + " +
+                "(SELECT COUNT(*) FROM reportscomments) AS total_count";
+
+        Long toReturn = (Long) em.createNativeQuery(sql).getSingleResult();
+        return toReturn.intValue();
+    }
+
+
+    @Override
+    public int getTypeReports(int type) {
+        return 0;
+    }
+
+    @Override
     public List<ReviewReport> getReviewReports() {
 
         String sql = "SELECT c FROM ReviewReport c";
@@ -86,7 +104,7 @@ public class ReportDaoImpl implements ReportDao{
     @Override
     public void reportMoovieListReview(int moovieListReviewId, int userId, int type, String content) {
         String sql = "INSERT INTO reportsmoovielistreviews " +
-                "(type, content, reportedBy, reviewId) " +
+                "(type, content, reportedBy, moovieListReviewId) " +
                 "VALUES ( :type, :content, :userId , :moovieListReviewId )";
 
         em.createNativeQuery(sql)
@@ -127,7 +145,7 @@ public class ReportDaoImpl implements ReportDao{
     @Override
     public void reportMoovieList(int moovieListId, int userId, int type, String content) {
         String sql = "INSERT INTO reportsmoovielists " +
-                "(type, content, reportedBy, reviewId) " +
+                "(type, content, reportedBy, moovieListId) " +
                 "VALUES ( :type, :content, :userId , :moovieListId )";
 
         em.createNativeQuery(sql)
@@ -168,7 +186,7 @@ public class ReportDaoImpl implements ReportDao{
     @Override
     public void reportComment(int commentId, int userId, int type, String content) {
         String sql = "INSERT INTO reportscomments " +
-                "(type, content, reportedBy, reviewId) " +
+                "(type, content, reportedBy, commentId) " +
                 "VALUES ( :type, :content, :userId , :commentId )";
 
         em.createNativeQuery(sql)

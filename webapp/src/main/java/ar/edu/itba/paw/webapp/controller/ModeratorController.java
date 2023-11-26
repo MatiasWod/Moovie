@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ar.edu.itba.paw.services.*;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.validation.Valid;
 
 @Controller
@@ -28,6 +29,9 @@ public class ModeratorController {
     private ReviewService reviewService;
     @Autowired
     private CommentService commentService;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModeratorController.class);
+
 
     @RequestMapping(value = "/deleteReview/{mediaId:\\d+}", method = RequestMethod.POST)
     public ModelAndView deleteReview(@RequestParam("reviewId") int reviewId, @RequestParam("path") String path, RedirectAttributes redirectAttributes, @PathVariable int mediaId) {
@@ -105,7 +109,8 @@ public class ModeratorController {
     public ModelAndView report(@ModelAttribute("reportForm") final ReportForm form,
                                @RequestParam("id") int id,
                                @RequestParam("reportedBy") int reportedBy,
-                               @RequestParam("type") String type) {
+                               @RequestParam("type") String type,
+                               RedirectAttributes redirectAttributes) {
 
         ModelAndView mav = new ModelAndView("helloworld/reportPage");
         try {
@@ -124,57 +129,57 @@ public class ModeratorController {
                                      @RequestParam("type") String type,
                                      RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
-            return report(form,id,reportedBy,type);
+            return report(form,id,reportedBy,type, redirectAttributes);
         }
-
+        LOGGER.info("Hola este es el type: "+form.getType() + " reportedBy: " +form.getReportedBy() + " id: " + form.getId());
         switch (type) {
-            case "reviewDetails":
+            case "reviewDetails,reviewDetails":
                 try {
                     reportService.reportReview(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
                     redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
                     return new ModelAndView("redirect:/details/" + reviewService.getReviewById(form.getId()).getMediaId());
                 } catch (Exception e) {
                     redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
-                    return report(form, id, reportedBy, type);
+                    return report(form, id, reportedBy, type, redirectAttributes);
                 }
-            case "review":
+            case "review,review":
                 try {
                     reportService.reportReview(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
                     redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
                     return new ModelAndView("redirect:/review/" + form.getId());
                 } catch (Exception e) {
                     redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
-                    return report(form, id, reportedBy, type);
+                    return report(form, id, reportedBy, type, redirectAttributes);
                 }
-            case "moovieList":
+            case "moovieList,moovieList":
                 try {
                     reportService.reportMoovieList(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
-                    redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
+                    redirectAttributes.addFlashAttribute("successMessage", "MoovieList Reported");
                     return new ModelAndView("redirect:/list/" + form.getId());
                 } catch (Exception e) {
                     redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
-                    return report(form, id, reportedBy, type);
+                    return report(form, id, reportedBy, type, redirectAttributes);
                 }
-            case "moovieListReview":
+            case "moovieListReview,moovieListReview":
                 try {
                     reportService.reportMoovieListReview(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
-                    redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
+                    redirectAttributes.addFlashAttribute("successMessage", "MoovieList Review Reported");
                     return new ModelAndView("redirect:/list/" + reviewService.getMoovieListReviewById(form.getId()).getMoovieListId());
                 } catch (Exception e) {
                     redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
-                    return report(form, id, reportedBy, type);
+                    return report(form, id, reportedBy, type, redirectAttributes);
                 }
-            case "comment":
+            case "comment,comment":
                 try {
                     reportService.reportComment(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
                     redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
                     return new ModelAndView("redirect:/details/"); // faltaria un getCommentById
                 } catch (Exception e) {
                     redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
-                    return report(form, id, reportedBy, type);
+                    return report(form, id, reportedBy, type, redirectAttributes);
                 }
         }
-        return new ModelAndView("redirect:/");
+        return report(form, id, reportedBy, type, redirectAttributes);
     }
 
     // TODO: Add mod filtering for this page
@@ -182,24 +187,28 @@ public class ModeratorController {
     public ModelAndView reportReview(@RequestParam(name = "list", required = false) String list) {
         ModelAndView mav = new ModelAndView("helloworld/pendingReports");
 
-        switch (list){
-            case("comments"):
-                mav.addObject("list",reportService.getReportedComments());
-                break;
-            case("reviews"):
-                mav.addObject("list",reportService.getReviewReports());
-                break;
-            case("mlReviews"):
-                mav.addObject("list",reportService.getReportedMoovieListReviews());
-                break;
-            case("ml"):
-                mav.addObject("list",reportService.getReportedMoovieLists());
-                break;
-            default:
-                mav.addObject("list",reportService.getReportedComments());
-                break;
-
+        if (list != null && list != ""){
+            switch (list){
+                case("comments"):
+                    mav.addObject("list",reportService.getReportedComments());
+                    break;
+                case("reviews"):
+                    mav.addObject("list",reportService.getReviewReports());
+                    break;
+                case("mlReviews"):
+                    mav.addObject("list",reportService.getReportedMoovieListReviews());
+                    break;
+                case("ml"):
+                    mav.addObject("list",reportService.getReportedMoovieLists());
+                    break;
+                case("banned"):
+                    //TODO banned
+                    break;
+            }
+        }else{
+            mav.addObject("list",reportService.getReportedComments());
         }
+
 
         try {
             mav.addObject("currentUser", userService.getInfoOfMyUser());

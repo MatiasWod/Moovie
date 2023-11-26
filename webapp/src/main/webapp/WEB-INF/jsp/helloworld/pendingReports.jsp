@@ -18,7 +18,20 @@
     <link href="${pageContext.request.contextPath}/resources/buttonsStyle.css?version=1" rel="stylesheet"/>
     <script async src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     <script async src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script async>
+        document.addEventListener("DOMContentLoaded", function() {
+            const form = document.getElementById("selected-radio");
+            const radios = document.querySelectorAll("input[name='btnradio']");
+            const listField = document.getElementById("listField");
 
+            radios.forEach((radio) => {
+                radio.addEventListener("change", function() {
+                    listField.value = radio.id.replace("btnradio-", "");
+                    form.submit();
+                });
+            });
+        });
+    </script>
 </head>
 <body>
 <c:import url="navBar.jsp"/>
@@ -56,20 +69,20 @@
 
     <div class="btn-group m-2" role="group" aria-label="Basic radio toggle button group">
 
-        <input type="radio" class="btn-check" name="btnradio" id="btnradio-watched-list" autocomplete="off" ${(param.list != null && param.list == 'watched-list')? 'checked':''}>
-        <label class="btn btn-outline-success" for="btnradio-watched-list"><spring:message code="profile.watched"/></label>
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio-comments" autocomplete="off" ${(param.list == null || param.list == '' || param.list == 'comments')? 'checked':''}>
+        <label class="btn btn-outline-success" for="btnradio-comments"><spring:message code="profile.watched"/></label>
 
-        <input type="radio" class="btn-check" name="btnradio" id="btnradio-user-lists" autocomplete="off" ${(param.list == null || param.list == '' || param.list == 'user-lists')? 'checked':''}>
-        <label class="btn btn-outline-success" for="btnradio-user-lists"><spring:message code="profile.userLists"/></label>
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio-ml" autocomplete="off" ${(param.list != null && param.list == 'ml')? 'checked':''}>
+        <label class="btn btn-outline-success" for="btnradio-ml"><spring:message code="profile.userLists"/></label>
 
-        <input type="radio" class="btn-check" name="btnradio" id="btnradio-user-private-lists" autocomplete="off" ${(param.list != null && param.list == 'private-user-lists')? 'checked':''}>
-        <label class="btn btn-outline-success" for="btnradio-user-private-lists"><spring:message code="profile.privateUserLists"/></label>
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio-mlReviews" autocomplete="off" ${(param.list != null && param.list == 'mlReviews')? 'checked':''}>
+        <label class="btn btn-outline-success" for="btnradio-mlReviews"><spring:message code="profile.privateUserLists"/></label>
 
-        <input type="radio" class="btn-check" name="btnradio" id="btnradio-liked-lists" autocomplete="off" ${(param.list != null && param.list == 'liked-lists')? 'checked':''}>
-        <label class="btn btn-outline-success" for="btnradio-liked-lists"><spring:message code="profile.likedLists"/></label>
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio-reviews" autocomplete="off" ${(param.list != null && param.list == 'reviews')? 'checked':''}>
+        <label class="btn btn-outline-success" for="btnradio-reviews"><spring:message code="profile.likedLists"/></label>
 
         <input type="radio" class="btn-check" name="btnradio" id="btnradio-banned" autocomplete="off" ${(param.list != null && param.list == 'banned')? 'checked':''}>
-        <label class="btn btn-outline-success" for="btnradio-liked-lists"><spring:message code="profile.likedLists"/></label>
+        <label class="btn btn-outline-success" for="btnradio-banned"><spring:message code="profile.likedLists"/></label>
 
         <form id="selected-radio" action="${pageContext.request.contextPath}/reports/review">
             <input type="hidden" name="list" id="listField">
@@ -78,7 +91,7 @@
     </div>
 
     <c:choose>
-        <c:when test="${param.list == 'comments' || param.list == null || param.list.length() == 0 }">
+        <c:when test="${param.list == 'comments' || param.list == null || param.list == '' }">
             comments
         </c:when>
         <c:when test="${param.list == 'ml'}">
@@ -90,30 +103,8 @@
         <c:when test="${param.list == 'reviews'}">
             reviews
         </c:when>
-    </c:choose>
-    <c:forEach items="${commentReports}" var="report">
-        <div>
-            reportedBy username: ${report.reportedBy.username} --
-            reported comment content: ${report.comment.content} --
-            ${report.report_date} --
-            ${report.type} --
-            ${report.content} --
-        </div>
-    </c:forEach>
-
-    <c:forEach items="${reportedReviews}" var="review">
-        <div>
-            ${review.reviewContent} --
-                total: ${review.totalReports} -- spam: ${review.spamReports}
-        </div>
-    </c:forEach>
-    
-    <c:choose>
-        
-        <c:when test="${param.list == 'users'}">
-            <div>
-                Esto sera un bloque para revisar un reporte de un user dado.
-            </div>
+        <c:when test="${param.list == 'banned'}">
+            banned
         </c:when>
     </c:choose>
 

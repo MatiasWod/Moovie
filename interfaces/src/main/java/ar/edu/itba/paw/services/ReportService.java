@@ -13,6 +13,11 @@ import java.util.List;
 
 public interface ReportService {
 
+    // STATS
+
+    int getTotalReports();
+    int getTypeReports(int type);
+
     // (Media) Reviews
 
     List<ReviewReport> getReviewReports();
