@@ -3,15 +3,17 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
 import ar.edu.itba.paw.services.ModeratorService;
+import ar.edu.itba.paw.services.ReportService;
 import ar.edu.itba.paw.services.UserService;
+import ar.edu.itba.paw.webapp.form.ReportForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
 
 @Controller
 public class ModeratorController {
@@ -19,6 +21,9 @@ public class ModeratorController {
     private ModeratorService moderatorService;
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ReportService reportService;
 
     @RequestMapping(value = "/deleteReview/{mediaId:\\d+}", method = RequestMethod.POST)
     public ModelAndView deleteReview(@RequestParam("reviewId") int reviewId, @RequestParam("path") String path, RedirectAttributes redirectAttributes, @PathVariable int mediaId) {
@@ -87,5 +92,37 @@ public class ModeratorController {
             redirectAttributes.addFlashAttribute("errorMessage", "Error promoting user to moderator");
         }
         return new ModelAndView("redirect:/profile/" + userService.findUserById(userId).getUsername());
+    }
+
+    // ---------- MODERATOR REPORT MANAGEMENT -------------- //
+
+
+    @RequestMapping(value = "/reports/new")
+    public ModelAndView report(@ModelAttribute("reportForm") final ReportForm form,
+                               @RequestParam("id") int id,
+                               @RequestParam("reportedBy") int reportedBy,
+                               @RequestParam("type") String type) {
+        return new ModelAndView("helloworld/reportPage");
+    }
+
+    @RequestMapping(value = "/reports/new", method = RequestMethod.POST)
+    public ModelAndView submitReport(@Valid @ModelAttribute("reportForm") final ReportForm form,
+                                     final BindingResult errors,
+                                     @RequestParam("id") int id,
+                                     @RequestParam("reportedBy") int reportedBy,
+                                     @RequestParam("type") String type) {
+        if (errors.hasErrors()) {
+            return report(form,id,reportedBy,type);
+        }
+        return new ModelAndView("redirect:/");
+    }
+
+    // TODO: Add mod filtering for this page
+    @RequestMapping(value = "/reports/review")
+    public ModelAndView reportReview() {
+        ModelAndView mav = new ModelAndView("helloworld/pendingReports");
+
+        mav.addObject("commentReports", reportService.getCommentReports());
+        return mav;
     }
 }

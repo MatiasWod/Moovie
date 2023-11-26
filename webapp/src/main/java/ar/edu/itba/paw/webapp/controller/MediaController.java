@@ -253,7 +253,7 @@ public class MediaController {
             User user =  userService.getInfoOfMyUser();
             String username=user.getUsername();
             int userId=user.getUserId();
-            mav.addObject("currentUsername", username);
+            mav.addObject("currentUser", user);
             mav.addObject("publicLists", moovieListService.getMoovieListCards(null, username, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),null,null, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), 0));
             mav.addObject("privateLists", moovieListService.getMoovieListCards(null, username, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), 0));
             mav.addObject("userReview", reviewService.getReviewByMediaIdAndUsername(mediaId, userId, ReviewTypes.REVIEW_MEDIA));

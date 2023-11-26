@@ -296,7 +296,7 @@
         </c:if>
         <!-- Cast -->
         <div class="row ">
-            <h2><spring:message code="details.cast"/></h2>
+            <h2>Cast</h2>
             <hr class="my-8">
             <div class="flex-wrap d-flex align-items-center justify-content-center container" id="actors-container">
                 <c:forEach var="actor" items="${actorsList}">
@@ -385,40 +385,6 @@
             </form:form>
 
         </div>
-        <div class="popup-overlay edit-popup-overlay"></div>
-        <div class="popup edit-popup">
-            <!-- Popup content goes here -->
-            <h2><spring:message code="details.yourRatingForMedia" arguments="${media.name}"/></h2>
-            <hr class="my-8">
-            <div class="rating">
-                <c:forEach var="i" begin="1" end="5" varStatus="loopStatus">
-                    <c:set var="reverseIndex" value="${5 - loopStatus.count + 1}"/>
-                    <c:choose>
-                        <c:when test="${userReview.rating>=reverseIndex}">
-                            <i class="bi bi-star-fill selected" onclick="rate2(${reverseIndex})"></i>
-                        </c:when>
-                        <c:otherwise>
-                            <i class="bi bi-star" onclick="rate2(${reverseIndex})"></i>
-                        </c:otherwise>
-                    </c:choose>
-                </c:forEach>
-            </div>
-            <h5><spring:message code="details.yourRating"/> <span id="selectedRatingEdit">${userReview.rating}</span></h5>
-
-                <textarea class="review-textarea" id="reviewContent2" rows="3"
-                          maxlength="500">${userReview.reviewContent}</textarea>
-                <span><span class="text-muted" id="charCount2">${userReview.reviewContent.length()}</span>/500</span>
-                <!-- Submit Button -->
-                <div class="text-center" style="margin-top: 20px">
-                    <button type="button" class="btn btn-danger" style="margin-inline: 10px"
-                            onclick="closePopup('edit-popup')">
-                        <spring:message code="details.cancel"/>
-                    </button>
-                    <button class="btn btn-dark" id="submitButton2"  style="margin-inline: 10px" ${userReview.reviewContent.length()>=0 ? '' : 'disabled'} onclick="submitFirstForm() " >
-                        <spring:message code="details.submit"/>
-                    </button>
-                </div>
-        </div>
         <!-- Reviews -->
         <h2><spring:message code="details.reviews"/></h2>
         <hr class="my-8">
@@ -449,36 +415,23 @@
                                             <i class="bi bi-star-fill ml-2"></i> ${review.rating}/5
                                         </h5>
                                         <c:choose>
-                                            <c:when test="${currentUsername==review.username}">
+                                            <c:when test="${currentUser.username==review.username}">
                                                 <div class="text-center m-2">
-                                                    <button onclick="openPopup('review${review.reviewId}')"
-                                                            class="btn btn-danger btn-sm">
+                                                    <button onclick="openPopup('review${review.reviewId}')" class="btn btn-danger btn-sm">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </div>
-                                                <div class="review${review.reviewId}-overlay popup-overlay"
-                                                     onclick="closePopup('review${review.reviewId}')"></div>
-                                                <div style="background-color: transparent; box-shadow: none"
-                                                     class="popup review${review.reviewId}">
-                                                    <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);"
-                                                         class="alert alert-danger" role="alert">
-                                                        <h5 class="alert-heading"><spring:message
-                                                                code="details.confirmReviewDeletion"/></h5>
-                                                        <p><spring:message
-                                                                code="details.confirmReviewDeletionPrompt"/></p>
+                                                <div class="review${review.reviewId}-overlay popup-overlay" onclick="closePopup('review${review.reviewId}')"></div>
+                                                <div style="background-color: transparent; box-shadow: none" class="popup review${review.reviewId}">
+                                                    <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
+                                                        <h5 class="alert-heading"><spring:message code="details.confirmReviewDeletion"/></h5>
+                                                        <p><spring:message code="details.confirmReviewDeletionPrompt"/></p>
                                                         <div class="d-flex justify-content-evenly">
-                                                            <form class="m-0"
-                                                                  action="${pageContext.request.contextPath}/deleteUserReview/${media.mediaId}"
-                                                                  method="post">
-                                                                <input type="hidden" name="reviewId"
-                                                                       value="${review.reviewId}"/>
-                                                                <button type="submit" class="btn btn-danger">
-                                                                    <spring:message code="details.delete"/></button>
+                                                            <form class="m-0" action="${pageContext.request.contextPath}/deleteUserReview/${media.mediaId}" method="post">
+                                                                <input type="hidden" name="reviewId" value="${review.reviewId}"/>
+                                                                <button type="submit" class="btn btn-danger"><spring:message code="details.delete"/></button>
                                                             </form>
-                                                            <button type="button"
-                                                                    onclick="closePopup('review${review.reviewId}')"
-                                                                    class="btn btn-secondary" id="cancelButton">
-                                                                <spring:message code="details.cancel"/></button>
+                                                            <button type="button" onclick="closePopup('review${review.reviewId}')" class="btn btn-secondary" id="cancelButton"><spring:message code="details.cancel"/></button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -545,86 +498,93 @@
                                             </c:otherwise>
                                         </c:choose>
                                     </div>
-                                    <c:if test="${currentUsername==review.username}">
+                                    <c:if test="${currentUser.username==review.username}">
                                         <div style="margin-bottom: 15px">
-                                            <button class="btn btn-primary" style="font-size: 14px;margin-left: 10px;"
-                                                    onclick="openPopup('edit-popup')">
-                                                <span>
+                                            <button class="btn btn-primary" style="font-size: 14px;margin-left: 10px;" onclick="openPopup('edit-popup')">                                                <span>
                                                    <i class="bi bi-pencil" ></i>
                                                 </span>
                                                 <spring:message code="details.editReview"/>
                                             </button>
                                         </div>
                                     </c:if>
-
-                                </div>
-                                <a class="ms-1" data-bs-toggle="collapse" href="#collapse${review.reviewId}" role="button" aria-expanded="false" aria-controls="collapse${review.reviewId}">
-                                    <spring:message code="details.comment"/> (${review.commentCount})
-                                </a>
-                                <div class="collapse" id="collapse${review.reviewId}">
-                                    <sec:authorize access="isAuthenticated()">
-                                        <div class="input-group mt-2">
-                                            <form:form modelAttribute="commentForm" action="${pageContext.request.contextPath}/createcomment" method="POST">
-                                                <form:input path="reviewId" type="hidden" value="${review.reviewId}"/>
-                                                <form:input path="listMediaId" type="hidden" value="${media.mediaId}"/>
-                                                <form:input path="content" class="form-control" placeholder="Add comment..." aria-label="With textarea"/>
-                                            </form:form>
-                                        </div>
-                                    </sec:authorize>
-
-                                    <c:if test="${review.commentCount > 0}">
-                                    <c:forEach items="${review.comments}" var="comment" end="4">
-                                        <div class="mb-2 mt-2 card card-body">
-                                            <div class="d-flex justify-content-between">
-                                                <h6 class="card-title"><a href="${pageContext.request.contextPath}/profile/${comment.username}">${comment.username}</a></h6>
-                                                <div class="d-flex">
-                                                    <p>${comment.commentLikes - comment.commentDislikes}  </p>
-
-                                                    <sec:authorize access="isAuthenticated()">
-                                                        <form action="${pageContext.request.contextPath}/likeComment" method="post">
-                                                            <input hidden name="commentId" value="${comment.commentId}">
-                                                            <input hidden name="mediaId" value="${media.mediaId}">
-                                                            <c:if test="${!comment.currentUserHasLiked}">
-                                                                <button type="submit" class="me-1 btn-sm btn btn-outline-success">
-                                                                    <i class="m-1 bi bi-hand-thumbs-up"></i>
-                                                                </button>
-                                                            </c:if>
-                                                            <c:if test="${comment.currentUserHasLiked}">
-                                                                <button type="submit" class="me-1 btn-sm btn btn-success">
-                                                                    <i class="m-1 bi bi-hand-thumbs-up"></i>
-                                                                </button>
-                                                            </c:if>
-
-                                                        </form>
-
-                                                        <form action="${pageContext.request.contextPath}/dislikeComment" method="post">
-                                                            <input hidden name="commentId" value="${comment.commentId}">
-                                                            <input hidden name="mediaId" value="${media.mediaId}">
-                                                            <c:if test="${!comment.currentUserHasDisliked}">
-                                                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                                    <i class="m-1 bi bi-hand-thumbs-down"></i>
-                                                                </button>
-                                                            </c:if>
-                                                            <c:if test="${comment.currentUserHasDisliked}">
-                                                                <button type="submit" class="btn btn-sm btn-danger">
-                                                                    <i class="m-1 bi bi-hand-thumbs-down"></i>
-                                                                </button>
-                                                            </c:if>
-                                                        </form>
-                                                    </sec:authorize>
-
-                                                </div>
+                                    <c:if test="${currentUser.username != review.username}">
+                                        <sec:authorize access="isAuthenticated()">
+                                            <div style="margin-bottom: 15px">
+                                                <a href="${pageContext.request.contextPath}/reports/new?id=${review.reviewId}&reportedBy=${currentUser.userId}&type=review" class="btn btn-warning" style="font-size: 14px;margin-left: 10px;" ><spring:message code="report.title"/>
+                                                <i class="bi bi-flag"></i>
+                                                </a>
                                             </div>
-                                            <p class="card-text">${comment.content}</p>
-                                        </div>
-                                    </c:forEach>
-                                        <c:if test="${review.commentCount > 5}">
-                                    <a class="ms-1" href="${pageContext.request.contextPath}/review/${review.reviewId}">
-                                        <spring:message code="details.seeMore"/>
-                                    </a>
-                                        </c:if>
-                                </div>
+                                        </sec:authorize>
                                     </c:if>
+                                </div>
+
+                                <sec:authorize access="isAuthenticated()">
+                                    <div class="input-group mt-2 d-flex">
+                                        <form:form modelAttribute="commentForm" cssClass="d-flex" action="${pageContext.request.contextPath}/createcomment" method="POST">
+                                            <form:input path="reviewId" type="hidden" value="${review.reviewId}"/>
+                                            <form:input path="listMediaId" type="hidden" value="${media.mediaId}"/>
+                                            <form:input path="content" class="form-control" placeholder="Add comment..." aria-label="With textarea"/>
+                                        </form:form>
+                                    </div>
+                                </sec:authorize>
+                                <c:if test="${review.commentCount > 0}">
+                                    <a class="ms-1" data-bs-toggle="collapse" href="#collapse${review.reviewId}" role="button" aria-expanded="false" aria-controls="collapse${review.reviewId}">
+                                        <spring:message code="details.comment"/> (${review.commentCount})
+                                    </a>
+                                    <div class="collapse" id="collapse${review.reviewId}">
+                                            <c:forEach items="${review.comments}" var="comment" end="4">
+                                                <div class="mb-2 mt-2 card card-body">
+                                                    <div class="d-flex justify-content-between">
+                                                        <h6 class="card-title"><a href="${pageContext.request.contextPath}/profile/${comment.username}">${comment.username}</a></h6>
+                                                        <div class="d-flex">
+                                                            <p>${comment.commentLikes - comment.commentDislikes}</p>
+                                                            <sec:authorize access="isAuthenticated()">
+                                                                <form action="${pageContext.request.contextPath}/likeComment" method="post">
+                                                                    <input hidden name="commentId" value="${comment.commentId}">
+                                                                    <input hidden name="mediaId" value="${media.mediaId}">
+                                                                    <c:if test="${!comment.currentUserHasLiked}">
+                                                                        <button type="submit" class="me-1 btn-sm btn btn-outline-success">
+                                                                            <i class="m-1 bi bi-hand-thumbs-up"></i>
+                                                                        </button>
+                                                                    </c:if>
+                                                                    <c:if test="${comment.currentUserHasLiked}">
+                                                                        <button type="submit" class="me-1 btn-sm btn btn-success">
+                                                                            <i class="m-1 bi bi-hand-thumbs-up"></i>
+                                                                        </button>
+                                                                    </c:if>
+                                                                </form>
+                                                                <form action="${pageContext.request.contextPath}/dislikeComment" method="post">
+                                                                    <input hidden name="commentId" value="${comment.commentId}">
+                                                                    <input hidden name="mediaId" value="${media.mediaId}">
+                                                                    <c:if test="${!comment.currentUserHasDisliked}">
+                                                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                                            <i class="m-1 bi bi-hand-thumbs-down"></i>
+                                                                        </button>
+                                                                    </c:if>
+                                                                    <c:if test="${comment.currentUserHasDisliked}">
+                                                                        <button type="submit" class="btn btn-sm btn-danger">
+                                                                            <i class="m-1 bi bi-hand-thumbs-down"></i>
+                                                                        </button>
+                                                                    </c:if>
+                                                                </form>
+                                                                <a href="${pageContext.request.contextPath}/reports/new?id=${comment.commentId}&reportedBy=${currentUser.userId}&type=reviewComment" class="btn btn-sm btn-warning ms-1" ><spring:message code="report.title"/>
+                                                                    <i class="bi bi-flag"></i>
+                                                                </a>
+                                                            </sec:authorize>
+                                                        </div>
+                                                    </div>
+                                                    <p class="card-text">${comment.content}</p>
+                                                </div>
+                                            </c:forEach>
+
+                                        <c:if test="${review.commentCount > 5}">
+                                            <a class="ms-1" href="${pageContext.request.contextPath}/review/${review.reviewId}">
+                                                <spring:message code="details.seeMore"/>
+                                            </a>
+                                        </c:if>
+                                    </div>
+                                </c:if>
+                            </div>
                         </div>
                     </c:forEach>
                 </div>

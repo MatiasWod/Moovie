@@ -339,4 +339,24 @@ public class UserController {
         return "redirect:" + referer;
     }
 
+
+    // ---------- REPORT SECTION ------------- //
+
+
+
+    // ---------- DATABASE UPDATER ---------- //
+    //TODO DELETE AFTER UPDATING
+//    /*
+    @RequestMapping(value = "/updateDatabaseSchema")
+    public ModelAndView updateDatabaseSchema() {
+        dmsService.updateActors();
+        dmsService.updateCreators();
+        dmsService.updateGenres();
+        dmsService.updateProviders();
+        return new ModelAndView("helloworld/403");
+    }
+//    */
+
+
+
 }
