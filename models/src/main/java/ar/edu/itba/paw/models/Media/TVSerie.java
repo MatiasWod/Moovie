@@ -3,10 +3,7 @@ package ar.edu.itba.paw.models.Media;
 import ar.edu.itba.paw.models.Genre.Genre;
 import ar.edu.itba.paw.models.Provider.Provider;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
@@ -15,9 +12,11 @@ import java.util.List;
 @PrimaryKeyJoinColumn(name = "mediaId")
 public class TVSerie extends Media{
 
+    @Temporal(TemporalType.DATE)
     @Column
     private Date lastAirDate;
 
+    @Temporal(TemporalType.DATE)
     @Column
     private Date nextEpisodeToAir;
 
