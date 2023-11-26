@@ -286,7 +286,7 @@
         </c:if>
         <!-- Cast -->
         <div class="row ">
-            <h2>Cast</h2>
+            <h2><spring:message code="details.cast"/></h2>
             <hr class="my-8">
             <div class="flex-wrap d-flex align-items-center justify-content-center container" id="actors-container">
                 <c:forEach var="actor" items="${actorsList}">
