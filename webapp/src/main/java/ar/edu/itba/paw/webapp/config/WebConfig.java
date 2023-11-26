@@ -8,6 +8,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.jdbc.datasource.init.DataSourceInitializer;
+import org.springframework.jdbc.datasource.init.DatabasePopulator;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -42,6 +45,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Value("classpath:media.sql")
     private Resource mediaSql;
 
+    @Value("classpath:featured_lists.sql")
+    private Resource featuredLists;
+
 
     @Bean
     public ViewResolver viewResolver() {
@@ -58,7 +64,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
                 .addResourceLocations("/resources/");
     }
 
-    /*
+
     @Bean
     public DataSourceInitializer dataSourceInitializer(final DataSource ds){
         final DataSourceInitializer dsi = new DataSourceInitializer();
@@ -66,13 +72,15 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         dsi.setDatabasePopulator(databasePopulator());
         return dsi;
     }
+
     private DatabasePopulator databasePopulator(){
         final ResourceDatabasePopulator dbp =  new ResourceDatabasePopulator();
         dbp.addScript(schemaSql);
-        //dbp.addScript(mediaSql);
+        dbp.addScript(mediaSql);
+        dbp.addScript(featuredLists);
         return dbp;
     }
-    */
+
 
     @Bean
     public CommonsMultipartResolver multipartResolver() {
