@@ -45,7 +45,7 @@
                             </button>
                         </div>
                         <div class="m-3">
-                            <img class="profile-image m-2 cropCenter" style="height:300px;width:300px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/profile/image/${profile.username}" alt="preview">
+                            <img class="profile-image profile-image-preview m-2 cropCenter" style="height:300px;width:300px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/profile/image/${profile.username}" alt="preview">
                             <form action="${pageContext.request.contextPath}/uploadProfilePicture" method="post" enctype="multipart/form-data">
                                 <input class="btn btn-success-outline" type="file" name="file" accept="image/*" onchange="previewImage(this)" />
                                 <input class="btn btn-success" type="submit" value="Submit" />
@@ -188,7 +188,7 @@
             <label class="btn btn-outline-success" for="btnradio-user-lists"><spring:message code="profile.userLists"/></label>
 
             <c:if test="${isMe}">
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio-user-private-lists" autocomplete="off" ${(param.list != null && param.list == 'private-user-lists')? 'checked':''}>
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio-user-private-lists" autocomplete="off" ${(param.list != null && param.list == 'user-private-lists')? 'checked':''}>
                 <label class="btn btn-outline-success" for="btnradio-user-private-lists"><spring:message code="profile.privateUserLists"/></label>
             </c:if>
 

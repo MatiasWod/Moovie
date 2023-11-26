@@ -142,7 +142,14 @@
                                     <li class="nav-item dropdown">
                                         <sec:authorize access="hasRole('ROLE_MODERATOR')"><img src="${pageContext.request.contextPath}/resources/moderator_logo.png" height="50" alt="Moderator logo"></sec:authorize>
                                         <button id="dropdownButtonProfile" class="btn bg-transparent dropdown-toggle customDropdownButton" style="color: rgba(0, 0, 0, 0.65);" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <img id="profile-image" style="height: 50px; width: 50px; border:solid black; border-radius: 50%" class="profile-image cropCenter" src="${pageContext.request.contextPath}/profile/image/${username}" alt="profile picture"/>
+                                            <c:choose>
+                                                <c:when test="${currentUser.hasPfp}">
+                                                    <img id="profile-image" style="height: 50px; width: 50px; border:solid black; border-radius: 50%" class="profile-image cropCenter" src="${pageContext.request.contextPath}/profile/image/${username}" alt="profile picture"/>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <img id="profile-image" style="height: 50px; width: 50px; border:solid black; border-radius: 50%" class="profile-image cropCenter" src="${pageContext.request.contextPath}/resources/defaultProfile.jpg" alt="profile picture"/>
+                                                </c:otherwise>
+                                            </c:choose>
                                                 <c:url value="${username}"/>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">

@@ -76,9 +76,9 @@
                                                 <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">
                                                     <input type="hidden" name="listId" value="${watchedListId}"/>
                                                     <input type="hidden" name="mediaId" value="${movie.mediaId}"/>
-                                                    <button class="btn btn-secondary m-1" type="submit">
+                                                    <button class="btn btn-success m-1" type="submit">
                                                     <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
-                                                        <i class="bi bi-eye-fill" style="color: green; cursor: pointer;"></i>
+                                                        <i class="bi bi-eye-fill" style="color: whitesmoke; cursor: pointer;"></i>
                                                     </span>
                                                     </button>
                                                 </form>
@@ -100,9 +100,9 @@
                                                 <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">
                                                     <input type="hidden" name="listId" value="${watchlistId}"/>
                                                     <input type="hidden" name="mediaId" value="${movie.mediaId}"/>
-                                                    <button class="btn btn-secondary m-1" type="submit">
+                                                    <button class="btn btn-success m-1" type="submit">
                                                     <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
-                                                        <i class="bi bi-bookmark-check-fill" style="color: green; cursor: pointer;"></i>
+                                                        <i class="bi bi-bookmark-check-fill" style="color: whitesmoke; cursor: pointer;"></i>
                                                     </span>
                                                     </button>
                                                 </form>

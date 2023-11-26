@@ -27,17 +27,18 @@
 <div class="d-flex">
     <div class="d-flex flex-column flex-grow-1 m-3">
             <div class="input-group mt-2 mb-3">
-                <form:form modelAttribute="createReviewForm" action="${pageContext.request.contextPath}/MoovieListReview" method="POST">
+                <form:form cssClass="d-flex" modelAttribute="createReviewForm" action="${pageContext.request.contextPath}/MoovieListReview" method="POST">
                     <form:input path="mediaId" type="hidden" value="${moovieList.moovieListId}"/>
                     <form:input path="rating" type="hidden" value="5"/>
                     <form:input path="reviewContent" class="form-control" placeholder="Add comment..." aria-label="With textarea"/>
-<%--                    <button type="submit" class="btn btn-dark" style="margin-inline: 10px" id="submitButton">--%>
-<%--                        <spring:message code="details.submit"/>--%>
-<%--                    </button>--%>
+                    <button type="submit" class="ms-1 btn btn-dark" id="submitButton">
+                        <spring:message code="details.submit"/>
+                    </button>
+
                 </form:form>
             </div>
-            <c:forEach var="review" items="${reviews}">
-                <div class="card mb-3">
+        <c:forEach var="review" items="${reviews}">
+            <div class="card mb-3">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
@@ -59,6 +60,7 @@
                         <div class="d-flex align-items-center justify-content-between">
                             <c:choose>
                                 <c:when test="${currentUser.username==review.username}">
+
                                     <div class="text-center m-2">
                                         <button onclick="openPopup('review${review.moovieListReviewId}')"
                                                 class="btn btn-danger btn-sm">
@@ -93,6 +95,11 @@
                                     </div>
                                 </c:when>
                                 <c:otherwise>
+                                    <div class="m-2 text-center">
+                                        <a href="${pageContext.request.contextPath}/reports/new?id=${review.moovieListReviewId}&reportedBy=${currentUser.userId}&type=moovieListReview" class="btn btn-sm btn-warning"><spring:message code="report.title"/>
+                                            <i class="bi bi-flag"></i>
+                                        </a>
+                                    </div>
                                     <sec:authorize access="hasRole('ROLE_MODERATOR')">
                                         <div class="text-center m-2" >
                                             <button onclick="openPopup('review${review.moovieListReviewId}')" class="btn btn-danger btn-sm">
@@ -164,11 +171,10 @@
 <%--                                </button>--%>
 <%--                            </div>--%>
 <%--                        </c:if>--%>
-
                     </div>
                 </div>
-            </c:forEach>
-                </div>
+            </div>
+        </c:forEach>
     </div>
     <c:if test="${RecomendedListsCards}">
         <div style="max-width: 30vw" class="d-flex flex-column align-items-center m-2">
