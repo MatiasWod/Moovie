@@ -205,7 +205,7 @@ public class MoovieListServiceImpl implements MoovieListService{
                 map.put("moovieListId",moovieListId);
                 map.put("moovieListName",ml.getName());
                 emailService.sendEmail(user.getEmail(),
-                        "A Moovie List you follow has been Updated",
+                        "email.newMediaAddedSubject",
                         "mediaAddedToFollowedList.html",
                         map);
             });
@@ -247,17 +247,65 @@ public class MoovieListServiceImpl implements MoovieListService{
         }
     }
 
+
     @Transactional
     @Override
-    public void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrevPage, int[] currentPage, int[] toNextPage) {
-        User currentUser = userService.getInfoOfMyUser();
-        if (!currentUser.getUsername().equals(getMoovieListCardById(moovieListId).getUsername())) {
-            throw new InvalidAccessToResourceException("User is not owner of the list.");
+    public void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrev, int[] currentPage, int[] toNext) {
+        int pageSize = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize();
+        int firstPosition = currentPageNumber * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize() + 1;
+        int currentPos = (toPrev.length > 0 && currentPageNumber > 0) ? firstPosition - toPrev.length : firstPosition;
+
+        List<MoovieListContent> currentPageMedia = moovieListDao.getMoovieListContentModel(moovieListId, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(), currentPageNumber);
+        int i = 0;
+
+
+        if(currentPageNumber > 0 && toPrev.length > 0){
+            List<MoovieListContent> prevPageMedia = moovieListDao.getMoovieListContentModel(moovieListId, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(), currentPageNumber - 1);
+
+            for(  ; currentPos  < firstPosition  ; i++ ){
+
+                int mediaId = prevPageMedia.get(currentPos - i - 1 ).getMediaId();
+                prevPageMedia.get(currentPos - i - 1 ).setMediaId(toPrev[i]);
+                currentPageMedia.get(i).setMediaId(mediaId);
+
+                currentPos ++;
+            }
+            moovieListDao.updateMoovieListOrder(prevPageMedia);
+
         }
 
-        moovieListDao.updateMoovieListOrder(moovieListId,currentPageNumber, toPrevPage, currentPage, toNextPage);
-        LOGGER.info("Succesfully updated list content order for list: {}.",moovieListId);
+        //Iterates in currentPageMedia
+        int j = 0;
 
+        if (currentPage.length > 0) {
+            for (; j < currentPage.length - i ; j++) {
+                currentPageMedia.get(j+i).setMediaId(currentPage[j]);
+                System.out.println("Update mediaid " + currentPage[j] + " with customorder " + currentPos);
+                currentPos++;
+            }
+        }
+
+        if(toNext.length > 0){
+            List<MoovieListContent> nextPageMedia = moovieListDao.getMoovieListContentModel(moovieListId, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(), currentPageNumber + 1);
+
+            int numberToNext = Math.min(nextPageMedia.size(), toNext.length);
+
+            int k = 0;
+            for(  ; k < numberToNext ; k++ ){
+                currentPageMedia.get(currentPos-1).setMediaId(nextPageMedia.get(k).getMediaId());
+                nextPageMedia.get(k).setMediaId(toNext[k]);
+                currentPos++;
+            }
+            if(numberToNext != toNext.length){
+                for( ; k < toNext.length ;  ){
+                    currentPageMedia.get(currentPos-1).setMediaId(toNext[k]);
+                    currentPos++;
+                }
+
+            }
+            moovieListDao.updateMoovieListOrder(nextPageMedia);
+        }
+        moovieListDao.updateMoovieListOrder(currentPageMedia);
     }
 
 
@@ -283,7 +331,7 @@ public class MoovieListServiceImpl implements MoovieListService{
                     map.put("moovieListId",mvlAux.getMoovieListId());
                     map.put("moovieListName",mvlAux.getName());
                     emailService.sendEmail(toUser.getEmail(),
-                            "New like goal on your list!",
+                            "email.notificationLikeMilestoneMoovieListSubject",
                             "notificationLikeMilestoneMoovieList.html",
                             map);
                     LOGGER.info("notificationLikeMilestoneMoovieList mail was sent to user : {} for the list: {}.", toUser.getUsername(), moovieListId);
@@ -322,7 +370,7 @@ public class MoovieListServiceImpl implements MoovieListService{
                     map.put("moovieListId", mvlAux.getMoovieListId());
                     map.put("moovieListName", mvlAux.getName());
                     emailService.sendEmail(toUser.getEmail(),
-                            "New follow goal on your list!",
+                            "email.notificationFollowMilestoneMoovieListSubject",
                             "notificationFollowMilestoneMoovieList.html",
                             map);
                     LOGGER.info("notificationFollowMilestoneMoovieList mail was sent to user : {} for the list: {}.", toUser.getUsername(), moovieListId);

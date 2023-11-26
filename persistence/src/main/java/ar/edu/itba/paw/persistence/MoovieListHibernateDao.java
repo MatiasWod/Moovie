@@ -8,11 +8,13 @@ import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.User.User;
 import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
 
 import javax.persistence.EntityManager;
@@ -283,11 +285,11 @@ public class MoovieListHibernateDao implements MoovieListDao{
                 "m, " +
                 "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END " +
                 "FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId " +
-                "WHERE mlc.media.mediaId = mlc2.media.mediaId AND wl.name = 'Watched' AND wl.userId = :userid),  " +
+                "WHERE mlc.mediaId = mlc2.mediaId AND wl.name = 'Watched' AND wl.userId = :userid),  " +
                 "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END " +
                 "FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId " +
-                "WHERE mlc.media.mediaId = mlc2.media.mediaId AND wl.name = 'Watchlist' AND wl.userId = :userid))  " +
-                "FROM MoovieListContent mlc LEFT JOIN Media m ON mlc.media.mediaId = m.mediaId " +
+                "WHERE mlc.mediaId = mlc2.mediaId AND wl.name = 'Watchlist' AND wl.userId = :userid))  " +
+                "FROM MoovieListContent mlc LEFT JOIN Media m ON mlc.mediaId = m.mediaId " +
                 "WHERE mlc.moovieList.moovieListId = :moovieListId " +
                 "ORDER BY ";
 
@@ -334,10 +336,10 @@ public class MoovieListHibernateDao implements MoovieListDao{
                 "m, " +
                 "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END " +
                 "FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId " +
-                "WHERE m.mediaId = mlc2.media.mediaId AND wl.name = 'Watched' AND wl.userId = :userid), " +
+                "WHERE m.mediaId = mlc2.mediaId AND wl.name = 'Watched' AND wl.userId = :userid), " +
                 "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END " +
                 "FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId " +
-                "WHERE m.mediaId = mlc2.media.mediaId AND wl.name = 'Watched' AND wl.userId = :userid))" +
+                "WHERE m.mediaId = mlc2.mediaId AND wl.name = 'Watched' AND wl.userId = :userid))" +
                 "FROM Media m " +
                 "WHERE m.mediaId IN (:medias) ORDER BY ";
 
@@ -355,7 +357,11 @@ public class MoovieListHibernateDao implements MoovieListDao{
     }
 
 
-
+    @Override
+    public List<MoovieListContent> getMoovieListContentModel(int moovieListId, int size, int pageNumber) {
+        TypedQuery<MoovieListContent> query = em.createQuery(" FROM MoovieListContent m WHERE m.moovieList.moovieListId = :moovieListId ORDER BY m.customOrder", MoovieListContent.class);
+        return query.setParameter("moovieListId", moovieListId).setMaxResults(size).setFirstResult(size*pageNumber).getResultList();
+    }
 
     @Override
     public int countWatchedFeaturedMoovieListContent(int mediaType, int userid, String featuredListOrder) {
@@ -425,7 +431,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public void deleteMediaFromMoovieList(int moovieListId, int mediaId) {
-        MoovieListContent toRemove = em.createQuery("SELECT mlc FROM MoovieListContent mlc WHERE mlc.moovieList.moovieListId = :moovieListId AND mlc.media.mediaId = :mediaId", MoovieListContent.class).setParameter("moovieListId", moovieListId).setParameter("mediaId",mediaId).getSingleResult();
+        MoovieListContent toRemove = em.createQuery("SELECT mlc FROM MoovieListContent mlc WHERE mlc.moovieList.moovieListId = :moovieListId AND mlc.mediaId = :mediaId", MoovieListContent.class).setParameter("moovieListId", moovieListId).setParameter("mediaId",mediaId).getSingleResult();
         if (toRemove != null){
             em.remove(toRemove);
         }
@@ -459,27 +465,23 @@ public class MoovieListHibernateDao implements MoovieListDao{
     }
 
 
+
     @Override
-    public void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrevPage, int[] currentPage, int[] toNextPage) {
-        executeFunctionScript();
-        List<Integer> toPrev = Arrays.stream(toPrevPage)
-                .boxed()
-                .collect(Collectors.toList());
-        List<Integer> toCurrent = Arrays.stream(currentPage)
-                .boxed()
-                .collect(Collectors.toList());
-        List<Integer> toNext = Arrays.stream(toNextPage)
-                .boxed()
-                .collect(Collectors.toList());
-        em.createNativeQuery("SELECT updatecustomorder(:mlid, :firstPos, :size, :prev, :current, :next)")
-                .setParameter("mlid", moovieListId)
-                .setParameter("firstPos", currentPageNumber * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize() + 1 )
-                .setParameter("size", PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize() )
-                .setParameter("prev", toPrev)
-                .setParameter("current", toCurrent)
-                .setParameter("next", toNext)
-                .executeUpdate();
+    public void updateMoovieListOrder(List<MoovieListContent> moovieListContents) {
+        final int batchSize = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(); // Set your desired batch size
+        for (int i = 0; i < moovieListContents.size(); i += batchSize) {
+            int endIndex = Math.min(i + batchSize, moovieListContents.size());
+            List<MoovieListContent> batch = moovieListContents.subList(i, endIndex);
+
+            // Update the batch of entities
+            for (MoovieListContent entity : batch) {
+                // Ensure the entity is in the persistent state
+                Query query = em.createNativeQuery("UPDATE moovielistscontent SET customorder = :customOrder WHERE id = :entityId").setParameter("customOrder", entity.getCustomOrder()).setParameter("entityId",entity.getId());
+                query.executeUpdate();
+            }
+        }
     }
+
 
     @Override
     public void removeLikeMoovieList(int userId, int moovieListId) {

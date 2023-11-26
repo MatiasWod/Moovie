@@ -60,7 +60,7 @@ public class ModeratorServiceImpl implements ModeratorService{
         mailMap.put("username", u.getUsername());
         mailMap.put("mediaName", m.getName());
 
-        emailService.sendEmail(u.getEmail(),"You review on " + m.getName() + " has been deleted", "yourReviewHasBeenRemovedEmail.html", mailMap);
+        emailService.sendEmail(u.getEmail(),"email.reviewDeletedSubject", "yourReviewHasBeenRemovedEmail.html", mailMap);
 
         reviewDao.deleteReview(reviewId,type);
         LOGGER.info("Succesfully removed review: {}. (by mod)", reviewId);
@@ -79,7 +79,7 @@ public class ModeratorServiceImpl implements ModeratorService{
         mailMap.put("username", u.getUsername());
         mailMap.put("moovieListName", m.getName());
 
-        emailService.sendEmail(u.getEmail(),"Your moovie list" + m.getName() + " has been deleted", "yourListHasBeenRemovedMail.html", mailMap);
+        emailService.sendEmail(u.getEmail(),"email.listDeletedSubject", "yourListHasBeenRemovedMail.html", mailMap);
 
         moovieListDao.deleteMoovieList(moovieListId);
         LOGGER.info("Succesfully removed list: {}. (by mod)", moovieListId);
@@ -113,7 +113,7 @@ public class ModeratorServiceImpl implements ModeratorService{
         mailMap.put("username", u.getUsername());
         mailMap.put("modUsername", userService.getInfoOfMyUser().getUsername());
         mailMap.put("message", message);
-        emailService.sendEmail(u.getEmail(),"You have been baned from Moovie", "youHaveBeenBannedMail.html", mailMap);
+        emailService.sendEmail(u.getEmail(),"email.bannedSubject", "youHaveBeenBannedMail.html", mailMap);
     }
 
     @Transactional
@@ -137,7 +137,7 @@ public class ModeratorServiceImpl implements ModeratorService{
 
         final Map<String,Object> mailMap = new HashMap<>();
         mailMap.put("username", u.getUsername());
-        emailService.sendEmail(u.getEmail(),"You have been unbaned from Moovie", "youHaveBeenUnbannedMail.html", mailMap);
+        emailService.sendEmail(u.getEmail(),"email.unbannedSubject", "youHaveBeenUnbannedMail.html", mailMap);
     }
 
 

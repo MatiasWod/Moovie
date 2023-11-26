@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 
@@ -19,7 +20,7 @@ public class VerificationTokenHibernateDao implements VerificationTokenDao{
     private EntityManager entityManager;
 
     @Override
-    public void createVerificationToken(int userId, String token, Date expirationDate) {
+    public void createVerificationToken(int userId, String token, LocalDateTime expirationDate) {
         final Token toCreateToken = new Token(userId,token,expirationDate);
         entityManager.persist(toCreateToken);
     }
@@ -34,13 +35,5 @@ public class VerificationTokenHibernateDao implements VerificationTokenDao{
     @Override
     public void deleteToken(Token token) {
         entityManager.remove(entityManager.contains(token) ? token : entityManager.merge(token));
-    }
-
-    @Override
-    public void renewToken(String token, Date newExpirationDate) {
-        final Query nativeQuery = entityManager.createNativeQuery("UPDATE verificationTokens SET expirationDate = :newExpirationDate WHERE token = :token");
-        nativeQuery.setParameter("newExpirationDate",newExpirationDate);
-        nativeQuery.setParameter("token",token);
-        nativeQuery.executeUpdate();
     }
 }

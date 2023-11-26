@@ -32,8 +32,8 @@ public class MediaHibernateDao implements MediaDao{
         ArrayList<Object> args = new ArrayList<>();
 
         String sql = "SELECT new ar.edu.itba.paw.models.Media.Media ( m , " +
-                "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId WHERE m.mediaId = mlc2.media.mediaId AND wl.name = 'Watched' AND wl.userId = :userid), " +
-                "(SELECT CASE WHEN COUNT(wl3) > 0 THEN true ELSE false END FROM MoovieList wl3 INNER JOIN MoovieListContent mlc3 ON wl3.moovieListId = mlc3.moovieList.moovieListId WHERE m.mediaId = mlc3.media.mediaId AND wl3.name = 'Watchlist' AND wl3.userId = :userid) ) ";
+                "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId WHERE m.mediaId = mlc2.mediaId AND wl.name = 'Watched' AND wl.userId = :userid), " +
+                "(SELECT CASE WHEN COUNT(wl3) > 0 THEN true ELSE false END FROM MoovieList wl3 INNER JOIN MoovieListContent mlc3 ON wl3.moovieListId = mlc3.moovieList.moovieListId WHERE m.mediaId = mlc3.mediaId AND wl3.name = 'Watchlist' AND wl3.userId = :userid) ) ";
 
         argtype.add("userid");
         args.add(currentUserId);
@@ -116,7 +116,7 @@ public class MediaHibernateDao implements MediaDao{
     @Override
     public List<Media> getMediaInMoovieList(int moovieListId, int size, int pageNumber) {
 
-        return em.createQuery("SELECT m FROM MoovieListContentEntity mlcE INNER JOIN Media m ON mlcE.mediaId = m.mediaId " +
+        return em.createQuery("SELECT m FROM MoovieListContent mlcE INNER JOIN Media m ON mlcE.mediaId = m.mediaId " +
                         "WHERE mlcE.moovieListId = :moovieListId", Media.class)
                 .setParameter("moovieListId", moovieListId)
                 .setFirstResult(size*pageNumber).setMaxResults(size)

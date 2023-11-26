@@ -15,14 +15,15 @@ import java.util.List;
 public class MoovieListContent implements Serializable {
 
     @Id
+    @Column
+    private int id;
+
     @ManyToOne
     @JoinColumn(name = "moovieListId", referencedColumnName = "moovieListId")
     private MoovieList moovieList;
 
-    @Id
-    @ManyToOne
-    @JoinColumn(name = "mediaId", referencedColumnName = "mediaId")
-    private Media media;
+    @Column
+    private int mediaId;
 
     @Column
     private int customOrder;
@@ -32,19 +33,35 @@ public class MoovieListContent implements Serializable {
 
     MoovieListContent(){}
 
-    public MoovieListContent(MoovieList moovieList, Media media, int customOrder, boolean watched) {
+    public MoovieListContent(int id, MoovieList moovieList, int mediaId, int customOrder, boolean watched) {
+        this.id = id;
         this.moovieList = moovieList;
-        this.media = media;
+        this.mediaId = mediaId;
         this.customOrder = customOrder;
         this.watched = watched;
+    }
+
+    public MoovieListContent(MoovieList moovieList, Media media, int mediaId, int customOrder, boolean watched) {
+        this.moovieList = moovieList;
+        this.mediaId = mediaId;
+        this.customOrder = customOrder;
+        this.watched = watched;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public void setMoovieList(MoovieList moovieList) {
         this.moovieList = moovieList;
     }
 
-    public void setMedia(Media media) {
-        this.media = media;
+    public int getMediaId() {
+        return mediaId;
+    }
+
+    public void setMediaId(int mediaId) {
+        this.mediaId = mediaId;
     }
 
     public void setCustomOrder(int customOrder) {
@@ -59,9 +76,6 @@ public class MoovieListContent implements Serializable {
         return moovieList;
     }
 
-    public Media getMedia() {
-        return media;
-    }
 
     public int getCustomOrder() {
         return customOrder;

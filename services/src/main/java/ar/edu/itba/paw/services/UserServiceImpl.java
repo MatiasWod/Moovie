@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -236,20 +237,16 @@ public class UserServiceImpl implements UserService {
         final Map<String,Object> mailMap = new HashMap<>();
         mailMap.put("username",username);
         mailMap.put("token",token);
-        final String subject = messageSource.getMessage("email.confirmation.subject",null, LocaleContextHolder.getLocale());
+        final String subject = messageSource.getMessage("email.confirmationSubject",null, LocaleContextHolder.getLocale());
         emailService.sendEmail(email,subject,"confirmationMail.html",mailMap);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public void resendVerificationEmail(String token) {
+    public void resendVerificationEmail(Token token) {
         verificationTokenService.renewToken(token);
-        verificationTokenService.getToken(token).ifPresent(token1 -> {
-            userDao.findUserById(token1.getUserId()).ifPresent(user -> {
-                sendVerificationEmail(user.getEmail(), user.getUsername(), token1.getToken());
-                    }
-            );
-        });
+        User toRenewTokenUser = userDao.findUserById(token.getUserId()).orElseThrow(UnableToFindUserException::new);
+        sendVerificationEmail(toRenewTokenUser.getEmail(),toRenewTokenUser.getUsername(), token.getToken());
     }
 }
 

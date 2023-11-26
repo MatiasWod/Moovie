@@ -125,7 +125,8 @@ public class UserController {
             redirectAttributes.addAttribute("message", message);
         }
         ModelAndView mav = new ModelAndView("redirect:/register/sentEmail");
-        userService.resendVerificationEmail(token);
+        Token toResendToken = verificationTokenService.getToken(token).orElseThrow(VerificationTokenNotFoundException::new);
+        userService.resendVerificationEmail(toResendToken);
         LOGGER.info("Confirmation email was resent.");
         return mav;
     }
@@ -337,17 +338,5 @@ public class UserController {
 
         return "redirect:" + referer;
     }
-
-    //TODO DELETE AFTER UPDATING
-//    /*
-    @RequestMapping(value = "/updateDatabaseSchema")
-    public ModelAndView updateDatabaseSchema() {
-        dmsService.updateActors();
-        dmsService.updateCreators();
-        dmsService.updateGenres();
-        dmsService.updateProviders();
-        return new ModelAndView("helloworld/403");
-    }
-//    */
 
 }

@@ -50,5 +50,5 @@ public interface UserService {
 
     //Verification mail methods
     void sendVerificationEmail(String email, String username, String token);
-    void resendVerificationEmail(String token);
+    void resendVerificationEmail(Token token);
 }
