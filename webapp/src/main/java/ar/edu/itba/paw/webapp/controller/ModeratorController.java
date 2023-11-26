@@ -136,6 +136,15 @@ public class ModeratorController {
                 redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
                 return report(form,id,reportedBy,type);
             }
+        } else if (type.equals("moovieList")) {
+            try {
+                reportService.reportReview(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
+                redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
+                return new ModelAndView("redirect:/list/" + form.getId());
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
+                return report(form,id,reportedBy,type);
+            }
         }
         return new ModelAndView("redirect:/");
     }
@@ -145,6 +154,7 @@ public class ModeratorController {
     public ModelAndView reportReview() {
         ModelAndView mav = new ModelAndView("helloworld/pendingReports");
 
+        mav.addObject("reportedReviews", reportService.getReportedReviews());
         mav.addObject("commentReports", reportService.getCommentReports());
         return mav;
     }

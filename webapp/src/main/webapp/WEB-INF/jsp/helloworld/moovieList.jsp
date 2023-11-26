@@ -35,7 +35,6 @@
 <%--                        <spring:message code="details.submit"/>--%>
 <%--                    </button>--%>
                 </form:form>
-                
             </div>
             <c:forEach var="review" items="${reviews}">
                 <div class="card mb-3">
@@ -59,7 +58,7 @@
                         </div>
                         <div class="d-flex align-items-center justify-content-between">
                             <c:choose>
-                                <c:when test="${currentUsername==review.username}">
+                                <c:when test="${currentUser.username==review.username}">
                                     <div class="text-center m-2">
                                         <button onclick="openPopup('review${review.moovieListReviewId}')"
                                                 class="btn btn-danger btn-sm">

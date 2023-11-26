@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.models.MoovieList;
 
+import org.hibernate.annotations.Formula;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,6 +28,17 @@ public class MoovieList {
     @Column(nullable = false)
     private int type;
 
+    @Formula("SELECT COUNT(*) FROM reportsMoovieLists rr WHERE rr.moovieListId = :moovieListId")
+    private int totalReports;
+    @Formula("SELECT COUNT(*) FROM reportsMoovieLists rr WHERE rr.type = 3 AND rr.moovieListId = :moovieListId")
+    private int spamReports;
+    @Formula("SELECT COUNT(*) FROM reportsMoovieLists rr WHERE rr.type = 0 AND rr.moovieListId = :moovieListId")
+    private int hateReports;
+    @Formula("SELECT COUNT(*) FROM reportsMoovieLists rr WHERE rr.type = 2 AND rr.moovieListId = :moovieListId")
+    private int privacyReports;
+    @Formula("SELECT COUNT(*) FROM reportsMoovieLists rr WHERE rr.type = 1 AND rr.moovieListId = :moovieListId")
+    private int abuseReports;
+
 //    @OneToMany(mappedBy = "moovieList")
 //    final private Set<MoovieListLikes> likes = new HashSet<>();
 //
@@ -48,6 +61,27 @@ public class MoovieList {
 //    public Set<MoovieListLikes> getLikes() {
 //        return likes;
 //    }
+
+
+    public int getTotalReports() {
+        return totalReports;
+    }
+
+    public int getSpamReports() {
+        return spamReports;
+    }
+
+    public int getHateReports() {
+        return hateReports;
+    }
+
+    public int getPrivacyReports() {
+        return privacyReports;
+    }
+
+    public int getAbuseReports() {
+        return abuseReports;
+    }
 
     public int getMoovieListId() {
         return moovieListId;

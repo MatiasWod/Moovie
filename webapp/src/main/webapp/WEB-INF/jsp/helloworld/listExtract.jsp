@@ -34,6 +34,15 @@
             </c:if>
         </div>
         <c:if test="${param.publicList == 'true'}">
+            <c:if test="${currentUser.username != moovieList.username}">
+                <sec:authorize access="isAuthenticated()">
+                    <div style="margin-bottom: 15px">
+                        <a href="${pageContext.request.contextPath}/reports/new?id=${review.reviewId}&reportedBy=${currentUser.userId}&type=moovieList" class="btn btn-warning" style="font-size: 14px;margin-left: 10px;" ><spring:message code="report.title"/>
+                            <i class="bi bi-flag"></i>
+                        </a>
+                    </div>
+                </sec:authorize>
+            </c:if>
             <sec:authorize access="hasRole('ROLE_MODERATOR')">
                 <div style="position: absolute;" class="d-flex">
                     <button onclick="openPopup('popup')" class="btn btn-danger btn-sm">

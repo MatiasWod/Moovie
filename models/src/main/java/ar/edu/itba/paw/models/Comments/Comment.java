@@ -65,6 +65,81 @@ public class Comment implements Serializable {
         this.content = content;
     }
 
+    public void setCommentId(int commentId) {
+        this.commentId = commentId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public void setReviewId(int reviewId) {
+        this.reviewId = reviewId;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setCommentLikes(int commentLikes) {
+        this.commentLikes = commentLikes;
+    }
+
+    public void setCommentDislikes(int commentDislikes) {
+        this.commentDislikes = commentDislikes;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public boolean isHasPfp() {
+        return hasPfp;
+    }
+
+    public void setHasPfp(boolean hasPfp) {
+        this.hasPfp = hasPfp;
+    }
+
+    public int getTotalReports() {
+        return totalReports;
+    }
+
+    public void setTotalReports(int totalReports) {
+        this.totalReports = totalReports;
+    }
+
+    public int getSpamReports() {
+        return spamReports;
+    }
+
+    public void setSpamReports(int spamReports) {
+        this.spamReports = spamReports;
+    }
+
+    public int getHateReports() {
+        return hateReports;
+    }
+
+    public void setHateReports(int hateReports) {
+        this.hateReports = hateReports;
+    }
+
+    public int getPrivacyReports() {
+        return privacyReports;
+    }
+
+    public void setPrivacyReports(int privacyReports) {
+        this.privacyReports = privacyReports;
+    }
+
+    public int getAbuseReports() {
+        return abuseReports;
+    }
+
+    public void setAbuseReports(int abuseReports) {
+        this.abuseReports = abuseReports;
+    }
 
     public boolean isCurrentUserHasDisliked() {
         return currentUserHasDisliked;

@@ -45,6 +45,17 @@ public class Review {
     @Transient
     private List<Comment> comments;
 
+    @Formula("SELECT COUNT(*) FROM reportsreviews rr WHERE rr.reviewid = :reviewId")
+    private int totalReports;
+    @Formula("SELECT COUNT(*) FROM reportsreviews rr WHERE rr.type = 3 AND rr.reviewid = :reviewId")
+    private int spamReports;
+    @Formula("SELECT COUNT(*) FROM reportsreviews rr WHERE rr.type = 0 AND rr.reviewid = :reviewId")
+    private int hateReports;
+    @Formula("SELECT COUNT(*) FROM reportsreviews rr WHERE rr.type = 2 AND rr.reviewid = :reviewId")
+    private int privacyReports;
+    @Formula("SELECT COUNT(*) FROM reportsreviews rr WHERE rr.type = 1 AND rr.reviewid = :reviewId")
+    private int abuseReports;
+
     //hibernate
     Review() {
     }
@@ -84,6 +95,26 @@ public class Review {
         this.commentCount = r.commentCount;
         this.comments = r.comments;
         this.currentUserHasLiked = currentUserHasLiked==1;
+    }
+
+    public int getTotalReports() {
+        return totalReports;
+    }
+
+    public int getSpamReports() {
+        return spamReports;
+    }
+
+    public int getHateReports() {
+        return hateReports;
+    }
+
+    public int getPrivacyReports() {
+        return privacyReports;
+    }
+
+    public int getAbuseReports() {
+        return abuseReports;
     }
 
     public List<Comment> getComments() {

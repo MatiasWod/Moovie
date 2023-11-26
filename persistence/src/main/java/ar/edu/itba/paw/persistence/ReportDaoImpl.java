@@ -1,9 +1,13 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Comments.Comment;
+import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.Reports.CommentReport;
 import ar.edu.itba.paw.models.Reports.MoovieListReport;
 import ar.edu.itba.paw.models.Reports.MoovieListReviewReport;
 import ar.edu.itba.paw.models.Reports.ReviewReport;
+import ar.edu.itba.paw.models.Review.MoovieListReview;
+import ar.edu.itba.paw.models.Review.Review;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
@@ -25,6 +29,15 @@ public class ReportDaoImpl implements ReportDao{
         String sql = "SELECT c FROM ReviewReport c";
 
         TypedQuery<ReviewReport> query = em.createQuery(sql, ReviewReport.class);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Review> getReportedReviews() {
+        String sql = "SELECT r FROM Review r WHERE r.totalReports > 0";
+
+        TypedQuery<Review> query = em.createQuery(sql, Review.class);
 
         return query.getResultList();
     }
@@ -61,6 +74,11 @@ public class ReportDaoImpl implements ReportDao{
     }
 
     @Override
+    public List<MoovieListReview> getReportedMoovieListReviews() {
+        return null;
+    }
+
+    @Override
     public void reportMoovieListReview(int moovieListReviewId, int userId, String type, String content) {
         String sql = "INSERT INTO reportsmoovielistreviews " +
                 "(type, content, reportedBy, reviewId) " +
@@ -92,6 +110,11 @@ public class ReportDaoImpl implements ReportDao{
     }
 
     @Override
+    public List<MoovieList> getReportedMoovieLists() {
+        return null;
+    }
+
+    @Override
     public void reportMoovieList(int moovieListId, int userId, String type, String content) {
         String sql = "INSERT INTO reportsmoovielists " +
                 "(type, content, reportedBy, reviewId) " +
@@ -120,6 +143,11 @@ public class ReportDaoImpl implements ReportDao{
 
         return query.getResultList();
 
+    }
+
+    @Override
+    public List<Comment> getReportedComments() {
+        return null;
     }
 
     @Override

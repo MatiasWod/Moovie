@@ -36,6 +36,17 @@ public class MoovieListReview {
     @Column(columnDefinition = "TEXT")
     private String reviewContent;
 
+    @Formula("SELECT COUNT(*) FROM reportsMoovieListReviews rr WHERE rr.moovieListReviewId = :moovieListReviewId")
+    private int totalReports;
+    @Formula("SELECT COUNT(*) FROM reportsMoovieListReviews rr WHERE rr.type = 3 AND rr.moovieListReviewId = :moovieListReviewId")
+    private int spamReports;
+    @Formula("SELECT COUNT(*) FROM reportsMoovieListReviews rr WHERE rr.type = 0 AND rr.moovieListReviewId = :moovieListReviewId")
+    private int hateReports;
+    @Formula("SELECT COUNT(*) FROM reportsMoovieListReviews rr WHERE rr.type = 2 AND rr.moovieListReviewId = :moovieListReviewId")
+    private int privacyReports;
+    @Formula("SELECT COUNT(*) FROM reportsMoovieListReviews rr WHERE rr.type = 1 AND rr.moovieListReviewId = :moovieListReviewId")
+    private int abuseReports;
+
     //hibernate
     MoovieListReview() {
     }
@@ -82,6 +93,45 @@ public class MoovieListReview {
     }
 
 
+    public int getTotalReports() {
+        return totalReports;
+    }
+
+    public void setTotalReports(int totalReports) {
+        this.totalReports = totalReports;
+    }
+
+    public int getSpamReports() {
+        return spamReports;
+    }
+
+    public void setSpamReports(int spamReports) {
+        this.spamReports = spamReports;
+    }
+
+    public int getHateReports() {
+        return hateReports;
+    }
+
+    public void setHateReports(int hateReports) {
+        this.hateReports = hateReports;
+    }
+
+    public int getPrivacyReports() {
+        return privacyReports;
+    }
+
+    public void setPrivacyReports(int privacyReports) {
+        this.privacyReports = privacyReports;
+    }
+
+    public int getAbuseReports() {
+        return abuseReports;
+    }
+
+    public void setAbuseReports(int abuseReports) {
+        this.abuseReports = abuseReports;
+    }
 
     public void setMoovieListReviewId(int moovieListReviewId) {
         this.moovieListReviewId = moovieListReviewId;

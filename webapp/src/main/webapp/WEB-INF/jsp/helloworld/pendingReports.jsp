@@ -86,6 +86,13 @@
             ${report.content} --
         </div>
     </c:forEach>
+
+    <c:forEach items="${reportedReviews}" var="review">
+        <div>
+            ${review.reviewContent} --
+                total: ${review.totalReports} -- spam: ${review.spamReports}
+        </div>
+    </c:forEach>
     
     <c:choose>
         

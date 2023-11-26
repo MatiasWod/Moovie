@@ -1,9 +1,13 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.models.Comments.Comment;
+import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.Reports.CommentReport;
 import ar.edu.itba.paw.models.Reports.MoovieListReport;
 import ar.edu.itba.paw.models.Reports.MoovieListReviewReport;
 import ar.edu.itba.paw.models.Reports.ReviewReport;
+import ar.edu.itba.paw.models.Review.MoovieListReview;
+import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.persistence.ReportDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +25,11 @@ public class ReportServiceImpl implements ReportService{
     public List<ReviewReport> getReviewReports() {
 
         return reportDao.getReviewReports();
+    }
+
+    @Override
+    public List<Review> getReportedReviews() {
+        return reportDao.getReportedReviews();
     }
 
     @Override
@@ -42,6 +51,11 @@ public class ReportServiceImpl implements ReportService{
     }
 
     @Override
+    public List<MoovieListReview> getReportedMoovieListReviews() {
+        return reportDao.getReportedMoovieListReviews();
+    }
+
+    @Override
     @Transactional
     public void reportMoovieListReview(int moovieListReviewId, int userId, String type, String content) {
         reportDao.reportMoovieListReview(moovieListReviewId, userId, type, content);
@@ -60,6 +74,11 @@ public class ReportServiceImpl implements ReportService{
     }
 
     @Override
+    public List<MoovieList> getReportedMoovieLists() {
+        return reportDao.getReportedMoovieLists();
+    }
+
+    @Override
     @Transactional
     public void reportMoovieList(int moovieListId, int userId, String type, String content) {
         reportDao.reportMoovieList(moovieListId, userId, type, content);
@@ -75,6 +94,11 @@ public class ReportServiceImpl implements ReportService{
     public List<CommentReport> getCommentReports() {
 
         return reportDao.getCommentReports();
+    }
+
+    @Override
+    public List<Comment> getReportedComments() {
+        return reportDao.getReportedComments();
     }
 
     @Override
