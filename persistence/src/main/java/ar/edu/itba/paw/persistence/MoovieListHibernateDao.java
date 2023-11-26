@@ -128,8 +128,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
     public List<User> getMoovieListFollowers(int moovieListId) {
         return em.createQuery("SELECT mlf.user " +
                         "FROM MoovieListFollowers mlf " +
-                        "WHERE mlf.moovieList.moovieListId = :moovieListId"
-                        , User.class)
+                        "WHERE mlf.moovieList.moovieListId = :moovieListId", User.class)
                 .setParameter("moovieListId", moovieListId)
                 .getResultList();
     }
