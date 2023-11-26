@@ -125,8 +125,9 @@
                 <p><spring:message code="profile.banPrompt"/></p>
 
                 <form class="m-0" action="${pageContext.request.contextPath}/banUser/${profile.userId}" method="post">
+                    <spring:message code="profile.explainBanPlaceholder" var="explainBanPlaceholder"/>
                     <textarea name="message" id="message" rows="6" cols="50"
-                              placeholder="Explain why the user is being banned" maxlength="500"></textarea>
+                              placeholder='${explainBanPlaceholder}' maxlength="500"></textarea>
                     <div class="d-flex justify-content-evenly">
                         <button type="submit" class="btn btn-danger" id="banUserButton"><spring:message code="profile.banUser"/></button>
                         <button type="button" onclick="closePopup('ban-popup')" class="btn btn-secondary" id="cancelBanButton"><spring:message code="profile.cancel"/></button>

@@ -21,6 +21,9 @@ public class BannedMessage {
     @Column(length = 250)
     private String message;
 
+    @Column(name = "banneduserid")
+    private int bannedUserId;
+
     public BannedMessage(){
 
     }
@@ -29,6 +32,10 @@ public class BannedMessage {
         this.modUserId = modUserId;
         this.modUsername = modUsername;
         this.message = message;
+    }
+
+    public int getBannedUserId() {
+        return bannedUserId;
     }
 
     public int getModUserId() {

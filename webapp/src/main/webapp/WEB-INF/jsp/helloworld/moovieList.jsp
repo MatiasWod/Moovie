@@ -30,7 +30,8 @@
                 <form:form cssClass="d-flex" modelAttribute="createReviewForm" action="${pageContext.request.contextPath}/MoovieListReview" method="POST">
                     <form:input path="mediaId" type="hidden" value="${moovieList.moovieListId}"/>
                     <form:input path="rating" type="hidden" value="5"/>
-                    <form:input path="reviewContent" class="form-control" placeholder="Add comment..." aria-label="With textarea"/>
+                    <spring:message code="moovieList.addCommentPlaceholder" var="addCommentPlaceholder"/>
+                    <form:input path="reviewContent" class="form-control" placeholder='${addCommentPlaceholder}' aria-label="With textarea"/>
                     <button type="submit" class="ms-1 btn btn-dark" id="submitButton">
                         <spring:message code="details.submit"/>
                     </button>

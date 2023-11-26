@@ -122,7 +122,7 @@
                                     </div>
                                 </sec:authorize>
 
-                                <img class="cropCenter" src="${movie.posterPath}" alt="media poster">
+                                <img class="cropCenter async-image" src="${pageContext.request.contextPath}/resources/defaultPoster.png" data-src="${movie.posterPath}" alt="media poster">
                                 <div class="card-img-overlay">
                                     <h6 class="card-title text-center">${movie.name}</h6>
                                     <div class="d-flex justify-content-evenly">

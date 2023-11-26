@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.math.BigInteger;
 import java.util.List;
 
 @Primary
@@ -31,14 +32,23 @@ public class ReportDaoImpl implements ReportDao{
                 "(SELECT COUNT(*) FROM reportsmoovielists) + " +
                 "(SELECT COUNT(*) FROM reportscomments) AS total_count";
 
-        Long toReturn = (Long) em.createNativeQuery(sql).getSingleResult();
+        BigInteger toReturn = (BigInteger) em.createNativeQuery(sql).getSingleResult();
         return toReturn.intValue();
     }
 
 
     @Override
     public int getTypeReports(int type) {
-        return 0;
+        String sql = "SELECT " +
+                "(SELECT COUNT(*) FROM reportsreviews r WHERE r.type = :type) + " +
+                "(SELECT COUNT(*) FROM reportsmoovielistreviews r WHERE r.type = :type) + " +
+                "(SELECT COUNT(*) FROM reportsmoovielists r WHERE r.type = :type) + " +
+                "(SELECT COUNT(*) FROM reportscomments r WHERE r.type = :type) AS total_count";
+
+        BigInteger toReturn = (BigInteger) em.createNativeQuery(sql)
+                .setParameter("type", type)
+                .getSingleResult();
+        return toReturn.intValue();
     }
 
     @Override
@@ -58,6 +68,15 @@ public class ReportDaoImpl implements ReportDao{
         TypedQuery<Review> query = em.createQuery(sql, Review.class);
 
         return query.getResultList();
+    }
+
+    @Override
+    public int getReportedReviewsCount() {
+        String sql = "SELECT r FROM Review r WHERE COALESCE(r.totalReports, 0) > 0";
+
+        TypedQuery<Review> query = em.createQuery(sql, Review.class);
+
+        return query.getResultList().size();
     }
 
     @Override
@@ -102,6 +121,15 @@ public class ReportDaoImpl implements ReportDao{
     }
 
     @Override
+    public int getReportedMoovieListReviewsCount() {
+        String sql = "SELECT r FROM MoovieListReview r WHERE COALESCE(r.totalReports, 0) > 0";
+
+        TypedQuery<MoovieListReview> query = em.createQuery(sql, MoovieListReview.class);
+
+        return query.getResultList().size();
+    }
+
+    @Override
     public void reportMoovieListReview(int moovieListReviewId, int userId, int type, String content) {
         String sql = "INSERT INTO reportsmoovielistreviews " +
                 "(type, content, reportedBy, moovieListReviewId) " +
@@ -143,6 +171,15 @@ public class ReportDaoImpl implements ReportDao{
     }
 
     @Override
+    public int getReportedMoovieListsCount() {
+        String sql = "SELECT r FROM MoovieList r WHERE COALESCE(r.totalReports, 0) > 0";
+
+        TypedQuery<MoovieList> query = em.createQuery(sql, MoovieList.class);
+
+        return query.getResultList().size();
+    }
+
+    @Override
     public void reportMoovieList(int moovieListId, int userId, int type, String content) {
         String sql = "INSERT INTO reportsmoovielists " +
                 "(type, content, reportedBy, moovieListId) " +
@@ -181,6 +218,15 @@ public class ReportDaoImpl implements ReportDao{
         TypedQuery<Comment> query = em.createQuery(sql, Comment.class);
 
         return query.getResultList();
+    }
+
+    @Override
+    public int getReportedCommentsCount() {
+        String sql = "SELECT r FROM Comment r WHERE COALESCE(r.totalReports, 0) > 0";
+
+        TypedQuery<Comment> query = em.createQuery(sql, Comment.class);
+
+        return query.getResultList().size();
     }
 
     @Override
