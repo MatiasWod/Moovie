@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,15 +33,16 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
+
     @Autowired
     private MoovieListDao moovieListDao;
+
     @Autowired
     private EmailService emailService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
-    private MessageSource messageSource;
+
     @Autowired
     private VerificationTokenService verificationTokenService;
 
@@ -63,7 +65,7 @@ public class UserServiceImpl implements UserService {
             if(aux.get().getRole() == UserRoles.UNREGISTERED.getRole()){
                 User user = createUserFromUnregistered(username, email, password);
                 String token = verificationTokenService.createVerificationToken(user.getUserId());
-                sendVerificationEmail(email,username,token);
+                emailService.sendVerificationEmail(user,token,LocaleContextHolder.getLocale());
                 LOGGER.info("Succesfuly created user with username: {}", username);
                 return token;
             } else{
@@ -73,7 +75,7 @@ public class UserServiceImpl implements UserService {
         User user = userDao.createUser(username, email, passwordEncoder.encode(password));
         LOGGER.info("Succesfuly created user with username: {}", username);
         String token = verificationTokenService.createVerificationToken(user.getUserId());
-        sendVerificationEmail(email,username,token);
+        emailService.sendVerificationEmail(user,token,LocaleContextHolder.getLocale());
         return token;
     }
 
@@ -229,24 +231,13 @@ public class UserServiceImpl implements UserService {
         return userDao.getProfilePicture(findUserByUsername(username).getUserId()).orElseThrow(() -> new NoFileException("Profile picture not found")).getImage();
     }
 
-
-    //EMAIL VERIFICATION
-
-
-    public void sendVerificationEmail(String email, String username, String token) {
-        final Map<String,Object> mailMap = new HashMap<>();
-        mailMap.put("username",username);
-        mailMap.put("token",token);
-        final String subject = messageSource.getMessage("email.confirmationSubject",null, LocaleContextHolder.getLocale());
-        emailService.sendEmail(email,subject,"confirmationMail.html",mailMap);
-    }
-
+    @Async
     @Transactional(readOnly = true)
     @Override
     public void resendVerificationEmail(Token token) {
         verificationTokenService.renewToken(token);
         User toRenewTokenUser = userDao.findUserById(token.getUserId()).orElseThrow(UnableToFindUserException::new);
-        sendVerificationEmail(toRenewTokenUser.getEmail(),toRenewTokenUser.getUsername(), token.getToken());
+        emailService.sendVerificationEmail(toRenewTokenUser, token.getToken(), LocaleContextHolder.getLocale());
     }
 }
 

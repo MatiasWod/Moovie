@@ -12,6 +12,7 @@ import ar.edu.itba.paw.persistence.MoovieListDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -200,14 +201,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         if(ml.getUserId() == currentUser.getUserId()){
             List<User> followers = moovieListDao.getMoovieListFollowers(moovieListId);
             followers.forEach( user -> {
-                Map<String,Object> map = new HashMap<>();
-                map.put("username",user.getUsername());
-                map.put("moovieListId",moovieListId);
-                map.put("moovieListName",ml.getName());
-                emailService.sendEmail(user.getEmail(),
-                        "email.newMediaAddedSubject",
-                        "mediaAddedToFollowedList.html",
-                        map);
+                emailService.sendMediaAddedToFollowedListMail(user,ml, LocaleContextHolder.getLocale());
             });
             LOGGER.info("About to insert media into empty list {}", moovieListId);
             MoovieList mlRet = moovieListDao.insertMediaIntoMoovieList(moovieListId, mediaIdList);
@@ -325,15 +319,7 @@ public class MoovieListServiceImpl implements MoovieListService{
                 if(likeCountForMoovieList != 0 && (likeCountForMoovieList % EVERY_THIS_AMOUNT_OF_LIKES_SEND_EMAIL) == 0){
                     MoovieList mvlAux = getMoovieListById(moovieListId);
                     User toUser = userService.findUserById(mvlAux.getUserId());
-                    Map<String,Object> map = new HashMap<>();
-                    map.put("username",toUser.getUsername());
-                    map.put("likes", likeCountForMoovieList);
-                    map.put("moovieListId",mvlAux.getMoovieListId());
-                    map.put("moovieListName",mvlAux.getName());
-                    emailService.sendEmail(toUser.getEmail(),
-                            "email.notificationLikeMilestoneMoovieListSubject",
-                            "notificationLikeMilestoneMoovieList.html",
-                            map);
+                    emailService.sendNotificationLikeMilestoneMoovieListMail(toUser,likeCountForMoovieList,mvlAux,LocaleContextHolder.getLocale());
                     LOGGER.info("notificationLikeMilestoneMoovieList mail was sent to user : {} for the list: {}.", toUser.getUsername(), moovieListId);
                 }
             }

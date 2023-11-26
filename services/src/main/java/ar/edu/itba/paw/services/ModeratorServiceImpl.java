@@ -17,6 +17,7 @@ import ar.edu.itba.paw.persistence.UserDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,12 +57,7 @@ public class ModeratorServiceImpl implements ModeratorService{
         Review r = reviewService.getReviewById(reviewId);
         User u = userService.findUserById(r.getUserId());
 
-        final Map<String,Object> mailMap = new HashMap<>();
-        mailMap.put("username", u.getUsername());
-        mailMap.put("mediaName", m.getName());
-
-        emailService.sendEmail(u.getEmail(),"email.reviewDeletedSubject", "yourReviewHasBeenRemovedEmail.html", mailMap);
-
+        emailService.sendDeletedReviewMail(u,m, LocaleContextHolder.getLocale());
         reviewDao.deleteReview(reviewId,type);
         LOGGER.info("Succesfully removed review: {}. (by mod)", reviewId);
     }
@@ -74,12 +70,7 @@ public class ModeratorServiceImpl implements ModeratorService{
         MoovieList m = moovieListService.getMoovieListById(moovieListId);
         User u = userService.findUserById(m.getUserId());
 
-        final Map<String,Object> mailMap = new HashMap<>();
-
-        mailMap.put("username", u.getUsername());
-        mailMap.put("moovieListName", m.getName());
-
-        emailService.sendEmail(u.getEmail(),"email.listDeletedSubject", "yourListHasBeenRemovedMail.html", mailMap);
+        emailService.sendDeletedListMail(u,m,LocaleContextHolder.getLocale());
 
         moovieListDao.deleteMoovieList(moovieListId);
         LOGGER.info("Succesfully removed list: {}. (by mod)", moovieListId);
@@ -108,12 +99,7 @@ public class ModeratorServiceImpl implements ModeratorService{
         bannedDao.createBannedMessage(userId, userService.getInfoOfMyUser().getUserId(), message);
         LOGGER.info("Succesfully banned user: {}.", userId);
 
-
-        final Map<String,Object> mailMap = new HashMap<>();
-        mailMap.put("username", u.getUsername());
-        mailMap.put("modUsername", userService.getInfoOfMyUser().getUsername());
-        mailMap.put("message", message);
-        emailService.sendEmail(u.getEmail(),"email.bannedSubject", "youHaveBeenBannedMail.html", mailMap);
+        emailService.sendBannedUserMail(u,userService.getInfoOfMyUser(),message,LocaleContextHolder.getLocale());
     }
 
     @Transactional
@@ -135,9 +121,7 @@ public class ModeratorServiceImpl implements ModeratorService{
 
         LOGGER.info("Succesfully unbanned user: {}.", userId);
 
-        final Map<String,Object> mailMap = new HashMap<>();
-        mailMap.put("username", u.getUsername());
-        emailService.sendEmail(u.getEmail(),"email.unbannedSubject", "youHaveBeenUnbannedMail.html", mailMap);
+        emailService.sendUnbannedUserMail(u,LocaleContextHolder.getLocale());
     }
 
 
