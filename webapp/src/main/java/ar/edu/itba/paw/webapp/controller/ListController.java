@@ -330,10 +330,10 @@ public class ListController {
             int listId = moovieListService.insertMediaIntoMoovieList(ml.getMoovieListId(), form.getMediaIdsList()).getMoovieListId();
             return new ModelAndView("redirect:/list/" + listId);
         }catch (DuplicateKeyException e){
-            redirectAttributes.addFlashAttribute("errorMessage", "Error creating list, already have a list with same name");
+            redirectAttributes.addFlashAttribute("errorMessage", "createList.errorCreatingListSameName");
             return new ModelAndView("redirect:/createList");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Error creating list");
+            redirectAttributes.addFlashAttribute("errorMessage", "createList.errorCreatingList");
             return new ModelAndView("redirect:/createList");
         }
 
