@@ -49,6 +49,5 @@ public interface UserService {
     byte[] getProfilePicture(String username);
 
     //Verification mail methods
-    void sendVerificationEmail(String email, String username, String token);
     void resendVerificationEmail(Token token);
 }
