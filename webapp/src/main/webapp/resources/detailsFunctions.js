@@ -82,7 +82,7 @@ function rate(starsClicked) {
     });
     document.getElementById("rating").value = selectedRating;
     document.getElementById("selectedRating").textContent = selectedRating;
-    document.getElementById("submitButton").disabled = false;
+    document.getElementById("submitRating").disabled = false;
 }
 
 function rate2(starsClicked) {

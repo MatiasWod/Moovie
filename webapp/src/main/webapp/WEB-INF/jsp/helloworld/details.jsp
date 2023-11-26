@@ -379,7 +379,7 @@
                             onclick="closePopup('rate-popup')">
                         <spring:message code="details.cancel"/>
                     </button>
-                    <button type="submit" class="btn btn-dark" style="margin-inline: 10px" disabled>
+                    <button id="submitRating" type="submit" class="btn btn-dark" style="margin-inline: 10px" disabled >
                         <spring:message code="details.submit"/>
                     </button>
                 </div>
