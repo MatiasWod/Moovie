@@ -17,28 +17,28 @@ public interface ReportService {
 
     List<ReviewReport> getReviewReports();
     List<Review> getReportedReviews();
-    void reportReview(int reviewId, int userId, String type, String content);
+    void reportReview(int reviewId, int userId, int type, String content);
     void resolveReviewReport(int reportId);
 
     // MoovieListReviews
 
     List<MoovieListReviewReport> getMoovieListReviewReports();
     List<MoovieListReview> getReportedMoovieListReviews();
-    void reportMoovieListReview(int moovieListReviewId, int userId, String type, String content);
+    void reportMoovieListReview(int moovieListReviewId, int userId, int type, String content);
     void resolveMoovieListReviewReport(int reportId);
 
     // MoovieLists
 
     List<MoovieListReport> getMoovieListReports();
     List<MoovieList> getReportedMoovieLists();
-    void reportMoovieList(int moovieListId, int userId, String type, String content);
+    void reportMoovieList(int moovieListId, int userId, int type, String content);
     void resolveMoovieListReport(int reportId);
 
     // (Review) Comments
 
     List<CommentReport> getCommentReports();
     List<Comment> getReportedComments();
-    void reportComment(int commentId, int userId, String type, String content);
+    void reportComment(int commentId, int userId, int type, String content);
 
     void resolveCommentReport(int reportId);
 }

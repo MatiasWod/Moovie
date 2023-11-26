@@ -10,7 +10,7 @@ import static java.util.stream.Collectors.toMap;
 
 public enum ReportTypesEnum {
 
-    hatefulContent(0, "Hateful Content"),
+    hatefulContent(0, "Hate"),
     abuse(1,"Abuse & Harassment"),
     privacy(2,"Privacy"),
     spam(3,"Spam");

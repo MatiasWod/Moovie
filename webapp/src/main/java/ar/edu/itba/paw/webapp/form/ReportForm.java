@@ -6,7 +6,7 @@ public class ReportForm {
 
 
     @NotEmpty(message = "Report Type Required")
-    private String reportType;
+    private int reportType;
 
 
     private String type;
@@ -17,11 +17,11 @@ public class ReportForm {
 
     private int id;
 
-    public String getReportType() {
+    public int getReportType() {
         return reportType;
     }
 
-    public void setReportType(String reportType) {
+    public void setReportType(int reportType) {
         this.reportType = reportType;
     }
 

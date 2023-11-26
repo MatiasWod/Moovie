@@ -43,7 +43,7 @@ public class ReportDaoImpl implements ReportDao{
     }
 
     @Override
-    public void reportReview(int reviewId, int userId, String type, String content) {
+    public void reportReview(int reviewId, int userId, int type, String content) {
         String sql = "INSERT INTO reportsreviews " +
                 "(type, content, reportedBy, reviewId) " +
                 "VALUES ( :type, :content, :userId , :reviewId )";
@@ -75,11 +75,16 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public List<MoovieListReview> getReportedMoovieListReviews() {
-        return null;
+
+        String sql = "SELECT r FROM MoovieListReview r WHERE COALESCE(r.totalReports, 0) > 0";
+
+        TypedQuery<MoovieListReview> query = em.createQuery(sql, MoovieListReview.class);
+
+        return query.getResultList();
     }
 
     @Override
-    public void reportMoovieListReview(int moovieListReviewId, int userId, String type, String content) {
+    public void reportMoovieListReview(int moovieListReviewId, int userId, int type, String content) {
         String sql = "INSERT INTO reportsmoovielistreviews " +
                 "(type, content, reportedBy, reviewId) " +
                 "VALUES ( :type, :content, :userId , :moovieListReviewId )";
@@ -111,11 +116,16 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public List<MoovieList> getReportedMoovieLists() {
-        return null;
+
+        String sql = "SELECT r FROM MoovieList r WHERE COALESCE(r.totalReports, 0) > 0";
+
+        TypedQuery<MoovieList> query = em.createQuery(sql, MoovieList.class);
+
+        return query.getResultList();
     }
 
     @Override
-    public void reportMoovieList(int moovieListId, int userId, String type, String content) {
+    public void reportMoovieList(int moovieListId, int userId, int type, String content) {
         String sql = "INSERT INTO reportsmoovielists " +
                 "(type, content, reportedBy, reviewId) " +
                 "VALUES ( :type, :content, :userId , :moovieListId )";
@@ -147,11 +157,16 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public List<Comment> getReportedComments() {
-        return null;
+
+        String sql = "SELECT r FROM Comment r WHERE COALESCE(r.totalReports, 0) > 0";
+
+        TypedQuery<Comment> query = em.createQuery(sql, Comment.class);
+
+        return query.getResultList();
     }
 
     @Override
-    public void reportComment(int commentId, int userId, String type, String content) {
+    public void reportComment(int commentId, int userId, int type, String content) {
         String sql = "INSERT INTO reportscomments " +
                 "(type, content, reportedBy, reviewId) " +
                 "VALUES ( :type, :content, :userId , :commentId )";

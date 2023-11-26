@@ -32,22 +32,22 @@
         <h2><spring:message code="report.what"/></h2>
     </div>
     <form:form modelAttribute="reportForm" action="/reports/new?id=${param.id}&reportedBy=${param.reportedBy}&type=${param.type}" method="post" cssClass="d-flex flex-column m-3 flex-grow-1">
-        <form:input path="reportType" type="hidden"/>
+        <form:input path="reportType" type=""/>
         <form:errors path="reportType" cssClass="error m-1" element="p"/>
         <div class="d-flex m-1">
-            <input class="form-check-input me-1" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+            <input value="0" class="form-check-input me-1" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
             <label style="font-weight: bold" class="form-check-label" for="flexRadioDefault1"><spring:message code="report.hate"/></label>
         </div>
         <div class="d-flex m-1">
-            <input class="form-check-input me-1" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+            <input value="1" class="form-check-input me-1" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
             <label style="font-weight: bold" class="form-check-label" for="flexRadioDefault2"><spring:message code="report.abuse"/></label>
         </div>
         <div class="d-flex m-1">
-            <input class="form-check-input me-1" type="radio" name="flexRadioDefault" id="flexRadioDefault3">
+            <input value="2" class="form-check-input me-1" type="radio" name="flexRadioDefault" id="flexRadioDefault3">
             <label style="font-weight: bold" class="form-check-label" for="flexRadioDefault3"><spring:message code="report.privacy"/></label>
         </div>
         <div class="d-flex m-1">
-            <input class="form-check-input me-1" type="radio" name="flexRadioDefault" id="flexRadioDefault4">
+            <input value="3" class="form-check-input me-1" type="radio" name="flexRadioDefault" id="flexRadioDefault4">
             <label style="font-weight: bold" class="form-check-label" for="flexRadioDefault4"><spring:message code="report.spam"/></label>
         </div>
 
@@ -65,7 +65,7 @@
 <script>
     $(document).ready(function () {
         $("input[name='flexRadioDefault']").click(function () {
-            let selectedValue = $("input[name='flexRadioDefault']:checked").next('label').text();
+            let selectedValue = $("input[name='flexRadioDefault']:checked");
             $("input[name='reportType']").val(selectedValue);
         });
     });
