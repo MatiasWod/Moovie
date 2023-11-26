@@ -45,15 +45,15 @@ public class Review {
     @Transient
     private List<Comment> comments;
 
-    @Formula("(SELECT COUNT(*) FROM reportsreviews rr WHERE rr.reviewid = :reviewId)")
+    @Formula("(SELECT COUNT(*) FROM reportsreviews rr WHERE rr.reviewid = reviewId)")
     private int totalReports;
-    @Formula("(SELECT COUNT(*) FROM reportsreviews rr WHERE rr.type = 3 AND rr.reviewid = :reviewId)")
+    @Formula("(SELECT COUNT(*) FROM reportsreviews rr WHERE rr.type = 3 AND rr.reviewid = reviewId)")
     private int spamReports;
-    @Formula("(SELECT COUNT(*) FROM reportsreviews rr WHERE rr.type = 0 AND rr.reviewid = :reviewId)")
+    @Formula("(SELECT COUNT(*) FROM reportsreviews rr WHERE rr.type = 0 AND rr.reviewid = reviewId)")
     private int hateReports;
-    @Formula("(SELECT COUNT(*) FROM reportsreviews rr WHERE rr.type = 2 AND rr.reviewid = :reviewId)")
+    @Formula("(SELECT COUNT(*) FROM reportsreviews rr WHERE rr.type = 2 AND rr.reviewid = reviewId)")
     private int privacyReports;
-    @Formula("(SELECT COUNT(*) FROM reportsreviews rr WHERE rr.type = 1 AND rr.reviewid = :reviewId)")
+    @Formula("(SELECT COUNT(*) FROM reportsreviews rr WHERE rr.type = 1 AND rr.reviewid = reviewId)")
     private int abuseReports;
 
     //hibernate
