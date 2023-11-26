@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.BannedMessage.BannedMessage;
+import ar.edu.itba.paw.models.User.User;
 import org.postgresql.core.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -16,6 +17,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -51,4 +53,19 @@ public class BannedHibernateDao implements BannedDao{
         .setParameter("bannedUserId",bannedUserId)
                 .executeUpdate();
     }
+
+    @Override
+    public List<User> getBannedUsers() {
+        return entityManager.createQuery(
+                "SELECT u FROM User u RIGHT JOIN BannedMessage bm ON u.userId = bm.bannedUserId"
+                , User.class).getResultList();
+    }
+
+    @Override
+    public int getBannedCount() {
+        return entityManager.createQuery(
+                "SELECT u FROM User u RIGHT JOIN BannedMessage bm ON u.userId = bm.bannedUserId"
+                , User.class).getResultList().size();    }
+
+
 }

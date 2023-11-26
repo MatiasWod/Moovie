@@ -36,80 +36,109 @@
 <body>
 <c:import url="navBar.jsp"/>
 
-
-<div class="container d-flex flex-column">
-
-    <div class="d-flex container justify-content-center">
-        <div class="m-2">
-            <div class="d-flex align-items-center">
-                <div class="m-1 d-flex align-items-center">
-                    <i class="bi bi-list-ul"></i>
-                    <h5>
-<%--                        ${profile.moovieListCount}--%>
-                        666
-                    </h5>
-                </div>
-                <div class="m-1 d-flex align-items-center">
-                    <h5>
-                        <i class="bi-star"></i>
-<%--                        ${profile.reviewsCount}--%>
-                        69
-                    </h5>
-                </div>
-                <div class="m-1 d-flex align-items-center">
-                    <h5>
-                        <img style="padding-bottom: 6px;" height="37" width="37" src="${pageContext.request.contextPath}/resources/logo.png" alt="moo">
-<%--                        ${profile.milkyPoints}--%>
-                        420
-                    </h5>
+<sec:authorize access="!hasRole('ROLE_MODERATOR')">
+    <div class="container d-flex flex-column">
+        <div class="d-flex justify-content-center">
+            <h2><spring:message code="report.adminPage"/></h2>
+        </div>
+        <div class="d-flex container justify-content-center">
+            <div class="m-2">
+                <div class="d-flex align-items-center">
+                    <div class="m-1 d-flex align-items-center">
+                        <i class="bi bi-list-ul m-1"></i>
+                        <h5>
+                                <%--                        ${profile.moovieListCount}--%>
+                            total reports: ${totalReports}
+                        </h5>
+                    </div>
+                    <div class="m-1 d-flex align-items-center">
+                        <h5>
+                            <i class="bi-star"></i>
+                                <%--                        ${profile.reviewsCount}--%>
+                            total banned: ${totalBanned}
+                        </h5>
+                    </div>
+                    <div class="m-1 d-flex align-items-center">
+                        <h5>
+                            <img style="padding-bottom: 6px;" height="37" width="37" src="${pageContext.request.contextPath}/resources/logo.png" alt="moo">
+                                <%--                        ${profile.milkyPoints}--%>
+                            total spam: ${spamReports}
+                        </h5>
+                    </div>
+                    <div class="m-1 d-flex align-items-center">
+                        <h5>
+                            <i class="bi-star"></i>
+                                <%--                        ${profile.reviewsCount}--%>
+                            total hate: ${hateReports}
+                        </h5>
+                    </div>
+                    <div class="m-1 d-flex align-items-center">
+                        <h5>
+                            <i class="bi-star"></i>
+                                <%--                        ${profile.reviewsCount}--%>
+                            total abuse: ${abuseReports}
+                        </h5>
+                    </div>
+                    <div class="m-1 d-flex align-items-center">
+                        <h5>
+                            <i class="bi-star"></i>
+                                <%--                        ${profile.reviewsCount}--%>
+                            total abuse: ${privacyReports}
+                        </h5>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div class="btn-group m-2" role="group" aria-label="Basic radio toggle button group">
+
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio-comments" autocomplete="off" ${(param.list == null || param.list == '' || param.list == 'comments')? 'checked':''}>
+            <label class="btn btn-outline-success" for="btnradio-comments"><spring:message code="report.comment"/></label>
+
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio-ml" autocomplete="off" ${(param.list != null && param.list == 'ml')? 'checked':''}>
+            <label class="btn btn-outline-success" for="btnradio-ml"><spring:message code="report.list"/></label>
+
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio-mlReviews" autocomplete="off" ${(param.list != null && param.list == 'mlReviews')? 'checked':''}>
+            <label class="btn btn-outline-success" for="btnradio-mlReviews"><spring:message code="report.listReview"/></label>
+
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio-reviews" autocomplete="off" ${(param.list != null && param.list == 'reviews')? 'checked':''}>
+            <label class="btn btn-outline-success" for="btnradio-reviews"><spring:message code="report.mediaReview"/></label>
+
+            <form id="selected-radio" action="${pageContext.request.contextPath}/reports/review">
+                <input type="hidden" name="list" id="listField">
+            </form>
+
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio-banned" autocomplete="off" ${(param.list != null && param.list == 'banned')? 'checked':''}>
+            <label class="btn btn-outline-success" for="btnradio-banned"><spring:message code="report.banned"/></label>
+
+        </div>
+
+        <div>
+            contador de la lista seleccionada : ${listCount}
+        </div>
+
+        <c:choose>
+            <c:when test="${param.list == 'comments' || param.list == null || param.list == '' }">
+                comments
+            </c:when>
+            <c:when test="${param.list == 'ml'}">
+                moovieLists
+            </c:when>
+            <c:when test="${param.list == 'mlReviews'}">
+                moovieList Reviews
+            </c:when>
+            <c:when test="${param.list == 'reviews'}">
+                reviews
+            </c:when>
+            <c:when test="${param.list == 'banned'}">
+                banned
+            </c:when>
+        </c:choose>
     </div>
-
-    <div class="btn-group m-2" role="group" aria-label="Basic radio toggle button group">
-
-        <input type="radio" class="btn-check" name="btnradio" id="btnradio-comments" autocomplete="off" ${(param.list == null || param.list == '' || param.list == 'comments')? 'checked':''}>
-        <label class="btn btn-outline-success" for="btnradio-comments"><spring:message code="profile.watched"/></label>
-
-        <input type="radio" class="btn-check" name="btnradio" id="btnradio-ml" autocomplete="off" ${(param.list != null && param.list == 'ml')? 'checked':''}>
-        <label class="btn btn-outline-success" for="btnradio-ml"><spring:message code="profile.userLists"/></label>
-
-        <input type="radio" class="btn-check" name="btnradio" id="btnradio-mlReviews" autocomplete="off" ${(param.list != null && param.list == 'mlReviews')? 'checked':''}>
-        <label class="btn btn-outline-success" for="btnradio-mlReviews"><spring:message code="profile.privateUserLists"/></label>
-
-        <input type="radio" class="btn-check" name="btnradio" id="btnradio-reviews" autocomplete="off" ${(param.list != null && param.list == 'reviews')? 'checked':''}>
-        <label class="btn btn-outline-success" for="btnradio-reviews"><spring:message code="profile.likedLists"/></label>
-
-        <input type="radio" class="btn-check" name="btnradio" id="btnradio-banned" autocomplete="off" ${(param.list != null && param.list == 'banned')? 'checked':''}>
-        <label class="btn btn-outline-success" for="btnradio-banned"><spring:message code="profile.likedLists"/></label>
-
-        <form id="selected-radio" action="${pageContext.request.contextPath}/reports/review">
-            <input type="hidden" name="list" id="listField">
-        </form>
-
-    </div>
-
-    <c:choose>
-        <c:when test="${param.list == 'comments' || param.list == null || param.list == '' }">
-            comments
-        </c:when>
-        <c:when test="${param.list == 'ml'}">
-            moovieLists
-        </c:when>
-        <c:when test="${param.list == 'mlReviews'}">
-            moovieList Reviews
-        </c:when>
-        <c:when test="${param.list == 'reviews'}">
-            reviews
-        </c:when>
-        <c:when test="${param.list == 'banned'}">
-            banned
-        </c:when>
-    </c:choose>
-
-
-</div>
+</sec:authorize>
+<%--<sec:authorize access="!hasRole('ROLE_MODERATOR')">
+    <c:import url="403.jsp"/>
+</sec:authorize>--%>
 
 
 
