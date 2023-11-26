@@ -250,10 +250,13 @@ public class MediaController {
         
         final ModelAndView mav = new ModelAndView("helloworld/details");
         try{
-            String username =  userService.getInfoOfMyUser().getUsername();
+            User user =  userService.getInfoOfMyUser();
+            String username=user.getUsername();
+            int userId=user.getUserId();
             mav.addObject("currentUsername", username);
             mav.addObject("publicLists", moovieListService.getMoovieListCards(null, username, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),null,null, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), 0));
             mav.addObject("privateLists", moovieListService.getMoovieListCards(null, username, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), 0));
+            mav.addObject("userReview", reviewService.getReviewByMediaIdAndUsername(mediaId, userId, ReviewTypes.REVIEW_MEDIA));
         } catch (Exception ignored) {
         }
 
@@ -286,11 +289,10 @@ public class MediaController {
 
     @RequestMapping(value = "/createrating", method = RequestMethod.POST)
     public ModelAndView createReview(@Valid @ModelAttribute("detailsForm") final CreateReviewForm form,
-                                     @ModelAttribute("commentForm") final CommentForm commentForm,
                                      final BindingResult errors,
                                      RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
-            return details(form.getMediaId(),1, form, commentForm);
+            return details(form.getMediaId(),1, form, null);
         }
         try{
             reviewService.createReview(form.getMediaId(), form.getRating(), form.getReviewContent(), ReviewTypes.REVIEW_MEDIA);

@@ -127,4 +127,10 @@ public class ReviewServiceImpl implements ReviewService{
         LOGGER.info("Succesfully deleted review: {}, user: {}.", reviewId , userService.getInfoOfMyUser().getUserId());
     }
 
+
+    @Transactional
+    @Override
+    public Review getReviewByMediaIdAndUsername(int mediaId, int userId, ReviewTypes type){
+        return reviewDao.getReviewByMediaIdAndUsername(mediaId, userId, type);
+    }
 }

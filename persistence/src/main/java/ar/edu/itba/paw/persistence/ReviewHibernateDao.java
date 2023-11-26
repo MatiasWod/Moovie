@@ -2,7 +2,6 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
-import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
@@ -207,5 +206,20 @@ public class ReviewHibernateDao implements ReviewDao {
         query.setParameter("userId", userId);
         query.setParameter("reviewId", reviewId);
         query.executeUpdate();
+    }
+
+    @Override
+    public Review getReviewByMediaIdAndUsername(int mediaId, int userId, ReviewTypes type){
+        if(type.getType() == ReviewTypes.REVIEW_MEDIA.getType()) {
+            return em.createQuery("SELECT r FROM Review r WHERE r.userId = :userId AND r.mediaId = :mediaId", Review.class)
+                    .setParameter("userId", userId)
+                    .setParameter("mediaId", mediaId)
+                    .getSingleResult();
+        }else{
+            return em.createQuery("SELECT r FROM MoovieListReview r WHERE r.userId = :userId AND r.moovieListId = :mediaId", Review.class)
+                    .setParameter("userId", userId)
+                    .setParameter("mediaId", mediaId)
+                    .getSingleResult();
+    }
     }
 }

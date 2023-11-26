@@ -28,4 +28,6 @@ public interface ReviewService {
 
     void likeReview(int reviewId, ReviewTypes type);
     void removeLikeReview(int reviewId, ReviewTypes type);
+
+    Review getReviewByMediaIdAndUsername(int mediaId, int userId, ReviewTypes type);
 }

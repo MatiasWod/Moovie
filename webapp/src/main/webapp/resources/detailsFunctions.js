@@ -1,3 +1,6 @@
+const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
 const cardsNumber = 4;
 window.onload = function () {
     const actorCards = document.querySelectorAll(".actor-card");
@@ -65,7 +68,6 @@ let stars = document.querySelectorAll('.rating > i');
 
 function rate(starsClicked) {
     selectedRating = starsClicked;
-
     // Remove 'bi-star' class and add 'bi-star-fill' class for selected stars
     stars.forEach(function (star, index) {
         if (index >= (5 - starsClicked)) {
@@ -81,6 +83,24 @@ function rate(starsClicked) {
     document.getElementById("rating").value = selectedRating;
     document.getElementById("selectedRating").textContent = selectedRating;
     document.getElementById("submitButton").disabled = false;
+}
+
+function rate2(starsClicked) {
+    selectedRating = starsClicked;
+    // Remove 'bi-star' class and add 'bi-star-fill' class for selected stars
+    stars.forEach(function (star, index) {
+        if (index >= (10-starsClicked)) {
+            star.classList.remove('bi-star');
+            star.classList.add('bi-star-fill');
+            star.classList.add('selected')
+        } else {
+            star.classList.remove('bi-star-fill');
+            star.classList.remove('selected')
+            star.classList.add('bi-star');
+        }
+    });
+    document.getElementById("rating").value = selectedRating;
+    document.getElementById("selectedRatingEdit").textContent = selectedRating;
 }
 
 // Function to format a number with commas and dots and add a dollar sign
@@ -143,7 +163,10 @@ window.addEventListener("load", formatRevenueAndBudget)
 {
 
     const textarea = document.getElementById("reviewContent");
+    const textarea2 = document.getElementById("reviewContent2");
+
     const charCount = document.getElementById("charCount");
+    const charCount2 = document.getElementById("charCount2");
 
     if (textarea) {
         textarea.addEventListener("input", function () {
@@ -163,5 +186,29 @@ window.addEventListener("load", formatRevenueAndBudget)
             textarea.value = textarea.value.replace(/\n/g, "");
         });
     }
+    if(textarea2){
+        textarea2.addEventListener("input", function () {
+            const remainingChars = textarea2.value.length;
+            charCount2.textContent = `${remainingChars}`;
+
+            if (remainingChars < 0) {
+                charCount2.style.color = "red";
+                document.getElementById("submitButton").disabled = true;
+            } else {
+                charCount2.style.color = "inherit";
+                document.getElementById("submitButton").disabled = false;
+            }
+
+            // Remove line breaks from the textarea
+
+            textarea2.value = textarea2.value.replace(/\n/g, "");
+        });
+    }
+}
+
+function submitFirstForm() {
+    document.getElementById('reviewContent').value = document.getElementById('reviewContent2').value;
+    document.getElementById('rating').value = document.getElementById('selectedRatingEdit').innerText;
+    document.getElementById('rateForm').submit();
 }
 

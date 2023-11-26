@@ -26,4 +26,5 @@ public interface ReviewDao {
 
     void likeReview(int userId, int reviewId, ReviewTypes type);
     void removeLikeReview(int userId, int reviewId, ReviewTypes type);
+    Review getReviewByMediaIdAndUsername(int mediaId, int userId, ReviewTypes type);
 }

@@ -262,9 +262,19 @@
                                 class="bi bi-plus-circle-fill"></i><spring:message code="details.createNewList"/></a></li>
                     </ul>
                 </div>
-                <button type="button" class="btn btn-light border border-black" onclick="openPopup('rate-popup')"><i
-                        class="bi bi-star-fill"></i> <spring:message code="details.rate"/>
-                </button>
+                <c:choose>
+                    <c:when test="${userReview!=null}">
+                        <button type="button" class="btn btn-dark border border-black" onclick="openPopup('edit-popup')"><i
+                                class="bi bi-star-fill"></i> <spring:message code="details.rated"/>
+                        </button>
+                    </c:when>
+                    <c:otherwise>
+                        <button type="button" class="btn btn-light border border-black" onclick="openPopup('rate-popup')"><i
+                                class="bi bi-star-fill"></i> <spring:message code="details.rate"/>
+                        </button>
+                    </c:otherwise>
+                </c:choose>
+
             </div>
 
         </div>
@@ -351,7 +361,7 @@
             <h5><spring:message code="details.yourRating"/> <span id="selectedRating"><spring:message code="details.notSelected"/></span></h5>
 
             <form:form modelAttribute="detailsForm" action="${pageContext.request.contextPath}/createrating"
-                       method="POST">
+                       method="POST" id="rateForm">
                 <form:textarea path="reviewContent" class="review-textarea" id="reviewContent" rows="3"
                                placeholder="Your review (Optional)" maxlength="500"/>
                 <span><span id="charCount" class="text-muted">0</span>/500</span>
@@ -374,6 +384,40 @@
                 </div>
             </form:form>
 
+        </div>
+        <div class="popup-overlay edit-popup-overlay"></div>
+        <div class="popup edit-popup">
+            <!-- Popup content goes here -->
+            <h2><spring:message code="details.yourRatingForMedia" arguments="${media.name}"/></h2>
+            <hr class="my-8">
+            <div class="rating">
+                <c:forEach var="i" begin="1" end="5" varStatus="loopStatus">
+                    <c:set var="reverseIndex" value="${5 - loopStatus.count + 1}"/>
+                    <c:choose>
+                        <c:when test="${userReview.rating>=reverseIndex}">
+                            <i class="bi bi-star-fill selected" onclick="rate2(${reverseIndex})"></i>
+                        </c:when>
+                        <c:otherwise>
+                            <i class="bi bi-star" onclick="rate2(${reverseIndex})"></i>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+            </div>
+            <h5><spring:message code="details.yourRating"/> <span id="selectedRatingEdit">${userReview.rating}</span></h5>
+
+                <textarea class="review-textarea" id="reviewContent2" rows="3"
+                          maxlength="500">${userReview.reviewContent}</textarea>
+                <span><span class="text-muted" id="charCount2">${userReview.reviewContent.length()}</span>/500</span>
+                <!-- Submit Button -->
+                <div class="text-center" style="margin-top: 20px">
+                    <button type="button" class="btn btn-danger" style="margin-inline: 10px"
+                            onclick="closePopup('edit-popup')">
+                        <spring:message code="details.cancel"/>
+                    </button>
+                    <button class="btn btn-dark" id="submitButton2"  style="margin-inline: 10px" ${userReview.reviewContent.length()>=0 ? '' : 'disabled'} onclick="submitFirstForm() " >
+                        <spring:message code="details.submit"/>
+                    </button>
+                </div>
         </div>
         <!-- Reviews -->
         <h2><spring:message code="details.reviews"/></h2>
@@ -503,7 +547,8 @@
                                     </div>
                                     <c:if test="${currentUsername==review.username}">
                                         <div style="margin-bottom: 15px">
-                                            <button class="btn btn-primary" style="font-size: 14px;margin-left: 10px;"  onclick="openPopup('rate-popup')">
+                                            <button class="btn btn-primary" style="font-size: 14px;margin-left: 10px;"
+                                                    onclick="openPopup('edit-popup')">
                                                 <span>
                                                    <i class="bi bi-pencil" ></i>
                                                 </span>
@@ -606,8 +651,4 @@
 </body>
 </html>
 
-<script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=84"></script>
-<script>
-    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
-    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
-</script>
+<script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=91"></script>
