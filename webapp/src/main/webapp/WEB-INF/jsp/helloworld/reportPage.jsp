@@ -32,11 +32,11 @@
         <h2><spring:message code="report.what"/></h2>
     </div>
     <form:form modelAttribute="reportForm" action="/reports/new?id=${param.id}&reportedBy=${param.reportedBy}&type=${param.type}" method="post" cssClass="d-flex flex-column m-3 flex-grow-1">
-        <form:input path="reportType" type=""/>
+        <form:input path="reportType" type="hidden"/>
         <form:errors path="reportType" cssClass="error m-1" element="p"/>
         <div class="d-flex m-1">
             <input value="0" class="form-check-input me-1" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-            <label style="font-weight: bold" class="form-check-label" for="flexRadioDefault1"><spring:message code="report.hate"/></label>
+            <label style="font-weight: bold" class="form-check-label" for="flexRadioDefault1" ><spring:message code="report.hate"/></label>
         </div>
         <div class="d-flex m-1">
             <input value="1" class="form-check-input me-1" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
@@ -65,7 +65,7 @@
 <script>
     $(document).ready(function () {
         $("input[name='flexRadioDefault']").click(function () {
-            let selectedValue = $("input[name='flexRadioDefault']:checked");
+            let selectedValue = $("input[name='flexRadioDefault']:checked").val();
             $("input[name='reportType']").val(selectedValue);
         });
     });
