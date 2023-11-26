@@ -385,6 +385,39 @@
             </form:form>
 
         </div>
+        <div class="popup-overlay edit-popup-overlay"></div>
+        <div class="popup edit-popup">
+            <!-- Popup content goes here -->
+            <h2><spring:message code="details.yourRatingForMedia" arguments="${media.name}"/></h2>
+            <hr class="my-8">
+            <div class="rating">
+                <c:forEach var="i" begin="1" end="5" varStatus="loopStatus">
+                    <c:set var="reverseIndex" value="${5 - loopStatus.count + 1}"/>
+                    <c:choose>
+                        <c:when test="${userReview.rating>=reverseIndex}">
+                            <i class="bi bi-star-fill selected" onclick="rate2(${reverseIndex})"></i>
+                        </c:when>
+                        <c:otherwise>
+                            <i class="bi bi-star" onclick="rate2(${reverseIndex})"></i>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+            </div>
+            <h5><spring:message code="details.yourRating"/> <span id="selectedRatingEdit">${userReview.rating}</span></h5>
+            <textarea class="review-textarea" id="reviewContent2" rows="3"
+                      maxlength="500">${userReview.reviewContent}</textarea>
+            <span><span class="text-muted" id="charCount2">${userReview.reviewContent.length()}</span>/500</span>
+            <!-- Submit Button -->
+            <div class="text-center" style="margin-top: 20px">
+                <button type="button" class="btn btn-danger" style="margin-inline: 10px"
+                        onclick="closePopup('edit-popup')">
+                    <spring:message code="details.cancel"/>
+                </button>
+                <button class="btn btn-dark" id="submitButton2"  style="margin-inline: 10px" ${userReview.reviewContent.length()>=0 ? '' : 'disabled'} onclick="submitFirstForm() " >
+                    <spring:message code="details.submit"/>
+                </button>
+            </div>
+        </div>
         <!-- Reviews -->
         <h2><spring:message code="details.reviews"/></h2>
         <hr class="my-8">
