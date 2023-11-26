@@ -1,8 +1,17 @@
 package ar.edu.itba.paw.webapp.form;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 public class CommentForm {
+
     private int reviewId;
     private int listMediaId;
+    @Pattern(regexp = "^(?!\\s+$)(?!.*[\\n\\r]).*$", message = "Comment or Review content must not contain enters or only spaces")
+    @Size(max = 500, message = "Comment or Review content must not exceed 500 characters")
+    @NotEmpty
     private String content;
 
 
