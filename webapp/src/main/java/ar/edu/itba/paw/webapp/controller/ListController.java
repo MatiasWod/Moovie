@@ -84,7 +84,7 @@ public class ListController {
         queries.put("search", search);
         String urlBase = UriComponentsBuilder.newInstance().path("/lists").query("orderBy={orderBy}&order={order}&search={search}").buildAndExpand(queries).toUriString();
         mav.addObject("urlBase", urlBase);
-
+        mav.addObject("currentUser", userService.getInfoOfMyUser());
         LOGGER.info("Returned lists for /lists.");
         return mav;
     }
@@ -120,6 +120,7 @@ public class ListController {
         numberOfPages = (int) Math.ceil(mediaCount * 1.0 / PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize());
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
+        mav.addObject("currentUser", userService.getInfoOfMyUser());
 
         // filter buttons
         mav.addObject("genresList", genreService.getAllGenres());
@@ -239,6 +240,7 @@ public class ListController {
         mav.addObject("recommendedList", mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
                 null, null, null, null, MediaFilters.TMDBRATING.getFilter(), MediaFilters.DESC.getFilter(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0));
 
+        mav.addObject("currentUser", userService.getInfoOfMyUser());
         LOGGER.info("Returned list with id: {} for /editList.", moovieListId);
         return mav;
     }
@@ -287,6 +289,7 @@ public class ListController {
         }
         try {
             User currentUser=userService.getInfoOfMyUser();
+            mav.addObject("currentUser", currentUser);
             mav.addObject("watchedListId",moovieListService.getMoovieListCards("Watched",currentUser.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId());
         }catch (Exception e){
 

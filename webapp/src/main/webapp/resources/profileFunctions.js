@@ -44,7 +44,7 @@ setTimeout(function() {
 }, 5000);
 
 function previewImage(input) {
-    let preview = document.getElementById('profile-image-preview');
+    let preview = document.querySelector('.profile-image-preview');
     let file = input.files[0];
     let reader = new FileReader();
     reader.onload = function() {

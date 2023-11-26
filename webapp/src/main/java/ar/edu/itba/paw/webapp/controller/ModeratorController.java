@@ -26,6 +26,8 @@ public class ModeratorController {
     private ReportService reportService;
     @Autowired
     private ReviewService reviewService;
+    @Autowired
+    private CommentService commentService;
 
     @RequestMapping(value = "/deleteReview/{mediaId:\\d+}", method = RequestMethod.POST)
     public ModelAndView deleteReview(@RequestParam("reviewId") int reviewId, @RequestParam("path") String path, RedirectAttributes redirectAttributes, @PathVariable int mediaId) {
@@ -104,7 +106,10 @@ public class ModeratorController {
                                @RequestParam("id") int id,
                                @RequestParam("reportedBy") int reportedBy,
                                @RequestParam("type") String type) {
-        return new ModelAndView("helloworld/reportPage");
+
+        ModelAndView mav = new ModelAndView("helloworld/reportPage");
+        mav.addObject("currentUser",userService.getInfoOfMyUser());
+        return mav;
     }
 
     @RequestMapping(value = "/reports/new", method = RequestMethod.POST)
@@ -145,6 +150,24 @@ public class ModeratorController {
                 redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
                 return report(form,id,reportedBy,type);
             }
+        } else if (type.equals("moovieListReview")) {
+            try {
+                reportService.reportMoovieListReview(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
+                redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
+                return new ModelAndView("redirect:/list/" + reviewService.getMoovieListReviewById(form.getId()).getMoovieListId());
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
+                return report(form,id,reportedBy,type);
+            }
+        } else if (type.equals("comment")) {
+            try {
+                reportService.reportComment(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
+                redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
+                return new ModelAndView("redirect:/details/"  ); // faltaria un getCommentById
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
+                return report(form,id,reportedBy,type);
+            }
         }
         return new ModelAndView("redirect:/");
     }
@@ -153,7 +176,7 @@ public class ModeratorController {
     @RequestMapping(value = "/reports/review")
     public ModelAndView reportReview() {
         ModelAndView mav = new ModelAndView("helloworld/pendingReports");
-
+        mav.addObject("currentUser",userService.getInfoOfMyUser());
         mav.addObject("reportedReviews", reportService.getReportedReviews());
         mav.addObject("commentReports", reportService.getCommentReports());
         return mav;

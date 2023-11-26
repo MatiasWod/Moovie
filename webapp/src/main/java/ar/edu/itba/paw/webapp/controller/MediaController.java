@@ -106,20 +106,10 @@ public class MediaController {
         mav.addObject("movieListPopular", popularMovies);
 
         LOGGER.info("Returned media for /.");
-        Media ml = mediaService.getMediaById(10);
-        mav.addObject("ml", ml);
+        //Media ml = mediaService.getMediaById(10);
+        mav.addObject("currentUser", userService.getInfoOfMyUser());
+        //mav.addObject("ml", ml);
         return mav;
-
-
-
-
-        
-        /*
-        final ModelAndView mav = new ModelAndView("helloworld/test");
-
-        dmsService.updateGenres();
-        dmsService.updateProviders();
-        return mav;*/
     }
 
     @RequestMapping("/search")
@@ -209,6 +199,7 @@ public class MediaController {
 
         try {
             User currentUser=userService.getInfoOfMyUser();
+            mav.addObject("currentUser", currentUser);
             mav.addObject("watchedListId",moovieListService.getMoovieListCards("Watched",currentUser.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId());
             mav.addObject("watchlistId",moovieListService.getMoovieListCards("Watchlist",currentUser.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId());
             mav.addObject("showWatched",true);

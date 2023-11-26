@@ -125,7 +125,7 @@ public class ModeratorServiceImpl implements ModeratorService{
     }
 
 
-
+    @Transactional
     @Override
     public void makeUserModerator(int userId) {
         amIModerator();

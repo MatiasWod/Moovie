@@ -378,7 +378,7 @@
                             onclick="closePopup('rate-popup')">
                         <spring:message code="details.cancel"/>
                     </button>
-                    <button type="submit" class="btn btn-dark" style="margin-inline: 10px" id="submitButton" disabled>
+                    <button type="submit" class="btn btn-dark" style="margin-inline: 10px" disabled>
                         <spring:message code="details.submit"/>
                     </button>
                 </div>
@@ -553,7 +553,7 @@
 
                                 <sec:authorize access="isAuthenticated()">
                                     <div class="input-group mt-2 d-flex">
-                                        <form:form modelAttribute="commentForm" cssClass="d-flex" action="${pageContext.request.contextPath}/createcomment" method="POST">
+                                        <form:form modelAttribute="commentForm" cssClass="d-flex " action="${pageContext.request.contextPath}/createcomment" method="POST">
                                             <form:input path="reviewId" type="hidden" value="${review.reviewId}"/>
                                             <form:input path="listMediaId" type="hidden" value="${media.mediaId}"/>
                                             <form:input path="content" class="form-control" placeholder="Add comment..." aria-label="With textarea"/>
@@ -561,6 +561,9 @@
                                             <form:errors path="reviewId" cssClass="error"/>
                                             <form:errors path="listMediaId" cssClass="error"/>
                                             <form:errors path="content" cssClass="error"/>
+                                            <button type="submit" class="ms-1 btn btn-dark" id="submitButton">
+                                                <spring:message code="details.submit"/>
+                                            </button>
                                         </form:form>
                                     </div>
                                 </sec:authorize>
