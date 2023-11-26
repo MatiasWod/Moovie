@@ -128,7 +128,7 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public Review getReviewByMediaIdAndUsername(int mediaId, int userId, ReviewTypes type){
         return reviewDao.getReviewByMediaIdAndUsername(mediaId, userId, type);

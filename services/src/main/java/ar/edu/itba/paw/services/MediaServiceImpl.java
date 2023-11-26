@@ -22,7 +22,7 @@ public class MediaServiceImpl implements MediaService{
     @Autowired
     private UserService userService;
 
-    @Transactional(propagation= Propagation.REQUIRED, readOnly = true)
+    @Transactional(readOnly = true)
     @Override
     public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber){
         return mediaDao.getMedia(type, search, participant,  genres, providers, status, lang, orderBy, sortOrder, size, pageNumber, userService.tryToGetCurrentUserId());
@@ -34,7 +34,7 @@ public class MediaServiceImpl implements MediaService{
         return mediaDao.getMediaInMoovieList(moovieListId, size, pageNumber);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public Media getMediaById(int mediaId) {
         return mediaDao.getMediaById(mediaId).orElseThrow(() -> new MediaNotFoundException("Media was not found for the id:" + mediaId));

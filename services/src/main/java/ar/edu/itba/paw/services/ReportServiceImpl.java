@@ -21,12 +21,14 @@ public class ReportServiceImpl implements ReportService{
     @Autowired
     private ReportDao reportDao;
 
+    @Transactional(readOnly = true)
     @Override
     public List<ReviewReport> getReviewReports() {
 
         return reportDao.getReviewReports();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Review> getReportedReviews() {
         return reportDao.getReportedReviews();
@@ -38,77 +40,83 @@ public class ReportServiceImpl implements ReportService{
         reportDao.reportReview(reviewId, userId, type, content);
     }
 
-    @Override
     @Transactional
+    @Override
     public void resolveReviewReport(int reportId) {
         reportDao.resolveReviewReport(reportId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<MoovieListReviewReport> getMoovieListReviewReports() {
 
         return reportDao.getMoovieListReviewReports();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<MoovieListReview> getReportedMoovieListReviews() {
         return reportDao.getReportedMoovieListReviews();
     }
 
-    @Override
     @Transactional
+    @Override
     public void reportMoovieListReview(int moovieListReviewId, int userId, int type, String content) {
         reportDao.reportMoovieListReview(moovieListReviewId, userId, type, content);
     }
 
-    @Override
     @Transactional
+    @Override
     public void resolveMoovieListReviewReport(int reportId) {
         reportDao.resolveMoovieListReviewReport(reportId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<MoovieListReport> getMoovieListReports() {
 
         return reportDao.getMoovieListReports();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<MoovieList> getReportedMoovieLists() {
         return reportDao.getReportedMoovieLists();
     }
 
-    @Override
     @Transactional
+    @Override
     public void reportMoovieList(int moovieListId, int userId, int type, String content) {
         reportDao.reportMoovieList(moovieListId, userId, type, content);
     }
 
-    @Override
     @Transactional
+    @Override
     public void resolveMoovieListReport(int reportId) {
         reportDao.resolveMoovieListReport(reportId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<CommentReport> getCommentReports() {
 
         return reportDao.getCommentReports();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Comment> getReportedComments() {
         return reportDao.getReportedComments();
     }
 
-    @Override
     @Transactional
+    @Override
     public void reportComment(int commentId, int userId, int type, String content) {
         reportDao.reportComment(commentId, userId, type, content);
     }
 
-    @Override
     @Transactional
+    @Override
     public void resolveCommentReport(int reportId) {
         reportDao.resolveCommentReport(reportId);
     }

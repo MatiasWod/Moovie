@@ -122,17 +122,18 @@ public class MoovieListServiceImpl implements MoovieListService{
         return moovieListDao.getLikedMoovieListCards(userId, type, size, pageNumber, userService.tryToGetCurrentUserId());
     }
 
+    @Transactional(readOnly = true)
     public List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber){
         return moovieListDao.getFollowedMoovieListCards(userId, type, size, pageNumber, userService.tryToGetCurrentUserId());
     }
 
-    @Override
+    @Transactional(readOnly = true)
     public int getFollowedMoovieListCardsCount(int userId, int type) {
         return moovieListDao.getFollowedMoovieListCardsCount(userId,type);
     }
 
 
-    @Override
+    @Transactional(readOnly = true)
     public List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber){
         List<MoovieListCard> mlc =  moovieListDao.getRecommendedMoovieListCards(moovieListId, size, pageNumber, userService.tryToGetCurrentUserId());
         if(mlc.size()<size){
@@ -158,6 +159,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         return null;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Media> getRecommendedMediaToAdd(int moovieListId, int size) {
         return moovieListDao.getRecommendedMediaToAdd(moovieListId, size);
@@ -327,7 +329,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
     public void removeLikeMoovieList(int moovieListId) {
         moovieListDao.removeLikeMoovieList(userService.getInfoOfMyUser().getUserId(), moovieListId);
@@ -365,7 +367,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         }
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
     public void removeFollowMoovieList(int moovieListId) {
         moovieListDao.removeFollowMoovieList(userService.tryToGetCurrentUserId(), moovieListId);
