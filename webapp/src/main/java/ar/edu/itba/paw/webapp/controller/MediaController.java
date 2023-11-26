@@ -15,6 +15,8 @@ import ar.edu.itba.paw.webapp.form.CreateReviewForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -63,6 +65,9 @@ public class MediaController {
 
     @Autowired
     private CommentService commentService;
+
+    @Autowired
+    private MessageSource messageSource;
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MediaController.class);
@@ -298,13 +303,13 @@ public class MediaController {
         }
         try{
             reviewService.createReview(form.getMediaId(), form.getRating(), form.getReviewContent(), ReviewTypes.REVIEW_MEDIA);
-            redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully created.");
+            redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("details.reviewCreated",null, LocaleContextHolder.getLocale()));
         } catch(Exception e1) {
             try {
                 reviewService.editReview(form.getMediaId(), form.getRating(), form.getReviewContent(), ReviewTypes.REVIEW_MEDIA);
-                redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully edited.");
+                redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("details.editReviewSuccess",null, LocaleContextHolder.getLocale()));
             } catch (Exception e2) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Couldn't create review, you already reviewed this.");
+                redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("details.editReviewFailure",null, LocaleContextHolder.getLocale()));
             }
         }
         return new ModelAndView("redirect:/details/" + form.getMediaId());
@@ -314,9 +319,9 @@ public class MediaController {
     public ModelAndView likeReview(@RequestParam int reviewId,@RequestParam int mediaId, RedirectAttributes redirectAttributes){
         try {
             reviewService.likeReview(reviewId, ReviewTypes.REVIEW_MEDIA);
-            redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully liked.");
+            redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("details.reviewLikedSuccess",null, LocaleContextHolder.getLocale()));
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Couldn't like review.");
+            redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("details.reviewLikedFailure",null, LocaleContextHolder.getLocale()));
         }
         return new ModelAndView("redirect:/details/" + mediaId);
     }
@@ -325,9 +330,9 @@ public class MediaController {
     public ModelAndView unlikeReview(@RequestParam int reviewId,@RequestParam int mediaId, RedirectAttributes redirectAttributes){
         try {
             reviewService.removeLikeReview(reviewId, ReviewTypes.REVIEW_MEDIA);
-            redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully unliked.");
+            redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("details.reviewUnlikedSuccess",null, LocaleContextHolder.getLocale()));
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Couldn't unlike review.");
+            redirectAttributes.addFlashAttribute("errorMessage",  messageSource.getMessage("details.reviewUnlikedFailure",null, LocaleContextHolder.getLocale()));
         }
         return new ModelAndView("redirect:/details/" + mediaId);
     }
@@ -336,9 +341,9 @@ public class MediaController {
     public ModelAndView deleteReview(@RequestParam("reviewId") int reviewId,RedirectAttributes redirectAttributes, @PathVariable int mediaId) {
         try {
             reviewService.deleteReview(reviewId, ReviewTypes.REVIEW_MEDIA);
-            redirectAttributes.addFlashAttribute("successMessage", "Review successfully deleted");
+            redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("details.reviewDeletedSuccess",null, LocaleContextHolder.getLocale()));
         }catch (Exception e){
-            redirectAttributes.addFlashAttribute("errorMessage", "Error deleting review");
+            redirectAttributes.addFlashAttribute("errorMessage",  messageSource.getMessage("details.reviewDeletedFailure",null, LocaleContextHolder.getLocale()));
         }
         return new ModelAndView("redirect:/details/" + mediaId);
     }
@@ -399,9 +404,9 @@ public class MediaController {
     public ModelAndView likeComment(@RequestParam int commentId,@RequestParam int mediaId, RedirectAttributes redirectAttributes){
         try {
             commentService.likeComment(commentId);
-            redirectAttributes.addFlashAttribute("successMessage", "Comment has been successfully liked.");
+            redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("details.commentLikedSuccess",null, LocaleContextHolder.getLocale()));
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Couldn't like comment.");
+            redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("details.commentLikedFailure",null, LocaleContextHolder.getLocale()));
         }
         return new ModelAndView("redirect:/details/" + mediaId);
     }
@@ -410,9 +415,9 @@ public class MediaController {
     public ModelAndView dislikeComment(@RequestParam int commentId,@RequestParam int mediaId, RedirectAttributes redirectAttributes){
         try {
             commentService.dislikeComment(commentId);
-            redirectAttributes.addFlashAttribute("successMessage", "Comment has been successfully disliked.");
+            redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("details.commentUnlikedSuccess",null, LocaleContextHolder.getLocale()));
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Couldn't dislike comment.");
+            redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("details.commentUnlikedFailure",null, LocaleContextHolder.getLocale()));
         }
         return new ModelAndView("redirect:/details/" + mediaId);
     }
@@ -427,9 +432,9 @@ public class MediaController {
         }
         try{
             commentService.createComment(commentForm.getReviewId(),commentForm.getContent());
-            redirectAttributes.addFlashAttribute("successMessage", "Comment has been successfully created.");
+            redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("details.commentCreatedSuccess",null, LocaleContextHolder.getLocale()));
         } catch(Exception e1) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Couldn't create comment.");
+            redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("details.commentCreatedFailure",null, LocaleContextHolder.getLocale()));
         }
 
         String referer = request.getHeader("Referer");

@@ -362,8 +362,9 @@
 
             <form:form modelAttribute="detailsForm" action="${pageContext.request.contextPath}/createrating"
                        method="POST" id="rateForm">
+                <spring:message code="details.yourReviewPlaceholder" var="yourReviewPlaceholder"/>
                 <form:textarea path="reviewContent" class="review-textarea" id="reviewContent" rows="3"
-                               placeholder="Your review (Optional)" maxlength="500"/>
+                               placeholder='${yourReviewPlaceholder}' maxlength="500"/>
                 <span><span id="charCount" class="text-muted">0</span>/500</span>
                 <form:input path="mediaId" type="hidden" id="mediaId" value="${media.mediaId}"/>
                 <form:input path="rating" type="hidden" id="rating"/>
@@ -556,7 +557,8 @@
                                         <form:form modelAttribute="commentForm" cssClass="d-flex " action="${pageContext.request.contextPath}/createcomment" method="POST">
                                             <form:input path="reviewId" type="hidden" value="${review.reviewId}"/>
                                             <form:input path="listMediaId" type="hidden" value="${media.mediaId}"/>
-                                            <form:input path="content" class="form-control" placeholder="Add comment..." aria-label="With textarea"/>
+                                            <spring:message code="details.addCommentPlaceholder" var="addCommentPlaceholder"/>
+                                            <form:input path="content" class="form-control" placeholder='${addCommentPlaceholder}' aria-label="With textarea"/>
 
                                             <form:errors path="reviewId" cssClass="error"/>
                                             <form:errors path="listMediaId" cssClass="error"/>
