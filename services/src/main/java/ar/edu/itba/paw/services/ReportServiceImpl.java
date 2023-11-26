@@ -9,6 +9,8 @@ import ar.edu.itba.paw.models.Reports.ReviewReport;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.persistence.ReportDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,8 +20,20 @@ import java.util.List;
 @Service
 public class ReportServiceImpl implements ReportService{
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReportServiceImpl.class);
+
     @Autowired
     private ReportDao reportDao;
+
+    @Override
+    public int getTotalReports() {
+        return reportDao.getTotalReports();
+    }
+
+    @Override
+    public int getTypeReports(int type) {
+        return reportDao.getTypeReports(type);
+    }
 
     @Transactional(readOnly = true)
     @Override
@@ -31,18 +45,21 @@ public class ReportServiceImpl implements ReportService{
     @Transactional(readOnly = true)
     @Override
     public List<Review> getReportedReviews() {
+
         return reportDao.getReportedReviews();
     }
 
     @Override
     @Transactional
     public void reportReview(int reviewId, int userId, int type, String content) {
+        LOGGER.info("reportReview insert");
         reportDao.reportReview(reviewId, userId, type, content);
     }
 
     @Transactional
     @Override
     public void resolveReviewReport(int reportId) {
+
         reportDao.resolveReviewReport(reportId);
     }
 
@@ -56,6 +73,7 @@ public class ReportServiceImpl implements ReportService{
     @Transactional(readOnly = true)
     @Override
     public List<MoovieListReview> getReportedMoovieListReviews() {
+
         return reportDao.getReportedMoovieListReviews();
     }
 

@@ -31,6 +31,14 @@
     <div class="d-flex justify-content-center">
         <h2><spring:message code="report.what"/></h2>
     </div>
+    <c:if test="${not empty errorMessage}">
+        <div class="alert alert-danger alert-dismissible fade show" id="errorAlert" role="alert">
+            <div class="d-flex justify-content-between align-items-center">
+                <div><spring:message code="${errorMessage}"/></div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </c:if>
     <form:form modelAttribute="reportForm" action="/reports/new?id=${param.id}&reportedBy=${param.reportedBy}&type=${param.type}" method="post" cssClass="d-flex flex-column m-3 flex-grow-1">
         <form:input path="reportType" type="hidden"/>
         <form:errors path="reportType" cssClass="error m-1" element="p"/>
