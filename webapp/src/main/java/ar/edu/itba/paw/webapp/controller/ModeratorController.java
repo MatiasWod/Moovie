@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ar.edu.itba.paw.services.*;
 
 import javax.validation.Valid;
 
@@ -21,9 +22,10 @@ public class ModeratorController {
     private ModeratorService moderatorService;
     @Autowired
     private UserService userService;
-
     @Autowired
     private ReportService reportService;
+    @Autowired
+    private ReviewService reviewService;
 
     @RequestMapping(value = "/deleteReview/{mediaId:\\d+}", method = RequestMethod.POST)
     public ModelAndView deleteReview(@RequestParam("reviewId") int reviewId, @RequestParam("path") String path, RedirectAttributes redirectAttributes, @PathVariable int mediaId) {
@@ -110,9 +112,30 @@ public class ModeratorController {
                                      final BindingResult errors,
                                      @RequestParam("id") int id,
                                      @RequestParam("reportedBy") int reportedBy,
-                                     @RequestParam("type") String type) {
+                                     @RequestParam("type") String type,
+                                     RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
             return report(form,id,reportedBy,type);
+        }
+
+        if (type.equals("reviewDetails")) {
+            try {
+                reportService.reportReview(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
+                redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
+                return new ModelAndView("redirect:/details/" + reviewService.getReviewById(form.getId()).getMediaId());
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
+                return report(form,id,reportedBy,type);
+            }
+        } else if (type.equals("review")) {
+            try {
+                reportService.reportReview(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
+                redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
+                return new ModelAndView("redirect:/review/" + form.getId());
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
+                return report(form,id,reportedBy,type);
+            }
         }
         return new ModelAndView("redirect:/");
     }

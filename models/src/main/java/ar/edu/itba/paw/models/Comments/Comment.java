@@ -43,6 +43,18 @@ public class Comment implements Serializable {
     @Formula("CASE WHEN EXISTS (SELECT 1 FROM userimages ui WHERE ui.userid = userId) THEN 1 ELSE 0 END")
     private boolean hasPfp;
 
+
+    @Formula("SELECT COUNT(*) FROM reportscomments rc WHERE rc.commentid = :commentId")
+    private int totalReports;
+    @Formula("SELECT COUNT(*) FROM reportscomments rc WHERE rc.type = 3 AND rc.commentid = :commentId")
+    private int spamReports;
+    @Formula("SELECT COUNT(*) FROM reportscomments rc WHERE rc.type = 0 AND rc.commentid = :commentId")
+    private int hateReports;
+    @Formula("SELECT COUNT(*) FROM reportscomments rc WHERE rc.type = 2 AND rc.commentid = :commentId")
+    private int privacyReports;
+    @Formula("SELECT COUNT(*) FROM reportscomments rc WHERE rc.type = 1 AND rc.commentid = :commentId")
+    private int abuseReports;
+
     Comment() {
 
     }

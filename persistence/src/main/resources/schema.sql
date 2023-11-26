@@ -363,7 +363,7 @@ CREATE TABLE IF NOT EXISTS commentDislikes(
 --ReportsComments
 CREATE TABLE IF NOT EXISTS reportsComments (
          reportId           SERIAL PRIMARY KEY,
-         type               VARCHAR(50) NOT NULL,
+         type               INTEGER NOT NULL,
          content            TEXT,
          reportedBy         INTEGER NOT NULL,
          commentId          INTEGER NOT NULL,
@@ -376,7 +376,7 @@ CREATE TABLE IF NOT EXISTS reportsComments (
 --ReportsReviews
 CREATE TABLE IF NOT EXISTS reportsReviews (
          reportId           SERIAL PRIMARY KEY,
-         type               VARCHAR(50) NOT NULL,
+         type               INTEGER NOT NULL,
          content            TEXT,
          reportedBy         INTEGER NOT NULL,
          reviewId           INTEGER NOT NULL,
@@ -389,7 +389,7 @@ CREATE TABLE IF NOT EXISTS reportsReviews (
 --ReportsMoovieListReviews
 CREATE TABLE IF NOT EXISTS reportsMoovieListReviews (
          reportId           SERIAL PRIMARY KEY,
-         type               VARCHAR(50) NOT NULL,
+         type               INTEGER NOT NULL,
          content            TEXT,
          reportedBy         INTEGER NOT NULL,
          moovieListReviewId        INTEGER NOT NULL,
@@ -402,7 +402,7 @@ CREATE TABLE IF NOT EXISTS reportsMoovieListReviews (
 --ReportsMoovieLists
 CREATE TABLE IF NOT EXISTS reportsMoovieLists (
           reportId           SERIAL PRIMARY KEY,
-          type               VARCHAR(50) NOT NULL,
+          type               INTEGER NOT NULL,
           content            TEXT,
           reportedBy         INTEGER NOT NULL,
           moovieListId       INTEGER NOT NULL,
@@ -411,6 +411,26 @@ CREATE TABLE IF NOT EXISTS reportsMoovieLists (
           FOREIGN KEY(reportedBy)     REFERENCES users(userId) ON DELETE CASCADE,
           FOREIGN KEY(moovieListId)     REFERENCES moovieLists(moovieListId) ON DELETE CASCADE
 );
+
+-- ALTER TABLES FOR OLD SCHEMA
+ALTER TABLE reportsComments
+    ALTER COLUMN type TYPE INTEGER,
+    ALTER COLUMN type SET NOT NULL;
+
+
+ALTER TABLE reportsMoovieListReviews
+    ALTER COLUMN type TYPE INTEGER,
+    ALTER COLUMN type SET NOT NULL;
+
+ALTER TABLE reportsMoovieLists
+    ALTER COLUMN type TYPE INTEGER,
+    ALTER COLUMN type SET NOT NULL;
+
+ALTER TABLE reportsReviews
+    ALTER COLUMN type TYPE INTEGER,
+    ALTER COLUMN type SET NOT NULL;
+
+
 
 /*
 ALTER TABLE moovielistscontent DROP CONSTRAINT moovielistscontent_moovielistid_mediaid_key;

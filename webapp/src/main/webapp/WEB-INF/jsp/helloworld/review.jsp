@@ -41,13 +41,22 @@
                                 <h5><c:out value="${review.username}"/></h5>
                             </a>
                         </div>
+                        <c:if test="${currentUser.username != review.username}">
+                            <sec:authorize access="isAuthenticated()">
+                                <div style="margin-bottom: 15px">
+                                    <a href="${pageContext.request.contextPath}/reports/new?id=${review.reviewId}&reportedBy=${currentUser.userId}&type=review" class="btn btn-warning" style="font-size: 14px;margin-left: 10px;" ><spring:message code="report.title"/>
+                                        <i class="bi bi-flag"></i>
+                                    </a>
+                                </div>
+                            </sec:authorize>
+                        </c:if>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
                         <h5 class="m-0">
                             <i class="bi bi-star-fill ml-2"></i> ${review.rating}/5
                         </h5>
                         <c:choose>
-                            <c:when test="${currentUsername==review.username}">
+                            <c:when test="${currentUser.username==review.username}">
                                 <div class="text-center m-2">
                                     <button onclick="openPopup('review${review.reviewId}')"
                                             class="btn btn-danger btn-sm">

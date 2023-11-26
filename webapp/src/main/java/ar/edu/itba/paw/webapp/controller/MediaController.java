@@ -381,7 +381,7 @@ public class MediaController {
                 null, null, null, null,MediaFilters.TMDBRATING.getFilter(), MediaFilters.DESC.getFilter(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("movieList", movieList);
         mav.addObject("review", reviewService.getReviewById(id));
-        mav.addObject("currentUsername", userService.getInfoOfMyUser());
+        mav.addObject("currentUser", userService.getInfoOfMyUser());
         return mav;
     }
 

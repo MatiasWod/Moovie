@@ -543,7 +543,7 @@
                                     <c:if test="${currentUser.username != review.username}">
                                         <sec:authorize access="isAuthenticated()">
                                             <div style="margin-bottom: 15px">
-                                                <a href="${pageContext.request.contextPath}/reports/new?id=${review.reviewId}&reportedBy=${currentUser.userId}&type=review" class="btn btn-warning" style="font-size: 14px;margin-left: 10px;" ><spring:message code="report.title"/>
+                                                <a href="${pageContext.request.contextPath}/reports/new?id=${review.reviewId}&reportedBy=${currentUser.userId}&type=reviewDetails" class="btn btn-warning" style="font-size: 14px;margin-left: 10px;" ><spring:message code="report.title"/>
                                                 <i class="bi bi-flag"></i>
                                                 </a>
                                             </div>
