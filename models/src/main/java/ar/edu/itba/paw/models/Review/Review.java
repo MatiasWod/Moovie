@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.models.Review;
 
 import ar.edu.itba.paw.models.Comments.Comment;
-import ar.edu.itba.paw.models.User.User;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
@@ -84,7 +83,7 @@ public class Review {
         this.reviewContent = r.reviewContent;
         this.commentCount = r.commentCount;
         this.comments = r.comments;
-        r.currentUserHasLiked = currentUserHasLiked==1;
+        this.currentUserHasLiked = currentUserHasLiked==1;
     }
 
     public List<Comment> getComments() {

@@ -413,7 +413,7 @@ CREATE TABLE IF NOT EXISTS reportsMoovieLists (
 );
 
 /*
-ALTER TABLE moovielistscontent DROP CONSTRAINT unique
+ALTER TABLE moovielistscontent DROP CONSTRAINT moovielistscontent_moovielistid_mediaid_key;
 ALTER TABLE moovielistscontent ADD COLUMN id SERIAL PRIMARY KEY;
 UPDATE moovielistscontent mlc SET id = DEFAULT;
 
