@@ -412,29 +412,34 @@ CREATE TABLE IF NOT EXISTS reportsMoovieLists (
           FOREIGN KEY(moovieListId)     REFERENCES moovieLists(moovieListId) ON DELETE CASCADE
 );
 
+/*
 -- ALTER TABLES FOR OLD SCHEMA
+-- For reportsComments
 ALTER TABLE reportsComments
-    ALTER COLUMN type TYPE INTEGER,
+    ALTER COLUMN type TYPE INTEGER USING type::INTEGER,
     ALTER COLUMN type SET NOT NULL;
 
-
+-- For reportsMoovieListReviews
 ALTER TABLE reportsMoovieListReviews
-    ALTER COLUMN type TYPE INTEGER,
+    ALTER COLUMN type TYPE INTEGER USING type::INTEGER,
     ALTER COLUMN type SET NOT NULL;
 
+-- For reportsMoovieLists
 ALTER TABLE reportsMoovieLists
-    ALTER COLUMN type TYPE INTEGER,
+    ALTER COLUMN type TYPE INTEGER USING type::INTEGER,
     ALTER COLUMN type SET NOT NULL;
 
+-- For reportsReviews
 ALTER TABLE reportsReviews
-    ALTER COLUMN type TYPE INTEGER,
+    ALTER COLUMN type TYPE INTEGER USING type::INTEGER,
     ALTER COLUMN type SET NOT NULL;
-
+*/
 
 
 /*
 ALTER TABLE moovielistscontent DROP CONSTRAINT moovielistscontent_moovielistid_mediaid_key;
 ALTER TABLE moovielistscontent ADD COLUMN id SERIAL PRIMARY KEY;
 UPDATE moovielistscontent mlc SET id = DEFAULT;
+ALTER TABLE actors DROP COLUMN charactername;
 
  */

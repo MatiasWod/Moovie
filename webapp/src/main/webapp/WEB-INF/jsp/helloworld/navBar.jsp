@@ -140,6 +140,9 @@
                             </ul>
                         </div>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/milkyLeaderboard"><spring:message code="navBar.leaderboard"/></a>
+                    </li>
                 </ul>
 
 
