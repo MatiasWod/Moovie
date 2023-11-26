@@ -254,9 +254,10 @@ public class MediaController {
             String username=user.getUsername();
             int userId=user.getUserId();
             mav.addObject("currentUser", user);
+            mav.addObject("userReview", reviewService.getReviewByMediaIdAndUsername(mediaId, userId, ReviewTypes.REVIEW_MEDIA));
+
             mav.addObject("publicLists", moovieListService.getMoovieListCards(null, username, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),null,null, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), 0));
             mav.addObject("privateLists", moovieListService.getMoovieListCards(null, username, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), 0));
-            mav.addObject("userReview", reviewService.getReviewByMediaIdAndUsername(mediaId, userId, ReviewTypes.REVIEW_MEDIA));
         } catch (Exception ignored) {
         }
 
@@ -407,13 +408,12 @@ public class MediaController {
     }
 
     @RequestMapping(value = "/createcomment", method = RequestMethod.POST)
-    public ModelAndView createComment(@ModelAttribute("detailsForm") final CreateReviewForm form,
-                                      @Valid @ModelAttribute("commentForm") final CommentForm commentForm,
+    public ModelAndView createComment(@Valid @ModelAttribute("commentForm") final CommentForm commentForm,
                                       final BindingResult errors, HttpServletRequest request,
                                       RedirectAttributes redirectAttributes) {
 
         if (errors.hasErrors()) {
-            return details(form.getMediaId(),1, form, commentForm);
+            return details(commentForm.getListMediaId(),1, null, commentForm);
         }
         try{
             commentService.createComment(commentForm.getReviewId(),commentForm.getContent());

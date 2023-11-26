@@ -557,6 +557,10 @@
                                             <form:input path="reviewId" type="hidden" value="${review.reviewId}"/>
                                             <form:input path="listMediaId" type="hidden" value="${media.mediaId}"/>
                                             <form:input path="content" class="form-control" placeholder="Add comment..." aria-label="With textarea"/>
+
+                                            <form:errors path="reviewId" cssClass="error"/>
+                                            <form:errors path="listMediaId" cssClass="error"/>
+                                            <form:errors path="content" cssClass="error"/>
                                         </form:form>
                                     </div>
                                 </sec:authorize>
