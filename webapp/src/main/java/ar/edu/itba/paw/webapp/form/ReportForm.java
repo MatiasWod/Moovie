@@ -1,20 +1,30 @@
 package ar.edu.itba.paw.webapp.form;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.Range;
+
+import javax.validation.constraints.Pattern;
 
 public class ReportForm {
 
 
     @NotEmpty(message = "Report Type Required")
+    @Range(min = 1, message = "Please enter a valid id")
+
     private int reportType;
 
-
+    @Pattern(regexp = "[a-zA-Z0-9]+", message = "Should only contain alphanumerical characters")
     private String type;
 
     private String content;
 
+    @NotEmpty(message = "Report Type Required")
+    @Range(min = 1, message = "Please enter a valid id")
     private int reportedBy;
 
+
+    @NotEmpty(message = "Report Type Required")
+    @Range(min = 1, message = "Please enter a valid id")
     private int id;
 
     public int getReportType() {

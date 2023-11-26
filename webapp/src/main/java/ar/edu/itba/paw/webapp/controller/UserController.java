@@ -162,7 +162,11 @@ public class UserController {
 
             mav.addObject("profile",requestedProfile);
             mav.addObject("isMe",userService.isUsernameMe(username));
-            mav.addObject("currentUser", userService.getInfoOfMyUser()); // medio repetitivo pero se necesita para el navBar
+            try {
+                mav.addObject("currentUser", userService.getInfoOfMyUser()); //hace falta para el navBar
+            } catch (Exception e) {
+                // do nothing
+            }
             if (list != null){
                 switch (list) {
                     case "watched-list":
@@ -270,8 +274,11 @@ public class UserController {
         int usersCount = userService.getUserCount();
         int pagesSize= PagingSizes.MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE.getSize();
         int numberOfPages = (int) Math.ceil(usersCount * 1.0 / pagesSize);
-        mav.addObject("currentUser", userService.getInfoOfMyUser());
-
+        try {
+            mav.addObject("currentUser", userService.getInfoOfMyUser());
+        } catch (Exception e) {
+            // do nothing
+        }
         mav.addObject("currentPage", pageNumber-1);
         mav.addObject("numberOfPages",numberOfPages);
 

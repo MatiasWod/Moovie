@@ -84,8 +84,11 @@ public class ListController {
         queries.put("search", search);
         String urlBase = UriComponentsBuilder.newInstance().path("/lists").query("orderBy={orderBy}&order={order}&search={search}").buildAndExpand(queries).toUriString();
         mav.addObject("urlBase", urlBase);
-        mav.addObject("currentUser", userService.getInfoOfMyUser());
-        LOGGER.info("Returned lists for /lists.");
+        try {
+            mav.addObject("currentUser", userService.getInfoOfMyUser());
+        } catch (Exception e) {
+            // do nothing
+        }        LOGGER.info("Returned lists for /lists.");
         return mav;
     }
 
@@ -120,8 +123,11 @@ public class ListController {
         numberOfPages = (int) Math.ceil(mediaCount * 1.0 / PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize());
         mav.addObject("numberOfPages",numberOfPages);
         mav.addObject("currentPage",pageNumber - 1);
-        mav.addObject("currentUser", userService.getInfoOfMyUser());
-
+        try {
+            mav.addObject("currentUser", userService.getInfoOfMyUser());
+        } catch (Exception e) {
+            // do nothing
+        }
         // filter buttons
         mav.addObject("genresList", genreService.getAllGenres());
         mav.addObject("providersList", providerService.getAllProviders());
@@ -215,8 +221,10 @@ public class ListController {
     @RequestMapping(value = "/editList/{id:\\d+}")
     public ModelAndView editList(@PathVariable("id") final int moovieListId, @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
         LOGGER.info("Attempting to get list with id: {} , for /editList", moovieListId);
+        final ModelAndView mav = new ModelAndView("helloworld/editList");
         try {
             User currentUser = userService.getInfoOfMyUser();
+            mav.addObject("currentUser", currentUser);
             if (!currentUser.getUsername().equals(moovieListService.getMoovieListCardById(moovieListId).getUsername())) {
                 LOGGER.info("Failed to get list with id: {} , for /editList", moovieListId);
                 return new ModelAndView("helloworld/404");
@@ -225,7 +233,6 @@ public class ListController {
             LOGGER.info("Failed to get list with id: {} , for /editList", moovieListId);
             return new ModelAndView("helloworld/404");
         }
-        final ModelAndView mav = new ModelAndView("helloworld/editList");
         int pagesSize = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
         MoovieListDetails myList = moovieListService.getMoovieListDetails(moovieListId, null, null, MediaFilters.CUSTOM_ORDER.getFilter(), MediaFilters.ASC.getFilter(), pagesSize, pageNumber - 1);
         int mediaCountForMoovieList =myList.getCard().getSize();
@@ -240,7 +247,6 @@ public class ListController {
         mav.addObject("recommendedList", mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
                 null, null, null, null, MediaFilters.TMDBRATING.getFilter(), MediaFilters.DESC.getFilter(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0));
 
-        mav.addObject("currentUser", userService.getInfoOfMyUser());
         LOGGER.info("Returned list with id: {} for /editList.", moovieListId);
         return mav;
     }

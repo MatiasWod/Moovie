@@ -108,12 +108,16 @@ public class ModeratorController {
                                @RequestParam("type") String type) {
 
         ModelAndView mav = new ModelAndView("helloworld/reportPage");
-        mav.addObject("currentUser",userService.getInfoOfMyUser());
+        try {
+            mav.addObject("currentUser", userService.getInfoOfMyUser());
+        } catch (Exception e) {
+            // do nothing
+        }
         return mav;
     }
 
     @RequestMapping(value = "/reports/new", method = RequestMethod.POST)
-    public ModelAndView submitReport(@Valid @ModelAttribute("reportForm") final ReportForm form,
+    public ModelAndView submitReport(@ModelAttribute("reportForm") final ReportForm form,
                                      final BindingResult errors,
                                      @RequestParam("id") int id,
                                      @RequestParam("reportedBy") int reportedBy,
@@ -123,62 +127,85 @@ public class ModeratorController {
             return report(form,id,reportedBy,type);
         }
 
-        if (type.equals("reviewDetails")) {
-            try {
-                reportService.reportReview(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
-                redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
-                return new ModelAndView("redirect:/details/" + reviewService.getReviewById(form.getId()).getMediaId());
-            } catch (Exception e) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
-                return report(form,id,reportedBy,type);
-            }
-        } else if (type.equals("review")) {
-            try {
-                reportService.reportReview(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
-                redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
-                return new ModelAndView("redirect:/review/" + form.getId());
-            } catch (Exception e) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
-                return report(form,id,reportedBy,type);
-            }
-        } else if (type.equals("moovieList")) {
-            try {
-                reportService.reportMoovieList(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
-                redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
-                return new ModelAndView("redirect:/list/" + form.getId());
-            } catch (Exception e) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
-                return report(form,id,reportedBy,type);
-            }
-        } else if (type.equals("moovieListReview")) {
-            try {
-                reportService.reportMoovieListReview(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
-                redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
-                return new ModelAndView("redirect:/list/" + reviewService.getMoovieListReviewById(form.getId()).getMoovieListId());
-            } catch (Exception e) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
-                return report(form,id,reportedBy,type);
-            }
-        } else if (type.equals("comment")) {
-            try {
-                reportService.reportComment(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
-                redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
-                return new ModelAndView("redirect:/details/"  ); // faltaria un getCommentById
-            } catch (Exception e) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
-                return report(form,id,reportedBy,type);
-            }
+        switch (type) {
+            case "reviewDetails":
+                try {
+                    reportService.reportReview(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
+                    redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
+                    return new ModelAndView("redirect:/details/" + reviewService.getReviewById(form.getId()).getMediaId());
+                } catch (Exception e) {
+                    redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
+                    return report(form, id, reportedBy, type);
+                }
+            case "review":
+                try {
+                    reportService.reportReview(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
+                    redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
+                    return new ModelAndView("redirect:/review/" + form.getId());
+                } catch (Exception e) {
+                    redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
+                    return report(form, id, reportedBy, type);
+                }
+            case "moovieList":
+                try {
+                    reportService.reportMoovieList(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
+                    redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
+                    return new ModelAndView("redirect:/list/" + form.getId());
+                } catch (Exception e) {
+                    redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
+                    return report(form, id, reportedBy, type);
+                }
+            case "moovieListReview":
+                try {
+                    reportService.reportMoovieListReview(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
+                    redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
+                    return new ModelAndView("redirect:/list/" + reviewService.getMoovieListReviewById(form.getId()).getMoovieListId());
+                } catch (Exception e) {
+                    redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
+                    return report(form, id, reportedBy, type);
+                }
+            case "comment":
+                try {
+                    reportService.reportComment(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
+                    redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
+                    return new ModelAndView("redirect:/details/"); // faltaria un getCommentById
+                } catch (Exception e) {
+                    redirectAttributes.addFlashAttribute("errorMessage", "Unable to Report Review");
+                    return report(form, id, reportedBy, type);
+                }
         }
         return new ModelAndView("redirect:/");
     }
 
     // TODO: Add mod filtering for this page
     @RequestMapping(value = "/reports/review")
-    public ModelAndView reportReview() {
+    public ModelAndView reportReview(@RequestParam(name = "list", required = false) String list) {
         ModelAndView mav = new ModelAndView("helloworld/pendingReports");
-        mav.addObject("currentUser",userService.getInfoOfMyUser());
-        mav.addObject("reportedReviews", reportService.getReportedReviews());
-        mav.addObject("commentReports", reportService.getCommentReports());
+
+        switch (list){
+            case("comments"):
+                mav.addObject("list",reportService.getReportedComments());
+                break;
+            case("reviews"):
+                mav.addObject("list",reportService.getReviewReports());
+                break;
+            case("mlReviews"):
+                mav.addObject("list",reportService.getReportedMoovieListReviews());
+                break;
+            case("ml"):
+                mav.addObject("list",reportService.getReportedMoovieLists());
+                break;
+            default:
+                mav.addObject("list",reportService.getReportedComments());
+                break;
+
+        }
+
+        try {
+            mav.addObject("currentUser", userService.getInfoOfMyUser());
+        } catch (Exception e) {
+            // do nothing
+        }
         return mav;
     }
 }

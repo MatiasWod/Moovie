@@ -77,6 +77,20 @@
 
     </div>
 
+    <c:choose>
+        <c:when test="${param.list == 'comments' || param.list == null || param.list.length() == 0 }">
+            comments
+        </c:when>
+        <c:when test="${param.list == 'ml'}">
+            moovieLists
+        </c:when>
+        <c:when test="${param.list == 'mlReviews'}">
+            moovieList Reviews
+        </c:when>
+        <c:when test="${param.list == 'reviews'}">
+            reviews
+        </c:when>
+    </c:choose>
     <c:forEach items="${commentReports}" var="report">
         <div>
             reportedBy username: ${report.reportedBy.username} --

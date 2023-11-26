@@ -107,7 +107,11 @@ public class MediaController {
 
         LOGGER.info("Returned media for /.");
         //Media ml = mediaService.getMediaById(10);
-        mav.addObject("currentUser", userService.getInfoOfMyUser());
+        try {
+            mav.addObject("currentUser", userService.getInfoOfMyUser());
+        } catch (Exception e) {
+            // do nothing
+        }
         //mav.addObject("ml", ml);
         return mav;
     }
@@ -159,6 +163,12 @@ public class MediaController {
         }
         else {
             mav.addObject("moovieListFlag",false);
+        }
+
+        try {
+            mav.addObject("currentUser", userService.getInfoOfMyUser());
+        } catch (Exception e) {
+            // do nothing
         }
 
         LOGGER.info("Returned media for /search.");
@@ -336,6 +346,11 @@ public class MediaController {
     @RequestMapping(value = "/cast/{type}/{id:\\d+}")
     public ModelAndView actor(@PathVariable String type, @PathVariable int id){
         final ModelAndView mav = new ModelAndView("helloworld/cast");
+        try {
+            mav.addObject("currentUser", userService.getInfoOfMyUser());
+        } catch (Exception e) {
+            // do nothing
+        }
         switch(type){
             case "actor" :
                 try{
@@ -372,7 +387,11 @@ public class MediaController {
                 null, null, null, null,MediaFilters.TMDBRATING.getFilter(), MediaFilters.DESC.getFilter(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("movieList", movieList);
         mav.addObject("review", reviewService.getReviewById(id));
-        mav.addObject("currentUser", userService.getInfoOfMyUser());
+        try {
+            mav.addObject("currentUser", userService.getInfoOfMyUser());
+        } catch (Exception e) {
+            // do nothing
+        }
         return mav;
     }
 
