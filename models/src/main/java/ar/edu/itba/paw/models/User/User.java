@@ -28,7 +28,7 @@ public class User {
     @Column(nullable = false)
     private int role;
 
-    @Formula("(SELECT CASE WHEN EXISTS (SELECT 1 FROM userimages ui WHERE ui.userid = user0_.userId) THEN 1 ELSE 0 END) ")
+    @Formula("(SELECT CASE WHEN EXISTS (SELECT 1 FROM userimages ui WHERE ui.userid = userId) THEN 1 ELSE 0 END) ")
     private boolean hasPfp;
 
     @Formula("(SELECT " +
