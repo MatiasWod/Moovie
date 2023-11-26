@@ -138,7 +138,7 @@ public class ModeratorController {
             }
         } else if (type.equals("moovieList")) {
             try {
-                reportService.reportReview(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
+                reportService.reportMoovieList(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
                 redirectAttributes.addFlashAttribute("successMessage", "Review Reported");
                 return new ModelAndView("redirect:/list/" + form.getId());
             } catch (Exception e) {

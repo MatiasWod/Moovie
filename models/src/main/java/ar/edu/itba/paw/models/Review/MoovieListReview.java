@@ -36,15 +36,15 @@ public class MoovieListReview {
     @Column(columnDefinition = "TEXT")
     private String reviewContent;
 
-    @Formula("SELECT COUNT(*) FROM reportsMoovieListReviews rr WHERE rr.moovieListReviewId = :moovieListReviewId")
+    @Formula("(SELECT COUNT(*) FROM reportsMoovieListReviews rr WHERE rr.moovieListReviewId = :moovieListReviewId)")
     private int totalReports;
-    @Formula("SELECT COUNT(*) FROM reportsMoovieListReviews rr WHERE rr.type = 3 AND rr.moovieListReviewId = :moovieListReviewId")
+    @Formula("(SELECT COUNT(*) FROM reportsMoovieListReviews rr WHERE rr.type = 3 AND rr.moovieListReviewId = :moovieListReviewId)")
     private int spamReports;
-    @Formula("SELECT COUNT(*) FROM reportsMoovieListReviews rr WHERE rr.type = 0 AND rr.moovieListReviewId = :moovieListReviewId")
+    @Formula("(SELECT COUNT(*) FROM reportsMoovieListReviews rr WHERE rr.type = 0 AND rr.moovieListReviewId = :moovieListReviewId)")
     private int hateReports;
-    @Formula("SELECT COUNT(*) FROM reportsMoovieListReviews rr WHERE rr.type = 2 AND rr.moovieListReviewId = :moovieListReviewId")
+    @Formula("(SELECT COUNT(*) FROM reportsMoovieListReviews rr WHERE rr.type = 2 AND rr.moovieListReviewId = :moovieListReviewId)")
     private int privacyReports;
-    @Formula("SELECT COUNT(*) FROM reportsMoovieListReviews rr WHERE rr.type = 1 AND rr.moovieListReviewId = :moovieListReviewId")
+    @Formula("(SELECT COUNT(*) FROM reportsMoovieListReviews rr WHERE rr.type = 1 AND rr.moovieListReviewId = :moovieListReviewId)")
     private int abuseReports;
 
     //hibernate

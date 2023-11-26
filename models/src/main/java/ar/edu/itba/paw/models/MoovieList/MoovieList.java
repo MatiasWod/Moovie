@@ -28,15 +28,15 @@ public class MoovieList {
     @Column(nullable = false)
     private int type;
 
-    @Formula("SELECT COUNT(*) FROM reportsMoovieLists rr WHERE rr.moovieListId = :moovieListId")
+    @Formula("(SELECT COUNT(*) FROM reportsMoovieLists rr WHERE rr.moovieListId = :moovieListId)")
     private int totalReports;
-    @Formula("SELECT COUNT(*) FROM reportsMoovieLists rr WHERE rr.type = 3 AND rr.moovieListId = :moovieListId")
+    @Formula("(SELECT COUNT(*) FROM reportsMoovieLists rr WHERE rr.type = 3 AND rr.moovieListId = :moovieListId)")
     private int spamReports;
-    @Formula("SELECT COUNT(*) FROM reportsMoovieLists rr WHERE rr.type = 0 AND rr.moovieListId = :moovieListId")
+    @Formula("(SELECT COUNT(*) FROM reportsMoovieLists rr WHERE rr.type = 0 AND rr.moovieListId = :moovieListId)")
     private int hateReports;
-    @Formula("SELECT COUNT(*) FROM reportsMoovieLists rr WHERE rr.type = 2 AND rr.moovieListId = :moovieListId")
+    @Formula("(SELECT COUNT(*) FROM reportsMoovieLists rr WHERE rr.type = 2 AND rr.moovieListId = :moovieListId)")
     private int privacyReports;
-    @Formula("SELECT COUNT(*) FROM reportsMoovieLists rr WHERE rr.type = 1 AND rr.moovieListId = :moovieListId")
+    @Formula("(SELECT COUNT(*) FROM reportsMoovieLists rr WHERE rr.type = 1 AND rr.moovieListId = :moovieListId)")
     private int abuseReports;
 
 //    @OneToMany(mappedBy = "moovieList")

@@ -35,7 +35,7 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public List<Review> getReportedReviews() {
-        String sql = "SELECT r FROM Review r WHERE r.totalReports > 0";
+        String sql = "SELECT r FROM Review r WHERE COALESCE(r.totalReports, 0) > 0";
 
         TypedQuery<Review> query = em.createQuery(sql, Review.class);
 
