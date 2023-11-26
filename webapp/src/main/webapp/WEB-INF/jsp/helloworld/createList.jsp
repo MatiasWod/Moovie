@@ -59,7 +59,7 @@
                         <div onclick="displayMediaName('${(fn:replace(fn:replace(movie.name,"'", "\\'"), "\"", "&quot;"))}',${movie.mediaId})" class="poster card text-bg-dark m-1">
                             <div id="${movie.mediaId}" class="card-img-container"> <!-- Add a container for the image -->
 
-                                <img class="cropCenter" src="${movie.posterPath}" alt="media poster">
+                                <img class="cropCenter async-image" src="${pageContext.request.contextPath}/resources/defaultPoster.png" data-src="${movie.posterPath}" alt="media poster">
 
                                 <div class="card-img-overlay">
                                     <h6 class="card-title text-center">${movie.name}</h6>
@@ -99,7 +99,7 @@
             </div>
             <div id="preview" style="position: relative" class="container d-flex p-0 container-gray-transp fullHeightDiv thirty-width">
                 <div class="image-blur height-full background" style="background: dimgray"></div>
-                <div style="position: absolute;top: 0;left: 0;height: 100%;overflow: hidden" class="d-flex p-4 container flex-column">
+                <div style="position: absolute;top: 0;left: 0;height: 100%;overflow: hidden" class="d-flex p-4 container flex-column ">
 
                     <div class="d-flex justify-content-between">
                         <h2 class="m-2"><spring:message code="createList.listName"/></h2>
@@ -126,7 +126,7 @@
                             <span id="listDescriptionCharCount" class="text-muted"><span id="listDescriptionRemainingChars">0</span>/255</span>
                             <form:errors path="listDescription" cssClass="error"/>
                             <form:input path="mediaIdsList" type="hidden"  name="mediaIds" id="selected-create-media"/>
-                            <div class="scrollableMedia d-flex flex-column m-2 p-2" id="selected-media-names">
+                            <div style="max-height: 100px" class="scrollableMedia d-flex flex-column m-2 p-2" id="selected-media-names">
                                 <c:forEach var="sel" items="${selected}">
                                     <div class="other-distinct d-flex justify-content-between ">
                                         <div id="${sel.mediaId}" class="distinct-class">${sel.name}</div>

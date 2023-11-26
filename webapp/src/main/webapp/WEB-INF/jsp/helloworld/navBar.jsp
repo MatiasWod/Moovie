@@ -60,6 +60,22 @@
         if (document.getElementById("dropdownButtonProfile")){
             addHoverableDropdownStyle("dropdownButtonProfile");
         }
+
+        var lazyImages = document.querySelectorAll('.async-image');
+
+        var observer = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.src = entry.target.dataset.src;
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '0px 0px 100px 0px' });
+
+        lazyImages.forEach(function(image) {
+            observer.observe(image);
+        });
+
     });
 </script>
 
@@ -83,6 +99,11 @@
                     <sec:authorize access="isAuthenticated()">
                         <li class="nav-item">
                             <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/createList"><spring:message code="navBar.createList"/></a>
+                        </li>
+                    </sec:authorize>
+                    <sec:authorize access="hasRole('ROLE_MODERATOR')">
+                        <li class="nav-item">
+                            <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/reports/review"><spring:message code="navBar.review"/></a>
                         </li>
                     </sec:authorize>
                     <li class="nav-item">

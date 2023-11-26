@@ -50,6 +50,11 @@ public class ReportServiceImpl implements ReportService{
     }
 
     @Override
+    public int getReportedReviewsCount() {
+        return reportDao.getReportedReviewsCount();
+    }
+
+    @Override
     @Transactional
     public void reportReview(int reviewId, int userId, int type, String content) {
         LOGGER.info("reportReview insert");
@@ -77,6 +82,11 @@ public class ReportServiceImpl implements ReportService{
         return reportDao.getReportedMoovieListReviews();
     }
 
+    @Override
+    public int getReportedMoovieListReviewsCount() {
+        return reportDao.getReportedMoovieListReviewsCount();
+    }
+
     @Transactional
     @Override
     public void reportMoovieListReview(int moovieListReviewId, int userId, int type, String content) {
@@ -102,6 +112,11 @@ public class ReportServiceImpl implements ReportService{
         return reportDao.getReportedMoovieLists();
     }
 
+    @Override
+    public int getReportedMoovieListsCount() {
+        return reportDao.getReportedMoovieListsCount();
+    }
+
     @Transactional
     @Override
     public void reportMoovieList(int moovieListId, int userId, int type, String content) {
@@ -125,6 +140,11 @@ public class ReportServiceImpl implements ReportService{
     @Override
     public List<Comment> getReportedComments() {
         return reportDao.getReportedComments();
+    }
+
+    @Override
+    public int getReportedCommentsCount() {
+        return reportDao.getReportedCommentsCount();
     }
 
     @Transactional

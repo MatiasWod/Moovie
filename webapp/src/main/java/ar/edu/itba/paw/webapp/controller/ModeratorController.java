@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
+import ar.edu.itba.paw.models.Reports.ReportTypesEnum;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
 import ar.edu.itba.paw.services.ModeratorService;
 import ar.edu.itba.paw.services.ReportService;
@@ -29,6 +30,8 @@ public class ModeratorController {
     private ReviewService reviewService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private BannedService bannedService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ModeratorController.class);
 
@@ -187,34 +190,55 @@ public class ModeratorController {
     public ModelAndView reportReview(@RequestParam(name = "list", required = false) String list) {
         ModelAndView mav = new ModelAndView("helloworld/pendingReports");
 
+        // -- LISTS --
         if (list != null && list != ""){
             switch (list){
                 case("comments"):
                     mav.addObject("list",reportService.getReportedComments());
+                    mav.addObject("listCount",reportService.getReportedCommentsCount());
                     break;
                 case("reviews"):
                     mav.addObject("list",reportService.getReviewReports());
+                    mav.addObject("listCount",reportService.getReportedReviewsCount());
                     break;
                 case("mlReviews"):
                     mav.addObject("list",reportService.getReportedMoovieListReviews());
+                    mav.addObject("listCount",reportService.getReportedMoovieListReviewsCount());
+
                     break;
                 case("ml"):
                     mav.addObject("list",reportService.getReportedMoovieLists());
+                    mav.addObject("listCount",reportService.getReportedMoovieListsCount());
                     break;
                 case("banned"):
-                    //TODO banned
+                    mav.addObject("list", bannedService.getBannedUsers());
+                    mav.addObject("listCount",bannedService.getBannedCount());
                     break;
             }
         }else{
             mav.addObject("list",reportService.getReportedComments());
+            mav.addObject("listCount",reportService.getReportedCommentsCount());
         }
 
+
+
+        // -- CURRENT USER --
 
         try {
             mav.addObject("currentUser", userService.getInfoOfMyUser());
         } catch (Exception e) {
             // do nothing
         }
+
+        // -- GLOBAL STATS --
+        mav.addObject("totalReports", reportService.getTotalReports());
+        mav.addObject("spamReports", reportService.getTypeReports(ReportTypesEnum.spam.getType()));
+        mav.addObject("hateReports", reportService.getTypeReports(ReportTypesEnum.hatefulContent.getType()));
+        mav.addObject("abuseReports", reportService.getTypeReports(ReportTypesEnum.abuse.getType()));
+        mav.addObject("privacyReports", reportService.getTypeReports(ReportTypesEnum.privacy.getType()));
+        mav.addObject("totalBanned", bannedService.getBannedCount());
+
+
         return mav;
     }
 }
