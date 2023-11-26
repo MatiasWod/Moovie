@@ -139,16 +139,19 @@ public class UserServiceImpl implements UserService {
         return userDao.searchUsers(username, orderBy, sortOrder, size, pageNumber);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public int getSearchCount(String username) {
         return userDao.getSearchCount(username);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public int getLikedMoovieListCountForUser(String username) {
         return userDao.getLikedMoovieListCountForUser(username);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public int getUserCount() {
         return userDao.getUserCount();
@@ -160,6 +163,7 @@ public class UserServiceImpl implements UserService {
         return userDao.getProfileByUsername(username).orElseThrow(() -> new UnableToFindUserException("No user with username: " + username));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Profile> getMilkyPointsLeaders(int size, int pageNumber) {
         return userDao.getMilkyPointsLeaders(size,pageNumber);
