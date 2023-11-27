@@ -64,6 +64,9 @@ public class ModeratorController {
 
 
 
+
+
+
     @RequestMapping(value = "/banUser/{userId:\\d+}", method = RequestMethod.POST)
     public ModelAndView banUser(@PathVariable int userId, RedirectAttributes redirectAttributes,
                                 @RequestParam(value = "message", required = false) String message,
@@ -182,7 +185,7 @@ public class ModeratorController {
                     redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("moderator.moovieListReviewReportedFailure",null, LocaleContextHolder.getLocale()));
                     return report(form, id, reportedBy, type, redirectAttributes);
                 }
-            case "comment,comment":
+            case "reviewComment,reviewComment":
                 try {
                     reportService.reportComment(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
                     redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("moderator.reviewReportedSuccess",null, LocaleContextHolder.getLocale()));
