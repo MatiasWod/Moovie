@@ -25,11 +25,13 @@ public class ReportServiceImpl implements ReportService{
     @Autowired
     private ReportDao reportDao;
 
+    @Transactional(readOnly = true)
     @Override
     public int getTotalReports() {
         return reportDao.getTotalReports();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public int getTypeReports(int type) {
         return reportDao.getTypeReports(type);
@@ -49,13 +51,14 @@ public class ReportServiceImpl implements ReportService{
         return reportDao.getReportedReviews();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public int getReportedReviewsCount() {
         return reportDao.getReportedReviewsCount();
     }
 
-    @Override
     @Transactional
+    @Override
     public void reportReview(int reviewId, int userId, int type, String content) {
         LOGGER.info("reportReview insert");
         reportDao.reportReview(reviewId, userId, type, content);
@@ -82,6 +85,7 @@ public class ReportServiceImpl implements ReportService{
         return reportDao.getReportedMoovieListReviews();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public int getReportedMoovieListReviewsCount() {
         return reportDao.getReportedMoovieListReviewsCount();
@@ -112,6 +116,7 @@ public class ReportServiceImpl implements ReportService{
         return reportDao.getReportedMoovieLists();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public int getReportedMoovieListsCount() {
         return reportDao.getReportedMoovieListsCount();
