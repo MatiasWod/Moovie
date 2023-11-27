@@ -23,11 +23,13 @@ public class BannedServiceImpl implements BannedService{
         return bannedDao.getBannedMessage(userId).orElseThrow(() -> new BannedMessageNotFoundException("Banned message for user not found"));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<User> getBannedUsers() {
         return bannedDao.getBannedUsers();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public int getBannedCount() {
         return bannedDao.getBannedCount();
