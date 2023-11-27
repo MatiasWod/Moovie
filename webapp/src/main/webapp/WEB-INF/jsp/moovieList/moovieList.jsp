@@ -63,7 +63,7 @@
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
                             <img src=""/>
-                            <a href="${pageContext.request.contextPath}/profile/${review.username}"
+                            <a href="${pageContext.request.contextPath}/profile/${review.user.username}"
                                style="text-decoration: none; color: inherit;">
                                 <%--<img class="cropCenter mr-3 profile-image rounded-circle"
                                      style="height:60px;width:60px;border: solid black; border-radius: 50%"
@@ -71,15 +71,15 @@
                                      alt="${review.userId} Reviewer Profile">--%>
                             </a>
                             <div class="mt-0" style="margin-left: 15px">
-                                <a href="${pageContext.request.contextPath}/profile/${review.username}"
+                                <a href="${pageContext.request.contextPath}/profile/${review.user.username}"
                                    style="text-decoration: none; color: inherit;">
-                                    <h5><c:out value="${review.username}"/></h5>
+                                    <h5><c:out value="${review.user.username}"/><c:if test="${review.user.hasBadge}"><i class="bi bi-trophy"></i></c:if></h5>
                                 </a>
                             </div>
                         </div>
                         <div class="d-flex align-items-center justify-content-between">
                             <c:choose>
-                                <c:when test="${currentUser.username==review.username}">
+                                <c:when test="${currentUser.username==review.user.username}">
 
                                     <div class="text-center m-2">
                                         <button onclick="openPopup('review${review.moovieListReviewId}')"

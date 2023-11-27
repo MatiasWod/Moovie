@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.models.Review;
 
+import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.Reports.MoovieListReviewReport;
 import org.hibernate.annotations.Formula;
 
@@ -17,10 +18,10 @@ public class MoovieListReview {
     @Column(name = "moovieListReviewId")
     private int moovieListReviewId;
 
-    @Column(name = "userid", nullable = false)
-    private int userId;
-    @Formula("(SELECT u.username FROM users u WHERE u.userid = userId)")
-    private String username;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userid", nullable = false)
+    private User user;
+
     @Column(nullable = false)
     private int moovieListId;
 
@@ -58,16 +59,15 @@ public class MoovieListReview {
     MoovieListReview() {
     }
 
-    public MoovieListReview(int userId, int moovieListId, String reviewContent) {
-        this.userId = userId;
+    public MoovieListReview(User user, int moovieListId, String reviewContent) {
+        this.user = user;
         this.moovieListId = moovieListId;
         this.reviewContent = reviewContent;
     }
 
-    public MoovieListReview(int moovieListReviewId, int userId, String username, int moovieListId, int reviewLikes, boolean currentUserHasLiked, String moovieListImages, String moovieListTitle, String reviewContent) {
+    public MoovieListReview(User user, int moovieListReviewId,  int moovieListId, int reviewLikes, boolean currentUserHasLiked, String moovieListImages, String moovieListTitle, String reviewContent) {
         this.moovieListReviewId = moovieListReviewId;
-        this.userId = userId;
-        this.username = username;
+        this.user = user;
         this.moovieListId = moovieListId;
         this.reviewLikes = reviewLikes;
         this.currentUserHasLiked = currentUserHasLiked;
@@ -76,10 +76,9 @@ public class MoovieListReview {
         this.reviewContent = reviewContent;
     }
 
-    public MoovieListReview(int moovieListReviewId, int userId, String username, int moovieListId, int reviewLikes, String moovieListImages, String moovieListTitle, String reviewContent) {
+    public MoovieListReview(User user, int moovieListReviewId, int moovieListId, int reviewLikes, String moovieListImages, String moovieListTitle, String reviewContent) {
         this.moovieListReviewId = moovieListReviewId;
-        this.userId = userId;
-        this.username = username;
+        this.user = user;
         this.moovieListId = moovieListId;
         this.reviewLikes = reviewLikes;
         this.moovieListImages = moovieListImages;
@@ -88,9 +87,8 @@ public class MoovieListReview {
     }
 
     public MoovieListReview(MoovieListReview m, int currentUserHasLiked){
+        this.user = m.user;
         this.moovieListReviewId = m.moovieListReviewId;
-        this.userId = m.userId;
-        this.username = m.username;
         this.moovieListId = m.moovieListId;
         this.reviewLikes = m.reviewLikes;
         this.currentUserHasLiked = currentUserHasLiked == 1;
@@ -144,13 +142,6 @@ public class MoovieListReview {
         this.moovieListReviewId = moovieListReviewId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     public void setMoovieListId(int mediaId) {
         this.moovieListId = mediaId;
@@ -182,11 +173,11 @@ public class MoovieListReview {
     }
 
     public int getUserId() {
-        return userId;
+        return user.getUserId();
     }
 
     public String getUsername() {
-        return username;
+        return user.getUsername();
     }
 
     public int getMoovieListId() {
@@ -201,7 +192,13 @@ public class MoovieListReview {
         return currentUserHasLiked;
     }
 
+    public User getUser() {
+        return user;
+    }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public List<String> getMoovieListImages() {
         List<String> toRet = new ArrayList<>();
@@ -224,4 +221,9 @@ public class MoovieListReview {
     public String getReviewContent() {
         return reviewContent;
     }
+
+    public boolean isHasBadge() {
+        return user.isHasBadge();
+    }
+
 }

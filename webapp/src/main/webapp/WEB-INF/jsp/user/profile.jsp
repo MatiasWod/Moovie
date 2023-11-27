@@ -56,7 +56,7 @@
             </c:if>
             <div class="m-2">
                 <div class="d-flex align-items-center justify-content-between">
-                    <h1><c:out value="${profile.username}"/></h1>
+                    <h1><c:out value="${profile.username}"/><c:if test="${profile.hasBadge}"><i class="bi bi-trophy"></i></c:if></h1>
                     <c:if test="${profile.role == 2 || profile.role == -102}">
                         <img class="cropCenter" style="height:50px;width:50px" src="${pageContext.request.contextPath}/resources/moderator_logo.png" alt="moderator profile pic">
                     </c:if>
