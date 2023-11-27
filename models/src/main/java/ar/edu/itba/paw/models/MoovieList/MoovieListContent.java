@@ -10,8 +10,8 @@ import java.io.Serializable;
 public class MoovieListContent implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "moovielistscontent_id_seq")
-    @SequenceGenerator(name = "moovielistscontent_id_seq", sequenceName = "moovielistscontent_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "moovielistscontent_id_seq1")
+    @SequenceGenerator(name = "moovielistscontent_id_seq1", sequenceName = "moovielistscontent_id_seq1", allocationSize = 1)
     @Column
     private int id;
 
