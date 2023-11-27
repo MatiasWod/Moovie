@@ -27,5 +27,10 @@ public class TVCreatorsServiceImpl implements TVCreatorsService{
         return tvCreatorsDao.getTvCreatorById(creatorId).orElseThrow( () -> new TVCreatorNotFoundException("TVCreator was not found for the id: " + creatorId));
     }
 
+    @Override
+    public List<TVCreators> getTVCreatorsForQuery(String query) {
+        return tvCreatorsDao.getTVCreatorsForQuery(query);
+    }
+
 
 }

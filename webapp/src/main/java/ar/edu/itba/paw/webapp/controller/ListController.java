@@ -453,12 +453,21 @@ public class ListController {
     }
 
     @RequestMapping(value = "/deleteUserMoovieListReview/{mediaId:\\d+}", method = RequestMethod.POST)
-    public ModelAndView deleteMoovieListReview(@RequestParam("reviewId") int reviewId,RedirectAttributes redirectAttributes, @PathVariable int mediaId) {
+    public ModelAndView deleteMoovieListReview(@RequestParam("reviewId") int reviewId,
+                                               RedirectAttributes redirectAttributes,
+                                               @PathVariable int mediaId,
+                                               HttpServletRequest request) {
         try {
             reviewService.deleteReview(reviewId, ReviewTypes.REVIEW_MOOVIE_LIST);
             redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("list.reviewDeletedSuccess",null, LocaleContextHolder.getLocale()));
         }catch (Exception e){
             redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("list.reviewDeletedFailure",null, LocaleContextHolder.getLocale()));
+        }
+        String referer = request.getHeader("Referer");
+        if (referer.contains("list")) {
+            return new ModelAndView("redirect:/list/" + mediaId);
+        } else if (referer.contains("reports")) {
+            return new ModelAndView("redirect:/reports/review?list=mlReviews");
         }
         return new ModelAndView("redirect:/list/" + mediaId);
     }

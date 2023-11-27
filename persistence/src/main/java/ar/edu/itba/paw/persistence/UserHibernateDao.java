@@ -41,6 +41,7 @@ public class UserHibernateDao implements UserDao{
                 .setParameter("role",UserRoles.NOT_AUTHENTICATED.getRole())
                 .setParameter("email",email)
                 .executeUpdate();
+
         return findUserByEmail(email).get();
     }
 

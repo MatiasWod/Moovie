@@ -36,4 +36,29 @@ public class ActorHibernateDao implements ActorDao{
         return Optional.ofNullable(query.getSingleResult());
     }
 
+    @Override
+    public int getActorsForQueryCount(String query) {
+        return getActorsForQuery(query).size();
+    }
+
+    @Override
+    public List<Actor> getActorsForQuery(String query) {
+        String sql = "SELECT a FROM Actor a WHERE LOWER(a.actorName) LIKE :query";
+
+        TypedQuery<Actor> q = em.createQuery(sql, Actor.class)
+                .setParameter("query", "%"+query.toLowerCase()+"%");
+
+        return q.getResultList();
+    }
+
+    @Override
+    public List<Media> getMediaForActor(int actorId) {
+        String sql = "SELECT m FROM Media m JOIN MediaActors ma ON m.mediaId = ma.media.mediaId WHERE ma.actor.actorId = :actorId";
+
+        TypedQuery<Media> q = em.createQuery(sql, Media.class)
+                .setParameter("actorId", actorId);
+
+        return q.getResultList();
+    }
+
 }

@@ -27,4 +27,19 @@ public class ActorServiceImpl implements ActorService{
         return actorDao.getActorById(actorId).orElseThrow( () -> new ActorNotFoundException("Actor was not found for the id: " + actorId));
     }
 
+    @Override
+    public int getActorsForQueryCount(String query) {
+        return actorDao.getActorsForQueryCount(query);
+    }
+
+    @Override
+    public List<Actor> getActorsForQuery(String query) {
+        return actorDao.getActorsForQuery(query);
+    }
+
+    @Override
+    public List<Media> getMediaForActor(int actorId) {
+        return actorDao.getMediaForActor(actorId);
+    }
+
 }

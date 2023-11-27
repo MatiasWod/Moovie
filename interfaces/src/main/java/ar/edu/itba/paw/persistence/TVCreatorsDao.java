@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface TVCreatorsDao {
     List<TVCreators> getTvCreatorsByMediaId(int mediaId);
     Optional<TVCreators> getTvCreatorById(int creatorId);
+    List<TVCreators> getTVCreatorsForQuery(String query);
 }

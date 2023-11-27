@@ -23,7 +23,19 @@
 <div class="container d-flex flex-column">
     <div class="header d-flex text-center" style="background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2)), url('${mediaList[0].backdropPath}'); background-size: cover; background-position: center;">
         <div class="d-flex flex-column flex-grow-1">
-            <h1 style="font-size: 60px; font-weight: bold;"><c:out value="${moovieList.name}"/></h1>
+            <h1 style="font-size: 60px; font-weight: bold;">
+                <c:choose>
+                    <c:when test="${moovieList.name == 'Watchlist'}">
+                        <spring:message code="listExtract.watchListTitle"/>
+                    </c:when>
+                    <c:when test="${moovieList.name == 'Watched'}">
+                        <spring:message code="listExtract.watchedListTitle"/>
+                    </c:when>
+                    <c:otherwise>
+                    <c:out value="${moovieList.name}"/>
+                    </c:otherwise>
+                </c:choose>
+            </h1>
             <h3><c:out value="${moovieList.description}"/></h3>
             <c:if test="${param.publicList == 'true'}">
                 <h4 style="color: ghostwhite;"><spring:message code="listExtract.by"/>

@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Cast.Director;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
@@ -19,4 +20,8 @@ public interface MediaDao {
     Optional<TVSerie> getTvById(int mediaId);
     int getMediaCount(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang);
 
+
+    // search creators
+    int getDirectorsForQueryCount(String query);
+    List<Director> getDirectorsForQuery(String query);
 }

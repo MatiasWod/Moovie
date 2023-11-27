@@ -30,4 +30,13 @@ public class TvCreatorsHibernateDao implements TVCreatorsDao{
         final TypedQuery<TVCreators> query = em.createQuery("FROM TVCreators WHERE creatorId = :creatorId ", TVCreators.class).setParameter("creatorId", creatorId);
         return Optional.ofNullable(query.getSingleResult());
     }
+
+    @Override
+    public List<TVCreators> getTVCreatorsForQuery(String query) {
+        String sql = "SELECT c FROM TVCreators c WHERE LOWER(c.creatorName) LIKE :query";
+        
+        return em.createQuery(sql, TVCreators.class)
+                .setParameter("query","%"+query+"%")
+                .getResultList();
+    }
 }

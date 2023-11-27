@@ -16,7 +16,7 @@ public class MoovieListReport implements Serializable {
     @Column(name = "reportid")
     private int reportId;
 
-    @Column(name = "type", columnDefinition = "VARCHAR(50)", nullable = false)
+    @Column(name = "type", nullable = false)
     private String type;
 
     @Column(name = "content", columnDefinition = "TEXT")

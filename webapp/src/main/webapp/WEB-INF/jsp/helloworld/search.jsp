@@ -14,7 +14,9 @@
 <head>
     <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/resources/logo.png" />
 
-    <link href="${pageContext.request.contextPath}/resources/main.css?version=82" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/main.css?version=55" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/details.css?version=55" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/resources/buttonsStyle.css?version=1" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
     <title><spring:message code="search.title"/></title>
@@ -79,43 +81,102 @@
 
     </c:if>
 
-    <c:if test="${creditMediaFlag}">
+    <c:if test="${actorsFlag}">
         <div class="container d-flex justify-content-between mt-2 p-2">
-            <h3><spring:message code="search.credited" arguments="${param.query}"/></h3>
-            <a href="${pageContext.request.contextPath}/discover?credit=${param.query}"><spring:message code="search.seeMore"/></a>
+            <h3><spring:message code="search.actors" arguments="${param.query}"/></h3>
+<%--            <a href="${pageContext.request.contextPath}/discover?credit=${param.query}"><spring:message code="search.seeMore"/></a>--%>
         </div>
         <hr class="my-1">
-        <div class="container d-flex overflow-hidden" style="max-height: 300px;"> <!-- Set a fixed maximum height for the container -->
-            <c:forEach var="media" items="${creditMedia}" end="5">
-                <a href="${pageContext.request.contextPath}/details/${media.mediaId}" class="poster card text-bg-dark m-1">
-                    <div class="card-img-container"> <!-- Add a container for the image -->
-                        <img class="cropCenter" src="${media.posterPath}" alt="media poster">
-                        <div class="card-img-overlay">
-                            <h6 class="card-title text-center">${media.name}</h6>
-                            <div class="d-flex justify-content-evenly">
-                                <p class="card-text">
-                                    <i class="bi bi-star-fill"></i>
-                                        ${media.tmdbRating}
-                                </p>
-                                <p class="card-text">
-                                    <fmt:formatDate value="${media.releaseDate}" pattern="YYYY"/>
-                                </p>
-                            </div>
-                            <div class="d-flex justify-content-evenly flex-wrap">
-                                <c:forEach var="genre" items="${media.genres}" end="1">
-                                    <span class="mt-1 badge text-bg-dark">${fn:replace(genre,"\"" ,"" )}</span>
-                                </c:forEach>
-                            </div>
-                            <div class="d-flex mt-3 justify-content-evenly flex-wrap">
-                                <c:forEach var="provider" items="${media.providers}" end="1">
-                                        <span class="mt-1 badge text-bg-light border border-black">
-                                            <img src="${provider.logoPath}" alt="provider logo" style="height: 1.4em; margin-right: 5px;">
-                                        </span>
-                                </c:forEach>
+        <div class="container d-flex" style="height: 200px;"> <!-- Set a fixed maximum height for the container -->
+            <c:forEach var="actor" items="${actors}" end="5">
+                <div class="card actor-card" id="actor-card"
+                     style="width: 300px;height: 152px; border-radius: 5px; margin: 5px;">
+                    <div class="flex-row">
+                        <div class="col-4 text-center">
+                            <c:choose>
+                                <c:when test="${actor.profilePath=='None'}">
+                                    <img
+                                            src="${pageContext.request.contextPath}/resources/defaultProfile.jpg"
+                                            alt="${actor.actorName} picture not found"
+                                            style="max-width: 100px; height: 150px; border-radius: 5px;"
+
+                                    >
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="${pageContext.request.contextPath}/cast/actor/${actor.actorId}">
+                                        <img
+                                                src="${actor.profilePath}"
+                                                alt="${actor.actorName} picture"
+                                                style="max-width: 150px; max-height: 150px; border-radius: 5px;"
+                                                href="${pageContext.request.contextPath}/cast/actor/${actor.actorId}">
+                                    </a>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                        <div class="col-8" style="min-width: 160px">
+                            <div class="card-body" style="min-width: 120px">
+                                <a style="color:black; text-decoration: none;" href="${pageContext.request.contextPath}/cast/actor/${actor.actorId}">
+                                    <h5 class="card-title">${actor.actorName}</h5>
+                                </a>
                             </div>
                         </div>
                     </div>
-                </a>
+                </div>
+            </c:forEach>
+        </div>
+
+    </c:if>
+
+    <c:if test="${creatorsFlag}">
+        <div class="container d-flex justify-content-between mt-2 p-2">
+            <h3><spring:message code="search.creators" arguments="${param.query}"/></h3>
+<%--            <a href="${pageContext.request.contextPath}/discover?credit=${param.query}"><spring:message code="search.seeMore"/></a>--%>
+        </div>
+        <hr class="my-1">
+        <div class="container d-flex" style="height: 200px;"> <!-- Set a fixed maximum height for the container -->
+            <c:forEach var="actor" items="${directors}">
+                <div class="card actor-card" id="actor-card"
+                     style="width: 300px;height: 152px; border-radius: 5px; margin: 5px;">
+                    <div class="flex-row">
+                        <div class="col-4 text-center">
+                                    <img
+                                            src="${pageContext.request.contextPath}/resources/defaultProfile.jpg"
+                                            alt="${actor.name} picture not found"
+                                            style="max-width: 100px; height: 150px; border-radius: 5px;"
+
+                                    >
+                        </div>
+                        <div class="col-8" style="min-width: 160px">
+                            <div class="card-body" style="min-width: 120px">
+                                <a style="color:black; text-decoration: none;" href="${pageContext.request.contextPath}/cast/director/${actor.directorId}">
+                                    <h5 class="card-title">${actor.name}</h5>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </c:forEach>
+            <c:forEach var="actor" items="${creators}">
+                <div class="card actor-card" id="actor-card"
+                     style="width: 300px;height: 152px; border-radius: 5px; margin: 5px;">
+                    <div class="flex-row">
+                        <div class="col-4 text-center">
+                            <img
+                                    src="${pageContext.request.contextPath}/resources/defaultProfile.jpg"
+                                    alt="${actor.creatorName} picture not found"
+                                    style="max-width: 100px; height: 150px; border-radius: 5px;"
+
+                            >
+                        </div>
+                        <div class="col-8" style="min-width: 160px">
+                            <div class="card-body" style="min-width: 120px">
+                                <a style="color:black; text-decoration: none;" href="${pageContext.request.contextPath}/cast/creator/${actor.creatorId}">
+                                    <h5 class="card-title">${actor.creatorName}</h5>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </c:forEach>
         </div>
 
@@ -171,7 +232,7 @@
 
 
 
-    <c:if test="${!(creditMediaFlag||nameMediaFlag||usersFlag||moovieListFlag)}">
+    <c:if test="${!(actorsFlag||creatorsFlag||nameMediaFlag||usersFlag||moovieListFlag)}">
         <div style="border: solid black; min-width: 40%; min-height: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 5%;" class="container-gray justify-content-center d-flex flex-column">
             <div class="text-center m-3">
                 <img style="height: 15vh" src="${pageContext.request.contextPath}/resources/logo.png" alt="logo">

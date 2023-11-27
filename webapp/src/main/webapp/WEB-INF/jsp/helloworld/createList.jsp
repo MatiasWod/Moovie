@@ -23,7 +23,7 @@
 
 
     <title><spring:message code="createList.title"/></title>
-    <script async src="${pageContext.request.contextPath}/resources/createListFunctions.js?version=83"></script>
+    <script async src="${pageContext.request.contextPath}/resources/createListFunctions.js?version=84"></script>
     <script async src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=82"></script>
     <link href="${pageContext.request.contextPath}/resources/buttonsStyle.css?version=1" rel="stylesheet"/>
 
