@@ -92,7 +92,7 @@
     <c:if test="${param.publicList == 'true'}">
         <c:if test="${not empty errorMessage}">
             <div class="alert alert-danger alert-dismissible fade show" id="errorAlert" role="alert">
-                    ${errorMessage}
+                    <c:out value="${errorMessage}"/>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </c:if>
@@ -162,7 +162,7 @@
         <c:if test="${not empty errorMessage}">
             <div class="alert alert-danger alert-dismissible fade show m-2" id="errorAlert" role="alert">
                 <div class="d-flex justify-content-between align-items-center">
-                    <div>${errorMessage} <a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}">${insertedMooovieList.name}</a></div>
+                    <div><c:out value="${errorMessage}"/> <a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}"><c:out value="${insertedMooovieList.name}"/></a></div>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             </div>
@@ -170,7 +170,7 @@
         <c:if test="${not empty successMessage}">
             <div class="alert alert-success alert-dismissible fade show m-2" id="errorAlert" role="alert">
                 <div class="d-flex justify-content-between align-items-center">
-                    <div>${successMessage} <a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}">${insertedMooovieList.name}</a></div>
+                    <div><c:out value="${successMessage}"/> <a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}"><c:out value="${insertedMooovieList.name}"/></a></div>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             </div>
@@ -183,7 +183,7 @@
             <div class="progress-bar" role="progressbar" style="width: ${listCount==0 ? 0:(watchedCount*100)/listCount}%;"
                  id="progressBar"
                  aria-valuenow="${listCount==0 ? 0:(watchedCount*100)/listCount}" aria-valuemin="0" aria-valuemax="100">
-                ${(watchedCount*100)/listCount}%
+                <c:out value="${(watchedCount*100)/listCount}"/>%
             </div>
         </div>
         </c:if>
@@ -230,7 +230,7 @@
                 <div class="col-auto" style="text-align: center">
                     <a href="${pageContext.request.contextPath}/details/${mediaList[loop.index].mediaId}"
                        style="text-decoration: none; color: inherit;">
-                        <strong>${mediaList[loop.index].name}</strong>
+                        <strong><c:out value="${mediaList[loop.index].name}"/></strong>
                     </a>
                 </div>
 </div>
@@ -246,13 +246,13 @@
     </c:choose>
 </td>
 <!-- Score -->
-<td>${mediaList[loop.index].tmdbRating}<i class="bi bi-star-fill" style="margin-left: 5px"></i>
+<td><c:out value="${mediaList[loop.index].tmdbRating}"/><i class="bi bi-star-fill" style="margin-left: 5px"></i>
 </td>
 <!--User Score -->
 <td>
     <c:choose>
 <c:when test="${mediaList[loop.index].voteCount>0}">
-${mediaList[loop.index].totalRating}<i class="bi bi-star" style="margin-left: 5px"></i>
+<c:out value="${mediaList[loop.index].totalRating}"/><i class="bi bi-star" style="margin-left: 5px"></i>
 </c:when>
         <c:otherwise>
             <span data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.noUsersRatingsMessage"/>">
@@ -262,7 +262,7 @@ ${mediaList[loop.index].totalRating}<i class="bi bi-star" style="margin-left: 5p
     </c:choose>
 </td>
 <td>
-    <span>${mediaList[loop.index].releaseDate}</span>
+    <span><c:out value="${mediaList[loop.index].releaseDate}"/></span>
 </td>
 <td>
     <c:choose>
@@ -345,4 +345,3 @@ ${mediaList[loop.index].totalRating}<i class="bi bi-star" style="margin-left: 5p
 </body>
 </html>
 <script src="${pageContext.request.contextPath}/resources/moovieListFunctions.js?version=81"></script>
-

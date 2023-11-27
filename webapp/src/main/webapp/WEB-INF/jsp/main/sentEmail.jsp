@@ -30,7 +30,7 @@
     <c:if test="${not empty param.message}">
         <div class="alert alert-success alert-dismissible fade show m-2" id="errorAlert" role="alert">
             <div class="d-flex justify-content-between align-items-center">
-                <div>${param.message}</div>
+                <div><c:out value="${param.message}"/></div>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<spring:message code="sentEmail.close"/>"></button>
             </div>
         </div>

@@ -22,7 +22,7 @@
             </c:if>
             <c:forEach var="gen" items="${param.g}">
                 <div class="m-1 badge text-bg-dark">
-                    <span class="text-bg-dark"> ${gen} </span>
+                    <span class="text-bg-dark"><c:out value="${gen}"/></span>
                     <i class="btn bi bi-trash-fill" onclick="deleteChip(this)"></i>
                 </div>
             </c:forEach>
@@ -35,7 +35,7 @@
             </c:if>
             <c:forEach var="provider" items="${param.providers}">
                 <div class="m-1 badge text-bg-dark">
-                    <span class="text-bg-dark">${provider}</span>
+                    <span class="text-bg-dark"><c:out value="${provider}"/></span>
                     <i class="btn bi bi-trash-fill" onclick="deleteChip(this)"></i>
                 </div>
             </c:forEach>
@@ -104,7 +104,7 @@
                     </c:forEach>
                     <div class="form-check special-genre-class">
                         <input ${isChecked} type="checkbox" class="form-check-input special-genre-input" id="dropdownCheck${genre}">
-                        <label class="form-check-label" for="dropdownCheck${genresList.indexOf(genre)}">${genre}</label>
+                        <label class="form-check-label" for="dropdownCheck${genresList.indexOf(genre)}"><c:out value="${genre}"/></label>
                     </div>
                     <c:set var="isChecked" value="" />
                 </c:forEach>
@@ -149,7 +149,7 @@
                     <div class="form-check special-language-class">
                         <input ${isChecked} type="checkbox" class="form-check-input special-language-input" id="dropdownCheck${genre}">
 <%--                        <label class="form-check-label" for="dropdownCheck${langList.indexOf(genre)}">${genre}</label>--%>
-                        <label class="form-check-label" for="dropdownCheck${langList.indexOf(genre)}">${genre}</label>
+                        <label class="form-check-label" for="dropdownCheck${langList.indexOf(genre)}"><c:out value="${genre}"/></label>
                     </div>
                     <c:set var="isChecked" value="" />
                 </c:forEach>
@@ -171,7 +171,7 @@
                     </c:forEach>
                     <div class="form-check special-status-class">
                         <input ${isChecked} type="checkbox" class="form-check-input special-status-input" id="dropdownCheck${genre}">
-                        <label class="form-check-label" for="dropdownCheck${statusList.indexOf(genre)}">${genre}</label>
+                        <label class="form-check-label" for="dropdownCheck${statusList.indexOf(genre)}"><c:out value="${genre}"/></label>
                     </div>
                     <c:set var="isChecked" value="" />
                 </c:forEach>

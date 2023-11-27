@@ -51,11 +51,11 @@
                     <div class="card-img-container"> <!-- Add a container for the image -->
                         <img class="cropCenter" src="${media.posterPath}" alt="media poster">
                         <div class="card-img-overlay">
-                            <h6 class="card-title text-center">${media.name}</h6>
+                            <h6 class="card-title text-center"><c:out value="${media.name}"/></h6>
                             <div class="d-flex justify-content-evenly">
                                 <p class="card-text">
                                     <i class="bi bi-star-fill"></i>
-                                        ${media.tmdbRating}
+                                        <c:out value="${media.tmdbRating}"/>
                                 </p>
                                 <p class="card-text">
                                     <fmt:formatDate value="${media.releaseDate}" pattern="YYYY"/>

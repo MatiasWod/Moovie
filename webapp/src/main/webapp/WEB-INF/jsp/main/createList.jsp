@@ -62,11 +62,11 @@
                                 <img class="cropCenter async-image" src="${pageContext.request.contextPath}/resources/defaultPoster.png" data-src="${movie.posterPath}" alt="media poster">
 
                                 <div class="card-img-overlay">
-                                    <h6 class="card-title text-center">${movie.name}</h6>
+                                    <h6 class="card-title text-center"><c:out value="${movie.name}"/></h6>
                                     <div class="d-flex justify-content-evenly">
                                         <p class="card-text">
                                             <i class="bi bi-star-fill"></i>
-                                                ${movie.tmdbRating}
+                                                <c:out value="${movie.tmdbRating}"/>
                                         </p>
                                         <p class="card-text">
                                             <fmt:formatDate value="${movie.releaseDate}" pattern="YYYY"/>
@@ -129,7 +129,7 @@
                             <div style="max-height: 100px" class="scrollableMedia d-flex flex-column m-2 p-2" id="selected-media-names">
                                 <c:forEach var="sel" items="${selected}">
                                     <div class="other-distinct d-flex justify-content-between ">
-                                        <div id="${sel.mediaId}" class="distinct-class">${sel.name}</div>
+                                        <div id="${sel.mediaId}" class="distinct-class"><c:out value="${sel.name}"/></div>
                                         <i class="btn bi bi-trash" onclick="deleteMedia(this)"></i>
                                     </div>
                                 </c:forEach>

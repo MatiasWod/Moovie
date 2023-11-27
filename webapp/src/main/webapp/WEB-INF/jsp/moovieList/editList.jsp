@@ -40,7 +40,7 @@
         <c:if test="${not empty errorMessage}">
             <div class="alert alert-danger alert-dismissible fade show m-2" id="errorAlert" role="alert">
                 <div class="d-flex justify-content-between align-items-center">
-                    <div>${errorMessage} <a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}">${insertedMooovieList.name}</a></div>
+                    <div><c:out value="${errorMessage}"/> <a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}"><c:out value="${insertedMooovieList.name}"/></a></div>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<spring:message code="editList.close"/>"></button>
                 </div>
             </div>
@@ -48,7 +48,7 @@
         <c:if test="${not empty successMessage}">
             <div class="alert alert-success alert-dismissible fade show m-2" id="errorAlert" role="alert">
                 <div class="d-flex justify-content-between align-items-center">
-                    <div>${successMessage} <a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}">${insertedMooovieList.name}</a></div>
+                    <div><c:out value="${successMessage}"/> <a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}"><c:out value="${insertedMooovieList.name}"/></a></div>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<spring:message code="editList.close"/>"></button>
                 </div>
             </div>
@@ -98,7 +98,7 @@
                     </td>
                     <td>
                         <div class="col-auto" style="text-align: center">
-                                <strong>${mediaList[loop.index].name}</strong>
+                                <strong><c:out value="${mediaList[loop.index].name}"/></strong>
                         </div>
                         </div>
                         <!-- Type -->
@@ -113,10 +113,10 @@
                         </c:choose>
                     </td>
                     <!-- Score -->
-                    <td>${mediaList[loop.index].tmdbRating}<i class="bi bi-star-fill" style="margin-left: 5px"></i>
+                    <td><c:out value="${mediaList[loop.index].tmdbRating}"/><i class="bi bi-star-fill" style="margin-left: 5px"></i>
                     </td>
                     <td>
-                        <span>${mediaList[loop.index].releaseDate}</span>
+                        <span><c:out value="${mediaList[loop.index].releaseDate}"/></span>
                     </td>
 <c:if test="${numberOfPages>1}">
 <td>
@@ -231,11 +231,11 @@
                     </div>
                     <img class="cropCenter" src="${movie.posterPath}" alt="media poster">
                     <div class="card-img-overlay">
-                        <h6 class="card-title text-center">${movie.name}</h6>
+                        <h6 class="card-title text-center"><c:out value="${movie.name}"/></h6>
                         <div class="d-flex justify-content-evenly">
                             <p class="card-text">
                                 <i class="bi bi-star-fill"></i>
-                                    ${movie.tmdbRating}
+                                    <c:out value="${movie.tmdbRating}"/>
                             </p>
                             <p class="card-text">
                                 <fmt:formatDate value="${movie.releaseDate}" pattern="YYYY"/>
