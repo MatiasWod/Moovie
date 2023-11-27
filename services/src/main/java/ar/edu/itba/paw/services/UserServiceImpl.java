@@ -72,17 +72,26 @@ public class UserServiceImpl implements UserService {
                 throw new UnableToCreateUserException("email_taken");
             }
         }
-        User user = userDao.createUser(username, email, passwordEncoder.encode(password));
-        LOGGER.info("Succesfuly created user with username: {}", username);
-        String token = verificationTokenService.createVerificationToken(user.getUserId());
-        emailService.sendVerificationEmail(user,token,LocaleContextHolder.getLocale());
-        return token;
+        try{
+            User user = userDao.createUser(username, email, passwordEncoder.encode(password));
+            LOGGER.info("Succesfuly created user with username: {}", username);
+            String token = verificationTokenService.createVerificationToken(user.getUserId());
+            emailService.sendVerificationEmail(user,token,LocaleContextHolder.getLocale());
+            return token;
+        } catch (Exception e){
+            throw new UnableToCreateUserException("Unable to create user");
+        }
     }
 
     @Transactional
     @Override
     public User createUserFromUnregistered(String username, String email, String password) {
-        return userDao.createUserFromUnregistered(username, email, passwordEncoder.encode(password));
+        try{
+            return userDao.createUserFromUnregistered(username, email, passwordEncoder.encode(password));
+        } catch (Exception e){
+            throw new UnableToCreateUserException("Unable to create user");
+        }
+
     }
 
     @Transactional
