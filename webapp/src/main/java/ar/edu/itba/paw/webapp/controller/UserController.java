@@ -60,8 +60,6 @@ public class UserController {
     @Autowired
     MediaService mediaService;
 
-    @Autowired
-    DatabaseModifierService dmsService;
 
     @Autowired
     private MessageSource messageSource;
@@ -351,25 +349,4 @@ public class UserController {
 
         return "redirect:" + referer;
     }
-
-
-    // ---------- REPORT SECTION ------------- //
-
-
-
-    // ---------- DATABASE UPDATER ---------- //
-    //TODO DELETE AFTER UPDATING
-//    /*
-    @RequestMapping(value = "/updateDatabaseSchema")
-    public ModelAndView updateDatabaseSchema() {
-        dmsService.updateActors();
-        dmsService.updateCreators();
-        dmsService.updateGenres();
-        dmsService.updateProviders();
-        return new ModelAndView("errors/403");
-    }
-//    */
-
-
-
 }

@@ -55,8 +55,6 @@ public class MediaController {
     @Autowired
     private ProviderService providerService;
 
-    @Autowired
-    private DatabaseModifierService dmsService;
 
     @Autowired
     private StatusService statusService;
