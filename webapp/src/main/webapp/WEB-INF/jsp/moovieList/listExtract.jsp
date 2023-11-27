@@ -89,14 +89,6 @@
             </div>
         </c:if>
     </div>
-    <c:if test="${param.publicList == 'true'}">
-        <c:if test="${not empty errorMessage}">
-            <div class="alert alert-danger alert-dismissible fade show" id="errorAlert" role="alert">
-                    <c:out value="${errorMessage}"/>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </c:if>
-    </c:if>
     <div class="buttons">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <c:if test="${moovieList.type==publicType}">
