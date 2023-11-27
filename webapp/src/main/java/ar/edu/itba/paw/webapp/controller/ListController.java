@@ -198,6 +198,9 @@ public class ListController {
             }catch(Exception e){
                 mav.addObject("currentUsername", "?????");
             }
+            mav.addObject("pagingSize",pagesSize);
+            mav.addObject("currentPage",pageNumber - 1);
+            mav.addObject("numberOfPages",numberOfPages);
 
             //TODO correct pagination
             int pagePending = 0;
@@ -205,7 +208,7 @@ public class ListController {
             int numberOfReviews = reviewService.getMoovieListReviewByMoovieListIdCount(moovieListId);
             mav.addObject("currentReviewPage", pagePending );
             int numberOfReviewPages = (int) Math.ceil(numberOfReviews * 1.0 / PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize());
-            mav.addObject("numberOfPages",numberOfReviewPages);
+            mav.addObject("numberOfReviewPages",numberOfReviewPages);
 
 
             final Map<String, String> queries = new HashMap<>();

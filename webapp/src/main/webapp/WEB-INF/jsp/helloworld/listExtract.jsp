@@ -329,7 +329,7 @@ ${mediaList[loop.index].totalRating}<i class="bi bi-star" style="margin-left: 5p
 <c:otherwise>
     <tbody>
     <tr>
-        <td colspan="10" style="text-align: center">List is empty</td>
+        <td colspan="10" style="text-align: center"><spring:message code="listExtract.listIsEmpty"/></td>
     </tr>
     </tbody>
 </c:otherwise>
