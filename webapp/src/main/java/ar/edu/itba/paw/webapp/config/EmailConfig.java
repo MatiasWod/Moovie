@@ -13,6 +13,7 @@ import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
+import java.net.URL;
 import java.util.Properties;
 
 @EnableWebMvc

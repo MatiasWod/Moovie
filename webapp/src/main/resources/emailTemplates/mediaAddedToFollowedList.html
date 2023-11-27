@@ -19,21 +19,17 @@
 <div th:style="'max-width: 600px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);'">
     <div th:class="container">
         <div class="media-container">
-            <img th:src="@{https://64.media.tumblr.com/41d36d56cc6f1cb18f71f8758d804084/fd6f2186ad840a10-43/s540x810/d1831360ce15f4e26c55659ce8d065ff311fb6c3.pnj}" alt="Logo">
+            <img th:src="@{https://64.media.tumblr.com/41d36d56cc6f1cb18f71f8758d804084/fd6f2186ad840a10-43/s540x810/d1831360ce15f4e26c55659ce8d065ff311fb6c3.png}" alt="Logo">
             <h1 th:style="'margin: 10px;'" th:text="#{email.logo}"></h1>
         </div>
     </div>
-    <h2 th:text="#{email.greeting}"/>
 
-    <p th:text="#{email.welcome (${username})}"/>
+    <h2 th:text="#{email.welcomeBack(${username})}"/>
+    <p th:text="#{email.newMediaAdded(${moovieListName})}"/>
 
-    <p th:text="#{email.confirmation}"/>
-
-    <a th:href="@{http://localhost:8080/register/confirm(token=${token})}" th:text="#{email.verify}" th:style="'display: inline-block; padding: 10px 20px; background-color: green; color: #fff; text-decoration: none; border-radius: 5px; margin-top: 10px;'"></a>
+    <a th:href="@{http://pawserver.it.itba.edu.ar/paw-2023b-06/list/${moovieListId}}" th:text="#{email.viewList}" th:style="'display: inline-block; padding: 10px 20px; background-color: green; color: #fff; text-decoration: none; border-radius: 5px; margin-top: 10px;'"></a>
 
 </div>
 
 </body>
 </html>
-
-<!--<a th:href="@{http://pawserver.it.itba.edu.ar/paw-2023b-06/register/confirm(token=${token})}">-->
