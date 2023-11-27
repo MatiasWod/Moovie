@@ -25,6 +25,10 @@ public interface MediaService {
     List<Movie> getMediaForDirectorId(int directorId);
 
 
+    //get watchlist/watched status for user
+    boolean getWatchlistStatus(int mediaId, int userId);
+    boolean getWatchedStatus(int mediaId, int userId);
+
     //Get the Tv or Movie details data
     Media getMediaById(int mediaId);
     Movie getMovieById(int mediaId);

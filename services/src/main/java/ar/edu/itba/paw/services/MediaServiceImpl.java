@@ -88,6 +88,16 @@ public class MediaServiceImpl implements MediaService{
         return mediaDao.getMediaForDirectorId(directorId, userService.tryToGetCurrentUserId());
     }
 
+    @Override
+    public boolean getWatchlistStatus(int mediaId, int userId) {
+        return mediaDao.getWatchlistStatus(mediaId,userId);
+    }
+
+    @Override
+    public boolean getWatchedStatus(int mediaId, int userId) {
+        return mediaDao.getWatchedStatus(mediaId,userId);
+    }
+
     private String setSortOrder(String sortOrder){
         if(sortOrder==null || sortOrder.isEmpty()){
             return null;
