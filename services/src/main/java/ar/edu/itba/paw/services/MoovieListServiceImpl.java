@@ -80,9 +80,9 @@ public class MoovieListServiceImpl implements MoovieListService{
         //If the previous didnt throw exception, we have the permissions needed to perform the next action
         try{
             int userid = userService.getInfoOfMyUser().getUserId();
-            return moovieListDao.getMoovieListContent(moovieListId, userid , orderBy,sortOrder ,size, pageNumber);
+            return moovieListDao.getMoovieListContent(moovieListId, userid , setOrderMediaBy(orderBy) , setSortOrder(sortOrder)  ,size, pageNumber);
         } catch(UserNotLoggedException e){
-            return moovieListDao.getMoovieListContent(moovieListId, -1 , orderBy,sortOrder ,size, pageNumber);
+            return moovieListDao.getMoovieListContent(moovieListId, -1 , setOrderMediaBy(orderBy) , setSortOrder(sortOrder) ,size, pageNumber);
         }
     }
 
@@ -90,7 +90,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public List<Media> getFeaturedMoovieListContent( int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
         int userId = userService.tryToGetCurrentUserId();
-        return moovieListDao.getFeaturedMoovieListContent(mediaType, userId, featuredListOrder, orderBy,sortOrder ,size, pageNumber);
+        return moovieListDao.getFeaturedMoovieListContent(mediaType, userId, featuredListOrder, setOrderMediaBy(orderBy) , setSortOrder(sortOrder) ,size, pageNumber);
     }
 
     @Transactional(readOnly = true)
@@ -107,7 +107,7 @@ public class MoovieListServiceImpl implements MoovieListService{
                 throw new InvalidAccessToResourceException("Need to be owner to acces the private list of this user");
             }
         }
-        return moovieListDao.getMoovieListCards(search, ownerUsername, type,orderBy,order, size, pageNumber, userService.tryToGetCurrentUserId());
+        return moovieListDao.getMoovieListCards(search, ownerUsername, type,setOrderListsBy(orderBy) , setSortOrder(order), size, pageNumber, userService.tryToGetCurrentUserId());
     }
 
     @Transactional(readOnly = true)
@@ -179,11 +179,11 @@ public class MoovieListServiceImpl implements MoovieListService{
                 throw new MoovieListNotFoundException("MoovieList: " + name+ " of: " +ownerUsername+ " not found");
             }
              card = cards.get(0);
-             content = getMoovieListContent(card.getMoovieListId(),orderBy,sortOrder,size,pageNumber);
+             content = getMoovieListContent(card.getMoovieListId(),  setOrderMediaBy(orderBy) , setSortOrder(sortOrder),size,pageNumber);
         }
         else{
             card = moovieListDao.getMoovieListCardById(moovieListId, currentUserId);
-            content = getMoovieListContent(moovieListId,orderBy,sortOrder,size,pageNumber);
+            content = getMoovieListContent(moovieListId,setOrderMediaBy(orderBy) , setSortOrder(sortOrder),size,pageNumber);
         }
         return new MoovieListDetails(card,content);
 
