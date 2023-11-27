@@ -1,5 +1,3 @@
-import ar.edu.itba.paw.exceptions.UnableToCreateUserException;
-import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.UserHibernateDao;
 import config.TestConfig;
@@ -35,7 +33,7 @@ public class UserHibernateDaoTest {
 
     private JdbcTemplate jdbcTemplate;
 
-    private static final int INSERTED_USER_ID = 1;
+    private static final int INSERTED_USER_ID = 2;
     private static final String INSERTED_USER_EMAIL = "cavani@test.com";
     private static final String INSERTED_USER_USERNAME = "Cavani";
 
@@ -82,7 +80,6 @@ public class UserHibernateDaoTest {
     @Test
     public void testCreateUser() {
         final User user = userHibernateDao.createUser(TO_INSERT_USER_USERNAME,TO_INSERT_USER_EMAIL,TO_INSERT_USER_PASSWORD);
-
         entityManager.flush();
 
         Assert.assertNotNull(user);
@@ -91,22 +88,24 @@ public class UserHibernateDaoTest {
     }
 
     @Rollback
-    @Test(expected = UnableToCreateUserException.class)
-    public void testUnableToCreateUser() throws UnableToCreateUserException{
-
-        userHibernateDao.createUser(TO_INSERT_USER_EMAIL, INSERTED_USER_USERNAME,TO_INSERT_USER_PASSWORD);
-
-        //Assert.fail();
-        //Assert.assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, USERS_TABLE, String.format("email = '%s'", INSERTED_USER_EMAIL)));
+    @Test
+    public void testChangeUserRole(){
+        userHibernateDao.changeUserRole(INSERTED_USER_ID,1);
+        entityManager.flush();
+        Assert.assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, USERS_TABLE, String.format("role = '%d'", 1)));
     }
 
     @Rollback
-    @Test(expected = UnableToFindUserException.class)
-    public void testUnableToFindUser() throws UnableToFindUserException {
+    @Test
+    public void testGetUserCount(){
+        final int count = userHibernateDao.getUserCount();
+        Assert.assertEquals(3,count);
+    }
 
-        userHibernateDao.findUserById(NON_EXISTENT_USER_ID);
-
-        Assert.fail();
-        Assert.assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, USERS_TABLE, String.format("userId = '%d'", INSERTED_USER_ID)));
+    @Rollback
+    @Test
+    public void testNonExistenUser(){
+        final Optional<User> user = userHibernateDao.findUserById(NON_EXISTENT_USER_ID);
+        Assert.assertFalse(user.isPresent());
     }
 }

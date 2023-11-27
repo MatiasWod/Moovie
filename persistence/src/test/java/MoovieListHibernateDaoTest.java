@@ -10,12 +10,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -34,7 +35,12 @@ public class MoovieListHibernateDaoTest {
 
     private JdbcTemplate jdbcTemplate;
 
-    private static final int INSERTED_MOOVIELIST_ID = 1;
+    private static final int INSERTED_MOOVIELIST_ID =2;
+
+    private static final int TO_INSERT_MEDIALIST = 2;
+
+    private static final List<Integer> TO_INSERT_MEDIA_LIST = Arrays.asList(1, 2, 3, 4, 5);
+
     private static final int TO_INSERT_USER_ID = 5;
     private static final String MOOVIELIST_TABLE = "moovielists";
 
@@ -50,4 +56,8 @@ public class MoovieListHibernateDaoTest {
         Assert.assertTrue(moovieList.isPresent());
         Assert.assertEquals(INSERTED_MOOVIELIST_ID,moovieList.get().getMoovieListId());
     }
+
+
+
+
 }

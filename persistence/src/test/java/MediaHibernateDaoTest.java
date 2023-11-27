@@ -63,9 +63,8 @@ public class MediaHibernateDaoTest {
     public void testGetMediaForDirectorId(){
         List<Movie> mediaList = mediaHibernateDao.getMediaForDirectorId(DIRECTOR_ID, INVALID_USER_ID);
 
-        Assert.assertTrue(mediaList.size() == 2);
+        Assert.assertEquals(2, mediaList.size());
         
-        //We have to check both orders because theres no defined order in this query!
         Assert.assertTrue((mediaList.get(0).getMediaId() == DIRECTOR_MOVIE_ID1 && mediaList.get(1).getMediaId() == DIRECTOR_MOVIE_ID2)
                             || (mediaList.get(1).getMediaId() == DIRECTOR_MOVIE_ID1 && mediaList.get(0).getMediaId() == DIRECTOR_MOVIE_ID2) );
     }
