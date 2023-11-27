@@ -374,9 +374,13 @@ public class MediaController {
     public ModelAndView actor(@PathVariable String type, @PathVariable int id){
         final ModelAndView mav = new ModelAndView("helloworld/cast");
         try {
-            mav.addObject("currentUser", userService.getInfoOfMyUser());
-        } catch (Exception e) {
-            // do nothing
+            User currentUser=userService.getInfoOfMyUser();
+            mav.addObject("currentUser", currentUser);
+            mav.addObject("watchedListId",moovieListService.getMoovieListCards("Watched",currentUser.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId());
+            mav.addObject("watchlistId",moovieListService.getMoovieListCards("Watchlist",currentUser.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId());
+            mav.addObject("showWatched",true);
+        }catch (Exception e){
+            mav.addObject("showWatched",false);
         }
         switch(type){
             case "actor" :
