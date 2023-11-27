@@ -18,6 +18,8 @@ import ar.edu.itba.paw.webapp.form.CreateReviewForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -56,6 +58,9 @@ public class ListController {
 
     @Autowired
     private ReviewService reviewService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
 
@@ -375,9 +380,9 @@ public class ListController {
         LOGGER.info("Attempting to insert media: {} to list with id: {}.",mediaId,listId);
         try {
             moovieListService.insertMediaIntoMoovieList(listId, Collections.singletonList(mediaId));
-            redirectAttributes.addFlashAttribute("successMessage", "Media has been successfully added to ");
+            redirectAttributes.addFlashAttribute("successMessage",  messageSource.getMessage("list.mediaAddedSuccess",null, LocaleContextHolder.getLocale()));
         } catch (UnableToInsertIntoDatabase exception) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to insert media into the list. Already in ");
+            redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("list.mediaAddedFailure",null, LocaleContextHolder.getLocale()));
         }
         redirectAttributes.addFlashAttribute("insertedMooovieList", moovieListService.getMoovieListCardById(listId));
 
@@ -395,9 +400,9 @@ public class ListController {
     public ModelAndView deleteMediaFromList(@RequestParam("listId") int listId,@RequestParam("mediaId") int mediaId,HttpServletRequest request,RedirectAttributes redirectAttributes){
         try{
             moovieListService.deleteMediaFromMoovieList(listId,mediaId);
-            redirectAttributes.addFlashAttribute("successMessage", "Media has been successfully deleted from ");
+            redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("list.mediaDeletedSuccess",null, LocaleContextHolder.getLocale()));
         } catch (Exception e){
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete media from the list ");
+            redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("list.mediaDeletedFailure",null, LocaleContextHolder.getLocale()));
         }
         String referer = request.getHeader("Referer");
         redirectAttributes.addFlashAttribute("insertedMooovieList", moovieListService.getMoovieListCardById(listId));
@@ -413,13 +418,13 @@ public class ListController {
         }
         try{
             reviewService.createReview(createReviewForm.getMediaId(), createReviewForm.getRating(), createReviewForm.getReviewContent(), ReviewTypes.REVIEW_MOOVIE_LIST);
-            redirectAttributes.addFlashAttribute("successMessage", "Comment has been successfully created.");
+            redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("list.commentCreatedSuccess",null, LocaleContextHolder.getLocale()));
         } catch(Exception e1) {
             try {
                 reviewService.editReview(createReviewForm.getMediaId(), createReviewForm.getRating(), createReviewForm.getReviewContent(), ReviewTypes.REVIEW_MOOVIE_LIST);
-                redirectAttributes.addFlashAttribute("successMessage", "Comment has been successfully edited.");
+                redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("list.commentEditedSuccess",null, LocaleContextHolder.getLocale()));
             } catch (Exception e2) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Couldn't create comment, you already have a review for this list.");
+                redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("list.commentCreatedFailure",null, LocaleContextHolder.getLocale()));
             }
         }
         return new ModelAndView("redirect:/list/" + createReviewForm.getMediaId());
@@ -429,9 +434,9 @@ public class ListController {
     public ModelAndView likeMoovieListReview(@RequestParam int reviewId,@RequestParam int mediaId, RedirectAttributes redirectAttributes){
         try {
             reviewService.likeReview(reviewId, ReviewTypes.REVIEW_MOOVIE_LIST);
-            redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully liked.");
+            redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("list.reviewLikedSuccess",null, LocaleContextHolder.getLocale()));
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Couldn't like review.");
+            redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("list.reviewLikedFailure",null, LocaleContextHolder.getLocale()));
         }
         return new ModelAndView("redirect:/list/" + mediaId);
     }
@@ -440,9 +445,9 @@ public class ListController {
     public ModelAndView unlikeMoovieListReview(@RequestParam int reviewId,@RequestParam int mediaId, RedirectAttributes redirectAttributes){
         try {
             reviewService.removeLikeReview(reviewId, ReviewTypes.REVIEW_MOOVIE_LIST);
-            redirectAttributes.addFlashAttribute("successMessage", "Review has been successfully unliked.");
+            redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("list.reviewUnlikedSuccess",null, LocaleContextHolder.getLocale()));
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Couldn't unlike review.");
+            redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("list.reviewUnlikedFailure",null, LocaleContextHolder.getLocale()));
         }
         return new ModelAndView("redirect:/list/" + mediaId);
     }
@@ -451,9 +456,9 @@ public class ListController {
     public ModelAndView deleteMoovieListReview(@RequestParam("reviewId") int reviewId,RedirectAttributes redirectAttributes, @PathVariable int mediaId) {
         try {
             reviewService.deleteReview(reviewId, ReviewTypes.REVIEW_MOOVIE_LIST);
-            redirectAttributes.addFlashAttribute("successMessage", "Review successfully deleted");
+            redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("list.reviewDeletedSuccess",null, LocaleContextHolder.getLocale()));
         }catch (Exception e){
-            redirectAttributes.addFlashAttribute("errorMessage", "Error deleting review");
+            redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("list.reviewDeletedFailure",null, LocaleContextHolder.getLocale()));
         }
         return new ModelAndView("redirect:/list/" + mediaId);
     }

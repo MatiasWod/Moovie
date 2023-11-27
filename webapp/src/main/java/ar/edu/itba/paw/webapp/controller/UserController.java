@@ -15,6 +15,8 @@ import ar.edu.itba.paw.webapp.form.RegisterForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -61,6 +63,9 @@ public class UserController {
     @Autowired
     DatabaseModifierService dmsService;
 
+    @Autowired
+    private MessageSource messageSource;
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
 
@@ -93,7 +98,7 @@ public class UserController {
                 return new ModelAndView("redirect:/");
             } else {
                 redirectAttributes.addAttribute("token", token);
-                redirectAttributes.addAttribute("message", "The verification token had expired. A new email was sent!");
+                redirectAttributes.addAttribute("message", messageSource.getMessage("user.tokenExpired",null, LocaleContextHolder.getLocale()));
                 LOGGER.info("Auto-login failed.");
                 return new ModelAndView("redirect:/register/resendEmail");
             }
@@ -120,7 +125,7 @@ public class UserController {
         LOGGER.info("Attempting to resend confirmation email.");
         redirectAttributes.addAttribute("token", token);
         if (message == null || message.isEmpty()) {
-            redirectAttributes.addAttribute("message", "Verification email has been resent successfully.");
+            redirectAttributes.addAttribute("message", messageSource.getMessage("user.resendVerification",null, LocaleContextHolder.getLocale()));
         } else {
             redirectAttributes.addAttribute("message", message);
         }
@@ -334,14 +339,14 @@ public class UserController {
         try {
             userService.setProfilePicture(picture);
         } catch (InvalidTypeException e) {
-            redirectAttributes.addAttribute("error", "The file was not an image");
+            redirectAttributes.addAttribute("error", messageSource.getMessage("user.fileNotAnImage",null, LocaleContextHolder.getLocale()));
         } catch (NoFileException e) {
-            redirectAttributes.addAttribute("error", "No file was chosen");
+            redirectAttributes.addAttribute("error", messageSource.getMessage("user.noFileChosen",null, LocaleContextHolder.getLocale()));
         } catch (FailedToSetProfilePictureException e) {
-            redirectAttributes.addAttribute("error", "An error occurred while updating your profile picture");
+            redirectAttributes.addAttribute("error", messageSource.getMessage("user.updateImageFailure",null, LocaleContextHolder.getLocale()));
         } catch (Exception e) {
             // Handle other exceptions if needed
-            redirectAttributes.addAttribute("error", "An error occurred");
+            redirectAttributes.addAttribute("error", messageSource.getMessage("user.error",null, LocaleContextHolder.getLocale()));
         }
 
         return "redirect:" + referer;
