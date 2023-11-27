@@ -430,17 +430,17 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div class="d-flex align-items-center">
-                                        <a href="${pageContext.request.contextPath}/profile/${review.username}"
+                                        <a href="${pageContext.request.contextPath}/profile/${review.user.username}"
                                            style="text-decoration: none; color: inherit;">
                                             <img class="cropCenter mr-3 profile-image rounded-circle"
                                                  style="height:60px;width:60px;border: solid black; border-radius: 50%"
-                                                 src="${pageContext.request.contextPath}/profile/image/${review.username}"
-                                                 alt="${review.userId} Reviewer Profile">
+                                                 src="${pageContext.request.contextPath}/profile/image/${review.user.username}"
+                                                 alt="${review.user.userId} Reviewer Profile">
                                         </a>
                                         <div class="mt-0" style="margin-left: 15px">
-                                            <a href="${pageContext.request.contextPath}/profile/${review.username}"
+                                            <a href="${pageContext.request.contextPath}/profile/${review.user.username}"
                                                style="text-decoration: none; color: inherit;">
-                                                <h5><c:out value="${review.username}"/></h5> <c:if test="${review.hasBadge}"><i class="bi bi-trophy"></i></c:if>
+                                                <h5><c:out value="${review.user.username}"/><c:if test="${review.user.hasBadge}"><i class="bi bi-trophy"></i></c:if></h5>
                                             </a>
                                         </div>
                                     </div>
@@ -449,7 +449,7 @@
                                             <i class="bi bi-star-fill ml-2"></i> <c:out value="${review.rating}"/>/5
                                         </h5>
                                         <c:choose>
-                                            <c:when test="${currentUser.username==review.username}">
+                                            <c:when test="${currentUser.username==review.user.username}">
                                                 <div class="text-center m-2">
                                                     <button onclick="openPopup('review${review.reviewId}')" class="btn btn-danger btn-sm">
                                                         <i class="bi bi-trash"></i>
@@ -532,7 +532,7 @@
                                             </c:otherwise>
                                         </c:choose>
                                     </div>
-                                    <c:if test="${currentUser.username==review.username}">
+                                    <c:if test="${currentUser.username==review.user.username}">
                                         <div style="margin-bottom: 15px">
                                             <button class="btn btn-primary" style="font-size: 14px;margin-left: 10px;" onclick="openPopup('edit-popup')">                                                <span>
                                                    <i class="bi bi-pencil" ></i>
@@ -541,7 +541,7 @@
                                             </button>
                                         </div>
                                     </c:if>
-                                    <c:if test="${currentUser.username != review.username}">
+                                    <c:if test="${currentUser.username != review.user.username}">
                                         <sec:authorize access="isAuthenticated()">
                                             <div style="margin-bottom: 15px">
                                                 <a href="${pageContext.request.contextPath}/reports/new?id=${review.reviewId}&reportedBy=${currentUser.userId}&type=reviewDetails" class="btn btn-warning" style="font-size: 14px;margin-left: 10px;" ><spring:message code="report.title"/>
