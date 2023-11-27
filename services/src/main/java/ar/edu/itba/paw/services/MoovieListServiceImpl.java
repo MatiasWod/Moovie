@@ -123,17 +123,20 @@ public class MoovieListServiceImpl implements MoovieListService{
     }
 
     @Transactional(readOnly = true)
+    @Override
     public List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber){
         return moovieListDao.getFollowedMoovieListCards(userId, type, size, pageNumber, userService.tryToGetCurrentUserId());
     }
 
     @Transactional(readOnly = true)
+    @Override
     public int getFollowedMoovieListCardsCount(int userId, int type) {
         return moovieListDao.getFollowedMoovieListCardsCount(userId,type);
     }
 
 
     @Transactional(readOnly = true)
+    @Override
     public List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber){
         List<MoovieListCard> mlc =  moovieListDao.getRecommendedMoovieListCards(moovieListId, size, pageNumber, userService.tryToGetCurrentUserId());
         if(mlc.size()<size){
