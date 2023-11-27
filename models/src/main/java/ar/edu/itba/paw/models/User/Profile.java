@@ -30,6 +30,9 @@ public class Profile {
             "(SELECT COUNT(ml.moovielistid) FROM moovielistslikes mll LEFT OUTER JOIN moovielists ml ON ml.moovielistid = mll.moovielistid WHERE ml.userid = userId) )")
     private int milkyPoints;
 
+    @Transient
+    private boolean hasBadge;
+
     public Profile(){
 
     }
@@ -70,5 +73,9 @@ public class Profile {
 
     public int getMilkyPoints() {
         return milkyPoints;
+    }
+
+    public boolean isHasBadge() {
+        return milkyPoints >= BadgeLimits.POINTS_FOR_SIMPLE_BADGE.getLimit();
     }
 }

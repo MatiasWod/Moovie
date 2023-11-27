@@ -21,7 +21,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-<c:import url="navBar.jsp"/>
+<c:import url="../common/navBar.jsp"/>
 <div class="d-flex justify-content-center">
     <div class="d-flex flex-column flex-grow-1 m-3" >
         <div class="card">

@@ -41,6 +41,7 @@
                 <h4 style="color: ghostwhite;"><spring:message code="listExtract.by"/>
                     <a style="text-decoration: none; color: inherit;" href="${pageContext.request.contextPath}/profile/${listOwner}">
                         <c:out value="${listOwner}"/>
+                        <c:if test="${moovieList.hasBadge}"><i class="bi bi-trophy"></i></c:if>
                     </a>
                 </h4>
             </c:if>
@@ -335,7 +336,7 @@ ${mediaList[loop.index].totalRating}<i class="bi bi-star" style="margin-left: 5p
 </c:otherwise>
 </c:choose>
 </table>
-<c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+<c:import url="/WEB-INF/jsp/common/pagination.jsp">
     <c:param name="mediaPages" value="${numberOfPages}"/>
     <c:param name="currentPage" value="${currentPage + 1}"/>
     <c:param name="url" value="${urlBase}"/>

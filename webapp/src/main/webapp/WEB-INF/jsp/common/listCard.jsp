@@ -44,7 +44,9 @@
                     <p>${(cardList.size - cardList.moviesAmount)} <spring:message code="listCard.series"/></p>
                 </c:if>
             </div>
-            <p style="max-height: 4.5rem" class="card-text overflow-hidden text-muted"><spring:message code="listCard.by" arguments="${cardList.username}"/>
+            <p style="max-height: 4.5rem" class="card-text overflow-hidden text-muted">
+                <spring:message code="listCard.by" arguments="${cardList.username}"/>
+                <c:if test="${cardList.hasBadge}"><i class="bi bi-trophy"></i></c:if>
             </p>
             <p style="max-height: 3.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" class="card-text">
                 <c:out value="${cardList.description}"/>

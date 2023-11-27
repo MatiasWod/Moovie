@@ -34,7 +34,7 @@
     </script>
 </head>
 <body>
-<c:import url="navBar.jsp"/>
+<c:import url="../common/navBar.jsp"/>
 
 <sec:authorize access="hasRole('ROLE_MODERATOR')">
     <c:if test="${not empty errorMessage}">
@@ -412,7 +412,7 @@
     </div>
 </sec:authorize>
 <sec:authorize access="!hasRole('ROLE_MODERATOR')">
-    <c:import url="403.jsp"/>
+    <c:import url="../errors/403.jsp"/>
 </sec:authorize>
 
 

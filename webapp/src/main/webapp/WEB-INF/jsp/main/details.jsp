@@ -20,7 +20,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body id="grad">
-<c:import url="navBar.jsp">
+<c:import url="../common/navBar.jsp">
 
 </c:import>
 <div class="container my-1">
@@ -644,7 +644,7 @@
         </c:choose>
     </div>
     <div class="m-1">
-        <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+        <c:import url="/WEB-INF/jsp/common/pagination.jsp">
             <c:param name="mediaPages" value="${numberOfPages}"/>
             <c:param name="currentPage" value="${currentPage + 1}"/>
             <c:param name="url" value="/details/${media.mediaId}"/>

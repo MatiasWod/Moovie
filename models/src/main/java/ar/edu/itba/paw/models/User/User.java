@@ -34,6 +34,8 @@ public class User {
             "(SELECT COUNT(ml.moovielistid) FROM moovielistslikes mll LEFT OUTER JOIN moovielists ml ON ml.moovielistid = mll.moovielistid WHERE ml.userid = userId) )")
     private int milkyPoints;
 
+    @Transient
+    private boolean hasBadge;
 
 //    @OneToMany(mappedBy = "user")
 //    final private Set<MoovieListLikes> likes = new HashSet<>();
@@ -128,4 +130,7 @@ public class User {
         }
     }
 
+    public boolean isHasBadge() {
+        return milkyPoints >= BadgeLimits.POINTS_FOR_SIMPLE_BADGE.getLimit();
+    }
 }

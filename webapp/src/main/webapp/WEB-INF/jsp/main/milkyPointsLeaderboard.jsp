@@ -17,7 +17,7 @@
     <script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=82"></script>
 </head>
 <body>
-<c:import url="navBar.jsp"/>
+<c:import url="../common/navBar.jsp"/>
 <div class="container d-flex flex-column">
 
     <div class="flex-row d-flex text-center">
@@ -64,7 +64,9 @@
                     <td>
                         <a href="${pageContext.request.contextPath}/profile/${user.username}"
                            style="text-decoration: none; color: inherit;">
-                        <div class="col-auto"><c:out value="${user.username}"/></div>
+                        <div class="col-auto"><c:out value="${user.username}"/><c:if test="${user.hasBadge}"><i class="bi bi-trophy"></i></c:if>
+                        </div>
+
                         </a>
                     </td>
 
@@ -106,7 +108,7 @@
     </c:choose>
 </table>
 </div>
-<c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+<c:import url="/WEB-INF/jsp/common/pagination.jsp">
     <c:param name="mediaPages" value="${numberOfPages}"/>
     <c:param name="currentPage" value="${currentPage + 1}"/>
     <c:param name="url" value="${urlBase}"/>

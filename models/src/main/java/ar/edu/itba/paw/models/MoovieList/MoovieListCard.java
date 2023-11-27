@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.models.MoovieList;
 
+import ar.edu.itba.paw.models.User.BadgeLimits;
+import ar.edu.itba.paw.models.User.User;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
@@ -16,8 +18,9 @@ public class MoovieListCard {
     @Column(name = "moovielistId")
     private int moovieListId;
 
-    @Column
-    private int userId;
+    @ManyToOne
+    @JoinColumn(name = "userId", nullable = false)
+    private User user;
 
     @Column(nullable = false)
     private String name;
@@ -27,9 +30,6 @@ public class MoovieListCard {
 
     @Column(nullable = false)
     private int type;
-
-    @Formula("(SELECT users.username FROM users WHERE users.userid = userid)")
-    private String username;
 
     @Formula("(SELECT COUNT(*) FROM moovielistslikes mll WHERE mll.moovielistid = moovielistid)")
     private int likeCount;
@@ -55,15 +55,15 @@ public class MoovieListCard {
     @Transient
     private boolean currentUserHasFollowed;
 
+
+
     public MoovieListCard(){}
 
-    public MoovieListCard(int moovieListId, int userId, String name, String username, String description, int likeCount, int followerCount, int type, int size, int moviesAmount, String images) {
+    public MoovieListCard(int moovieListId,  String name,  String description, int likeCount, int followerCount, int type, int size, int moviesAmount, String images) {
         this.moovieListId = moovieListId;
-        this.userId = userId;
         this.name = name;
         this.type = type;
         this.description = description;
-        this.username = username;
         this.likeCount = likeCount;
         this.followerCount = followerCount;
         this.size = size;
@@ -71,14 +71,12 @@ public class MoovieListCard {
         this.images = images;
     }
 
-    public MoovieListCard(int moovieListId, int userId, String name, String username, String description, int likeCount, int followerCount, int type, int size, int moviesAmount,
+    public MoovieListCard(int moovieListId,  String name,  String description, int likeCount, int followerCount, int type, int size, int moviesAmount,
                           String images, int currentUserWatchAmount, boolean currentUserHasLiked, boolean currentUserHasFollowed) {
         this.moovieListId = moovieListId;
-        this.userId = userId;
         this.name = name;
         this.type = type;
         this.description = description;
-        this.username = username;
         this.likeCount = likeCount;
         this.followerCount = followerCount;
         this.size = size;
@@ -94,7 +92,7 @@ public class MoovieListCard {
     }
 
     public int getUserId() {
-        return userId;
+        return user.getUserId();
     }
 
     public String getName() {
@@ -110,7 +108,7 @@ public class MoovieListCard {
     }
 
     public String getUsername() {
-        return username;
+        return user.getUsername();
     }
 
     public int getLikeCount() {
@@ -170,9 +168,6 @@ public class MoovieListCard {
         this.moovieListId = moovieListId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
 
     public void setName(String name) {
         this.name = name;
@@ -186,9 +181,6 @@ public class MoovieListCard {
         this.type = type;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     public void setLikeCount(int likeCount) {
         this.likeCount = likeCount;
@@ -226,5 +218,9 @@ public class MoovieListCard {
 
     public void setCurrentUserHasFollowed(boolean currentUserHasFollowed) {
         this.currentUserHasFollowed = currentUserHasFollowed;
+    }
+
+    public boolean isHasBadge() {
+        return user.isHasBadge();
     }
 }

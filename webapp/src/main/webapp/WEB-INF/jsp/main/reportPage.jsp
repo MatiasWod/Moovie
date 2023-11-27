@@ -21,7 +21,7 @@
 
 </head>
 <body style="background: whitesmoke">
-<c:import url="navBar.jsp"/>
+<c:import url="../common/navBar.jsp"/>
 
 <div style="border: solid black; min-width: 40%; min-height: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" class="container-gray justify-content-center p-1 d-flex flex-column">
     <div class="d-flex justify-content-between align-items-center mt-2 m-1">
