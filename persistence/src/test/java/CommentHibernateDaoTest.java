@@ -56,11 +56,4 @@ public class CommentHibernateDaoTest {
         Assert.assertEquals(TO_INSERT_COMMENT_USER_ID,commentList.get(0).getCommentId());
     }
 
-//    @Rollback
-//    @Test
-//    public void deleteCommentFromReview(){
-//        Assert.assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, COMMENTS_TABLE, String.format("userid = '%d'", INSERTED_COMMENT_USER_ID)));
-//        commentDao.deleteComment(commentDao.getComments(INSERTED_COMMENT_REVIEW_ID,INSERTED_COMMENT_USER_ID,PAGE_SIZE,0).get(0).getCommentId());
-//        Assert.assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, COMMENTS_TABLE, String.format("userid = '%d'", INSERTED_COMMENT_USER_ID)));
-//    }
 }
