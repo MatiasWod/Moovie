@@ -1,12 +1,13 @@
 package ar.edu.itba.paw.models.Comments;
 
 
-import ar.edu.itba.paw.models.Review.Review;
+import ar.edu.itba.paw.models.Reports.CommentReport;
 import ar.edu.itba.paw.models.User.User;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "comments")
@@ -56,6 +57,9 @@ public class Comment implements Serializable {
     private int privacyReports;
     @Formula("(SELECT COUNT(*) FROM reportscomments rc WHERE rc.type = 1 AND rc.commentid = commentId)")
     private int abuseReports;
+
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    List<CommentReport> commentReports;
 
     Comment() {
 

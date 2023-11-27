@@ -21,6 +21,10 @@ public interface MediaDao {
     int getMediaCount(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang);
 
 
+    //get watchlist/watched status for user
+    boolean getWatchlistStatus(int mediaId, int userId);
+    boolean getWatchedStatus(int mediaId, int userId);
+
     // search creators
     int getDirectorsForQueryCount(String query, int size);
     List<Director> getDirectorsForQuery(String query, int size);

@@ -126,6 +126,13 @@
 
         <c:choose>
             <c:when test="${param.list == 'comments' || param.list == null || param.list == '' }">
+                <c:if test="${commentList.size() == 0}">
+                    <div class="d-flex justify-content-center">
+                        <h3>
+                            <spring:message code="report.noComment"/>
+                        </h3>
+                    </div>
+                </c:if>
                 <c:forEach items="${commentList}" var="review">
                     <div class="card d-flex m-1">
                         <div class="card-body m-1">
@@ -161,21 +168,25 @@
                             <p class="card-text"><c:out value="${review.content}"/></p>
                             <hr>
                             <div class="d-flex justify-content-evenly">
+                                <button onclick="openPopup('comment${review.commentId}')" class="btn btn-lg btn-warning"><spring:message code="details.delete"/></button>
                                 <button onclick="openPopup('ban${review.commentId}')" class="btn btn-lg btn-danger"><spring:message code="profile.banUser"/></button>
                             </div>
                         </div>
                     </div>
                     <div class="ban${review.commentId}-overlay popup-overlay" onclick="closePopup('ban${review.commentId}')"></div>
                     <div style="background-color: transparent; box-shadow: none" class="popup ban${review.commentId}">
-                        <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
+                        <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-warning" role="alert">
                             <h5 class="alert-heading"><spring:message code="profile.confirmUserBan"/></h5>
                             <p><spring:message code="profile.banPrompt"/></p>
-                            <div class="d-flex justify-content-evenly">
-                                <form class="m-0" action="${pageContext.request.contextPath}/banUser/${review.userId}" method="post">
-                                    <button type="submit" class="btn btn-danger"><spring:message code="profile.banUser"/></button>
-                                </form>
-                                <button type="button" onclick="closePopup('ban${review.commentId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
-                            </div>
+
+                            <form class="m-0" action="${pageContext.request.contextPath}/banUser/${review.userId}" method="post">
+                                <spring:message code="profile.explainBanPlaceholder" var="explainBanPlaceholder"/>
+                                <textarea name="message" id="message" rows="6" cols="50" placeholder='${explainBanPlaceholder}' maxlength="500"></textarea>
+                                <div class="d-flex justify-content-evenly">
+                                    <button type="submit" class="btn btn-danger" id="banUserButton"><spring:message code="profile.banUser"/></button>
+                                    <button type="button" onclick="closePopup('ban${review.commentId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                     <div class="comment${review.commentId}-overlay popup-overlay" onclick="closePopup('comment${review.commentId}')"></div>
@@ -188,13 +199,20 @@
                                     <input type="hidden" name="reviewId" value="${review.commentId}"/>
                                     <button type="submit" class="btn btn-danger"><spring:message code="details.delete"/></button>
                                 </form>
-                                <button type="button" onclick="closePopup('review${ml.moovieListId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
+                                <button type="button" onclick="closePopup('comment${review.commentId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
                             </div>
                         </div>
                     </div>
                 </c:forEach>
             </c:when>
             <c:when test="${param.list == 'ml'}">
+                <c:if test="${mlList.size() == 0}">
+                    <div class="d-flex justify-content-center">
+                        <h3>
+                            <spring:message code="report.noList"/>
+                        </h3>
+                    </div>
+                </c:if>
                 <div class="d-flex flex-wrap m-1 justify-content-center">
                     <c:forEach items="${mlList}" var="ml">
                         <div class="card m-2" style="width: 18rem;">
@@ -216,9 +234,12 @@
                                 <p><spring:message code="profile.banPrompt"/></p>
                                 <div class="d-flex justify-content-evenly">
                                     <form class="m-0" action="${pageContext.request.contextPath}/banUser/${ml.userId}" method="post">
-                                        <button type="submit" class="btn btn-danger"><spring:message code="profile.banUser"/></button>
+                                        <textarea name="message"  rows="6" cols="50" placeholder='${explainBanPlaceholder}' maxlength="500"></textarea>
+                                        <div class="d-flex justify-content-evenly">
+                                            <button type="submit" class="btn btn-danger"><spring:message code="profile.banUser"/></button>
+                                            <button type="button" onclick="closePopup('ban${ml.moovieListId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
+                                        </div>
                                     </form>
-                                    <button type="button" onclick="closePopup('ban${ml.moovieListId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
                                 </div>
                             </div>
                         </div>
@@ -241,6 +262,13 @@
                 </div>
             </c:when>
             <c:when test="${param.list == 'mlReviews'}">
+                <c:if test="${mlReviewList.size() == 0}">
+                    <div class="d-flex justify-content-center">
+                        <h3>
+                            <spring:message code="report.noListRev"/>
+                        </h3>
+                    </div>
+                </c:if>
                 <c:forEach items="${mlReviewList}" var="review">
                     <div class="card d-flex m-1">
                         <div class="card-body m-1">
@@ -302,16 +330,26 @@
                             <p><spring:message code="profile.banPrompt"/></p>
                             <div class="d-flex justify-content-evenly">
                                 <form class="m-0" action="${pageContext.request.contextPath}/banUser/${review.userId}" method="post">
+                                    <textarea name="message"  rows="6" cols="50" placeholder='${explainBanPlaceholder}' maxlength="500"></textarea>
                                     <input type="hidden" name="reviewId" value="${review.moovieListReviewId}"/>
-                                    <button type="submit" class="btn btn-danger"><spring:message code="profile.banUser"/></button>
+                                    <div class="d-flex justify-content-evenly">
+                                        <button type="submit" class="btn btn-danger"><spring:message code="profile.banUser"/></button>
+                                        <button type="button" onclick="closePopup('ban${review.moovieListReviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
+                                    </div>
                                 </form>
-                                <button type="button" onclick="closePopup('ban${review.moovieListReviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
                             </div>
                         </div>
                     </div>
                 </c:forEach>
             </c:when>
             <c:when test="${param.list == 'reviews'}">
+                <c:if test="${reviewList.size() == 0}">
+                    <div class="d-flex justify-content-center">
+                        <h3>
+                            <spring:message code="report.noReview"/>
+                        </h3>
+                    </div>
+                </c:if>
                 <c:forEach items="${reviewList}" var="review">
                     <div class="card d-flex m-1">
                         <div class="card-body m-1">
@@ -376,16 +414,26 @@
                             <p><spring:message code="profile.banPrompt"/></p>
                             <div class="d-flex justify-content-evenly">
                                 <form class="m-0" action="${pageContext.request.contextPath}/banUser/${review.userId}" method="post">
+                                    <textarea name="message"  rows="6" cols="50" placeholder='${explainBanPlaceholder}' maxlength="500"></textarea>
                                     <input type="hidden" name="reviewId" value="${review.reviewId}"/>
-                                    <button type="submit" class="btn btn-danger"><spring:message code="profile.banUser"/></button>
+                                    <div class="d-flex justify-content-evenly">
+                                        <button type="submit" class="btn btn-danger"><spring:message code="profile.banUser"/></button>
+                                        <button type="button" onclick="closePopup('ban${review.reviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
+                                    </div>
                                 </form>
-                                <button type="button" onclick="closePopup('ban${review.reviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
                             </div>
                         </div>
                     </div>
                 </c:forEach>
             </c:when>
             <c:when test="${param.list == 'banned'}">
+                <c:if test="${bannedList.size() == 0}">
+                    <div class="d-flex justify-content-center">
+                        <h3>
+                            <spring:message code="report.noBan"/>
+                        </h3>
+                    </div>
+                </c:if>
                 <c:forEach items="${bannedList}" var="bannedUser">
                     <div class="card d-flex m-1">
                         <div class="card-body m-1">

@@ -239,14 +239,42 @@
                     </div>
                     <ul class="dropdown-menu scrollable-menu">
                         <c:forEach var="privateList" items="${privateLists}">
-                            <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
-                                <input type="hidden" name="listId" value="${privateList.moovieListId}"/>
-                                <input type="hidden" name="mediaId" value="${media.mediaId}"/>
-                                <li>
-                                    <button class="dropdown-item" type="submit"><c:out
-                                            value="${privateList.name}"/></button>
-                                </li>
-                            </form>
+                            <c:if test="${privateList.name != 'Watched' && privateList.name != 'Watchlist'}">
+                                <!-- Mostrar siempre -->
+                                <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
+                                    <input type="hidden" name="listId" value="${privateList.moovieListId}"/>
+                                    <input type="hidden" name="mediaId" value="${media.mediaId}"/>
+                                    <li>
+                                        <button class="dropdown-item" type="submit"><c:out
+                                                value="${privateList.name}"/></button>
+                                    </li>
+                                </form>
+                            </c:if>
+                            <c:if test="${privateList.name == 'Watched' && !media.watched}">
+                                <!-- Mostrar si media.watched es falso -->
+                                <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
+                                    <input type="hidden" name="listId" value="${privateList.moovieListId}"/>
+                                    <input type="hidden" name="mediaId" value="${media.mediaId}"/>
+                                    <li>
+                                        <button class="dropdown-item" type="submit"><c:out
+                                                value="${privateList.name}"/></button>
+                                    </li>
+                                </form>
+                            </c:if>
+                            <c:if test="${privateList.name == 'Watchlist' && !media.watchlist}">
+                                <!-- Mostrar si media.watchlist es falso -->
+                                <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
+                                    <input type="hidden" name="listId" value="${privateList.moovieListId}"/>
+                                    <input type="hidden" name="mediaId" value="${media.mediaId}"/>
+                                    <li>
+                                        <button class="dropdown-item" type="submit"><c:out
+                                                value="${privateList.name}"/></button>
+                                    </li>
+                                </form>
+                            </c:if>
+
+
+
                         </c:forEach>
                         <c:forEach var="publicList" items="${publicLists}">
                             <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
@@ -621,7 +649,7 @@
                                             </c:forEach>
 
                                         <c:if test="${review.commentCount > 5}">
-                                            <a class="ms-1" href="${pageContext.request.contextPath}/review/${review.reviewId}">
+                                            <a class="ms-1" href="${pageContext.request.contextPath}/review/${media.mediaId}/${review.reviewId}">
                                                 <spring:message code="details.seeMore"/>
                                             </a>
                                         </c:if>

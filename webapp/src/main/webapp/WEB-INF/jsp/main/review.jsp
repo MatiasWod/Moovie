@@ -22,7 +22,7 @@
 </head>
 <body>
 <c:import url="../common/navBar.jsp"/>
-<div class="d-flex justify-content-center">
+<div class="d-flex justify-content-center flex-column">
     <div class="d-flex flex-column flex-grow-1 m-3" >
         <div class="card">
             <div class="card-body">
@@ -75,7 +75,7 @@
                                                 code="details.confirmReviewDeletionPrompt"/></p>
                                         <div class="d-flex justify-content-evenly">
                                             <form class="m-0"
-                                                  action="${pageContext.request.contextPath}/deleteUserReview/${media.mediaId}"
+                                                  action="${pageContext.request.contextPath}/deleteUserReview/${mediaId}"
                                                   method="post">
                                                 <input type="hidden" name="reviewId"
                                                        value="${review.reviewId}"/>
@@ -103,9 +103,9 @@
                                             <h5 class="alert-heading"><spring:message code="details.confirmReviewDeletion"/></h5>
                                             <p><spring:message code="details.confirmReviewDeletionPrompt"/></p>
                                             <div class="d-flex justify-content-evenly">
-                                                <form class="m-0" action="${pageContext.request.contextPath}/deleteReview/${media.mediaId}" method="post">
+                                                <form class="m-0" action="${pageContext.request.contextPath}/deleteReview/${mediaId}" method="post">
                                                     <input type="hidden" name="reviewId" value="${review.reviewId}"/>
-                                                    <input type="hidden" name="path" value="/details/${media.mediaId}"/>
+                                                    <input type="hidden" name="path" value="/details/${mediaId}"/>
                                                     <button type="submit" class="btn btn-danger"><spring:message code="details.delete"/></button>
                                                 </form>
                                                 <button type="button" onclick="closePopup('review${review.reviewId}')" class="btn btn-secondary" id="cancelModButton"><spring:message code="details.cancel"/></button>
@@ -132,13 +132,13 @@
                 <c:forEach items="${review.comments}" var="comment">
                     <div class="mb-2 mt-2 card card-body">
                         <div class="d-flex justify-content-between">
-                            <h6 class="card-title"><a href="${pageContext.request.contextPath}/profile/${comment.username}"><c:out value="${comment.username}"/></a></h6>
+                            <h6 class="card-title"><a href="${pageContext.request.contextPath}/profile/${comment.username}"  style="text-decoration: none; color: black"><c:out value="${comment.username}"/></a></h6>
                             <div class="d-flex">
                                 <p style="margin: 10px">${comment.commentLikes - comment.commentDislikes}<img style="padding-bottom: 6px;" height="37" width="37" src="${pageContext.request.contextPath}/resources/logo.png" alt="moo"></p>
                                 <sec:authorize access="isAuthenticated()">
                                     <form action="${pageContext.request.contextPath}/likeComment" method="post">
                                         <input hidden name="commentId" value="${comment.commentId}">
-                                        <input hidden name="mediaId" value="${comment.reviewId}">
+                                        <input hidden name="mediaId" value="${mediaId}">
                                         <c:if test="${!comment.currentUserHasLiked}">
                                             <button type="submit" class="me-1 btn-sm btn btn-outline-success">
                                                 <i class="m-1 bi bi-hand-thumbs-up"></i>
@@ -152,7 +152,7 @@
                                     </form>
                                     <form action="${pageContext.request.contextPath}/dislikeComment" method="post">
                                         <input hidden name="commentId" value="${comment.commentId}">
-                                        <input hidden name="mediaId" value="${media.mediaId}">
+                                        <input hidden name="mediaId" value="${mediaId}">
                                         <c:if test="${!comment.currentUserHasDisliked}">
                                             <button type="submit" class="btn btn-sm btn-outline-danger">
                                                 <i class="m-1 bi bi-hand-thumbs-down"></i>
@@ -179,14 +179,15 @@
             <%--</c:if>--%>
         </div>
     </div>
-    <div class="d-flex flex-column m-3" style="max-width: 20vw">
-        <div class="card">
-            <div class="card-body">
-                <a href="${pageContext.request.contextPath}/featuredList/topRatedMovies" class="mb-1 card-title">
-                    <spring:message code="review.recommended"/>
-                </a>
-                <c:forEach var="movie" items="${movieList}" end="5">
-                    <a href="${pageContext.request.contextPath}/details/${movie.mediaId}" class="card text-bg-dark m-1">
+    <div style="align-items: center;text-align: center">
+    <a href="${pageContext.request.contextPath}/featuredList/topRatedMovies"  style="text-decoration: none;color: black"> <h2><spring:message
+            code="review.recommended"/></h2> </a>
+    </div>
+    <div class="d-flex flex-row m-3" style="max-width: 100%">
+        <div class="card-group">
+            <c:forEach var="movie" items="${movieList}" end="5">
+                <div class="card text-bg-dark m-1">
+                    <a href="${pageContext.request.contextPath}/details/${movie.mediaId}"  style="text-decoration: none; color: white">
                         <div class="card-img-container">
                             <img class="cropCenter" src="${movie.posterPath}" alt="media poster">
                             <div class="card-img-overlay">
@@ -194,7 +195,7 @@
                                 <div class="d-flex justify-content-evenly">
                                     <p class="card-text">
                                         <i class="bi bi-star-fill"></i>
-                                            <c:out value="${movie.tmdbRating}"/>
+                                        <c:out value="${movie.tmdbRating}"/>
                                     </p>
                                     <p class="card-text">
                                         <fmt:formatDate value="${movie.releaseDate}" pattern="YYYY"/>
@@ -207,18 +208,19 @@
                                 </div>
                                 <div class="d-flex mt-3 justify-content-evenly flex-wrap">
                                     <c:forEach var="provider" items="${movie.providers}" end="1">
-                                        <span class="mt-1 badge text-bg-light border border-black">
-                                            <img src="${provider.logoPath}" alt="provider logo" style="height: 1.4em; margin-right: 5px;">
-                                        </span>
+                                    <span class="mt-1 badge text-bg-light border border-black">
+                                        <img src="${provider.logoPath}" alt="provider logo" style="height: 1.4em; margin-right: 5px;">
+                                    </span>
                                     </c:forEach>
                                 </div>
                             </div>
                         </div>
                     </a>
-                </c:forEach>
-            </div>
+                </div>
+            </c:forEach>
         </div>
     </div>
+
 </div>
 </body>
 </html>
