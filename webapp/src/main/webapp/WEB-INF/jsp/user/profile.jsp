@@ -106,7 +106,7 @@
                     <div class="m-1 d-flex align-items-center">
                         <h5>
                             <i class="bi-star"></i>
-                                <c:out value="${profile.reviewsCount}"/>
+                                <c:out value="${profile.reviewsMediaCount}"/>
                         </h5>
                     </div>
                     <div class="m-1 d-flex align-items-center">

@@ -23,6 +23,9 @@ public class Profile {
             " + (SELECT COUNT(*) FROM comments c WHERE c.userId = userId) )")
     private int reviewsCount;
 
+    @Formula("(SELECT COUNT(*) FROM reviews r WHERE r.userId = userId)")
+    private int reviewsMediaCount;
+
     @Formula("(SELECT " +
             "(SELECT COUNT(rl.reviewid) FROM reviewslikes rl LEFT OUTER JOIN reviews r ON r.reviewid = rl.reviewid WHERE r.userid = userId) + " +
             "(SELECT COUNT(mlrl.moovielistreviewid) FROM moovielistsreviewslikes mlrl LEFT OUTER JOIN moovielistsreviews mlr ON mlr.moovielistreviewid = mlrl.moovielistreviewid WHERE mlr.userid = userId) + " +
@@ -69,6 +72,10 @@ public class Profile {
 
     public int getReviewsCount() {
         return reviewsCount;
+    }
+
+    public int getReviewsMediaCount() {
+        return reviewsMediaCount;
     }
 
     public int getMilkyPoints() {
