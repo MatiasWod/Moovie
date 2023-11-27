@@ -332,12 +332,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <p class="card-text"><c:out value="${review.content}"/></p>
+                            <p class="card-text"><c:out value="${review.reviewContent}"/></p>
                             <hr>
                             <div class="d-flex justify-content-evenly">
-                                <button onclick="openPopup('review${review.reviewId}')" class="btn btn-lg btn-warning"><spring:message code="details.delete"/></button>
-                                <button onclick="openPopup('ban${review.reviewId}')" class="btn btn-lg btn-danger"><spring:message code="profile.banUser"/></button>
-                                <button onclick="openPopup('resolve${review.reviewId}')" class="btn m-1 btn-info"><spring:message code="report.resolve"/></button>
+                                <button onclick="openPopup('review${review.moovieListReviewId}')" class="btn btn-lg btn-warning"><spring:message code="details.delete"/></button>
+                                <button onclick="openPopup('ban${review.moovieListReviewId}')" class="btn btn-lg btn-danger"><spring:message code="profile.banUser"/></button>
+                                <button onclick="openPopup('resolve${review.moovieListReviewId}')" class="btn btn-lg btn-info"><spring:message code="report.resolve"/></button>
                             </div>
                         </div>
                     </div>
