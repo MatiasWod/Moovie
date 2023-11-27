@@ -204,8 +204,7 @@ public class ListController {
             mav.addObject("numberOfPages",numberOfPages);
 
             //TODO correct pagination
-            int pagePending = 0;
-            mav.addObject("reviews", reviewService.getMoovieListReviewsByMoovieListId(moovieListId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), pagePending));
+            mav.addObject("reviews", reviewService.getMoovieListReviewsByMoovieListId(moovieListId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1));
             int numberOfReviews = reviewService.getMoovieListReviewByMoovieListIdCount(moovieListId);
             mav.addObject("currentReviewPage", pageReviewNumber -1 );
             int numberOfReviewPages = (int) Math.ceil(numberOfReviews * 1.0 / PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize());
@@ -304,8 +303,10 @@ public class ListController {
             User currentUser=userService.getInfoOfMyUser();
             mav.addObject("currentUser", currentUser);
             mav.addObject("watchedListId",moovieListService.getMoovieListCards("Watched",currentUser.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId());
+            mav.addObject("watchlistId",moovieListService.getMoovieListCards("Watchlist",currentUser.getUsername(),MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId());
+            mav.addObject("isOwner", currentUser.getUsername().equals(moovieListCard.getUsername()));
         }catch (Exception e){
-
+            mav.addObject("watchedCount",0);
         }
         int mediaCountForMoovieList = PagingSizes.FEATURED_MOOVIE_LIST_DEFAULT_TOTAL_CONTENT.getSize();
         int numberOfPages = (int) Math.ceil(mediaCountForMoovieList * 1.0 / pagesSize);

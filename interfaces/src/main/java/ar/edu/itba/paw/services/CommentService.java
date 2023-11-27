@@ -10,6 +10,9 @@ public interface CommentService {
 
     public Comment getCommentById(int commentId);
 
+    public boolean userHasLiked(int commentId, int userId);
+    public boolean userHasDisliked(int commentId, int userId);
+
     public void likeComment(int commentId);
 
     public void removeLikeComment(int commentId);

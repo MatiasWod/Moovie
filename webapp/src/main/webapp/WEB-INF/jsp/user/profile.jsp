@@ -178,6 +178,14 @@
             </div>
         </div>
         </c:if>
+        <c:if test="${not empty param.error}">
+        <div class="alert alert-danger alert-dismissible fade show" id="errorAlert" role="alert">
+            <div class="d-flex justify-content-between align-items-center">
+                <div><c:out value="${param.error}"/></div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+        </c:if>
         <hr class="my-8">
 
         <div class="btn-group m-2" role="group" aria-label="Basic radio toggle button group">
