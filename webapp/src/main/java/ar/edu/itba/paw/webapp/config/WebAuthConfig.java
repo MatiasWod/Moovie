@@ -103,8 +103,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/login", "/register").anonymous()
                     .antMatchers( "/createreview", "/uploadProfilePicture","/createrating","/insertMediaToList","/like", "/createlist", "/profile/**"
                             ,"/createListAction","/deleteMediaFromList","/likeReview","/unlikeReview","/editList/**", "/updateMoovieListOrder/**", "/followList","/likeMoovieListReview","/unlikeMoovieListReview","/MoovieListReview",
-                            "/likeComment","/dislikeComment","/createcomment").hasRole( "USER")
-                    .antMatchers( "/deleteReview/**", "/deleteList/**","/banUser/**","/unbanUser/**","/makeUserMod/**").hasRole("MODERATOR")
+                            "/likeComment","/dislikeComment","/createcomment","/reports/new").hasRole( "USER")
+                    .antMatchers( "/deleteReview/**", "/deleteList/**","/banUser/**","/unbanUser/**","/makeUserMod/**","/deleteUserMoovieListReviewMod/**","/reports/review/**").hasRole("MODERATOR")
                     .antMatchers("/**").permitAll()
                 .and().exceptionHandling()
                     .accessDeniedPage("/403")
