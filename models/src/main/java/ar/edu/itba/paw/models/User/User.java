@@ -61,7 +61,7 @@ public class User {
         this.username = builder.username;
         this.password = builder.password;
         this.role =  builder.role;
-        this.milkyPoints = milkyPoints;
+        this.milkyPoints = builder.milkyPoints;
     }
 
 //    public Set<MoovieListFollowers> getFollowers() {
@@ -92,6 +92,10 @@ public class User {
         return role;
     }
 
+    public void setRole(int role){
+        this.role = role;
+    }
+
     public boolean getHasPfp(){ return hasPfp; }
 
     public int getMilkyPoints() {
@@ -103,13 +107,15 @@ public class User {
         private final String username;
         private final String password;
         private final int role;
+        private final int milkyPoints;
         private Integer userId = null;
 
-        public Builder(String username, String email, String password, int role) {
+        public Builder(String username, String email, String password, int role, int milkyPoints) {
             this.username = username;
             this.email = email;
             this.password = password;
             this.role = role;
+            this.milkyPoints = milkyPoints;
         }
 
         public Builder userId(int userId) {

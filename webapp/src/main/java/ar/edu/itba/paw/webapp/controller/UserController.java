@@ -94,7 +94,7 @@ public class UserController {
                 if (usernamePasswordAuthenticationToken.isAuthenticated()) {
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 }
-                LOGGER.info("Auto-login succesful for {}.",userDetails.getUsername());
+                LOGGER.info("Auto-login succesful for {} {}.",userDetails.getUsername(),userDetails.getAuthorities());
                 return new ModelAndView("redirect:/");
             } else {
                 redirectAttributes.addAttribute("token", token);

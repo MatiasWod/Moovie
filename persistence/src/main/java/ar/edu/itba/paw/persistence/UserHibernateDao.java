@@ -24,11 +24,12 @@ public class UserHibernateDao implements UserDao{
     @PersistenceContext
     private EntityManager entityManager;
 
+    private static final int INITIAL_MILKY_POINTS = 0;
 
     //Revisar, está mal así
     @Override
     public User createUser(String username, String email, String password) {
-        final User toCreateUser = new User.Builder(username,email,password,UserRoles.NOT_AUTHENTICATED.getRole()).build();
+        final User toCreateUser = new User.Builder(username,email,password,UserRoles.NOT_AUTHENTICATED.getRole(),INITIAL_MILKY_POINTS).build();
         entityManager.persist(toCreateUser);
         return toCreateUser;
     }
@@ -47,10 +48,9 @@ public class UserHibernateDao implements UserDao{
 
     @Override
     public void confirmRegister(int userId, int authenticated) {
-        entityManager.createNativeQuery("UPDATE users SET role = :role WHERE userId = :userId")
-                .setParameter("role",authenticated)
-                .setParameter("userId",userId)
-                .executeUpdate();
+        User user = entityManager.find(User.class,userId);
+        user.setRole(authenticated);
+        entityManager.merge(user);
     }
 
     @Override
