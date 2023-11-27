@@ -70,7 +70,7 @@ public class ReviewHibernateDao implements ReviewDao {
     public List<Review> getMovieReviewsFromUser(int currentUserId, int userId, int size, int pageNumber) {
         final String jpql = "SELECT new ar.edu.itba.paw.models.Review.Review ( " +
                 " r , COALESCE((SELECT 1 FROM ReviewsLikes rl WHERE rl.review.reviewId = r.reviewId AND rl.user.userId = :currentUserId), 0) ) " +
-                " FROM Review r WHERE r.userId = :userId";
+                " FROM Review r WHERE r.user.userId = :userId";
 
         TypedQuery<Review> query = em.createQuery(jpql, Review.class)
                 .setParameter("userId", userId).setParameter("currentUserId", currentUserId);
@@ -119,7 +119,7 @@ public class ReviewHibernateDao implements ReviewDao {
     public List<MoovieListReview> getMoovieListReviewsFromUser(int currentUserId, int userId, int size, int pageNumber) {
         final String jpql = "SELECT new ar.edu.itba.paw.models.Review.MoovieListReview ( " +
                             " r , COALESCE((SELECT 1 FROM MoovieListsReviewsLikes rl WHERE rl.moovieListReview.moovieListReviewId = r.moovieListReviewId AND rl.user.userId = :currentUserId), 0)  ) " +
-                            " FROM MoovieListReview r WHERE r.userId = :userId ";
+                            " FROM MoovieListReview r WHERE r.user.userId = :userId ";
 
         TypedQuery<MoovieListReview> query = em.createQuery(jpql, MoovieListReview.class)
                 .setParameter("userId", userId).setParameter("currentUserId", currentUserId);
@@ -157,7 +157,7 @@ public class ReviewHibernateDao implements ReviewDao {
                 em.merge(review);
             }
         }else{
-            MoovieListReview review = em.createQuery("SELECT r FROM MoovieListReview r WHERE r.userId = :userId AND r.moovieListId = :mediaId", MoovieListReview.class)
+            MoovieListReview review = em.createQuery("SELECT r FROM MoovieListReview r WHERE r.user.userId = :userId AND r.moovieListId = :mediaId", MoovieListReview.class)
                     .setParameter("userId", userId)
                     .setParameter("mediaId", mediaId)
                     .getSingleResult();
