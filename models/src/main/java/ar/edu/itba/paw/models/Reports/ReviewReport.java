@@ -17,7 +17,7 @@ public class ReviewReport implements Serializable {
     private int reportId;
 
     @Column(name = "type", nullable = false)
-    private String type;
+    private int type;
 
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
@@ -38,20 +38,21 @@ public class ReviewReport implements Serializable {
     
     ReviewReport(){}
 
-    public ReviewReport(String type, String content, User reportedBy, Review review)
+    public ReviewReport(int type, String content, User reportedBy, Review review)
     {
         this.review = review;
         this.resolved = false;
         this.reportedBy = reportedBy;
         this.content = content;
         this.type = type;
+        this.report_date = LocalDateTime.now();
     }
 
     public void setReportId(int reportId) {
         this.reportId = reportId;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 
@@ -79,7 +80,7 @@ public class ReviewReport implements Serializable {
         return reportId;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 

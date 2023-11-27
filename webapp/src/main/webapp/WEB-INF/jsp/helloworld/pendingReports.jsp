@@ -37,6 +37,22 @@
 <c:import url="navBar.jsp"/>
 
 <sec:authorize access="hasRole('ROLE_MODERATOR')">
+    <c:if test="${not empty errorMessage}">
+        <div class="alert alert-danger alert-dismissible fade show m-2" id="errorAlert" role="alert">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>${errorMessage} <a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}">${insertedMooovieList.name}</a></div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </c:if>
+    <c:if test="${not empty successMessage}">
+        <div class="alert alert-success alert-dismissible fade show m-2" id="errorAlert" role="alert">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>${successMessage} <a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}">${insertedMooovieList.name}</a></div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </c:if>
     <div class="container d-flex flex-column">
         <div class="d-flex justify-content-center">
             <h2><spring:message code="report.adminPage"/></h2>

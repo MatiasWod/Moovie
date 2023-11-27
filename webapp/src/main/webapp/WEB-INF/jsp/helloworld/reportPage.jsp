@@ -39,7 +39,7 @@
             </div>
         </div>
     </c:if>
-    <form:form modelAttribute="reportForm" action="/reports/new?id=${param.id}&reportedBy=${param.reportedBy}&type=${param.type}" method="post" cssClass="d-flex flex-column m-3 flex-grow-1">
+    <form:form modelAttribute="reportForm" action="${pageContext.request.contextPath}/reports/new?id=${param.id}&reportedBy=${param.reportedBy}&type=${param.type}" method="post" cssClass="d-flex flex-column m-3 flex-grow-1">
         <form:input path="reportType" type="hidden"/>
         <form:errors path="reportType" cssClass="error m-1" element="p"/>
         <div class="d-flex m-1">

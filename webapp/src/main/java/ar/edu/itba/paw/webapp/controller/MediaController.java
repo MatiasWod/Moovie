@@ -70,6 +70,9 @@ public class MediaController {
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private ModeratorService moderatorService;
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MediaController.class);
 
@@ -353,7 +356,7 @@ public class MediaController {
                                      @PathVariable int mediaId,
                                      HttpServletRequest request) {
         try {
-            reviewService.deleteReview(reviewId, ReviewTypes.REVIEW_MEDIA);
+            moderatorService.deleteReview(reviewId, mediaId, ReviewTypes.REVIEW_MEDIA);
             redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("details.reviewDeletedSuccess",null, LocaleContextHolder.getLocale()));
         }catch (Exception e){
             redirectAttributes.addFlashAttribute("errorMessage",  messageSource.getMessage("details.reviewDeletedFailure",null, LocaleContextHolder.getLocale()));

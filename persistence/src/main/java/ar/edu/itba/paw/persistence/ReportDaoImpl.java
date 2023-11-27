@@ -8,6 +8,7 @@ import ar.edu.itba.paw.models.Reports.MoovieListReviewReport;
 import ar.edu.itba.paw.models.Reports.ReviewReport;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
+import ar.edu.itba.paw.models.User.User;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
@@ -81,16 +82,10 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public void reportReview(int reviewId, int userId, int type, String content) {
-        String sql = "INSERT INTO reportsreviews " +
-                "(type, content, reportedBy, reviewId) " +
-                "VALUES ( :type, :content, :userId , :reviewId )";
-
-        em.createNativeQuery(sql)
-                .setParameter("type", type)
-                .setParameter("content", content)
-                .setParameter("userId", userId)
-                .setParameter("reviewId", reviewId)
-                .executeUpdate();
+        Review review= em.find(Review.class, reviewId);
+        User user = em.find(User.class, userId);
+        ReviewReport report = new ReviewReport(type,content, user, review);
+        em.persist(report);
     }
 
     @Override
