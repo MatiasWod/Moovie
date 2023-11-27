@@ -71,7 +71,7 @@ public class ListController {
                                 @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
         LOGGER.info("Attempting to get lists for /lists.");
 
-        final ModelAndView mav = new ModelAndView("helloworld/viewLists");
+        final ModelAndView mav = new ModelAndView("moovieList/viewLists");
 
         mav.addObject("showLists", moovieListService.getMoovieListCards(search, null, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
                 orderBy, order,
@@ -109,7 +109,7 @@ public class ListController {
                                    @RequestParam(value = "page",defaultValue = "1") final int pageNumber,
                                    @ModelAttribute("ListForm") final CreateListForm form) {
         LOGGER.info("Attempting to get lists for /createLists.");
-        final ModelAndView mav = new ModelAndView("helloworld/createList");
+        final ModelAndView mav = new ModelAndView("main/createList");
         int numberOfPages;
         int mediaCount;
         mav.addObject("searchMode",false);
@@ -168,7 +168,7 @@ public class ListController {
                              ) {
         LOGGER.info("Attempting to get list with id: {} for /list.", moovieListId);
 
-        final ModelAndView mav = new ModelAndView("helloworld/moovieList");
+        final ModelAndView mav = new ModelAndView("moovieList/moovieList");
         int pagesSize= PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
         try{
             MoovieListDetails myList=moovieListService.getMoovieListDetails(moovieListId,null,null,orderBy,order,pagesSize,pageNumber - 1);
@@ -222,24 +222,24 @@ public class ListController {
             return mav;
         } catch (MoovieListNotFoundException e){
             LOGGER.info("Failed to return list with id: {} for /list. {} ", moovieListId, e);
-            return new ModelAndView("helloworld/404").addObject("extrainfo", "Error retrieving list, no list for id: "+ moovieListId);
+            return new ModelAndView("errors/404").addObject("extrainfo", "Error retrieving list, no list for id: "+ moovieListId);
         }
     }
 
     @RequestMapping(value = "/editList/{id:\\d+}")
     public ModelAndView editList(@PathVariable("id") final int moovieListId, @RequestParam(value = "page", defaultValue = "1") final int pageNumber) {
         LOGGER.info("Attempting to get list with id: {} , for /editList", moovieListId);
-        final ModelAndView mav = new ModelAndView("helloworld/editList");
+        final ModelAndView mav = new ModelAndView("moovieList/editList");
         try {
             User currentUser = userService.getInfoOfMyUser();
             mav.addObject("currentUser", currentUser);
             if (!currentUser.getUsername().equals(moovieListService.getMoovieListCardById(moovieListId).getUsername())) {
                 LOGGER.info("Failed to get list with id: {} , for /editList", moovieListId);
-                return new ModelAndView("helloworld/404");
+                return new ModelAndView("errors/404");
             }
         } catch (Exception e) {
             LOGGER.info("Failed to get list with id: {} , for /editList", moovieListId);
-            return new ModelAndView("helloworld/404");
+            return new ModelAndView("errors/404");
         }
         int pagesSize = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
         MoovieListDetails myList = moovieListService.getMoovieListDetails(moovieListId, null, null, MediaFilters.CUSTOM_ORDER.getFilter(), MediaFilters.ASC.getFilter(), pagesSize, pageNumber - 1);
@@ -268,7 +268,7 @@ public class ListController {
             moovieListService.updateMoovieListOrder(listId,currentPageNumber,toPrevArray,currentArray,toNextArray);
             return new ModelAndView("redirect:/list/" + listId);
         }catch (InvalidAccessToResourceException e) {
-            return new ModelAndView("helloworld/404").addObject("extrainfo", "Can't modify list that are not your own");
+            return new ModelAndView("errors/404").addObject("extrainfo", "Can't modify list that are not your own");
         }
 //        } catch (Exception e) {
 //            return new ModelAndView("helloworld/404").addObject("extrainfo", "Failed updating order");
@@ -284,7 +284,7 @@ public class ListController {
                                      @RequestParam(value = "page",defaultValue = "1") final int pageNumber){
         LOGGER.info("Attempting to get featured list : {} for /featuredlist.", list);
 
-        final ModelAndView mav = new ModelAndView("helloworld/moovieList");
+        final ModelAndView mav = new ModelAndView("moovieList/moovieList");
         int pagesSize= PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
         MoovieListCard moovieListCard;
         List<Media> moovieListContentList;
@@ -298,7 +298,7 @@ public class ListController {
         }
         else {
             LOGGER.info("Failed to return featured list : {} for /featuredlist.", list);
-            return new ModelAndView("helloworld/404");
+            return new ModelAndView("errors/404");
         }
         try {
             User currentUser=userService.getInfoOfMyUser();
