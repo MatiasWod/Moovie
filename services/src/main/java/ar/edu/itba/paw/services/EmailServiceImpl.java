@@ -123,6 +123,18 @@ public class EmailServiceImpl implements EmailService{
 
     @Async
     @Override
+    public void sendNotificationFollowMilestoneMoovieListMail(User user, int followCount, MoovieList moovieList, Locale locale) {
+        final String subject = messageSource.getMessage("email.notificationFollowMilestoneMoovieListSubject",null,locale);
+        Map<String, Object> mailMap = new HashMap<>();
+        mailMap.put("username", user.getUsername());
+        mailMap.put("follows", followCount);
+        mailMap.put("moovieListId", moovieList.getMoovieListId());
+        mailMap.put("moovieListName", moovieList.getName());
+        sendEmail(user.getEmail(),subject,"notificationFollowMilestoneMoovieList.html",mailMap,locale);
+    }
+
+    @Async
+    @Override
     public void sendVerificationEmail(User user, String token, Locale locale) {
         final String subject = messageSource.getMessage("email.confirmationSubject",null,locale);
         final Map<String,Object> mailMap = new HashMap<>();

@@ -23,7 +23,7 @@ public interface EmailService {
 
     void sendNotificationLikeMilestoneMoovieListMail(User user, int likeCount, MoovieList moovieList, Locale locale);
 
+    void sendNotificationFollowMilestoneMoovieListMail(User user, int followCount, MoovieList moovieList, Locale locale);
+
     void sendVerificationEmail(User user, String token, Locale locale);
-
-
 }

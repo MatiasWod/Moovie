@@ -352,15 +352,7 @@ public class MoovieListServiceImpl implements MoovieListService{
                 if (followCountForMoovieList != 0 && (followCountForMoovieList % EVERY_THIS_AMOUNT_OF_FOLLOWS_SEND_EMAIL) == 0) {
                     MoovieList mvlAux = getMoovieListById(moovieListId);
                     User toUser = userService.findUserById(mvlAux.getUserId());
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("username", toUser.getUsername());
-                    map.put("follows", followCountForMoovieList);
-                    map.put("moovieListId", mvlAux.getMoovieListId());
-                    map.put("moovieListName", mvlAux.getName());
-                    emailService.sendEmail(toUser.getEmail(),
-                            "email.notificationFollowMilestoneMoovieListSubject",
-                            "notificationFollowMilestoneMoovieList.html",
-                            map);
+                    emailService.sendNotificationFollowMilestoneMoovieListMail(toUser,followCountForMoovieList,mvlAux,LocaleContextHolder.getLocale());
                     LOGGER.info("notificationFollowMilestoneMoovieList mail was sent to user : {} for the list: {}.", toUser.getUsername(), moovieListId);
                 }
             }
