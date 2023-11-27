@@ -312,15 +312,15 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public List<Media> getFeaturedMoovieListContent( int mediaType, int userid, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber) {
-        StringBuilder firstQuery = new StringBuilder("SELECT m.mediaId FROM Media m ");
+        String firstQuery = "SELECT m.mediaId FROM Media m ";
 
         if (mediaType != MediaTypes.TYPE_ALL.getType()) {
-            firstQuery.append(" WHERE m.type = :type ");
+            firstQuery+= " WHERE m.type = :type ";
         }
 
-        firstQuery.append(" ORDER BY m.").append(featuredListOrder).append(" DESC");
+        firstQuery += " ORDER BY m." + featuredListOrder + " DESC";
 
-        TypedQuery<Integer> q1 = em.createQuery(firstQuery.toString(), Integer.class);
+        TypedQuery<Integer> q1 = em.createQuery(firstQuery, Integer.class);
 
         if (mediaType != MediaTypes.TYPE_ALL.getType()) {
             q1 = q1.setParameter("type", mediaType==1 );
@@ -366,19 +366,19 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public int countWatchedFeaturedMoovieListContent(int mediaType, int userid, String featuredListOrder) {
-        StringBuilder query = new StringBuilder("SELECT COUNT(*) FROM ( ");
-        query.append(" SELECT * FROM media WHERE ");
+        String query = "SELECT COUNT(*) FROM ( ";
+        query += " SELECT * FROM media WHERE ";
 
         if(mediaType!=MediaTypes.TYPE_ALL.getType()){
-            query.append(" type = :type AND ");
+            query += " type = :type AND ";
         }
 
-        query.append("  mediaid IN ( SELECT mediaid FROM ( SELECT m2.mediaid, COUNT(r.rating) AS votecount ");
-        query.append(" FROM media m2 LEFT JOIN reviews r ON m2.mediaid = r.mediaid GROUP BY m2.mediaid ORDER BY votecount DESC LIMIT 100) sq1 ) ");
-        query.append(" AND mediaid IN ( SELECT mlc.mediaid FROM moovielists ml LEFT JOIN moovielistscontent mlc ON ml.moovielistid = mlc.moovielistid ");
-        query.append(" WHERE ml.name = 'Watched' AND userid = :userid )) AS sq2; ");
+        query += "  mediaid IN ( SELECT mediaid FROM ( SELECT m2.mediaid, COUNT(r.rating) AS votecount ";
+        query += " FROM media m2 LEFT JOIN reviews r ON m2.mediaid = r.mediaid GROUP BY m2.mediaid ORDER BY votecount DESC LIMIT 100) sq1 ) ";
+        query += " AND mediaid IN ( SELECT mlc.mediaid FROM moovielists ml LEFT JOIN moovielistscontent mlc ON ml.moovielistid = mlc.moovielistid ";
+        query += " WHERE ml.name = 'Watched' AND userid = :userid )) AS sq2; ";
 
-        Query q1 = em.createNativeQuery(query.toString()).setParameter("userid", userid);
+        Query q1 = em.createNativeQuery(query).setParameter("userid", userid);
 
         if (mediaType != MediaTypes.TYPE_ALL.getType()) {
             q1 = q1.setParameter("type", mediaType==1 );
