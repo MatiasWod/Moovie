@@ -343,11 +343,13 @@ public class ListController {
 
         try {
             MoovieList ml = moovieListService.createMoovieList(form.getListName(), MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), form.getListDescription());
-            int listId = moovieListService.insertMediaIntoMoovieList(ml.getMoovieListId(), form.getMediaIdsList()).getMoovieListId();
-            return new ModelAndView("redirect:/list/" + listId);
-        }catch (DuplicateKeyException e){
-            redirectAttributes.addFlashAttribute("errorMessage", "createList.errorCreatingListSameName");
-            return new ModelAndView("redirect:/createList");
+            try{
+                int listId = moovieListService.insertMediaIntoMoovieList(ml.getMoovieListId(), form.getMediaIdsList()).getMoovieListId();
+                return new ModelAndView("redirect:/list/" + listId);
+            } catch (Exception e){
+                redirectAttributes.addFlashAttribute("errorMessage", "createList.mediaInsertError");
+                return new ModelAndView("redirect:/createList");
+            }
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "createList.errorCreatingList");
             return new ModelAndView("redirect:/createList");

@@ -152,7 +152,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
                 "(SELECT COUNT(mll2) > 0 FROM MoovieListLikes mll2 WHERE mll2.moovieList.id = mlc.id), " +
                 "(SELECT COUNT(mlf2) > 0 FROM MoovieListFollowers mlf2 WHERE mlf2.moovieList.id = mlc.id), " +
                 "COUNT(l) AS totallikes" +
-                " FROM MoovieListCard mlc LEFT JOIN User u ON mlc.userId = u.userId LEFT JOIN MoovieListLikes l ON mlc.moovieListId = l.moovieList.moovieListId " +
+                " FROM MoovieListCard mlc LEFT JOIN User u ON mlc.user.userId = u.userId LEFT JOIN MoovieListLikes l ON mlc.moovieListId = l.moovieList.moovieListId " +
                 " LEFT JOIN MoovieListFollowers mlf ON mlf.moovieList.moovieListId = mlc.moovieListId " +
                 " WHERE type = 1  AND l.user.userId IN (SELECT user.userId FROM MoovieListLikes WHERE moovieList.moovieListId = :moovieListId) AND mlc.moovieListId <> :moovieListId " +
                 " GROUP BY mlc.moovieListId, u.userId ORDER BY totallikes ";
@@ -211,7 +211,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
         }
 
         if (usernameFlag){
-            jpql += "AND LOWER(mlc.username) = :ownerUsername ";
+            jpql += "AND LOWER(mlc.user.username) = :ownerUsername ";
         }
 
         if(orderFlag){
@@ -256,7 +256,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
         }
 
         if (usernameFlag){
-            jpql += "AND LOWER(mlc.username) = :ownerUsername ";
+            jpql += "AND LOWER(mlc.user.username) = :ownerUsername ";
         }
         Query query = em.createQuery(jpql)
                 .setParameter("type", type);

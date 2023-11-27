@@ -64,7 +64,9 @@
                     <td>
                         <a href="${pageContext.request.contextPath}/profile/${user.username}"
                            style="text-decoration: none; color: inherit;">
-                        <div class="col-auto"><c:out value="${user.username}"/></div>
+                        <div class="col-auto"><c:out value="${user.username}"/><c:if test="${user.hasBadge}"><i class="bi bi-trophy"></i></c:if>
+                        </div>
+
                         </a>
                     </td>
 
