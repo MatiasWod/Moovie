@@ -75,7 +75,7 @@
                                                 code="details.confirmReviewDeletionPrompt"/></p>
                                         <div class="d-flex justify-content-evenly">
                                             <form class="m-0"
-                                                  action="${pageContext.request.contextPath}/deleteUserReview/${media.mediaId}"
+                                                  action="${pageContext.request.contextPath}/deleteUserReview/${mediaId}"
                                                   method="post">
                                                 <input type="hidden" name="reviewId"
                                                        value="${review.reviewId}"/>
@@ -103,9 +103,9 @@
                                             <h5 class="alert-heading"><spring:message code="details.confirmReviewDeletion"/></h5>
                                             <p><spring:message code="details.confirmReviewDeletionPrompt"/></p>
                                             <div class="d-flex justify-content-evenly">
-                                                <form class="m-0" action="${pageContext.request.contextPath}/deleteReview/${media.mediaId}" method="post">
+                                                <form class="m-0" action="${pageContext.request.contextPath}/deleteReview/${mediaId}" method="post">
                                                     <input type="hidden" name="reviewId" value="${review.reviewId}"/>
-                                                    <input type="hidden" name="path" value="/details/${media.mediaId}"/>
+                                                    <input type="hidden" name="path" value="/details/${mediaId}"/>
                                                     <button type="submit" class="btn btn-danger"><spring:message code="details.delete"/></button>
                                                 </form>
                                                 <button type="button" onclick="closePopup('review${review.reviewId}')" class="btn btn-secondary" id="cancelModButton"><spring:message code="details.cancel"/></button>
@@ -138,7 +138,7 @@
                                 <sec:authorize access="isAuthenticated()">
                                     <form action="${pageContext.request.contextPath}/likeComment" method="post">
                                         <input hidden name="commentId" value="${comment.commentId}">
-                                        <input hidden name="mediaId" value="${comment.reviewId}">
+                                        <input hidden name="mediaId" value="${mediaId}">
                                         <c:if test="${!comment.currentUserHasLiked}">
                                             <button type="submit" class="me-1 btn-sm btn btn-outline-success">
                                                 <i class="m-1 bi bi-hand-thumbs-up"></i>
@@ -152,7 +152,7 @@
                                     </form>
                                     <form action="${pageContext.request.contextPath}/dislikeComment" method="post">
                                         <input hidden name="commentId" value="${comment.commentId}">
-                                        <input hidden name="mediaId" value="${media.mediaId}">
+                                        <input hidden name="mediaId" value="${mediaId}">
                                         <c:if test="${!comment.currentUserHasDisliked}">
                                             <button type="submit" class="btn btn-sm btn-outline-danger">
                                                 <i class="m-1 bi bi-hand-thumbs-down"></i>

@@ -621,7 +621,7 @@
                                             </c:forEach>
 
                                         <c:if test="${review.commentCount > 5}">
-                                            <a class="ms-1" href="${pageContext.request.contextPath}/review/${review.reviewId}">
+                                            <a class="ms-1" href="${pageContext.request.contextPath}/review/${media.mediaId}/${review.reviewId}">
                                                 <spring:message code="details.seeMore"/>
                                             </a>
                                         </c:if>
