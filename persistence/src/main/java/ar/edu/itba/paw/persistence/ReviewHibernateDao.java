@@ -5,6 +5,7 @@ import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
+import ar.edu.itba.paw.models.User.User;
 import org.hibernate.SQLQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -69,7 +70,7 @@ public class ReviewHibernateDao implements ReviewDao {
     public List<Review> getMovieReviewsFromUser(int currentUserId, int userId, int size, int pageNumber) {
         final String jpql = "SELECT new ar.edu.itba.paw.models.Review.Review ( " +
                 " r , COALESCE((SELECT 1 FROM ReviewsLikes rl WHERE rl.review.reviewId = r.reviewId AND rl.user.userId = :currentUserId), 0) ) " +
-                " FROM Review r WHERE r.userId = :userId";
+                " FROM Review r WHERE r.user.userId = :userId";
 
         TypedQuery<Review> query = em.createQuery(jpql, Review.class)
                 .setParameter("userId", userId).setParameter("currentUserId", currentUserId);
@@ -118,7 +119,7 @@ public class ReviewHibernateDao implements ReviewDao {
     public List<MoovieListReview> getMoovieListReviewsFromUser(int currentUserId, int userId, int size, int pageNumber) {
         final String jpql = "SELECT new ar.edu.itba.paw.models.Review.MoovieListReview ( " +
                             " r , COALESCE((SELECT 1 FROM MoovieListsReviewsLikes rl WHERE rl.moovieListReview.moovieListReviewId = r.moovieListReviewId AND rl.user.userId = :currentUserId), 0)  ) " +
-                            " FROM MoovieListReview r WHERE r.userId = :userId ";
+                            " FROM MoovieListReview r WHERE r.user.userId = :userId ";
 
         TypedQuery<MoovieListReview> query = em.createQuery(jpql, MoovieListReview.class)
                 .setParameter("userId", userId).setParameter("currentUserId", currentUserId);
@@ -129,13 +130,13 @@ public class ReviewHibernateDao implements ReviewDao {
 
 
     @Override
-    public void createReview(int userId, int mediaId, int rating, String reviewContent, ReviewTypes type) {
+    public void createReview(User user, int mediaId, int rating, String reviewContent, ReviewTypes type) {
         try {
             if(type.getType() == ReviewTypes.REVIEW_MEDIA.getType()) {
-                Review review = new Review(userId, mediaId, rating, reviewContent);
+                Review review = new Review(user, mediaId, rating, reviewContent);
                 em.persist(review);
             }else{
-                MoovieListReview review = new MoovieListReview(userId, mediaId,  reviewContent);
+                MoovieListReview review = new MoovieListReview(user, mediaId,  reviewContent);
                 em.persist(review);
             }
         } catch (Exception e) {
@@ -146,7 +147,7 @@ public class ReviewHibernateDao implements ReviewDao {
     @Override
     public void editReview(int userId, int mediaId, int rating, String reviewContent, ReviewTypes type) {
         if(type.getType() == ReviewTypes.REVIEW_MEDIA.getType()) {
-            Review review = em.createQuery("SELECT r FROM Review r WHERE r.userId = :userId AND r.mediaId = :mediaId", Review.class)
+            Review review = em.createQuery("SELECT r FROM Review r WHERE r.user.userId = :userId AND r.mediaId = :mediaId", Review.class)
                     .setParameter("userId", userId)
                     .setParameter("mediaId", mediaId)
                     .getSingleResult();
@@ -156,7 +157,7 @@ public class ReviewHibernateDao implements ReviewDao {
                 em.merge(review);
             }
         }else{
-            MoovieListReview review = em.createQuery("SELECT r FROM MoovieListReview r WHERE r.userId = :userId AND r.moovieListId = :mediaId", MoovieListReview.class)
+            MoovieListReview review = em.createQuery("SELECT r FROM MoovieListReview r WHERE r.user.userId = :userId AND r.moovieListId = :mediaId", MoovieListReview.class)
                     .setParameter("userId", userId)
                     .setParameter("mediaId", mediaId)
                     .getSingleResult();
@@ -211,12 +212,12 @@ public class ReviewHibernateDao implements ReviewDao {
     @Override
     public Review getReviewByMediaIdAndUsername(int mediaId, int userId, ReviewTypes type){
         if(type.getType() == ReviewTypes.REVIEW_MEDIA.getType()) {
-            return em.createQuery("SELECT r FROM Review r WHERE r.userId = :userId AND r.mediaId = :mediaId", Review.class)
+            return em.createQuery("SELECT r FROM Review r WHERE r.user.userId = :userId AND r.mediaId = :mediaId", Review.class)
                     .setParameter("userId", userId)
                     .setParameter("mediaId", mediaId)
                     .getSingleResult();
         }else{
-            return em.createQuery("SELECT r FROM MoovieListReview r WHERE r.userId = :userId AND r.moovieListId = :mediaId", Review.class)
+            return em.createQuery("SELECT r FROM MoovieListReview r WHERE r.user.userId = :userId AND r.moovieListId = :mediaId", Review.class)
                     .setParameter("userId", userId)
                     .setParameter("mediaId", mediaId)
                     .getSingleResult();

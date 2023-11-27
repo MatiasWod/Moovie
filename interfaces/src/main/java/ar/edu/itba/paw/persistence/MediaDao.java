@@ -13,13 +13,17 @@ public interface MediaDao {
 
     List<Media> getMediaInMoovieList(int moovieListId, int size, int pageNumber);
 
-    List<Movie> getMediaForDirectorId(int directorId);
+    List<Movie> getMediaForDirectorId(int directorId, int currentId);
 
     Optional<Media> getMediaById(int mediaId);
     Optional<Movie> getMovieById(int mediaId);
     Optional<TVSerie> getTvById(int mediaId);
     int getMediaCount(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang);
 
+
+    //get watchlist/watched status for user
+    boolean getWatchlistStatus(int mediaId, int userId);
+    boolean getWatchedStatus(int mediaId, int userId);
 
     // search creators
     int getDirectorsForQueryCount(String query, int size);

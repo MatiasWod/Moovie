@@ -8,7 +8,7 @@ public interface CommentService {
 
     public List<Comment> getComments(int reviewId, int size, int pageNumber);
 
-
+    public Comment getCommentById(int commentId);
 
     public void likeComment(int commentId);
 

@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 
+import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.User.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -43,7 +44,8 @@ public class UserHibernateDao implements UserDao{
                 .setParameter("email",email)
                 .executeUpdate();
 
-        return findUserByEmail(email).get();
+
+        return findUserByEmail(email).orElseThrow(() -> new UnableToFindUserException("Unable to find user"));
     }
 
     @Override

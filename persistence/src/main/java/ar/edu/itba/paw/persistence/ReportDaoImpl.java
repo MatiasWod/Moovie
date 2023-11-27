@@ -64,7 +64,7 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public List<Review> getReportedReviews() {
-        String sql = "SELECT r FROM Review r WHERE COALESCE(r.totalReports, 0) > 0";
+        String sql = "SELECT r FROM Review r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
 
         TypedQuery<Review> query = em.createQuery(sql, Review.class);
 
@@ -73,7 +73,7 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public int getReportedReviewsCount() {
-        String sql = "SELECT r FROM Review r WHERE COALESCE(r.totalReports, 0) > 0";
+        String sql = "SELECT r FROM Review r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
 
         TypedQuery<Review> query = em.createQuery(sql, Review.class);
 
@@ -113,7 +113,7 @@ public class ReportDaoImpl implements ReportDao{
     @Override
     public List<MoovieListReview> getReportedMoovieListReviews() {
 
-        String sql = "SELECT r FROM MoovieListReview r WHERE COALESCE(r.totalReports, 0) > 0";
+        String sql = "SELECT r FROM MoovieListReview r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
 
         TypedQuery<MoovieListReview> query = em.createQuery(sql, MoovieListReview.class);
 
@@ -122,7 +122,7 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public int getReportedMoovieListReviewsCount() {
-        String sql = "SELECT r FROM MoovieListReview r WHERE COALESCE(r.totalReports, 0) > 0";
+        String sql = "SELECT r FROM MoovieListReview r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
 
         TypedQuery<MoovieListReview> query = em.createQuery(sql, MoovieListReview.class);
 
@@ -131,16 +131,10 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public void reportMoovieListReview(int moovieListReviewId, int userId, int type, String content) {
-        String sql = "INSERT INTO reportsmoovielistreviews " +
-                "(type, content, reportedBy, moovieListReviewId) " +
-                "VALUES ( :type, :content, :userId , :moovieListReviewId )";
-
-        em.createNativeQuery(sql)
-                .setParameter("type", type)
-                .setParameter("content", content)
-                .setParameter("userId", userId)
-                .setParameter("moovieListReviewId", moovieListReviewId)
-                .executeUpdate();
+        MoovieListReview review= em.find(MoovieListReview.class, moovieListReviewId);
+        User user = em.find(User.class, userId);
+        MoovieListReviewReport report = new MoovieListReviewReport(type,content, user, review);
+        em.persist(report);
     }
 
     @Override
@@ -168,7 +162,7 @@ public class ReportDaoImpl implements ReportDao{
     @Override
     public List<MoovieList> getReportedMoovieLists() {
 
-        String sql = "SELECT r FROM MoovieList r WHERE COALESCE(r.totalReports, 0) > 0";
+        String sql = "SELECT r FROM MoovieList r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
 
         TypedQuery<MoovieList> query = em.createQuery(sql, MoovieList.class);
 
@@ -177,7 +171,7 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public int getReportedMoovieListsCount() {
-        String sql = "SELECT r FROM MoovieList r WHERE COALESCE(r.totalReports, 0) > 0";
+        String sql = "SELECT r FROM MoovieList r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
 
         TypedQuery<MoovieList> query = em.createQuery(sql, MoovieList.class);
 
@@ -186,16 +180,11 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public void reportMoovieList(int moovieListId, int userId, int type, String content) {
-        String sql = "INSERT INTO reportsmoovielists " +
-                "(type, content, reportedBy, moovieListId) " +
-                "VALUES ( :type, :content, :userId , :moovieListId )";
 
-        em.createNativeQuery(sql)
-                .setParameter("type", type)
-                .setParameter("content", content)
-                .setParameter("userId", userId)
-                .setParameter("moovieListId", moovieListId)
-                .executeUpdate();
+        MoovieList moovieList=em.find(MoovieList.class, moovieListId);
+        User user = em.find(User.class, userId);
+        MoovieListReport report = new MoovieListReport(type,content, user, moovieList);
+        em.persist(report);
     }
 
     @Override
@@ -223,7 +212,7 @@ public class ReportDaoImpl implements ReportDao{
     @Override
     public List<Comment> getReportedComments() {
 
-        String sql = "SELECT r FROM Comment r WHERE COALESCE(r.totalReports, 0) > 0";
+        String sql = "SELECT r FROM Comment r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
 
         TypedQuery<Comment> query = em.createQuery(sql, Comment.class);
 
@@ -232,7 +221,7 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public int getReportedCommentsCount() {
-        String sql = "SELECT r FROM Comment r WHERE COALESCE(r.totalReports, 0) > 0";
+        String sql = "SELECT r FROM Comment r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
 
         TypedQuery<Comment> query = em.createQuery(sql, Comment.class);
 
@@ -241,16 +230,10 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public void reportComment(int commentId, int userId, int type, String content) {
-        String sql = "INSERT INTO reportscomments " +
-                "(type, content, reportedBy, commentId) " +
-                "VALUES ( :type, :content, :userId , :commentId )";
-
-        em.createNativeQuery(sql)
-                .setParameter("type", type)
-                .setParameter("content", content)
-                .setParameter("userId", userId)
-                .setParameter("commentId", commentId)
-                .executeUpdate();
+        Comment comment= em.find(Comment.class, commentId);
+        User user = em.find(User.class, userId);
+        CommentReport report = new CommentReport(type,content, user, comment);
+        em.persist(report);
     }
 
     @Override

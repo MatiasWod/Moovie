@@ -15,6 +15,9 @@ public class ActorServiceImpl implements ActorService{
     @Autowired
     private ActorDao actorDao;
 
+    @Autowired
+    private UserService userService;
+
     @Transactional(readOnly = true)
     @Override
     public List<Actor> getAllActorsForMedia(int mediaId) {
@@ -39,7 +42,7 @@ public class ActorServiceImpl implements ActorService{
 
     @Override
     public List<Media> getMediaForActor(int actorId) {
-        return actorDao.getMediaForActor(actorId);
+        return actorDao.getMediaForActor(actorId, userService.tryToGetCurrentUserId());
     }
 
 }

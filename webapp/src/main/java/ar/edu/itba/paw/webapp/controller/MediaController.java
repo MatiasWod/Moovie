@@ -356,7 +356,7 @@ public class MediaController {
                                      @PathVariable int mediaId,
                                      HttpServletRequest request) {
         try {
-            moderatorService.deleteReview(reviewId, mediaId, ReviewTypes.REVIEW_MEDIA);
+            reviewService.deleteReview(reviewId, ReviewTypes.REVIEW_MEDIA);
             redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("details.reviewDeletedSuccess",null, LocaleContextHolder.getLocale()));
         }catch (Exception e){
             redirectAttributes.addFlashAttribute("errorMessage",  messageSource.getMessage("details.reviewDeletedFailure",null, LocaleContextHolder.getLocale()));
@@ -412,12 +412,13 @@ public class MediaController {
         return new ModelAndView("helloword/404");
     }
 
-    @RequestMapping("/review/{id:\\d+}")
-    public ModelAndView review(@PathVariable int id, @ModelAttribute("commentForm") CommentForm commentForm) {
+    @RequestMapping("/review/{mediaId:\\d+}/{id:\\d+}")
+    public ModelAndView review(@PathVariable int id,@PathVariable int mediaId ,@ModelAttribute("commentForm") CommentForm commentForm) {
         final ModelAndView mav = new ModelAndView("main/review");
         List<Media> movieList = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
                 null, null, null, null,MediaFilters.TMDBRATING.getFilter(), MediaFilters.DESC.getFilter(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("movieList", movieList);
+        mav.addObject("mediaId", mediaId);
         mav.addObject("review", reviewService.getReviewById(id));
         try {
             mav.addObject("currentUser", userService.getInfoOfMyUser());
@@ -428,23 +429,37 @@ public class MediaController {
     }
 
     @RequestMapping(value= "/likeComment", method = RequestMethod.POST)
-    public ModelAndView likeComment(@RequestParam int commentId,@RequestParam int mediaId, RedirectAttributes redirectAttributes){
+    public ModelAndView likeComment(@RequestParam int commentId,@RequestParam int mediaId,
+                                    RedirectAttributes redirectAttributes,HttpServletRequest request) {
         try {
             commentService.likeComment(commentId);
             redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("details.commentLikedSuccess",null, LocaleContextHolder.getLocale()));
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("details.commentLikedFailure",null, LocaleContextHolder.getLocale()));
         }
+        String referer = request.getHeader("Referer");
+        if (referer.contains("details")) {
+            return new ModelAndView("redirect:/details/" + mediaId);
+        } else if (referer.contains("reivew")) {
+            return new ModelAndView("redirect:/review/" + mediaId);
+        }
         return new ModelAndView("redirect:/details/" + mediaId);
     }
 
     @RequestMapping(value= "/dislikeComment", method = RequestMethod.POST)
-    public ModelAndView dislikeComment(@RequestParam int commentId,@RequestParam int mediaId, RedirectAttributes redirectAttributes){
+    public ModelAndView dislikeComment(@RequestParam int commentId,@RequestParam int mediaId,
+                                       RedirectAttributes redirectAttributes, HttpServletRequest request){
         try {
             commentService.dislikeComment(commentId);
             redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("details.commentUnlikedSuccess",null, LocaleContextHolder.getLocale()));
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("details.commentUnlikedFailure",null, LocaleContextHolder.getLocale()));
+        }
+        String referer = request.getHeader("Referer");
+        if (referer.contains("details")) {
+            return new ModelAndView("redirect:/details/" + mediaId);
+        } else if (referer.contains("reivew")) {
+            return new ModelAndView("redirect:/review/" + mediaId);
         }
         return new ModelAndView("redirect:/details/" + mediaId);
     }

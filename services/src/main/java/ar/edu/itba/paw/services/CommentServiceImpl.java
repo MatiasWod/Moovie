@@ -26,6 +26,11 @@ public class CommentServiceImpl implements CommentService{
         return commentDao.getComments(reviewId, userService.getInfoOfMyUser().getUserId(), size, pageNumber);
     }
 
+    @Override
+    public Comment getCommentById(int commentId) {
+        return commentDao.getCommentById(commentId);
+    }
+
     @Transactional
     @Override
     public void likeComment(int commentId) {
@@ -78,7 +83,7 @@ public class CommentServiceImpl implements CommentService{
     @Transactional
     @Override
     public void createComment(int reviewId, String content) {
-        commentDao.createComment(reviewId, content, userService.getInfoOfMyUser().getUserId());
+        commentDao.createComment(reviewId, content, userService.getInfoOfMyUser());
     }
 
     @Transactional

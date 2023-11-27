@@ -144,7 +144,7 @@
                             <h5><spring:message code="details.director"/></h5>
                         </div>
                         <div>
-                            <a href="${pageContext.request.contextPath}/discover?credit=${media.director}">
+                            <a href="${pageContext.request.contextPath}/cast/director/${media.directorId}">
                                 <span class="badge text-bg-light border border-black"><c:out value="${media.director}"/></span>
                             </a>
                         </div>
@@ -186,7 +186,7 @@
                             </div>
                             <div>
                                 <c:forEach var="creator" items="${creators}">
-                                    <a style="text-decoration: none;" href="${pageContext.request.contextPath}/discover?credit=${creator.creatorName.trim()}">
+                                    <a style="text-decoration: none;" href="${pageContext.request.contextPath}/cast/creator/${creator.creatorId}">
                                         <span class="badge text-bg-light border border-black"><c:out value="${creator.creatorName}"/></span>
                                     </a>
                                 </c:forEach>
@@ -239,14 +239,42 @@
                     </div>
                     <ul class="dropdown-menu scrollable-menu">
                         <c:forEach var="privateList" items="${privateLists}">
-                            <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
-                                <input type="hidden" name="listId" value="${privateList.moovieListId}"/>
-                                <input type="hidden" name="mediaId" value="${media.mediaId}"/>
-                                <li>
-                                    <button class="dropdown-item" type="submit"><c:out
-                                            value="${privateList.name}"/></button>
-                                </li>
-                            </form>
+                            <c:if test="${privateList.name != 'Watched' && privateList.name != 'Watchlist'}">
+                                <!-- Mostrar siempre -->
+                                <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
+                                    <input type="hidden" name="listId" value="${privateList.moovieListId}"/>
+                                    <input type="hidden" name="mediaId" value="${media.mediaId}"/>
+                                    <li>
+                                        <button class="dropdown-item" type="submit"><c:out
+                                                value="${privateList.name}"/></button>
+                                    </li>
+                                </form>
+                            </c:if>
+                            <c:if test="${privateList.name == 'Watched' && !media.watched}">
+                                <!-- Mostrar si media.watched es falso -->
+                                <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
+                                    <input type="hidden" name="listId" value="${privateList.moovieListId}"/>
+                                    <input type="hidden" name="mediaId" value="${media.mediaId}"/>
+                                    <li>
+                                        <button class="dropdown-item" type="submit"><c:out
+                                                value="${privateList.name}"/></button>
+                                    </li>
+                                </form>
+                            </c:if>
+                            <c:if test="${privateList.name == 'Watchlist' && !media.watchlist}">
+                                <!-- Mostrar si media.watchlist es falso -->
+                                <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
+                                    <input type="hidden" name="listId" value="${privateList.moovieListId}"/>
+                                    <input type="hidden" name="mediaId" value="${media.mediaId}"/>
+                                    <li>
+                                        <button class="dropdown-item" type="submit"><c:out
+                                                value="${privateList.name}"/></button>
+                                    </li>
+                                </form>
+                            </c:if>
+
+
+
                         </c:forEach>
                         <c:forEach var="publicList" items="${publicLists}">
                             <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
@@ -314,7 +342,7 @@
                                         >
                                     </c:when>
                                     <c:otherwise>
-                                    <a href="${pageContext.request.contextPath}/discover?credit=${actor.actorName}">
+                                    <a href="${pageContext.request.contextPath}/cast/actor/${actor.actorId}">
                                         <img
                                                 src="${actor.profilePath}"
                                                 alt="${actor.actorName} picture"
@@ -326,7 +354,7 @@
                             </div>
                             <div class="col-8" style="min-width: 160px">
                                 <div class="card-body" style="min-width: 120px">
-                                    <a style="color:black; text-decoration: none;" href="${pageContext.request.contextPath}/discover?credit=${actor.actorName}">
+                                    <a style="color:black; text-decoration: none;" href="${pageContext.request.contextPath}/cast/actor/${actor.actorId}">
                                         <h5 class="card-title"><c:out value="${actor.actorName}"/></h5>
                                     </a>
                                     <p class="card-text"><c:out value="${actor.characterName}"/></p>
@@ -430,17 +458,17 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div class="d-flex align-items-center">
-                                        <a href="${pageContext.request.contextPath}/profile/${review.username}"
+                                        <a href="${pageContext.request.contextPath}/profile/${review.user.username}"
                                            style="text-decoration: none; color: inherit;">
                                             <img class="cropCenter mr-3 profile-image rounded-circle"
                                                  style="height:60px;width:60px;border: solid black; border-radius: 50%"
-                                                 src="${pageContext.request.contextPath}/profile/image/${review.username}"
-                                                 alt="${review.userId} Reviewer Profile">
+                                                 src="${pageContext.request.contextPath}/profile/image/${review.user.username}"
+                                                 alt="${review.user.userId} Reviewer Profile">
                                         </a>
                                         <div class="mt-0" style="margin-left: 15px">
-                                            <a href="${pageContext.request.contextPath}/profile/${review.username}"
+                                            <a href="${pageContext.request.contextPath}/profile/${review.user.username}"
                                                style="text-decoration: none; color: inherit;">
-                                                <h5><c:out value="${review.username}"/></h5> <c:if test="${review.hasBadge}"><i class="bi bi-trophy"></i></c:if>
+                                                <h5><c:out value="${review.user.username}"/><c:if test="${review.user.hasBadge}"><i class="bi bi-trophy"></i></c:if></h5>
                                             </a>
                                         </div>
                                     </div>
@@ -449,7 +477,7 @@
                                             <i class="bi bi-star-fill ml-2"></i> <c:out value="${review.rating}"/>/5
                                         </h5>
                                         <c:choose>
-                                            <c:when test="${currentUser.username==review.username}">
+                                            <c:when test="${currentUser.username==review.user.username}">
                                                 <div class="text-center m-2">
                                                     <button onclick="openPopup('review${review.reviewId}')" class="btn btn-danger btn-sm">
                                                         <i class="bi bi-trash"></i>
@@ -485,7 +513,6 @@
                                                     <div class="d-flex justify-content-evenly">
                                                         <form class="m-0" action="${pageContext.request.contextPath}/deleteReview/${media.mediaId}" method="post">
                                                             <input type="hidden" name="reviewId" value="${review.reviewId}"/>
-                                                            <input type="hidden" name="path" value="/details/${media.mediaId}"/>
                                                             <button type="submit" class="btn btn-danger"><spring:message code="details.delete"/></button>
                                                         </form>
                                                         <button type="button" onclick="closePopup('review${review.reviewId}')" class="btn btn-secondary" id="cancelModButton"><spring:message code="details.cancel"/></button>
@@ -532,7 +559,7 @@
                                             </c:otherwise>
                                         </c:choose>
                                     </div>
-                                    <c:if test="${currentUser.username==review.username}">
+                                    <c:if test="${currentUser.username==review.user.username}">
                                         <div style="margin-bottom: 15px">
                                             <button class="btn btn-primary" style="font-size: 14px;margin-left: 10px;" onclick="openPopup('edit-popup')">                                                <span>
                                                    <i class="bi bi-pencil" ></i>
@@ -541,7 +568,7 @@
                                             </button>
                                         </div>
                                     </c:if>
-                                    <c:if test="${currentUser.username != review.username}">
+                                    <c:if test="${currentUser.username != review.user.username}">
                                         <sec:authorize access="isAuthenticated()">
                                             <div style="margin-bottom: 15px">
                                                 <a href="${pageContext.request.contextPath}/reports/new?id=${review.reviewId}&reportedBy=${currentUser.userId}&type=reviewDetails" class="btn btn-warning" style="font-size: 14px;margin-left: 10px;" ><spring:message code="report.title"/>
@@ -577,7 +604,7 @@
                                             <c:forEach items="${review.comments}" var="comment" end="4">
                                                 <div class="mb-2 mt-2 card card-body">
                                                     <div class="d-flex justify-content-between">
-                                                        <h6 class="card-title"><a href="${pageContext.request.contextPath}/profile/${comment.username}"><c:out value="${comment.username}"/></a></h6>
+                                                        <h6 class="card-title"><a href="${pageContext.request.contextPath}/profile/${comment.username}" style="text-decoration: none; color: black"><c:out value="${comment.username}"/><c:if test="${comment.hasBadge}"><i class="bi bi-trophy"></i></c:if></a></h6>
                                                         <div class="d-flex">
                                                             <p style="margin: 10px">${comment.commentLikes - comment.commentDislikes}<img style="padding-bottom: 6px;" height="37" width="37" src="${pageContext.request.contextPath}/resources/logo.png" alt="moo"></p>
                                                             <sec:authorize access="isAuthenticated()">
@@ -622,7 +649,7 @@
                                             </c:forEach>
 
                                         <c:if test="${review.commentCount > 5}">
-                                            <a class="ms-1" href="${pageContext.request.contextPath}/review/${review.reviewId}">
+                                            <a class="ms-1" href="${pageContext.request.contextPath}/review/${media.mediaId}/${review.reviewId}">
                                                 <spring:message code="details.seeMore"/>
                                             </a>
                                         </c:if>

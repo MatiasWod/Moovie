@@ -1,11 +1,13 @@
 package ar.edu.itba.paw.models.Comments;
 
 
-import ar.edu.itba.paw.models.Review.Review;
+import ar.edu.itba.paw.models.Reports.CommentReport;
+import ar.edu.itba.paw.models.User.User;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "comments")
@@ -15,12 +17,15 @@ public class Comment implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int commentId;
 
-    @Column(name = "userid", nullable = false)
-    private int userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userid", nullable = false)
+    private User user;
 
     @Column(name = "reviewId", nullable = false)
     private int reviewId;
 
+    @Formula("(SELECT m.mediaid FROM media m JOIN reviews r ON r.mediaid = m.mediaid WHERE r.reviewid = reviewId )")
+    private int mediaId;
 
     @Column(name = "content", length = 5000)
     private String content;
@@ -37,8 +42,6 @@ public class Comment implements Serializable {
     @Formula("(SELECT COUNT(*) FROM commentdislikes cl WHERE cl.commentId = commentId)")
     private int commentDislikes;
 
-    @Formula("(SELECT u.username FROM users u WHERE u.userid = userId)")
-    private String username;
 
     @Formula("CASE WHEN EXISTS (SELECT 1 FROM userimages ui WHERE ui.userid = userId) THEN 1 ELSE 0 END")
     private boolean hasPfp;
@@ -55,22 +58,29 @@ public class Comment implements Serializable {
     @Formula("(SELECT COUNT(*) FROM reportscomments rc WHERE rc.type = 1 AND rc.commentid = commentId)")
     private int abuseReports;
 
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    List<CommentReport> commentReports;
+
     Comment() {
 
     }
 
-    public Comment(final int userId, final int reviewId, final String content) {
+    public Comment(final User user, final int reviewId, final String content) {
         this.reviewId = reviewId;
-        this.userId = userId;
+        this.user = user;
         this.content = content;
+    }
+
+    public int getMediaId() {
+        return mediaId;
+    }
+
+    public void setMediaId(int mediaId) {
+        this.mediaId = mediaId;
     }
 
     public void setCommentId(int commentId) {
         this.commentId = commentId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 
     public void setReviewId(int reviewId) {
@@ -87,10 +97,6 @@ public class Comment implements Serializable {
 
     public void setCommentDislikes(int commentDislikes) {
         this.commentDislikes = commentDislikes;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public boolean isHasPfp() {
@@ -170,7 +176,7 @@ public class Comment implements Serializable {
     }
 
     public String getUsername() {
-        return username;
+        return user.getUsername();
     }
 
     public String getContent() {
@@ -178,7 +184,7 @@ public class Comment implements Serializable {
     }
 
     public int getUserId() {
-        return userId;
+        return user.getUserId();
     }
 
     public int getCommentId() {
@@ -188,4 +194,9 @@ public class Comment implements Serializable {
     public int getReviewId() {
         return reviewId;
     }
+
+    public boolean isHasBadge() {
+        return user.isHasBadge();
+    }
+
 }

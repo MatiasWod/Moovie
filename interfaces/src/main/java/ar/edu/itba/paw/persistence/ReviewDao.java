@@ -3,6 +3,7 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
+import ar.edu.itba.paw.models.User.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +20,7 @@ public interface ReviewDao {
     List<MoovieListReview> getMoovieListReviewsFromUser(int currentUserId, int userId, int size, int pageNumber);
 
 
-    void createReview(int userId, int mediaId, int rating, String reviewContent, ReviewTypes type);
+    void createReview(User user, int mediaId, int rating, String reviewContent, ReviewTypes type);
 
     void editReview(int userId, int mediaId, int rating, String reviewContent, ReviewTypes type);
     void deleteReview(int reviewId, ReviewTypes type);

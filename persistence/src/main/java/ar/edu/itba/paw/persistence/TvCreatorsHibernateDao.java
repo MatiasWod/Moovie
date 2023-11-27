@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Cast.Actor;
+import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.TV.TVCreators;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
@@ -33,10 +34,22 @@ public class TvCreatorsHibernateDao implements TVCreatorsDao{
 
     @Override
     public List<TVCreators> getTVCreatorsForQuery(String query, int size) {
-        String sql = "SELECT c FROM TVCreators c WHERE LOWER(c.creatorName) LIKE :query";
-        
-        return em.createQuery(sql, TVCreators.class)
+        String sql = "SELECT c FROM TVCreators c WHERE LOWER(c.creatorName) LIKE :query ORDER BY c.medias.size DESC";
+
+
+        TypedQuery<TVCreators> q = em.createQuery(sql, TVCreators.class)
                 .setParameter("query","%"+query+"%").setMaxResults(size)
-                .getResultList();
+                ;
+
+        List<TVCreators> toReturn = q.getResultList();
+
+        for( TVCreators c : toReturn ){
+            for( Media m : c.getMedias() ){
+//                m.setWatched();
+//                m.setWatchlist();
+            }
+        }
+
+        return toReturn;
     }
 }

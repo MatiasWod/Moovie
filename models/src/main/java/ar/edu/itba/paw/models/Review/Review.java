@@ -3,6 +3,7 @@ package ar.edu.itba.paw.models.Review;
 import ar.edu.itba.paw.models.Comments.Comment;
 import ar.edu.itba.paw.models.User.BadgeLimits;
 import ar.edu.itba.paw.models.Reports.ReviewReport;
+import ar.edu.itba.paw.models.User.User;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ public class Review {
     @Column(name = "reviewid")
     private int reviewId;
 
+    /*
     @Column(name = "userid", nullable = false)
     private int userId;
     @Formula("(SELECT u.username FROM users u WHERE u.userid = userId)")
@@ -27,7 +29,7 @@ public class Review {
             "(SELECT COUNT(mlrl.moovielistreviewid) FROM moovielistsreviewslikes mlrl LEFT OUTER JOIN moovielistsreviews mlr ON mlr.moovielistreviewid = mlrl.moovielistreviewid WHERE mlr.userid = userId) + " +
             "(SELECT COUNT(c.commentid) FROM commentlikes cl LEFT OUTER JOIN comments c ON c.commentid = cl.commentid WHERE c.userid = userId) + " +
             "(SELECT COUNT(ml.moovielistid) FROM moovielistslikes mll LEFT OUTER JOIN moovielists ml ON ml.moovielistid = mll.moovielistid WHERE ml.userid = userId) )")
-    private int milkyPoints;
+    private int milkyPoints; */
 
     @Column(nullable = false)
     private int mediaId;
@@ -61,6 +63,11 @@ public class Review {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "review", cascade = CascadeType.ALL)
     private List<ReviewsLikes> likes;
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userid", nullable = false)
+    private User user;
+
     @Formula("(SELECT COUNT(*) FROM reportsreviews rr WHERE rr.reviewid = reviewId)")
     private int totalReports;
     @Formula("(SELECT COUNT(*) FROM reportsreviews rr WHERE rr.type = 3 AND rr.reviewid = reviewId)")
@@ -76,17 +83,16 @@ public class Review {
     Review() {
     }
 
-    public Review(int userId, int mediaId, int rating, String reviewContent) {
-        this.userId = userId;
+    public Review(User user, int mediaId, int rating, String reviewContent) {
+        this.user = user;
         this.mediaId = mediaId;
         this.rating = rating;
         this.reviewContent = reviewContent;
     }
 
-    public Review(int reviewId, int userId, String username, int mediaId, int rating, int reviewLikes, String mediaPosterPath, String mediaTitle, String reviewContent, Long commentCount, List<Comment> comments, int milkyPoints) {
+    public Review(User user, int reviewId, int mediaId, int rating, int reviewLikes, String mediaPosterPath, String mediaTitle, String reviewContent, Long commentCount, List<Comment> comments) {
+        this.user = user;
         this.reviewId = reviewId;
-        this.userId = userId;
-        this.username = username;
         this.mediaId = mediaId;
         this.rating = rating;
         this.reviewLikes = reviewLikes;
@@ -95,14 +101,12 @@ public class Review {
         this.reviewContent = reviewContent;
         this.commentCount = commentCount;
         this.comments = comments;
-        this.milkyPoints = milkyPoints;
     }
 
 
     public Review(Review r, int currentUserHasLiked){
+        this.user = r.getUser();
         this.reviewId = r.reviewId;
-        this.userId = r.userId;
-        this.username = r.username;
         this.mediaId = r.mediaId;
         this.rating = r.rating;
         this.reviewLikes = r.reviewLikes;
@@ -147,11 +151,11 @@ public class Review {
     }
 
     public int getUserId() {
-        return userId;
+        return user.getUserId();
     }
 
     public String getUsername() {
-        return username;
+        return user.getUsername();
     }
 
     public int getMediaId() {
@@ -203,6 +207,10 @@ public class Review {
     }
 
     public boolean isHasBadge() {
-        return milkyPoints >= BadgeLimits.POINTS_FOR_SIMPLE_BADGE.getLimit();
+        return user.isHasBadge();
+    }
+
+    public User getUser() {
+        return user;
     }
 }

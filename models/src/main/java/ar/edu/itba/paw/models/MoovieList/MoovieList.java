@@ -1,8 +1,11 @@
 package ar.edu.itba.paw.models.MoovieList;
 
+import ar.edu.itba.paw.models.Reports.MoovieListReport;
+import ar.edu.itba.paw.models.Review.MoovieListReview;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -38,11 +41,20 @@ public class MoovieList {
     @Formula("(SELECT COUNT(*) FROM reportsMoovieLists rr WHERE rr.type = 1 AND rr.moovieListId = moovieListId)")
     private int abuseReports;
 
-//    @OneToMany(mappedBy = "moovieList")
-//    final private Set<MoovieListLikes> likes = new HashSet<>();
-//
-//    @OneToMany(mappedBy = "user")
-//    final private Set<MoovieListFollowers> followers = new HashSet<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "moovieList", cascade = CascadeType.ALL)
+    private List<MoovieListLikes> likes;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "moovieList", cascade = CascadeType.ALL)
+    private List<MoovieListFollowers>  followers;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "moovieList", cascade = CascadeType.ALL)
+    private List<MoovieListContent> content;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "moovieListReviewId", cascade = CascadeType.ALL)
+    private List<MoovieListReview> reviews;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "moovieList", cascade = CascadeType.ALL)
+    private  List<MoovieListReport> reports;
 
     public MoovieList(){}
 

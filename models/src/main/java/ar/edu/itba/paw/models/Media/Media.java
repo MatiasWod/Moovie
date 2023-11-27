@@ -152,6 +152,79 @@ public class Media {
         this.watchlist = watchlist;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Media that = (Media) obj;
+        return mediaId == that.mediaId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mediaId);
+    }
+
+    public void setMediaId(int mediaId) {
+        this.mediaId = mediaId;
+    }
+
+    public void setType(boolean type) {
+        this.type = type;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setOriginalLanguage(String originalLanguage) {
+        this.originalLanguage = originalLanguage;
+    }
+
+    public void setAdult(boolean adult) {
+        this.adult = adult;
+    }
+
+    public void setReleaseDate(Date releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
+    public void setTrailerLink(String trailerLink) {
+        this.trailerLink = trailerLink;
+    }
+
+    public void setTmdbRating(float tmdbRating) {
+        this.tmdbRating = tmdbRating;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setTotalRating(float totalRating) {
+        this.totalRating = totalRating;
+    }
+
+    public void setVoteCount(int voteCount) {
+        this.voteCount = voteCount;
+    }
+
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
+    }
+
     public int getMediaId() {
         return mediaId;
     }
@@ -246,18 +319,5 @@ public class Media {
 
     public void setWatchlist(boolean watchlist) {
         this.watchlist = watchlist;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Media media = (Media) o;
-        return mediaId == media.mediaId;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(mediaId);
     }
 }

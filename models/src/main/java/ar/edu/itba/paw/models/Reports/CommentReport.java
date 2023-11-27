@@ -18,7 +18,7 @@ public class CommentReport implements Serializable {
     private int reportId;
 
     @Column(name = "type", nullable = false)
-    private String type;
+    private int type;
 
     @Column(name = "content", length = 5000)
     private String content;
@@ -39,20 +39,21 @@ public class CommentReport implements Serializable {
 
     CommentReport(){}
 
-    public CommentReport(String type, String content, User reportedBy, Comment comment)
+    public CommentReport(int type, String content, User reportedBy, Comment comment)
     {
         this.comment = comment;
         this.resolved = false;
         this.reportedBy = reportedBy;
         this.content = content;
         this.type = type;
+        this.report_date = LocalDateTime.now();
     }
 
     public int getReportId() {
         return reportId;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
@@ -80,7 +81,7 @@ public class CommentReport implements Serializable {
         this.reportId = reportId;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 
