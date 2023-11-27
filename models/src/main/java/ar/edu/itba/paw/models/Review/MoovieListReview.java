@@ -33,7 +33,7 @@ public class MoovieListReview {
     @Formula("(SELECT m.name FROM moovieLists m WHERE m.moovielistid = moovielistid)")
     private String moovieListTitle;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 5000)
     private String reviewContent;
 
     @Formula("(SELECT COUNT(*) FROM reportsMoovieListReviews rr WHERE rr.moovieListReviewId = moovieListReviewId)")

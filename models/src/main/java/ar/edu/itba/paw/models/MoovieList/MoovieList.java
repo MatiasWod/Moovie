@@ -3,6 +3,7 @@ package ar.edu.itba.paw.models.MoovieList;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name="moovielists",uniqueConstraints = @UniqueConstraint(columnNames = {"userId", "name"}) )
@@ -20,7 +21,7 @@ public class MoovieList {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = true, columnDefinition = "TEXT")
+    @Column(nullable = true, length = 5000)
     private String description;
 
     @Column(nullable = false)
@@ -99,6 +100,19 @@ public class MoovieList {
 
     public int getType() {
         return type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MoovieList that = (MoovieList) o;
+        return moovieListId == that.moovieListId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(moovieListId);
     }
 }
 

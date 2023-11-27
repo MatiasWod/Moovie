@@ -37,7 +37,7 @@ public class Media {
     @Column
     private Date releaseDate;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, length = 5000)
     private String overview;
 
     @Column(length = 255)
@@ -152,23 +152,6 @@ public class Media {
         this.watchlist = watchlist;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        Media that = (Media) obj;
-        return mediaId == that.mediaId;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(mediaId);
-    }
-
     public int getMediaId() {
         return mediaId;
     }
@@ -263,5 +246,18 @@ public class Media {
 
     public void setWatchlist(boolean watchlist) {
         this.watchlist = watchlist;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Media media = (Media) o;
+        return mediaId == media.mediaId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mediaId);
     }
 }

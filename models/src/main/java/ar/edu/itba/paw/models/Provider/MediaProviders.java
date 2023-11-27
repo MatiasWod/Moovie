@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.TV.TVCreators;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "mediaproviders", uniqueConstraints = @UniqueConstraint(columnNames = {"mediaId", "providerId"}))

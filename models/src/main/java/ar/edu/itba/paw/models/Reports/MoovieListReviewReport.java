@@ -20,7 +20,7 @@ public class MoovieListReviewReport implements Serializable {
     @Column(name = "type", nullable = false)
     private String type;
 
-    @Column(name = "content", columnDefinition = "TEXT")
+    @Column(name = "content", length = 5000)
     private String content;
 
     @ManyToOne

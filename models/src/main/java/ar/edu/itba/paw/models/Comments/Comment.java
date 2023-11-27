@@ -22,7 +22,7 @@ public class Comment implements Serializable {
     private int reviewId;
 
 
-    @Column(name = "content", columnDefinition = "TEXT")
+    @Column(name = "content", length = 5000)
     private String content;
 
     @Transient
