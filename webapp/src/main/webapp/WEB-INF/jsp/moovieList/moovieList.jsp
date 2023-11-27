@@ -181,24 +181,18 @@
                                 </c:otherwise>
                             </c:choose>
                         </div>
-<%--                        <c:if test="${currentUsername==review.username}">--%>
-<%--                            <div style="margin-bottom: 15px">--%>
-<%--                                <button class="btn btn-primary" style="font-size: 14px;margin-left: 10px;"  onclick="openPopup('rate-popup')">--%>
-<%--                                                <span>--%>
-<%--                                                   <i class="bi bi-pencil" ></i>--%>
-<%--                                                </span>--%>
-<%--                                    <spring:message code="details.editReview"/>--%>
-<%--                                </button>--%>
-<%--                            </div>--%>
-<%--                        </c:if>--%>
+
                     </div>
                 </div>
             </div>
             </c:if>
         </c:forEach>
+        <c:import url="../common/pagination.jsp">
+            <c:param name="mediaPages" value="${numberOfReviewPages}"/>
+            <c:param name="currentPage" value="${currentReviewPage + 1}"/>
+            <c:param name="url" value="${urlBase}"/>
+        </c:import>
     </div>
-
-
 </c:if>
 </body>
 </html>

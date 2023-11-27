@@ -49,7 +49,7 @@
             <c:forEach var="media" items="${nameMedia}" end="5">
                 <a href="${pageContext.request.contextPath}/details/${media.mediaId}" class="poster card text-bg-dark m-1">
                     <div class="card-img-container"> <!-- Add a container for the image -->
-                        <img class="cropCenter" src="${media.posterPath}" alt="media poster">
+                        <img class="cropCenter async-image" src="${pageContext.request.contextPath}/resources/defaultPoster.png" data-src="${media.posterPath}" alt="media poster">
                         <div class="card-img-overlay">
                             <h6 class="card-title text-center"><c:out value="${media.name}"/></h6>
                             <div class="d-flex justify-content-evenly">
@@ -90,14 +90,16 @@
             <hr class="my-1">
             <div class="container d-flex" style="height: 200px;"> <!-- Set a fixed maximum height for the container -->
                 <c:forEach var="actor" items="${actors}" end="5">
-                    <a href="/cast/actor/${actor.actorId}" class="poster card text-bg-dark m-1">
+                    <a href="${pageContext.request.contextPath}/cast/actor/${actor.actorId}" class="poster card text-bg-dark m-1">
                         <div class="card-img-container"> <!-- Add a container for the image -->
                             <c:choose>
                                 <c:when test="${actor.profilePath == 'None'}">
-                                    <img src="${pageContext.request.contextPath}/resources/defaultPoster.png" class="cropCenter"  alt="${actor.actorName} profile">
+                                    <img src="${pageContext.request.contextPath}/resources/defaultProfile.jpg.png" class="cropCenter"  alt="${actor.actorName} profile">
                                 </c:when>
                                 <c:otherwise>
-                                    <img src="${actor.profilePath}" class="cropCenter" alt="${actor.actorName} profile">
+                                    <img data-src="${actor.profilePath}"
+                                         src="${pageContext.request.contextPath}/resources/defaultProfile.jpg"
+                                         class="cropCenter async-image" alt="${actor.actorName} profile">
                                 </c:otherwise>
                             </c:choose>
                             <div class="card-img-overlay">

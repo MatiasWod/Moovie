@@ -5,11 +5,12 @@
      onclick="location.href='${pageContext.request.contextPath}/list/${cardList.moovieListId}?page=1'">
     <div class="list-img-container card-img-top">
         <c:forEach var="image" items="${cardList.images}">
-            <img class="cropCenterImage" src="${image}" alt="...">
+            <img class="cropCenterImage async-image" src="/resources/defaultPoster.png" data-src="${image}" alt="...">
         </c:forEach>
         <c:forEach begin="${fn:length(cardList.images)}" end="3">
-            <img class="cropCenterImage"
-                 src=${pageContext.request.contextPath}/resources/defaultPoster.png alt="...">
+            <img class="cropCenterImage async-image"
+                 src="/resources/defaultPoster.png"
+                 data-src=${pageContext.request.contextPath}/resources/defaultPoster.png alt="...">
         </c:forEach>
     </div>
     <div class="card-body cardBodyFlex">

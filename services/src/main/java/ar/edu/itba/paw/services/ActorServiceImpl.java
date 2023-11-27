@@ -34,12 +34,17 @@ public class ActorServiceImpl implements ActorService{
 
         int currentUserId = userService.tryToGetCurrentUserId();
 
-        if(currentUserId >= 0 ){
-            for(Media m : toReturn.getMedias()){
-                m.setWatchlist(mediaService.getWatchlistStatus(m.getMediaId(),currentUserId));
-                m.setWatched(mediaService.getWatchedStatus(m.getMediaId(),currentUserId));
+        try{
+            if(currentUserId >= 0 ){
+                for(Media m : toReturn.getMedias()){
+                    m.setWatchlist(mediaService.getWatchlistStatus(m.getMediaId(),currentUserId));
+                    m.setWatched(mediaService.getWatchedStatus(m.getMediaId(),currentUserId));
+                }
             }
+        }catch(Exception e){
+            throw new ActorNotFoundException("There was an error setting up the actor media");
         }
+
 
         return toReturn;
     }
