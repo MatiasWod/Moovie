@@ -95,7 +95,7 @@ public class ModeratorController {
         }
         String referer = request.getHeader("Referer");
         if (referer.contains("list")) {
-            return new ModelAndView("redirect:/list/" + moovieListId);
+            return new ModelAndView("redirect:/lists");
         }  else if (referer.contains("reports")) {
             return new ModelAndView("redirect:/reports/review?list=ml");
         }

@@ -422,6 +422,23 @@ public class ListController {
     }
 
 
+    @RequestMapping(value = "/deleteMoovieList/{moovieListId:\\d+}", method = RequestMethod.POST)
+    public ModelAndView deleteMoovieList(@PathVariable int moovieListId, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+        try {
+            moovieListService.deleteMoovieList(moovieListId);
+            redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("moderator.moovieListDeletedSuccess",null, LocaleContextHolder.getLocale()));
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("moderator.moovieListDeletedFailure",null, LocaleContextHolder.getLocale()));
+        }
+        String referer = request.getHeader("Referer");
+        if (referer.contains("list")) {
+            return new ModelAndView("redirect:/lists");
+        }  else if (referer.contains("reports")) {
+            return new ModelAndView("redirect:/reports/review?list=ml");
+        }
+        return new ModelAndView("redirect:/lists");
+    }
+
     @RequestMapping(value = "/MoovieListReview", method = RequestMethod.POST)
     public ModelAndView createMoovieListReview(@Valid @ModelAttribute("createReviewForm") final CreateReviewForm createReviewForm, final BindingResult errors, RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {

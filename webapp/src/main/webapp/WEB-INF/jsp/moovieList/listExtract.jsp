@@ -58,7 +58,7 @@
                     </sec:authorize>
                 </c:if>
             </c:if>
-            <sec:authorize access="hasRole('ROLE_MODERATOR')">
+            <c:if test="${isOwner}">
                 <div style="position: absolute;" class="d-flex">
                     <button onclick="openPopup('popup')" class="btn btn-danger btn-sm">
                         <i class="bi bi-trash"></i>
@@ -77,8 +77,36 @@
                         </div>
                     </div>
                 </div>
-            </sec:authorize>
+            </c:if>
+
+            <c:if test="${!isOwner}">
+                <sec:authorize access="hasRole('ROLE_MODERATOR')">
+                    <div style="position: absolute;" class="d-flex">
+                        <button onclick="openPopup('popup')" class="btn btn-danger btn-sm">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                    <div class="popup-overlay" onclick="closePopup('popup')"></div>
+                    <div style="background-color: transparent; box-shadow: none" class="popup">
+                        <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
+                            <h5 class="alert-heading"><spring:message code="listExtract.confirmListDeletion"/></h5>
+                            <p><spring:message code="listExtract.confirmListDeletionPrompt"/></p>
+                            <div class="d-flex justify-content-evenly">
+                                <form class="m-0" action="${pageContext.request.contextPath}/deleteList/${moovieList.moovieListId}" method="post">
+                                    <button type="submit" class="btn btn-danger"><spring:message code="listExtract.delete"/></button>
+                                </form>
+                                <button type="button" onclick="closePopup('popup')" class="btn btn-secondary" id="cancelModButton"><spring:message code="listExtract.cancel"/></button>
+                            </div>
+                        </div>
+                    </div>
+                </sec:authorize>
+            </c:if>
+
+
         </c:if>
+
+
+
         <c:if test="${isOwner}">
             <div style="position: relative;" class="d-flex">
                 <div style="position: absolute; top: 0; right: 0;">
