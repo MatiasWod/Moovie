@@ -35,11 +35,11 @@ public class CommentHibernateDaoTest {
 
     private static final int TO_INSERT_COMMENT_REVIEW_ID = 2;
     private static final String TO_INSERT_COMMENT_DESCRIPTION = "My comment =)";
-    private static final int TO_INSERT_COMMENT_USER_ID = 1;
+    private static final int TO_INSERT_COMMENT_USER_ID = 4;
     private static final String COMMENTS_TABLE = "comments";
 
     private static final int INSERTED_COMMENT_REVIEW_ID = 3;
-    private static final int INSERTED_COMMENT_USER_ID = 1;
+    private static final int INSERTED_COMMENT_USER_ID = 2;
     private static final int PAGE_SIZE = 10;
 
     @Before
@@ -47,15 +47,6 @@ public class CommentHibernateDaoTest {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-//    @Rollback
-//    @Test
-//    public void addCommentToReview(){
-//        commentDao.createComment(TO_INSERT_COMMENT_REVIEW_ID,TO_INSERT_COMMENT_DESCRIPTION,TO_INSERT_COMMENT_USER_ID);
-//
-//        entityManager.flush();
-//
-//        Assert.assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, COMMENTS_TABLE, String.format("userid = '%d'", TO_INSERT_COMMENT_USER_ID)));
-//    }
 
     @Rollback
     @Test

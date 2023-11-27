@@ -1,5 +1,3 @@
-import ar.edu.itba.paw.exceptions.ReviewNotFoundException;
-import ar.edu.itba.paw.exceptions.UnableToCreateUserException;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
 import ar.edu.itba.paw.models.User.User;
@@ -38,22 +36,27 @@ public class ReviewHibernateDaoTest {
 
     private JdbcTemplate jdbcTemplate;
 
-    private static final int INSERTED_REVIEW_ID = 1;
-    private static final int INSERTED_REVIEW_USER_ID = 1;
-    private static final int INSERTED_REVIEW_MEDIA_ID = 1;
+    private static final int INSERTED_REVIEW_ID = 2;
+    private static final int INSERTED_REVIEW_USER_ID = 2;
+    private static final int INSERTED_REVIEW_MEDIA_ID = 9;
     private static final int INSERTED_REVIEW_RATING = 5;
 
     private static final int TO_INSERT_REVIEW_ID = 4;
     private static final int TO_INSERT_REVIEW_USER_ID = 2;
-    private static final int TO_INSERT_REVIEW_MEDIA_ID = 2;
+    private static final int TO_INSERT_REVIEW_MEDIA_ID = 4;
     private static final int TO_INSERT_REVIEW_RATING_ID = 4;
     private static final String TO_INSERT_REVIEW_DESCRIPTION = "My description";
     private static final int PAGE_SIZE = 10;
     private static final String REVIEWS_TABLE = "reviews";
 
+    private static final int ROLE_USER=1;
+
+    private User user;
+
     @Before
     public void setup(){
         jdbcTemplate = new JdbcTemplate(dataSource);
+        user= new User.Builder("testUser","testEmail","testPassword",ROLE_USER,0).userId(TO_INSERT_REVIEW_USER_ID).build();
     }
 
     @Rollback
@@ -70,7 +73,7 @@ public class ReviewHibernateDaoTest {
     public void testGetReviewsByMediaId(){
         final List<Review> review = reviewHibernateDao.getReviewsByMediaId(INSERTED_REVIEW_USER_ID,INSERTED_REVIEW_MEDIA_ID,PAGE_SIZE,0);
         Assert.assertFalse(review.isEmpty());
-        Assert.assertEquals(2, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, REVIEWS_TABLE, String.format("mediaid = '%d'", INSERTED_REVIEW_MEDIA_ID)));
+        Assert.assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, REVIEWS_TABLE, String.format("mediaid = '%d'", INSERTED_REVIEW_MEDIA_ID)));
     }
 
     @Rollback
@@ -81,21 +84,27 @@ public class ReviewHibernateDaoTest {
         Assert.assertEquals(2, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, REVIEWS_TABLE, String.format("userid = '%d'", INSERTED_REVIEW_USER_ID)));
     }
 
-//    @Rollback
-//    @Test
-//    public void testCreateReview(){
-//        reviewHibernateDao.createReview(TO_INSERT_REVIEW_USER_ID,TO_INSERT_REVIEW_MEDIA_ID,TO_INSERT_REVIEW_RATING_ID,TO_INSERT_REVIEW_DESCRIPTION,ReviewTypes.REVIEW_MEDIA);
-//        entityManager.flush();
-//        Assert.assertEquals(2, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, REVIEWS_TABLE, String.format("userid = '%d'", TO_INSERT_REVIEW_USER_ID)));
-//    }
+    @Rollback
+    @Test
+    public void testCreateReview(){
+        reviewHibernateDao.createReview(user,TO_INSERT_REVIEW_MEDIA_ID,TO_INSERT_REVIEW_RATING_ID,TO_INSERT_REVIEW_DESCRIPTION,ReviewTypes.REVIEW_MEDIA);
+        entityManager.flush();
+        Assert.assertEquals(3, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, REVIEWS_TABLE, String.format("userid = '%d'", TO_INSERT_REVIEW_USER_ID)));
+    }
 
-//    @Rollback
-//    @Test(expected = ReviewNotFoundException.class)
-//    public void testUnableToCreateReview() throws ReviewNotFoundException{
-//
-//        reviewHibernateDao.createReview(INSERTED_REVIEW_USER_ID, INSERTED_REVIEW_MEDIA_ID,INSERTED_REVIEW_RATING,TO_INSERT_REVIEW_DESCRIPTION, ReviewTypes.REVIEW_MEDIA);
-//
-//        Assert.fail();
-//        Assert.assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, REVIEWS_TABLE, String.format("userid = '%d'", INSERTED_REVIEW_USER_ID)));
-//    }
+    @Rollback
+    @Test
+    public void testDeleteReview(){
+        reviewHibernateDao.deleteReview(INSERTED_REVIEW_USER_ID,ReviewTypes.REVIEW_MEDIA);
+        entityManager.flush();
+        Assert.assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, REVIEWS_TABLE, String.format("userid = '%d'", INSERTED_REVIEW_USER_ID)));
+    }
+
+    @Rollback
+    @Test
+    public void testGetReviewsByMediaIdCount(){
+        final int count = reviewHibernateDao.getReviewsByMediaIdCount(INSERTED_REVIEW_MEDIA_ID);
+        Assert.assertEquals(1,count);
+    }
+
 }
