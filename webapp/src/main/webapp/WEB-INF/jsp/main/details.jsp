@@ -43,10 +43,10 @@
         </div>
         <div class="col">
             <!-- Title and Details -->
-            <h1>${media.name} <a href="${pageContext.request.contextPath}/discover?status=${media.status}"><sup class="badge text-bg-light border border-black"
-                                      style="font-size: 14px;">${media.status}</sup></a>
+            <h1><c:out value="${media.name}"/> <a href="${pageContext.request.contextPath}/discover?status=${media.status}"><sup class="badge text-bg-light border border-black"
+                                      style="font-size: 14px;"><c:out value="${media.status}"/></sup></a>
                 <a href="${pageContext.request.contextPath}/discover?l=${media.originalLanguage}"><sup class="badge text-bg-light border border-black"
-                        style="font-size: 14px;">${media.originalLanguage}</sup></a>
+                        style="font-size: 14px;"><c:out value="${media.originalLanguage}"/></sup></a>
             </h1>
 
             <h5 style="display: flex; align-items: center">
@@ -56,14 +56,14 @@
 
                 <c:choose>
                     <c:when test="${media.type==false}">
-                        ${media.runtime}m
+                        <c:out value="${media.runtime}"/>m
                         <span style="margin: 0 5px;">•</span>
                         <spring:message code="details.movie"/>
                     </c:when>
                     <c:otherwise>
                         <spring:message code="details.series"/>
                         <span style="margin: 0 5px;">•</span>
-                        ${media.numberOfSeasons}
+                        <c:out value="${media.numberOfSeasons}"/>
                         <c:choose>
                             <c:when test="${media.numberOfSeasons == 1}">
                                 <spring:message code="details.season"/>
@@ -73,7 +73,7 @@
                             </c:otherwise>
                         </c:choose>
                         <span style="margin: 0 5px;">•</span>
-                        ${media.numberOfEpisodes}
+                        <c:out value="${media.numberOfEpisodes}"/>
                         <c:choose>
                             <c:when test="${media.numberOfEpisodes == 1}">
                                 <spring:message code="details.episode"/>
@@ -93,13 +93,13 @@
                     <div data-bs-toggle="popover" data-bs-trigger="hover"
                          data-bs-content="<spring:message code="details.popoverMoovieRating"/>">
                         <i class="bi bi-star-fill"></i>
-                        ${media.tmdbRating}
+                        <c:out value="${media.tmdbRating}"/>
                     </div>
                     <c:if test="${media.voteCount > 0}">
                         <div data-bs-toggle="popover" data-bs-trigger="hover"
                              data-bs-content="<spring:message code="details.popoverUserRating"/>">
                             <span style="margin: 0 5px;">•</span>
-                            <i class="bi bi-star"></i>${media.totalRating}
+                            <i class="bi bi-star"></i><c:out value="${media.totalRating}"/>
                         </div>
                     </c:if>
             </h1>
@@ -115,7 +115,7 @@
                             <span class="badge text-bg-light border border-black" style="margin: 3px;">
                             <img src="${provider.logoPath}" alt="${provider.providerName} logo not found"
                                  style="height: 1.6em; margin-right: 5px;">
-                            ${provider.providerName}
+                            <c:out value="${provider.providerName}"/>
                         </span>
                         </a>
 
@@ -130,7 +130,7 @@
                 <div>
                     <c:forEach var="genre" items="${genresList}">
                         <a style="text-decoration: none;" href="${pageContext.request.contextPath}/discover?g=${genre}&media=${media.type? 'Series':'Movies'}">
-                            <span class="badge text-bg-dark">${genre}</span>
+                            <span class="badge text-bg-dark"><c:out value="${genre}"/></span>
                         </a>
 
                     </c:forEach>
@@ -145,7 +145,7 @@
                         </div>
                         <div>
                             <a href="${pageContext.request.contextPath}/discover?credit=${media.director}">
-                                <span class="badge text-bg-light border border-black">${media.director}</span>
+                                <span class="badge text-bg-light border border-black"><c:out value="${media.director}"/></span>
                             </a>
                         </div>
                     </div>
@@ -155,7 +155,7 @@
                                 <h5><spring:message code="details.budget"/></h5>
                             </div>
                             <div>
-                                <span class="badge text-bg-light border border-black" id="budget">${media.budget}</span>
+                                <span class="badge text-bg-light border border-black" id="budget"><c:out value="${media.budget}"/></span>
                             </div>
                         </div>
                     </c:if>
@@ -166,7 +166,7 @@
                             </div>
                             <div>
                                 <span class="badge text-bg-light border border-black"
-                                      id="revenue">${media.revenue}</span>
+                                      id="revenue"><c:out value="${media.revenue}"/></span>
                             </div>
                         </div>
                     </c:if>
@@ -187,7 +187,7 @@
                             <div>
                                 <c:forEach var="creator" items="${creators}">
                                     <a style="text-decoration: none;" href="${pageContext.request.contextPath}/discover?credit=${creator.creatorName.trim()}">
-                                        <span class="badge text-bg-light border border-black">${creator.creatorName}</span>
+                                        <span class="badge text-bg-light border border-black"><c:out value="${creator.creatorName}"/></span>
                                     </a>
                                 </c:forEach>
                             </div>
@@ -199,7 +199,7 @@
                                 <h5><spring:message code="details.lastAirDate"/></h5>
                             </div>
                             <div>
-                                <span class="badge text-bg-light border border-black">${media.lastAirDate}</span>
+                                <span class="badge text-bg-light border border-black"><c:out value="${media.lastAirDate}"/></span>
                             </div>
                         </div>
                     </c:if>
@@ -209,7 +209,7 @@
                                 <h5><spring:message code="details.nextEpisodeToAir"/></h5>
                             </div>
                             <div>
-                                <span class="badge text-bg-light border border-black">${media.nextEpisodeToAir}</span>
+                                <span class="badge text-bg-light border border-black"><c:out value="${media.nextEpisodeToAir}"/></span>
                             </div>
                         </div>
                     </c:if>
@@ -289,7 +289,7 @@
         <c:if test="${not empty successMessage}">
             <div class="alert alert-success alert-dismissible fade show m-2" id="errorAlert" role="alert">
                 <div class="d-flex justify-content-between align-items-center">
-                    <div>${successMessage} <a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}">${insertedMooovieList.name}</a></div>
+                    <div><c:out value="${successMessage}"/><a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}"><c:out value="${insertedMooovieList.name}"/></a></div>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             </div>
@@ -327,9 +327,9 @@
                             <div class="col-8" style="min-width: 160px">
                                 <div class="card-body" style="min-width: 120px">
                                     <a style="color:black; text-decoration: none;" href="${pageContext.request.contextPath}/discover?credit=${actor.actorName}">
-                                        <h5 class="card-title">${actor.actorName}</h5>
+                                        <h5 class="card-title"><c:out value="${actor.actorName}"/></h5>
                                     </a>
-                                    <p class="card-text">${actor.characterName}</p>
+                                    <p class="card-text"><c:out value="${actor.characterName}"/></p>
                                 </div>
                             </div>
                         </div>
@@ -404,10 +404,10 @@
                     </c:choose>
                 </c:forEach>
             </div>
-            <h5><spring:message code="details.yourRating"/> <span id="selectedRatingEdit">${userReview.rating}</span></h5>
+            <h5><spring:message code="details.yourRating"/> <span id="selectedRatingEdit"><c:out value="${userReview.rating}"/></span></h5>
             <textarea class="review-textarea" id="reviewContent2" rows="3"
-                      maxlength="500">${userReview.reviewContent}</textarea>
-            <span><span class="text-muted" id="charCount2">${userReview.reviewContent.length()}</span>/500</span>
+                      maxlength="500"><c:out value="${userReview.reviewContent}"/></textarea>
+            <span><span class="text-muted" id="charCount2"><c:out value="${userReview.reviewContent.length()}"/></span>/500</span>
             <!-- Submit Button -->
             <div class="text-center" style="margin-top: 20px">
                 <button type="button" class="btn btn-danger" style="margin-inline: 10px"
@@ -440,13 +440,13 @@
                                         <div class="mt-0" style="margin-left: 15px">
                                             <a href="${pageContext.request.contextPath}/profile/${review.username}"
                                                style="text-decoration: none; color: inherit;">
-                                                <h5><c:out value="${review.username}"/></h5>
+                                                <h5><c:out value="${review.username}"/></h5> <c:if test="${review.hasBadge}"><i class="bi bi-trophy"></i></c:if>
                                             </a>
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-center justify-content-between">
                                         <h5 class="m-0">
-                                            <i class="bi bi-star-fill ml-2"></i> ${review.rating}/5
+                                            <i class="bi bi-star-fill ml-2"></i> <c:out value="${review.rating}"/>/5
                                         </h5>
                                         <c:choose>
                                             <c:when test="${currentUser.username==review.username}">
@@ -511,7 +511,7 @@
                                                     <button class="btn btn-style" style="font-size: 14px">
                                                         <span>
                                                             <i class="bi bi-hand-thumbs-up-fill"></i>
-                                                                ${review.reviewLikes}
+                                                                <c:out value="${review.reviewLikes}"/>
                                                         </span>
                                                         <spring:message code="details.liked"/>
                                                     </button>
@@ -524,7 +524,7 @@
                                                     <button class="btn btn-style" style="font-size: 14px">
                                                         <span>
                                                             <i class="bi bi-hand-thumbs-up"></i>
-                                                                ${review.reviewLikes}
+                                                                <c:out value="${review.reviewLikes}"/>
                                                         </span>
                                                         <spring:message code="details.like"/>
                                                     </button>
@@ -577,7 +577,7 @@
                                             <c:forEach items="${review.comments}" var="comment" end="4">
                                                 <div class="mb-2 mt-2 card card-body">
                                                     <div class="d-flex justify-content-between">
-                                                        <h6 class="card-title"><a href="${pageContext.request.contextPath}/profile/${comment.username}">${comment.username}</a></h6>
+                                                        <h6 class="card-title"><a href="${pageContext.request.contextPath}/profile/${comment.username}"><c:out value="${comment.username}"/></a></h6>
                                                         <div class="d-flex">
                                                             <p style="margin: 10px">${comment.commentLikes - comment.commentDislikes}<img style="padding-bottom: 6px;" height="37" width="37" src="${pageContext.request.contextPath}/resources/logo.png" alt="moo"></p>
                                                             <sec:authorize access="isAuthenticated()">
@@ -617,7 +617,7 @@
                                                             </sec:authorize>
                                                         </div>
                                                     </div>
-                                                    <p class="card-text">${comment.content}</p>
+                                                    <p class="card-text"><c:out value="${comment.content}"/></p>
                                                 </div>
                                             </c:forEach>
 

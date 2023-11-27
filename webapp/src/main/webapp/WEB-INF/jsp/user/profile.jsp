@@ -61,7 +61,7 @@
                         <img class="cropCenter" style="height:50px;width:50px" src="${pageContext.request.contextPath}/resources/moderator_logo.png" alt="moderator profile pic">
                     </c:if>
                     <c:if test="${profile.role == -2 || profile.role == -101}">
-                        <span class="ms-2 me-2 badge text-bg-danger" aria-disabled="true">Banned</span>
+                        <span class="ms-2 me-2 badge text-bg-danger" aria-disabled="true"><spring:message code="profile.banned"/></span>
                     </c:if>
 
                     <sec:authorize access="hasRole('ROLE_MODERATOR')">
@@ -100,19 +100,19 @@
                     <div class="m-1 d-flex align-items-center">
                         <i class="bi bi-list-ul"></i>
                         <h5>
-                                ${profile.moovieListCount}
+                                <c:out value="${profile.moovieListCount}"/>
                         </h5>
                     </div>
                     <div class="m-1 d-flex align-items-center">
                         <h5>
                             <i class="bi-star"></i>
-                                ${profile.reviewsCount}
+                                <c:out value="${profile.reviewsCount}"/>
                         </h5>
                     </div>
                     <div class="m-1 d-flex align-items-center">
                         <h5>
                             <img style="padding-bottom: 6px;" height="37" width="37" src="${pageContext.request.contextPath}/resources/logo.png" alt="moo">
-                                ${profile.milkyPoints}
+                                <c:out value="${profile.milkyPoints}"/>
                         </h5>
                     </div>
                 </div>
@@ -165,7 +165,7 @@
         <c:if test="${not empty successMessage}">
         <div class="alert alert-success alert-dismissible fade show" id="errorAlert" role="alert">
             <div class="d-flex justify-content-between align-items-center">
-                <div>${successMessage}</div>
+                <div><c:out value="${successMessage}"/></div>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
@@ -173,7 +173,7 @@
         <c:if test="${not empty errorMessage}">
         <div class="alert alert-danger alert-dismissible fade show" id="errorAlert" role="alert">
             <div class="d-flex justify-content-between align-items-center">
-                <div>${errorMessage}</div>
+                <div><c:out value="${errorMessage}"/></div>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
@@ -312,7 +312,7 @@
                                             </div>
                                             <div class="d-flex align-items-center justify-content-between">
                                                 <h5>
-                                                    <i class="bi bi-star-fill ml-2"></i> ${review.rating}/5
+                                                    <i class="bi bi-star-fill ml-2"></i><c:out value="${review.rating}"/>/5
                                                 </h5>
                                                 <sec:authorize access="hasRole('ROLE_MODERATOR')">
                                                     <div class="text-center m-2" >

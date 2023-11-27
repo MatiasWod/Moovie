@@ -74,7 +74,7 @@
                     <td>
                             <a href="${pageContext.request.contextPath}/profile/${user.username}?list=user-lists"
                                style="text-decoration: none; color: inherit;">
-                            ${user.moovieListCount} <i class="bi bi-list-ul"></i>
+                            <c:out value="${user.moovieListCount}"/> <i class="bi bi-list-ul"></i>
                             </a>
                     </td>
 
@@ -82,7 +82,7 @@
                     <td>
                         <a href="${pageContext.request.contextPath}/profile/${user.username}?list=reviews"
                            style="text-decoration: none; color: inherit;">
-                            ${user.reviewsCount} <i class="bi-star"></i>
+                            <c:out value="${user.reviewsCount}"/> <i class="bi-star"></i>
                         </a>
                     </td>
 
@@ -90,7 +90,7 @@
                     <td>
                         <a href="${pageContext.request.contextPath}/profile/${user.username}"
                            style="text-decoration: none; color: inherit;">
-                        <span>${user.milkyPoints}<img src="${pageContext.request.contextPath}/resources/logo.png" height="30" alt="Moovie logo"></span>
+                        <span><c:out value="${user.milkyPoints}"/><img src="${pageContext.request.contextPath}/resources/logo.png" height="30" alt="Moovie logo"></span>
                         </a>
                     </td>
                 </tr>

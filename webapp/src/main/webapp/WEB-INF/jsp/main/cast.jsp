@@ -32,7 +32,7 @@
             <div class="m-1 d-flex align-items-center">
                 <h5>
                     <img style="padding-bottom: 6px;" height="37" width="37" src="${pageContext.request.contextPath}/resources/logo.png" alt="moo">
-                        ${actor.medias.size()}
+                        <c:out value="${actor.medias.size()}"/>
                 </h5>
             </div>
         </div>
@@ -102,11 +102,11 @@
 
                 <img class="cropCenter async-image" src="${pageContext.request.contextPath}/resources/defaultPoster.png" data-src="${movie.posterPath}" alt="media poster">
                 <div class="card-img-overlay">
-                    <h6 class="card-title text-center">${movie.name}</h6>
+                    <h6 class="card-title text-center"><c:out value="${movie.name}"/></h6>
                     <div class="d-flex justify-content-evenly">
                         <p class="card-text">
                             <i class="bi bi-star-fill"></i>
-                                ${movie.tmdbRating}
+                                <c:out value="${movie.tmdbRating}"/>
                         </p>
                         <p class="card-text">
                             <fmt:formatDate value="${movie.releaseDate}" pattern="YYYY"/>
@@ -139,7 +139,7 @@
         <div class="m-1 d-flex align-items-center">
             <h5>
                 <img style="padding-bottom: 6px;" height="37" width="37" src="${pageContext.request.contextPath}/resources/logo.png" alt="moo">
-                    ${tvCreator.medias.size()}
+                    <c:out value="${tvCreator.medias.size()}"/>
             </h5>
         </div>
     </div>
@@ -209,11 +209,11 @@
 
                 <img class="cropCenter async-image" src="${pageContext.request.contextPath}/resources/defaultPoster.png" data-src="${movie.posterPath}" alt="media poster">
                 <div class="card-img-overlay">
-                    <h6 class="card-title text-center">${movie.name}</h6>
+                    <h6 class="card-title text-center"><c:out value="${movie.name}"/></h6>
                     <div class="d-flex justify-content-evenly">
                         <p class="card-text">
                             <i class="bi bi-star-fill"></i>
-                                ${movie.tmdbRating}
+                                <c:out value="${movie.tmdbRating}"/>
                         </p>
                         <p class="card-text">
                             <fmt:formatDate value="${movie.releaseDate}" pattern="YYYY"/>
@@ -247,7 +247,7 @@
         <div class="m-1 d-flex align-items-center">
             <h5>
                 <img style="padding-bottom: 6px;" height="37" width="37" src="${pageContext.request.contextPath}/resources/logo.png" alt="moo">
-                    ${directorMedia.size()}
+                    <c:out value="${directorMedia.size()}"/>
             </h5>
         </div>
     </div>
@@ -317,11 +317,11 @@
 
                 <img class="cropCenter async-image" src="${pageContext.request.contextPath}/resources/defaultPoster.png" data-src="${movie.posterPath}" alt="media poster">
                 <div class="card-img-overlay">
-                    <h6 class="card-title text-center">${movie.name}</h6>
+                    <h6 class="card-title text-center"><c:out value="${movie.name}"/></h6>
                     <div class="d-flex justify-content-evenly">
                         <p class="card-text">
                             <i class="bi bi-star-fill"></i>
-                                ${movie.tmdbRating}
+                                <c:out value="${movie.tmdbRating}"/>
                         </p>
                         <p class="card-text">
                             <fmt:formatDate value="${movie.releaseDate}" pattern="YYYY"/>

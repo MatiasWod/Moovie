@@ -63,37 +63,37 @@
                     <div class="m-2 d-flex align-items-center">
                         <i class="bi bi-flag m-1"></i>
                         <h5>
-                            <spring:message code="report.total"/> ${totalReports}
+                            <spring:message code="report.total"/> <c:out value="${totalReports}"/>
                         </h5>
                     </div>
                     <div class="m-2 d-flex align-items-center">
                         <h5>
                             <i class="bi bi-person-slash m-1"></i>
-                            <spring:message code="report.totalBanned"/> ${totalBanned}
+                            <spring:message code="report.totalBanned"/> <c:out value="${totalBanned}"/>
                         </h5>
                     </div>
                     <div class="m-2 d-flex align-items-center">
                         <h5>
                             <i class="bi bi-envelope-exclamation m-1"></i>
-                            <spring:message code="report.totalSpam"/> ${spamReports}
+                            <spring:message code="report.totalSpam"/> <c:out value="${spamReports}"/>
                         </h5>
                     </div>
                     <div class="m-2 d-flex align-items-center">
                         <h5>
                             <i class="bi bi-emoji-angry m-1"></i>
-                            <spring:message code="report.totalHate"/> ${hateReports}
+                            <spring:message code="report.totalHate"/> <c:out value="${hateReports}"/>
                         </h5>
                     </div>
                     <div class="m-2 d-flex align-items-center">
                         <h5>
                             <i class="bi bi-slash-circle m-1"></i>
-                            <spring:message code="report.abuse"/> ${abuseReports}
+                            <spring:message code="report.abuse"/> <c:out value="${abuseReports}"/>
                         </h5>
                     </div>
                     <div class="m-2 d-flex align-items-center">
                         <h5>
                             <i class="bi bi-incognito m1"></i>
-                            <spring:message code="report.totalPriv"/> ${privacyReports}
+                            <spring:message code="report.totalPriv"/> <c:out value="${privacyReports}"/>
                         </h5>
                     </div>
                 </div>
@@ -132,33 +132,33 @@
                             <div class="d-flex justify-content-between">
                                 <div class="d-flex">
                                     <a href="/profile/${review.username}">
-                                        <h4  class="card-title me-2">${review.username}</h4>
+                                        <h4  class="card-title me-2"><c:out value="${review.username}"/></h4>
                                     </a>
                                 </div>
                                 <div class="d-flex">
                                     <div class="d-flex m-1">
                                         <i class="bi bi-flag m-1"></i>
-                                            ${review.totalReports}
+                                            <c:out value="${review.totalReports}"/>
                                     </div>
                                     <div class="d-flex m-1">
                                         <i class="bi bi-envelope-exclamation m-1"></i>
-                                            ${review.spamReports}
+                                            <c:out value="${review.spamReports}"/>
                                     </div>
                                     <div class="d-flex m-1">
                                         <i class="bi bi-emoji-angry m-1"></i>
-                                            ${review.hateReports}
+                                            <c:out value="${review.hateReports}"/>
                                     </div>
                                     <div class="d-flex m-1">
                                         <i class="bi bi-slash-circle m-1"></i>
-                                            ${review.abuseReports}
+                                            <c:out value="${review.abuseReports}"/>
                                     </div>
                                     <div class="d-flex m-1">
                                         <i class="bi bi-incognito m-1"></i>
-                                            ${review.privacyReports}
+                                            <c:out value="${review.privacyReports}"/>
                                     </div>
                                 </div>
                             </div>
-                            <p class="card-text">${review.content}</p>
+                            <p class="card-text"><c:out value="${review.content}"/></p>
                             <hr>
                             <div class="d-flex justify-content-evenly">
                                 <button onclick="openPopup('ban${review.commentId}')" class="btn btn-lg btn-danger"><spring:message code="profile.banUser"/></button>
@@ -186,9 +186,9 @@
                         <div class="card m-2" style="width: 18rem;">
                             <div class="card-body text-center">
                                 <h5 class="card-title">
-                                    <a href="/list/${ml.moovieListId}">${ml.name}</a>
+                                    <a href="/list/${ml.moovieListId}"><c:out value="${ml.name}"/></a>
                                 </h5>
-                                <p class="card-text">${ml.description}</p>
+                                <p class="card-text"><c:out value="${ml.description}"/></p>
                                 <div class="d-flex justify-content-evenly">
                                     <button class="btn btn-warning m-1"><spring:message code="details.delete"/></button>
                                     <button class="btn btn-danger m-1"><spring:message code="profile.banUser"/></button>
@@ -233,33 +233,33 @@
                             <div class="d-flex justify-content-between">
                                 <div class="d-flex">
                                     <a href="/profile/${review.username}">
-                                        <h4  class="card-title me-2">${review.username}</h4>
+                                        <h4  class="card-title me-2"><c:out value="${review.username}"/></h4>
                                     </a>
                                 </div>
                                 <div class="d-flex">
                                     <div class="d-flex m-1">
                                         <i class="bi bi-flag m-1"></i>
-                                            ${review.totalReports}
+                                            <c:out value="${review.totalReports}"/>
                                     </div>
                                     <div class="d-flex m-1">
                                         <i class="bi bi-envelope-exclamation m-1"></i>
-                                            ${review.spamReports}
+                                            <c:out value="${review.spamReports}"/>
                                     </div>
                                     <div class="d-flex m-1">
                                         <i class="bi bi-emoji-angry m-1"></i>
-                                            ${review.hateReports}
+                                            <c:out value="${review.hateReports}"/>
                                     </div>
                                     <div class="d-flex m-1">
                                         <i class="bi bi-slash-circle m-1"></i>
-                                            ${review.abuseReports}
+                                            <c:out value="${review.abuseReports}"/>
                                     </div>
                                     <div class="d-flex m-1">
                                         <i class="bi bi-incognito m-1"></i>
-                                            ${review.privacyReports}
+                                            <c:out value="${review.privacyReports}"/>
                                     </div>
                                 </div>
                             </div>
-                            <p class="card-text">${review.reviewContent}</p>
+                            <p class="card-text"><c:out value="${review.reviewContent}"/></p>
                             <hr>
                             <div class="d-flex justify-content-evenly">
                                 <button onclick="openPopup('review${review.moovieListReviewId}')" class="btn btn-lg btn-warning"><spring:message code="details.delete"/></button>
@@ -304,36 +304,36 @@
                             <div class="d-flex justify-content-between">
                                 <div class="d-flex">
                                     <a href="/profile/${review.username}">
-                                        <h4  class="card-title me-2">${review.username}</h4>
+                                        <h4  class="card-title me-2"><c:out value="${review.username}"/></h4>
                                     </a>
-                                    <h4>${review.rating}/5
+                                    <h4><c:out value="${review.rating}"/>/5
                                        <i class="bi bi-star-fill"></i>
                                     </h4>
                                 </div>
                                 <div class="d-flex">
                                     <div class="d-flex m-1">
                                         <i class="bi bi-flag m-1"></i>
-                                            ${review.totalReports}
+                                            <c:out value="${review.totalReports}"/>
                                     </div>
                                     <div class="d-flex m-1">
                                         <i class="bi bi-envelope-exclamation m-1"></i>
-                                            ${review.spamReports}
+                                            <c:out value="${review.spamReports}"/>
                                     </div>
                                     <div class="d-flex m-1">
                                         <i class="bi bi-emoji-angry m-1"></i>
-                                            ${review.hateReports}
+                                            <c:out value="${review.hateReports}"/>
                                     </div>
                                     <div class="d-flex m-1">
                                         <i class="bi bi-slash-circle m-1"></i>
-                                            ${review.abuseReports}
+                                            <c:out value="${review.abuseReports}"/>
                                     </div>
                                     <div class="d-flex m-1">
                                         <i class="bi bi-incognito m-1"></i>
-                                            ${review.privacyReports}
+                                            <c:out value="${review.privacyReports}"/>
                                     </div>
                                 </div>
                             </div>
-                            <p class="card-text">${review.reviewContent}</p>
+                            <p class="card-text"><c:out value="${review.reviewContent}"/></p>
                             <hr>
                             <div class="d-flex justify-content-evenly">
                                 <button onclick="openPopup('review${review.reviewId}')" class="btn btn-lg btn-warning"><spring:message code="details.delete"/></button>
@@ -386,7 +386,7 @@
                                         </c:otherwise>
                                     </c:choose>
                                     <a class="ms-2" href="/profile/${bannedUser.username}">
-                                        <h4 class="card-title">${bannedUser.username}</h4>
+                                        <h4 class="card-title"><c:out value="${bannedUser.username}"/></h4>
                                     </a>
                                 </div>
                                 <button onclick="openPopup('unban${bannedUser.userId}')" class="btn btn-lg btn-danger"><spring:message code="profile.unbanUser"/></button>

@@ -30,11 +30,11 @@
                             <div class="card-img-container"> <!-- Add a container for the image -->
                                 <img class="cropCenter" src="${movie.posterPath}" alt="media poster">
                                 <div class="card-img-overlay">
-                                    <h6 class="card-title text-center">${movie.name}</h6>
+                                    <h6 class="card-title text-center"><c:out value="${movie.name}"/></h6>
                                     <div class="d-flex justify-content-evenly">
                                         <p class="card-text">
                                             <i class="bi bi-star-fill"></i>
-                                                ${movie.tmdbRating}
+                                                <c:out value="${movie.tmdbRating}"/>
                                         </p>
                                         <p class="card-text">
                                             <fmt:formatDate value="${movie.releaseDate}" pattern="YYYY"/>
@@ -69,11 +69,11 @@
                             <div class="card-img-container"> <!-- Add a container for the image -->
                                 <img class="cropCenter" src="${movie.posterPath}" alt="media poster">
                                 <div class="card-img-overlay">
-                                    <h6 class="card-title text-center">${movie.name}</h6>
+                                    <h6 class="card-title text-center"><c:out value="${movie.name}"/></h6>
                                     <div class="d-flex justify-content-evenly">
                                         <p class="card-text">
                                             <i class="bi bi-star-fill"></i>
-                                                ${movie.tmdbRating}
+                                                <c:out value="${movie.tmdbRating}"/>
                                         </p>
                                         <p class="card-text">
                                             <fmt:formatDate value="${movie.releaseDate}" pattern="YYYY"/>
@@ -108,11 +108,11 @@
                                 <div class="card-img-container"> <!-- Add a container for the image -->
                                     <img class="cropCenter" src="${series.posterPath}" alt="media poster">
                                     <div class="card-img-overlay">
-                                        <h6 class="card-title text-center">${series.name}</h6>
+                                        <h6 class="card-title text-center"><c:out value="${series.name}"/></h6>
                                         <div class="d-flex justify-content-evenly">
                                             <p class="card-text">
                                                 <i class="bi bi-star-fill"></i>
-                                                    ${series.tmdbRating}
+                                                    <c:out value="${series.tmdbRating}"/>
                                             </p>
                                             <p class="card-text">
                                                 <fmt:formatDate value="${series.releaseDate}" pattern="YYYY"/>
@@ -147,11 +147,11 @@
                             <div class="card-img-container"> <!-- Add a container for the image -->
                                 <img class="cropCenter" src="${series.posterPath}" alt="media poster">
                                 <div class="card-img-overlay">
-                                    <h6 class="card-title text-center">${series.name}</h6>
+                                    <h6 class="card-title text-center"><c:out value="${series.name}"/></h6>
                                     <div class="d-flex justify-content-evenly">
                                         <p class="card-text">
                                             <i class="bi bi-star-fill"></i>
-                                                ${series.tmdbRating}
+                                                <c:out value="${series.tmdbRating}"/>
                                         </p>
                                         <p class="card-text">
                                             <fmt:formatDate value="${series.releaseDate}" pattern="YYYY"/>

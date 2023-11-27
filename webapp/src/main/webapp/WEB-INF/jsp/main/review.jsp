@@ -53,7 +53,7 @@
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
                         <h5 class="m-0">
-                            <i class="bi bi-star-fill ml-2"></i> ${review.rating}/5
+                            <i class="bi bi-star-fill ml-2"></i> <c:out value="${review.rating}"/>/5
                         </h5>
                         <c:choose>
                             <c:when test="${currentUser.username==review.username}">
@@ -133,10 +133,10 @@
                     <div class="mb-2 mt-2 card card-body">
                         <div class="d-flex justify-content-between">
                             <a href="/profile/${comment.username}">
-                                <h6 class="card-title">${comment.username}</h6>
+                                <h6 class="card-title"><c:out value="${comment.username}"/></h6>
                             </a>
                             <div class="d-flex">
-                                <p>${comment.commentLikes - comment.commentDislikes}  </p>
+                                <p><c:out value="${comment.commentLikes - comment.commentDislikes}"/>  </p>
                                 <form action="${pageContext.request.contextPath}/likeComment" method="post">
                                     <input hidden name="commentId" value="${comment.commentId}">
                                     <input hidden name="mediaId" value="${media.mediaId}">
@@ -169,7 +169,7 @@
                                 </form>
                             </div>
                         </div>
-                        <p class="card-text">${comment.content}</p>
+                        <p class="card-text"><c:out value="${comment.content}"/></p>
                     </div>
                 </c:forEach>
             </div>
@@ -187,11 +187,11 @@
                         <div class="card-img-container">
                             <img class="cropCenter" src="${movie.posterPath}" alt="media poster">
                             <div class="card-img-overlay">
-                                <h6 class="card-title text-center">${movie.name}</h6>
+                                <h6 class="card-title text-center"><c:out value="${movie.name}"/></h6>
                                 <div class="d-flex justify-content-evenly">
                                     <p class="card-text">
                                         <i class="bi bi-star-fill"></i>
-                                            ${movie.tmdbRating}
+                                            <c:out value="${movie.tmdbRating}"/>
                                     </p>
                                     <p class="card-text">
                                         <fmt:formatDate value="${movie.releaseDate}" pattern="YYYY"/>

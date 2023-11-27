@@ -160,7 +160,7 @@
                                         <button class="btn btn-style" style="font-size: 14px">
                                                         <span>
                                                             <i class="bi bi-hand-thumbs-up-fill"></i>
-                                                                ${review.reviewLikes}
+                                                                <c:out value="${review.reviewLikes}"/>
                                                         </span>
                                             <spring:message code="details.liked"/>
                                         </button>
@@ -173,7 +173,7 @@
                                         <button class="btn btn-style" style="font-size: 14px">
                                                         <span>
                                                             <i class="bi bi-hand-thumbs-up"></i>
-                                                                ${review.reviewLikes}
+                                                                <c:out value="${review.reviewLikes}"/>
                                                         </span>
                                             <spring:message code="details.like"/>
                                         </button>
