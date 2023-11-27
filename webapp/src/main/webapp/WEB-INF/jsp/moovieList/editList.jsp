@@ -33,7 +33,6 @@
                         <c:out value="${moovieList.username}"/>
                         <c:if test="${moovieList.hasBadge}"><i class="bi bi-trophy"></i></c:if>
                     </a>
-
                 </h4>
         </div>
     </div>

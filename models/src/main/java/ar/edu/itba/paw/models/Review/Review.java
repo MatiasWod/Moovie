@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.models.Review;
 
 import ar.edu.itba.paw.models.Comments.Comment;
+import ar.edu.itba.paw.models.User.BadgeLimits;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
@@ -19,6 +20,14 @@ public class Review {
     private int userId;
     @Formula("(SELECT u.username FROM users u WHERE u.userid = userId)")
     private String username;
+
+    @Formula("(SELECT " +
+            "(SELECT COUNT(rl.reviewid) FROM reviewslikes rl LEFT OUTER JOIN reviews r ON r.reviewid = rl.reviewid WHERE r.userid = userId) + " +
+            "(SELECT COUNT(mlrl.moovielistreviewid) FROM moovielistsreviewslikes mlrl LEFT OUTER JOIN moovielistsreviews mlr ON mlr.moovielistreviewid = mlrl.moovielistreviewid WHERE mlr.userid = userId) + " +
+            "(SELECT COUNT(c.commentid) FROM commentlikes cl LEFT OUTER JOIN comments c ON c.commentid = cl.commentid WHERE c.userid = userId) + " +
+            "(SELECT COUNT(ml.moovielistid) FROM moovielistslikes mll LEFT OUTER JOIN moovielists ml ON ml.moovielistid = mll.moovielistid WHERE ml.userid = userId) )")
+    private int milkyPoints;
+
     @Column(nullable = false)
     private int mediaId;
     @Column(nullable = false, columnDefinition = "SMALLINT")
@@ -67,7 +76,7 @@ public class Review {
         this.reviewContent = reviewContent;
     }
 
-    public Review(int reviewId, int userId, String username, int mediaId, int rating, int reviewLikes, String mediaPosterPath, String mediaTitle, String reviewContent, Long commentCount, List<Comment> comments) {
+    public Review(int reviewId, int userId, String username, int mediaId, int rating, int reviewLikes, String mediaPosterPath, String mediaTitle, String reviewContent, Long commentCount, List<Comment> comments, int milkyPoints) {
         this.reviewId = reviewId;
         this.userId = userId;
         this.username = username;
@@ -79,6 +88,7 @@ public class Review {
         this.reviewContent = reviewContent;
         this.commentCount = commentCount;
         this.comments = comments;
+        this.milkyPoints = milkyPoints;
     }
 
 
@@ -183,5 +193,9 @@ public class Review {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public boolean isHasBadge() {
+        return milkyPoints >= BadgeLimits.POINTS_FOR_SIMPLE_BADGE.getLimit();
     }
 }

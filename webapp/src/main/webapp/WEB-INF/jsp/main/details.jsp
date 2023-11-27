@@ -440,7 +440,7 @@
                                         <div class="mt-0" style="margin-left: 15px">
                                             <a href="${pageContext.request.contextPath}/profile/${review.username}"
                                                style="text-decoration: none; color: inherit;">
-                                                <h5><c:out value="${review.username}"/></h5>
+                                                <h5><c:out value="${review.username}"/></h5> <c:if test="${review.hasBadge}"><i class="bi bi-trophy"></i></c:if>
                                             </a>
                                         </div>
                                     </div>
