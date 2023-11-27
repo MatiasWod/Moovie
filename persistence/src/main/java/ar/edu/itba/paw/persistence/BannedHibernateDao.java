@@ -57,15 +57,14 @@ public class BannedHibernateDao implements BannedDao{
     @Override
     public List<User> getBannedUsers() {
         return entityManager.createQuery(
-                "SELECT u FROM User u RIGHT JOIN BannedMessage bm ON u.userId = bm.bannedUserId"
+                "SELECT u FROM User u WHERE u.role = -2"
                 , User.class).getResultList();
     }
 
     @Override
     public int getBannedCount() {
-        return entityManager.createQuery(
-                "SELECT u FROM User u RIGHT JOIN BannedMessage bm ON u.userId = bm.bannedUserId"
-                , User.class).getResultList().size();    }
+            return getBannedUsers().size();
+    }
 
 
 }

@@ -35,7 +35,7 @@
 <c:set var="selectedProviders" value="${fn:split(param.providers, ',')}" />
 <div class="d-flex flex-column">
     <div class=" d-flex flex-row ">
-        <div id="preview" class="fullHeightDiv" style="width: 13vw">
+        <div id="preview" class="fullHeightDiv ms-1" style="width: 13vw">
             <c:import url="filterButtons.jsp">
                 <c:param name="query" value="${param.query}"/>
                 <c:param name="credit" value="${param.credit}"/>

@@ -8,6 +8,7 @@ import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
+import ar.edu.itba.paw.models.TV.TVCreators;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.CommentForm;
@@ -129,9 +130,12 @@ public class MediaController {
         // Aca se realizan 3 queries. Para poder notificar correctamente al JSP de las listas que va a recibir, primero se corre el getMediaCount
         int nameMediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query, null, null, null, null, null);
         int actorsCount = actorService.getActorsForQueryCount(query);
-        int creatorsCount = mediaService.getDirectorsForQueryCount(query); // TODO + creators count
+        int creatorsCount = mediaService.getDirectorsForQueryCount(query);
         int usersCount = userService.getSearchCount(query);
         int moovieListCount = moovieListService.getMoovieListCardsCount(query,null,MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(),0);
+
+        List<TVCreators> tvCreators = tvCreatorsService.getTVCreatorsForQuery(query);
+        creatorsCount += tvCreators.size();
 
         if (query.isEmpty()){
             return mav;
@@ -156,7 +160,8 @@ public class MediaController {
         // Creators/Directors query
         if (creatorsCount > 0){
             mav.addObject("creatorsFlag", true);
-            mav.addObject("directors", mediaService.getDirectorsForQuery( query ));
+            mav.addObject("directors", mediaService.getDirectorsForQuery( query ).subList(0,3));
+            mav.addObject("creators", tvCreators.subList(0,3));
         }else{
             mav.addObject("creatorsFlag",false);
         }
@@ -377,7 +382,7 @@ public class MediaController {
             case "actor" :
                 try{
                     mav.addObject("type", type);
-                    mav.addObject("cast", actorService.getActorById(id));
+                    mav.addObject("actor", actorService.getActorById(id));
                     return mav;
                 } catch(ActorNotFoundException e){
                     return new ModelAndView("helloword/404");
@@ -385,7 +390,7 @@ public class MediaController {
             case "creator" :
                 try{
                     mav.addObject("type", type);
-                    mav.addObject("cast", tvCreatorsService.getTvCreatorById(id));
+                    mav.addObject("tvCreator", tvCreatorsService.getTvCreatorById(id));
 //                    mav.addObject("media", mediaService.getMediaForCreatorId(id));
                     return mav;
                 } catch(ActorNotFoundException e){

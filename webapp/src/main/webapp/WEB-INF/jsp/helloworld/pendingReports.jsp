@@ -110,16 +110,175 @@
 
         <c:choose>
             <c:when test="${param.list == 'comments' || param.list == null || param.list == '' }">
-                <c:forEach items="${commentList}" var="comment">
+                <c:forEach items="${commentList}" var="review">
+                    <div class="card d-flex m-1">
+                        <div class="card-body m-1">
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex">
+                                    <a href="/profile/${review.username}">
+                                        <h4  class="card-title me-2">${review.username}</h4>
+                                    </a>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="d-flex m-1">
+                                        <i class="bi bi-flag m-1"></i>
+                                            ${review.totalReports}
+                                    </div>
+                                    <div class="d-flex m-1">
+                                        <i class="bi bi-envelope-exclamation m-1"></i>
+                                            ${review.spamReports}
+                                    </div>
+                                    <div class="d-flex m-1">
+                                        <i class="bi bi-emoji-angry m-1"></i>
+                                            ${review.hateReports}
+                                    </div>
+                                    <div class="d-flex m-1">
+                                        <i class="bi bi-slash-circle m-1"></i>
+                                            ${review.abuseReports}
+                                    </div>
+                                    <div class="d-flex m-1">
+                                        <i class="bi bi-incognito m-1"></i>
+                                            ${review.privacyReports}
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="card-text">${review.content}</p>
+                            <hr>
+                            <div class="d-flex justify-content-evenly">
+                                <button onclick="openPopup('ban${review.commentId}')" class="btn btn-lg btn-danger"><spring:message code="profile.banUser"/></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ban${review.commentId}-overlay popup-overlay" onclick="closePopup('ban${review.commentId}')"></div>
+                    <div style="background-color: transparent; box-shadow: none" class="popup ban${review.commentId}">
+                        <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
+                            <h5 class="alert-heading"><spring:message code="profile.confirmUserBan"/></h5>
+                            <p><spring:message code="profile.banPrompt"/></p>
+                            <div class="d-flex justify-content-evenly">
+                                <form class="m-0" action="${pageContext.request.contextPath}/banUser/${review.userId}" method="post">
+                                    <button type="submit" class="btn btn-danger"><spring:message code="profile.banUser"/></button>
+                                </form>
+                                <button type="button" onclick="closePopup('ban${review.commentId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
+                            </div>
+                        </div>
+                    </div>
                 </c:forEach>
             </c:when>
             <c:when test="${param.list == 'ml'}">
-                <c:forEach items="${mlList}" var="ml">
-
-                </c:forEach>
+                <div class="d-flex flex-wrap m-1 justify-content-center">
+                    <c:forEach items="${mlList}" var="ml">
+                        <div class="card m-2" style="width: 18rem;">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">
+                                    <a href="/list/${ml.moovieListId}">${ml.name}</a>
+                                </h5>
+                                <p class="card-text">${ml.description}</p>
+                                <div class="d-flex justify-content-evenly">
+                                    <button class="btn btn-warning m-1"><spring:message code="details.delete"/></button>
+                                    <button class="btn btn-danger m-1"><spring:message code="profile.banUser"/></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ban${ml.moovieListId}-overlay popup-overlay" onclick="closePopup('ban${ml.moovieListId}')"></div>
+                        <div style="background-color: transparent; box-shadow: none" class="popup ban${ml.moovieListId}">
+                            <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
+                                <h5 class="alert-heading"><spring:message code="profile.confirmUserBan"/></h5>
+                                <p><spring:message code="profile.banPrompt"/></p>
+                                <div class="d-flex justify-content-evenly">
+                                    <form class="m-0" action="${pageContext.request.contextPath}/banUser/${ml.userId}" method="post">
+                                        <button type="submit" class="btn btn-danger"><spring:message code="profile.banUser"/></button>
+                                    </form>
+                                    <button type="button" onclick="closePopup('ban${ml.moovieListId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
+                                </div>
+                            </div>
+                        </div>
+                        <%-- TODO: poner bien el link --%>
+                        <div class="review${ml.moovieListId}-overlay popup-overlay" onclick="closePopup('review${ml.moovieListId}')"></div>
+                        <div style="background-color: transparent; box-shadow: none" class="popup review${ml.moovieListId}">
+                            <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
+                                <h5 class="alert-heading"><spring:message code="details.confirmReviewDeletion"/></h5>
+                                <p><spring:message code="details.confirmReviewDeletionPrompt"/></p>
+                                <div class="d-flex justify-content-evenly">
+                                    <form class="m-0" action="${pageContext.request.contextPath}/deleteUserReview/${review.moovieListId}" method="post">
+                                        <input type="hidden" name="reviewId" value="${review.moovieListReviewId}"/>
+                                        <button type="submit" class="btn btn-danger"><spring:message code="details.delete"/></button>
+                                    </form>
+                                    <button type="button" onclick="closePopup('review${ml.moovieListId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
+                                </div>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
             </c:when>
             <c:when test="${param.list == 'mlReviews'}">
-                <c:forEach items="${mlReviewList}" var="mlReview">
+                <c:forEach items="${mlReviewList}" var="review">
+                    <div class="card d-flex m-1">
+                        <div class="card-body m-1">
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex">
+                                    <a href="/profile/${review.username}">
+                                        <h4  class="card-title me-2">${review.username}</h4>
+                                    </a>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="d-flex m-1">
+                                        <i class="bi bi-flag m-1"></i>
+                                            ${review.totalReports}
+                                    </div>
+                                    <div class="d-flex m-1">
+                                        <i class="bi bi-envelope-exclamation m-1"></i>
+                                            ${review.spamReports}
+                                    </div>
+                                    <div class="d-flex m-1">
+                                        <i class="bi bi-emoji-angry m-1"></i>
+                                            ${review.hateReports}
+                                    </div>
+                                    <div class="d-flex m-1">
+                                        <i class="bi bi-slash-circle m-1"></i>
+                                            ${review.abuseReports}
+                                    </div>
+                                    <div class="d-flex m-1">
+                                        <i class="bi bi-incognito m-1"></i>
+                                            ${review.privacyReports}
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="card-text">${review.reviewContent}</p>
+                            <hr>
+                            <div class="d-flex justify-content-evenly">
+                                <button onclick="openPopup('review${review.moovieListReviewId}')" class="btn btn-lg btn-warning"><spring:message code="details.delete"/></button>
+                                <button onclick="openPopup('ban${review.moovieListReviewId}')" class="btn btn-lg btn-danger"><spring:message code="profile.banUser"/></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review${review.moovieListReviewId}-overlay popup-overlay" onclick="closePopup('review${review.moovieListReviewId}')"></div>
+                    <div style="background-color: transparent; box-shadow: none" class="popup review${review.moovieListReviewId}">
+                        <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
+                            <h5 class="alert-heading"><spring:message code="details.confirmReviewDeletion"/></h5>
+                            <p><spring:message code="details.confirmReviewDeletionPrompt"/></p>
+                            <div class="d-flex justify-content-evenly">
+                                <form class="m-0" action="${pageContext.request.contextPath}/deleteUserReview/${review.moovieListId}" method="post">
+                                    <input type="hidden" name="reviewId" value="${review.moovieListReviewId}"/>
+                                    <button type="submit" class="btn btn-danger"><spring:message code="details.delete"/></button>
+                                </form>
+                                <button type="button" onclick="closePopup('review${review.moovieListReviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ban${review.moovieListReviewId}-overlay popup-overlay" onclick="closePopup('ban${review.moovieListReviewId}')"></div>
+                    <div style="background-color: transparent; box-shadow: none" class="popup ban${review.moovieListReviewId}">
+                        <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
+                            <h5 class="alert-heading"><spring:message code="profile.confirmUserBan"/></h5>
+                            <p><spring:message code="profile.banPrompt"/></p>
+                            <div class="d-flex justify-content-evenly">
+                                <form class="m-0" action="${pageContext.request.contextPath}/banUser/${review.userId}" method="post">
+                                    <input type="hidden" name="reviewId" value="${review.moovieListReviewId}"/>
+                                    <button type="submit" class="btn btn-danger"><spring:message code="profile.banUser"/></button>
+                                </form>
+                                <button type="button" onclick="closePopup('ban${review.moovieListReviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
+                            </div>
+                        </div>
+                    </div>
                 </c:forEach>
             </c:when>
             <c:when test="${param.list == 'reviews'}">
@@ -128,9 +287,10 @@
                         <div class="card-body m-1">
                             <div class="d-flex justify-content-between">
                                 <div class="d-flex">
-                                    <h4 class="card-title me-2">${review.username}</h4>
-                                    <h4>
-                                        ${review.rating}/5
+                                    <a href="/profile/${review.username}">
+                                        <h4  class="card-title me-2">${review.username}</h4>
+                                    </a>
+                                    <h4>${review.rating}/5
                                        <i class="bi bi-star-fill"></i>
                                     </h4>
                                 </div>
@@ -200,7 +360,33 @@
                     <div class="card d-flex m-1">
                         <div class="card-body m-1">
                             <div class="d-flex justify-content-between">
-                                <h4 class="card-title">${bannedUser.username}</h4>
+                                <div class="d-flex align-items-center">
+                                    <c:choose>
+                                        <c:when test="${bannedUser.hasPfp}">
+                                            <img style="height:50px;width:50px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/profile/image/${bannedUser.username}" alt="profile picture">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <img style="height:50px;width:50px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/resources/defaultProfile.jpg" alt="profile picture">
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <a class="ms-2" href="/profile/${bannedUser.username}">
+                                        <h4 class="card-title">${bannedUser.username}</h4>
+                                    </a>
+                                </div>
+                                <button onclick="openPopup('unban${bannedUser.userId}')" class="btn btn-lg btn-danger"><spring:message code="profile.unbanUser"/></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="unban${bannedUser.userId}-overlay popup-overlay" onclick="closePopup('unban${bannedUser.userId}')"></div>
+                    <div style="background-color: transparent; box-shadow: none" class="popup unban${bannedUser.userId}">
+                        <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
+                            <h5 class="alert-heading"><spring:message code="profile.confirmUserBan"/></h5>
+                            <p><spring:message code="profile.unbanPrompt"/></p>
+                            <div class="d-flex justify-content-evenly">
+                                <form class="m-0" action="${pageContext.request.contextPath}/unbanUser/${bannedUser.userId}" method="post">
+                                    <button type="submit" class="btn btn-danger"><spring:message code="profile.unbanUser"/></button>
+                                </form>
+                                <button type="button" onclick="closePopup('unban${bannedUser.userId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
                             </div>
                         </div>
                     </div>

@@ -29,7 +29,7 @@ public class TVCreatorsServiceImpl implements TVCreatorsService{
 
     @Override
     public List<TVCreators> getTVCreatorsForQuery(String query) {
-        return null;
+        return tvCreatorsDao.getTVCreatorsForQuery(query);
     }
 
 

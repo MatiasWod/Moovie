@@ -173,10 +173,10 @@
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             <li><a class="dropdown-item" href="${pageContext.request.contextPath}/profile/${username}"><spring:message code="navBar.profile"/></a></li>
-                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/logout"><spring:message code="navBar.logout"/></a></li>
                                             <sec:authorize access="hasRole('ROLE_MODERATOR')">
                                                 <li><a class="dropdown-item" href="${pageContext.request.contextPath}/reports/review"><spring:message code="navBar.review"/></a></li>
                                             </sec:authorize>
+                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/logout"><spring:message code="navBar.logout"/></a></li>
                                         </ul>
                                     </li>
                                 </ul>

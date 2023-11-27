@@ -155,7 +155,7 @@
 
                                 <form action="${pageContext.request.contextPath}/dislikeComment" method="post">
                                     <input hidden name="commentId" value="${comment.commentId}">
-                                    <input hidden name="mediaId" value="${media.mediaId}">
+                                    <input hidden name="mediaId" value="${review.mediaId}">
                                     <c:if test="${!comment.currentUserHasDisliked}">
                                         <button type="submit" class="btn btn-sm btn-outline-danger">
                                             <i class="m-1 bi bi-hand-thumbs-down"></i>

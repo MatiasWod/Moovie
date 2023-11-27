@@ -14,7 +14,7 @@
 <div>
 
 
-        <div class="container d-flex justify-content-left p-0" id="genre-chips">
+        <div class="container d-flex justify-content-left p-0 flex-wrap" id="genre-chips">
             <c:if test="${param.g != null && param.g.length() > 0}">
                 <h4>
                     <spring:message code="createList.displayGenres"/>
@@ -27,7 +27,7 @@
                 </div>
             </c:forEach>
         </div>
-        <div class="container d-flex justify-content-left p-0" id="provider-chips">
+        <div class="container d-flex justify-content-left p-0 flex-wrap" id="provider-chips">
             <c:if test="${param.providers != null && param.providers.length() > 0}">
                 <h4>
                     <spring:message code="createList.displayProviders"/>
