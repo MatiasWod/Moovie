@@ -131,16 +131,10 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public void reportMoovieListReview(int moovieListReviewId, int userId, int type, String content) {
-        String sql = "INSERT INTO reportsmoovielistreviews " +
-                "(type, content, reportedBy, moovieListReviewId) " +
-                "VALUES ( :type, :content, :userId , :moovieListReviewId )";
-
-        em.createNativeQuery(sql)
-                .setParameter("type", type)
-                .setParameter("content", content)
-                .setParameter("userId", userId)
-                .setParameter("moovieListReviewId", moovieListReviewId)
-                .executeUpdate();
+        MoovieListReview review= em.find(MoovieListReview.class, moovieListReviewId);
+        User user = em.find(User.class, userId);
+        MoovieListReviewReport report = new MoovieListReviewReport(type,content, user, review);
+        em.persist(report);
     }
 
     @Override
@@ -186,16 +180,11 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public void reportMoovieList(int moovieListId, int userId, int type, String content) {
-        String sql = "INSERT INTO reportsmoovielists " +
-                "(type, content, reportedBy, moovieListId) " +
-                "VALUES ( :type, :content, :userId , :moovieListId )";
 
-        em.createNativeQuery(sql)
-                .setParameter("type", type)
-                .setParameter("content", content)
-                .setParameter("userId", userId)
-                .setParameter("moovieListId", moovieListId)
-                .executeUpdate();
+        MoovieList moovieList=em.find(MoovieList.class, moovieListId);
+        User user = em.find(User.class, userId);
+        MoovieListReport report = new MoovieListReport(type,content, user, moovieList);
+        em.persist(report);
     }
 
     @Override
@@ -241,16 +230,10 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public void reportComment(int commentId, int userId, int type, String content) {
-        String sql = "INSERT INTO reportscomments " +
-                "(type, content, reportedBy, commentId) " +
-                "VALUES ( :type, :content, :userId , :commentId )";
-
-        em.createNativeQuery(sql)
-                .setParameter("type", type)
-                .setParameter("content", content)
-                .setParameter("userId", userId)
-                .setParameter("commentId", commentId)
-                .executeUpdate();
+        Comment comment= em.find(Comment.class, commentId);
+        User user = em.find(User.class, userId);
+        CommentReport report = new CommentReport(type,content, user, comment);
+        em.persist(report);
     }
 
     @Override

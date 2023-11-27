@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.models.MoovieList;
 
+import ar.edu.itba.paw.models.Reports.MoovieListReport;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 import org.hibernate.annotations.Formula;
 
@@ -50,6 +51,9 @@ public class MoovieList {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "moovieListReviewId", cascade = CascadeType.ALL)
     private List<MoovieListReview> reviews;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "moovieList", cascade = CascadeType.ALL)
+    private  List<MoovieListReport> reports;
 
     public MoovieList(){}
 

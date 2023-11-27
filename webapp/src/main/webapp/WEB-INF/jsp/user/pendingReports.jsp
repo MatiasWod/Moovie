@@ -186,12 +186,12 @@
                         <div class="card m-2" style="width: 18rem;">
                             <div class="card-body text-center">
                                 <h5 class="card-title">
-                                    <a href="/list/${ml.moovieListId}"><c:out value="${ml.name}"/></a>
+                                    <a href="${pageContext.request.contextPath}/list/${ml.moovieListId}"><c:out value="${ml.name}"/></a>
                                 </h5>
                                 <p class="card-text"><c:out value="${ml.description}"/></p>
                                 <div class="d-flex justify-content-evenly">
-                                    <button class="btn btn-warning m-1"><spring:message code="details.delete"/></button>
-                                    <button class="btn btn-danger m-1"><spring:message code="profile.banUser"/></button>
+                                    <button class="btn btn-warning m-1 " onclick="openPopup('review${ml.moovieListId}')" ><spring:message code="details.delete"/></button>
+                                    <button class="btn btn-danger m-1"  onclick="openPopup('ban${ml.moovieListId}')" ><spring:message code="profile.banUser"/></button>
                                 </div>
                             </div>
                         </div>
@@ -212,11 +212,11 @@
                         <div class="review${ml.moovieListId}-overlay popup-overlay" onclick="closePopup('review${ml.moovieListId}')"></div>
                         <div style="background-color: transparent; box-shadow: none" class="popup review${ml.moovieListId}">
                             <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
-                                <h5 class="alert-heading"><spring:message code="details.confirmReviewDeletion"/></h5>
-                                <p><spring:message code="details.confirmReviewDeletionPrompt"/></p>
+                                <h5 class="alert-heading"><spring:message code="report.ConfirmMoovieListDeletion"/></h5>
+                                <p><spring:message code="report.deleteMoovieList"/></p>
                                 <div class="d-flex justify-content-evenly">
-                                    <form class="m-0" action="${pageContext.request.contextPath}/deleteUserReview/${review.moovieListId}" method="post">
-                                        <input type="hidden" name="reviewId" value="${review.moovieListReviewId}"/>
+                                    <form class="m-0" action="${pageContext.request.contextPath}/deleteList/${ml.moovieListId}" method="post">
+                                        <input type="hidden" name="reviewId" value="${ml.moovieListId}"/>
                                         <button type="submit" class="btn btn-danger"><spring:message code="details.delete"/></button>
                                     </form>
                                     <button type="button" onclick="closePopup('review${ml.moovieListId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
