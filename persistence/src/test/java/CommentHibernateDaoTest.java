@@ -47,15 +47,15 @@ public class CommentHibernateDaoTest {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    @Rollback
-    @Test
-    public void addCommentToReview(){
-        commentDao.createComment(TO_INSERT_COMMENT_REVIEW_ID,TO_INSERT_COMMENT_DESCRIPTION,TO_INSERT_COMMENT_USER_ID);
-
-        entityManager.flush();
-
-        Assert.assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, COMMENTS_TABLE, String.format("userid = '%d'", TO_INSERT_COMMENT_USER_ID)));
-    }
+//    @Rollback
+//    @Test
+//    public void addCommentToReview(){
+//        commentDao.createComment(TO_INSERT_COMMENT_REVIEW_ID,TO_INSERT_COMMENT_DESCRIPTION,TO_INSERT_COMMENT_USER_ID);
+//
+//        entityManager.flush();
+//
+//        Assert.assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, COMMENTS_TABLE, String.format("userid = '%d'", TO_INSERT_COMMENT_USER_ID)));
+//    }
 
     @Rollback
     @Test

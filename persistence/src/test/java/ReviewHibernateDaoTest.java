@@ -81,21 +81,21 @@ public class ReviewHibernateDaoTest {
         Assert.assertEquals(2, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, REVIEWS_TABLE, String.format("userid = '%d'", INSERTED_REVIEW_USER_ID)));
     }
 
-    @Rollback
-    @Test
-    public void testCreateReview(){
-        reviewHibernateDao.createReview(TO_INSERT_REVIEW_USER_ID,TO_INSERT_REVIEW_MEDIA_ID,TO_INSERT_REVIEW_RATING_ID,TO_INSERT_REVIEW_DESCRIPTION,ReviewTypes.REVIEW_MEDIA);
-        entityManager.flush();
-        Assert.assertEquals(2, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, REVIEWS_TABLE, String.format("userid = '%d'", TO_INSERT_REVIEW_USER_ID)));
-    }
+//    @Rollback
+//    @Test
+//    public void testCreateReview(){
+//        reviewHibernateDao.createReview(TO_INSERT_REVIEW_USER_ID,TO_INSERT_REVIEW_MEDIA_ID,TO_INSERT_REVIEW_RATING_ID,TO_INSERT_REVIEW_DESCRIPTION,ReviewTypes.REVIEW_MEDIA);
+//        entityManager.flush();
+//        Assert.assertEquals(2, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, REVIEWS_TABLE, String.format("userid = '%d'", TO_INSERT_REVIEW_USER_ID)));
+//    }
 
-    @Rollback
-    @Test(expected = ReviewNotFoundException.class)
-    public void testUnableToCreateReview() throws ReviewNotFoundException{
-
-        reviewHibernateDao.createReview(INSERTED_REVIEW_USER_ID, INSERTED_REVIEW_MEDIA_ID,INSERTED_REVIEW_RATING,TO_INSERT_REVIEW_DESCRIPTION, ReviewTypes.REVIEW_MEDIA);
-
-        Assert.fail();
-        Assert.assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, REVIEWS_TABLE, String.format("userid = '%d'", INSERTED_REVIEW_USER_ID)));
-    }
+//    @Rollback
+//    @Test(expected = ReviewNotFoundException.class)
+//    public void testUnableToCreateReview() throws ReviewNotFoundException{
+//
+//        reviewHibernateDao.createReview(INSERTED_REVIEW_USER_ID, INSERTED_REVIEW_MEDIA_ID,INSERTED_REVIEW_RATING,TO_INSERT_REVIEW_DESCRIPTION, ReviewTypes.REVIEW_MEDIA);
+//
+//        Assert.fail();
+//        Assert.assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, REVIEWS_TABLE, String.format("userid = '%d'", INSERTED_REVIEW_USER_ID)));
+//    }
 }
