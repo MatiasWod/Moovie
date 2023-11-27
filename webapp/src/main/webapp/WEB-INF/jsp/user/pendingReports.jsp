@@ -287,8 +287,8 @@
                             <h5 class="alert-heading"><spring:message code="details.confirmReviewDeletion"/></h5>
                             <p><spring:message code="details.confirmReviewDeletionPrompt"/></p>
                             <div class="d-flex justify-content-evenly">
-                                <form class="m-0" action="${pageContext.request.contextPath}/deleteUserReview/${review.moovieListId}" method="post">
-                                    <input type="hidden" name="reviewId" value="${review.moovieListReviewId}"/>
+                                <form class="m-0" action="${pageContext.request.contextPath}/deleteUserMoovieListReviewMod/${review.moovieListReviewId}" method="post">
+                                    <input type="hidden" name="reviewId" value="${review.moovieListId}"/>
                                     <button type="submit" class="btn btn-danger"><spring:message code="details.delete"/></button>
                                 </form>
                                 <button type="button" onclick="closePopup('review${review.moovieListReviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>

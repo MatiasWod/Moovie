@@ -64,7 +64,25 @@ public class ModeratorController {
 
 
 
-
+    @RequestMapping(value = "/deleteUserMoovieListReviewMod/{moovieListReviewId:\\d+}", method = RequestMethod.POST)
+    public ModelAndView deleteUserMoovieListReviewMod(@RequestParam("reviewId") int mediaId,
+                                               RedirectAttributes redirectAttributes,
+                                               @PathVariable int moovieListReviewId,
+                                               HttpServletRequest request) {
+        try {
+            moderatorService.deleteListReview(moovieListReviewId);
+            redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("list.reviewDeletedSuccess",null, LocaleContextHolder.getLocale()));
+        }catch (Exception e){
+            redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("list.reviewDeletedFailure",null, LocaleContextHolder.getLocale()));
+        }
+        String referer = request.getHeader("Referer");
+        if (referer.contains("list")) {
+            return new ModelAndView("redirect:/list/" + mediaId);
+        } else if (referer.contains("reports")) {
+            return new ModelAndView("redirect:/reports/review?list=mlReviews");
+        }
+        return new ModelAndView("redirect:/list/" + mediaId);
+    }
 
 
     @RequestMapping(value = "/banUser/{userId:\\d+}", method = RequestMethod.POST)

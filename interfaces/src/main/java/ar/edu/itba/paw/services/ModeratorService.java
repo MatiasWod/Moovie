@@ -14,4 +14,6 @@ public interface ModeratorService {
     void unbanUser(int userId);
     //Chane the tole of an user to Moderator
     void makeUserModerator(int userId);
+
+    void deleteListReview(int moovieListReviewId);
 }

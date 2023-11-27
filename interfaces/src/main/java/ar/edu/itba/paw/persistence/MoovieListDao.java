@@ -51,4 +51,7 @@ public interface MoovieListDao {
 
     void removeFollowMoovieList(int userId, int moovieListId);
     void followMoovieList(int userId, int moovieListId);
-}
+
+    void deleteListReview(int moovieListReviewId);
+
+    }
