@@ -15,6 +15,7 @@ import java.util.List;
 public class MoovieListContent implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "moovielistscontent_id_seq")
     @Column
     private int id;
 
