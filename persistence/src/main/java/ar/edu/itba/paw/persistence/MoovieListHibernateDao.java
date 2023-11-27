@@ -20,10 +20,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Primary
 @Repository
@@ -190,9 +187,16 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
         List<Integer> ids = em.createNativeQuery(jpql).setParameter("moovieListId", moovieListId).setFirstResult(0).setMaxResults(size).getResultList();
 
-        TypedQuery<Media> query = em.createQuery("SELECT m FROM Media m WHERE m.mediaId in (:ids)", Media.class).setParameter("ids", ids);
+        if (ids == null || ids.isEmpty()) {
+            // no recommendations
+            return Collections.emptyList();
+        } else {
+            TypedQuery<Media> query = em.createQuery("SELECT m FROM Media m WHERE m.mediaId in (:ids)", Media.class)
+                    .setParameter("ids", ids);
 
-        return query.getResultList();
+            return query.getResultList();
+        }
+
     }
 
     @Override
