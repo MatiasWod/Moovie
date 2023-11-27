@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface BannedDao {
     Optional<BannedMessage> getBannedMessage(int userId);
 
-    void createBannedMessage(int bannedUserId, int modUserId , String message);
+    void createBannedMessage(int bannedUserId, int modUserId , String message, String modUsername);
 
     void deleteBannedMessage(int bannedUserId);
 

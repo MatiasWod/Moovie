@@ -341,47 +341,47 @@
                             </div>
                         </div>
                     </div>
-                    <div class="review${review.reviewId}-overlay popup-overlay" onclick="closePopup('review${review.reviewId}')"></div>
-                    <div style="background-color: transparent; box-shadow: none" class="popup review${review.reviewId}">
+                    <div class="review${review.moovieListReviewId}-overlay popup-overlay" onclick="closePopup('review${review.moovieListReviewId}')"></div>
+                    <div style="background-color: transparent; box-shadow: none" class="popup review${review.moovieListReviewId}">
                         <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
                             <h5 class="alert-heading"><spring:message code="details.confirmReviewDeletion"/></h5>
                             <p><spring:message code="details.confirmReviewDeletionPrompt"/></p>
                             <div class="d-flex justify-content-evenly">
-                                <form class="m-0" action="${pageContext.request.contextPath}/deleteUserMoovieListReviewMod/${review.reviewId}" method="post">
-                                    <input type="hidden" name="reviewId" value="${review.reviewId}"/>
+                                <form class="m-0" action="${pageContext.request.contextPath}/deleteUserMoovieListReviewMod/${review.moovieListReviewId}" method="post">
+                                    <input type="hidden" name="reviewId" value="${review.moovieListReviewId}"/>
                                     <button type="submit" class="btn btn-danger"><spring:message code="details.delete"/></button>
                                 </form>
-                                <button type="button" onclick="closePopup('review${review.reviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
+                                <button type="button" onclick="closePopup('review${review.moovieListReviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
                             </div>
                         </div>
                     </div>
-                    <div class="resolve${review.reviewId}-overlay popup-overlay" onclick="closePopup('resolve${review.reviewId}')"></div>
-                    <div style="background-color: transparent; box-shadow: none" class="popup resolve${review.reviewId}">
+                    <div class="resolve${review.moovieListReviewId}-overlay popup-overlay" onclick="closePopup('resolve${review.moovieListReviewId}')"></div>
+                    <div style="background-color: transparent; box-shadow: none" class="popup resolve${review.moovieListReviewId}">
                         <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
                             <h5 class="alert-heading"><spring:message code="report.resolveComment"/></h5>
                             <p><spring:message code="report.resolveCommentMessage"/></p>
                             <div class="d-flex justify-content-evenly">
                                 <form class="m-0" action="${pageContext.request.contextPath}/reports/resolve" method="post">
-                                    <input type="hidden" name="id" value="${review.reviewId}"/>
+                                    <input type="hidden" name="id" value="${review.moovieListReviewId}"/>
                                     <input type="hidden" name="type" value="mlReviews"/>
                                     <button type="submit" class="btn btn-danger"><spring:message code="report.resolve"/></button>
                                 </form>
-                                <button type="button" onclick="closePopup('resolve${review.reviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
+                                <button type="button" onclick="closePopup('resolve${review.moovieListReviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
                             </div>
                         </div>
                     </div>
-                    <div class="ban${review.reviewId}-overlay popup-overlay" onclick="closePopup('ban${review.reviewId}')"></div>
-                    <div style="background-color: transparent; box-shadow: none" class="popup ban${review.reviewId}">
+                    <div class="ban${review.moovieListReviewId}-overlay popup-overlay" onclick="closePopup('ban${review.moovieListReviewId}')"></div>
+                    <div style="background-color: transparent; box-shadow: none" class="popup ban${review.moovieListReviewId}">
                         <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
                             <h5 class="alert-heading"><spring:message code="profile.confirmUserBan"/></h5>
                             <p><spring:message code="profile.banPrompt"/></p>
                             <div class="d-flex justify-content-evenly">
                                 <form class="m-0" action="${pageContext.request.contextPath}/banUser/${review.userId}" method="post">
                                     <textarea name="message"  rows="6" cols="50" placeholder='${explainBanPlaceholder}' maxlength="500"></textarea>
-                                    <input type="hidden" name="reviewId" value="${review.reviewId}"/>
+                                    <input type="hidden" name="reviewId" value="${review.moovieListReviewId}"/>
                                     <div class="d-flex justify-content-evenly">
                                         <button type="submit" class="btn btn-danger"><spring:message code="profile.banUser"/></button>
-                                        <button type="button" onclick="closePopup('ban${review.reviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
+                                        <button type="button" onclick="closePopup('ban${review.moovieListReviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
                                     </div>
                                 </form>
                             </div>

@@ -18,18 +18,19 @@ public class CommentDaoImpl implements CommentDao{
 
     @Override
     public List<Comment> getComments(int reviewId, int userId, int size, int pageSize) {
-        String sql = "SELECT new ar.edu.itba.paw.models.Comments.Comment(c," +
-                " (SELECT CASE WHEN EXISTS( SELECT 1 FROM CommentLike cl WHERE cl.commentId = c.commentId AND cl.userId = :userId) THEN true ELSE false END), " +
-                " (SELECT CASE WHEN EXISTS( SELECT 1 FROM CommentDislike cl WHERE cl.commentId = c.commentId AND cl.userId = :userId) THEN true ELSE false END )  )" +
+        String sql = "SELECT c" +
                 " FROM Comment c WHERE c.reviewId = :reviewId";
 
         List<Comment> comments = em.createQuery(sql, Comment.class)
                 .setParameter("reviewId", reviewId)
-                .setParameter("userId", userId)
                 .setFirstResult(pageSize*size)
                 .setMaxResults(size)
                 .getResultList();
 
+        for (Comment c : comments){
+            c.setCurrentUserHasLiked(userHasLiked(c.getCommentId(),userId));
+            c.setCurrentUserHasDisliked(userHasDisliked(c.getCommentId(),userId));
+        }
 
         return comments;
     }
