@@ -21,6 +21,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -401,6 +402,10 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList) {
+        //Remove the duplicates, just for security, we cant use an unique contraint for the update moovie list order to work!
+        HashSet<Integer> uniqueSet = new HashSet<>(mediaIdList);
+        mediaIdList = new ArrayList<>(uniqueSet);
+
         MoovieList updatedMoovieList = em.find(MoovieList.class, moovieListid);
         if (updatedMoovieList != null) {
             Integer maxCustomOrder = (Integer) em.createQuery("SELECT MAX(mlc.customOrder) FROM MoovieListContent mlc WHERE mlc.moovieList.moovieListId = :moovieListId")
@@ -412,9 +417,16 @@ public class MoovieListHibernateDao implements MoovieListDao{
             }
 
             for (Integer mediaId : mediaIdList) {
-                maxCustomOrder++;
-                MoovieListContent newMoovieListContent = new MoovieListContent(updatedMoovieList, mediaId, maxCustomOrder);
-                em.persist(newMoovieListContent);
+                Boolean isPresent = (Boolean) em.createQuery("SELECT CASE WHEN COUNT(mlc) > 0 THEN true ELSE false END FROM MoovieListContent mlc" +
+                                " WHERE mlc.moovieList.moovieListId = :moovieListId AND mlc.mediaId = :mediaId", Boolean.class )
+                        .setParameter("mediaId", mediaId).setParameter("moovieListId", updatedMoovieList.getMoovieListId()).getSingleResult();
+                if(!isPresent){
+                    maxCustomOrder++;
+                    MoovieListContent newMoovieListContent = new MoovieListContent(updatedMoovieList, mediaId, maxCustomOrder);
+                    em.persist(newMoovieListContent);
+                } else {
+                    throw new UnableToInsertIntoDatabase("Media already in list.");
+                }
             }
         }
 
@@ -425,10 +437,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
     @Override
     public void deleteMediaFromMoovieList(int moovieListId, int mediaId) {
         MoovieListContent toRemove = em.createQuery("SELECT mlc FROM MoovieListContent mlc WHERE mlc.moovieList.moovieListId = :moovieListId AND mlc.mediaId = :mediaId", MoovieListContent.class).setParameter("moovieListId", moovieListId).setParameter("mediaId",mediaId).getSingleResult();
-        if (toRemove != null){
-            em.remove(toRemove);
-        }
-
+        em.remove(toRemove);
     }
 
     @Override

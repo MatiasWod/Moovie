@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.User.User;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "moovielistsreviewslikes",uniqueConstraints = @UniqueConstraint(columnNames = {"moovieListReviewId", "userId"}))

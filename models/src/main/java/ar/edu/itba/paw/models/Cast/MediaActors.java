@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Media.Media;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "mediaactors", uniqueConstraints = @UniqueConstraint(columnNames = {"mediaId", "actorId"}))
@@ -23,6 +24,5 @@ public class MediaActors implements Serializable {
 
     @Column(name = "charactername")
     private String characterName;
-
 }
 

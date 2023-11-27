@@ -20,7 +20,7 @@ public class CommentReport implements Serializable {
     @Column(name = "type", nullable = false)
     private int type;
 
-    @Column(name = "content", columnDefinition = "TEXT")
+    @Column(name = "content", length = 5000)
     private String content;
 
     @ManyToOne

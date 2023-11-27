@@ -133,4 +133,6 @@ public class User {
     public boolean isHasBadge() {
         return milkyPoints >= BadgeLimits.POINTS_FOR_SIMPLE_BADGE.getLimit();
     }
+
+
 }

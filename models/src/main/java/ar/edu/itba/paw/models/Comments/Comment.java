@@ -27,7 +27,7 @@ public class Comment implements Serializable {
     @Formula("(SELECT m.mediaid FROM media m JOIN reviews r ON r.mediaid = m.mediaid WHERE r.reviewid = reviewId )")
     private int mediaId;
 
-    @Column(name = "content", columnDefinition = "TEXT")
+    @Column(name = "content", length = 5000)
     private String content;
 
     @Transient

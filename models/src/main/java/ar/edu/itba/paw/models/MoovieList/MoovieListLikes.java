@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.User.User;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "moovieListsLikes",uniqueConstraints = @UniqueConstraint(columnNames = {"moovieListId", "userId"}))
@@ -44,5 +45,7 @@ public class MoovieListLikes implements Serializable {
     public void setUser(User user) {
         this.user = user;
     }
+
+
 }
 

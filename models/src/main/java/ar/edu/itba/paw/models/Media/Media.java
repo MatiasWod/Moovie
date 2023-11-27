@@ -37,7 +37,7 @@ public class Media {
     @Column
     private Date releaseDate;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, length = 5000)
     private String overview;
 
     @Column(length = 255)

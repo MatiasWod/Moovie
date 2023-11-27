@@ -48,7 +48,7 @@ public class Review {
     @Formula("(SELECT m.name FROM media m WHERE m.mediaId = mediaId)")
     private String mediaTitle;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 5000)
     private String reviewContent;
 
     @Formula("(SELECT COUNT(*) FROM comments c WHERE c.reviewid = reviewId)")

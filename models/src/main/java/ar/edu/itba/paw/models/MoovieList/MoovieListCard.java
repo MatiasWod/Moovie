@@ -25,7 +25,7 @@ public class MoovieListCard {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = true, columnDefinition = "TEXT")
+    @Column(nullable = true, length = 5000)
     private String description;
 
     @Column(nullable = false)
