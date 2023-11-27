@@ -74,22 +74,6 @@ public class MediaController {
     private static final Logger LOGGER = LoggerFactory.getLogger(MediaController.class);
 
 
-
-    @RequestMapping("/testing")
-    public ModelAndView test(){
-        final ModelAndView mav = new ModelAndView("helloworld/test");
-        mav.addObject("ml", userService.getMilkyPointsLeaders(25,0));
-        return mav;
-    }
-
-    @RequestMapping("/adolfoTest")
-    public ModelAndView adolfoTest(){
-        final ModelAndView mav = new ModelAndView("helloworld/adolfoTesting");
-        mav.addObject("providerList", providerService.getAllProviders());
-        mav.addObject("user", userService.getInfoOfMyUser());
-        return mav;
-    }
-
     @RequestMapping("/")
     public ModelAndView home() {
 

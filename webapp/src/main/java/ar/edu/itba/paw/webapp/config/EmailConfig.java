@@ -37,8 +37,7 @@ public class EmailConfig {
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
         properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
-        //Creo que es esta línea que hay que sacar, hacerlo antes de entregar
-        properties.put("mail.debug", "true");
+
         return javaMailSender;
     }
 
