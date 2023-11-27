@@ -8,13 +8,11 @@ import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.User.User;
 import org.hibernate.SQLQuery;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
 
 import javax.persistence.EntityManager;
@@ -22,10 +20,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Primary
 @Repository
@@ -416,11 +412,8 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
             for (Integer mediaId : mediaIdList) {
                 maxCustomOrder++;
-                em.createNativeQuery("INSERT INTO moovielistscontent (mediaid, moovielistid, customorder) VALUES (:mediaId, :moovielistid, :customorder)")
-                        .setParameter("mediaId", mediaId)
-                        .setParameter("moovielistid", moovieListid)
-                        .setParameter("customorder", maxCustomOrder)
-                        .executeUpdate();
+                MoovieListContent newMoovieListContent = new MoovieListContent(updatedMoovieList, mediaId, maxCustomOrder);
+                em.persist(newMoovieListContent);
             }
         }
 

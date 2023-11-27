@@ -1,14 +1,9 @@
 package ar.edu.itba.paw.models.MoovieList;
 
-import ar.edu.itba.paw.models.Genre.Genre;
 import ar.edu.itba.paw.models.Media.Media;
-import ar.edu.itba.paw.models.Provider.Provider;
-import ar.edu.itba.paw.models.User.User;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "moovielistscontent")
@@ -35,8 +30,7 @@ public class MoovieListContent implements Serializable {
 
     MoovieListContent(){}
 
-    public MoovieListContent(int id, MoovieList moovieList, int mediaId, int customOrder, boolean watched) {
-        this.id = id;
+    public MoovieListContent(MoovieList moovieList, int mediaId, int customOrder, boolean watched) {
         this.moovieList = moovieList;
         this.mediaId = mediaId;
         this.customOrder = customOrder;
@@ -48,6 +42,12 @@ public class MoovieListContent implements Serializable {
         this.mediaId = mediaId;
         this.customOrder = customOrder;
         this.watched = watched;
+    }
+
+    public MoovieListContent(MoovieList updatedMoovieList, Integer mediaId, Integer maxCustomOrder) {
+        this.moovieList = updatedMoovieList;
+        this.mediaId = mediaId;
+        this.customOrder = maxCustomOrder + 1;
     }
 
     public int getId() {
