@@ -83,7 +83,7 @@ public class CommentServiceImpl implements CommentService{
     @Transactional
     @Override
     public void createComment(int reviewId, String content) {
-        commentDao.createComment(reviewId, content, userService.getInfoOfMyUser().getUserId());
+        commentDao.createComment(reviewId, content, userService.getInfoOfMyUser());
     }
 
     @Transactional
