@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "moovieListsLikes")
+@Table(name = "moovieListsLikes",uniqueConstraints = @UniqueConstraint(columnNames = {"moovieListId", "userId"}))
 public class MoovieListLikes implements Serializable {
 
     @Id

@@ -1,15 +1,11 @@
 package ar.edu.itba.paw.models.User;
 
-import ar.edu.itba.paw.models.MoovieList.MoovieListFollowers;
-import ar.edu.itba.paw.models.MoovieList.MoovieListLikes;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users",uniqueConstraints = {@UniqueConstraint(columnNames = {"username"}), @UniqueConstraint(columnNames = {"email"})})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_userid_seq")

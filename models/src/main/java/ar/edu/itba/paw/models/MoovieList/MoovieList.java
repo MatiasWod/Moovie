@@ -3,11 +3,9 @@ package ar.edu.itba.paw.models.MoovieList;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
-@Table(name="moovielists")
+@Table(name="moovielists",uniqueConstraints = @UniqueConstraint(columnNames = {"userId", "name"}) )
 public class MoovieList {
 
     @Id

@@ -3,7 +3,7 @@ package ar.edu.itba.paw.models.User;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "userimages")
+@Table(name = "userimages", uniqueConstraints = @UniqueConstraint(columnNames = {"userId"}))
 public class Image {
     @Id
     private int userId;
