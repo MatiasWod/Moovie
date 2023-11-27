@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 
 import ar.edu.itba.paw.models.Comments.Comment;
+import ar.edu.itba.paw.models.User.User;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -90,8 +91,8 @@ public class CommentDaoImpl implements CommentDao{
     }
 
     @Override
-    public void createComment(int reviewId, String content, int userId) {
-        em.persist(new Comment(userId,reviewId,content));
+    public void createComment(int reviewId, String content, User user) {
+        em.persist(new Comment(user,reviewId,content));
     }
 
     @Override
