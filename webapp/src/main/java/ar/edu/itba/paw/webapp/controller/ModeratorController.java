@@ -207,7 +207,16 @@ public class ModeratorController {
                 try {
                     reportService.reportComment(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
                     redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("moderator.reviewReportedSuccess",null, LocaleContextHolder.getLocale()));
-                    return new ModelAndView("redirect:/details/"); // faltaria un getCommentById
+                    return new ModelAndView("redirect:/review/" + commentService.getCommentById(form.getId()).getReviewId());
+                } catch (Exception e) {
+                    redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("moderator.reviewReportedFailure",null, LocaleContextHolder.getLocale()));
+                    return report(form, id, reportedBy, type, redirectAttributes);
+                }
+            case "reviewComment,reviewComment":
+                try {
+                    reportService.reportComment(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
+                    redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("moderator.reviewReportedSuccess",null, LocaleContextHolder.getLocale()));
+                    return new ModelAndView("redirect:/details/" + commentService.getCommentById(form.getId()).getMediaId()); // faltaria un getCommentById
                 } catch (Exception e) {
                     redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("moderator.reviewReportedFailure",null, LocaleContextHolder.getLocale()));
                     return report(form, id, reportedBy, type, redirectAttributes);

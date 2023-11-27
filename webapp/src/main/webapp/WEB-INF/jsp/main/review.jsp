@@ -132,41 +132,44 @@
                 <c:forEach items="${review.comments}" var="comment">
                     <div class="mb-2 mt-2 card card-body">
                         <div class="d-flex justify-content-between">
-                            <a href="/profile/${comment.username}">
-                                <h6 class="card-title"><c:out value="${comment.username}"/></h6>
-                            </a>
+                            <h6 class="card-title"><a href="${pageContext.request.contextPath}/profile/${comment.username}"><c:out value="${comment.username}"/></a></h6>
                             <div class="d-flex">
-                                <p><c:out value="${comment.commentLikes - comment.commentDislikes}"/>  </p>
-                                <form action="${pageContext.request.contextPath}/likeComment" method="post">
-                                    <input hidden name="commentId" value="${comment.commentId}">
-                                    <input hidden name="mediaId" value="${media.mediaId}">
-                                    <c:if test="${!comment.currentUserHasLiked}">
-                                        <button type="submit" class="me-1 btn-sm btn btn-outline-success">
-                                            <i class="m-1 bi bi-hand-thumbs-up"></i>
-                                        </button>
+                                <p style="margin: 10px">${comment.commentLikes - comment.commentDislikes}<img style="padding-bottom: 6px;" height="37" width="37" src="${pageContext.request.contextPath}/resources/logo.png" alt="moo"></p>
+                                <sec:authorize access="isAuthenticated()">
+                                    <form action="${pageContext.request.contextPath}/likeComment" method="post">
+                                        <input hidden name="commentId" value="${comment.commentId}">
+                                        <input hidden name="mediaId" value="${comment.reviewId}">
+                                        <c:if test="${!comment.currentUserHasLiked}">
+                                            <button type="submit" class="me-1 btn-sm btn btn-outline-success">
+                                                <i class="m-1 bi bi-hand-thumbs-up"></i>
+                                            </button>
+                                        </c:if>
+                                        <c:if test="${comment.currentUserHasLiked}">
+                                            <button type="submit" class="me-1 btn-sm btn btn-success">
+                                                <i class="m-1 bi bi-hand-thumbs-up"></i>
+                                            </button>
+                                        </c:if>
+                                    </form>
+                                    <form action="${pageContext.request.contextPath}/dislikeComment" method="post">
+                                        <input hidden name="commentId" value="${comment.commentId}">
+                                        <input hidden name="mediaId" value="${media.mediaId}">
+                                        <c:if test="${!comment.currentUserHasDisliked}">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="m-1 bi bi-hand-thumbs-down"></i>
+                                            </button>
+                                        </c:if>
+                                        <c:if test="${comment.currentUserHasDisliked}">
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="m-1 bi bi-hand-thumbs-down"></i>
+                                            </button>
+                                        </c:if>
+                                    </form>
+                                    <c:if test="${currentUser.username!=comment.username}">
+                                        <a href="${pageContext.request.contextPath}/reports/new?id=${comment.commentId}&reportedBy=${currentUser.userId}&type=comment" class="btn btn-sm btn-warning ms-1" ><spring:message code="report.title"/>
+                                            <i class="bi bi-flag"></i>
+                                        </a>
                                     </c:if>
-                                    <c:if test="${comment.currentUserHasLiked}">
-                                        <button type="submit" class="me-1 btn-sm btn btn-success">
-                                            <i class="m-1 bi bi-hand-thumbs-up"></i>
-                                        </button>
-                                    </c:if>
-
-                                </form>
-
-                                <form action="${pageContext.request.contextPath}/dislikeComment" method="post">
-                                    <input hidden name="commentId" value="${comment.commentId}">
-                                    <input hidden name="mediaId" value="${review.mediaId}">
-                                    <c:if test="${!comment.currentUserHasDisliked}">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            <i class="m-1 bi bi-hand-thumbs-down"></i>
-                                        </button>
-                                    </c:if>
-                                    <c:if test="${comment.currentUserHasDisliked}">
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="m-1 bi bi-hand-thumbs-down"></i>
-                                        </button>
-                                    </c:if>
-                                </form>
+                                </sec:authorize>
                             </div>
                         </div>
                         <p class="card-text"><c:out value="${comment.content}"/></p>

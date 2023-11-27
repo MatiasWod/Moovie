@@ -23,6 +23,8 @@ public class Comment implements Serializable {
     @Column(name = "reviewId", nullable = false)
     private int reviewId;
 
+    @Formula("(SELECT m.mediaid FROM media m JOIN reviews r ON r.mediaid = m.mediaid WHERE r.reviewid = reviewId )")
+    private int mediaId;
 
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
@@ -63,6 +65,14 @@ public class Comment implements Serializable {
         this.reviewId = reviewId;
         this.user = user;
         this.content = content;
+    }
+
+    public int getMediaId() {
+        return mediaId;
+    }
+
+    public void setMediaId(int mediaId) {
+        this.mediaId = mediaId;
     }
 
     public void setCommentId(int commentId) {

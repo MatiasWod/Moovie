@@ -43,6 +43,17 @@ public class Movie extends Media{
         this.director = director;
     }
 
+    public Movie(Movie movie, boolean watched, boolean watchlist){
+        super(movie.getMediaId(), movie.isType(), movie.getName(), movie.getOriginalLanguage(), movie.isAdult(), movie.getReleaseDate(), movie.getOverview(), movie.getBackdropPath(), movie.getPosterPath(), movie.getTrailerLink(), movie.getTmdbRating(), movie.getTotalRating(), movie.getVoteCount(), movie.getStatus(), movie.getGenresModels(), movie.getProviders());
+        this.setWatched(watched);
+        this.setWatchlist(watchlist);
+        this.runtime = movie.runtime;
+        this.budget = movie.budget;
+        this.revenue = movie.revenue;
+        this.directorId = movie.directorId;
+        this.director = movie.director;
+    }
+
     public int getRuntime() {
         return runtime;
     }

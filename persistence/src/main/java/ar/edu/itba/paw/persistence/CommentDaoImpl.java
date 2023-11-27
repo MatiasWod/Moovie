@@ -33,6 +33,11 @@ public class CommentDaoImpl implements CommentDao{
     }
 
     @Override
+    public Comment getCommentById(int commentId) {
+        return em.find(Comment.class, commentId);
+    }
+
+    @Override
     public boolean userHasLiked(int commentId, int userId) {
         String sqlQuery = "SELECT CASE WHEN " +
                 "EXISTS( SELECT 1 FROM commentlikes cl WHERE cl.commentid = :commentId AND cl.userid = :userId ) " +

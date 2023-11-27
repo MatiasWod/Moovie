@@ -125,8 +125,14 @@ public class MediaHibernateDao implements MediaDao{
     }
 
     @Override
-    public List<Movie> getMediaForDirectorId(int directorId) {
-        final TypedQuery<Movie> query = em.createQuery("FROM Movie WHERE directorId = :directorId ", Movie.class).setParameter("directorId", directorId);
+    public List<Movie> getMediaForDirectorId(int directorId, int currentUser) {
+//
+        String sql = "SELECT new ar.edu.itba.paw.models.Media.Movie(m,"+
+                "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId WHERE m.mediaId = mlc2.mediaId AND wl.name = 'Watched' AND wl.userId = :userid), " +
+                "(SELECT CASE WHEN COUNT(wl3) > 0 THEN true ELSE false END FROM MoovieList wl3 INNER JOIN MoovieListContent mlc3 ON wl3.moovieListId = mlc3.moovieList.moovieListId WHERE m.mediaId = mlc3.mediaId AND wl3.name = 'Watchlist' AND wl3.userId = :userid) ) "+
+                "FROM Movie m WHERE directorId = :directorId " +
+                "ORDER BY m.tmdbRating DESC";
+        final TypedQuery<Movie> query = em.createQuery(sql, Movie.class).setParameter("directorId", directorId).setParameter("userid", currentUser);
         return query.getResultList();
     }
 
@@ -236,14 +242,24 @@ public class MediaHibernateDao implements MediaDao{
 
     @Override
     public List<Director> getDirectorsForQuery(String query, int size) {
-        String sql = "SELECT DISTINCT new ar.edu.itba.paw.models.Cast.Director(m.directorId, m.director) " +
-                "FROM Movie m WHERE m.director LIKE :query";
+        String sql = "SELECT m.directorId, m.director, COUNT(m.mediaId) as mediaCount " +
+                "FROM Movie m WHERE m.director LIKE :query " +
+                "GROUP BY m.directorId, m.director " +
+                "ORDER BY mediaCount DESC";
 
-        TypedQuery<Director> q = em.createQuery(sql, Director.class)
+        TypedQuery<Object[]> q = em.createQuery(sql, Object[].class)
                 .setParameter("query", "%" + query + "%");
 
-        return q.setMaxResults(size).getResultList();
+        List<Object[]> results = q.setMaxResults(size).getResultList();
+        List<Director> directors = new ArrayList<>();
+        for (Object[] result : results) {
+            Long mediaCount = (Long) result[2];
+            directors.add(new Director((int)result[0], (String) result[1], mediaCount.intValue()));
+        }
+
+        return directors;
     }
+
 
 
 

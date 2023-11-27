@@ -74,7 +74,7 @@ public class MediaServiceImpl implements MediaService{
     @Transactional(readOnly = true)
     @Override
     public List<Movie> getMediaForDirectorId(int directorId) {
-        return mediaDao.getMediaForDirectorId(directorId);
+        return mediaDao.getMediaForDirectorId(directorId, userService.tryToGetCurrentUserId());
     }
 
     private String setSortOrder(String sortOrder){
