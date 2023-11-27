@@ -19,9 +19,9 @@ public class Profile {
     private int moovieListCount;
 
     //ReviewsCount is the sum of reviews + moovielistreviews + comments
-    @Formula("( SELECT (SELECT COUNT(*) FROM reviews r WHERE r.userId = userId) + (SELECT COUNT(*) FROM moovielistsreviews mlr WHERE mlr.userId = userId) " +
-            " + (SELECT COUNT(*) FROM comments c WHERE c.userId = userId) )")
+    @Formula("(SELECT COUNT(*) FROM reviews r WHERE r.userId = userId)")
     private int reviewsCount;
+
 
     @Formula("(SELECT " +
             "(SELECT COUNT(rl.reviewid) FROM reviewslikes rl LEFT OUTER JOIN reviews r ON r.reviewid = rl.reviewid WHERE r.userid = userId) + " +
@@ -70,6 +70,7 @@ public class Profile {
     public int getReviewsCount() {
         return reviewsCount;
     }
+
 
     public int getMilkyPoints() {
         return milkyPoints;

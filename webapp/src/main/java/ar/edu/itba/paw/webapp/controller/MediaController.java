@@ -412,12 +412,13 @@ public class MediaController {
         return new ModelAndView("helloword/404");
     }
 
-    @RequestMapping("/review/{id:\\d+}")
-    public ModelAndView review(@PathVariable int id, @ModelAttribute("commentForm") CommentForm commentForm) {
+    @RequestMapping("/review/{mediaId:\\d+}/{id:\\d+}")
+    public ModelAndView review(@PathVariable int id,@PathVariable int mediaId ,@ModelAttribute("commentForm") CommentForm commentForm) {
         final ModelAndView mav = new ModelAndView("main/review");
         List<Media> movieList = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
                 null, null, null, null,MediaFilters.TMDBRATING.getFilter(), MediaFilters.DESC.getFilter(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("movieList", movieList);
+        mav.addObject("mediaId", mediaId);
         mav.addObject("review", reviewService.getReviewById(id));
         try {
             mav.addObject("currentUser", userService.getInfoOfMyUser());

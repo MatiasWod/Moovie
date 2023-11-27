@@ -604,7 +604,7 @@
                                             <c:forEach items="${review.comments}" var="comment" end="4">
                                                 <div class="mb-2 mt-2 card card-body">
                                                     <div class="d-flex justify-content-between">
-                                                        <h6 class="card-title"><a href="${pageContext.request.contextPath}/profile/${commen.username}"><c:out value="${comment.username}"/><c:if test="${comment.hasBadge}"><i class="bi bi-trophy"></i></c:if></a></h6>
+                                                        <h6 class="card-title"><a href="${pageContext.request.contextPath}/profile/${comment.username}" style="text-decoration: none; color: black"><c:out value="${comment.username}"/><c:if test="${comment.hasBadge}"><i class="bi bi-trophy"></i></c:if></a></h6>
                                                         <div class="d-flex">
                                                             <p style="margin: 10px">${comment.commentLikes - comment.commentDislikes}<img style="padding-bottom: 6px;" height="37" width="37" src="${pageContext.request.contextPath}/resources/logo.png" alt="moo"></p>
                                                             <sec:authorize access="isAuthenticated()">
@@ -649,7 +649,7 @@
                                             </c:forEach>
 
                                         <c:if test="${review.commentCount > 5}">
-                                            <a class="ms-1" href="${pageContext.request.contextPath}/review/${review.reviewId}">
+                                            <a class="ms-1" href="${pageContext.request.contextPath}/review/${media.mediaId}/${review.reviewId}">
                                                 <spring:message code="details.seeMore"/>
                                             </a>
                                         </c:if>
