@@ -23,13 +23,23 @@ public class CommentServiceImpl implements CommentService{
     @Transactional(readOnly = true)
     @Override
     public List<Comment> getComments(int reviewId, int size, int pageNumber) {
-        return commentDao.getComments(reviewId, userService.getInfoOfMyUser().getUserId(), size, pageNumber);
+        return commentDao.getComments(reviewId, userService.tryToGetCurrentUserId(), size, pageNumber);
     }
 
     @Transactional(readOnly = true)
     @Override
     public Comment getCommentById(int commentId) {
         return commentDao.getCommentById(commentId);
+    }
+
+    @Override
+    public boolean userHasLiked(int commentId, int userId) {
+        return commentDao.userHasLiked(commentId, userId);
+    }
+
+    @Override
+    public boolean userHasDisliked(int commentId, int userId) {
+        return commentDao.userHasDisliked(commentId,userId);
     }
 
     @Transactional
