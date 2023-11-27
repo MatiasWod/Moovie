@@ -65,11 +65,13 @@ public class MediaServiceImpl implements MediaService{
         return toReturn;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public int getDirectorsForQueryCount(String query, int size) {
         return mediaDao.getDirectorsForQueryCount(query, size);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Director> getDirectorsForQuery(String query, int size) {
         return mediaDao.getDirectorsForQuery(query, size);
@@ -88,11 +90,13 @@ public class MediaServiceImpl implements MediaService{
         return mediaDao.getMediaForDirectorId(directorId, userService.tryToGetCurrentUserId());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public boolean getWatchlistStatus(int mediaId, int userId) {
         return mediaDao.getWatchlistStatus(mediaId,userId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public boolean getWatchedStatus(int mediaId, int userId) {
         return mediaDao.getWatchedStatus(mediaId,userId);

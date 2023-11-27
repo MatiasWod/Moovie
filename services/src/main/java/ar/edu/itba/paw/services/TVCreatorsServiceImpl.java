@@ -45,6 +45,7 @@ public class TVCreatorsServiceImpl implements TVCreatorsService{
         return toReturn;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<TVCreators> getTVCreatorsForQuery(String query, int size) {
         List<TVCreators> toReturn = tvCreatorsDao.getTVCreatorsForQuery(query, size);

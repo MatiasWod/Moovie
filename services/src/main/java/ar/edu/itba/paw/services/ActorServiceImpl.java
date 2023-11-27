@@ -49,16 +49,19 @@ public class ActorServiceImpl implements ActorService{
         return toReturn;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public int getActorsForQueryCount(String query) {
         return actorDao.getActorsForQueryCount(query);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Actor> getActorsForQuery(String query) {
         return actorDao.getActorsForQuery(query);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Media> getMediaForActor(int actorId) {
         return actorDao.getMediaForActor(actorId, userService.tryToGetCurrentUserId());
