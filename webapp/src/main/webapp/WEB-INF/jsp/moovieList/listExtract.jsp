@@ -70,7 +70,7 @@
                         <h5 class="alert-heading"><spring:message code="listExtract.confirmListDeletion"/></h5>
                         <p><spring:message code="listExtract.confirmListDeletionPrompt"/></p>
                         <div class="d-flex justify-content-evenly">
-                            <form class="m-0" action="${pageContext.request.contextPath}/deleteList/${moovieList.moovieListId}" method="post">
+                            <form class="m-0" action="${pageContext.request.contextPath}/deleteMoovieList/${moovieList.moovieListId}" method="post">
                                 <button type="submit" class="btn btn-danger"><spring:message code="listExtract.delete"/></button>
                             </form>
                             <button type="button" onclick="closePopup('popup')" class="btn btn-secondary" id="cancelModButton"><spring:message code="listExtract.cancel"/></button>

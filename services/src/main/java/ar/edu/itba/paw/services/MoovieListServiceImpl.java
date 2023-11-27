@@ -16,9 +16,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class MoovieListServiceImpl implements MoovieListService{
@@ -238,7 +236,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         MoovieList ml = getMoovieListById(moovieListId);
         User currentUser = userService.getInfoOfMyUser();
         if(currentUser.getRole() == UserRoles.MODERATOR.getRole() || currentUser.getUserId() == ml.getUserId()){
-            deleteMoovieList(moovieListId);
+            moovieListDao.deleteMoovieList(moovieListId);
             LOGGER.info("Succesfully deleted list: {}.",moovieListId);
 
         }else{

@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -203,7 +202,6 @@ public class ListController {
             mav.addObject("currentPage",pageNumber - 1);
             mav.addObject("numberOfPages",numberOfPages);
 
-            //TODO correct pagination
             mav.addObject("reviews", reviewService.getMoovieListReviewsByMoovieListId(moovieListId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1));
             int numberOfReviews = reviewService.getMoovieListReviewByMoovieListIdCount(moovieListId);
             mav.addObject("currentReviewPage", pageReviewNumber -1 );

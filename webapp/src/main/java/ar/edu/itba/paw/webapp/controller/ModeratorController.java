@@ -295,7 +295,7 @@ public class ModeratorController {
         return reportReview(type);
     }
 
-    // TODO: Add mod filtering for this page
+
     @RequestMapping(value = "/reports/review")
     public ModelAndView reportReview(@RequestParam(name = "list", required = false) String list) {
         ModelAndView mav = new ModelAndView("user/pendingReports");
