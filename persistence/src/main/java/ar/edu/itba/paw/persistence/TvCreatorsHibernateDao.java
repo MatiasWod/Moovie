@@ -32,11 +32,11 @@ public class TvCreatorsHibernateDao implements TVCreatorsDao{
     }
 
     @Override
-    public List<TVCreators> getTVCreatorsForQuery(String query) {
+    public List<TVCreators> getTVCreatorsForQuery(String query, int size) {
         String sql = "SELECT c FROM TVCreators c WHERE LOWER(c.creatorName) LIKE :query";
         
         return em.createQuery(sql, TVCreators.class)
-                .setParameter("query","%"+query+"%")
+                .setParameter("query","%"+query+"%").setMaxResults(size)
                 .getResultList();
     }
 }

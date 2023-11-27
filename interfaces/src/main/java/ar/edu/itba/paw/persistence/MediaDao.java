@@ -22,6 +22,6 @@ public interface MediaDao {
 
 
     // search creators
-    int getDirectorsForQueryCount(String query);
-    List<Director> getDirectorsForQuery(String query);
+    int getDirectorsForQueryCount(String query, int size);
+    List<Director> getDirectorsForQuery(String query, int size);
 }
