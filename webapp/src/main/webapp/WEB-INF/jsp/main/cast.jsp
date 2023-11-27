@@ -54,6 +54,7 @@
                         <div class="card-img-container"> <!-- Add a container for the image -->
                             <sec:authorize access="isAuthenticated()">
                                 <div style="position:absolute;bottom:0;left: 20%;z-index: 2" class="d-flex m-2">
+<%--                                    COULD NOT MAKE TVCREATOR WATCHED & WATCHLIST STATUS WORK--%>
 <%--                                    <c:choose>--%>
 <%--                                        <c:when test="${movie.watched}">--%>
 <%--                                            <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">--%>
@@ -161,6 +162,7 @@
                         <div class="card-img-container"> <!-- Add a container for the image -->
                             <sec:authorize access="isAuthenticated()">
                                 <div style="position:absolute;bottom:0;left: 20%;z-index: 2" class="d-flex m-2">
+        <%--                                    COULD NOT MAKE TVCREATOR WATCHED & WATCHLIST STATUS WORK--%>
 <%--                                    <c:choose>--%>
 <%--                                        <c:when test="${movie.watched}">--%>
 <%--                                            <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">--%>
@@ -269,6 +271,7 @@
                         <div class="card-img-container"> <!-- Add a container for the image -->
                             <sec:authorize access="isAuthenticated()">
                                 <div style="position:absolute;bottom:0;left: 20%;z-index: 2" class="d-flex m-2">
+    <%--                                    COULD NOT MAKE TVCREATOR WATCHED & WATCHLIST STATUS WORK--%>
 <%--                                    <c:choose>--%>
 <%--                                        <c:when test="${movie.watched}">--%>
 <%--                                            <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">--%>

@@ -7,6 +7,7 @@ import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.persistence.MediaDao;
+import com.sun.media.jfxmedia.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -39,19 +40,29 @@ public class MediaServiceImpl implements MediaService{
     @Transactional(readOnly = true)
     @Override
     public Media getMediaById(int mediaId) {
-        return mediaDao.getMediaById(mediaId).orElseThrow(() -> new MediaNotFoundException("Media was not found for the id:" + mediaId));
+        Media toReturn = mediaDao.getMediaById(mediaId).orElseThrow(() -> new MediaNotFoundException("Media was not found for the id:" + mediaId));
+        toReturn.setWatchlist(mediaDao.getWatchlistStatus(mediaId, userService.tryToGetCurrentUserId()));
+        toReturn.setWatched(mediaDao.getWatchedStatus(mediaId, userService.tryToGetCurrentUserId()));
+        return toReturn;
     }
 
     @Transactional(readOnly = true)
     @Override
     public Movie getMovieById(int mediaId) {
-        return mediaDao.getMovieById(mediaId).orElseThrow(() -> new MediaNotFoundException("Movie was not found for the id:" + mediaId));
+        Movie toReturn = mediaDao.getMovieById(mediaId).orElseThrow(() -> new MediaNotFoundException("Movie was not found for the id:" + mediaId));
+        toReturn.setWatchlist(mediaDao.getWatchlistStatus(mediaId, userService.tryToGetCurrentUserId()));
+        toReturn.setWatched(mediaDao.getWatchedStatus(mediaId, userService.tryToGetCurrentUserId()));
+        return toReturn;
+
     }
 
     @Transactional(readOnly = true)
     @Override
     public TVSerie getTvById(int mediaId) {
-        return mediaDao.getTvById(mediaId).orElseThrow(() -> new MediaNotFoundException("Tv was not found for the id:" + mediaId));
+        TVSerie toReturn = mediaDao.getTvById(mediaId).orElseThrow(() -> new MediaNotFoundException("Tv was not found for the id:" + mediaId));
+        toReturn.setWatchlist(mediaDao.getWatchlistStatus(mediaId, userService.tryToGetCurrentUserId()));
+        toReturn.setWatched(mediaDao.getWatchedStatus(mediaId, userService.tryToGetCurrentUserId()));
+        return toReturn;
     }
 
     @Override

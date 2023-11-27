@@ -236,6 +236,24 @@ public class MediaHibernateDao implements MediaDao{
     }
 
     @Override
+    public boolean getWatchlistStatus(int mediaId, int userId) {
+        String sql = "SELECT CASE WHEN COUNT(wl3) > 0 THEN true ELSE false END FROM MoovieList wl3 INNER JOIN MoovieListContent mlc3 ON wl3.moovieListId = mlc3.moovieList.moovieListId WHERE :mediaId = mlc3.mediaId AND wl3.name = 'Watchlist' AND wl3.userId = :userid ";
+
+        return (boolean) em.createQuery(sql)
+                .setParameter("userid",userId).setParameter("mediaId",mediaId)
+                .getSingleResult();
+    }
+
+    @Override
+    public boolean getWatchedStatus(int mediaId, int userId) {
+        String sql = "SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId WHERE :mediaId = mlc2.mediaId AND wl.name = 'Watched' AND wl.userId = :userid";
+
+        return (boolean) em.createQuery(sql)
+                .setParameter("userid",userId).setParameter("mediaId",mediaId)
+                .getSingleResult();
+    }
+
+    @Override
     public int getDirectorsForQueryCount(String query, int size) {
         return getDirectorsForQuery(query, size).size();
     }
