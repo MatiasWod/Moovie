@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.models.Review;
 
 import ar.edu.itba.paw.models.Comments.Comment;
+import ar.edu.itba.paw.models.Reports.ReviewReport;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
@@ -44,6 +45,12 @@ public class Review {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "reviewId", cascade = CascadeType.ALL)
     private List<Comment> comments;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "review", cascade = CascadeType.ALL)
+    private List<ReviewReport> reports;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "review", cascade = CascadeType.ALL)
+    private List<ReviewsLikes> likes;
 
     @Formula("(SELECT COUNT(*) FROM reportsreviews rr WHERE rr.reviewid = reviewId)")
     private int totalReports;

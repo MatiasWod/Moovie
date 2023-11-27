@@ -2,7 +2,6 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
-import ar.edu.itba.paw.models.Reports.ReviewReport;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
@@ -173,10 +172,6 @@ public class ReviewHibernateDao implements ReviewDao {
     @Override
     public void deleteReview(int reviewId, ReviewTypes type) {
         if(type.getType() == ReviewTypes.REVIEW_MEDIA.getType()){
-            ReviewReport report = em.find(ReviewReport.class, reviewId);
-            if(report != null){
-                em.remove(report);
-            }
             Review review = em.find(Review.class, reviewId);
             em.remove(review);
         }else{
