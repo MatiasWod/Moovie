@@ -32,13 +32,16 @@
                     <form:input path="rating" type="hidden" value="5"/>
                     <spring:message code="moovieList.addCommentPlaceholder" var="addCommentPlaceholder"/>
                     <form:input path="reviewContent" class="form-control" placeholder='${addCommentPlaceholder}' aria-label="With textarea"/>
+                    <form:errors path="reviewContent" cssClass="text-danger"/>
+                    <form:errors path="mediaId" cssClass="text-danger"/>
+                    <form:errors path="rating" cssClass="text-danger"/>
                     <button type="submit" class="ms-1 btn btn-dark" id="submitButton">
                         <spring:message code="details.submit"/>
                     </button>
-
                 </form:form>
             </div>
         <c:forEach var="review" items="${reviews}">
+            <c:if test="${review.reviewContent.length()>0}">
             <div class="card mb-3">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
@@ -175,6 +178,7 @@
                     </div>
                 </div>
             </div>
+            </c:if>
         </c:forEach>
     </div>
     <c:if test="${RecomendedListsCards}">

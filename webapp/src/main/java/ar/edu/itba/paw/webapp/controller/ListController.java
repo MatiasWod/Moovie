@@ -417,7 +417,7 @@ public class ListController {
     @RequestMapping(value = "/MoovieListReview", method = RequestMethod.POST)
     public ModelAndView createMoovieListReview(@Valid @ModelAttribute("createReviewForm") final CreateReviewForm createReviewForm, final BindingResult errors, RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
-            return list(createReviewForm.getMediaId(),"tmdbRating", "asc", 1,null);
+            return list(createReviewForm.getMediaId(),"tmdbRating", "asc", 1, createReviewForm);
         }
         try{
             reviewService.createReview(createReviewForm.getMediaId(), createReviewForm.getRating(), createReviewForm.getReviewContent(), ReviewTypes.REVIEW_MOOVIE_LIST);
