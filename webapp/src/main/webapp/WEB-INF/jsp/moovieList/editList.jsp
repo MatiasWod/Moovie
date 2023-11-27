@@ -214,16 +214,16 @@
     <div class="d-flex justify-content-center">
         <h4><spring:message code="editList.recommended"/></h4>
     </div>
-    <div class="d-flex m-2">
+    <div class="d-flex flex-wrap m-2" style="align-items: center;justify-content: center">
         <c:forEach var="movie" items="${recommendedList}" end="8">
-            <a href="${pageContext.request.contextPath}/details/${movie.mediaId}" class="card text-bg-dark m-1">
-                <div class="card-img-container"> <!-- Add a container for the image -->
-                    <div style="position:absolute;bottom:0;left: 27%;z-index: 2" class="d-flex m-2">
+            <a href="${pageContext.request.contextPath}/details/${movie.mediaId}" class="card text-bg-dark m-1" style="width: 12rem; position: relative;">
+                <div class="card-img-container" style="position: relative;">
+                    <div class="d-flex m-2" style="position: absolute; bottom: 0; left: 27%; z-index: 2;">
                         <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
                             <input type="hidden" name="listId" value="${moovieList.moovieListId}"/>
                             <input type="hidden" name="mediaId" value="${movie.mediaId}"/>
                             <button class="btn btn-secondary m-1" type="submit">
-                            <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
+                            <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code='listExtract.watchedMessage'/>">
                                 <i class="bi bi-plus-circle-fill" style="cursor: pointer;"></i>
                             </span>
                             </button>
@@ -235,7 +235,7 @@
                         <div class="d-flex justify-content-evenly">
                             <p class="card-text">
                                 <i class="bi bi-star-fill"></i>
-                                    <c:out value="${movie.tmdbRating}"/>
+                                <c:out value="${movie.tmdbRating}"/>
                             </p>
                             <p class="card-text">
                                 <fmt:formatDate value="${movie.releaseDate}" pattern="YYYY"/>
@@ -243,14 +243,14 @@
                         </div>
                         <div class="d-flex justify-content-evenly flex-wrap">
                             <c:forEach var="genre" items="${movie.genres}" end="1">
-                                <span class="mt-1 badge text-bg-dark">${fn:replace(genre,"\"" ,"" )}</span>
+                                <span class="mt-1 badge text-bg-dark">${fn:replace(genre, "\"" ,"")}</span>
                             </c:forEach>
                         </div>
                         <div class="d-flex mt-3 justify-content-evenly flex-wrap">
                             <c:forEach var="provider" items="${movie.providers}" end="1">
-                                        <span class="mt-1 badge text-bg-light border border-black">
-                                            <img src="${provider.logoPath}" alt="provider logo" style="height: 1.4em; margin-right: 5px;">
-                                        </span>
+                            <span class="mt-1 badge text-bg-light border border-black">
+                                <img src="${provider.logoPath}" alt="provider logo" style="height: 1.4em; margin-right: 5px;">
+                            </span>
                             </c:forEach>
                         </div>
                     </div>
@@ -258,6 +258,7 @@
             </a>
         </c:forEach>
     </div>
+
     <div class="d-flex justify-content-center">
         <a href="${pageContext.request.contextPath}/discover" class="btn btn-success">
             <spring:message code="editList.seeMore"/>
