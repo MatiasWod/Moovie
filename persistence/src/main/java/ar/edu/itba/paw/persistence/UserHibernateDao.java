@@ -161,30 +161,4 @@ public class UserHibernateDao implements UserDao{
         return query.setMaxResults(size).setFirstResult(pageNumber*size).getResultList();
     }
 
-
-
-    //Following functions needed in order to be safe of sql injection
-    private boolean isOrderValid( String order) {
-        if(order==null || order.isEmpty()){
-            return false;
-        }
-        order = order.replaceAll(" ","");
-        String[] validOrders = {"username", "userid", "role", "moovieListCount", "likedMoovieListCount", "reviewCount"};
-        for (String element : validOrders) {
-            if (element.toLowerCase().equals(order)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    private boolean isSortOrderValid(String so){
-        if(so==null || so.isEmpty()){
-            return false;
-        }
-        so = so.replaceAll(" ","");
-        if(so.toLowerCase().equals("asc") || so.toLowerCase().equals("desc")){
-            return true;
-        }
-        return false;
-    }
 }

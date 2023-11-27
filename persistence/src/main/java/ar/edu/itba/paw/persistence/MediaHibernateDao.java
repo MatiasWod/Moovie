@@ -99,7 +99,7 @@ public class MediaHibernateDao implements MediaDao{
             sql += " ) ";
         }
 
-        if (isOrderValid(orderBy) && isSortOrderValid(sortOrder)) {
+        if (orderBy!=null && sortOrder!=null) {
             sql += " ORDER BY " + orderBy + " " + sortOrder;
         }
 
@@ -247,28 +247,4 @@ public class MediaHibernateDao implements MediaDao{
 
 
 
-    //Following functions needed in order to be safe of sql injection
-    private boolean isOrderValid( String order) {
-        if(order==null || order.isEmpty()){
-            return false;
-        }
-        order = order.replaceAll(" ","");
-        String[] validOrders = {"name", "tmdbRating", "releasedate", "type", "totalrating","voteCount"};
-        for (String element : validOrders) {
-            if (element.equals(order)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    private boolean isSortOrderValid(String so){
-        if(so==null || so.isEmpty()){
-            return false;
-        }
-        so = so.replaceAll(" ","");
-        if(so.toLowerCase().equals("asc") || so.toLowerCase().equals("desc")){
-            return true;
-        }
-        return false;
-    }
 }

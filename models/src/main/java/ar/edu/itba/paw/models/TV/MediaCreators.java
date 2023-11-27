@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "mediacreators")
+@Table(name = "mediacreators", uniqueConstraints = @UniqueConstraint(columnNames = {"mediaId", "creatorId"}))
 public class MediaCreators implements Serializable {
     @Id
     @ManyToOne

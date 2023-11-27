@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "mediaactors")
+@Table(name = "mediaactors", uniqueConstraints = @UniqueConstraint(columnNames = {"mediaId", "actorId"}))
 public class MediaActors implements Serializable {
 
     @Id

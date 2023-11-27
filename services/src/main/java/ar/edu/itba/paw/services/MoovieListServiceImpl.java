@@ -156,7 +156,7 @@ public class MoovieListServiceImpl implements MoovieListService{
                 }
             }
         }
-        return null;
+        return mlc;
     }
 
     @Transactional(readOnly = true)
@@ -364,5 +364,71 @@ public class MoovieListServiceImpl implements MoovieListService{
     public void removeFollowMoovieList(int moovieListId) {
         moovieListDao.removeFollowMoovieList(userService.tryToGetCurrentUserId(), moovieListId);
         LOGGER.info("Succesfully unfollowed list: {}, user: {}.",moovieListId,userService.tryToGetCurrentUserId());
+    }
+
+    private String setSortOrder(String sortOrder){
+        if(sortOrder==null || sortOrder.isEmpty()){
+            return null;
+        }
+        sortOrder = sortOrder.replaceAll(" ","");
+        if(sortOrder.toLowerCase().equals("asc")){
+            return "asc";
+        }
+        if(sortOrder.toLowerCase().equals("desc")){
+            return "desc";
+        }
+        return null;
+    }
+
+    private String setOrderMediaBy(String orderBy){
+        if(orderBy==null || orderBy.isEmpty()){
+            return null;
+        }
+        orderBy = orderBy.replaceAll(" ","");
+        if(orderBy.toLowerCase().equals("tmdbrating")){
+            return "tmdbRating";
+        }
+        if(orderBy.toLowerCase().equals("name")){
+            return "name";
+        }
+        if(orderBy.toLowerCase().equals("releasedate")){
+            return "releaseDate";
+        }
+        if(orderBy.toLowerCase().equals("totalrating")){
+            return "totalRating";
+        }
+        if(orderBy.toLowerCase().equals("votecount")){
+            return "voteCount";
+        }
+        if(orderBy.toLowerCase().equals("customorder")){
+            return "customOrder";
+        }
+        if(orderBy.toLowerCase().equals("type")){
+            return "type";
+        }
+        return null;
+    }
+
+    private String setOrderListsBy(String orderBy){
+        if(orderBy==null || orderBy.isEmpty()){
+            return null;
+        }
+        orderBy = orderBy.replaceAll(" ","");
+        if(orderBy.toLowerCase().equals("type")){
+            return "type";
+        }
+        if(orderBy.toLowerCase().equals("username")){
+            return "username";
+        }
+        if(orderBy.toLowerCase().equals("likecount")){
+            return "likeCount";
+        }
+        if(orderBy.toLowerCase().equals("followercount")){
+            return "followerCount";
+        }
+        if(orderBy.toLowerCase().equals("moovielistid")){
+            return "moovieListId";
+        }
+        return null;
     }
 }

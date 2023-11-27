@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public List<Profile> searchUsers(String username, String orderBy, String sortOrder, int size, int pageNumber) {
-        return userDao.searchUsers(username, orderBy, sortOrder, size, pageNumber);
+        return userDao.searchUsers(username, setOrderBy(orderBy) , setSortOrder(sortOrder) , size, pageNumber);
     }
 
     @Transactional(readOnly = true)
@@ -242,6 +242,37 @@ public class UserServiceImpl implements UserService {
         verificationTokenService.renewToken(token);
         User toRenewTokenUser = userDao.findUserById(token.getUserId()).orElseThrow(UnableToFindUserException::new);
         emailService.sendVerificationEmail(toRenewTokenUser, token.getToken(), LocaleContextHolder.getLocale());
+    }
+
+    private String setSortOrder(String sortOrder){
+        if(sortOrder==null || sortOrder.isEmpty()){
+            return null;
+        }
+        sortOrder = sortOrder.replaceAll(" ","");
+        if(sortOrder.toLowerCase().equals("asc")){
+            return "asc";
+        }
+        if(sortOrder.toLowerCase().equals("desc")){
+            return "desc";
+        }
+        return null;
+    }
+
+    private String setOrderBy(String orderBy){
+        if(orderBy==null || orderBy.isEmpty()){
+            return null;
+        }
+        orderBy = orderBy.replaceAll(" ","");
+        if(orderBy.toLowerCase().equals("milkypoints")){
+            return "milkyPoints";
+        }
+        if(orderBy.toLowerCase().equals("userid")){
+            return "userId";
+        }
+        if(orderBy.toLowerCase().equals("username")){
+            return "username";
+        }
+        return null;
     }
 }
 

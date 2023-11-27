@@ -27,7 +27,7 @@ public class MediaServiceImpl implements MediaService{
     @Transactional(readOnly = true)
     @Override
     public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber){
-        return mediaDao.getMedia(type, search, participant,  genres, providers, status, lang, orderBy, sortOrder, size, pageNumber, userService.tryToGetCurrentUserId());
+        return mediaDao.getMedia(type, search, participant,  genres, providers, status, lang,setOrderBy(orderBy) , setSortOrder(sortOrder) , size, pageNumber, userService.tryToGetCurrentUserId());
     }
 
     @Transactional(readOnly = true)
@@ -75,5 +75,48 @@ public class MediaServiceImpl implements MediaService{
     @Override
     public List<Movie> getMediaForDirectorId(int directorId) {
         return mediaDao.getMediaForDirectorId(directorId);
+    }
+
+    private String setSortOrder(String sortOrder){
+        if(sortOrder==null || sortOrder.isEmpty()){
+            return null;
+        }
+        sortOrder = sortOrder.replaceAll(" ","");
+        if(sortOrder.toLowerCase().equals("asc")){
+            return "asc";
+        }
+        if(sortOrder.toLowerCase().equals("desc")){
+            return "desc";
+        }
+        return null;
+    }
+
+    private String setOrderBy(String orderBy){
+        if(orderBy==null || orderBy.isEmpty()){
+            return null;
+        }
+        orderBy = orderBy.replaceAll(" ","");
+        if(orderBy.toLowerCase().equals("tmdbrating")){
+            return "tmdbRating";
+        }
+        if(orderBy.toLowerCase().equals("name")){
+            return "name";
+        }
+        if(orderBy.toLowerCase().equals("releasedate")){
+            return "releaseDate";
+        }
+        if(orderBy.toLowerCase().equals("totalrating")){
+            return "totalRating";
+        }
+        if(orderBy.toLowerCase().equals("votecount")){
+            return "voteCount";
+        }
+        if(orderBy.toLowerCase().equals("customorder")){
+            return "customOrder";
+        }
+        if(orderBy.toLowerCase().equals("type")){
+            return "type";
+        }
+        return null;
     }
 }
