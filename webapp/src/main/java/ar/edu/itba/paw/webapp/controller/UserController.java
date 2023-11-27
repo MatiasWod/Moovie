@@ -221,7 +221,7 @@ public class UserController {
                     case "reviews":
                         mav.addObject("reviewsList",reviewService.getMovieReviewsFromUser(requestedProfile.getUserId(),PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1));
                         queries.put("list","reviews");
-                        listCount = requestedProfile.getReviewsMediaCount();
+                        listCount = requestedProfile.getReviewsCount();
                         numberOfPages = (int) Math.ceil(listCount * 1.0 / PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize());
                         //Obtener la cantidad de reviews del usuario
                         break;
