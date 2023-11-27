@@ -90,7 +90,7 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public void resolveReviewReport(int reviewId) {
-        String sql = "SELECT r FROM MoovieListReviewReport r WHERE r.moovieListReview.moovieListReviewId = :reviewId";
+        String sql = "SELECT r FROM ReviewReport r WHERE r.review.reviewId = :reviewId";
         List<ReviewReport> toRemove = em.createQuery(sql, ReviewReport.class)
                 .setParameter("reviewId", reviewId)
                 .getResultList();

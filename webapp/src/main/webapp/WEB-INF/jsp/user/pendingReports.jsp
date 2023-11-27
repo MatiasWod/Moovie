@@ -210,7 +210,9 @@
                             <h5 class="alert-heading"><spring:message code="report.resolveComment"/></h5>
                             <p><spring:message code="report.resolveCommentMessage"/></p>
                             <div class="d-flex justify-content-evenly">
-                                <form class="m-0" action="${pageContext.request.contextPath}/resolveCommentReport/${review.commentId}" method="post">
+                                <form class="m-0" action="${pageContext.request.contextPath}/reports/resolve" method="post">
+                                    <input type="hidden" name="id" value="${review.commentId}"/>
+                                    <input type="hidden" name="type" value="comments"/>
                                     <button type="submit" class="btn btn-danger"><spring:message code="report.resolve"/></button>
                                 </form>
                                 <button type="button" onclick="closePopup('resolve${review.commentId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
@@ -238,6 +240,22 @@
                                 <div class="d-flex justify-content-evenly">
                                     <button class="btn btn-warning m-1 " onclick="openPopup('review${ml.moovieListId}')" ><spring:message code="details.delete"/></button>
                                     <button class="btn btn-danger m-1"  onclick="openPopup('ban${ml.moovieListId}')" ><spring:message code="profile.banUser"/></button>
+                                    <button onclick="openPopup('resolve${ml.moovieListId}')" class="btn m-1 btn-info"><spring:message code="report.resolve"/></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="resolve${ml.moovieListId}-overlay popup-overlay" onclick="closePopup('resolve${ml.moovieListId}')"></div>
+                        <div style="background-color: transparent; box-shadow: none" class="popup resolve${ml.moovieListId}">
+                            <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
+                                <h5 class="alert-heading"><spring:message code="report.resolveComment"/></h5>
+                                <p><spring:message code="report.resolveCommentMessage"/></p>
+                                <div class="d-flex justify-content-evenly">
+                                    <form class="m-0" action="${pageContext.request.contextPath}/reports/resolve" method="post">
+                                        <input type="hidden" name="id" value="${ml.moovieListId}"/>
+                                        <input type="hidden" name="type" value="ml"/>
+                                        <button type="submit" class="btn btn-danger"><spring:message code="report.resolve"/></button>
+                                    </form>
+                                    <button type="button" onclick="closePopup('resolve${ml.moovieListId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
                                 </div>
                             </div>
                         </div>
@@ -257,7 +275,6 @@
                                 </div>
                             </div>
                         </div>
-                        <%-- TODO: poner bien el link --%>
                         <div class="review${ml.moovieListId}-overlay popup-overlay" onclick="closePopup('review${ml.moovieListId}')"></div>
                         <div style="background-color: transparent; box-shadow: none" class="popup review${ml.moovieListId}">
                             <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
@@ -315,40 +332,56 @@
                                     </div>
                                 </div>
                             </div>
-                            <p class="card-text"><c:out value="${review.reviewContent}"/></p>
+                            <p class="card-text"><c:out value="${review.content}"/></p>
                             <hr>
                             <div class="d-flex justify-content-evenly">
-                                <button onclick="openPopup('review${review.moovieListReviewId}')" class="btn btn-lg btn-warning"><spring:message code="details.delete"/></button>
-                                <button onclick="openPopup('ban${review.moovieListReviewId}')" class="btn btn-lg btn-danger"><spring:message code="profile.banUser"/></button>
+                                <button onclick="openPopup('review${review.reviewId}')" class="btn btn-lg btn-warning"><spring:message code="details.delete"/></button>
+                                <button onclick="openPopup('ban${review.reviewId}')" class="btn btn-lg btn-danger"><spring:message code="profile.banUser"/></button>
+                                <button onclick="openPopup('resolve${review.reviewId}')" class="btn m-1 btn-info"><spring:message code="report.resolve"/></button>
                             </div>
                         </div>
                     </div>
-                    <div class="review${review.moovieListReviewId}-overlay popup-overlay" onclick="closePopup('review${review.moovieListReviewId}')"></div>
-                    <div style="background-color: transparent; box-shadow: none" class="popup review${review.moovieListReviewId}">
+                    <div class="review${review.reviewId}-overlay popup-overlay" onclick="closePopup('review${review.reviewId}')"></div>
+                    <div style="background-color: transparent; box-shadow: none" class="popup review${review.reviewId}">
                         <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
                             <h5 class="alert-heading"><spring:message code="details.confirmReviewDeletion"/></h5>
                             <p><spring:message code="details.confirmReviewDeletionPrompt"/></p>
                             <div class="d-flex justify-content-evenly">
-                                <form class="m-0" action="${pageContext.request.contextPath}/deleteUserMoovieListReviewMod/${review.moovieListReviewId}" method="post">
-                                    <input type="hidden" name="reviewId" value="${review.moovieListId}"/>
+                                <form class="m-0" action="${pageContext.request.contextPath}/deleteUserMoovieListReviewMod/${review.reviewId}" method="post">
+                                    <input type="hidden" name="reviewId" value="${review.reviewId}"/>
                                     <button type="submit" class="btn btn-danger"><spring:message code="details.delete"/></button>
                                 </form>
-                                <button type="button" onclick="closePopup('review${review.moovieListReviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
+                                <button type="button" onclick="closePopup('review${review.reviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
                             </div>
                         </div>
                     </div>
-                    <div class="ban${review.moovieListReviewId}-overlay popup-overlay" onclick="closePopup('ban${review.moovieListReviewId}')"></div>
-                    <div style="background-color: transparent; box-shadow: none" class="popup ban${review.moovieListReviewId}">
+                    <div class="resolve${review.reviewId}-overlay popup-overlay" onclick="closePopup('resolve${review.reviewId}')"></div>
+                    <div style="background-color: transparent; box-shadow: none" class="popup resolve${review.reviewId}">
+                        <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
+                            <h5 class="alert-heading"><spring:message code="report.resolveComment"/></h5>
+                            <p><spring:message code="report.resolveCommentMessage"/></p>
+                            <div class="d-flex justify-content-evenly">
+                                <form class="m-0" action="${pageContext.request.contextPath}/reports/resolve" method="post">
+                                    <input type="hidden" name="id" value="${review.reviewId}"/>
+                                    <input type="hidden" name="type" value="mlReviews"/>
+                                    <button type="submit" class="btn btn-danger"><spring:message code="report.resolve"/></button>
+                                </form>
+                                <button type="button" onclick="closePopup('resolve${review.reviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ban${review.reviewId}-overlay popup-overlay" onclick="closePopup('ban${review.reviewId}')"></div>
+                    <div style="background-color: transparent; box-shadow: none" class="popup ban${review.reviewId}">
                         <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
                             <h5 class="alert-heading"><spring:message code="profile.confirmUserBan"/></h5>
                             <p><spring:message code="profile.banPrompt"/></p>
                             <div class="d-flex justify-content-evenly">
                                 <form class="m-0" action="${pageContext.request.contextPath}/banUser/${review.userId}" method="post">
                                     <textarea name="message"  rows="6" cols="50" placeholder='${explainBanPlaceholder}' maxlength="500"></textarea>
-                                    <input type="hidden" name="reviewId" value="${review.moovieListReviewId}"/>
+                                    <input type="hidden" name="reviewId" value="${review.reviewId}"/>
                                     <div class="d-flex justify-content-evenly">
                                         <button type="submit" class="btn btn-danger"><spring:message code="profile.banUser"/></button>
-                                        <button type="button" onclick="closePopup('ban${review.moovieListReviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
+                                        <button type="button" onclick="closePopup('ban${review.reviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
                                     </div>
                                 </form>
                             </div>
@@ -404,6 +437,7 @@
                             <div class="d-flex justify-content-evenly">
                                 <button onclick="openPopup('review${review.reviewId}')" class="btn btn-lg btn-warning"><spring:message code="details.delete"/></button>
                                 <button onclick="openPopup('ban${review.reviewId}')" class="btn btn-lg btn-danger"><spring:message code="profile.banUser"/></button>
+                                <button onclick="openPopup('resolve${review.reviewId}')" class="btn btn-lg btn-info"><spring:message code="report.resolve"/></button>
                             </div>
                         </div>
                     </div>
@@ -435,6 +469,21 @@
                                         <button type="button" onclick="closePopup('ban${review.reviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
                                     </div>
                                 </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="resolve${review.reviewId}-overlay popup-overlay" onclick="closePopup('resolve${review.reviewId}')"></div>
+                    <div style="background-color: transparent; box-shadow: none" class="popup resolve${review.reviewId}">
+                        <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
+                            <h5 class="alert-heading"><spring:message code="report.resolveComment"/></h5>
+                            <p><spring:message code="report.resolveCommentMessage"/></p>
+                            <div class="d-flex justify-content-evenly">
+                                <form class="m-0" action="${pageContext.request.contextPath}/reports/resolve" method="post">
+                                    <input type="hidden" name="id" value="${review.reviewId}"/>
+                                    <input type="hidden" name="type" value="reviews"/>
+                                    <button type="submit" class="btn btn-danger"><spring:message code="report.resolve"/></button>
+                                </form>
+                                <button type="button" onclick="closePopup('resolve${review.reviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
                             </div>
                         </div>
                     </div>
