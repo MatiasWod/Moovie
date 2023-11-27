@@ -144,7 +144,7 @@
                             <h5><spring:message code="details.director"/></h5>
                         </div>
                         <div>
-                            <a href="${pageContext.request.contextPath}/discover?credit=${media.director}">
+                            <a href="${pageContext.request.contextPath}/cast/director/${media.directorId}">
                                 <span class="badge text-bg-light border border-black"><c:out value="${media.director}"/></span>
                             </a>
                         </div>
@@ -186,7 +186,7 @@
                             </div>
                             <div>
                                 <c:forEach var="creator" items="${creators}">
-                                    <a style="text-decoration: none;" href="${pageContext.request.contextPath}/discover?credit=${creator.creatorName.trim()}">
+                                    <a style="text-decoration: none;" href="${pageContext.request.contextPath}/cast/creator/${creator.creatorId}">
                                         <span class="badge text-bg-light border border-black"><c:out value="${creator.creatorName}"/></span>
                                     </a>
                                 </c:forEach>
@@ -314,7 +314,7 @@
                                         >
                                     </c:when>
                                     <c:otherwise>
-                                    <a href="${pageContext.request.contextPath}/discover?credit=${actor.actorName}">
+                                    <a href="${pageContext.request.contextPath}/cast/actor/${actor.actorId}">
                                         <img
                                                 src="${actor.profilePath}"
                                                 alt="${actor.actorName} picture"
@@ -326,7 +326,7 @@
                             </div>
                             <div class="col-8" style="min-width: 160px">
                                 <div class="card-body" style="min-width: 120px">
-                                    <a style="color:black; text-decoration: none;" href="${pageContext.request.contextPath}/discover?credit=${actor.actorName}">
+                                    <a style="color:black; text-decoration: none;" href="${pageContext.request.contextPath}/cast/actor/${actor.actorId}">
                                         <h5 class="card-title"><c:out value="${actor.actorName}"/></h5>
                                     </a>
                                     <p class="card-text"><c:out value="${actor.characterName}"/></p>
