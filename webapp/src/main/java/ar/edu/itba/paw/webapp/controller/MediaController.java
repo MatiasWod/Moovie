@@ -123,7 +123,8 @@ public class MediaController {
         final ModelAndView mav = new ModelAndView("helloworld/search");
         // Aca se realizan 3 queries. Para poder notificar correctamente al JSP de las listas que va a recibir, primero se corre el getMediaCount
         int nameMediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query, null, null, null, null, null);
-        int creditMediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), null, query, null, null, null, null);
+        int actorsCount = actorService.getActorsForQueryCount(query);
+        int creatorsCount = mediaService.getDirectorsForQueryCount(query); // TODO + creators count
         int usersCount = userService.getSearchCount(query);
         int moovieListCount = moovieListService.getMoovieListCardsCount(query,null,MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(),0);
 
@@ -140,12 +141,19 @@ public class MediaController {
         }else{
             mav.addObject("nameMediaFlag",false);
         }
-        // Credited media query
-        if (creditMediaCount > 0){
-            mav.addObject("creditMediaFlag", true);
-            mav.addObject("creditMedia", mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null, query, null, null,null,null, "tmdbRating", "desc",resultSizeLimit,0 ));
+        // Actors query
+        if (actorsCount > 0){
+            mav.addObject("actorsFlag", true);
+            mav.addObject("actors", actorService.getActorsForQuery(query));
         }else{
-            mav.addObject("creditMediaFlag",false);
+            mav.addObject("actorsFlag",false);
+        }
+        // Creators/Directors query
+        if (creatorsCount > 0){
+            mav.addObject("creatorsFlag", true);
+            mav.addObject("directors", mediaService.getDirectorsForQuery( query ));
+        }else{
+            mav.addObject("creatorsFlag",false);
         }
         // Users query
         if (usersCount > 0){
@@ -333,12 +341,21 @@ public class MediaController {
     }
 
     @RequestMapping(value = "/deleteUserReview/{mediaId:\\d+}", method = RequestMethod.POST)
-    public ModelAndView deleteReview(@RequestParam("reviewId") int reviewId,RedirectAttributes redirectAttributes, @PathVariable int mediaId) {
+    public ModelAndView deleteReview(@RequestParam("reviewId") int reviewId,
+                                     RedirectAttributes redirectAttributes,
+                                     @PathVariable int mediaId,
+                                     HttpServletRequest request) {
         try {
             reviewService.deleteReview(reviewId, ReviewTypes.REVIEW_MEDIA);
             redirectAttributes.addFlashAttribute("successMessage", "Review successfully deleted");
         }catch (Exception e){
             redirectAttributes.addFlashAttribute("errorMessage", "Error deleting review");
+        }
+        String referer = request.getHeader("Referer");
+        if (referer.contains("details")) {
+            return new ModelAndView("redirect:/details/" + mediaId);
+        } else if (referer.contains("reports")) {
+            return new ModelAndView("redirect:/reports/review?list=reviews");
         }
         return new ModelAndView("redirect:/details/" + mediaId);
     }
@@ -364,6 +381,7 @@ public class MediaController {
                 try{
                     mav.addObject("type", type);
                     mav.addObject("cast", tvCreatorsService.getTvCreatorById(id));
+//                    mav.addObject("media", mediaService.getMediaForCreatorId(id));
                     return mav;
                 } catch(ActorNotFoundException e){
                     return new ModelAndView("helloword/404");
@@ -371,7 +389,7 @@ public class MediaController {
             case "director" :
                 try{
                     mav.addObject("type", type);
-                    mav.addObject("cast", mediaService.getMediaForDirectorId(id));
+                    mav.addObject("directorMedia", mediaService.getMediaForDirectorId(id));
                     return mav;
                 } catch(ActorNotFoundException e){
                     return new ModelAndView("helloword/404");

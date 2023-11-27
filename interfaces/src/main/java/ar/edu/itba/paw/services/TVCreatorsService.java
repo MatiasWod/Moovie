@@ -7,4 +7,6 @@ import java.util.List;
 public interface TVCreatorsService {
     List<TVCreators> getTvCreatorsByMediaId(int mediaId);
     TVCreators getTvCreatorById(int creatorId);
+
+    List<TVCreators> getTVCreatorsForQuery(String query);
 }

@@ -30,4 +30,9 @@ public class TvCreatorsHibernateDao implements TVCreatorsDao{
         final TypedQuery<TVCreators> query = em.createQuery("FROM TVCreators WHERE creatorId = :creatorId ", TVCreators.class).setParameter("creatorId", creatorId);
         return Optional.ofNullable(query.getSingleResult());
     }
+
+    @Override
+    public List<TVCreators> getTVCreatorsForQuery(String query) {
+        return null;
+    }
 }

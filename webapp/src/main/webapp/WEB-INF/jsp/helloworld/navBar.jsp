@@ -101,11 +101,6 @@
                             <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/createList"><spring:message code="navBar.createList"/></a>
                         </li>
                     </sec:authorize>
-                    <sec:authorize access="hasRole('ROLE_MODERATOR')">
-                        <li class="nav-item">
-                            <a class="nav-link nav-item-link" aria-current="page" href="${pageContext.request.contextPath}/reports/review"><spring:message code="navBar.review"/></a>
-                        </li>
-                    </sec:authorize>
                     <li class="nav-item">
                         <div class="d-flex flex-row align-self-left">
                             <div class="collapse navbar-collapse" id="navBarTopRatedDropdown">
@@ -179,6 +174,9 @@
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             <li><a class="dropdown-item" href="${pageContext.request.contextPath}/profile/${username}"><spring:message code="navBar.profile"/></a></li>
                                             <li><a class="dropdown-item" href="${pageContext.request.contextPath}/logout"><spring:message code="navBar.logout"/></a></li>
+                                            <sec:authorize access="hasRole('ROLE_MODERATOR')">
+                                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/reports/review"><spring:message code="navBar.review"/></a></li>
+                                            </sec:authorize>
                                         </ul>
                                     </li>
                                 </ul>

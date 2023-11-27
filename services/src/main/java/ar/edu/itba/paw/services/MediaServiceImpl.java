@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 
 import ar.edu.itba.paw.exceptions.MediaNotFoundException;
+import ar.edu.itba.paw.models.Cast.Director;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 
@@ -51,6 +53,17 @@ public class MediaServiceImpl implements MediaService{
     public TVSerie getTvById(int mediaId) {
         return mediaDao.getTvById(mediaId).orElseThrow(() -> new MediaNotFoundException("Tv was not found for the id:" + mediaId));
     }
+
+    @Override
+    public int getDirectorsForQueryCount(String query) {
+        return mediaDao.getDirectorsForQueryCount(query);
+    }
+
+    @Override
+    public List<Director> getDirectorsForQuery(String query) {
+        return mediaDao.getDirectorsForQuery(query);
+    }
+
 
     @Transactional(readOnly = true)
     @Override

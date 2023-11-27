@@ -36,7 +36,7 @@
 <body>
 <c:import url="navBar.jsp"/>
 
-<sec:authorize access="!hasRole('ROLE_MODERATOR')">
+<sec:authorize access="hasRole('ROLE_MODERATOR')">
     <div class="container d-flex flex-column">
         <div class="d-flex justify-content-center">
             <h2><spring:message code="report.adminPage"/></h2>
@@ -44,46 +44,40 @@
         <div class="d-flex container justify-content-center">
             <div class="m-2">
                 <div class="d-flex align-items-center">
-                    <div class="m-1 d-flex align-items-center">
-                        <i class="bi bi-list-ul m-1"></i>
+                    <div class="m-2 d-flex align-items-center">
+                        <i class="bi bi-flag m-1"></i>
                         <h5>
-                                <%--                        ${profile.moovieListCount}--%>
-                            total reports: ${totalReports}
+                            <spring:message code="report.total"/> ${totalReports}
                         </h5>
                     </div>
-                    <div class="m-1 d-flex align-items-center">
+                    <div class="m-2 d-flex align-items-center">
                         <h5>
-                            <i class="bi-star"></i>
-                                <%--                        ${profile.reviewsCount}--%>
-                            total banned: ${totalBanned}
+                            <i class="bi bi-person-slash m-1"></i>
+                            <spring:message code="report.totalBanned"/> ${totalBanned}
                         </h5>
                     </div>
-                    <div class="m-1 d-flex align-items-center">
+                    <div class="m-2 d-flex align-items-center">
                         <h5>
-                            <img style="padding-bottom: 6px;" height="37" width="37" src="${pageContext.request.contextPath}/resources/logo.png" alt="moo">
-                                <%--                        ${profile.milkyPoints}--%>
-                            total spam: ${spamReports}
+                            <i class="bi bi-envelope-exclamation m-1"></i>
+                            <spring:message code="report.totalSpam"/> ${spamReports}
                         </h5>
                     </div>
-                    <div class="m-1 d-flex align-items-center">
+                    <div class="m-2 d-flex align-items-center">
                         <h5>
-                            <i class="bi-star"></i>
-                                <%--                        ${profile.reviewsCount}--%>
-                            total hate: ${hateReports}
+                            <i class="bi bi-emoji-angry m-1"></i>
+                            <spring:message code="report.totalHate"/> ${hateReports}
                         </h5>
                     </div>
-                    <div class="m-1 d-flex align-items-center">
+                    <div class="m-2 d-flex align-items-center">
                         <h5>
-                            <i class="bi-star"></i>
-                                <%--                        ${profile.reviewsCount}--%>
-                            total abuse: ${abuseReports}
+                            <i class="bi bi-slash-circle m-1"></i>
+                            <spring:message code="report.abuse"/> ${abuseReports}
                         </h5>
                     </div>
-                    <div class="m-1 d-flex align-items-center">
+                    <div class="m-2 d-flex align-items-center">
                         <h5>
-                            <i class="bi-star"></i>
-                                <%--                        ${profile.reviewsCount}--%>
-                            total abuse: ${privacyReports}
+                            <i class="bi bi-incognito m1"></i>
+                            <spring:message code="report.totalPriv"/> ${privacyReports}
                         </h5>
                     </div>
                 </div>
@@ -113,34 +107,114 @@
 
         </div>
 
-        <div>
-            contador de la lista seleccionada : ${listCount}
-        </div>
 
         <c:choose>
             <c:when test="${param.list == 'comments' || param.list == null || param.list == '' }">
-                comments
+                <c:forEach items="${commentList}" var="comment">
+                </c:forEach>
             </c:when>
             <c:when test="${param.list == 'ml'}">
-                moovieLists
+                <c:forEach items="${mlList}" var="ml">
+
+                </c:forEach>
             </c:when>
             <c:when test="${param.list == 'mlReviews'}">
-                moovieList Reviews
+                <c:forEach items="${mlReviewList}" var="mlReview">
+                </c:forEach>
             </c:when>
             <c:when test="${param.list == 'reviews'}">
-                reviews
+                <c:forEach items="${reviewList}" var="review">
+                    <div class="card d-flex m-1">
+                        <div class="card-body m-1">
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex">
+                                    <h4 class="card-title me-2">${review.username}</h4>
+                                    <h4>
+                                        ${review.rating}/5
+                                       <i class="bi bi-star-fill"></i>
+                                    </h4>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="d-flex m-1">
+                                        <i class="bi bi-flag m-1"></i>
+                                            ${review.totalReports}
+                                    </div>
+                                    <div class="d-flex m-1">
+                                        <i class="bi bi-envelope-exclamation m-1"></i>
+                                            ${review.spamReports}
+                                    </div>
+                                    <div class="d-flex m-1">
+                                        <i class="bi bi-emoji-angry m-1"></i>
+                                            ${review.hateReports}
+                                    </div>
+                                    <div class="d-flex m-1">
+                                        <i class="bi bi-slash-circle m-1"></i>
+                                            ${review.abuseReports}
+                                    </div>
+                                    <div class="d-flex m-1">
+                                        <i class="bi bi-incognito m-1"></i>
+                                            ${review.privacyReports}
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="card-text">${review.reviewContent}</p>
+                            <hr>
+                            <div class="d-flex justify-content-evenly">
+                                <button onclick="openPopup('review${review.reviewId}')" class="btn btn-lg btn-warning"><spring:message code="details.delete"/></button>
+                                <button onclick="openPopup('ban${review.reviewId}')" class="btn btn-lg btn-danger"><spring:message code="profile.banUser"/></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review${review.reviewId}-overlay popup-overlay" onclick="closePopup('review${review.reviewId}')"></div>
+                    <div style="background-color: transparent; box-shadow: none" class="popup review${review.reviewId}">
+                        <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
+                            <h5 class="alert-heading"><spring:message code="details.confirmReviewDeletion"/></h5>
+                            <p><spring:message code="details.confirmReviewDeletionPrompt"/></p>
+                            <div class="d-flex justify-content-evenly">
+                                <form class="m-0" action="${pageContext.request.contextPath}/deleteUserReview/${review.mediaId}" method="post">
+                                    <input type="hidden" name="reviewId" value="${review.reviewId}"/>
+                                    <button type="submit" class="btn btn-danger"><spring:message code="details.delete"/></button>
+                                </form>
+                                <button type="button" onclick="closePopup('review${review.reviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ban${review.reviewId}-overlay popup-overlay" onclick="closePopup('ban${review.reviewId}')"></div>
+                    <div style="background-color: transparent; box-shadow: none" class="popup ban${review.reviewId}">
+                        <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
+                            <h5 class="alert-heading"><spring:message code="profile.confirmUserBan"/></h5>
+                            <p><spring:message code="profile.banPrompt"/></p>
+                            <div class="d-flex justify-content-evenly">
+                                <form class="m-0" action="${pageContext.request.contextPath}/banUser/${review.userId}" method="post">
+                                    <input type="hidden" name="reviewId" value="${review.reviewId}"/>
+                                    <button type="submit" class="btn btn-danger"><spring:message code="profile.banUser"/></button>
+                                </form>
+                                <button type="button" onclick="closePopup('ban${review.reviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
+                            </div>
+                        </div>
+                    </div>
+                </c:forEach>
             </c:when>
             <c:when test="${param.list == 'banned'}">
-                banned
+                <c:forEach items="${bannedList}" var="bannedUser">
+                    <div class="card d-flex m-1">
+                        <div class="card-body m-1">
+                            <div class="d-flex justify-content-between">
+                                <h4 class="card-title">${bannedUser.username}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </c:forEach>
             </c:when>
         </c:choose>
     </div>
 </sec:authorize>
-<%--<sec:authorize access="!hasRole('ROLE_MODERATOR')">
+<sec:authorize access="!hasRole('ROLE_MODERATOR')">
     <c:import url="403.jsp"/>
-</sec:authorize>--%>
+</sec:authorize>
 
 
 
 </body>
 </html>
+<script src="${pageContext.request.contextPath}/resources/detailsFunctions.js?version=91"></script>

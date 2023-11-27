@@ -94,10 +94,15 @@ public class ReportDaoImpl implements ReportDao{
     }
 
     @Override
-    public void resolveReviewReport(int reportId) {
-        ReviewReport cr = em.find(ReviewReport.class, reportId);
-        if (cr != null)
-            cr.setResolved(true);
+    public void resolveReviewReport(int reviewId) {
+        String sql = "SELECT r FROM MoovieListReviewReport r WHERE r.moovieListReview.moovieListReviewId = :reviewId";
+        List<ReviewReport> toRemove = em.createQuery(sql, ReviewReport.class)
+                .setParameter("reviewId", reviewId)
+                .getResultList();
+
+        for( ReviewReport report : toRemove ){
+            em.remove(report);
+        }
     }
 
     @Override
@@ -144,10 +149,15 @@ public class ReportDaoImpl implements ReportDao{
     }
 
     @Override
-    public void resolveMoovieListReviewReport(int reportId) {
-        MoovieListReviewReport cr = em.find(MoovieListReviewReport.class, reportId);
-        if (cr != null)
-            cr.setResolved(true);
+    public void resolveMoovieListReviewReport(int moovieListReviewId) {
+        String sql = "SELECT r FROM MoovieListReviewReport r WHERE r.moovieListReview.moovieListReviewId = :moovieListReviewId";
+        List<MoovieListReviewReport> toRemove = em.createQuery(sql, MoovieListReviewReport.class)
+                .setParameter("moovieListReviewId", moovieListReviewId)
+                .getResultList();
+
+        for( MoovieListReviewReport report : toRemove ){
+            em.remove(report);
+        }
     }
 
     @Override
@@ -194,10 +204,15 @@ public class ReportDaoImpl implements ReportDao{
     }
 
     @Override
-    public void resolveMoovieListReport(int reportId) {
-        MoovieListReport cr = em.find(MoovieListReport.class, reportId);
-        if (cr != null)
-            cr.setResolved(true);
+    public void resolveMoovieListReport(int moovieListId) {
+        String sql = "SELECT r FROM MoovieListReport r WHERE r.moovieList.moovieListId = :moovieListId";
+        List<MoovieListReport> toRemove = em.createQuery(sql, MoovieListReport.class)
+                .setParameter("moovieListId", moovieListId)
+                .getResultList();
+
+        for( MoovieListReport report : toRemove ){
+            em.remove(report);
+        }
     }
 
     @Override
@@ -244,9 +259,14 @@ public class ReportDaoImpl implements ReportDao{
     }
 
     @Override
-    public void resolveCommentReport(int reportId) {
-        CommentReport cr = em.find(CommentReport.class, reportId);
-        if (cr != null)
-            cr.setResolved(true);
+    public void resolveCommentReport(int commentId) {
+        String sql = "SELECT r FROM CommentReport r WHERE r.comment.commentId = :commentId";
+        List<CommentReport> toRemove = em.createQuery(sql, CommentReport.class)
+                .setParameter("commentId", commentId)
+                .getResultList();
+
+        for( CommentReport report : toRemove ){
+            em.remove(report);
+        }
     }
 }

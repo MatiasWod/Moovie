@@ -8,6 +8,7 @@ import ar.edu.itba.paw.services.ReportService;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.form.ReportForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ar.edu.itba.paw.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @Controller
@@ -64,7 +68,8 @@ public class ModeratorController {
 
     @RequestMapping(value = "/banUser/{userId:\\d+}", method = RequestMethod.POST)
     public ModelAndView banUser(@PathVariable int userId, RedirectAttributes redirectAttributes,
-                                @RequestParam(value = "message", required = false) String message ) {
+                                @RequestParam(value = "message", required = false) String message,
+                                HttpServletRequest request) {
 
         try {
             moderatorService.banUser(userId, message);
@@ -73,6 +78,13 @@ public class ModeratorController {
             return new ModelAndView("helloworld/404").addObject("extrainfo", "Error banning user, cant find user");
         }  catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error banning user");
+        }
+
+        String referer = request.getHeader("Referer");
+        if (referer.contains("profile")) {
+            return new ModelAndView("redirect:/profile/" + userService.findUserById(userId).getUsername());
+        } else if (referer.contains("reports")) {
+            return new ModelAndView("redirect:/reports/review");
         }
         return new ModelAndView("redirect:/profile/" + userService.findUserById(userId).getUsername());
     }
@@ -194,29 +206,31 @@ public class ModeratorController {
         if (list != null && list != ""){
             switch (list){
                 case("comments"):
-                    mav.addObject("list",reportService.getReportedComments());
+                    mav.addObject("commentList",reportService.getReportedComments());
                     mav.addObject("listCount",reportService.getReportedCommentsCount());
                     break;
                 case("reviews"):
-                    mav.addObject("list",reportService.getReviewReports());
+                    mav.addObject("reviewList",reportService.getReportedReviews());
                     mav.addObject("listCount",reportService.getReportedReviewsCount());
                     break;
                 case("mlReviews"):
-                    mav.addObject("list",reportService.getReportedMoovieListReviews());
+                    mav.addObject("mlReviewList",reportService.getReportedMoovieListReviews());
                     mav.addObject("listCount",reportService.getReportedMoovieListReviewsCount());
 
                     break;
                 case("ml"):
-                    mav.addObject("list",reportService.getReportedMoovieLists());
+                    mav.addObject("mlList",reportService.getReportedMoovieLists());
                     mav.addObject("listCount",reportService.getReportedMoovieListsCount());
                     break;
                 case("banned"):
-                    mav.addObject("list", bannedService.getBannedUsers());
+                    mav.addObject("bannedList", bannedService.getBannedUsers());
                     mav.addObject("listCount",bannedService.getBannedCount());
                     break;
+                default:
+                    return new ModelAndView("helloworld/404").addObject("extrainfo", "Illegal parameter");
             }
         }else{
-            mav.addObject("list",reportService.getReportedComments());
+            mav.addObject("commentList",reportService.getReportedComments());
             mav.addObject("listCount",reportService.getReportedCommentsCount());
         }
 

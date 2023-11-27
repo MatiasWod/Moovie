@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Cast.Director;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.Media.Movie;
@@ -227,6 +228,24 @@ public class MediaHibernateDao implements MediaDao{
         Long toReturn = (Long) query.getSingleResult();
         return toReturn.intValue();
     }
+
+    @Override
+    public int getDirectorsForQueryCount(String query) {
+        return getDirectorsForQuery(query).size();
+    }
+
+    @Override
+    public List<Director> getDirectorsForQuery(String query) {
+        String sql = "SELECT DISTINCT new ar.edu.itba.paw.models.Cast.Director(m.directorId, m.director) " +
+                "FROM Movie m WHERE m.director LIKE :query";
+
+        TypedQuery<Director> q = em.createQuery(sql, Director.class)
+                .setParameter("query", "%" + query + "%");
+
+        return q.getResultList();
+    }
+
+
 
     //Following functions needed in order to be safe of sql injection
     private boolean isOrderValid( String order) {

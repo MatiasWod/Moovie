@@ -156,7 +156,7 @@
                         <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
                             <c:param name="mediaPages" value="${numberOfPages}"/>
                             <c:param name="currentPage" value="${currentPage + 1}"/>
-                            <c:param name="url" value="/discover?media=${param.media}&g=${param.g}"/>
+                            <c:param name="url" value="/discover?query=${param.query}&m=${param.m}&g=${param.g}&orderBy=${param.orderBy}&order=${param.order}&providers=${param.providers}&l=${param.l}&status=${param.status}"/>
                         </c:import>
                     </div>
                 </c:if>
@@ -165,8 +165,9 @@
                         <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
                             <c:param name="mediaPages" value="${numberOfPages}"/>
                             <c:param name="currentPage" value="${currentPage + 1}"/>
-                            <c:param name="url" value="/discover?query=${param.query}&media=${param.media}&g=${param.g}"/>
+                            <c:param name="url" value="/discover?query=${param.query}&m=${param.m}&g=${param.g}&orderBy=${param.orderBy}&order=${param.order}&providers=${param.providers}&l=${param.l}&status=${param.status}"/>
                         </c:import>
+<%--                        // discover?m=All&orderBy=tmdbRating&order=desc&g=&providers=&l=&status=--%>
                     </div>
                 </c:if>
             </div>

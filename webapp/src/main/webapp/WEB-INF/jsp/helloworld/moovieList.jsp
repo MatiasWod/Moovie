@@ -24,7 +24,7 @@
 </c:import>
 <c:if test="${moovieList.type==publicType}">
 <hr/>
-<div class="d-flex">
+<div class="d-flex flex-column">
     <div class="d-flex flex-column flex-grow-1 m-3">
             <div class="input-group mt-2 mb-3">
                 <form:form cssClass="d-flex" modelAttribute="createReviewForm" action="${pageContext.request.contextPath}/MoovieListReview" method="POST">

@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.models.Cast.Director;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
@@ -28,4 +29,8 @@ public interface MediaService {
     Media getMediaById(int mediaId);
     Movie getMovieById(int mediaId);
     TVSerie getTvById(int mediaId);
+
+    // search creators
+    int getDirectorsForQueryCount(String query);
+    List<Director> getDirectorsForQuery(String query);
     }
