@@ -36,14 +36,14 @@ public class EmailServiceImpl implements EmailService{
 
     @Async
     @Override
-    public void sendEmail(String to, String subject, String template, Map<String, Object> variables) {
+    public void sendEmail(String to, String subject, String template, Map<String, Object> variables, Locale locale) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,MULTIPART_MODE,ENCODING);
             mimeMessageHelper.setTo(to);
             mimeMessageHelper.setFrom(FROM);
             mimeMessageHelper.setSubject(subject);
-            mimeMessageHelper.setText(getHtmlBody(template,variables),true);
+            mimeMessageHelper.setText(getHtmlBody(template,variables,locale),true);
 
             javaMailSender.send(mimeMessage);
         }
@@ -52,8 +52,8 @@ public class EmailServiceImpl implements EmailService{
         }
     }
 
-    private String getHtmlBody(String template, Map<String,Object> variables){
-        Context context = new Context();
+    private String getHtmlBody(String template, Map<String,Object> variables, Locale locale){
+        Context context = new Context(locale);
         context.setVariables(variables);
         return springTemplateEngine.process(template,context);
     }
@@ -65,7 +65,7 @@ public class EmailServiceImpl implements EmailService{
         final Map<String,Object> mailMap = new HashMap<>();
         mailMap.put("username", user.getUsername());
         mailMap.put("mediaName", media.getName());
-        sendEmail(user.getEmail(), subject, "yourReviewHasBeenRemovedEmail.html", mailMap);
+        sendEmail(user.getEmail(), subject, "yourReviewHasBeenRemovedEmail.html", mailMap, locale);
     }
 
     @Async
@@ -75,7 +75,7 @@ public class EmailServiceImpl implements EmailService{
         final Map<String,Object> mailMap = new HashMap<>();
         mailMap.put("username", user.getUsername());
         mailMap.put("moovieListName", moovieList.getName());
-        sendEmail(user.getEmail(),subject, "yourListHasBeenRemovedMail.html", mailMap);
+        sendEmail(user.getEmail(),subject, "yourListHasBeenRemovedMail.html", mailMap, locale);
     }
 
     @Async
@@ -86,7 +86,7 @@ public class EmailServiceImpl implements EmailService{
         mailMap.put("username", userBanned.getUsername());
         mailMap.put("modUsername", userBanning.getUsername());
         mailMap.put("message", banReason);
-        sendEmail(userBanned.getEmail(),subject, "youHaveBeenBannedMail.html", mailMap);
+        sendEmail(userBanned.getEmail(),subject, "youHaveBeenBannedMail.html", mailMap, locale);
     }
 
     @Async
@@ -95,7 +95,7 @@ public class EmailServiceImpl implements EmailService{
         final String subject = messageSource.getMessage("email.unbannedSubject",null,locale);
         final Map<String,Object> mailMap = new HashMap<>();
         mailMap.put("username", userUnbanned.getUsername());
-        sendEmail(userUnbanned.getEmail(),subject, "youHaveBeenUnbannedMail.html", mailMap);
+        sendEmail(userUnbanned.getEmail(),subject, "youHaveBeenUnbannedMail.html", mailMap, locale);
     }
 
     @Async
@@ -106,7 +106,7 @@ public class EmailServiceImpl implements EmailService{
         mailMap.put("username",user.getUsername());
         mailMap.put("moovieListId",moovieList.getMoovieListId());
         mailMap.put("moovieListName",moovieList.getName());
-        sendEmail(user.getEmail(), subject, "mediaAddedToFollowedList.html", mailMap);
+        sendEmail(user.getEmail(), subject, "mediaAddedToFollowedList.html", mailMap, locale);
     }
 
     @Async
@@ -118,7 +118,7 @@ public class EmailServiceImpl implements EmailService{
         mailMap.put("likes", likeCount);
         mailMap.put("moovieListId",moovieList.getMoovieListId());
         mailMap.put("moovieListName",moovieList.getName());
-        sendEmail(user.getEmail(), subject, "notificationLikeMilestoneMoovieList.html", mailMap);
+        sendEmail(user.getEmail(), subject, "notificationLikeMilestoneMoovieList.html", mailMap, locale);
     }
 
     @Async
@@ -128,6 +128,6 @@ public class EmailServiceImpl implements EmailService{
         final Map<String,Object> mailMap = new HashMap<>();
         mailMap.put("username",user.getUsername());
         mailMap.put("token",token);
-        sendEmail(user.getEmail(), subject,"confirmationMail.html",mailMap);
+        sendEmail(user.getEmail(), subject,"confirmationMail.html",mailMap, locale);
     }
 }
