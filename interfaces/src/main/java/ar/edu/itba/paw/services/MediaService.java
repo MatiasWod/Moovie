@@ -31,6 +31,6 @@ public interface MediaService {
     TVSerie getTvById(int mediaId);
 
     // search creators
-    int getDirectorsForQueryCount(String query);
-    List<Director> getDirectorsForQuery(String query);
+    int getDirectorsForQueryCount(String query, int size);
+    List<Director> getDirectorsForQuery(String query, int size);
     }

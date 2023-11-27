@@ -230,19 +230,19 @@ public class MediaHibernateDao implements MediaDao{
     }
 
     @Override
-    public int getDirectorsForQueryCount(String query) {
-        return getDirectorsForQuery(query).size();
+    public int getDirectorsForQueryCount(String query, int size) {
+        return getDirectorsForQuery(query, size).size();
     }
 
     @Override
-    public List<Director> getDirectorsForQuery(String query) {
+    public List<Director> getDirectorsForQuery(String query, int size) {
         String sql = "SELECT DISTINCT new ar.edu.itba.paw.models.Cast.Director(m.directorId, m.director) " +
                 "FROM Movie m WHERE m.director LIKE :query";
 
         TypedQuery<Director> q = em.createQuery(sql, Director.class)
                 .setParameter("query", "%" + query + "%");
 
-        return q.getResultList();
+        return q.setMaxResults(size).getResultList();
     }
 
 

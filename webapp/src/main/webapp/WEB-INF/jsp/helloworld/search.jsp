@@ -82,6 +82,7 @@
     </c:if>
 
     <c:if test="${actorsFlag}">
+        <div style = "margin-bottom: 20px">
         <div class="container d-flex justify-content-between mt-2 p-2">
             <h3><spring:message code="search.actors" arguments="${param.query}"/></h3>
 <%--            <a href="${pageContext.request.contextPath}/discover?credit=${param.query}"><spring:message code="search.seeMore"/></a>--%>
@@ -124,11 +125,11 @@
                 </div>
             </c:forEach>
         </div>
-
+        </div>
     </c:if>
 
     <c:if test="${creatorsFlag}">
-        <div class="container d-flex justify-content-between mt-2 p-2">
+        <div class="container d-flex justify-content-between mt-2 p-2" >
             <h3><spring:message code="search.creators" arguments="${param.query}"/></h3>
 <%--            <a href="${pageContext.request.contextPath}/discover?credit=${param.query}"><spring:message code="search.seeMore"/></a>--%>
         </div>
@@ -142,9 +143,7 @@
                                     <img
                                             src="${pageContext.request.contextPath}/resources/defaultProfile.jpg"
                                             alt="${actor.name} picture not found"
-                                            style="max-width: 100px; height: 150px; border-radius: 5px;"
-
-                                    >
+                                            style="max-width: 100px; height: 150px; border-radius: 5px;">
                         </div>
                         <div class="col-8" style="min-width: 160px">
                             <div class="card-body" style="min-width: 120px">
