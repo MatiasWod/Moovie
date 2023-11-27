@@ -41,6 +41,7 @@
                 <h4 style="color: ghostwhite;"><spring:message code="listExtract.by"/>
                     <a style="text-decoration: none; color: inherit;" href="${pageContext.request.contextPath}/profile/${listOwner}">
                         <c:out value="${listOwner}"/>
+                        <c:if test="${moovieList.hasBadge}"><i class="bi bi-trophy"></i></c:if>
                     </a>
                 </h4>
             </c:if>

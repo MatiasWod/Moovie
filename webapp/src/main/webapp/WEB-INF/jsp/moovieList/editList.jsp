@@ -28,10 +28,12 @@
         <div class="d-flex flex-column flex-grow-1">
             <h1 style="font-size: 60px; font-weight: bold;"><c:out value="${moovieList.name}"/></h1>
             <h3><c:out value="${moovieList.description}"/></h3>
-                <h4 style="color: ghostwhite;">by
+                <h4 style="color: ghostwhite;"><spring:message code="listExtract.by"/>
                     <a style="text-decoration: none; color: inherit;" href="${pageContext.request.contextPath}/profile/${moovieList.username}">
                         <c:out value="${moovieList.username}"/>
+                        <c:if test="${moovieList.hasBadge}"><i class="bi bi-trophy"></i></c:if>
                     </a>
+
                 </h4>
         </div>
     </div>
