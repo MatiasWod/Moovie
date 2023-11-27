@@ -179,6 +179,10 @@
             <%--</c:if>--%>
         </div>
     </div>
+    <div style="align-items: center;text-align: center">
+    <a href="${pageContext.request.contextPath}/featuredList/topRatedMovies"  style="text-decoration: none;color: black"> <h2><spring:message
+            code="review.recommended"/></h2> </a>
+    </div>
     <div class="d-flex flex-row m-3" style="max-width: 100%">
         <div class="card-group">
             <c:forEach var="movie" items="${movieList}" end="5">
