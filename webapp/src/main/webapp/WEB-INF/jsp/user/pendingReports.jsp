@@ -361,7 +361,7 @@
                             <h5 class="alert-heading"><spring:message code="details.confirmReviewDeletion"/></h5>
                             <p><spring:message code="details.confirmReviewDeletionPrompt"/></p>
                             <div class="d-flex justify-content-evenly">
-                                <form class="m-0" action="${pageContext.request.contextPath}/deleteUserReview/${review.mediaId}" method="post">
+                                <form class="m-0" action="${pageContext.request.contextPath}/deleteReview/${review.mediaId}" method="post">
                                     <input type="hidden" name="reviewId" value="${review.reviewId}"/>
                                     <button type="submit" class="btn btn-danger"><spring:message code="details.delete"/></button>
                                 </form>

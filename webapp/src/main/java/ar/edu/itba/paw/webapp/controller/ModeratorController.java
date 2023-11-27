@@ -39,7 +39,7 @@ public class ModeratorController {
 
 
     @RequestMapping(value = "/deleteReview/{mediaId:\\d+}", method = RequestMethod.POST)
-    public ModelAndView deleteReview(@RequestParam("reviewId") int reviewId, @RequestParam("path") String path, RedirectAttributes redirectAttributes, @PathVariable int mediaId) {
+    public ModelAndView deleteReview(@RequestParam("reviewId") int reviewId, RedirectAttributes redirectAttributes, @PathVariable int mediaId) {
         try {
             moderatorService.deleteReview(reviewId, mediaId, ReviewTypes.REVIEW_MEDIA);
             redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("moderator.reviewDeletedSuccess",null, LocaleContextHolder.getLocale()));
@@ -47,7 +47,7 @@ public class ModeratorController {
 
             redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("moderator.reviewDeletedFailure",null, LocaleContextHolder.getLocale()));
         }
-        return new ModelAndView("redirect:" + path);
+        return new ModelAndView("redirect:" + "/details/" + mediaId);
     }
 
     @RequestMapping(value = "/deleteList/{moovieListId:\\d+}", method = RequestMethod.POST)
