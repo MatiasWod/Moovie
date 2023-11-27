@@ -42,7 +42,7 @@ public class Review {
     @Formula("(SELECT COUNT(*) FROM comments c WHERE c.reviewid = reviewId)")
     private Long commentCount;
 
-    @Transient
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "reviewId", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     @Formula("(SELECT COUNT(*) FROM reportsreviews rr WHERE rr.reviewid = reviewId)")

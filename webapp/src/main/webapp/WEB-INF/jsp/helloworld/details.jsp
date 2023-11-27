@@ -579,7 +579,7 @@
                                                     <div class="d-flex justify-content-between">
                                                         <h6 class="card-title"><a href="${pageContext.request.contextPath}/profile/${comment.username}">${comment.username}</a></h6>
                                                         <div class="d-flex">
-                                                            <p>${comment.commentLikes - comment.commentDislikes}</p>
+                                                            <p style="margin: 10px">${comment.commentLikes - comment.commentDislikes}<img style="padding-bottom: 6px;" height="37" width="37" src="${pageContext.request.contextPath}/resources/logo.png" alt="moo"></p>
                                                             <sec:authorize access="isAuthenticated()">
                                                                 <form action="${pageContext.request.contextPath}/likeComment" method="post">
                                                                     <input hidden name="commentId" value="${comment.commentId}">
@@ -609,9 +609,11 @@
                                                                         </button>
                                                                     </c:if>
                                                                 </form>
+                                                                <c:if test="${currentUser.username!=comment.username}">
                                                                 <a href="${pageContext.request.contextPath}/reports/new?id=${comment.commentId}&reportedBy=${currentUser.userId}&type=reviewComment" class="btn btn-sm btn-warning ms-1" ><spring:message code="report.title"/>
                                                                     <i class="bi bi-flag"></i>
                                                                 </a>
+                                                                </c:if>
                                                             </sec:authorize>
                                                         </div>
                                                     </div>

@@ -252,8 +252,7 @@ public class ListController {
         mav.addObject("mediaList", myList.getContent());
 
         // TODO: cambiar por recomended
-        mav.addObject("recommendedList", mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
-                null, null, null, null, MediaFilters.TMDBRATING.getFilter(), MediaFilters.DESC.getFilter(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0));
+        mav.addObject("recommendedList", moovieListService.getRecommendedMediaToAdd(moovieListId, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize() ));
 
         LOGGER.info("Returned list with id: {} for /editList.", moovieListId);
         return mav;
@@ -417,7 +416,7 @@ public class ListController {
     @RequestMapping(value = "/MoovieListReview", method = RequestMethod.POST)
     public ModelAndView createMoovieListReview(@Valid @ModelAttribute("createReviewForm") final CreateReviewForm createReviewForm, final BindingResult errors, RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
-            return list(createReviewForm.getMediaId(),"tmdbRating", "asc", 1,null);
+            return list(createReviewForm.getMediaId(),"tmdbRating", "asc", 1, createReviewForm);
         }
         try{
             reviewService.createReview(createReviewForm.getMediaId(), createReviewForm.getRating(), createReviewForm.getReviewContent(), ReviewTypes.REVIEW_MOOVIE_LIST);

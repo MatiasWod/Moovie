@@ -8,5 +8,5 @@ public interface TVCreatorsService {
     List<TVCreators> getTvCreatorsByMediaId(int mediaId);
     TVCreators getTvCreatorById(int creatorId);
 
-    List<TVCreators> getTVCreatorsForQuery(String query);
+    List<TVCreators> getTVCreatorsForQuery(String query, int size);
 }

@@ -55,13 +55,13 @@ public class MediaServiceImpl implements MediaService{
     }
 
     @Override
-    public int getDirectorsForQueryCount(String query) {
-        return mediaDao.getDirectorsForQueryCount(query);
+    public int getDirectorsForQueryCount(String query, int size) {
+        return mediaDao.getDirectorsForQueryCount(query, size);
     }
 
     @Override
-    public List<Director> getDirectorsForQuery(String query) {
-        return mediaDao.getDirectorsForQuery(query);
+    public List<Director> getDirectorsForQuery(String query, int size) {
+        return mediaDao.getDirectorsForQuery(query, size);
     }
 
 

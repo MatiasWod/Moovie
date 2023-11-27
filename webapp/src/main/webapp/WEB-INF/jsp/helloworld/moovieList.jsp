@@ -22,9 +22,21 @@
 <c:import url="/WEB-INF/jsp/helloworld/listExtract.jsp">
     <c:param name="publicList" value="true"/>
 </c:import>
+
+<c:if test="${RecomendedListsCards.size()>0}">
+    <hr/>
+    <div class="d-flex flex-column align-items-center" style="margin-bottom: 20px">
+        <h2><spring:message code="moovieList.recommendations"/></h2>
+        <div class="d-flex flex-row flex-wrap">
+            <c:forEach var="cardList" items="${RecomendedListsCards}">
+                <%@include file="listCard.jsp" %>
+            </c:forEach>
+        </div>
+    </div>
+</c:if>
 <c:if test="${moovieList.type==publicType}">
 <hr/>
-<div class="d-flex flex-column">
+    <div class="d-flex flex-column" style="align-items: center">
     <div class="d-flex flex-column flex-grow-1 m-3">
             <div class="input-group mt-2 mb-3">
                 <form:form cssClass="d-flex" modelAttribute="createReviewForm" action="${pageContext.request.contextPath}/MoovieListReview" method="POST">
@@ -32,13 +44,20 @@
                     <form:input path="rating" type="hidden" value="5"/>
                     <spring:message code="moovieList.addCommentPlaceholder" var="addCommentPlaceholder"/>
                     <form:input path="reviewContent" class="form-control" placeholder='${addCommentPlaceholder}' aria-label="With textarea"/>
+                    <form:errors path="reviewContent" cssClass="text-danger"/>
+                    <form:errors path="mediaId" cssClass="text-danger"/>
+                    <form:errors path="rating" cssClass="text-danger"/>
                     <button type="submit" class="ms-1 btn btn-dark" id="submitButton">
                         <spring:message code="details.submit"/>
                     </button>
-
                 </form:form>
             </div>
+    </div>
+    </div>
+
+    <div class="d-flex flex-column flex-grow-1 m-3">
         <c:forEach var="review" items="${reviews}">
+            <c:if test="${review.reviewContent.length()>0}">
             <div class="card mb-3">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
@@ -175,20 +194,10 @@
                     </div>
                 </div>
             </div>
+            </c:if>
         </c:forEach>
     </div>
-    <c:if test="${RecomendedListsCards}">
-        <div style="max-width: 30vw" class="d-flex flex-column align-items-center m-2">
-            <h4><spring:message code="moovieList.recommendations"/></h4>
-            <div class="d-flex flex-row flex-wrap">
-                <c:forEach var="cardList" items="${RecomendedListsCards}">
-                    <%@include file="listCard.jsp"%>
-                </c:forEach>
-            </div>
-        </div>
-    </c:if>
 
-</div>
 
 </c:if>
 </body>

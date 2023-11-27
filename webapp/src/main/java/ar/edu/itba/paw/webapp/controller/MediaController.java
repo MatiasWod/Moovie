@@ -110,15 +110,17 @@ public class MediaController {
     public ModelAndView search(@RequestParam(value = "query") String query){
         LOGGER.info("Attempting to get media for /search.");
 
+        int searchSizes = 3;
+
         final ModelAndView mav = new ModelAndView("helloworld/search");
         // Aca se realizan 3 queries. Para poder notificar correctamente al JSP de las listas que va a recibir, primero se corre el getMediaCount
         int nameMediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query, null, null, null, null, null);
         int actorsCount = actorService.getActorsForQueryCount(query);
-        int creatorsCount = mediaService.getDirectorsForQueryCount(query);
+        int creatorsCount = mediaService.getDirectorsForQueryCount(query, searchSizes);
         int usersCount = userService.getSearchCount(query);
         int moovieListCount = moovieListService.getMoovieListCardsCount(query,null,MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(),0);
 
-        List<TVCreators> tvCreators = tvCreatorsService.getTVCreatorsForQuery(query);
+        List<TVCreators> tvCreators = tvCreatorsService.getTVCreatorsForQuery(query,searchSizes);
         creatorsCount += tvCreators.size();
 
         if (query.isEmpty()){
@@ -144,8 +146,8 @@ public class MediaController {
         // Creators/Directors query
         if (creatorsCount > 0){
             mav.addObject("creatorsFlag", true);
-            mav.addObject("directors", mediaService.getDirectorsForQuery( query ).subList(0,3));
-            mav.addObject("creators", tvCreators.subList(0,3));
+            mav.addObject("directors", mediaService.getDirectorsForQuery( query,searchSizes ));
+            mav.addObject("creators", tvCreators);
         }else{
             mav.addObject("creatorsFlag",false);
         }
