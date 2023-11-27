@@ -8,6 +8,8 @@ public interface CommentDao {
 
     public List<Comment> getComments(int reviewId, int userId, int size, int pageNumber);
 
+    public Comment getCommentById(int commentId);
+
     public boolean userHasLiked(int commentId, int userId);
     public boolean userHasDisliked(int commentId, int userId);
 

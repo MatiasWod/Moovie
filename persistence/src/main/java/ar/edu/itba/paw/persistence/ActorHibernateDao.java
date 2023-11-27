@@ -2,9 +2,6 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Cast.Actor;
 import ar.edu.itba.paw.models.Media.Media;
-import ar.edu.itba.paw.models.Media.TVSerie;
-import ar.edu.itba.paw.models.Provider.Provider;
-import ar.edu.itba.paw.services.ActorService;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
@@ -43,7 +40,7 @@ public class ActorHibernateDao implements ActorDao{
 
     @Override
     public List<Actor> getActorsForQuery(String query) {
-        String sql = "SELECT a FROM Actor a WHERE LOWER(a.actorName) LIKE :query";
+        String sql = "SELECT a FROM Actor a WHERE LOWER(a.actorName) LIKE :query ORDER BY a.medias.size DESC";
 
         TypedQuery<Actor> q = em.createQuery(sql, Actor.class)
                 .setParameter("query", "%"+query.toLowerCase()+"%");
@@ -52,11 +49,16 @@ public class ActorHibernateDao implements ActorDao{
     }
 
     @Override
-    public List<Media> getMediaForActor(int actorId) {
-        String sql = "SELECT m FROM Media m JOIN MediaActors ma ON m.mediaId = ma.media.mediaId WHERE ma.actor.actorId = :actorId";
+    public List<Media> getMediaForActor(int actorId, int currentUser) {
+        String sql = "SELECT new ar.edu.itba.paw.models.Media.Media(m,"+
+                "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId WHERE m.mediaId = mlc2.mediaId AND wl.name = 'Watched' AND wl.userId = :userid), " +
+                "(SELECT CASE WHEN COUNT(wl3) > 0 THEN true ELSE false END FROM MoovieList wl3 INNER JOIN MoovieListContent mlc3 ON wl3.moovieListId = mlc3.moovieList.moovieListId WHERE m.mediaId = mlc3.mediaId AND wl3.name = 'Watchlist' AND wl3.userId = :userid) ) " +
+                "FROM Media m JOIN MediaActors ma ON m.mediaId = ma.media.mediaId WHERE ma.actor.actorId = :actorId" +
+                " ORDER BY m.tmdbRating DESC";
 
         TypedQuery<Media> q = em.createQuery(sql, Media.class)
-                .setParameter("actorId", actorId);
+                .setParameter("actorId", actorId)
+                .setParameter("userid", currentUser);
 
         return q.getResultList();
     }

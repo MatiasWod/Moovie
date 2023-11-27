@@ -64,7 +64,7 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public List<Review> getReportedReviews() {
-        String sql = "SELECT r FROM Review r WHERE COALESCE(r.totalReports, 0) > 0";
+        String sql = "SELECT r FROM Review r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
 
         TypedQuery<Review> query = em.createQuery(sql, Review.class);
 
@@ -73,7 +73,7 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public int getReportedReviewsCount() {
-        String sql = "SELECT r FROM Review r WHERE COALESCE(r.totalReports, 0) > 0";
+        String sql = "SELECT r FROM Review r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
 
         TypedQuery<Review> query = em.createQuery(sql, Review.class);
 
@@ -113,7 +113,7 @@ public class ReportDaoImpl implements ReportDao{
     @Override
     public List<MoovieListReview> getReportedMoovieListReviews() {
 
-        String sql = "SELECT r FROM MoovieListReview r WHERE COALESCE(r.totalReports, 0) > 0";
+        String sql = "SELECT r FROM MoovieListReview r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
 
         TypedQuery<MoovieListReview> query = em.createQuery(sql, MoovieListReview.class);
 
@@ -122,7 +122,7 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public int getReportedMoovieListReviewsCount() {
-        String sql = "SELECT r FROM MoovieListReview r WHERE COALESCE(r.totalReports, 0) > 0";
+        String sql = "SELECT r FROM MoovieListReview r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
 
         TypedQuery<MoovieListReview> query = em.createQuery(sql, MoovieListReview.class);
 
@@ -162,7 +162,7 @@ public class ReportDaoImpl implements ReportDao{
     @Override
     public List<MoovieList> getReportedMoovieLists() {
 
-        String sql = "SELECT r FROM MoovieList r WHERE COALESCE(r.totalReports, 0) > 0";
+        String sql = "SELECT r FROM MoovieList r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
 
         TypedQuery<MoovieList> query = em.createQuery(sql, MoovieList.class);
 
@@ -171,7 +171,7 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public int getReportedMoovieListsCount() {
-        String sql = "SELECT r FROM MoovieList r WHERE COALESCE(r.totalReports, 0) > 0";
+        String sql = "SELECT r FROM MoovieList r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
 
         TypedQuery<MoovieList> query = em.createQuery(sql, MoovieList.class);
 
@@ -212,7 +212,7 @@ public class ReportDaoImpl implements ReportDao{
     @Override
     public List<Comment> getReportedComments() {
 
-        String sql = "SELECT r FROM Comment r WHERE COALESCE(r.totalReports, 0) > 0";
+        String sql = "SELECT r FROM Comment r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
 
         TypedQuery<Comment> query = em.createQuery(sql, Comment.class);
 
@@ -221,7 +221,7 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public int getReportedCommentsCount() {
-        String sql = "SELECT r FROM Comment r WHERE COALESCE(r.totalReports, 0) > 0";
+        String sql = "SELECT r FROM Comment r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
 
         TypedQuery<Comment> query = em.createQuery(sql, Comment.class);
 

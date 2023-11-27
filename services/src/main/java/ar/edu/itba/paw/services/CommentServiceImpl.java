@@ -26,6 +26,11 @@ public class CommentServiceImpl implements CommentService{
         return commentDao.getComments(reviewId, userService.getInfoOfMyUser().getUserId(), size, pageNumber);
     }
 
+    @Override
+    public Comment getCommentById(int commentId) {
+        return commentDao.getCommentById(commentId);
+    }
+
     @Transactional
     @Override
     public void likeComment(int commentId) {

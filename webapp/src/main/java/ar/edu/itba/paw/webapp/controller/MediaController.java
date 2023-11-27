@@ -428,23 +428,37 @@ public class MediaController {
     }
 
     @RequestMapping(value= "/likeComment", method = RequestMethod.POST)
-    public ModelAndView likeComment(@RequestParam int commentId,@RequestParam int mediaId, RedirectAttributes redirectAttributes){
+    public ModelAndView likeComment(@RequestParam int commentId,@RequestParam int mediaId,
+                                    RedirectAttributes redirectAttributes,HttpServletRequest request) {
         try {
             commentService.likeComment(commentId);
             redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("details.commentLikedSuccess",null, LocaleContextHolder.getLocale()));
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("details.commentLikedFailure",null, LocaleContextHolder.getLocale()));
         }
+        String referer = request.getHeader("Referer");
+        if (referer.contains("details")) {
+            return new ModelAndView("redirect:/details/" + mediaId);
+        } else if (referer.contains("reivew")) {
+            return new ModelAndView("redirect:/review/" + mediaId);
+        }
         return new ModelAndView("redirect:/details/" + mediaId);
     }
 
     @RequestMapping(value= "/dislikeComment", method = RequestMethod.POST)
-    public ModelAndView dislikeComment(@RequestParam int commentId,@RequestParam int mediaId, RedirectAttributes redirectAttributes){
+    public ModelAndView dislikeComment(@RequestParam int commentId,@RequestParam int mediaId,
+                                       RedirectAttributes redirectAttributes, HttpServletRequest request){
         try {
             commentService.dislikeComment(commentId);
             redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("details.commentUnlikedSuccess",null, LocaleContextHolder.getLocale()));
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("details.commentUnlikedFailure",null, LocaleContextHolder.getLocale()));
+        }
+        String referer = request.getHeader("Referer");
+        if (referer.contains("details")) {
+            return new ModelAndView("redirect:/details/" + mediaId);
+        } else if (referer.contains("reivew")) {
+            return new ModelAndView("redirect:/review/" + mediaId);
         }
         return new ModelAndView("redirect:/details/" + mediaId);
     }

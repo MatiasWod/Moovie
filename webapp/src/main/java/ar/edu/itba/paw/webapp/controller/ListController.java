@@ -393,7 +393,7 @@ public class ListController {
         String referer = request.getHeader("Referer");
         if (referer.contains("details")) {
             return new ModelAndView("redirect:/details/" + mediaId);
-        } else if (referer.contains("editList")||referer.contains("list") || referer.contains("featuredList") || referer.contains("discover")) {
+        } else if (referer.contains("editList")||referer.contains("list") || referer.contains("featuredList") || referer.contains("discover") || referer.contains("cast")) {
             return new ModelAndView("redirect:" + referer);
         } else {
             return new ModelAndView("redirect:/");
@@ -411,7 +411,13 @@ public class ListController {
         String referer = request.getHeader("Referer");
         redirectAttributes.addFlashAttribute("insertedMooovieList", moovieListService.getMoovieListCardById(listId));
 
-        return new ModelAndView("redirect:" + referer);
+        if (referer.contains("details")) {
+            return new ModelAndView("redirect:/details/" + mediaId);
+        } else if (referer.contains("editList")||referer.contains("list") || referer.contains("featuredList") || referer.contains("discover") || referer.contains("cast")) {
+            return new ModelAndView("redirect:" + referer);
+        } else {
+            return new ModelAndView("redirect:/");
+        }
     }
 
 

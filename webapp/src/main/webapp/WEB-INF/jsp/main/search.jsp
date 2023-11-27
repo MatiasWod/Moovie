@@ -33,9 +33,9 @@
         </div>
         <hr class="my-1">
         <div class="d-flex flex-row flex-wrap justify-content-center">
-        <c:forEach items="${moovieListsList}" var="cardList">
-            <%@include file="../common/listCard.jsp"%>
-        </c:forEach>
+            <c:forEach items="${moovieListsList}" var="cardList">
+                <%@include file="../common/listCard.jsp"%>
+            </c:forEach>
         </div>
     </c:if>
 
@@ -55,7 +55,7 @@
                             <div class="d-flex justify-content-evenly">
                                 <p class="card-text">
                                     <i class="bi bi-star-fill"></i>
-                                        <c:out value="${media.tmdbRating}"/>
+                                    <c:out value="${media.tmdbRating}"/>
                                 </p>
                                 <p class="card-text">
                                     <fmt:formatDate value="${media.releaseDate}" pattern="YYYY"/>
@@ -83,108 +83,71 @@
 
     <c:if test="${actorsFlag}">
         <div style = "margin-bottom: 20px">
-        <div class="container d-flex justify-content-between mt-2 p-2">
-            <h3><spring:message code="search.actors" arguments="${param.query}"/></h3>
-<%--            <a href="${pageContext.request.contextPath}/discover?credit=${param.query}"><spring:message code="search.seeMore"/></a>--%>
-        </div>
-        <hr class="my-1">
-        <div class="container d-flex" style="height: 200px;"> <!-- Set a fixed maximum height for the container -->
-            <c:forEach var="actor" items="${actors}" end="5">
-                <div class="card actor-card" id="actor-card"
-                     style="width: 300px;height: 152px; border-radius: 5px; margin: 5px;">
-                    <div class="flex-row">
-                        <div class="col-4 text-center">
+            <div class="container d-flex justify-content-between mt-2 p-2">
+                <h3><spring:message code="search.actors" arguments="${param.query}"/></h3>
+                    <%--            <a href="${pageContext.request.contextPath}/discover?credit=${param.query}"><spring:message code="search.seeMore"/></a>--%>
+            </div>
+            <hr class="my-1">
+            <div class="container d-flex" style="height: 200px;"> <!-- Set a fixed maximum height for the container -->
+                <c:forEach var="actor" items="${actors}" end="5">
+                    <a href="/cast/actor/${actor.actorId}" class="poster card text-bg-dark m-1">
+                        <div class="card-img-container"> <!-- Add a container for the image -->
                             <c:choose>
-                                <c:when test="${actor.profilePath=='None'}">
-                                    <img
-                                            src="${pageContext.request.contextPath}/resources/defaultProfile.jpg"
-                                            alt="${actor.actorName} picture not found"
-                                            style="max-width: 100px; height: 150px; border-radius: 5px;"
-
-                                    >
+                                <c:when test="${actor.profilePath == 'None'}">
+                                    <img src="${pageContext.request.contextPath}/resources/defaultPoster.png" class="cropCenter"  alt="${actor.actorName} profile">
                                 </c:when>
                                 <c:otherwise>
-                                    <a href="${pageContext.request.contextPath}/cast/actor/${actor.actorId}">
-                                        <img
-                                                src="${actor.profilePath}"
-                                                alt="${actor.actorName} picture"
-                                                style="max-width: 150px; max-height: 150px; border-radius: 5px;"
-                                                href="${pageContext.request.contextPath}/cast/actor/${actor.actorId}">
-                                    </a>
+                                    <img src="${actor.profilePath}" class="cropCenter" alt="${actor.actorName} profile">
                                 </c:otherwise>
                             </c:choose>
-                        </div>
-                        <div class="col-8" style="min-width: 160px">
-                            <div class="card-body" style="min-width: 120px">
-                                <a style="color:black; text-decoration: none;" href="${pageContext.request.contextPath}/cast/actor/${actor.actorId}">
-                                    <h5 class="card-title">${actor.actorName}</h5>
-                                </a>
+                            <div class="card-img-overlay">
+                                <h6 class="card-title text-center"><c:out value="${actor.actorName}"/></h6>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </c:forEach>
-        </div>
+                    </a>
+
+                </c:forEach>
+            </div>
         </div>
     </c:if>
 
     <c:if test="${creatorsFlag}">
         <div class="container d-flex justify-content-between mt-2 p-2" >
             <h3><spring:message code="search.creators" arguments="${param.query}"/></h3>
-<%--            <a href="${pageContext.request.contextPath}/discover?credit=${param.query}"><spring:message code="search.seeMore"/></a>--%>
+                <%--            <a href="${pageContext.request.contextPath}/discover?credit=${param.query}"><spring:message code="search.seeMore"/></a>--%>
         </div>
         <hr class="my-1">
         <div class="container d-flex" style="height: 200px;"> <!-- Set a fixed maximum height for the container -->
             <c:forEach var="actor" items="${directors}">
-                <div class="card actor-card" id="actor-card"
-                     style="width: 300px;height: 152px; border-radius: 5px; margin: 5px;">
-                    <div class="flex-row">
-                        <div class="col-4 text-center">
-                                    <img
-                                            src="${pageContext.request.contextPath}/resources/defaultProfile.jpg"
-                                            alt="${actor.name} picture not found"
-                                            style="max-width: 100px; height: 150px; border-radius: 5px;">
-                        </div>
-                        <div class="col-8" style="min-width: 160px">
-                            <div class="card-body" style="min-width: 120px">
-                                <a style="color:black; text-decoration: none;" href="${pageContext.request.contextPath}/cast/director/${actor.directorId}">
-                                    <h5 class="card-title">${actor.name}</h5>
-                                </a>
-                            </div>
+                <a href="${pageContext.request.contextPath}/cast/director/${actor.directorId}" class="poster card text-bg-dark m-1">
+                    <div class="card-img-container"> <!-- Add a container for the image -->
+                        <img class=" cropCenter"  src="${pageContext.request.contextPath}/resources/logo.png"/>
+                        <div class="card-img-overlay" style="opacity: 1; background-color: rgba(255,255,255,0.1);">
+                            <h3 class="card-title text-center">${actor.name}</h3>
+                            <h4 class="card-title text-center"><spring:message code="search.total"/>${actor.totalMedia}</h4>
                         </div>
                     </div>
-                </div>
+                </a>
             </c:forEach>
             <c:forEach var="actor" items="${creators}">
-                <div class="card actor-card" id="actor-card"
-                     style="width: 300px;height: 152px; border-radius: 5px; margin: 5px;">
-                    <div class="flex-row">
-                        <div class="col-4 text-center">
-                            <img
-                                    src="${pageContext.request.contextPath}/resources/defaultProfile.jpg"
-                                    alt="${actor.creatorName} picture not found"
-                                    style="max-width: 100px; height: 150px; border-radius: 5px;"
-
-                            >
-                        </div>
-                        <div class="col-8" style="min-width: 160px">
-                            <div class="card-body" style="min-width: 120px">
-                                <a style="color:black; text-decoration: none;" href="${pageContext.request.contextPath}/cast/creator/${actor.creatorId}">
-                                    <h5 class="card-title">${actor.creatorName}</h5>
-                                </a>
-                            </div>
+                <a href="${pageContext.request.contextPath}/cast/creator/${actor.creatorId}" class="poster card text-bg-dark m-1">
+                    <div class="card-img-container"> <!-- Add a container for the image -->
+                        <img class=" cropCenter"  src="${pageContext.request.contextPath}/resources/logo.png"/>
+                        <div class="card-img-overlay" style="opacity: 1; background-color: rgba(255,255,255,0.1);">
+                            <h3 class="card-title text-center">${actor.creatorName}</h3>
+                            <h4 class="card-title text-center"><spring:message code="search.total"/>${fn:length(actor.medias)}</h4>
                         </div>
                     </div>
-                </div>
+                </a>
             </c:forEach>
         </div>
 
     </c:if>
 
     <c:if test="${usersFlag}">
-        <div class="container d-flex justify-content-between mt-2 p-2">
+        <div class="container d-flex justify-content-between mt-3 p-2">
             <h3><spring:message code="search.usersFor" arguments="${param.query}"/></h3>
-<%--            <a href="${pageContext.request.contextPath}/discover?credit=${param.query}">see more</a>--%>
+                <%--            <a href="${pageContext.request.contextPath}/discover?credit=${param.query}">see more</a>--%>
         </div>
         <hr class="my-1">
         <div class="container d-flex overflow-hidden" style="max-height: 300px;">
