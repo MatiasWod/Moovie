@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.models.Review;
 
 import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.models.Reports.MoovieListReviewReport;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
@@ -47,6 +48,12 @@ public class MoovieListReview {
     private int privacyReports;
     @Formula("(SELECT COUNT(*) FROM reportsMoovieListReviews rr WHERE rr.type = 1 AND rr.moovieListReviewId = moovieListReviewId)")
     private int abuseReports;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "moovieListReview", cascade = CascadeType.ALL)
+    private List<MoovieListsReviewsLikes> likes;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "moovieListReview", cascade = CascadeType.ALL)
+    private List<MoovieListReviewReport> reports;
 
     //hibernate
     MoovieListReview() {

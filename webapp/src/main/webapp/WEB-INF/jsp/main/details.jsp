@@ -485,7 +485,6 @@
                                                     <div class="d-flex justify-content-evenly">
                                                         <form class="m-0" action="${pageContext.request.contextPath}/deleteReview/${media.mediaId}" method="post">
                                                             <input type="hidden" name="reviewId" value="${review.reviewId}"/>
-                                                            <input type="hidden" name="path" value="/details/${media.mediaId}"/>
                                                             <button type="submit" class="btn btn-danger"><spring:message code="details.delete"/></button>
                                                         </form>
                                                         <button type="button" onclick="closePopup('review${review.reviewId}')" class="btn btn-secondary" id="cancelModButton"><spring:message code="details.cancel"/></button>
