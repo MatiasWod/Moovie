@@ -433,13 +433,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
     @Override
     public void deleteMoovieList(int moovieListId) {
         MoovieList toRemove = em.find(MoovieList.class, moovieListId);
-        List<MoovieListContent> toRemoveContent= em.createQuery("SELECT mlc FROM MoovieListContent mlc WHERE mlc.moovieList.moovieListId = :moovieListId", MoovieListContent.class).setParameter("moovieListId", moovieListId).getResultList();
-        if (toRemove != null ){
-            for(MoovieListContent mlc : toRemoveContent){
-                em.remove(mlc);
-            }
-            em.remove(toRemove);
-        }
+        em.remove(toRemove);
     }
 
     @Value("classpath:functions.sql")
