@@ -80,7 +80,7 @@ public class ModeratorController {
         }  else if (referer.contains("reports")) {
             return new ModelAndView("redirect:/reports/review?list=comments");
         } else if (referer.contains("review")) {
-            return new ModelAndView("redirect:/review/" + reviewId);
+            return new ModelAndView("redirect:/details/" + mediaId);
         }
         return new ModelAndView("redirect:" + "/details/" + mediaId);
     }
