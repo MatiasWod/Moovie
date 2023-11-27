@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.PagingSizes;
+import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.User.User;
 import org.hibernate.SQLQuery;
 import org.springframework.beans.factory.annotation.Value;
@@ -522,5 +523,11 @@ public class MoovieListHibernateDao implements MoovieListDao{
         MoovieList moovieList = em.find(MoovieList.class, moovieListId);
         MoovieListFollowers newFollow = new MoovieListFollowers(moovieList, user);
         em.persist(newFollow);
+    }
+
+    @Override
+    public void deleteListReview(int moovieListReviewId){
+        MoovieListReview toRemove = em.find(MoovieListReview.class, moovieListReviewId);
+        em.remove(toRemove);
     }
 }

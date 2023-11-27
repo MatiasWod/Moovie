@@ -91,8 +91,8 @@ public class ReviewServiceImpl implements ReviewService{
     @Transactional
     @Override
     public void createReview(int mediaId, int rating, String reviewContent, ReviewTypes type) {
-        int userId = userService.getInfoOfMyUser().getUserId();
-        reviewDao.createReview(userId, mediaId, rating, reviewContent,type);
+        User user = userService.getInfoOfMyUser();
+        reviewDao.createReview(user, mediaId, rating, reviewContent,type);
         LOGGER.info("Succesfully created review in media: {}, user: {}.", mediaId , userService.getInfoOfMyUser().getUserId());
 
     }

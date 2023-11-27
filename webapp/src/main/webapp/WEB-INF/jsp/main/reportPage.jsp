@@ -32,9 +32,9 @@
         <h2><spring:message code="report.what"/></h2>
     </div>
     <c:if test="${not empty errorMessage}">
-        <div class="alert alert-danger alert-dismissible fade show" id="errorAlert" role="alert">
+        <div class="alert alert-danger alert-dismissible fade show m-2" id="errorAlert" role="alert">
             <div class="d-flex justify-content-between align-items-center">
-                <div><spring:message code="${errorMessage}"/></div>
+                <div>${errorMessage} <a href="${pageContext.request.contextPath}/list/${insertedMooovieList.moovieListId}">${insertedMooovieList.name}</a></div>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>

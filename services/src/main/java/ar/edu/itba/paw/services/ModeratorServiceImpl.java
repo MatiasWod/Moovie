@@ -41,6 +41,7 @@ public class ModeratorServiceImpl implements ModeratorService{
     private EmailService emailService;
     @Autowired
     private BannedDao bannedDao;
+    @Autowired
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -147,6 +148,14 @@ public class ModeratorServiceImpl implements ModeratorService{
         if(userService.getInfoOfMyUser().getRole() != UserRoles.MODERATOR.getRole()){
             throw new InvalidAuthenticationLevelRequiredToPerformActionException("To perform this action you must have role: moderator");
         }
+    }
+
+    @Transactional
+    @Override
+   public void deleteListReview(int moovieListReviewId){
+        amIModerator();
+        moovieListDao.deleteListReview(moovieListReviewId);
+        LOGGER.info("Succesfully deleted report for review: {}.", moovieListReviewId);
     }
 
 }

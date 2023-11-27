@@ -178,6 +178,20 @@
                             </div>
                         </div>
                     </div>
+                    <div class="comment${review.commentId}-overlay popup-overlay" onclick="closePopup('comment${review.commentId}')"></div>
+                    <div style="background-color: transparent; box-shadow: none" class="popup comment${review.commentId}">
+                        <div style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" class="alert alert-danger" role="alert">
+                            <h5 class="alert-heading"><spring:message code="report.ConfirmCommentDeletion"/></h5>
+                            <p><spring:message code="report.deleteComment"/></p>
+                            <div class="d-flex justify-content-evenly">
+                                <form class="m-0" action="${pageContext.request.contextPath}/deleteComment/${review.commentId}" method="post">
+                                    <input type="hidden" name="reviewId" value="${review.commentId}"/>
+                                    <button type="submit" class="btn btn-danger"><spring:message code="details.delete"/></button>
+                                </form>
+                                <button type="button" onclick="closePopup('review${ml.moovieListId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
+                            </div>
+                        </div>
+                    </div>
                 </c:forEach>
             </c:when>
             <c:when test="${param.list == 'ml'}">
@@ -273,8 +287,8 @@
                             <h5 class="alert-heading"><spring:message code="details.confirmReviewDeletion"/></h5>
                             <p><spring:message code="details.confirmReviewDeletionPrompt"/></p>
                             <div class="d-flex justify-content-evenly">
-                                <form class="m-0" action="${pageContext.request.contextPath}/deleteUserReview/${review.moovieListId}" method="post">
-                                    <input type="hidden" name="reviewId" value="${review.moovieListReviewId}"/>
+                                <form class="m-0" action="${pageContext.request.contextPath}/deleteUserMoovieListReviewMod/${review.moovieListReviewId}" method="post">
+                                    <input type="hidden" name="reviewId" value="${review.moovieListId}"/>
                                     <button type="submit" class="btn btn-danger"><spring:message code="details.delete"/></button>
                                 </form>
                                 <button type="button" onclick="closePopup('review${review.moovieListReviewId}')" class="btn btn-secondary"><spring:message code="details.cancel"/></button>
@@ -347,7 +361,7 @@
                             <h5 class="alert-heading"><spring:message code="details.confirmReviewDeletion"/></h5>
                             <p><spring:message code="details.confirmReviewDeletionPrompt"/></p>
                             <div class="d-flex justify-content-evenly">
-                                <form class="m-0" action="${pageContext.request.contextPath}/deleteUserReview/${review.mediaId}" method="post">
+                                <form class="m-0" action="${pageContext.request.contextPath}/deleteReview/${review.mediaId}" method="post">
                                     <input type="hidden" name="reviewId" value="${review.reviewId}"/>
                                     <button type="submit" class="btn btn-danger"><spring:message code="details.delete"/></button>
                                 </form>

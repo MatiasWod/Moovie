@@ -39,7 +39,7 @@ public class ModeratorController {
 
 
     @RequestMapping(value = "/deleteReview/{mediaId:\\d+}", method = RequestMethod.POST)
-    public ModelAndView deleteReview(@RequestParam("reviewId") int reviewId, @RequestParam("path") String path, RedirectAttributes redirectAttributes, @PathVariable int mediaId) {
+    public ModelAndView deleteReview(@RequestParam("reviewId") int reviewId, RedirectAttributes redirectAttributes, @PathVariable int mediaId) {
         try {
             moderatorService.deleteReview(reviewId, mediaId, ReviewTypes.REVIEW_MEDIA);
             redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("moderator.reviewDeletedSuccess",null, LocaleContextHolder.getLocale()));
@@ -47,7 +47,7 @@ public class ModeratorController {
 
             redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("moderator.reviewDeletedFailure",null, LocaleContextHolder.getLocale()));
         }
-        return new ModelAndView("redirect:" + path);
+        return new ModelAndView("redirect:" + "/details/" + mediaId);
     }
 
     @RequestMapping(value = "/deleteList/{moovieListId:\\d+}", method = RequestMethod.POST)
@@ -62,6 +62,27 @@ public class ModeratorController {
         return new ModelAndView("redirect:/lists");
     }
 
+
+
+    @RequestMapping(value = "/deleteUserMoovieListReviewMod/{moovieListReviewId:\\d+}", method = RequestMethod.POST)
+    public ModelAndView deleteUserMoovieListReviewMod(@RequestParam("reviewId") int mediaId,
+                                               RedirectAttributes redirectAttributes,
+                                               @PathVariable int moovieListReviewId,
+                                               HttpServletRequest request) {
+        try {
+            moderatorService.deleteListReview(moovieListReviewId);
+            redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("list.reviewDeletedSuccess",null, LocaleContextHolder.getLocale()));
+        }catch (Exception e){
+            redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("list.reviewDeletedFailure",null, LocaleContextHolder.getLocale()));
+        }
+        String referer = request.getHeader("Referer");
+        if (referer.contains("list")) {
+            return new ModelAndView("redirect:/list/" + mediaId);
+        } else if (referer.contains("reports")) {
+            return new ModelAndView("redirect:/reports/review?list=mlReviews");
+        }
+        return new ModelAndView("redirect:/list/" + mediaId);
+    }
 
 
     @RequestMapping(value = "/banUser/{userId:\\d+}", method = RequestMethod.POST)
@@ -182,7 +203,7 @@ public class ModeratorController {
                     redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("moderator.moovieListReviewReportedFailure",null, LocaleContextHolder.getLocale()));
                     return report(form, id, reportedBy, type, redirectAttributes);
                 }
-            case "comment,comment":
+            case "reviewComment,reviewComment":
                 try {
                     reportService.reportComment(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
                     redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("moderator.reviewReportedSuccess",null, LocaleContextHolder.getLocale()));
