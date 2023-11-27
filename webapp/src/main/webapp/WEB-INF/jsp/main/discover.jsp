@@ -28,7 +28,7 @@
 
 </head>
 <body style="background: whitesmoke">
-<c:import url="navBar.jsp"/>
+<c:import url="../common/navBar.jsp"/>
 
 <%--variables para el manejo de selected filters--%>
 <c:set var="selectedGenres" value="${fn:split(param.g, ',')}" />
@@ -36,7 +36,7 @@
 <div class="d-flex flex-column">
     <div class=" d-flex flex-row ">
         <div id="preview" class="fullHeightDiv ms-1" style="width: 13vw">
-            <c:import url="filterButtons.jsp">
+            <c:import url="../common/filterButtons.jsp">
                 <c:param name="query" value="${param.query}"/>
                 <c:param name="credit" value="${param.credit}"/>
                 <c:param name="g" value="${param.g}"/>
@@ -153,7 +153,7 @@
                 </div>
                 <c:if test="${searchMode == false}">
                     <div class="m-1">
-                        <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+                        <c:import url="/WEB-INF/jsp/common/pagination.jsp">
                             <c:param name="mediaPages" value="${numberOfPages}"/>
                             <c:param name="currentPage" value="${currentPage + 1}"/>
                             <c:param name="url" value="/discover?query=${param.query}&m=${param.m}&g=${param.g}&orderBy=${param.orderBy}&order=${param.order}&providers=${param.providers}&l=${param.l}&status=${param.status}"/>
@@ -162,7 +162,7 @@
                 </c:if>
                 <c:if test="${searchMode == true}">
                     <div class="m-1">
-                        <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+                        <c:import url="/WEB-INF/jsp/common/pagination.jsp">
                             <c:param name="mediaPages" value="${numberOfPages}"/>
                             <c:param name="currentPage" value="${currentPage + 1}"/>
                             <c:param name="url" value="/discover?query=${param.query}&m=${param.m}&g=${param.g}&orderBy=${param.orderBy}&order=${param.order}&providers=${param.providers}&l=${param.l}&status=${param.status}"/>

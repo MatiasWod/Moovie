@@ -22,7 +22,7 @@
     <title><spring:message code="editList.title"/></title>
 </head>
 <body style="background: whitesmoke">
-<c:import url="navBar.jsp"/>
+<c:import url="../common/navBar.jsp"/>
 <div class="container d-flex flex-column">
     <div class="header d-flex text-center" style="background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2)), url('${mediaList[0].backdropPath}'); background-size: cover; background-position: center;">
         <div class="d-flex flex-column flex-grow-1">
@@ -202,7 +202,7 @@
     </c:choose>
 </table>
 </div>
-<c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+<c:import url="/WEB-INF/jsp/common/pagination.jsp">
     <c:param name="mediaPages" value="${numberOfPages}"/>
     <c:param name="currentPage" value="${currentPage + 1}"/>
     <c:param name="url" value="/editList/${moovieList.moovieListId}"/>

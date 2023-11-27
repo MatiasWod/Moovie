@@ -25,7 +25,7 @@
 
 </head>
 <body style="background: whitesmoke">
-<c:import url="navBar.jsp">
+<c:import url="../common/navBar.jsp">
 
 </c:import>
 
@@ -80,13 +80,13 @@
                 <h3><spring:message code="viewLists.noResults"/></h3>
             </c:if>
         <c:forEach var="cardList" items="${showLists}">
-            <%@include file="listCard.jsp"%>
+            <%@include file="../common/listCard.jsp"%>
             </c:forEach>
     </div>
 </div>
 </body>
 <div class="m-1">
-    <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+    <c:import url="/WEB-INF/jsp/common/pagination.jsp">
         <c:param name="mediaPages" value="${numberOfPages}"/>
         <c:param name="currentPage" value="${currentPage + 1}"/>
         <c:param name="url" value="${urlBase}"/>

@@ -20,7 +20,7 @@ public class BannedUserController {
 
     @RequestMapping(value = "/bannedMessage/{id:\\d+}", method = RequestMethod.GET)
     public ModelAndView bannedMessage( @PathVariable("id") final int userId) {
-        ModelAndView mav = new ModelAndView("helloworld/bannedMessage");
+        ModelAndView mav = new ModelAndView("main/bannedMessage");
         LOGGER.info("Attempting to GET bannedMessafe page with id: {} for /bannedMessage.", userId);
         try {
             mav.addObject("bannedMessageObject", bannedService.getBannedMessage(userId));

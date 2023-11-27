@@ -30,7 +30,7 @@
 </head>
 <body style="background: whitesmoke">
 
-<c:import url="navBar.jsp"/>
+<c:import url="../common/navBar.jsp"/>
 <sec:authorize access="isAuthenticated()">
     <c:set var="selectedGenres" value="${fn:split(param.g, ',')}" />
     <c:set var="selectedProviders" value="${fn:split(param.providers, ',')}" />
@@ -42,7 +42,7 @@
                         <spring:message code="discover.results" arguments="${param.q}"/>
                     </h3>
                 </c:if>
-                <c:import url="filterButtons.jsp">
+                <c:import url="../common/filterButtons.jsp">
                     <c:param name="g" value="${param.g}"/>
                     <c:param name="providers" value="${param.providers}"/>
                     <c:param name="url" value="createList"/>
@@ -90,7 +90,7 @@
                     </c:forEach>
                 </div>
                 <div class="m-1">
-                    <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+                    <c:import url="/WEB-INF/jsp/common/pagination.jsp">
                         <c:param name="mediaPages" value="${numberOfPages}"/>
                         <c:param name="currentPage" value="${currentPage + 1}"/>
                         <c:param name="url" value="/createList?m=${param.m}&g=${param.g}&q=${param.q}"/>

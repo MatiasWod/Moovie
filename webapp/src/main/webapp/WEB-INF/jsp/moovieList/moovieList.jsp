@@ -18,8 +18,8 @@
     <link href="${pageContext.request.contextPath}/resources/buttonsStyle.css?version=1" rel="stylesheet"/>
 </head>
 <body style="background: whitesmoke">
-<c:import url="navBar.jsp"/>
-<c:import url="/WEB-INF/jsp/helloworld/listExtract.jsp">
+<c:import url="../common/navBar.jsp"/>
+<c:import url="/WEB-INF/jsp/moovieList/listExtract.jsp">
     <c:param name="publicList" value="true"/>
 </c:import>
 
@@ -29,7 +29,7 @@
         <h2><spring:message code="moovieList.recommendations"/></h2>
         <div class="d-flex flex-row flex-wrap">
             <c:forEach var="cardList" items="${RecomendedListsCards}">
-                <%@include file="listCard.jsp" %>
+                <%@include file="../common/listCard.jsp" %>
             </c:forEach>
         </div>
     </div>

@@ -24,7 +24,7 @@
     <title><spring:message code="profile.title" arguments="${username}"/></title>
 </head>
 <body id="grad">
-<c:import url="navBar.jsp"/>
+<c:import url="../common/navBar.jsp"/>
 <sec:authorize access="isAuthenticated()">
     <div style="align-items: center" class="d-flex flex-column">
         <div class="d-flex container justify-content-center">
@@ -214,7 +214,7 @@
 
         <c:if test="${param.list == 'watched-list' || param.list == 'watchlist'}">
             <div class="container lists-container" id="detailed-list" style="margin-top: 30px">
-                <c:import url="/WEB-INF/jsp/helloworld/listExtract.jsp">
+                <c:import url="/WEB-INF/jsp/moovieList/listExtract.jsp">
                     <c:param name="listType" value="${param.list == 'watched-list' ? ('watched-list'):('watchlist')}"/>
                 </c:import>
             </div>
@@ -272,11 +272,11 @@
                 </c:if>
 
                 <c:forEach var="cardList" items="${showLists}">
-                    <%@include file="listCard.jsp"%>
+                    <%@include file="../common/listCard.jsp"%>
                 </c:forEach>
             </div>
         <div class="m-1">
-            <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+            <c:import url="/WEB-INF/jsp/common/pagination.jsp">
                 <c:param name="mediaPages" value="${numberOfPages}"/>
                 <c:param name="currentPage" value="${currentPage + 1}"/>
                 <c:param name="url" value="${urlBase}"/>
@@ -362,7 +362,7 @@
                     </c:otherwise>
                 </c:choose>
                 <div class="m-1">
-                    <c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+                    <c:import url="/WEB-INF/jsp/common/pagination.jsp">
                         <c:param name="mediaPages" value="${numberOfPages}"/>
                         <c:param name="currentPage" value="${currentPage + 1}"/>
                         <c:param name="url" value="${urlBase}"/>
@@ -378,7 +378,7 @@
 
 </sec:authorize>
 <sec:authorize access="!isAuthenticated()">
-    <c:import url="signUpAlert.jsp"/>
+    <c:import url="../main/signUpAlert.jsp"/>
 </sec:authorize>
 
 </body>

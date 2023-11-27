@@ -74,7 +74,7 @@ public class UserController {
     public ModelAndView register(@ModelAttribute("registerForm") final RegisterForm form) {
         LOGGER.info("Attempting to get /register");
         LOGGER.info("Returned /register");
-        return new ModelAndView("helloworld/register").
+        return new ModelAndView("user/register").
                 addObject("mediaList",
                 mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null,null,null,null,null,null,MediaFilters.TMDBRATING.getFilter(), MediaFilters.DESC.getFilter(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0));
     }
@@ -104,7 +104,7 @@ public class UserController {
             }
         } catch (VerificationTokenNotFoundException e) {
             LOGGER.info("Auto-login failed.");
-            return new ModelAndView("helloworld/404");
+            return new ModelAndView("errors/404");
         }
     }
 
@@ -113,7 +113,7 @@ public class UserController {
 
     @RequestMapping(value = "/register/tokentimedout")
     public ModelAndView tokenTimedOut(@RequestParam("token") final String token) {
-        ModelAndView mav = new ModelAndView("helloworld/tokenTimedOut");
+        ModelAndView mav = new ModelAndView("user/tokenTimedOut");
         mav.addObject("token", token);
         return mav;
     }
@@ -142,7 +142,7 @@ public class UserController {
     public ModelAndView login() {
         LOGGER.info("Attempting to get /register");
         LOGGER.info("Returned /register");
-        return new ModelAndView("helloworld/login")
+        return new ModelAndView("user/login")
                 .addObject("mediaList",
                         mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null,null,null,null,null,null, MediaFilters.TMDBRATING.getFilter(), MediaFilters.DESC.getFilter(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0));
     }
@@ -158,7 +158,7 @@ public class UserController {
         try{
             Profile requestedProfile = userService.getProfileByUsername(username);
 
-            ModelAndView mav = new ModelAndView("helloworld/profile");
+            ModelAndView mav = new ModelAndView("user/profile");
 
             int listCount;
             int numberOfPages;
@@ -266,14 +266,14 @@ public class UserController {
 
         }catch (UnableToFindUserException e){
             LOGGER.info("Failed to return user with username: {} for /profile.", username);
-            return new ModelAndView("helloworld/404");
+            return new ModelAndView("errors/404");
         }
 
     }
 
     @RequestMapping("/milkyLeaderboard")
     public ModelAndView profilePage(@RequestParam(value = "page",defaultValue = "1") final int pageNumber){
-        ModelAndView mav = new ModelAndView("helloworld/milkyPointsLeaderboard");
+        ModelAndView mav = new ModelAndView("main/milkyPointsLeaderboard");
         mav.addObject("profiles", userService.getMilkyPointsLeaders(PagingSizes.MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE.getSize(), pageNumber-1));
 
         int usersCount = userService.getUserCount();
@@ -330,7 +330,7 @@ public class UserController {
     @RequestMapping(value = "/register/sentEmail")
     public ModelAndView sentEmail() {
         LOGGER.info("Confirmation email was sent.");
-        return new ModelAndView("helloworld/sentEmail");
+        return new ModelAndView("main/sentEmail");
     }
 
     @RequestMapping(value = "/uploadProfilePicture", method = {RequestMethod.POST})
@@ -366,7 +366,7 @@ public class UserController {
         dmsService.updateCreators();
         dmsService.updateGenres();
         dmsService.updateProviders();
-        return new ModelAndView("helloworld/403");
+        return new ModelAndView("errors/403");
     }
 //    */
 

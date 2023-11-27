@@ -20,7 +20,7 @@
     <script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=82"></script>
 </head>
 <body>
-<c:import url="navBar.jsp"/>
+<c:import url="../common/navBar.jsp"/>
 
 <c:choose>
 <c:when test="${actor != null}">

@@ -335,7 +335,7 @@ ${mediaList[loop.index].totalRating}<i class="bi bi-star" style="margin-left: 5p
 </c:otherwise>
 </c:choose>
 </table>
-<c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+<c:import url="/WEB-INF/jsp/common/pagination.jsp">
     <c:param name="mediaPages" value="${numberOfPages}"/>
     <c:param name="currentPage" value="${currentPage + 1}"/>
     <c:param name="url" value="${urlBase}"/>

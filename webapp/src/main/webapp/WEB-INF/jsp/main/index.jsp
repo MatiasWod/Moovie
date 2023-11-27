@@ -12,7 +12,7 @@
     <title><spring:message code="index.title"/></title>
 </head>
 <body style="background: whitesmoke;">
-    <c:import url="navBar.jsp"/>
+    <c:import url="../common/navBar.jsp"/>
     <div class="container d-flex flex-column" style="margin-bottom: 50px">
         <div style="position: page;" class="d-flex flex-column align-items-center justify-content-center">
             <div class="container d-flex flex-column justify-content-end">

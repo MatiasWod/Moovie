@@ -22,7 +22,7 @@
     <title><spring:message code="search.title"/></title>
 </head>
 <body>
-<c:import url="navBar.jsp"/>
+<c:import url="../common/navBar.jsp"/>
 
 <div class="container d-flex flex-column">
 
@@ -34,7 +34,7 @@
         <hr class="my-1">
         <div class="d-flex flex-row flex-wrap justify-content-center">
         <c:forEach items="${moovieListsList}" var="cardList">
-            <%@include file="listCard.jsp"%>
+            <%@include file="../common/listCard.jsp"%>
         </c:forEach>
         </div>
     </c:if>

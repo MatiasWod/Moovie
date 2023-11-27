@@ -17,7 +17,7 @@
     <script src="${pageContext.request.contextPath}/resources/moovieListSort.js?version=82"></script>
 </head>
 <body>
-<c:import url="navBar.jsp"/>
+<c:import url="../common/navBar.jsp"/>
 <div class="container d-flex flex-column">
 
     <div class="flex-row d-flex text-center">
@@ -106,7 +106,7 @@
     </c:choose>
 </table>
 </div>
-<c:import url="/WEB-INF/jsp/helloworld/pagination.jsp">
+<c:import url="/WEB-INF/jsp/common/pagination.jsp">
     <c:param name="mediaPages" value="${numberOfPages}"/>
     <c:param name="currentPage" value="${currentPage + 1}"/>
     <c:param name="url" value="${urlBase}"/>

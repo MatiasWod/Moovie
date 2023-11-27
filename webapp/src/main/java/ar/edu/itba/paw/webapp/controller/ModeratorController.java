@@ -73,7 +73,7 @@ public class ModeratorController {
             moderatorService.banUser(userId, message);
             redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("moderator.userBannedSuccess",null, LocaleContextHolder.getLocale()));
         } catch (UnableToFindUserException e) {
-            return new ModelAndView("helloworld/404").addObject("extrainfo", messageSource.getMessage("moderator.userBannedNotFound",null, LocaleContextHolder.getLocale()));
+            return new ModelAndView("errors/404").addObject("extrainfo", messageSource.getMessage("moderator.userBannedNotFound",null, LocaleContextHolder.getLocale()));
         }  catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("moderator.userBannedFailure",null, LocaleContextHolder.getLocale()));
         }
@@ -93,7 +93,7 @@ public class ModeratorController {
             moderatorService.unbanUser(userId);
             redirectAttributes.addFlashAttribute("successMessage",  messageSource.getMessage("moderator.userUnbannedSuccess",null, LocaleContextHolder.getLocale()));
         } catch (UnableToFindUserException e) {
-            return new ModelAndView("helloworld/404").addObject("extrainfo", messageSource.getMessage("moderator.userUnbannedNotFound",null, LocaleContextHolder.getLocale()));
+            return new ModelAndView("errors/404").addObject("extrainfo", messageSource.getMessage("moderator.userUnbannedNotFound",null, LocaleContextHolder.getLocale()));
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("moderator.userUnbannedFailure",null, LocaleContextHolder.getLocale()));
         }
@@ -108,7 +108,7 @@ public class ModeratorController {
             moderatorService.makeUserModerator(userId);
             redirectAttributes.addFlashAttribute("successMessage",  messageSource.getMessage("moderator.promoteToModSuccess",null, LocaleContextHolder.getLocale()));
         } catch (UnableToFindUserException e) {
-            return new ModelAndView("helloworld/404");
+            return new ModelAndView("errors/404");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("moderator.promoteToModFailure",null, LocaleContextHolder.getLocale()));
         }
@@ -125,7 +125,7 @@ public class ModeratorController {
                                @RequestParam("type") String type,
                                RedirectAttributes redirectAttributes) {
 
-        ModelAndView mav = new ModelAndView("helloworld/reportPage");
+        ModelAndView mav = new ModelAndView("main/reportPage");
         try {
             mav.addObject("currentUser", userService.getInfoOfMyUser());
         } catch (Exception e) {
@@ -198,7 +198,7 @@ public class ModeratorController {
     // TODO: Add mod filtering for this page
     @RequestMapping(value = "/reports/review")
     public ModelAndView reportReview(@RequestParam(name = "list", required = false) String list) {
-        ModelAndView mav = new ModelAndView("helloworld/pendingReports");
+        ModelAndView mav = new ModelAndView("user/pendingReports");
 
         // -- LISTS --
         if (list != null && list != ""){
@@ -225,7 +225,7 @@ public class ModeratorController {
                     mav.addObject("listCount",bannedService.getBannedCount());
                     break;
                 default:
-                    return new ModelAndView("helloworld/404").addObject("extrainfo", "Illegal parameter");
+                    return new ModelAndView("errors/404").addObject("extrainfo", "Illegal parameter");
             }
         }else{
             mav.addObject("commentList",reportService.getReportedComments());

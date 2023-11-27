@@ -78,7 +78,7 @@ public class MediaController {
     public ModelAndView home() {
 
         LOGGER.info("Attempting to get media for /.");
-        final ModelAndView mav = new ModelAndView("helloworld/index");
+        final ModelAndView mav = new ModelAndView("main/index");
         List<Media> movieList = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
                 null, null, null, null, MediaFilters.TMDBRATING.getFilter(), MediaFilters.DESC.getFilter(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("movieList", movieList);
@@ -112,7 +112,7 @@ public class MediaController {
 
         int searchSizes = 3;
 
-        final ModelAndView mav = new ModelAndView("helloworld/search");
+        final ModelAndView mav = new ModelAndView("main/search");
         // Aca se realizan 3 queries. Para poder notificar correctamente al JSP de las listas que va a recibir, primero se corre el getMediaCount
         int nameMediaCount = mediaService.getMediaCount(MediaTypes.TYPE_ALL.getType(), query, null, null, null, null, null);
         int actorsCount = actorService.getActorsForQueryCount(query);
@@ -191,7 +191,7 @@ public class MediaController {
                                  @RequestParam(value="order", defaultValue = "desc") final String order,
                                @RequestParam(value = "page", defaultValue = "1") final int pageNumber){
         LOGGER.info("Attempting to get media for /discover.");
-        final ModelAndView mav = new ModelAndView("helloworld/discover");
+        final ModelAndView mav = new ModelAndView("main/discover");
 
         mav.addObject("searchMode", (query != null && !query.isEmpty()));
         int mediaCount;
@@ -248,12 +248,12 @@ public class MediaController {
             type = mediaService.getMediaById(mediaId).isType();
         } catch (MediaNotFoundException e){
             LOGGER.info("Failed to get media with id: {} for /details.", mediaId);
-            final ModelAndView mav = new ModelAndView("helloworld/404");
+            final ModelAndView mav = new ModelAndView("errors/404");
             mav.addObject("extraInfo", e.getMessage());
             return mav;
         }
         
-        final ModelAndView mav = new ModelAndView("helloworld/details");
+        final ModelAndView mav = new ModelAndView("main/details");
         try{
             User user =  userService.getInfoOfMyUser();
             String username=user.getUsername();
@@ -369,7 +369,7 @@ public class MediaController {
 
     @RequestMapping(value = "/cast/{type}/{id:\\d+}")
     public ModelAndView actor(@PathVariable String type, @PathVariable int id){
-        final ModelAndView mav = new ModelAndView("helloworld/cast");
+        final ModelAndView mav = new ModelAndView("main/cast");
         try {
             User currentUser=userService.getInfoOfMyUser();
             mav.addObject("currentUser", currentUser);
@@ -411,7 +411,7 @@ public class MediaController {
 
     @RequestMapping("/review/{id:\\d+}")
     public ModelAndView review(@PathVariable int id, @ModelAttribute("commentForm") CommentForm commentForm) {
-        final ModelAndView mav = new ModelAndView("helloworld/review");
+        final ModelAndView mav = new ModelAndView("main/review");
         List<Media> movieList = mediaService.getMedia(MediaTypes.TYPE_MOVIE.getType(), null, null,
                 null, null, null, null,MediaFilters.TMDBRATING.getFilter(), MediaFilters.DESC.getFilter(), PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 0);
         mav.addObject("movieList", movieList);
@@ -467,7 +467,7 @@ public class MediaController {
         } else if (referer.contains("review")) {
             return new ModelAndView("redirect:/review/" + commentForm.getReviewId());
         }
-        return new ModelAndView("helloworld/index");
+        return new ModelAndView("main/index");
     }
 }
 

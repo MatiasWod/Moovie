@@ -15,10 +15,10 @@
 
 <body style="background: whitesmoke">
 
-<c:import url="navBar.jsp"/>
+<c:import url="../common/navBar.jsp"/>
 <div class="container d-flex flex-column">
 
-    <div class="col"><img src="${pageContext.request.contextPath}/resources/logo.png"  alt="Moovie logo" height="100px" width="100px"/></div>
+    <div class="col"><img src="${pageContext.request.contextPath}/resources/logo.png" alt="Moovie logo" height="100px" width="100px"/></div>
 
     <div class="col">
         <h1><spring:message code="error500.message"/></h1>

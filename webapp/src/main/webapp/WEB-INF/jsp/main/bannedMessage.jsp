@@ -12,7 +12,7 @@
 </head>
 <body style="background: whitesmoke">
 
-<c:import url="navBar.jsp"/>
+<c:import url="../common/navBar.jsp"/>
 
 <div style="border: solid black; min-width: 40%; min-height: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 5%;" class="container-gray justify-content-center d-flex flex-column">
     <div class="text-center m-3">
