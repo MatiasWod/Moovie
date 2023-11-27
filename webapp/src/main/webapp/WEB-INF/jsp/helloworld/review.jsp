@@ -125,7 +125,8 @@
                     <form:form modelAttribute="commentForm" action="${pageContext.request.contextPath}/createcomment" method="POST">
                         <form:input path="reviewId" type="hidden" value="${review.reviewId}"/>
                         <form:input path="listMediaId" type="hidden" value="${review.mediaId}"/>
-                        <form:input path="content" class="form-control" placeholder="Add comment..." aria-label="With textarea"/>
+                        <spring:message code="review.addCommentPlaceholder" var="addCommentPlaceholder"/>
+                        <form:input path="content" class="form-control" placeholder='${addCommentPlaceholder}' aria-label="With textarea"/>
                     </form:form>
                 </div>
                 <c:forEach items="${review.comments}" var="comment">

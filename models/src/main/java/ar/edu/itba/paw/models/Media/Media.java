@@ -100,7 +100,7 @@ public class Media {
         this.backdropPath = backdropPath;
         this.posterPath = posterPath;
         this.trailerLink = trailerLink;
-        this.tmdbRating = tmdbRating/2;
+        this.tmdbRating = tmdbRating;
         this.totalRating = totalRating;
         this.voteCount = voteCount;
         this.status = status;
@@ -121,7 +121,7 @@ public class Media {
         this.backdropPath = backdropPath;
         this.posterPath = posterPath;
         this.trailerLink = trailerLink;
-        this.tmdbRating = tmdbRating/2;
+        this.tmdbRating = tmdbRating;
         this.totalRating = totalRating;
         this.voteCount = voteCount;
         this.status = status;
@@ -142,7 +142,7 @@ public class Media {
         this.backdropPath = media.backdropPath;
         this.posterPath = media.posterPath;
         this.trailerLink = media.trailerLink;
-        this.tmdbRating = media.tmdbRating/2;
+        this.tmdbRating = media.tmdbRating;
         this.totalRating = media.totalRating;
         this.voteCount = media.voteCount;
         this.status = media.status;
@@ -210,7 +210,7 @@ public class Media {
     }
 
     public float getTmdbRating() {
-        return tmdbRating;
+        return tmdbRating/2;
     }
 
     public float getTotalRating() {
