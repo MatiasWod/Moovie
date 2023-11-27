@@ -43,13 +43,6 @@ public class TvCreatorsHibernateDao implements TVCreatorsDao{
 
         List<TVCreators> toReturn = q.getResultList();
 
-        for( TVCreators c : toReturn ){
-            for( Media m : c.getMedias() ){
-//                m.setWatched();
-//                m.setWatchlist();
-            }
-        }
-
         return toReturn;
     }
 }

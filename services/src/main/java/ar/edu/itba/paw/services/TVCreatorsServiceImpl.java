@@ -1,7 +1,8 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.exceptions.ActorNotFoundException;
+
 import ar.edu.itba.paw.exceptions.TVCreatorNotFoundException;
+import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.TV.TVCreators;
 import ar.edu.itba.paw.persistence.TVCreatorsDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,12 @@ public class TVCreatorsServiceImpl implements TVCreatorsService{
     @Autowired
     private TVCreatorsDao tvCreatorsDao;
 
+    @Autowired
+    private MediaService mediaService;
+
+    @Autowired
+    private UserService userService;
+
     @Transactional(readOnly = true)
     @Override
     public List<TVCreators> getTvCreatorsByMediaId(int mediaId) {
@@ -24,12 +31,37 @@ public class TVCreatorsServiceImpl implements TVCreatorsService{
     @Transactional(readOnly = true)
     @Override
     public TVCreators getTvCreatorById(int creatorId) {
-        return tvCreatorsDao.getTvCreatorById(creatorId).orElseThrow( () -> new TVCreatorNotFoundException("TVCreator was not found for the id: " + creatorId));
+        TVCreators toReturn = tvCreatorsDao.getTvCreatorById(creatorId).orElseThrow( () -> new TVCreatorNotFoundException("TVCreator was not found for the id: " + creatorId));
+
+        int currentUserId = userService.tryToGetCurrentUserId();
+
+        if ( currentUserId >= 0 ){
+            for(Media m : toReturn.getMedias()){
+                m.setWatched(mediaService.getWatchedStatus(m.getMediaId(), currentUserId));
+                m.setWatchlist(mediaService.getWatchlistStatus(m.getMediaId(),currentUserId));
+            }
+        }
+
+        return toReturn;
     }
 
     @Override
     public List<TVCreators> getTVCreatorsForQuery(String query, int size) {
-        return tvCreatorsDao.getTVCreatorsForQuery(query, size);
+        List<TVCreators> toReturn = tvCreatorsDao.getTVCreatorsForQuery(query, size);
+
+        int currentUserId = userService.tryToGetCurrentUserId();
+
+        if(currentUserId >= 0){
+            for( TVCreators tv : toReturn ){
+                for(Media m : tv.getMedias()){
+                    m.setWatched(mediaService.getWatchedStatus(m.getMediaId(), currentUserId));
+                    m.setWatchlist(mediaService.getWatchlistStatus(m.getMediaId(),currentUserId));
+                }
+            }
+        }
+
+
+        return toReturn;
     }
 
 

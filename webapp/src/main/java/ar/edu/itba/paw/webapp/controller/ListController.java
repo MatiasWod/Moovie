@@ -251,7 +251,6 @@ public class ListController {
         mav.addObject("moovieList", myList.getCard());
         mav.addObject("mediaList", myList.getContent());
 
-        // TODO: cambiar por recomended
         mav.addObject("recommendedList", moovieListService.getRecommendedMediaToAdd(moovieListId, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize() ));
 
         LOGGER.info("Returned list with id: {} for /editList.", moovieListId);

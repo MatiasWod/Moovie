@@ -18,6 +18,9 @@ public class ActorServiceImpl implements ActorService{
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private MediaService mediaService;
+
     @Transactional(readOnly = true)
     @Override
     public List<Actor> getAllActorsForMedia(int mediaId) {
@@ -27,7 +30,18 @@ public class ActorServiceImpl implements ActorService{
     @Transactional(readOnly = true)
     @Override
     public Actor getActorById(int actorId) {
-        return actorDao.getActorById(actorId).orElseThrow( () -> new ActorNotFoundException("Actor was not found for the id: " + actorId));
+        Actor toReturn = actorDao.getActorById(actorId).orElseThrow( () -> new ActorNotFoundException("Actor was not found for the id: " + actorId));
+
+        int currentUserId = userService.tryToGetCurrentUserId();
+
+        if(currentUserId >= 0 ){
+            for(Media m : toReturn.getMedias()){
+                m.setWatchlist(mediaService.getWatchlistStatus(m.getMediaId(),currentUserId));
+                m.setWatched(mediaService.getWatchedStatus(m.getMediaId(),currentUserId));
+            }
+        }
+
+        return toReturn;
     }
 
     @Override

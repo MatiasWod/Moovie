@@ -55,54 +55,54 @@
                             <sec:authorize access="isAuthenticated()">
                                 <div style="position:absolute;bottom:0;left: 20%;z-index: 2" class="d-flex m-2">
 <%--                                    COULD NOT MAKE TVCREATOR WATCHED & WATCHLIST STATUS WORK--%>
-<%--                                    <c:choose>--%>
-<%--                                        <c:when test="${movie.watched}">--%>
-<%--                                            <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">--%>
-<%--                                                <input type="hidden" name="listId" value="${watchedListId}"/>--%>
-<%--                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>--%>
-<%--                                                <button class="btn btn-success m-1" type="submit">--%>
-<%--                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">--%>
-<%--                                                        <i class="bi bi-eye-fill" style="color: whitesmoke; cursor: pointer;"></i>--%>
-<%--                                                    </span>--%>
-<%--                                                </button>--%>
-<%--                                            </form>--%>
-<%--                                        </c:when>--%>
-<%--                                        <c:otherwise>--%>
-<%--                                            <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">--%>
-<%--                                                <input type="hidden" name="listId" value="${watchedListId}"/>--%>
-<%--                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>--%>
-<%--                                                <button class="btn btn-secondary m-1" type="submit">--%>
-<%--                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">--%>
-<%--                                                        <i class="bi bi-eye-fill" style="color: whitesmoke; cursor: pointer;"></i>--%>
-<%--                                                    </span>--%>
-<%--                                                </button>--%>
-<%--                                            </form>--%>
-<%--                                        </c:otherwise>--%>
-<%--                                    </c:choose>--%>
-<%--                                    <c:choose>--%>
-<%--                                        <c:when test="${movie.watchlist}">--%>
-<%--                                            <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">--%>
-<%--                                                <input type="hidden" name="listId" value="${watchlistId}"/>--%>
-<%--                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>--%>
-<%--                                                <button class="btn btn-success m-1" type="submit">--%>
-<%--                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">--%>
-<%--                                                        <i class="bi bi-bookmark-check-fill" style="color: whitesmoke; cursor: pointer;"></i>--%>
-<%--                                                    </span>--%>
-<%--                                                </button>--%>
-<%--                                            </form>--%>
-<%--                                        </c:when>--%>
-<%--                                        <c:otherwise>--%>
-<%--                                            <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">--%>
-<%--                                                <input type="hidden" name="listId" value="${watchlistId}"/>--%>
-<%--                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>--%>
-<%--                                                <button class="btn btn-secondary m-1" type="submit">--%>
-<%--                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">--%>
-<%--                                                        <i class="bi bi-bookmark-check-fill" style="color: whitesmoke; cursor: pointer;"></i>--%>
-<%--                                                    </span>--%>
-<%--                                                </button>--%>
-<%--                                            </form>--%>
-<%--                                        </c:otherwise>--%>
-<%--                                    </c:choose>--%>
+                                    <c:choose>
+                                        <c:when test="${movie.watched}">
+                                            <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">
+                                                <input type="hidden" name="listId" value="${watchedListId}"/>
+                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>
+                                                <button class="btn btn-success m-1" type="submit">
+                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
+                                                        <i class="bi bi-eye-fill" style="color: whitesmoke; cursor: pointer;"></i>
+                                                    </span>
+                                                </button>
+                                            </form>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
+                                                <input type="hidden" name="listId" value="${watchedListId}"/>
+                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>
+                                                <button class="btn btn-secondary m-1" type="submit">
+                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
+                                                        <i class="bi bi-eye-fill" style="color: whitesmoke; cursor: pointer;"></i>
+                                                    </span>
+                                                </button>
+                                            </form>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <c:choose>
+                                        <c:when test="${movie.watchlist}">
+                                            <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">
+                                                <input type="hidden" name="listId" value="${watchlistId}"/>
+                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>
+                                                <button class="btn btn-success m-1" type="submit">
+                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
+                                                        <i class="bi bi-bookmark-check-fill" style="color: whitesmoke; cursor: pointer;"></i>
+                                                    </span>
+                                                </button>
+                                            </form>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
+                                                <input type="hidden" name="listId" value="${watchlistId}"/>
+                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>
+                                                <button class="btn btn-secondary m-1" type="submit">
+                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
+                                                        <i class="bi bi-bookmark-check-fill" style="color: whitesmoke; cursor: pointer;"></i>
+                                                    </span>
+                                                </button>
+                                            </form>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                             </sec:authorize>
 
@@ -163,54 +163,54 @@
                             <sec:authorize access="isAuthenticated()">
                                 <div style="position:absolute;bottom:0;left: 20%;z-index: 2" class="d-flex m-2">
         <%--                                    COULD NOT MAKE TVCREATOR WATCHED & WATCHLIST STATUS WORK--%>
-<%--                                    <c:choose>--%>
-<%--                                        <c:when test="${movie.watched}">--%>
-<%--                                            <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">--%>
-<%--                                                <input type="hidden" name="listId" value="${watchedListId}"/>--%>
-<%--                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>--%>
-<%--                                                <button class="btn btn-success m-1" type="submit">--%>
-<%--                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">--%>
-<%--                                                        <i class="bi bi-eye-fill" style="color: whitesmoke; cursor: pointer;"></i>--%>
-<%--                                                    </span>--%>
-<%--                                                </button>--%>
-<%--                                            </form>--%>
-<%--                                        </c:when>--%>
-<%--                                        <c:otherwise>--%>
-<%--                                            <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">--%>
-<%--                                                <input type="hidden" name="listId" value="${watchedListId}"/>--%>
-<%--                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>--%>
-<%--                                                <button class="btn btn-secondary m-1" type="submit">--%>
-<%--                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">--%>
-<%--                                                        <i class="bi bi-eye-fill" style="color: whitesmoke; cursor: pointer;"></i>--%>
-<%--                                                    </span>--%>
-<%--                                                </button>--%>
-<%--                                            </form>--%>
-<%--                                        </c:otherwise>--%>
-<%--                                    </c:choose>--%>
-<%--                                    <c:choose>--%>
-<%--                                        <c:when test="${movie.watchlist}">--%>
-<%--                                            <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">--%>
-<%--                                                <input type="hidden" name="listId" value="${watchlistId}"/>--%>
-<%--                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>--%>
-<%--                                                <button class="btn btn-success m-1" type="submit">--%>
-<%--                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">--%>
-<%--                                                        <i class="bi bi-bookmark-check-fill" style="color: whitesmoke; cursor: pointer;"></i>--%>
-<%--                                                    </span>--%>
-<%--                                                </button>--%>
-<%--                                            </form>--%>
-<%--                                        </c:when>--%>
-<%--                                        <c:otherwise>--%>
-<%--                                            <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">--%>
-<%--                                                <input type="hidden" name="listId" value="${watchlistId}"/>--%>
-<%--                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>--%>
-<%--                                                <button class="btn btn-secondary m-1" type="submit">--%>
-<%--                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">--%>
-<%--                                                        <i class="bi bi-bookmark-check-fill" style="color: whitesmoke; cursor: pointer;"></i>--%>
-<%--                                                    </span>--%>
-<%--                                                </button>--%>
-<%--                                            </form>--%>
-<%--                                        </c:otherwise>--%>
-<%--                                    </c:choose>--%>
+                                    <c:choose>
+                                        <c:when test="${movie.watched}">
+                                            <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">
+                                                <input type="hidden" name="listId" value="${watchedListId}"/>
+                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>
+                                                <button class="btn btn-success m-1" type="submit">
+                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
+                                                        <i class="bi bi-eye-fill" style="color: whitesmoke; cursor: pointer;"></i>
+                                                    </span>
+                                                </button>
+                                            </form>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
+                                                <input type="hidden" name="listId" value="${watchedListId}"/>
+                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>
+                                                <button class="btn btn-secondary m-1" type="submit">
+                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
+                                                        <i class="bi bi-eye-fill" style="color: whitesmoke; cursor: pointer;"></i>
+                                                    </span>
+                                                </button>
+                                            </form>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <c:choose>
+                                        <c:when test="${movie.watchlist}">
+                                            <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">
+                                                <input type="hidden" name="listId" value="${watchlistId}"/>
+                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>
+                                                <button class="btn btn-success m-1" type="submit">
+                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
+                                                        <i class="bi bi-bookmark-check-fill" style="color: whitesmoke; cursor: pointer;"></i>
+                                                    </span>
+                                                </button>
+                                            </form>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
+                                                <input type="hidden" name="listId" value="${watchlistId}"/>
+                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>
+                                                <button class="btn btn-secondary m-1" type="submit">
+                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
+                                                        <i class="bi bi-bookmark-check-fill" style="color: whitesmoke; cursor: pointer;"></i>
+                                                    </span>
+                                                </button>
+                                            </form>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                             </sec:authorize>
 
@@ -272,54 +272,54 @@
                             <sec:authorize access="isAuthenticated()">
                                 <div style="position:absolute;bottom:0;left: 20%;z-index: 2" class="d-flex m-2">
     <%--                                    COULD NOT MAKE TVCREATOR WATCHED & WATCHLIST STATUS WORK--%>
-<%--                                    <c:choose>--%>
-<%--                                        <c:when test="${movie.watched}">--%>
-<%--                                            <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">--%>
-<%--                                                <input type="hidden" name="listId" value="${watchedListId}"/>--%>
-<%--                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>--%>
-<%--                                                <button class="btn btn-success m-1" type="submit">--%>
-<%--                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">--%>
-<%--                                                        <i class="bi bi-eye-fill" style="color: whitesmoke; cursor: pointer;"></i>--%>
-<%--                                                    </span>--%>
-<%--                                                </button>--%>
-<%--                                            </form>--%>
-<%--                                        </c:when>--%>
-<%--                                        <c:otherwise>--%>
-<%--                                            <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">--%>
-<%--                                                <input type="hidden" name="listId" value="${watchedListId}"/>--%>
-<%--                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>--%>
-<%--                                                <button class="btn btn-secondary m-1" type="submit">--%>
-<%--                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">--%>
-<%--                                                        <i class="bi bi-eye-fill" style="color: whitesmoke; cursor: pointer;"></i>--%>
-<%--                                                    </span>--%>
-<%--                                                </button>--%>
-<%--                                            </form>--%>
-<%--                                        </c:otherwise>--%>
-<%--                                    </c:choose>--%>
-<%--                                    <c:choose>--%>
-<%--                                        <c:when test="${movie.watchlist}">--%>
-<%--                                            <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">--%>
-<%--                                                <input type="hidden" name="listId" value="${watchlistId}"/>--%>
-<%--                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>--%>
-<%--                                                <button class="btn btn-success m-1" type="submit">--%>
-<%--                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">--%>
-<%--                                                        <i class="bi bi-bookmark-check-fill" style="color: whitesmoke; cursor: pointer;"></i>--%>
-<%--                                                    </span>--%>
-<%--                                                </button>--%>
-<%--                                            </form>--%>
-<%--                                        </c:when>--%>
-<%--                                        <c:otherwise>--%>
-<%--                                            <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">--%>
-<%--                                                <input type="hidden" name="listId" value="${watchlistId}"/>--%>
-<%--                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>--%>
-<%--                                                <button class="btn btn-secondary m-1" type="submit">--%>
-<%--                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">--%>
-<%--                                                        <i class="bi bi-bookmark-check-fill" style="color: whitesmoke; cursor: pointer;"></i>--%>
-<%--                                                    </span>--%>
-<%--                                                </button>--%>
-<%--                                            </form>--%>
-<%--                                        </c:otherwise>--%>
-<%--                                    </c:choose>--%>
+                                    <c:choose>
+                                        <c:when test="${movie.watched}">
+                                            <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">
+                                                <input type="hidden" name="listId" value="${watchedListId}"/>
+                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>
+                                                <button class="btn btn-success m-1" type="submit">
+                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
+                                                        <i class="bi bi-eye-fill" style="color: whitesmoke; cursor: pointer;"></i>
+                                                    </span>
+                                                </button>
+                                            </form>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
+                                                <input type="hidden" name="listId" value="${watchedListId}"/>
+                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>
+                                                <button class="btn btn-secondary m-1" type="submit">
+                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
+                                                        <i class="bi bi-eye-fill" style="color: whitesmoke; cursor: pointer;"></i>
+                                                    </span>
+                                                </button>
+                                            </form>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <c:choose>
+                                        <c:when test="${movie.watchlist}">
+                                            <form action="${pageContext.request.contextPath}/deleteMediaFromList" method="post">
+                                                <input type="hidden" name="listId" value="${watchlistId}"/>
+                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>
+                                                <button class="btn btn-success m-1" type="submit">
+                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
+                                                        <i class="bi bi-bookmark-check-fill" style="color: whitesmoke; cursor: pointer;"></i>
+                                                    </span>
+                                                </button>
+                                            </form>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <form action="${pageContext.request.contextPath}/insertMediaToList" method="post">
+                                                <input type="hidden" name="listId" value="${watchlistId}"/>
+                                                <input type="hidden" name="mediaId" value="${movie.mediaId}"/>
+                                                <button class="btn btn-secondary m-1" type="submit">
+                                                    <span class="d-inline-block"  tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<spring:message code="listExtract.watchedMessage"/>">
+                                                        <i class="bi bi-bookmark-check-fill" style="color: whitesmoke; cursor: pointer;"></i>
+                                                    </span>
+                                                </button>
+                                            </form>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                             </sec:authorize>
 
