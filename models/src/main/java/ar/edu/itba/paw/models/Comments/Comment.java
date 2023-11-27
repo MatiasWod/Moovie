@@ -71,6 +71,15 @@ public class Comment implements Serializable {
         this.content = content;
     }
 
+    public Comment(Comment comment, boolean currentUserHasLiked, boolean currentUserHasDisliked){
+        this.reviewId = comment.reviewId;
+        this.user = comment.user;
+        this.content = comment.content;
+
+        this.currentUserHasLiked = currentUserHasLiked;
+        this.currentUserHasDisliked = currentUserHasDisliked;
+    }
+
     public int getMediaId() {
         return mediaId;
     }

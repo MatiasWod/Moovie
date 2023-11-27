@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
 import ar.edu.itba.paw.exceptions.ReviewNotFoundException;
+import ar.edu.itba.paw.models.Comments.Comment;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
@@ -22,6 +23,8 @@ public class ReviewServiceImpl implements ReviewService{
     private ReviewDao reviewDao;
     @Autowired
     private UserService userService;
+    @Autowired
+    private CommentService commentService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -35,7 +38,23 @@ public class ReviewServiceImpl implements ReviewService{
     @Transactional(readOnly = true)
     @Override
     public List<Review> getReviewsByMediaId(int mediaId, int size, int pageNumber)  {
-        return reviewDao.getReviewsByMediaId(userService.tryToGetCurrentUserId(), mediaId, size, pageNumber);
+        List<Review> toReturn = reviewDao.getReviewsByMediaId(userService.tryToGetCurrentUserId(), mediaId, size, pageNumber);
+
+        // porque reviews hacen su propio fetch de los comments
+        // y el estado de watched es un Transient para cada comment que debe ser setteado en la creacion
+        // hay que modificarlas en caso que el user este loggeado
+        int currentUser = userService.tryToGetCurrentUserId();
+        if (currentUser > 0){
+            for(Review r : toReturn){
+                for(Comment c : r.getComments()){
+                    c.setCurrentUserHasLiked(commentService.userHasLiked(c.getCommentId(),currentUser));
+                    c.setCurrentUserHasDisliked(commentService.userHasDisliked(c.getCommentId(),currentUser));
+                }
+            }
+        }
+
+
+        return toReturn;
     }
 
     @Transactional(readOnly = true)

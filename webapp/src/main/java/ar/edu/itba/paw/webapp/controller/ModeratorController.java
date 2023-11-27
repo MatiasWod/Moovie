@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.Reports.ReportTypesEnum;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
+import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.form.ReportForm;
 import org.slf4j.Logger;
@@ -251,8 +252,46 @@ public class ModeratorController {
                     redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("moderator.reviewReportedFailure",null, LocaleContextHolder.getLocale()));
                     return report(form, id, reportedBy, type, redirectAttributes);
                 }
+            case "reviewComment,reviewComment":
+                try {
+                    reportService.reportComment(form.getId(), form.getReportedBy(), form.getReportType(), form.getContent());
+                    redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("moderator.reviewReportedSuccess",null, LocaleContextHolder.getLocale()));
+                    return new ModelAndView("redirect:/review/" + commentService.getCommentById(form.getId()).getMediaId() + "/" + commentService.getCommentById(form.getId()).getReviewId()); // faltaria un getCommentById
+                } catch (Exception e) {
+                    redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("moderator.reviewReportedFailure",null, LocaleContextHolder.getLocale()));
+                    return report(form, id, reportedBy, type, redirectAttributes);
+                }
         }
         return report(form, id, reportedBy, type, redirectAttributes);
+    }
+
+    @RequestMapping(value = "/reports/resolve", method = RequestMethod.POST)
+    public ModelAndView resolveReport(@RequestParam(name ="type", required = true) String type,
+                                      @RequestParam(name = "id", required = true) int id){
+
+        try{
+            User currentUser = userService.getInfoOfMyUser();
+            if (currentUser != null && currentUser.getRole() == 2){
+                switch (type){
+                    case("comments"):
+                        reportService.resolveCommentReport(id);
+                        break;
+                    case("reviews"):
+                        reportService.resolveReviewReport(id);
+                        break;
+                    case("ml"):
+                        reportService.resolveMoovieListReport(id);
+                        break;
+                    case("mlReviews"):
+                        reportService.resolveMoovieListReviewReport(id);
+                        break;
+                }
+            }
+        }catch(Exception e){
+            return new ModelAndView("errors/404");
+        }
+
+        return reportReview(type);
     }
 
     // TODO: Add mod filtering for this page

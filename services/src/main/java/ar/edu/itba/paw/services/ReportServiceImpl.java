@@ -100,6 +100,7 @@ public class ReportServiceImpl implements ReportService{
     @Transactional
     @Override
     public void resolveMoovieListReviewReport(int reportId) {
+
         reportDao.resolveMoovieListReviewReport(reportId);
     }
 
@@ -131,6 +132,7 @@ public class ReportServiceImpl implements ReportService{
     @Transactional
     @Override
     public void resolveMoovieListReport(int reportId) {
+
         reportDao.resolveMoovieListReport(reportId);
     }
 
@@ -161,6 +163,7 @@ public class ReportServiceImpl implements ReportService{
     @Transactional
     @Override
     public void resolveCommentReport(int reportId) {
+
         reportDao.resolveCommentReport(reportId);
     }
 }

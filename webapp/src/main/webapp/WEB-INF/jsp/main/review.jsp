@@ -122,11 +122,12 @@
             <%--<c:if test="${review.hasComments}">--%>
             <div class="m-3">
                 <div class="input-group mt-2 mb-3">
-                    <form:form modelAttribute="commentForm" action="${pageContext.request.contextPath}/createcomment" method="POST">
+                    <form:form modelAttribute="commentForm" action="${pageContext.request.contextPath}/createcomment" cssClass="d-flex" method="POST">
                         <form:input path="reviewId" type="hidden" value="${review.reviewId}"/>
                         <form:input path="listMediaId" type="hidden" value="${review.mediaId}"/>
                         <spring:message code="review.addCommentPlaceholder" var="addCommentPlaceholder"/>
                         <form:input path="content" class="form-control" placeholder='${addCommentPlaceholder}' aria-label="With textarea"/>
+                        <button class="btn ms-1 btn-dark" type="submit"><spring:message code="details.submit"/></button>
                     </form:form>
                 </div>
                 <c:forEach items="${review.comments}" var="comment">

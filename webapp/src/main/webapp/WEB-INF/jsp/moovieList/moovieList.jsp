@@ -63,12 +63,15 @@
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
                             <img src=""/>
-                            <a href="${pageContext.request.contextPath}/profile/${review.user.username}"
-                               style="text-decoration: none; color: inherit;">
-                                <%--<img class="cropCenter mr-3 profile-image rounded-circle"
-                                     style="height:60px;width:60px;border: solid black; border-radius: 50%"
-                                     src="${pageContext.request.contextPath}/profile/image/${review.username}"
-                                     alt="${review.userId} Reviewer Profile">--%>
+                            <a href="${pageContext.request.contextPath}/profile/${review.user.username}" style="text-decoration: none; color: inherit;">
+                                <c:choose>
+                                    <c:when test="${review.user.hasPfp}">
+                                        <img class="cropCenter mr-3 profile-image rounded-circle" style="height:60px;width:60px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/profile/image/${review.username}" alt="${review.userId} Reviewer Profile">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img class="cropCenter mr-3 profile-image rounded-circle" style="height:60px;width:60px;border: solid black; border-radius: 50%" src="${pageContext.request.contextPath}/resources/defaultProfile.jpg" alt="${review.userId} Reviewer Profile">
+                                    </c:otherwise>
+                                </c:choose>
                             </a>
                             <div class="mt-0" style="margin-left: 15px">
                                 <a href="${pageContext.request.contextPath}/profile/${review.user.username}"

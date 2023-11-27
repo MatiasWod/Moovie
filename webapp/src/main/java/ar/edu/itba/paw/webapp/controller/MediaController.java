@@ -483,7 +483,7 @@ public class MediaController {
         if (referer.contains("details")) {
             return new ModelAndView("redirect:/details/" + commentForm.getListMediaId());
         } else if (referer.contains("review")) {
-            return new ModelAndView("redirect:/review/" + commentForm.getReviewId());
+            return new ModelAndView("redirect:/review/" + commentForm.getListMediaId() + "/" + commentForm.getReviewId());
         }
         return new ModelAndView("main/index");
     }

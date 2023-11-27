@@ -35,12 +35,13 @@ public class BannedHibernateDao implements BannedDao{
     }
 
     @Override
-    public void createBannedMessage(int bannedUserId, int modUserId, String message) {
+    public void createBannedMessage(int bannedUserId, int modUserId, String message, String modUsername) {
         try{
-            entityManager.createNativeQuery("INSERT INTO bannedmessage (moduserid,bannedUserId,message) VALUES (:modUserId,:bannedUserId,:message)")
+            entityManager.createNativeQuery("INSERT INTO bannedmessage (moduserid,bannedUserId,message, modusername) VALUES (:modUserId,:bannedUserId,:message, :modUsername)")
                     .setParameter("modUserId",modUserId)
                     .setParameter("bannedUserId",bannedUserId)
                     .setParameter("message",message)
+                    .setParameter("modUsername", modUsername)
                     .executeUpdate();
         } catch (Exception e){
             throw new UnableToInsertIntoDatabase("BannedMessage creation failed, user already has a banned message");

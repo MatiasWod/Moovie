@@ -18,15 +18,18 @@ public class CommentDaoImpl implements CommentDao{
 
     @Override
     public List<Comment> getComments(int reviewId, int userId, int size, int pageSize) {
-        String sql = "SELECT c FROM Comment c WHERE c.reviewId = :reviewId";
+        String sql = "SELECT c" +
+                " FROM Comment c WHERE c.reviewId = :reviewId";
 
         List<Comment> comments = em.createQuery(sql, Comment.class)
                 .setParameter("reviewId", reviewId)
+                .setFirstResult(pageSize*size)
+                .setMaxResults(size)
                 .getResultList();
-        for (Comment comment : comments){
-            comment.setCurrentUserHasLiked(userHasLiked(comment.getCommentId(),userId));
 
-            comment.setCurrentUserHasDisliked(userHasDisliked(comment.getCommentId(), userId));
+        for (Comment c : comments){
+            c.setCurrentUserHasLiked(userHasLiked(c.getCommentId(),userId));
+            c.setCurrentUserHasDisliked(userHasDisliked(c.getCommentId(),userId));
         }
 
         return comments;

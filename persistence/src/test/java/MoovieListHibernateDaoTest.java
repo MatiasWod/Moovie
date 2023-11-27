@@ -15,8 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -35,6 +33,8 @@ public class MoovieListHibernateDaoTest {
 
     private JdbcTemplate jdbcTemplate;
 
+    private static final int INSERTED_MOOVIELIST_ID = 1;
+    private static final int TO_INSERT_USER_ID = 95;
     private static final int INSERTED_MOOVIELIST_ID =2;
 
     private static final int TO_INSERT_MEDIALIST = 2;
@@ -43,6 +43,14 @@ public class MoovieListHibernateDaoTest {
 
     private static final int TO_INSERT_USER_ID = 5;
     private static final String MOOVIELIST_TABLE = "moovielists";
+    private static final String MOOVIELISTCONTENT_TABLE = "moovielistscontent";
+
+    private static final String MOOVIELIST_NAME = "Namenamename";
+    private static final int MOOVIE_LIST_ID = 1;
+
+    private static final int ID_TO_DELETE = 2;
+
+    private static final int MEDIA_IN_MOOVIE_LIST = 1;
 
     @Before
     public void setup(){
@@ -57,7 +65,50 @@ public class MoovieListHibernateDaoTest {
         Assert.assertEquals(INSERTED_MOOVIELIST_ID,moovieList.get().getMoovieListId());
     }
 
+    /*@Rollback
+    @Test
+    public void testCreateMoovieList() {
+        MoovieList ml = moovieListHibernateDao.createMoovieList(TO_INSERT_USER_ID, MOOVIELIST_NAME, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), "Description");
+        entityManager.flush();
 
+        Assert.assertNotNull(ml);
+        Assert.assertEquals(ml.getName(), MOOVIELIST_NAME);
+        Assert.assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, MOOVIELIST_TABLE, String.format("name = '%s'", MOOVIELIST_NAME)));
+    }*/
+
+    @Rollback
+    @Test
+    public void testGetFeaturedMoovieListContent(){
+        List<Media> m = moovieListHibernateDao.getFeaturedMoovieListContent( MediaTypes.TYPE_ALL.getType(), -1, "tmdbRating", "tmdbRating", "desc", 2, 0 );
+
+        Assert.assertEquals(m.get(0).getMediaId(), 91);
+        Assert.assertEquals(m.get(1).getMediaId(), 247);
+    }
+
+
+    @Rollback
+    @Test
+    public void testDeleteMoovieList(){
+        Assert.assertEquals(2, JdbcTestUtils.countRowsInTable(jdbcTemplate, MOOVIELIST_TABLE));
+
+        moovieListHibernateDao.deleteMoovieList(ID_TO_DELETE);
+
+        entityManager.flush();
+
+        Assert.assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, MOOVIELIST_TABLE));
+    }
+
+    @Rollback
+    @Test
+    public void testDeleteMediaFromMoovieList(){
+        Assert.assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, MOOVIELISTCONTENT_TABLE));
+
+        moovieListHibernateDao.deleteMediaFromMoovieList(MOOVIE_LIST_ID, MEDIA_IN_MOOVIE_LIST);
+
+        entityManager.flush();
+
+        Assert.assertEquals(0, JdbcTestUtils.countRowsInTable(jdbcTemplate, MOOVIELISTCONTENT_TABLE));
+    }
 
 
 }

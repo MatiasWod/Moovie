@@ -93,8 +93,8 @@ public class ModeratorServiceImpl implements ModeratorService{
         else{
             userDao.changeUserRole(userId, UserRoles.BANNED.getRole());
         }
-
-        bannedDao.createBannedMessage(userId, userService.getInfoOfMyUser().getUserId(), message);
+        User currentUser = userService.getInfoOfMyUser();
+        bannedDao.createBannedMessage(userId, currentUser.getUserId(), message, currentUser.getUsername());
         LOGGER.info("Succesfully banned user: {}.", userId);
 
         emailService.sendBannedUserMail(u,userService.getInfoOfMyUser(),message,LocaleContextHolder.getLocale());
