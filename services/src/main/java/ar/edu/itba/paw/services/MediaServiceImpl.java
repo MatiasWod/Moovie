@@ -7,13 +7,10 @@ import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.persistence.MediaDao;
-import com.sun.media.jfxmedia.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.TypedQuery;
 import java.util.List;
 
 
