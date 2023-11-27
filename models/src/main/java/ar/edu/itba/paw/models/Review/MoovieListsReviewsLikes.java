@@ -1,13 +1,12 @@
 package ar.edu.itba.paw.models.Review;
 
-import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.User.User;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "moovielistsreviewslikes")
+@Table(name = "moovielistsreviewslikes",uniqueConstraints = @UniqueConstraint(columnNames = {"moovieListReviewId", "userId"}))
 public class MoovieListsReviewsLikes implements Serializable {
 
     @Id

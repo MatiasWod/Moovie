@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "reviews")
+@Table(name = "reviews",uniqueConstraints = @UniqueConstraint(columnNames = {"userid", "mediaid"}))
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "review_reviewid_seq")

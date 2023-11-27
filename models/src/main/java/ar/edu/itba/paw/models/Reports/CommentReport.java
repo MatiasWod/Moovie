@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "reportscomments")
+@Table(name = "reportscomments", uniqueConstraints = @UniqueConstraint(columnNames = {"commentId", "reportedBy"}))
 public class CommentReport implements Serializable {
 
     @Id

@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Entity
-@Table(name = "moovieListsReviews")
+@Table(name = "moovieListsReviews", uniqueConstraints = @UniqueConstraint(columnNames = {"userId", "moovieListId"}))
 public class MoovieListReview {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "moovielistsreviews_moovielistreviewid_seq")
