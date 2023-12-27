@@ -26,7 +26,7 @@
             </span></c:if></h5>
                 </div>
                 <div class="card-likes">
-                    <h5><i class="bi bi-hand-thumbs-up"></i>${cardList.likeCount}</h5>
+                    <h5><i class="bi bi-hand-thumbs-up"></i><c:out value="${cardList.likeCount}"/></h5>
                 </div>
             </div>
             <div style="display: flex;">
