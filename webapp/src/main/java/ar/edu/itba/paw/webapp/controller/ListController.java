@@ -196,6 +196,7 @@ public class ListController {
             try{
                 mav.addObject("currentUsername", userService.getInfoOfMyUser().getUsername());
             }catch(Exception e){
+                //TODO cambiar el valor que retorna
                 mav.addObject("currentUsername", "?????");
             }
             mav.addObject("pagingSize",pagesSize);
@@ -440,7 +441,7 @@ public class ListController {
     @RequestMapping(value = "/MoovieListReview", method = RequestMethod.POST)
     public ModelAndView createMoovieListReview(@Valid @ModelAttribute("createReviewForm") final CreateReviewForm createReviewForm, final BindingResult errors, RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
-            return list(createReviewForm.getMediaId(),"tmdbRating", "asc", 1, 1,createReviewForm);
+            return list(createReviewForm.getMediaId(),MediaFilters.TMDBRATING.getFilter(), MediaFilters.ASC.getFilter(), 1, 1,createReviewForm);
         }
         try{
             reviewService.createReview(createReviewForm.getMediaId(), createReviewForm.getRating(), createReviewForm.getReviewContent(), ReviewTypes.REVIEW_MOOVIE_LIST);

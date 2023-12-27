@@ -133,7 +133,7 @@ public class MediaController {
         // Name media query
         if (nameMediaCount > 0){
             mav.addObject("nameMediaFlag", true);
-            mav.addObject("nameMedia", mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null, null, null, null, null,"tmdbRating", "desc",resultSizeLimit,0 ));
+            mav.addObject("nameMedia", mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), query, null, null, null, null, null,MediaFilters.TMDBRATING.getFilter(), MediaFilters.DESC.getFilter(),resultSizeLimit,0 ));
         }else{
             mav.addObject("nameMediaFlag",false);
         }
@@ -155,6 +155,7 @@ public class MediaController {
         // Users query
         if (usersCount > 0){
             mav.addObject("usersFlag", true);
+            //TODO Si solo usamos aca el filtro, no se si es necesario el enum
             mav.addObject("usersList", userService.searchUsers(query, "username", "ASC" ,PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),0));
         }else{
             mav.addObject("usersFlag",false);
