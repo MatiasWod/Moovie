@@ -9,8 +9,6 @@ import java.util.Locale;
 import java.util.Map;
 
 public interface EmailService {
-    void sendEmail(String to, String subject, String template, Map<String,Object> variables, Locale locale);
-
     void sendDeletedReviewMail(User user, Media media, Locale locale);
 
     void sendDeletedListMail(User user, MoovieList moovieList, Locale locale);

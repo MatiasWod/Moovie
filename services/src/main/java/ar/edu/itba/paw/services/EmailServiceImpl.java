@@ -34,9 +34,7 @@ public class EmailServiceImpl implements EmailService{
     private static final String ENCODING = StandardCharsets.UTF_8.name();
     private static final String FROM = "no-reply@moovie.com";
 
-    @Async
-    @Override
-    public void sendEmail(String to, String subject, String template, Map<String, Object> variables, Locale locale) {
+    private void sendEmail(String to, String subject, String template, Map<String, Object> variables, Locale locale) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,MULTIPART_MODE,ENCODING);
