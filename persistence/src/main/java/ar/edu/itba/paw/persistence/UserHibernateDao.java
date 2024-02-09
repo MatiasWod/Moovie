@@ -29,7 +29,7 @@ public class UserHibernateDao implements UserDao{
 
     @Override
     public List<User> listAll(int page) {
-        return entityManager.createQuery("SELECT User",User.class).getResultList();
+        return entityManager.createQuery("SELECT u FROM User u",User.class).getResultList();
     }
 
     //Revisar, está mal así

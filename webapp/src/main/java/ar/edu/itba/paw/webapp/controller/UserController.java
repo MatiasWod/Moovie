@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,12 +23,15 @@ public class UserController {
     }
 
     @GET
-    @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response listAll( @QueryParam("page") @DefaultValue("1") final int page){
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listAll(@QueryParam("page") @DefaultValue("1") final int page) {
+//        if (page<DEFAULT_PAGE_INT)
+//            return Response.status(Response.Status.BAD_REQUEST).build();
+
         final List<User> all = userService.listAll(page);
 
-        List<UserDTO> dtoList =  all.stream().map(UserDTO::fromUser).collect(Collectors.toList());
-        return Response.ok(dtoList).build();
+        List<UserDTO> dtoList = all.stream().map(UserDTO::fromUser).collect(Collectors.toList());
+        return Response.ok(new GenericEntity<List<UserDTO>>(dtoList) {}).build();
     }
 
     public void create(){}
