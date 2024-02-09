@@ -27,6 +27,11 @@ public class UserHibernateDao implements UserDao{
 
     private static final int INITIAL_MILKY_POINTS = 0;
 
+    @Override
+    public List<User> listAll(int page) {
+        return entityManager.createQuery("SELECT User",User.class).getResultList();
+    }
+
     //Revisar, está mal así
     @Override
     public User createUser(String username, String email, String password) {

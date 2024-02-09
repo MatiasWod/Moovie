@@ -10,6 +10,9 @@ import java.util.List;
 
 public interface UserService {
 
+    //API
+    List<User> listAll(int page);
+
     //Registration actions
     String createUser(String username, String email, String password);
     User createUserFromUnregistered(String username, String email, String password);

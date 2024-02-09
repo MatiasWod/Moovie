@@ -52,6 +52,11 @@ public class UserServiceImpl implements UserService {
     //REGSITRATION
 
 
+    @Override
+    public List<User> listAll(int page) {
+        return userDao.listAll(page);
+    }
+
     @Transactional
     @Override
     public String createUser(String username, String email, String password){

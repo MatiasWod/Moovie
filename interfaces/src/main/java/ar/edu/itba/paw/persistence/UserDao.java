@@ -9,6 +9,8 @@ import java.util.Optional;
 
 public interface UserDao {
 
+    List<User> listAll(int page);
+
     User createUser(String username, String email, String password);
     User createUserFromUnregistered(String username, String email, String password);
 
