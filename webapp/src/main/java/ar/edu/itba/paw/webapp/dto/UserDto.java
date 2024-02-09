@@ -1,15 +1,15 @@
-package ar.edu.itba.paw.webapp.DTO;
+package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.User.User;
 
-public class UserDTO {
+public class UserDto {
     private String username;
     private String email;
 
     private int role;
 
-    public static UserDTO fromUser(final User user){
-        final UserDTO dto = new UserDTO();
+    public static UserDto fromUser(final User user){
+        final UserDto dto = new UserDto();
 
         dto.username = user.getUsername();
         dto.email = user.getEmail();
