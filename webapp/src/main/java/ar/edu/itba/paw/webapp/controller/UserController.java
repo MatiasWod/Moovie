@@ -2,7 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.UserService;
-import ar.edu.itba.paw.webapp.dto.UserDTO;
+import ar.edu.itba.paw.webapp.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +28,7 @@ public class UserController {
     public Response listAll( @QueryParam("page") @DefaultValue("1") final int page){
         final List<User> all = userService.listAll(page);
 
-        List<UserDTO> dtoList =  all.stream().map(UserDTO::fromUser).collect(Collectors.toList());
+        List<UserDto> dtoList =  all.stream().map(UserDto::fromUser).collect(Collectors.toList());
         return Response.ok(dtoList).build();
     }
 
