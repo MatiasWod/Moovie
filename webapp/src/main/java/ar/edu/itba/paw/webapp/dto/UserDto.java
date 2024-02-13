@@ -2,13 +2,18 @@ package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.User.User;
 
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
+import java.util.List;
+
 public class UserDto {
+
+    private URI self;
     private String username;
     private String email;
-
     private int role;
 
-    public static UserDto fromUser(final User user){
+    public static UserDto fromUser(final User user, final UriInfo uriInfo){
         final UserDto dto = new UserDto();
 
         dto.username = user.getUsername();
@@ -16,6 +21,10 @@ public class UserDto {
         dto.role = user.getRole();
 
         return dto;
+    }
+
+    public static List<UserDto> fromUserList(final List<User> userList, final UriInfo uriInfo){
+        return userList.stream().map(u -> fromUser(u, uriInfo)).collect(java.util.stream.Collectors.toList());
     }
 
     public String getUsername() {

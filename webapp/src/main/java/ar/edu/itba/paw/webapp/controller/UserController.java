@@ -9,13 +9,17 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Path("users")
 @Component
 public class UserController {
 
+    private static int DEFAULT_PAGE_INT = 1;
+
     private final UserService userService;
+
+    @Context
+    private UriInfo uriInfo;
 
     @Autowired
     public UserController(final UserService userService){
@@ -25,15 +29,37 @@ public class UserController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAll(@QueryParam("page") @DefaultValue("1") final int page) {
-//        if (page<DEFAULT_PAGE_INT)
-//            return Response.status(Response.Status.BAD_REQUEST).build();
+        if (page<DEFAULT_PAGE_INT)
+            return Response.status(Response.Status.BAD_REQUEST).build();
 
         final List<User> all = userService.listAll(page);
 
-        List<UserDto> dtoList = all.stream().map(UserDto::fromUser).collect(Collectors.toList());
+        if(all.isEmpty())
+            return Response.status(Response.Status.NOT_FOUND).build();
+
+        List<UserDto> dtoList = UserDto.fromUserList(all, uriInfo);
         return Response.ok(new GenericEntity<List<UserDto>>(dtoList) {}).build();
     }
 
-    public void create(){}
+    @GET
+    @Path("/{id}")
+    public Response findUserById(@PathParam("id") final int id){
+        final User user = userService.findUserById(id);
+        if(user == null)
+            return Response.status(Response.Status.NOT_FOUND).build();
+        return Response.ok(UserDto.fromUser(user, uriInfo)).build();
+    }
+
+    public void create(){
+
+    }
+
+    public void update(){
+
+    }
+
+    public void delete(){
+
+    }
 
 }
