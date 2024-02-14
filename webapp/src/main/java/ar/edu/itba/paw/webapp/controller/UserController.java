@@ -50,6 +50,34 @@ public class UserController {
         return Response.ok(UserDto.fromUser(user, uriInfo)).build();
     }
 
+    @GET
+    @Path("/email/{email}")
+    public Response findUserByEmail(@PathParam("email") final String email){
+        final User user = userService.findUserByEmail(email);
+        if(user == null)
+            return Response.status(Response.Status.NOT_FOUND).build();
+        return Response.ok(UserDto.fromUser(user, uriInfo)).build();
+    }
+
+    @GET
+    @Path("/username/{username}")
+    public Response findUserByUsername(@PathParam("username") final String username){
+        final User user = userService.findUserByUsername(username);
+        if(user == null)
+            return Response.status(Response.Status.NOT_FOUND).build();
+        return Response.ok(UserDto.fromUser(user, uriInfo)).build();
+    }
+
+    @GET
+    @Path("/usersCount")
+    public Response getUserCount(){
+        return Response.ok(userService.getUserCount()).build();
+    }
+
+    //TOFIX buscar un username/id/email invalido da error 500 y no el bad request eso se soluciona con un try-catch y la excepcion correcta(en el service esto)
+    //TODO quedarian los de authenticacion y Profile que no estoy muy seguro si va aparte o incluido en userDto
+
+
     public void create(){
 
     }
