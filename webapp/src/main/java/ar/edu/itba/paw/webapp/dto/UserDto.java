@@ -3,12 +3,10 @@ package ar.edu.itba.paw.webapp.dto;
 import ar.edu.itba.paw.models.User.User;
 
 import javax.ws.rs.core.UriInfo;
-import java.net.URI;
 import java.util.List;
 
 public class UserDto {
 
-    private URI self;
     private String username;
     private String email;
     private int role;
@@ -19,6 +17,7 @@ public class UserDto {
         dto.username = user.getUsername();
         dto.email = user.getEmail();
         dto.role = user.getRole();
+
 
         return dto;
     }

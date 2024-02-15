@@ -1,11 +1,19 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.UserService;
+import ar.edu.itba.paw.services.VerificationTokenService;
+import ar.edu.itba.paw.webapp.dto.ProfileDto;
+import ar.edu.itba.paw.webapp.dto.UserCreateDto;
 import ar.edu.itba.paw.webapp.dto.UserDto;
+import com.sun.org.slf4j.internal.Logger;
+import com.sun.org.slf4j.internal.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
@@ -18,12 +26,17 @@ public class UserController {
 
     private final UserService userService;
 
+    private final VerificationTokenService verificationTokenService;
+
     @Context
     private UriInfo uriInfo;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
+
 
     @Autowired
-    public UserController(final UserService userService){
+    public UserController(final UserService userService, VerificationTokenService verificationTokenService){
         this.userService = userService;
+        this.verificationTokenService = verificationTokenService;
     }
 
     @GET
@@ -74,20 +87,55 @@ public class UserController {
         return Response.ok(userService.getUserCount()).build();
     }
 
-    //TOFIX buscar un username/id/email invalido da error 500 y no el bad request eso se soluciona con un try-catch y la excepcion correcta(en el service esto)
-    //TODO quedarian los de authenticacion y Profile que no estoy muy seguro si va aparte o incluido en userDto
-
-
-    public void create(){
-
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createUser(@Valid final UserCreateDto userCreateDto) {
+        final User user = userService.createUserFromUnregistered(userCreateDto.getUsername(), userCreateDto.getEmail(), userCreateDto.getPassword());
+        return Response.created(uriInfo.getBaseUriBuilder().path("users").path(String.valueOf(user.getUserId())).build()).entity(UserDto.fromUser(user, uriInfo)).build();
     }
 
-    public void update(){
-
+    @POST
+    @Path("/sendVerificationEmail")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response sendVerificationEmail(@Valid final UserCreateDto userCreateDto) {
+//        final User user = userService.findUserByEmail(userCreateDto.getEmail());
+//        if(user == null)
+//            return Response.status(Response.Status.NOT_FOUND).build();
+//
+//        final String token = userService.createUser(userCreateDto.getUsername(), userCreateDto.getEmail(), userCreateDto.getPassword());
+//
+//        userService.resendVerificationEmail(verificationTokenService.getToken(token));
+        return Response.ok().build();
     }
 
-    public void delete(){
-
+    @GET
+    @Path("/profile/{username}")
+    public Response getProfileByUsername(@PathParam("username") final String username){
+        final Profile profile = userService.getProfileByUsername(username);
+        if(profile == null)
+            return Response.status(Response.Status.NOT_FOUND).build();
+        return Response.ok(ProfileDto.fromProfile(profile, uriInfo)).build();
     }
+
+    @GET
+    @Path("/{username}/image")
+    @Produces("image/png")
+    public Response getProfileImage(@PathParam("username") final String username){
+        final byte[] image = userService.getProfilePicture(username);
+        if(image == null)
+            return Response.status(Response.Status.NOT_FOUND).build();
+        return Response.ok(image).build();
+    }
+
+    @PUT
+    @Path("/{username}/image")
+    @Consumes("image/png")
+    public Response setProfileImage(@PathParam("username") final String username, final MultipartFile image){
+        userService.setProfilePicture(image);
+        return Response.ok().build();
+    }
+
 
 }
