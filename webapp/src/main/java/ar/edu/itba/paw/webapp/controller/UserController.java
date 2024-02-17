@@ -26,17 +26,14 @@ public class UserController {
 
     private final UserService userService;
 
-    private final VerificationTokenService verificationTokenService;
-
     @Context
     private UriInfo uriInfo;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ListController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
 
     @Autowired
     public UserController(final UserService userService, VerificationTokenService verificationTokenService){
         this.userService = userService;
-        this.verificationTokenService = verificationTokenService;
     }
 
     @GET
@@ -93,21 +90,6 @@ public class UserController {
     public Response createUser(@Valid final UserCreateDto userCreateDto) {
         final User user = userService.createUserFromUnregistered(userCreateDto.getUsername(), userCreateDto.getEmail(), userCreateDto.getPassword());
         return Response.created(uriInfo.getBaseUriBuilder().path("users").path(String.valueOf(user.getUserId())).build()).entity(UserDto.fromUser(user, uriInfo)).build();
-    }
-
-    @POST
-    @Path("/sendVerificationEmail")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response sendVerificationEmail(@Valid final UserCreateDto userCreateDto) {
-//        final User user = userService.findUserByEmail(userCreateDto.getEmail());
-//        if(user == null)
-//            return Response.status(Response.Status.NOT_FOUND).build();
-//
-//        final String token = userService.createUser(userCreateDto.getUsername(), userCreateDto.getEmail(), userCreateDto.getPassword());
-//
-//        userService.resendVerificationEmail(verificationTokenService.getToken(token));
-        return Response.ok().build();
     }
 
     @GET

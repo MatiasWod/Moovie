@@ -5,7 +5,6 @@ import ar.edu.itba.paw.models.User.Profile;
 import javax.ws.rs.core.UriInfo;
 
 public class ProfileDto {
-    private int userId;
     private String username;
     private String email;
     private int role;
@@ -17,7 +16,6 @@ public class ProfileDto {
     public static ProfileDto fromProfile(final Profile profile, final UriInfo uriInfo){
         final ProfileDto dto = new ProfileDto();
 
-        dto.userId = profile.getUserId();
         dto.username = profile.getUsername();
         dto.email = profile.getEmail();
         dto.role = profile.getRole();
@@ -29,14 +27,6 @@ public class ProfileDto {
         return dto;
     }
 
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -44,6 +34,16 @@ public class ProfileDto {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+
 
 
 }
