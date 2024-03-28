@@ -5,12 +5,13 @@ import reportWebVitals from './reportWebVitals';
 import './App.css';
 import Router from "./router/router"
 import {RouterProvider} from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-      <div className="flex bg-gray-200 min-h-screen text-center justify-center">
+      <div className="bg-gray-200 min-h-screen">
           <RouterProvider router={Router()}/>
       </div>
   </React.StrictMode>
@@ -20,3 +21,5 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+
