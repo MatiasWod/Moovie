@@ -10,7 +10,7 @@ import {RouterProvider} from "react-router-dom";
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-      <div className="App-header">
+      <div className="flex bg-gray-200 min-h-screen text-center justify-center">
           <RouterProvider router={Router()}/>
       </div>
   </React.StrictMode>

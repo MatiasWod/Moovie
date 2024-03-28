@@ -6,6 +6,7 @@ import {
     createBrowserRouter,
 } from "react-router-dom";
 
+import ErrorPage from "../pages/404";
 
 function Router(){
     return(
@@ -13,10 +14,12 @@ function Router(){
         {
             path: "/",
             element: App(),
+            errorElement: <ErrorPage />,
         },
         {
             path: "/login",
             element: Login(),
+            errorElement: <ErrorPage />,
         },
     ])
     )
