@@ -17,5 +17,14 @@ public enum UserRoles {
     public int getRole(){
         return role;
     }
+
+    public static UserRoles getRoleFromInt(int role) {
+        for (UserRoles userRole : UserRoles.values()) {
+            if (userRole.getRole() == role) {
+                return userRole;
+            }
+        }
+        return null;
+    }
 }
 

@@ -7,9 +7,11 @@ import ar.edu.itba.paw.services.VerificationTokenService;
 import ar.edu.itba.paw.webapp.dto.ProfileDto;
 import ar.edu.itba.paw.webapp.dto.UserCreateDto;
 import ar.edu.itba.paw.webapp.dto.UserDto;
+
 import com.sun.org.slf4j.internal.Logger;
 import com.sun.org.slf4j.internal.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,6 +51,14 @@ public class UserController {
 
         List<UserDto> dtoList = UserDto.fromUserList(all, uriInfo);
         return Response.ok(new GenericEntity<List<UserDto>>(dtoList) {}).build();
+    }
+
+
+    // users/authtest
+    @GET
+    @Path("/authtest")
+    public Response authTest(){
+        return Response.ok("Hello authenticated user").build();
     }
 
     @GET
