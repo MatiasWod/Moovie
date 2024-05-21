@@ -198,7 +198,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                             "/deleteMoovieList/**").hasRole("USER")
                     .antMatchers("/deleteList/**", "/deleteReview/**", "/banUser/**", "/unbanUser/**", "/makeUserMod/**",
                             "/deleteUserMoovieListReviewMod/**", "/reports/review/**", "/reports/resolve/**").hasRole("MODERATOR")
-                    .antMatchers("/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/users/*").permitAll()
+                    .antMatchers(HttpMethod.GET, "/**").permitAll()
                 .and()
                     .cors()
                 .and()
