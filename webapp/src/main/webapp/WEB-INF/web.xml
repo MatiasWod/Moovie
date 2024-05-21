@@ -19,23 +19,56 @@
 <!--  </servlet-mapping>-->
 
 <!--  JERSEY-->
-  <filter>
-    <filter-name>jersey</filter-name>
-    <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
+<!--  <filter>-->
+<!--    <filter-name>jersey</filter-name>-->
+<!--    <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>-->
+<!--    <init-param>-->
+<!--      <param-name>jersey.config.server.provider.packages</param-name>-->
+<!--      <param-value>ar.edu.itba.paw.webapp.controller</param-value>-->
+<!--    </init-param>-->
+<!--    &lt;!&ndash; pass to next filter if Jersey/App returns 404 &ndash;&gt;-->
+<!--    <init-param>-->
+<!--      <param-name>jersey.config.servlet.filter.forwardOn404</param-name>-->
+<!--      <param-value>true</param-value>-->
+<!--    </init-param>-->
+<!--  </filter>-->
+<!--  <filter-mapping>-->
+<!--    <filter-name>jersey</filter-name>-->
+<!--    <url-pattern>/*</url-pattern>-->
+<!--  </filter-mapping>-->
+
+  <servlet>
+    <servlet-name>jersey-servlet</servlet-name>
+    <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+
     <init-param>
       <param-name>jersey.config.server.provider.packages</param-name>
-      <param-value>ar.edu.itba.paw.webapp.controller</param-value>
+      <param-value>
+        ar.edu.itba.paw.webapp.config,
+        ar.edu.itba.paw.webapp.controller,
+        ar.edu.itba.paw.webapp.exceptionMappers
+      </param-value>
     </init-param>
-    <!-- pass to next filter if Jersey/App returns 404 -->
+
+    <!--https://stackoverflow.com/questions/30653012/multipart-form-data-no-injection-source-found-for-a-parameter-of-type-public-ja-->
     <init-param>
-      <param-name>jersey.config.servlet.filter.forwardOn404</param-name>
+      <param-name>jersey.config.server.provider.classnames</param-name>
+      <param-value>org.glassfish.jersey.media.multipart.MultiPartFeature</param-value>
+    </init-param>
+
+    <!--  Don't send HTML on error https://stackoverflow.com/questions/25420697/jersey-2-exception-handing -->
+    <init-param>
+      <param-name>jersey.config.server.response.setStatusOverSendError</param-name>
       <param-value>true</param-value>
     </init-param>
-  </filter>
-  <filter-mapping>
-    <filter-name>jersey</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
+
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>jersey-servlet</servlet-name>
+    <url-pattern>/api/*</url-pattern>
+  </servlet-mapping>
 <!--  -->
 
 <!--  <servlet-mapping>-->

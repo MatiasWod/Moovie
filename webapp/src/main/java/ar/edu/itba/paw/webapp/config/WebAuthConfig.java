@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -185,9 +186,10 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     .headers().cacheControl().disable()
                 .and()
                     .authorizeRequests()
-                    .antMatchers("/login", "/register").anonymous()
+                .accessDecisionManager(accessDecisionManager())
+                    .antMatchers(HttpMethod.GET, "/login", "/register").anonymous()
 
-                    .antMatchers("/users/authtest").hasRole(UserRoles.MODERATOR.name())
+                    .antMatchers(HttpMethod.GET,"/users/authtest").hasRole(UserRoles.MODERATOR.name())
 
                     .antMatchers("/createreview", "/uploadProfilePicture", "/createrating", "/insertMediaToList", "/like", "/createlist",
                             "/profile/**", "/createListAction", "/deleteMediaFromList", "/likeReview", "/unlikeReview", "/editList/**",
