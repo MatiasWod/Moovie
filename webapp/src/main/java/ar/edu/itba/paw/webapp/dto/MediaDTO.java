@@ -46,6 +46,8 @@ public class MediaDTO {
 
     private boolean watchlist;
 
+    private String url;
+
     public static MediaDTO fromMedia(Media media, UriInfo uriInfo) {
         MediaDTO mediaDTO = new MediaDTO();
         mediaDTO.mediaId = media.getMediaId();
@@ -63,6 +65,8 @@ public class MediaDTO {
         mediaDTO.providers.addAll(media.getProviders());
         mediaDTO.watched = media.isWatched();
         mediaDTO.watchlist = media.isWatchlist();
+
+        mediaDTO.url = uriInfo.getBaseUriBuilder().path("media/{mediaId}").build(media.getMediaId()).toString();
         return mediaDTO;
     }
 
@@ -212,5 +216,13 @@ public class MediaDTO {
 
     public void setWatchlist(boolean watchlist) {
         this.watchlist = watchlist;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

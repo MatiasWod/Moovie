@@ -11,7 +11,7 @@ public class UserDto {
     private String email;
     private int role;
 
-    private UriInfo uriInfo;
+    private String url;
 
     public static UserDto fromUser(final User user, final UriInfo uriInfo) {
         final UserDto dto = new UserDto();
@@ -19,7 +19,7 @@ public class UserDto {
         dto.username = user.getUsername();
         dto.email = user.getEmail();
         dto.role = user.getRole();
-        dto.uriInfo = uriInfo;
+        dto.url = uriInfo.getBaseUriBuilder().path("/users/{username}").build(user.getUsername()).toString();
 
         return dto;
     }
@@ -50,5 +50,13 @@ public class UserDto {
 
     public void setRole(int role) {
         this.role = role;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }
