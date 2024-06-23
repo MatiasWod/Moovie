@@ -37,6 +37,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 throw new UsernameNotFoundException("User role not found for role value: " + user.getRole());
             }
 
+//            HAY que agregar el ROLE_ porque el antMatcher en WebAuthConfig precede los roles con ROLE_
             authorities.add(new SimpleGrantedAuthority("ROLE_" + userRole.name()));
 
             boolean enabled = user.getRole() != UserRoles.BANNED.getRole();

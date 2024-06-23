@@ -11,18 +11,20 @@ public class UserDto {
     private String email;
     private int role;
 
-    public static UserDto fromUser(final User user, final UriInfo uriInfo){
+    private UriInfo uriInfo;
+
+    public static UserDto fromUser(final User user, final UriInfo uriInfo) {
         final UserDto dto = new UserDto();
 
         dto.username = user.getUsername();
         dto.email = user.getEmail();
         dto.role = user.getRole();
-
+        dto.uriInfo = uriInfo;
 
         return dto;
     }
 
-    public static List<UserDto> fromUserList(final List<User> userList, final UriInfo uriInfo){
+    public static List<UserDto> fromUserList(final List<User> userList, final UriInfo uriInfo) {
         return userList.stream().map(u -> fromUser(u, uriInfo)).collect(java.util.stream.Collectors.toList());
     }
 
