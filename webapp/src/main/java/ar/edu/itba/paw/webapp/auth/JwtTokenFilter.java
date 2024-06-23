@@ -82,7 +82,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         LOGGER.debug("Security context updated with authentication for user: {}", userDetails.getUsername());
 
         response.setHeader(HttpHeaders.AUTHORIZATION, header);
-        LOGGER.debug("Authorization header set on response");
+        LOGGER.debug("Authorization header set on response: {}", userDetails.getAuthorities());
 
         filterChain.doFilter(request, response);
         LOGGER.debug("Request processing completed for {}", request.getRequestURI());

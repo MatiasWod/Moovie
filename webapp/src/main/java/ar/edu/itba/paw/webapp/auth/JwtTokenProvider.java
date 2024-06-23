@@ -80,7 +80,7 @@ public class JwtTokenProvider {
 //        TODO: parece ser que el error viene del UserRoles y el claim. POR MAS que se genera correctamente el token, y luego se parsea en el Filter. El Filter dice que no esta enabled! hay que ver que onda eso.
         String token = Jwts.builder()
                 .setSubject(user.getUsername())
-                .claim("authorization", UserRoles.getRoleFromInt(user.getRole()))
+                .claim("authorization", UserRoles.getRoleFromInt(user.getRole()).name())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRY_TIME))
                 .signWith(jwtKey)

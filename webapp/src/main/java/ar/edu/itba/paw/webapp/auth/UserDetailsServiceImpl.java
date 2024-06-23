@@ -1,10 +1,8 @@
 package ar.edu.itba.paw.webapp.auth;
 
 
-
 import ar.edu.itba.paw.models.User.UserRoles;
 import ar.edu.itba.paw.services.UserService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -39,9 +37,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 throw new UsernameNotFoundException("User role not found for role value: " + user.getRole());
             }
 
-            authorities.add(new SimpleGrantedAuthority(userRole.name()));
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + userRole.name()));
 
-            boolean enabled = user.getRole() == UserRoles.UNREGISTERED.getRole();
+            boolean enabled = user.getRole() != UserRoles.BANNED.getRole();
             boolean accountNonLocked = user.getRole() > UserRoles.NOT_AUTHENTICATED.getRole();
 
             return new User(username, user.getPassword(), enabled, ACCOUNT_NON_EXPIRED, CREDENTIALS_NON_EXPIRED, accountNonLocked, authorities);

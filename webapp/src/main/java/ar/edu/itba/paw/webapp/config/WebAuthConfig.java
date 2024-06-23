@@ -187,7 +187,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .accessDecisionManager(accessDecisionManager())
                 .antMatchers(HttpMethod.GET, "/login", "/register").anonymous()
 
-                .antMatchers(HttpMethod.GET, "/users/authtest").hasRole(UserRoles.MODERATOR.name())
+                .antMatchers(HttpMethod.GET, "/users/authtest").hasRole(UserRoles.USER.name())
 
                 .antMatchers("/createreview", "/uploadProfilePicture", "/createrating", "/insertMediaToList", "/like", "/createlist",
                         "/profile/**", "/createListAction", "/deleteMediaFromList", "/likeReview", "/unlikeReview", "/editList/**",
