@@ -15,6 +15,7 @@ public class UserCreateDto {
     @NotNull
     @Email
     private String email;
+//    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")
 
     @NotNull
     @Size(min = 8, max = 100)
@@ -32,8 +33,8 @@ public class UserCreateDto {
         return email;
     }
 
-    public void setEmail() {
-        this.email= email;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

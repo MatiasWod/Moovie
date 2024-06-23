@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.webapp.config;
 
-import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.User.UserRoles;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.auth.*;
@@ -37,16 +36,13 @@ import org.springframework.security.web.access.expression.DefaultWebSecurityExpr
 import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.util.FileCopyUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @ComponentScan("ar.edu.itba.paw.webapp.auth")
 @EnableWebSecurity
@@ -82,13 +78,13 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 // Account wasnt verified
                 int uid = userService.findUserByUsername(request.getParameter("username")).getUserId();
                 response.sendRedirect(contextPath + "/bannedMessage/" + uid);
-            }else if(exception instanceof UsernameNotFoundException) {
+            } else if (exception instanceof UsernameNotFoundException) {
                 // User not found
                 response.sendRedirect(contextPath + "/login?error=unknown_user");
             } else if (exception instanceof BadCredentialsException) {
                 // Wrong password
                 response.sendRedirect(contextPath + "/login?error=bad_credentials");
-            }else {
+            } else {
                 response.sendRedirect(contextPath + "/login?error=unknown_error");
             }
         }
@@ -127,17 +123,19 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         return new UnanimousBased(decisionVoters);
     }
 
-    @Override @Bean
+    @Override
+    @Bean
     public AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
     }
+
     @Bean
     public JwtTokenProvider jwtTokenProvider(@Value("classpath:jwt.key") Resource jwtKeyResource) throws IOException {
         return new JwtTokenProvider(jwtKeyResource);
     }
 
     @Bean
-    public AuthenticationEntryPoint authenticationEntryPoint () {
+    public AuthenticationEntryPoint authenticationEntryPoint() {
         return new UnauthorizedRequestHandler();
     }
 
@@ -177,33 +175,34 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 //                .and().exceptionHandling()
 //                    .accessDeniedPage("/403")
 //                .and().csrf().disable();
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                    .exceptionHandling()
-                    .authenticationEntryPoint(new UnauthorizedRequestHandler())
-                    .accessDeniedHandler(new ForbiddenRequestHandler())
+                .exceptionHandling()
+                .authenticationEntryPoint(new UnauthorizedRequestHandler())
+                .accessDeniedHandler(new ForbiddenRequestHandler())
                 .and()
-                    .headers().cacheControl().disable()
+                .headers().cacheControl().disable()
                 .and()
-                    .authorizeRequests()
+                .authorizeRequests()
                 .accessDecisionManager(accessDecisionManager())
-                    .antMatchers(HttpMethod.GET, "/login", "/register").anonymous()
+                .antMatchers(HttpMethod.GET, "/login", "/register").anonymous()
 
-                    .antMatchers(HttpMethod.GET,"/users/authtest").hasRole(UserRoles.MODERATOR.name())
+                .antMatchers(HttpMethod.GET, "/users/authtest").hasRole(UserRoles.MODERATOR.name())
 
-                    .antMatchers("/createreview", "/uploadProfilePicture", "/createrating", "/insertMediaToList", "/like", "/createlist",
-                            "/profile/**", "/createListAction", "/deleteMediaFromList", "/likeReview", "/unlikeReview", "/editList/**",
-                            "/updateMoovieListOrder/**", "/followList", "/likeMoovieListReview", "/unlikeMoovieListReview",
-                            "/MoovieListReview", "/likeComment", "/dislikeComment", "/createcomment", "/reports/new", "/deleteUserReview/**",
-                            "/deleteMoovieList/**").hasRole("USER")
-                    .antMatchers("/deleteList/**", "/deleteReview/**", "/banUser/**", "/unbanUser/**", "/makeUserMod/**",
-                            "/deleteUserMoovieListReviewMod/**", "/reports/review/**", "/reports/resolve/**").hasRole("MODERATOR")
+                .antMatchers("/createreview", "/uploadProfilePicture", "/createrating", "/insertMediaToList", "/like", "/createlist",
+                        "/profile/**", "/createListAction", "/deleteMediaFromList", "/likeReview", "/unlikeReview", "/editList/**",
+                        "/updateMoovieListOrder/**", "/followList", "/likeMoovieListReview", "/unlikeMoovieListReview",
+                        "/MoovieListReview", "/likeComment", "/dislikeComment", "/createcomment", "/reports/new", "/deleteUserReview/**",
+                        "/deleteMoovieList/**").hasRole("USER")
+                .antMatchers("/deleteList/**", "/deleteReview/**", "/banUser/**", "/unbanUser/**", "/makeUserMod/**",
+                        "/deleteUserMoovieListReviewMod/**", "/reports/review/**", "/reports/resolve/**").hasRole("MODERATOR")
                 .antMatchers(HttpMethod.GET, "/users/*").permitAll()
-                    .antMatchers(HttpMethod.GET, "/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/users").permitAll()
                 .and()
-                    .cors()
+                .cors()
                 .and()
-                    .csrf().disable()
+                .csrf().disable()
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(basicAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
@@ -211,11 +210,11 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(final WebSecurity web) throws Exception {
         web.ignoring()
-                .antMatchers("/css/**",	"/js/**",	"/img/**");
+                .antMatchers("/css/**", "/js/**", "/img/**");
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
