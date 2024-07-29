@@ -3,8 +3,9 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.services.VerificationTokenService;
 import ar.edu.itba.paw.webapp.dto.UserCreateDto;
-import com.sun.org.slf4j.internal.Logger;
-import com.sun.org.slf4j.internal.LoggerFactory;
+//TODO CHECK LOGGERS
+//import com.sun.org.slf4j.internal.Logger;
+//import com.sun.org.slf4j.internal.LoggerFactory;
 
 
 import javax.validation.Valid;
@@ -21,7 +22,7 @@ public class TokenController {
 
     private final VerificationTokenService verificationTokenService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TokenController.class);
+    //private static final Logger LOGGER = LoggerFactory.getLogger(TokenController.class);
 
     public TokenController(UserService userService, VerificationTokenService verificationTokenService) {
         this.userService = userService;

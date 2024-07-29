@@ -33,6 +33,7 @@
     <org.hibernate.jpa.version>1.0.0.Final</org.hibernate.jpa.version>
 <!--JERSEY-->
     <jersey.version>3.0-SNAPSHOT</jersey.version>
+    <frontend.plugin.version>1.12.1</frontend.plugin.version>
   </properties>
 
   <modules>
@@ -41,6 +42,7 @@
     <module>interfaces</module>
     <module>persistence</module>
     <module>services</module>
+    <module>frontend</module>
   </modules>
 
 
@@ -319,6 +321,11 @@
           <configuration>
             <packagingExcludes>WEB-INF/classes/logback-test.xml</packagingExcludes>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>com.github.eirslett</groupId>
+          <artifactId>frontend-maven-plugin</artifactId>
+          <version>${frontend.plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
