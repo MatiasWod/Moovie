@@ -100,7 +100,11 @@ public class UserController {
     @GET
     @Path("/usersCount")
     public Response getUserCount() {
-        return Response.ok(userService.getUserCount()).build();
+        try{
+            return Response.ok(userService.getUserCount()).build();
+        }catch(Exception e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @POST
