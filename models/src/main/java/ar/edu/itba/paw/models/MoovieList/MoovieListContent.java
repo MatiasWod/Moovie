@@ -28,7 +28,8 @@ public class MoovieListContent implements Serializable {
     @Transient
     private boolean watched;
 
-    MoovieListContent(){}
+    public MoovieListContent(){}
+
 
     public MoovieListContent(MoovieList moovieList, int mediaId, int customOrder, boolean watched) {
         this.moovieList = moovieList;

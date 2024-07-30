@@ -20,4 +20,6 @@ public class MoovieListDetails {
     public List<Media> getContent() {
         return content;
     }
+
+
 }
