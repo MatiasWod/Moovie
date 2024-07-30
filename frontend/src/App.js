@@ -3,9 +3,13 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import React, {Suspense,lazy} from "react";
 import Loader from "./pages/Loader";
 
-const Login = lazy(() => import('./pages/login'));;
-const Healthcheck = lazy(() => import('./pages/healthcheck'));
-const Error404 = lazy(() => import('./pages/views/errorViews/error404'));
+const views = './pages/views'
+
+
+const Home = lazy(() => import(views + '/home'));
+const Login = lazy(() => import(views + '/login'));
+const Healthcheck = lazy(() => import(views + '/healthcheck'));
+const Error404 = lazy(() => import(views + '/errorViews/error404'));
 
 export default function App() {
     const helmetContext = {};
@@ -15,6 +19,7 @@ export default function App() {
               <BrowserRouter>
                   <Suspense fallback={<Loader/>}>
                       <Routes>
+                        <Route path='/' element={<Home/>}/>
                         <Route path='/login' element={<Login/>}/>
                         <Route path='/healthcheck' element={<Healthcheck/>}/>
                         <Route path='*' element={<Error404/>}/>
