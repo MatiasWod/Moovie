@@ -1,0 +1,6 @@
+{
+  "error404_title": "Error 404",
+  "error404_message": "Error 404",
+  "error404_description": "The resource requested isn't available",
+  "error404_call_to_action": "Go back"
+}
