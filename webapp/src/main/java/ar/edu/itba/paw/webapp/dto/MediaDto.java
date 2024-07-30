@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class MediaDTO {
+public class MediaDto {
 
-    private int mediaId;
+    private int id;
 
     private boolean type;
 
@@ -48,9 +48,10 @@ public class MediaDTO {
 
     private String url;
 
-    public static MediaDTO fromMedia(Media media, UriInfo uriInfo) {
-        MediaDTO mediaDTO = new MediaDTO();
-        mediaDTO.mediaId = media.getMediaId();
+    public static MediaDto fromMedia(Media media, UriInfo uriInfo) {
+        MediaDto mediaDTO = new MediaDto();
+        mediaDTO.name = media.getName();
+        mediaDTO.id = media.getMediaId();
         mediaDTO.voteCount = media.getVoteCount();
         mediaDTO.adult = media.isAdult();
         mediaDTO.releaseDate = media.getReleaseDate();
@@ -62,7 +63,7 @@ public class MediaDTO {
         mediaDTO.status = media.getStatus();
         mediaDTO.totalRating = media.getTotalRating();
         mediaDTO.genres.addAll(media.getGenres());
-        mediaDTO.providers.addAll(media.getProviders());
+        mediaDTO.providers.addAll(media.getProviders()); //TODO FIX THIS
         mediaDTO.watched = media.isWatched();
         mediaDTO.watchlist = media.isWatchlist();
 
@@ -70,16 +71,16 @@ public class MediaDTO {
         return mediaDTO;
     }
 
-    public static List<MediaDTO> fromMediaList(List<Media> mediaList, UriInfo uriInfo) {
+    public static List<MediaDto> fromMediaList(List<Media> mediaList, UriInfo uriInfo) {
         return mediaList.stream().map(m -> fromMedia(m, uriInfo)).collect(java.util.stream.Collectors.toList());
     }
 
-    public int getMediaId() {
-        return mediaId;
+    public int getId() {
+        return id;
     }
 
-    public void setMediaId(int mediaId) {
-        this.mediaId = mediaId;
+    public void setId(int mediaId) {
+        this.id = mediaId;
     }
 
     public boolean isType() {

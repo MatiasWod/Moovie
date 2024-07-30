@@ -56,7 +56,7 @@ public class MoovieListReview {
     private List<MoovieListReviewReport> reports;
 
     //hibernate
-    MoovieListReview() {
+    public MoovieListReview() {
     }
 
     public MoovieListReview(User user, int moovieListId, String reviewContent) {
@@ -200,6 +200,12 @@ public class MoovieListReview {
         this.user = user;
     }
 
+    public String getMoovieListImages(){
+        return moovieListImages;
+    }
+
+    /*
+    COMMENTED BECAUSE IT FAILED TRANSACTIONS
     public List<String> getMoovieListImages() {
         List<String> toRet = new ArrayList<>();
         if(this.moovieListImages!=null){
@@ -213,6 +219,8 @@ public class MoovieListReview {
         }
         return toRet;
     }
+    */
+
 
     public String getMoovieListTitle() {
         return moovieListTitle;
