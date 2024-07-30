@@ -5,7 +5,7 @@ import Loader from "./pages/Loader";
 
 const Login = lazy(() => import('./pages/login'));;
 const Healthcheck = lazy(() => import('./pages/healthcheck'));
-const Error404 = lazy(() => import('./pages/error404'));
+const Error404 = lazy(() => import('./pages/views/errorViews/error404'));
 
 export default function App() {
     const helmetContext = {};
