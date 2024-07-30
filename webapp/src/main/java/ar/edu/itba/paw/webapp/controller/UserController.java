@@ -152,10 +152,15 @@ public class UserController {
     @GET
     @Path("/profile/{username}")
     public Response getProfileByUsername(@PathParam("username") final String username) {
-        final Profile profile = userService.getProfileByUsername(username);
-        if (profile == null)
-            return Response.status(Response.Status.NOT_FOUND).build();
-        return Response.ok(ProfileDto.fromProfile(profile, uriInfo)).build();
+        try{
+            final Profile profile = userService.getProfileByUsername(username);
+            if (profile == null)
+                return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.ok(ProfileDto.fromProfile(profile, uriInfo)).build();
+        } catch(RuntimeException e){
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+
     }
 
     @GET

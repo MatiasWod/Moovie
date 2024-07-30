@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
+import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListContent;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 
@@ -25,13 +26,15 @@ public class MoovieListDto {
 
     private int followers;
 
-    private List<MoovieListContent> content;
+    private int mediaCount;
 
     private List<MoovieListReview> reviews;
 
+    private List<String> images;
+
     private String url;
 
-    public static MoovieListDto fromMoovieList(MoovieList moovieList, UriInfo uriInfo) {
+    public static MoovieListDto fromMoovieList(MoovieListCard moovieList, UriInfo uriInfo) {
         MoovieListDto dto = new MoovieListDto();
         dto.name = moovieList.getName();
         dto.id = moovieList.getMoovieListId();
@@ -39,10 +42,10 @@ public class MoovieListDto {
         dto.name = moovieList.getName();
         dto.description = moovieList.getDescription();
         dto.type = moovieList.getType();
-        dto.likes = 0; //TODO correct this and followers
-        dto.followers = 0;
-        dto.content =  null;
-        dto.reviews = null;
+        dto.likes = moovieList.getLikeCount();
+        dto.followers = moovieList.getFollowerCount();
+        dto.mediaCount =  moovieList.getMoviesAmount();
+        dto.images =  moovieList.getImages();
         dto.url = uriInfo.getBaseUriBuilder().path("list/{mediaId}").build(moovieList.getMoovieListId()).toString();
         return dto;
     }
@@ -103,12 +106,12 @@ public class MoovieListDto {
         this.followers = followers;
     }
 
-    public List<MoovieListContent> getContent() {
-        return content;
+    public int getMediaCount() {
+        return mediaCount;
     }
 
-    public void setContent(List<MoovieListContent> content) {
-        this.content = content;
+    public void setMediaCount(int mediaCount) {
+        this.mediaCount = mediaCount;
     }
 
     public List<MoovieListReview> getReviews() {
@@ -125,5 +128,13 @@ public class MoovieListDto {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
     }
 }
