@@ -1,6 +1,14 @@
 {
+  "error403_title": "Error 403",
+  "error403_message": "Error 403",
+  "error403_description": "No puedes acceder a esta página (permisos insuficientes)",
+  "error403_call_to_action": "Volver",
   "error404_title": "Error 404",
   "error404_message": "Error 404",
   "error404_description": "El recurso solicitado no está disponible",
-  "error404_call_to_action": "Volver"
+  "error404_call_to_action": "Volver",
+  "error500_title": "Error 500",
+  "error500_message": "Error 500",
+  "error500_description": "No puedes acceder a esta página (permisos insuficientes)",
+  "error500_call_to_action": "Volver"
 }
