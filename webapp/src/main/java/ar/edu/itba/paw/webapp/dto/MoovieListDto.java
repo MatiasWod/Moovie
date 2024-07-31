@@ -34,6 +34,8 @@ public class MoovieListDto {
 
     private String url;
 
+    private String contentUrl;
+
     public static MoovieListDto fromMoovieList(MoovieListCard moovieList, UriInfo uriInfo) {
         MoovieListDto dto = new MoovieListDto();
         dto.name = moovieList.getName();
@@ -47,6 +49,7 @@ public class MoovieListDto {
         dto.mediaCount =  moovieList.getMoviesAmount();
         dto.images =  moovieList.getImages();
         dto.url = uriInfo.getBaseUriBuilder().path("list/{mediaId}").build(moovieList.getMoovieListId()).toString();
+        dto.contentUrl = uriInfo.getBaseUriBuilder().path("list/{mediaId}/content").build(moovieList.getMoovieListId()).toString();
         return dto;
     }
 
@@ -136,5 +139,13 @@ public class MoovieListDto {
 
     public void setImages(List<String> images) {
         this.images = images;
+    }
+
+    public String getContentUrl() {
+        return contentUrl;
+    }
+
+    public void setContentUrl(String contentUrl) {
+        this.contentUrl = contentUrl;
     }
 }

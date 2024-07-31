@@ -20,8 +20,6 @@ public class MoovieListController {
 
     private final MoovieListService moovieListService;
 
-    private final int PAGE_SIZE = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
-
     @Context
     UriInfo uriInfo;
 
@@ -43,14 +41,20 @@ public class MoovieListController {
 
     //We have a separate endpoint for content to be able to use filters and no need to do it every time we want to find a list
     @GET
-    @Path("/{id}/media")
+    @Path("/{id}/content")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMoovieListMedia(@PathParam("id") final int id,
                                        @QueryParam("orderBy") @DefaultValue("customOrder") final String orderBy,
                                        @QueryParam("sortOrder") @DefaultValue("DESC") final String sortOrder,
-                                       @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber){
+                                       @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber,
+                                       @QueryParam("pageSize") @DefaultValue("-1") final int pageSize){
         try{
-            List<Media> mediaList = moovieListService.getMoovieListContent(id, orderBy, sortOrder, PAGE_SIZE, pageNumber);
+            int pageSizeQuery = pageSize;
+            if( pageSize < 1 || pageSize > PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize() ){
+                pageSizeQuery = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
+            }
+
+            List<Media> mediaList = moovieListService.getMoovieListContent(id, orderBy, sortOrder, pageSizeQuery, pageNumber);
             List<MediaDto> mediaDtoList = MediaDto.fromMediaList(mediaList, uriInfo);
             return Response.ok(new GenericEntity<List<MediaDto>>(mediaDtoList) {
             }).build();

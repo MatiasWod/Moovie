@@ -9,7 +9,7 @@ const mediaApi = (()=> {
                     'type': type,
                     'orderBy': orderBy,
                     'sortOrder': sortOrder,
-                    'page': page,
+                    'pageNumber': page,
                     'pageSize': pageSize
                 }
             });

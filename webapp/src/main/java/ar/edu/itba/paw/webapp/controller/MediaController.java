@@ -32,7 +32,7 @@ public class MediaController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMedia(@QueryParam("type") @DefaultValue("-1") final int type,
-                             @QueryParam("page") @DefaultValue("1") final int page,
+                             @QueryParam("pageNumber") @DefaultValue("1") final int page,
                              @QueryParam("pageSize") @DefaultValue("-1") final int pageSize,
                              @QueryParam("orderBy") final String orderBy,
                              @QueryParam("sortOrder") final String sortOrder) {
@@ -40,9 +40,10 @@ public class MediaController {
                 List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber*/
         try {
             int typeQuery = MediaTypes.TYPE_ALL.getType();
-            if(type!=-1){
+            if(type==MediaTypes.TYPE_MOVIE.getType() || type==MediaTypes.TYPE_TVSERIE.getType()){
                 typeQuery = type;
             }
+
             int pageSizeQuery = pageSize;
             if(pageSize<1 || pageSize>PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize()){
                 pageSizeQuery = PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize();
