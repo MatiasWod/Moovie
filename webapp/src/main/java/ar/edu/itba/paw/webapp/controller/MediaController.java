@@ -32,14 +32,16 @@ public class MediaController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMedia(@QueryParam("page") @DefaultValue("1") final int page,
-                            @QueryParam("pageSize") @DefaultValue("-1") final int pageSize) {
+                             @QueryParam("pageSize") @DefaultValue("-1") final int pageSize,
+                             @QueryParam("orderBy") final String orderBy,
+                             @QueryParam("sortOrder") final String sortOrder) {
         try {
             int pageSizeQuery = pageSize;
             if(pageSize<1 || pageSize>PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize()){
                 pageSizeQuery = PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize();
             }
             List<Media> mediaList = mediaService.getMedia(MediaTypes.TYPE_ALL.getType(), null, null,
-                    null, null, null, null, MediaFilters.TMDBRATING.getFilter(), MediaFilters.DESC.getFilter(), pageSizeQuery, page - 1);
+                    null, null, null, null, sortOrder, orderBy, pageSizeQuery, page - 1);
 
             List<MediaDto> mediaDtoList = MediaDto.fromMediaList(mediaList, uriInfo);
             return Response.ok(new GenericEntity<List<MediaDto>>(mediaDtoList) {

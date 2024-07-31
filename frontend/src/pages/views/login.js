@@ -1,6 +1,6 @@
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import Navbar from "../components/navbar";
+import Navbar from "../components/navBar/navbar";
 
 function Login(){
     return(

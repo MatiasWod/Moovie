@@ -5,7 +5,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from "react-bootstrap/Form";
 import {Col, Image, InputGroup, Row} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
-import Logo from '../../images/logo.png';
+import Logo from '../../../images/logo.png';
 import NavbarStyle from './navbarStyle.css';
 
 function navbar() {

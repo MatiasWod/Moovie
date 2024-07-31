@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import {Helmet} from "react-helmet-async";
-import Navbar from "../../components/navbar";
+import Navbar from "../../components/navBar/navbar";
 import mainStyle from "../../components/mainStyle.css";
 
 export default function Error404() {

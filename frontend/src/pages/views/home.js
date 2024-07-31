@@ -1,13 +1,15 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import mediaApi from '../../api/MediaApi'; // Adjust the path if needed
-import MediaCard from '../components/mediaCard';
-import Navbar from "../components/navbar";
+import Navbar from "../components/navBar/navbar";
 import mainStyle from "../components/mainStyle.css";
+import Loader from "../Loader";
+import MediaCard from "../components/mediaCard/MediaCard";
+import CardsHorizontalContainer from "../components/cardsHorizontalContainer/CardsHorizontalContainer";
 
 function Home() {
     const [topRatedMedia, setTopRatedMedia] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [topRatedMediaLoading, setTopRatedMediaLoading] = useState(true);
+    const [topRatedMediaError, setTopRatedMediaError] = useState(null);
 
     useEffect(() => {
         const fetchMedia = async () => {
@@ -15,35 +17,29 @@ function Home() {
                 const response = await mediaApi.getMedia({ page: 1, pageSize: 5 });
                 setTopRatedMedia(response.data);
             } catch (err) {
-                setError(err);
+                setTopRatedMediaError(err);
             } finally {
-                setLoading(false);
+                setTopRatedMediaLoading(false);
             }
         };
 
         fetchMedia();
     }, []);
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error.message}</div>;
+
+
 
     return (
         <main>
-        <Navbar/>
+            <Navbar/>
+            <div>Sumérgete en Películas y Series,
+                Descubre tu Próxima Experiencia Favorita.</div>
             <div>Home Page of Moovie, Welcome!</div>
             <div>
                 <div>Top Rating by IMDB</div>
-                <div className="cards-container">
-                    {topRatedMedia.map((movie) => (
-                        <MediaCard
-                            key={movie.id}
-                            releaseDate={movie.releaseDate}
-                            posterPath={movie.posterPath}
-                            mediaName={movie.name}
-                        />
-                    ))}
-                </div>
+                <CardsHorizontalContainer mediaList={topRatedMedia} loading={topRatedMediaLoading} error={topRatedMediaError}/>
             </div>
+
         </main>
     );
 }
