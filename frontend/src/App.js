@@ -2,29 +2,30 @@ import {HelmetProvider} from "react-helmet-async";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import React, {Suspense,lazy} from "react";
 import Loader from "./pages/Loader";
-const views = './pages/views'
-
+const views = './pages/views';
 
 const Home = lazy(() => import(views + '/home'));
 const Login = lazy(() => import(views + '/login'));
 const Healthcheck = lazy(() => import(views + '/healthcheck'));
 const Error404 = lazy(() => import(views + '/errorViews/error404'));
+const AuthTest = lazy(() => import(views + '/AuthTest')); // Import AuthTest
 
 export default function App() {
     const helmetContext = {};
 
-      return (
-          <HelmetProvider context={helmetContext}>
-              <BrowserRouter>
-                  <Suspense fallback={<Loader/>}>
-                      <Routes>
-                         <Route path='/' element={<Home/>}/>
+    return (
+        <HelmetProvider context={helmetContext}>
+            <BrowserRouter>
+                <Suspense fallback={<Loader/>}>
+                    <Routes>
+                        <Route path='/' element={<Home/>}/>
                         <Route path='/login' element={<Login/>}/>
                         <Route path='/healthcheck' element={<Healthcheck/>}/>
+                        <Route path='/authtest' element={<AuthTest/>}/> {/* Add AuthTest route */}
                         <Route path='*' element={<Error404/>}/>
-                      </Routes>
-                  </Suspense>
-              </BrowserRouter>
-          </HelmetProvider>
-      );
+                    </Routes>
+                </Suspense>
+            </BrowserRouter>
+        </HelmetProvider>
+    );
 }

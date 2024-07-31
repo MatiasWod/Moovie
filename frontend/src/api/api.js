@@ -7,13 +7,17 @@ const api = axios.create({
     paramsSerializer: params => Qs.stringify(params, {arrayFormat: 'repeat'})
 });
 
-// Interceptor para agregar el token a todas las solicitudes
+// Interceptor to add the token to all requests
 api.interceptors.request.use(
     config => {
         const token = sessionStorage.getItem('jwtToken');
-        console.log(token);
+        console.log('Retrieved token:', token);
+        if (token === undefined || token === null || token === 'undefined') {
+            console.log('No token');
+            return config;
+        }
         if (token) {
-            config.headers['Authorization'] = `Bearer ${token}`;
+            config.headers['Authorization'] = `${token}`;
         }
         return config;
     },
