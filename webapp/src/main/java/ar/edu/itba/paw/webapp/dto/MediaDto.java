@@ -62,7 +62,6 @@ public class MediaDto {
         mediaDTO.tmdbRating = media.getTmdbRating();
         mediaDTO.status = media.getStatus();
         mediaDTO.totalRating = media.getTotalRating();
-        mediaDTO.genres.addAll(media.getGenres());
         mediaDTO.providers.addAll(media.getProviders()); //TODO FIX THIS
         mediaDTO.watched = media.isWatched();
         mediaDTO.watchlist = media.isWatchlist();
@@ -200,7 +199,7 @@ public class MediaDto {
     }
 
     public void setGenres(List<String> genres) {
-        this.genres = genres;
+        return;
     }
 
     public boolean isWatched() {
