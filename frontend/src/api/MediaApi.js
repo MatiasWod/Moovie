@@ -2,10 +2,13 @@ import api from './api.js'
 
 const mediaApi = (()=> {
 
-    const getMedia = ({page, pageSize}) => {
+    const getMedia = ({type, page, pageSize, orderBy, sortOrder}) => {
         return api.get('/media',
             {
                 params: {
+                    'type': type,
+                    'orderBy': orderBy,
+                    'sortOrder': sortOrder,
                     'page': page,
                     'pageSize': pageSize
                 }
