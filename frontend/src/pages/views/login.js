@@ -1,10 +1,11 @@
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import Navbar from '../components/navbar';
+import Navbar from "../components/navbar";
 
 function Login(){
     return(
-        <main className="m-1">
+        <main className="m-1 moovie-default">
+            <Navbar/>
             <div className="text-3xl font-bold underline">This is the login page. Powered by Tailwind CSS</div>
             <Form>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
