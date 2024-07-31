@@ -2,11 +2,13 @@ import {HelmetProvider} from "react-helmet-async";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import React, {Suspense,lazy} from "react";
 import Loader from "./pages/Loader";
+import Navbar from "./pages/components/navBar/navbar";
 const views = './pages/views'
 
 
 const Home = lazy(() => import(views + '/home'));
 const Login = lazy(() => import(views + '/login'));
+const Details = lazy(() => import(views + '/details'));
 const Healthcheck = lazy(() => import(views + '/healthcheck'));
 const Error404 = lazy(() => import(views + '/errorViews/error404'));
 
@@ -18,8 +20,9 @@ export default function App() {
               <BrowserRouter>
                   <Suspense fallback={<Loader/>}>
                       <Routes>
-                         <Route path='/' element={<Home/>}/>
+                        <Route path='/' element={<Home/>}/>
                         <Route path='/login' element={<Login/>}/>
+                        <Route path='/details/:id' element={<Details/>}/>
                         <Route path='/healthcheck' element={<Healthcheck/>}/>
                         <Route path='*' element={<Error404/>}/>
                       </Routes>
