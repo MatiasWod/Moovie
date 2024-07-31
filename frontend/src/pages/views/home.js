@@ -28,7 +28,7 @@ function Home() {
     if (error) return <div>Error: {error.message}</div>;
 
     return (
-        <main style={"moovie-default"}>
+        <main>
         <Navbar/>
             <div>Home Page of Moovie, Welcome!</div>
             <div>
