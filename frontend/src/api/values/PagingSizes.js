@@ -1,0 +1,15 @@
+const PagingSizes = {
+    MEDIA_DEFAULT_PAGE_SIZE: 25,
+    MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS: 24,
+    MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT: 25,
+    FEATURED_MOOVIE_LIST_DEFAULT_TOTAL_CONTENT: 100,
+    REVIEW_DEFAULT_PAGE_SIZE: 5,
+    USER_LIST_DEFAULT_PAGE_SIZE: 6,
+    MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE: 25,
+
+    getSize: function(sizeName) {
+        return this[sizeName];
+    }
+};
+
+export default PagingSizes

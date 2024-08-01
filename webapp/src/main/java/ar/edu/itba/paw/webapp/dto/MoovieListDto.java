@@ -13,9 +13,9 @@ public class MoovieListDto {
 
     private int id;
 
-    private int userId;
-
     private String name;
+
+    private String createdBy;
 
     private String description;
 
@@ -36,11 +36,13 @@ public class MoovieListDto {
 
     private String contentUrl;
 
+    private String creatorUrl;
+
     public static MoovieListDto fromMoovieList(MoovieListCard moovieList, UriInfo uriInfo) {
         MoovieListDto dto = new MoovieListDto();
         dto.name = moovieList.getName();
+        dto.createdBy = moovieList.getUsername();
         dto.id = moovieList.getMoovieListId();
-        dto.userId = moovieList.getUserId();
         dto.name = moovieList.getName();
         dto.description = moovieList.getDescription();
         dto.type = moovieList.getType();
@@ -48,8 +50,9 @@ public class MoovieListDto {
         dto.followers = moovieList.getFollowerCount();
         dto.mediaCount =  moovieList.getMoviesAmount();
         dto.images =  moovieList.getImages();
-        dto.url = uriInfo.getBaseUriBuilder().path("list/{mediaId}").build(moovieList.getMoovieListId()).toString();
-        dto.contentUrl = uriInfo.getBaseUriBuilder().path("list/{mediaId}/content").build(moovieList.getMoovieListId()).toString();
+        dto.url = uriInfo.getBaseUriBuilder().path("list/{moovieListId}").build(moovieList.getMoovieListId()).toString();
+        dto.contentUrl = uriInfo.getBaseUriBuilder().path("list/{moovieListId}/content").build(moovieList.getMoovieListId()).toString();
+        dto.creatorUrl = uriInfo.getBaseUriBuilder().path("users/username/{username}").build(moovieList.getUsername()).toString();
         return dto;
     }
 
@@ -59,14 +62,6 @@ public class MoovieListDto {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 
     public String getName() {
@@ -147,5 +142,21 @@ public class MoovieListDto {
 
     public void setContentUrl(String contentUrl) {
         this.contentUrl = contentUrl;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getCreatorUrl() {
+        return creatorUrl;
+    }
+
+    public void setCreatorUrl(String creatorUrl) {
+        this.creatorUrl = creatorUrl;
     }
 }

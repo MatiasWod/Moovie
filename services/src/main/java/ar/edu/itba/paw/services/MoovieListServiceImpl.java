@@ -78,9 +78,9 @@ public class MoovieListServiceImpl implements MoovieListService{
         //If the previous didnt throw exception, we have the permissions needed to perform the next action
         try{
             int userid = userService.getInfoOfMyUser().getUserId();
-            return moovieListDao.getMoovieListContent(moovieListId, userid , setOrderMediaBy(orderBy) , setSortOrder(sortOrder)  ,size, pageNumber);
+            return moovieListDao.getMoovieListContent(moovieListId, userid , setOrderMediaBy(orderBy) , setSortOrder(sortOrder)  ,size, pageNumber-1);
         } catch(UserNotLoggedException e){
-            return moovieListDao.getMoovieListContent(moovieListId, -1 , setOrderMediaBy(orderBy) , setSortOrder(sortOrder) ,size, pageNumber);
+            return moovieListDao.getMoovieListContent(moovieListId, -1 , setOrderMediaBy(orderBy) , setSortOrder(sortOrder) ,size, pageNumber-1);
         }
     }
 

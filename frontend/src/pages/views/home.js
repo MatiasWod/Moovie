@@ -1,12 +1,10 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import mediaApi from '../../api/MediaApi'; // Adjust the path if needed
 import Navbar from "../components/navBar/navbar";
-import mainStyle from "../components/mainStyle.css";
-import Loader from "../Loader";
-import MediaCard from "../components/mediaCard/MediaCard";
 import CardsHorizontalContainer from "../components/cardsHorizontalContainer/CardsHorizontalContainer";
 import MediaTypes from "../../api/values/MediaTypes";
-import MediaFilters from "../../api/values/MediaFilters";
+import OrderBy from "../../api/values/OrderBy";
+import SortOrder from "../../api/values/SortOrder";
 
 function Home() {
 
@@ -18,7 +16,7 @@ function Home() {
     const fetchTopRatedMovies = async () => {
         try {
             const response = await mediaApi
-                .getMedia({ type: MediaTypes.TYPE_MOVIE, orderBy: MediaFilters.TMDB_RATING, sortOrder: MediaFilters.DESC, page: 1, pageSize: 5});
+                .getMedia({ type: MediaTypes.TYPE_MOVIE, orderBy: OrderBy.TMDB_RATING, sortOrder: SortOrder.DESC, page: 1, pageSize: 5});
             setTopRatedMovies(response.data);
         } catch (err) {
             setTopRatedMoviesError(err);
@@ -40,7 +38,7 @@ function Home() {
     const fetchMostPopularMovies = async () => {
         try {
             const response = await mediaApi
-                .getMedia({ type: MediaTypes.TYPE_MOVIE, orderBy: MediaFilters.VOTE_COUNT, sortOrder: MediaFilters.DESC, page: 1, pageSize: 5});
+                .getMedia({ type: MediaTypes.TYPE_MOVIE, orderBy: OrderBy.VOTE_COUNT, sortOrder: SortOrder.DESC, page: 1, pageSize: 5});
             setMostPopularMovies(response.data);
         } catch (err) {
             setMostPopularMoviesError(err);
@@ -62,7 +60,7 @@ function Home() {
     const fetchTopRatedSeries = async () => {
         try {
             const response = await mediaApi
-                .getMedia({ type: MediaTypes.TYPE_TVSERIE, orderBy: MediaFilters.TMDB_RATING, sortOrder: MediaFilters.DESC, page: 1, pageSize: 5});
+                .getMedia({ type: MediaTypes.TYPE_TVSERIE, orderBy: OrderBy.TMDB_RATING, sortOrder: SortOrder.DESC, page: 1, pageSize: 5});
             setTopRatedSeries(response.data);
         } catch (err) {
             setTopRatedSeriesError(err);
@@ -84,7 +82,7 @@ function Home() {
     const fetchMostPopularSeries = async () => {
         try {
             const response = await mediaApi
-                .getMedia({ type: MediaTypes.TYPE_TVSERIE, orderBy: MediaFilters.VOTE_COUNT, sortOrder: MediaFilters.DESC, page: 1, pageSize: 5});
+                .getMedia({ type: MediaTypes.TYPE_TVSERIE, orderBy: OrderBy.VOTE_COUNT, sortOrder: SortOrder.DESC, page: 1, pageSize: 5});
             setMostPopularSeries(response.data);
         } catch (err) {
             setMostPopularSeriesError(err);

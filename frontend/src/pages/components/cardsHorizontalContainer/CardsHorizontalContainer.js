@@ -15,12 +15,7 @@ const CardsHorizontalContainer = ({ mediaList, loading, error }) => {
     return (
         <div className="cardsHorizontalContainer">
             {mediaList.map((media) => (
-                <MediaCard
-                    key={media.id}
-                    releaseDate={media.releaseDate}
-                    posterPath={media.posterPath}
-                    mediaName={media.name}
-                />
+                <MediaCard media={media} />
             ))}
         </div>
     );

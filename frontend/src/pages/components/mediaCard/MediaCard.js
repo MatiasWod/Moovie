@@ -1,15 +1,15 @@
 import React from 'react';
 import './mediaCard.css';
 
-const MediaCard = ({ title, releaseDate, posterPath, mediaName }) => {
+const MediaCard = ({ media }) => {
     return (
         <div className="card shadow">
             <div className="card-body" style={{ borderRadius: '5%' }}>
-                <span data-toggle="tooltip" data-placement="top" title={`${title} (${releaseDate})`}>
-                    <img className="card-img-top" style={{ borderRadius: '5%' }} src={posterPath} alt={title} />
+                <span data-toggle="tooltip" data-placement="top" title={`(${media.releaseDate})`}>
+                    <img className="card-img-top" style={{ borderRadius: '5%' }} src={media.posterPath} />
                 </span>
-                <h4 className="card-title">{mediaName}</h4>
-                <h5>{releaseDate}</h5>
+                <h4 className="card-title">{media.name}</h4>
+                <h5>{media.releaseDate}</h5>
             </div>
         </div>
     );
