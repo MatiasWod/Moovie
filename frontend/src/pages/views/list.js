@@ -8,7 +8,7 @@ import PaginationButton from "../components/paginationButton/PaginationButton";
 import PagingSizes from "../../api/values/PagingSizes";
 import OrderBy from "../../api/values/OrderBy";
 import SortOrder from "../../api/values/SortOrder";
-import {DropdownButton} from "react-bootstrap";
+import DropdownMediaOrder from "../components/dropdownMediaOrder/DropdownMediaOrder";
 
 function List() {
     const {id} = useParams();
@@ -72,10 +72,14 @@ function List() {
             <h1>Details Page</h1>
             <ListHeader list={list}/>
             <h1>------</h1>
-            {/* Need to add a dropdown menu for filter and order, variables currentSortOrder, currentOrderBy already created */}
+
+            <DropdownMediaOrder setOrderBy={setOrderBy} setSortOrder={setSortOrder} currentOrderDefault={currentSortOrder}/>
+
             <ListContent listContent={listContent}/>
+
             <PaginationButton currentPage={currentPage} setCurrentPage={setCurrentPage}
                               totalPages={Math.ceil(list.mediaCount / PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT)}/>
+
         </div>
     );
 

@@ -18,7 +18,6 @@ const PaginationButton = (({currentPage, setCurrentPage, totalPages}) =>{
         <div style={{display: "flex"}}>
             <button onClick={handlePrevious}>←</button>
             <div>{currentPage}</div>
-            <button onClick={handleNext}>→</button>
         </div>
     )
 });
