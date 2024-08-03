@@ -1,11 +1,13 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.services.VerificationTokenService;
 import ar.edu.itba.paw.webapp.auth.JwtTokenProvider;
+import ar.edu.itba.paw.webapp.dto.MediaDto;
 import ar.edu.itba.paw.webapp.dto.ProfileDto;
 import ar.edu.itba.paw.webapp.dto.UserCreateDto;
 import ar.edu.itba.paw.webapp.dto.UserDto;
@@ -179,6 +181,22 @@ public class UserController {
     public Response setProfileImage(@PathParam("username") final String username, final MultipartFile image) {
         userService.setProfilePicture(image);
         return Response.ok().build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/milkyLeaderboard")
+    public Response getMilkyLeaderboard(@QueryParam("page") @DefaultValue("1") final int page,
+                                        @QueryParam("pageSize") @DefaultValue("-1") final int pageSize) {
+        try{
+            int pageSizeQuery = pageSize;
+            if(pageSize<1 || pageSize > PagingSizes.MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE.getSize()){
+                pageSizeQuery = PagingSizes.MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE.getSize();
+            }
+            return Response.ok(new GenericEntity<List<ProfileDto>>(ProfileDto.fromProfileList(userService.getMilkyPointsLeaders(pageSizeQuery, page), uriInfo)){}).build();
+        } catch(RuntimeException e){
+            return Response.serverError().entity(e.getMessage()).build();
+        }
     }
 
 

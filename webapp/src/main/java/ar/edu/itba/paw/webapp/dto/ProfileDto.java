@@ -1,8 +1,10 @@
 package ar.edu.itba.paw.webapp.dto;
 
+import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.User.Profile;
 
 import javax.ws.rs.core.UriInfo;
+import java.util.List;
 
 public class ProfileDto {
     private String username;
@@ -12,6 +14,7 @@ public class ProfileDto {
     private int reviewsCount;
     private int milkyPoints;
     private boolean hasBadge;
+    private String url;
 
     public static ProfileDto fromProfile(final Profile profile, final UriInfo uriInfo){
         final ProfileDto dto = new ProfileDto();
@@ -23,8 +26,12 @@ public class ProfileDto {
         dto.reviewsCount = profile.getReviewsCount();
         dto.milkyPoints = profile.getMilkyPoints();
         dto.hasBadge = profile.isHasBadge();
-
+        dto.url = uriInfo.getBaseUriBuilder().path("/profile/{username}").build(profile.getUsername()).toString();
         return dto;
+    }
+
+    public static List<ProfileDto> fromProfileList(List<Profile> profileList, UriInfo uriInfo) {
+        return profileList.stream().map(m -> fromProfile(m, uriInfo)).collect(java.util.stream.Collectors.toList());
     }
 
     public String getUsername() {
@@ -43,7 +50,51 @@ public class ProfileDto {
         this.email = email;
     }
 
+    public int getRole() {
+        return role;
+    }
 
+    public void setRole(int role) {
+        this.role = role;
+    }
 
+    public int getMoovieListCount() {
+        return moovieListCount;
+    }
 
+    public void setMoovieListCount(int moovieListCount) {
+        this.moovieListCount = moovieListCount;
+    }
+
+    public int getReviewsCount() {
+        return reviewsCount;
+    }
+
+    public void setReviewsCount(int reviewsCount) {
+        this.reviewsCount = reviewsCount;
+    }
+
+    public int getMilkyPoints() {
+        return milkyPoints;
+    }
+
+    public void setMilkyPoints(int milkyPoints) {
+        this.milkyPoints = milkyPoints;
+    }
+
+    public boolean isHasBadge() {
+        return hasBadge;
+    }
+
+    public void setHasBadge(boolean hasBadge) {
+        this.hasBadge = hasBadge;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }
