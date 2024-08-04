@@ -2,6 +2,7 @@ import {HelmetProvider} from "react-helmet-async";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import React, {lazy, Suspense} from "react";
 import Loader from "./pages/Loader";
+import Nav from "./pages/components/navBar/navbar";
 
 const views = './pages/views';
 
@@ -21,6 +22,7 @@ export default function App() {
         <HelmetProvider context={helmetContext}>
             <BrowserRouter>
                 <Suspense fallback={<Loader/>}>
+                    <Nav/>
                     <Routes>
                         <Route path='/' element={<Home/>}/>
                         <Route path='/login' element={<Login/>}/>

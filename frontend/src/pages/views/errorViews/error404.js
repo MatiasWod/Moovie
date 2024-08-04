@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import {Helmet} from "react-helmet-async";
-import Navbar from "../../components/navBar/navbar";
 import mainStyle from "../../components/mainStyle.css";
 
 export default function Error404() {
@@ -10,7 +9,6 @@ export default function Error404() {
 
     return (
         <div className={"moovie-default"}>
-            <Navbar/>
             <Helmet>
                 <title>{t('error404_title')}</title>
             </Helmet>

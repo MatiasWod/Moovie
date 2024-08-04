@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import Navbar from "../components/navBar/navbar";
 import {useParams} from "react-router-dom";
 import listApi from '../../api/ListApi'
 import ListHeader from "../components/listHeader/ListHeader";
@@ -68,7 +67,6 @@ function List() {
 
     return (
         <div>
-            <Navbar/>
             <h1>Details Page</h1>
             <ListHeader list={list}/>
             <h1>------</h1>

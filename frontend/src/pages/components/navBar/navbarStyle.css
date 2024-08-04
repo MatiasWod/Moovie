@@ -9,3 +9,20 @@
     margin-left: 15px;
     margin-right: 10px;
 }
+
+.sticky-top{
+    border-bottom: none !important;
+    margin-bottom: 0 !important;
+}
+
+.navbar-nav > .nav-item > .nav-link.active {
+    color: green !important;
+}
+
+.customDropdownButton:hover {
+    color: #000000 !important;
+}
+
+.customDropdownButton.expanded {
+    color: green !important;
+}

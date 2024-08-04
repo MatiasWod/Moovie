@@ -30,7 +30,6 @@ function Details() {
 
     return (
         <div className={"moovie-default"}>
-            <Navbar/>
             <h1>Details Page</h1>
             <h1>{media.name}</h1>
         </div>

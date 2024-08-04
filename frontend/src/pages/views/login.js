@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import Navbar from "../components/navBar/navbar";
 import userApi from '../../api/UserApi';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -28,7 +27,6 @@ function Login(){
 
     return(
         <main className="m-1 moovie-default">
-            <Navbar/>
             <div className="text-3xl font-bold underline">This is the login page. Powered by Tailwind CSS</div>
             <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="formBasicUsername">

@@ -1,6 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import mediaApi from '../../api/MediaApi'; // Adjust the path if needed
-import Navbar from "../components/navBar/navbar";
 import CardsHorizontalContainer from "../components/cardsHorizontalContainer/CardsHorizontalContainer";
 import MediaTypes from "../../api/values/MediaTypes";
 import OrderBy from "../../api/values/OrderBy";
@@ -98,7 +97,6 @@ function Home() {
 
     return (
         <main>
-            <Navbar/>
             <div>Sumérgete en Películas y Series,
                 Descubre tu Próxima Experiencia Favorita.
             </div>
