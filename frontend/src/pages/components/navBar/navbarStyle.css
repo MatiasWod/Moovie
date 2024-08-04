@@ -11,11 +11,10 @@
 }
 
 .sticky-top{
-    border-bottom: none !important;
     margin-bottom: 0 !important;
 }
 
-.navbar-nav > .nav-item > .nav-link.active {
+.navbar-nav .nav-link.active {
     color: green !important;
 }
 
