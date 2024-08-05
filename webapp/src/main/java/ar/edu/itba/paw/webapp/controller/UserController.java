@@ -193,7 +193,7 @@ public class UserController {
             if(pageSize<1 || pageSize > PagingSizes.MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE.getSize()){
                 pageSizeQuery = PagingSizes.MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE.getSize();
             }
-            return Response.ok(new GenericEntity<List<ProfileDto>>(ProfileDto.fromProfileList(userService.getMilkyPointsLeaders(pageSizeQuery, page), uriInfo)){}).build();
+            return Response.ok(new GenericEntity<List<ProfileDto>>(ProfileDto.fromProfileList(userService.getMilkyPointsLeaders(page, pageSizeQuery), uriInfo)){}).build();
         } catch(RuntimeException e){
             return Response.serverError().entity(e.getMessage()).build();
         }

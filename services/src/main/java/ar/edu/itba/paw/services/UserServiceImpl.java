@@ -175,7 +175,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public List<Profile> getMilkyPointsLeaders(int size, int pageNumber) {
-        return userDao.getMilkyPointsLeaders(size, pageNumber);
+        return userDao.getMilkyPointsLeaders(size, pageNumber-1);
     }
 
     //AUTHENTICATION INFO

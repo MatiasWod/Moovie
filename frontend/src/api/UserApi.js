@@ -43,11 +43,22 @@ const userApi = (() => {
         }
     };
 
+    const getMilkyLeaderboard = ({page, pageSize}) => {
+        return api.get( '/users/milkyLeaderboard',
+            {
+                params:{
+                    'page': page,
+                    'pageSize': pageSize
+                }
+            });
+    }
+
     return {
         login,
         register,
         listUsers,
-        authTest
+        authTest,
+        getMilkyLeaderboard
     };
 
 })();
