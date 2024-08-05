@@ -1,6 +1,6 @@
 import React from "react";
 
-const ListHeader = ({listContent}) => {
+const ListContent = ({listContent}) => {
     return(
         <div>
             <div>
@@ -12,4 +12,4 @@ const ListHeader = ({listContent}) => {
     )
 }
 
-export default ListHeader;
+export default ListContent;
