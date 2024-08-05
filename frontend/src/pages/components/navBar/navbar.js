@@ -41,8 +41,7 @@ function NavbarComponent() {
                                 className="me-2"
                             />
                             <Button variant="outline-success" type="submit">
-                                <i className={"bi bi-search"}></i>
-                                Search
+                                <i className={"bi bi-search"}/> Search
                             </Button>
                         </InputGroup>
                     </Form>
