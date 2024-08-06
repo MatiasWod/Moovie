@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import mediaApi from "../../api/MediaApi";
-import MediaTypes from "../../api/values/MediaTypes";
-import OrderBy from "../../api/values/OrderBy";
-import SortOrder from "../../api/values/SortOrder";
 import userApi from "../../api/UserApi";
+import paginationButton from "../components/paginationButton/PaginationButton";
+import PaginationButton from "../components/paginationButton/PaginationButton";
+import PagingSizes from "../../api/values/PagingSizes";
 
 function MilkyLeaderboard(){
     const [milkyLeaderboard, setMilkyLeaderboard] = useState([]);
@@ -13,7 +12,7 @@ function MilkyLeaderboard(){
     const fetchMilkyLeaderboard = async () => {
         try {
             const response = await userApi
-                .getMilkyLeaderboard({page: 0, pageSize: 25});
+                .getMilkyLeaderboard({page: 1, pageSize: PagingSizes.MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE});
             setMilkyLeaderboard(response.data);
         } catch (err) {
             setMilkyLeaderboardError(err);

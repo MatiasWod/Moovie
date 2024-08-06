@@ -43,6 +43,10 @@ const userApi = (() => {
         }
     };
 
+    const getUsersCount = () => {
+        return api.get('users/usersCount');
+    }
+
     const getMilkyLeaderboard = ({page, pageSize}) => {
         return api.get( '/users/milkyLeaderboard',
             {
@@ -58,6 +62,7 @@ const userApi = (() => {
         register,
         listUsers,
         authTest,
+        getUsersCount,
         getMilkyLeaderboard
     };
 
