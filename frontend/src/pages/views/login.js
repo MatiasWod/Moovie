@@ -1,31 +1,35 @@
-import React, { useState } from 'react';
+// src/views/login.js
+import React, {useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import userApi from '../../api/UserApi';
-import { useNavigate, useLocation } from 'react-router-dom';
+import {useNavigate, useLocation} from 'react-router-dom';
+import {loginUser} from '../../features/authSlice';
 
-function Login(){
+
+function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState(null);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
+    const {status, error} = useSelector((state) => state.auth);
 
     const from = location.state?.from?.pathname || '/';
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        try {
-            const response = await userApi.login({ username, password });
-            console.log('Login successful:', response);
-            // Redirect to the previous location or default to '/'
-            navigate(from, { replace: true });
-        } catch (error) {
-            setError('Login failed. Please check your username and password.');
-        }
+        dispatch(loginUser({username, password}))
+            .unwrap()
+            .then(() => {
+                navigate(from, {replace: true});
+            })
+            .catch(() => {
+                // Error handling is already done in the slice
+            });
     };
 
-    return(
+    return (
         <main className="m-1 moovie-default">
             <div className="text-3xl font-bold underline">This is the login page. Powered by Tailwind CSS</div>
             <Form onSubmit={handleSubmit}>
@@ -49,15 +53,15 @@ function Login(){
                     />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                    <Form.Check type="checkbox" label="Keep me logged in" />
+                    <Form.Check type="checkbox" label="Keep me logged in"/>
                 </Form.Group>
-                {error && <div className="text-red-500">{error}</div>}
-                <Button variant="primary" type="submit">
-                    Submit
+                {status === 'failed' && <div className="text-red-500">{error}</div>}
+                <Button variant="primary" type="submit" disabled={status === 'loading'}>
+                    {status === 'loading' ? 'Submitting...' : 'Submit'}
                 </Button>
             </Form>
         </main>
-    )
+    );
 }
 
 export default Login;

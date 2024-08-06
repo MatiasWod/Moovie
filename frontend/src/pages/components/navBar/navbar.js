@@ -3,20 +3,30 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from "react-bootstrap/Form";
-import { Image, InputGroup } from "react-bootstrap";
+import {Image, InputGroup} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Logo from '../../../images/logo.png';
 import NavbarStyle from './navbarStyle.css';
 import {NavLink} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {logout} from "../../../features/authSlice";
 
 function NavbarComponent() {
+
+    const dispatch = useDispatch();
+    const {isLoggedIn, user} = useSelector(state => state.auth);
+
+    const handleLogout = () => {
+        dispatch(logout());
+    };
+
     return (
         <Navbar expand="lg" className="sticky-top navbar navbar-expand-lg navbar-light container-nav mb-4">
             <Container fluid>
                 <Navbar.Brand href="/" className="d-flex align-items-center">
-                    <Image src={Logo} width={50} className="me-2" /> Moovie
+                    <Image src={Logo} width={50} className="me-2"/> Moovie
                 </Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link as={NavLink} to="/discover" activeClassName="active">Discover</Nav.Link>
@@ -46,7 +56,15 @@ function NavbarComponent() {
                         </InputGroup>
                     </Form>
                     <Nav className="d-flex nav-item justify-content-center userPic-login">
-                        <Nav.Link as={NavLink} to="/login" activeClassName="active" className={'link-primary'}>Login</Nav.Link>
+                        {isLoggedIn ? (
+                            <NavDropdown title={`${user.username} (${user.role})`} id="basic-nav-dropdown">
+                                <NavDropdown.Item as={NavLink} to="/profile">Profile</NavDropdown.Item>
+                                <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+                            </NavDropdown>
+                        ) : (
+                            <Nav.Link as={NavLink} to="/login" activeClassName="active"
+                                      className={'link-primary'}>Login</Nav.Link>
+                        )}
                     </Nav>
                 </Navbar.Collapse>
             </Container>

@@ -2,19 +2,24 @@ import api from './api.js';
 
 const userApi = (() => {
 
-    const login = async ({ username, password }) => {
+    const attemptReconnect = async () => {
+
+    }
+
+    const login = async ({username, password}) => {
         const credentials = btoa(`${username}:${password}`);
         try {
-            const response = await api.get('/users', {
+            const response = await api.get('/users/username/' + username, {
                 headers: {
                     'Authorization': `Basic ${credentials}`,
                 }
             });
             console.log('response', response);
             const token = response.headers.get('Authorization');
-            console.log('token to set',token);
+            console.log('token to set', token);
             if (token) {
                 sessionStorage.setItem('jwtToken', token);
+                sessionStorage.setItem('username', username);
             } else {
                 throw new Error('No token found in response');
             }
@@ -48,9 +53,9 @@ const userApi = (() => {
     }
 
     const getMilkyLeaderboard = ({page, pageSize}) => {
-        return api.get( '/users/milkyLeaderboard',
+        return api.get('/users/milkyLeaderboard',
             {
-                params:{
+                params: {
                     'page': page,
                     'pageSize': pageSize
                 }
