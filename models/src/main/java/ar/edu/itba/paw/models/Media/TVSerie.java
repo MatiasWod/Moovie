@@ -26,8 +26,7 @@ public class TVSerie extends Media{
     @Column
     private int numberOfSeasons;
 
-    TVSerie(){
-
+    public TVSerie(){
     }
 
     public TVSerie(int mediaId, boolean type, String name, String originalLanguage, boolean adult, Date releaseDate, String overview, String backdropPath, String posterPath, String trailerLink, float tmdbRating, float totalRating, int voteCount, String status, List<Genre> genres, List<Provider> providers, Date lastAirDate, Date nextEpisodeToAir, int numberOfEpisodes, int numberOfSeasons) {

@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.models.Provider.Provider;
 
 import javax.ws.rs.core.UriInfo;
@@ -65,9 +66,27 @@ public class MediaDto {
         mediaDTO.providers.addAll(media.getProviders()); //TODO FIX THIS
         mediaDTO.watched = media.isWatched();
         mediaDTO.watchlist = media.isWatchlist();
-
         mediaDTO.url = uriInfo.getBaseUriBuilder().path("media/{mediaId}").build(media.getMediaId()).toString();
         return mediaDTO;
+    }
+
+    protected static void setFromTV(TVSerieDTO mediaDTO, TVSerie media, UriInfo uriInfo) {
+        mediaDTO.setName(media.getName());
+        mediaDTO.setId(media.getMediaId());
+        mediaDTO.setVoteCount(media.getVoteCount());
+        mediaDTO.setAdult(media.isAdult());
+        mediaDTO.setReleaseDate(media.getReleaseDate());
+        mediaDTO.setOverview(media.getOverview());
+        mediaDTO.setBackdropPath(media.getBackdropPath());
+        mediaDTO.setPosterPath(media.getPosterPath());
+        mediaDTO.setTrailerLink(media.getTrailerLink());
+        mediaDTO.setTmdbRating(media.getTmdbRating());
+        mediaDTO.setStatus(media.getStatus());
+        mediaDTO.setTotalRating(media.getTotalRating());
+        mediaDTO.setProviders(media.getProviders());
+        mediaDTO.setWatched(media.isWatched());
+        mediaDTO.setWatchlist(media.isWatchlist());
+        mediaDTO.setUrl(uriInfo.getBaseUriBuilder().path("media/{mediaId}").build(media.getMediaId()).toString());
     }
 
     public static List<MediaDto> fromMediaList(List<Media> mediaList, UriInfo uriInfo) {
