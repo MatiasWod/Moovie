@@ -1,12 +1,12 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.Media.Media;
-import ar.edu.itba.paw.models.Media.MediaFilters;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.services.MediaService;
 import ar.edu.itba.paw.webapp.dto.MediaDto;
-import ar.edu.itba.paw.webapp.dto.TVSerieDTO;
+import ar.edu.itba.paw.webapp.dto.MovieDto;
+import ar.edu.itba.paw.webapp.dto.TVSerieDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -67,27 +67,13 @@ public class MediaController {
     public Response getMediaById(@PathParam("id") final int id) {
         try{
             Media media = mediaService.getMediaById(id);
-            return Response.ok(MediaDto.fromMedia(media, uriInfo)).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-    }
-
-    @GET
-    @Path("details/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getDetailsById(@PathParam("id") final int id) {
-        try{
-            Media media = mediaService.getMediaById(id);
             if(media.isType()){
-                return Response.ok(TVSerieDTO.fromTVSerie(mediaService.getTvById(id), uriInfo)).build();
+                return Response.ok(TVSerieDto.fromTVSerie(mediaService.getTvById(id), uriInfo)).build();
             }
-            return Response.ok(MediaDto.fromMedia(media, uriInfo)).build();
+            return Response.ok(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo)).build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
-
-
 
 }

@@ -70,7 +70,7 @@ public class MediaDto {
         return mediaDTO;
     }
 
-    protected static void setFromTV(TVSerieDTO mediaDTO, TVSerie media, UriInfo uriInfo) {
+    protected static void setFromMediaChild(MediaDto mediaDTO, Media media, UriInfo uriInfo) {
         mediaDTO.setName(media.getName());
         mediaDTO.setId(media.getMediaId());
         mediaDTO.setVoteCount(media.getVoteCount());

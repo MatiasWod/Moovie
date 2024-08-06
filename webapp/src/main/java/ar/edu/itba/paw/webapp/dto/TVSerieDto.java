@@ -1,10 +1,11 @@
 package ar.edu.itba.paw.webapp.dto;
 
+import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.TVSerie;
 import javax.ws.rs.core.UriInfo;
 import java.util.Date;
 
-public class TVSerieDTO extends MediaDto{
+public class TVSerieDto extends MediaDto{
 
     private Date lastAirDate;
 
@@ -14,9 +15,9 @@ public class TVSerieDTO extends MediaDto{
 
     private int numberOfSeasons;
 
-    public static TVSerieDTO fromTVSerie(TVSerie tvserie, UriInfo uri) {
-        TVSerieDTO tvSerieDTO = new TVSerieDTO();
-        MediaDto.setFromTV(tvSerieDTO, tvserie, uri);
+    public static TVSerieDto fromTVSerie(TVSerie tvserie, UriInfo uri) {
+        TVSerieDto tvSerieDTO = new TVSerieDto();
+        MediaDto.setFromMediaChild(tvSerieDTO, tvserie, uri);
         tvSerieDTO.lastAirDate = tvserie.getLastAirDate();
         tvSerieDTO.numberOfEpisodes = tvserie.getNumberOfEpisodes();
         tvSerieDTO.numberOfEpisodes = tvserie.getNumberOfEpisodes();

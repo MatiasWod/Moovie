@@ -30,9 +30,7 @@ public class Movie extends Media{
     @Column
     private String director;
 
-    Movie(){
-
-    }
+    public Movie(){ }
 
     public Movie(int mediaId, boolean type, String name, String originalLanguage, boolean adult, Date releaseDate, String overview, String backdropPath, String posterPath, String trailerLink, float tmdbRating, int totalRating, int voteCount, String status, List<Genre> genres, List<Provider> providers, int runtime, long budget, long revenue, int directorId, String director) {
         super(mediaId, type, name, originalLanguage, adult, releaseDate, overview, backdropPath, posterPath, trailerLink, tmdbRating, totalRating, voteCount, status, genres, providers);
