@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.models.Provider.Provider;
 
@@ -13,7 +14,7 @@ public class MediaDto {
 
     private int id;
 
-    private boolean type;
+    private String type ;
 
     private String name;
 
@@ -51,6 +52,7 @@ public class MediaDto {
 
     public static MediaDto fromMedia(Media media, UriInfo uriInfo) {
         MediaDto mediaDTO = new MediaDto();
+        mediaDTO.type = (media.isType() ? "Serie" :  "Movie");
         mediaDTO.name = media.getName();
         mediaDTO.id = media.getMediaId();
         mediaDTO.voteCount = media.getVoteCount();
@@ -66,12 +68,14 @@ public class MediaDto {
         mediaDTO.providers.addAll(media.getProviders()); //TODO FIX THIS
         mediaDTO.watched = media.isWatched();
         mediaDTO.watchlist = media.isWatchlist();
+        mediaDTO.originalLanguage = media.getOriginalLanguage();
         mediaDTO.url = uriInfo.getBaseUriBuilder().path("media/{mediaId}").build(media.getMediaId()).toString();
         return mediaDTO;
     }
 
     protected static void setFromMediaChild(MediaDto mediaDTO, Media media, UriInfo uriInfo) {
         mediaDTO.setName(media.getName());
+        mediaDTO.setType((media.isType() ? "Serie" :  "Movie"));
         mediaDTO.setId(media.getMediaId());
         mediaDTO.setVoteCount(media.getVoteCount());
         mediaDTO.setAdult(media.isAdult());
@@ -86,6 +90,7 @@ public class MediaDto {
         mediaDTO.setProviders(media.getProviders());
         mediaDTO.setWatched(media.isWatched());
         mediaDTO.setWatchlist(media.isWatchlist());
+        mediaDTO.setOriginalLanguage(media.getOriginalLanguage());
         mediaDTO.setUrl(uriInfo.getBaseUriBuilder().path("media/{mediaId}").build(media.getMediaId()).toString());
     }
 
@@ -101,11 +106,11 @@ public class MediaDto {
         this.id = mediaId;
     }
 
-    public boolean isType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(boolean type) {
+    public void setType(String type) {
         this.type = type;
     }
 

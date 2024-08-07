@@ -20,6 +20,7 @@ public class MovieDto extends MediaDto{
     public static MovieDto fromMovie(Movie movie, UriInfo uri){
         MovieDto movieDto = new MovieDto();
         MediaDto.setFromMediaChild(movieDto, movie, uri);
+        movieDto.runtime = movie.getRuntime();
         movieDto.budget = movie.getBudget();
         movieDto.revenue = movie.getRevenue();
         movieDto.directorId = movie.getDirectorId();

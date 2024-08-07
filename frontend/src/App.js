@@ -5,6 +5,7 @@ import Loader from "./pages/Loader";
 import Nav from "./pages/components/navBar/navbar";
 import {useDispatch} from "react-redux";
 import {attemptReconnect} from "./features/authSlice";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const views = './pages/views';
 
