@@ -52,7 +52,7 @@ function Details() {
                 {trailerLink && (
                     <iframe src={trailerLink.replace("watch?v=", "embed/")}/>
                 )}
-                
+
                 <div>{media.overview}</div>
             </div>
 
@@ -68,8 +68,14 @@ function Details() {
 
                 <div>Generos:</div>
                 <div>Creadores:</div>
-                <div>Fecha de Ultima Emision: {media.lastAirDate}</div>
-                <div>Proximo Episodio a Emitir:{media.nextEpisodeToAir}</div>
+
+                {media.lastAirDate && (
+                    <div>Fecha de Ultima Emision: {media.lastAirDate}</div>
+                )}
+
+                {media.nextEpisodeToAir && (
+                    <div>Proximo Episodio a Emitir:{media.nextEpisodeToAir}</div>
+                )}
 
                 {trailerLink && (
                     <iframe src={trailerLink.replace("watch?v=", "embed/")}/>
