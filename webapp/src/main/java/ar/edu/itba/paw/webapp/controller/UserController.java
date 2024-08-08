@@ -7,7 +7,6 @@ import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.services.VerificationTokenService;
 import ar.edu.itba.paw.webapp.auth.JwtTokenProvider;
-import ar.edu.itba.paw.webapp.dto.MediaDto;
 import ar.edu.itba.paw.webapp.dto.ProfileDto;
 import ar.edu.itba.paw.webapp.dto.UserCreateDto;
 import ar.edu.itba.paw.webapp.dto.UserDto;
@@ -179,6 +178,7 @@ public class UserController {
         }
     }
 
+    //TODO ESTO NO FUNCIONA, ARREGLAR
     @GET
     @Path("/{username}/image")
     @Produces("image/png")
