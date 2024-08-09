@@ -16,6 +16,7 @@ const Details = lazy(() => import(views + '/details'));
 const List = lazy(() => import(views + '/list'));
 const BrowseLists = lazy(() => import(views + '/browseLists'));
 const MilkyLeaderboard = lazy(() => import(views + '/milkyLeaderboard'));
+const Profile = lazy(() => import(views + '/profile'));
 const Healthcheck = lazy(() => import(views + '/healthcheck'));
 const Error404 = lazy(() => import(views + '/errorViews/error404'));
 const AuthTest = lazy(() => import(views + '/AuthTest')); // Import AuthTest
@@ -42,6 +43,7 @@ export default function App() {
                         <Route path='/list/:id' element={<List/>}/>
                         <Route path='/browseLists' element={<BrowseLists/>}/>
                         <Route path='/milkyLeaderboard' element={<MilkyLeaderboard/>}/>
+                        <Route path='/profile/:username' element={<Profile/>}/>
                         <Route path='/healthcheck' element={<Healthcheck/>}/>
                         <Route path='/authtest' element={<AuthTest/>}/> {/* Add AuthTest route */}
                         <Route path='*' element={<Error404/>}/>
