@@ -14,6 +14,7 @@ public class ProfileDto {
     private int reviewsCount;
     private int milkyPoints;
     private boolean hasBadge;
+    private String profilePictureUrl;
     private String url;
 
     public static ProfileDto fromProfile(final Profile profile, final UriInfo uriInfo){
@@ -26,7 +27,9 @@ public class ProfileDto {
         dto.reviewsCount = profile.getReviewsCount();
         dto.milkyPoints = profile.getMilkyPoints();
         dto.hasBadge = profile.isHasBadge();
-        dto.url = uriInfo.getBaseUriBuilder().path("/profile/{username}").build(profile.getUsername()).toString();
+
+        dto.profilePictureUrl = uriInfo.getBaseUriBuilder().path("users/{username}/image").build(profile.getUsername()).toString();
+        dto.url = uriInfo.getBaseUriBuilder().path("users/profile/{username}").build(profile.getUsername()).toString();
         return dto;
     }
 
@@ -96,5 +99,13 @@ public class ProfileDto {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getPictureUrl() {
+        return profilePictureUrl;
+    }
+
+    public void setPictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
     }
 }

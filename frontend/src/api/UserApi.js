@@ -2,6 +2,8 @@ import api from './api.js';
 
 const userApi = (() => {
 
+    //AUTHENTICATION STUFF
+
     const attemptReconnect = async () => {
 
     }
@@ -48,6 +50,12 @@ const userApi = (() => {
         }
     };
 
+    //PROFILE STUFF
+
+    const getProfileByUsername = (username) =>{
+        return api.get(`users/profile/${username}`);
+    }
+
     const getUsersCount = () => {
         return api.get('users/usersCount');
     }
@@ -67,6 +75,7 @@ const userApi = (() => {
         register,
         listUsers,
         authTest,
+        getProfileByUsername,
         getUsersCount,
         getMilkyLeaderboard
     };

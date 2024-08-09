@@ -42,7 +42,7 @@ export default function App() {
                         <Route path='/details/:id' element={<Details/>}/>
                         <Route path='/list/:id' element={<List/>}/>
                         <Route path='/browseLists' element={<BrowseLists/>}/>
-                        <Route path='/milkyLeaderboard' element={<MilkyLeaderboard/>}/>
+                        <Route path='/leaderboard' element={<MilkyLeaderboard/>}/>
                         <Route path='/profile/:username' element={<Profile/>}/>
                         <Route path='/healthcheck' element={<Healthcheck/>}/>
                         <Route path='/authtest' element={<AuthTest/>}/> {/* Add AuthTest route */}
