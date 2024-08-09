@@ -178,7 +178,6 @@ public class UserController {
         }
     }
 
-    //TODO ESTO NO FUNCIONA, ARREGLAR
     @GET
     @Path("/{username}/image")
     @Produces("image/png")
