@@ -2,6 +2,21 @@ import api from './api'
 
 const listApi = (() => {
 
+    const getLists = ({search, ownerUsername, type, orderBy, order, pageNumber, pageSize}) =>{
+        return api.get('list',
+            {
+                params:{
+                    'search' : search,
+                    'ownerUsername': ownerUsername,
+                    'type': type,
+                    'orderBy': orderBy,
+                    'order': order,
+                    'pageNumber': pageNumber,
+                    'pageSize': pageSize
+                }
+        });
+    }
+
     const getListById = (id) => {
         return api.get( `/list/${id}`);
     }
@@ -20,6 +35,7 @@ const listApi = (() => {
     }
 
     return{
+        getLists,
         getListById,
         getListContentById
     }

@@ -8,6 +8,7 @@ import ar.edu.itba.paw.models.Review.MoovieListReview;
 import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MoovieListDto {
 
@@ -54,6 +55,10 @@ public class MoovieListDto {
         dto.contentUrl = uriInfo.getBaseUriBuilder().path("list/{moovieListId}/content").build(moovieList.getMoovieListId()).toString();
         dto.creatorUrl = uriInfo.getBaseUriBuilder().path("users/username/{username}").build(moovieList.getUsername()).toString();
         return dto;
+    }
+
+    public static List<MoovieListDto> fromMoovieListList(List<MoovieListCard> mlcList, UriInfo uriInfo) {
+        return mlcList.stream().map(mlc -> fromMoovieList(mlc, uriInfo)).collect(java.util.stream.Collectors.toList());
     }
 
     public int getId() {

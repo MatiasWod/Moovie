@@ -29,6 +29,23 @@ public class MoovieListController {
     }
 
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMoovieList(@QueryParam("search") @DefaultValue("") String search,
+                                    @QueryParam("ownerUsername") @DefaultValue("") String ownerUsername,
+                                    @QueryParam("type") int type,
+                                    @QueryParam("orderBy") String orderBy,
+                                    @QueryParam("order") String order,
+                                    @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber,
+                                    @QueryParam("pageSize") @DefaultValue("-1") final int pageSize){
+        try{
+            List<MoovieListDto> mlcDto = MoovieListDto.fromMoovieListList(moovieListService.getMoovieListCards(search, ownerUsername, type, orderBy, order, pageSize, pageNumber), uriInfo);
+            return Response.ok(new GenericEntity<List<MoovieListDto>>(mlcDto){}).build();
+        }catch (RuntimeException e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+
+    @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMoovieListById(@PathParam("id") final int id) {
@@ -62,4 +79,5 @@ public class MoovieListController {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
+
 }
