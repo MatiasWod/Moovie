@@ -32,7 +32,7 @@ function NavbarComponent() {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link as={NavLink} to="/discover" activeClassName="active">Discover</Nav.Link>
-                        <Nav.Link as={NavLink} to="/moovieLists" activeClassName="active">Browse Lists</Nav.Link>
+                        <Nav.Link as={NavLink} to="/browseLists" activeClassName="active">Browse Lists</Nav.Link>
                         <NavDropdown title="Top Rated" id="basic-nav-dropdown">
                             <NavDropdown.Item to="#action/3.1" activeClassName="active">Media</NavDropdown.Item>
                             <NavDropdown.Item to="#action/3.2" activeClassName="active">Movies</NavDropdown.Item>
