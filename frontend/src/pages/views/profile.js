@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import userApi from "../../api/UserApi";
+import ProfileImage from "../components/profileImage/ProfileImage";
 
 function Profile(){
 
@@ -26,10 +27,11 @@ function Profile(){
         fetchProfile();
     }, []);
 
+
     return (
         <div>
             <div>Perfil de {profile.username}</div>
-            <div><img alt="profile_picture" src={profile.pictureUrl}/></div>
+            <ProfileImage image={profile.pictureUrl} size={100}/>
         </div>
     )
 }

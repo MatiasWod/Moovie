@@ -10,6 +10,8 @@ import NavbarStyle from './navbarStyle.css';
 import {NavLink} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {logout} from "../../../features/authSlice";
+import ProfileImage from "../profileImage/ProfileImage";
+import React from "react";
 
 function NavbarComponent() {
 
@@ -56,6 +58,8 @@ function NavbarComponent() {
                         </InputGroup>
                     </Form>
                     <Nav className="d-flex nav-item justify-content-center userPic-login">
+                        <ProfileImage image={user ? "http://localhost:8080/users/" + user.username + "/image" : null}/>
+
                         {isLoggedIn ? (
                             <NavDropdown title={`${user.username} (${user.role})`} id="basic-nav-dropdown">
                                 <NavDropdown.Item as={NavLink} to="/profile">Profile</NavDropdown.Item>
