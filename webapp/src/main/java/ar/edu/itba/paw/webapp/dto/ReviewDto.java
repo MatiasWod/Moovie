@@ -67,6 +67,10 @@ public class ReviewDto {
         return reviewDto;
     }
 
+    public static List<ReviewDto> fromReviewList(final List<Review> reviews, UriInfo uriInfo) {
+        return reviews.stream().map(r -> fromReview(r, uriInfo)).collect(java.util.stream.Collectors.toList());
+    }
+
     public int getId() {
         return id;
     }
