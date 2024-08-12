@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.services.MoovieListService;
 import ar.edu.itba.paw.webapp.dto.MediaDto;
@@ -30,15 +31,17 @@ public class MoovieListController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getMoovieList(@QueryParam("search") @DefaultValue("") String search,
-                                    @QueryParam("ownerUsername") @DefaultValue("") String ownerUsername,
-                                    @QueryParam("type") int type,
+    public Response getMoovieList(@QueryParam("search")  String search,
+                                    @QueryParam("ownerUsername") String ownerUsername,
+                                    @QueryParam("type") @DefaultValue("-1") int type,
                                     @QueryParam("orderBy") String orderBy,
                                     @QueryParam("order") String order,
-                                    @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber,
-                                    @QueryParam("pageSize") @DefaultValue("-1") final int pageSize){
+                                    @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber){
         try{
-            List<MoovieListDto> mlcDto = MoovieListDto.fromMoovieListList(moovieListService.getMoovieListCards(search, ownerUsername, type, orderBy, order, pageSize, pageNumber), uriInfo);
+            if(type<1 || type>4){
+                type = MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType();
+            }
+            List<MoovieListDto> mlcDto = MoovieListDto.fromMoovieListList(moovieListService.getMoovieListCards(search, ownerUsername, type, orderBy, order, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), pageNumber), uriInfo);
             return Response.ok(new GenericEntity<List<MoovieListDto>>(mlcDto){}).build();
         }catch (RuntimeException e){
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();

@@ -105,7 +105,7 @@ public class MoovieListServiceImpl implements MoovieListService{
                 throw new InvalidAccessToResourceException("Need to be owner to acces the private list of this user");
             }
         }
-        return moovieListDao.getMoovieListCards(search, ownerUsername, type,setOrderListsBy(orderBy) , setSortOrder(order), size, pageNumber, userService.tryToGetCurrentUserId());
+        return moovieListDao.getMoovieListCards(search, ownerUsername, type,setOrderListsBy(orderBy) , setSortOrder(order), size, pageNumber-1, userService.tryToGetCurrentUserId());
     }
 
     @Transactional(readOnly = true)

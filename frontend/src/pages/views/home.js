@@ -2,7 +2,7 @@ import React, {useState, useEffect, useCallback} from 'react';
 import mediaApi from '../../api/MediaApi'; // Adjust the path if needed
 import CardsHorizontalContainer from "../components/cardsHorizontalContainer/CardsHorizontalContainer";
 import MediaTypes from "../../api/values/MediaTypes";
-import OrderBy from "../../api/values/OrderBy";
+import OrderBy from "../../api/values/MediaOrderBy";
 import SortOrder from "../../api/values/SortOrder";
 
 function Home() {

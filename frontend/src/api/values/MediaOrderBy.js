@@ -1,4 +1,4 @@
-const OrderBy = {
+const MediaOrderBy = {
     NAME: "name",
     TOTAL_RATING: "totalRating",
     TMDB_RATING: "tmdbRating",
@@ -7,4 +7,4 @@ const OrderBy = {
     CUSTOM_ORDER: "customOrder",
 };
 
-export default OrderBy;
+export default MediaOrderBy;

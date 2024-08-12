@@ -5,9 +5,9 @@ import ListHeader from "../components/listHeader/ListHeader";
 import ListContent from "../components/listContent/ListContent";
 import PaginationButton from "../components/paginationButton/PaginationButton";
 import PagingSizes from "../../api/values/PagingSizes";
-import OrderBy from "../../api/values/OrderBy";
+import OrderBy from "../../api/values/MediaOrderBy";
 import SortOrder from "../../api/values/SortOrder";
-import DropdownMediaOrder from "../components/dropdownMediaOrder/DropdownMediaOrder";
+import DropdownMenu from "../components/dropdownMenus/DropdownMenu/DropdownMenu";
 
 function List() {
     const {id} = useParams();
@@ -71,7 +71,7 @@ function List() {
             <ListHeader list={list}/>
             <h1>------</h1>
 
-            <DropdownMediaOrder setOrderBy={setOrderBy} setSortOrder={setSortOrder} currentOrderDefault={currentSortOrder}/>
+            <DropdownMenu setOrderBy={setOrderBy} setSortOrder={setSortOrder} currentOrderDefault={currentSortOrder} values={Object.values(OrderBy)}/>
 
             <ListContent listContent={listContent}/>
 

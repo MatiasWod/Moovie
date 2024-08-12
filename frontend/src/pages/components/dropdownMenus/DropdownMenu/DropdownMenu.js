@@ -1,11 +1,11 @@
 import React, {useState} from "react";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import OrderBy from "../../../api/values/OrderBy";
-import SortOrder from "../../../api/values/SortOrder";
+import OrderBy from "../../../../api/values/MediaOrderBy";
+import SortOrder from "../../../../api/values/SortOrder";
 import Button from "react-bootstrap/Button";
 
 
-const DropdownMediaOrder = ({setOrderBy, setSortOrder, currentSortOrder}) => {
+const DropdownMenu = ({setOrderBy, setSortOrder, currentSortOrder, values}) => {
 
     const handleSelect = (selectedValue) =>{
         setOrderBy(selectedValue);
@@ -21,7 +21,7 @@ const DropdownMediaOrder = ({setOrderBy, setSortOrder, currentSortOrder}) => {
     return (
         <div style={{display: "flex"}}>
             <NavDropdown title="Order By">
-                {Object.values(OrderBy).map((value) => (
+                {values.map((value) => (
                     <NavDropdown.Item onClick={ ()=>handleSelect(value)}>{value}</NavDropdown.Item>
                 ))}
             </NavDropdown>
@@ -30,4 +30,4 @@ const DropdownMediaOrder = ({setOrderBy, setSortOrder, currentSortOrder}) => {
     );
 }
 
-export default DropdownMediaOrder;
+export default DropdownMenu;
