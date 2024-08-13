@@ -26,9 +26,10 @@ function MilkyLeaderboard(){
 
     return (
         <div className="moovie-default default-container">
+            <div className="title bold-title">Milky Leaderboard</div>
             <div>
                 {milkyLeaderboard.map(profile => (
-                    <div>{profile.username}, {profile.milkyPoints}</div>
+                    <MilkyLeaderboardProfile profile={profile}/>
                 ))}
             </div>
         </div>
@@ -36,3 +37,16 @@ function MilkyLeaderboard(){
 }
 
 export default MilkyLeaderboard;
+
+//Aux functions for milkyLeaderboard
+
+function MilkyLeaderboardProfile({profile}) {
+    return(
+        <div className="milky-leaderboard-profile">
+            <div>{profile.username}</div>
+            <div>{profile.milkyPoints}</div>
+        </div>
+    )
+}
+
+

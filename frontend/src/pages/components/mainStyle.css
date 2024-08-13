@@ -7,8 +7,12 @@
     padding-inline: 4%;
 }
 
-.title{
+.title {
     font-size: 3em;
+}
+
+.bold-title{
+    font-weight: bold;
 }
 
 
