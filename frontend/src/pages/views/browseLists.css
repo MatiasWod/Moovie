@@ -1,0 +1,7 @@
+.listCardContainer{
+    max-height: 100%;
+    max-width: 60%;
+    display: grid;
+    justify-content: center;
+    grid-template-columns: repeat(2, 1fr);
+}

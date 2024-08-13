@@ -5,6 +5,7 @@ import MediaTypes from "../../api/values/MediaTypes";
 import OrderBy from "../../api/values/MediaOrderBy";
 import SortOrder from "../../api/values/SortOrder";
 
+
 function Home() {
 
     //GET VALUES FOT Top Rated Movies

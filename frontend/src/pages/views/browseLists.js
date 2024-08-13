@@ -3,6 +3,8 @@ import listApi from "../../api/ListApi";
 import DropdownMenu from "../components/dropdownMenus/DropdownMenu/DropdownMenu";
 import CardsListOrderBy from "../../api/values/CardsListOrderBy";
 import SortOrder from "../../api/values/SortOrder";
+import ListCard from "../components/listCard/ListCard";
+import "./browseLists.css"
 
 function BrowseLists(){
 
@@ -50,9 +52,9 @@ function BrowseLists(){
 
             <DropdownMenu setOrderBy={setOrderBy} setSortOrder={setOrder} currentOrderDefault={order} values={Object.values(CardsListOrderBy)}/>
 
-            <div>
+            <div className="listCardContainer">
                 {mlcList.map(list => (
-                    <div>{list.name}</div>
+                    <ListCard listCard={list}/>
                 ))}
             </div>
         </div>
