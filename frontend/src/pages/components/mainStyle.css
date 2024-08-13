@@ -3,3 +3,13 @@
     height:100vh ;
 }
 
+.default-container{
+    padding-top: 1%;
+    padding-inline: 4%;
+}
+
+.title{
+    font-size: 3em;
+}
+
+

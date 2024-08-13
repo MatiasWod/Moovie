@@ -1,21 +1,38 @@
-.listCard{
-    border:solid black;
-    overflow: hidden;
-    padding: 20px;
-    align-self: center;
+.list-card{
+    border: solid darkgrey;
+    border-radius: 3%;
+    margin: 10px;
+    width: 20rem;
+    cursor: pointer;
+    background-color: white;
+    transition: background-color 0.3s ease;
 }
 
-.listCardImages{
-    height: 100%;
-    width: 100%;
+.list-card:hover{
+    background-color: lightgray;
+}
+
+.list-card-images{
     object-fit: cover;
+    object-position: center;
+    width: 8rem;
+    height: 9rem;
 }
 
-.imageGrid{
-    flex:1;
-    height: 100%;
+.image-grid{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
     width: 100%;
-    display: grid;
-    grid-template-rows: repeat(2, 1fr);
-    grid-template-columns: repeat(2, 1fr);
+    height: auto;
+}
+
+.list-card-body{
+    padding: 5%;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    flex: 1 1 auto;
 }

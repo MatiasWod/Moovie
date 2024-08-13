@@ -12,14 +12,17 @@ const ListCard = ({ listCard }) => {
     }
 
     return (
-        <div className="listCard">
-            <div className="imageGrid">
+        <div className="list-card">
+            <div className="image-grid">
                 {images.map((image, index) => (
-                    <img className="listCardImages" src={image}/>
+                    <img className="list-card-images" src={image}/>
                 ))}
             </div>
-            <div>
+            <div className="list-card-body">
                 <div>{listCard.name}</div>
+                <div>{listCard.createdBy}</div>
+                <div>{listCard.likes}</div>
+                <div>{listCard.mediaCount}</div>
             </div>
         </div>
     );

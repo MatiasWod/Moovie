@@ -5,6 +5,8 @@ import CardsListOrderBy from "../../api/values/CardsListOrderBy";
 import SortOrder from "../../api/values/SortOrder";
 import ListCard from "../components/listCard/ListCard";
 import "./browseLists.css"
+import SearchBar from "../components/searchBar/SearchBar";
+import "./../components/mainStyle.css"
 
 function BrowseLists(){
 
@@ -45,14 +47,20 @@ function BrowseLists(){
     }, [order, orderBy, pageNumber]);
 
     return (
-        <div>
-            <div>Lists browsing</div>
-            <div>Oredr by: {orderBy}</div>
-            <div>Sort Order: {order}</div>
+        <div className="moovie-default default-container">
 
-            <DropdownMenu setOrderBy={setOrderBy} setSortOrder={setOrder} currentOrderDefault={order} values={Object.values(CardsListOrderBy)}/>
+            <div className="browse-lists-header">
+                <div className="title">Community Lists</div>
+                <div className="browse-list-header-searchable">
+                    <SearchBar />
+                    <div style={{display:"flex", float:"right"}}>
+                        <div style={{marginInline:"10px"}}>Order By </div>
+                        <DropdownMenu setOrderBy={setOrderBy} setSortOrder={setOrder} currentOrderDefault={order} values={Object.values(CardsListOrderBy)}/>
+                    </div>
+                </div>
+            </div>
 
-            <div className="listCardContainer">
+            <div className="list-card-container">
                 {mlcList.map(list => (
                     <ListCard listCard={list}/>
                 ))}

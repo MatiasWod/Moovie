@@ -12,6 +12,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {logout} from "../../../features/authSlice";
 import ProfileImage from "../profileImage/ProfileImage";
 import React from "react";
+import SearchBar from "../searchBar/SearchBar";
 
 function NavbarComponent() {
 
@@ -45,18 +46,7 @@ function NavbarComponent() {
                         </NavDropdown>
                         <Nav.Link as={NavLink} to="/leaderboard" activeClassName="active">Leaderboard</Nav.Link>
                     </Nav>
-                    <Form inline>
-                        <InputGroup className={"InputGroup"}>
-                            <Form.Control
-                                type="search"
-                                placeholder="Search"
-                                className="me-2"
-                            />
-                            <Button variant="outline-success" type="submit">
-                                <i className={"bi bi-search"}/> Search
-                            </Button>
-                        </InputGroup>
-                    </Form>
+                    <SearchBar/>
                     <Nav className="d-flex nav-item justify-content-center userPic-login">
                         <ProfileImage image={user ? "http://localhost:8080/users/" + user.username + "/image" : null}/>
 

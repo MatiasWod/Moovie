@@ -1,7 +1,19 @@
-.listCardContainer{
-    max-height: 100%;
-    max-width: 60%;
-    display: grid;
+.browse-lists-header{
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.browse-list-header-searchable{
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.list-card-container{
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    grid-template-columns: repeat(2, 1fr);
+    margin: 5px auto;
+    width: 90%;
 }
