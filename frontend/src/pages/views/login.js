@@ -5,6 +5,8 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import {useNavigate, useLocation} from 'react-router-dom';
 import {loginUser} from '../../features/authSlice';
+import "../components/mainStyle.css"
+
 
 
 function Login() {
@@ -30,7 +32,7 @@ function Login() {
     };
 
     return (
-        <main className="m-1 moovie-default">
+        <main className="m-1 moovie-default default-container">
             <div className="text-3xl font-bold underline">This is the login page. Powered by Tailwind CSS</div>
             <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="formBasicUsername">

@@ -4,6 +4,7 @@ import CardsHorizontalContainer from "../components/cardsHorizontalContainer/Car
 import MediaTypes from "../../api/values/MediaTypes";
 import OrderBy from "../../api/values/MediaOrderBy";
 import SortOrder from "../../api/values/SortOrder";
+import "../components/mainStyle.css"
 
 
 function Home() {
@@ -97,7 +98,7 @@ function Home() {
 
 
     return (
-        <main>
+        <main className="moovie-default default-container">
             <div>Sumérgete en Películas y Series,
                 Descubre tu Próxima Experiencia Favorita.
             </div>

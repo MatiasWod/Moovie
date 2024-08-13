@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import userApi from "../../api/UserApi";
 import ProfileImage from "../components/profileImage/ProfileImage";
+import "../components/mainStyle.css"
 
 function Profile(){
 
@@ -29,7 +30,7 @@ function Profile(){
 
 
     return (
-        <div>
+        <div className="default-container moovie-default">
             <div>Perfil de {profile.username}</div>
             <ProfileImage image={profile.pictureUrl} size={100}/>
         </div>

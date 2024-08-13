@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import './details.css';
+import "../components/mainStyle.css"
 import {useParams} from "react-router-dom";
 import mediaApi from "../../api/MediaApi";
 import SearchableMediaTag from "../components/searchableMediaTag/searchableMediaTag";
@@ -88,8 +89,8 @@ function Details() {
 
 
     return (
-        <div className={"moovie-default"}>
-        <div className="row">
+        <div className="moovie-default default-container">
+            <div className="row">
 
                 {/*POSTER COLUMN*/}
                 <div className="col">

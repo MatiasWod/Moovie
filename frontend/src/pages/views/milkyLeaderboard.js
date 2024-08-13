@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import userApi from "../../api/UserApi";
-import paginationButton from "../components/paginationButton/PaginationButton";
-import PaginationButton from "../components/paginationButton/PaginationButton";
 import PagingSizes from "../../api/values/PagingSizes";
+import "../components/mainStyle.css"
 
 function MilkyLeaderboard(){
     const [milkyLeaderboard, setMilkyLeaderboard] = useState([]);
@@ -26,7 +25,7 @@ function MilkyLeaderboard(){
     }, []);
 
     return (
-        <div>
+        <div className="moovie-default default-container">
             <div>
                 {milkyLeaderboard.map(profile => (
                     <div>{profile.username}, {profile.milkyPoints}</div>

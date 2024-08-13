@@ -8,6 +8,8 @@ import PagingSizes from "../../api/values/PagingSizes";
 import OrderBy from "../../api/values/MediaOrderBy";
 import SortOrder from "../../api/values/SortOrder";
 import DropdownMenu from "../components/dropdownMenus/DropdownMenu/DropdownMenu";
+import "../components/mainStyle.css"
+
 
 function List() {
     const {id} = useParams();
@@ -66,7 +68,7 @@ function List() {
 
 
     return (
-        <div>
+        <div className="default-container moovie-default">
             <h1>Details Page</h1>
             <ListHeader list={list}/>
             <h1>------</h1>
