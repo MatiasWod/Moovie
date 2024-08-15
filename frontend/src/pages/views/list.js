@@ -7,7 +7,7 @@ import PaginationButton from "../components/paginationButton/PaginationButton";
 import PagingSizes from "../../api/values/PagingSizes";
 import OrderBy from "../../api/values/MediaOrderBy";
 import SortOrder from "../../api/values/SortOrder";
-import DropdownMenu from "../components/dropdownMenus/DropdownMenu/DropdownMenu";
+import DropdownMenu from "../components/dropdownMenu/DropdownMenu";
 import "../components/mainStyle.css"
 
 

@@ -24,7 +24,7 @@
                     <a href="${pageContext.request.contextPath}/featuredList/topRatedMovies"><spring:message code="index.seeMore"/></a>
                 </div>
                 <hr class="my-1">
-                <div class="container d-flex scrollableDiv">
+                <div class="container dflex- scrollableDiv">
                     <c:forEach var="movie" items="${movieList}" end="5">
                         <a href="${pageContext.request.contextPath}/details/${movie.mediaId}" class="poster card text-bg-dark m-1">
                             <div class="card-img-container"> <!-- Add a container for the image -->

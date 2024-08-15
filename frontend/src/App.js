@@ -15,6 +15,7 @@ const Login = lazy(() => import(views + '/login'));
 const Details = lazy(() => import(views + '/details'));
 const List = lazy(() => import(views + '/list'));
 const BrowseLists = lazy(() => import(views + '/browseLists'));
+const Discover = lazy(() => import(views + '/discover'));
 const MilkyLeaderboard = lazy(() => import(views + '/milkyLeaderboard'));
 const Profile = lazy(() => import(views + '/profile'));
 const Healthcheck = lazy(() => import(views + '/healthcheck'));
@@ -41,6 +42,7 @@ export default function App() {
                         <Route path='/login' element={<Login/>}/>
                         <Route path='/details/:id' element={<Details/>}/>
                         <Route path='/list/:id' element={<List/>}/>
+                        <Route path='/discover' element={<Discover/>}/>
                         <Route path='/browseLists' element={<BrowseLists/>}/>
                         <Route path='/leaderboard' element={<MilkyLeaderboard/>}/>
                         <Route path='/profile/:username' element={<Profile/>}/>

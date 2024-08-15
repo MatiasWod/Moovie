@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import OrderBy from "../../../../api/values/MediaOrderBy";
-import SortOrder from "../../../../api/values/SortOrder";
+import OrderBy from "../../../api/values/MediaOrderBy";
+import SortOrder from "../../../api/values/SortOrder";
 import Button from "react-bootstrap/Button";
 
 

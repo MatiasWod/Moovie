@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import listApi from "../../api/ListApi";
-import DropdownMenu from "../components/dropdownMenus/DropdownMenu/DropdownMenu";
+import DropdownMenu from "../components/dropdownMenu/DropdownMenu";
 import CardsListOrderBy from "../../api/values/CardsListOrderBy";
 import SortOrder from "../../api/values/SortOrder";
 import ListCard from "../components/listCard/ListCard";
