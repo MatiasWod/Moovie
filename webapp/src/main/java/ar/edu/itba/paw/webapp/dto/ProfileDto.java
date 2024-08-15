@@ -28,7 +28,9 @@ public class ProfileDto {
         dto.milkyPoints = profile.getMilkyPoints();
         dto.hasBadge = profile.isHasBadge();
 
-        dto.profilePictureUrl = uriInfo.getBaseUriBuilder().path("users/{username}/image").build(profile.getUsername()).toString();
+        if(profile.isHasPfp()){
+            dto.profilePictureUrl = uriInfo.getBaseUriBuilder().path("users/{username}/image").build(profile.getUsername()).toString();
+        }
         dto.url = uriInfo.getBaseUriBuilder().path("users/profile/{username}").build(profile.getUsername()).toString();
         return dto;
     }
@@ -108,4 +110,5 @@ public class ProfileDto {
     public void setPictureUrl(String profilePictureUrl) {
         this.profilePictureUrl = profilePictureUrl;
     }
+
 }

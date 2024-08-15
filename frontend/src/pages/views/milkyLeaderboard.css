@@ -2,6 +2,13 @@
 
 }
 
-.milky-leaderboard-profile{
+.milky-leaderboard-table-container{
     display: flex;
+    margin: auto;
+    width:75%;
+    justify-content: center;
+}
+
+.milky-leaderboard-profile{
+    width: 100%;
 }

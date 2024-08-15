@@ -30,6 +30,9 @@ public class Profile {
             "(SELECT COUNT(ml.moovielistid) FROM moovielistslikes mll LEFT OUTER JOIN moovielists ml ON ml.moovielistid = mll.moovielistid WHERE ml.userid = userId) )")
     private int milkyPoints;
 
+    @Formula("(SELECT EXISTS( SELECT 1 FROM userimages ui WHERE userid = ui.userid))")
+    private boolean hasPfp;
+
     @Transient
     private boolean hasBadge;
 
@@ -37,7 +40,7 @@ public class Profile {
 
     }
 
-    public Profile(int userId, String username, String email, int role, int moovieListCount, int reviewsCount, int milkyPoints) {
+    public Profile(int userId, String username, String email, int role, int moovieListCount, int reviewsCount, int milkyPoints, boolean hasPfp) {
         this.userId = userId;
         this.username = username;
         this.email = email;
@@ -45,6 +48,7 @@ public class Profile {
         this.moovieListCount = moovieListCount;
         this.reviewsCount = reviewsCount;
         this.milkyPoints = milkyPoints;
+        this.hasPfp = hasPfp;
     }
 
     public int getUserId() {
@@ -78,5 +82,9 @@ public class Profile {
 
     public boolean isHasBadge() {
         return milkyPoints >= BadgeLimits.POINTS_FOR_SIMPLE_BADGE.getLimit();
+    }
+
+    public boolean isHasPfp() {
+        return hasPfp;
     }
 }

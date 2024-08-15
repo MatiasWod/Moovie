@@ -184,10 +184,6 @@ public class UserController {
     public Response getProfileImage(@PathParam("username") final String username) {
         LOGGER.info("Method: getProfileImage, Path: /users/{username}/image, Username: {}", username);
         final byte[] image = userService.getProfilePicture(username);
-        if (image == null) {
-            LOGGER.info("Profile image for username {} not found. Returning NOT_FOUND.", username);
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
         return Response.ok(image).build();
     }
 
