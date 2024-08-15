@@ -36,6 +36,8 @@ function MilkyLeaderboard(){
                     <tr className={"milky-leaderboard-profile"}>
                         <td className="col"></td>
                         <td className="col">User</td>
+                        <td className="col">Lists</td>
+                        <td className="col">Reviews</td>
                         <td className="col">Points</td>
                     </tr>
 
@@ -58,6 +60,8 @@ function MilkyLeaderboardProfile({profile}) {
         <tr className={"milky-leaderboard-profile"}>
             <ProfileImage image={profile.pictureUrl}/>
             <td className="col">{profile.username}</td>
+            <td className="col">{profile.moovieListCount}</td>
+            <td className="col">{profile.reviewsCount}</td>
             <td className="col">{profile.milkyPoints}</td>
         </tr>
     )
