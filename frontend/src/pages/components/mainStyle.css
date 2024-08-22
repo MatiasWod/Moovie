@@ -15,4 +15,7 @@
     font-weight: bold;
 }
 
-
+.not-link{
+    text-decoration: none;
+    color: inherit;
+}

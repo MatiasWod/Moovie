@@ -48,7 +48,13 @@ function NavbarComponent() {
                     </Nav>
                     <SearchBar/>
                     <Nav className="d-flex nav-item justify-content-center userPic-login">
-                        <ProfileImage image={user ? "http://localhost:8080/users/" + user.username + "/image" : null}/>
+                        {user && (
+                            <ProfileImage
+                                imgSrc={`http://localhost:8080/users/${user.username}/image`}
+                                size="100px" // Adjust size as needed
+                                defaultProfilePicture="https://example.com/default-profile.jpg" // Your default image URL
+                            />
+                        )}
 
                         {isLoggedIn ? (
                             <NavDropdown title={`${user.username} (${user.role})`} id="basic-nav-dropdown">

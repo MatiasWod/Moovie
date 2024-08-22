@@ -58,7 +58,7 @@ export default MilkyLeaderboard;
 function MilkyLeaderboardProfile({profile}) {
     return (
         <tr className={"milky-leaderboard-profile"}>
-            <ProfileImage image={profile.pictureUrl}/>
+            <ProfileImage image={profile.pictureUrl} username={profile.username}/>
             <td className="col">{profile.username}</td>
             <td className="col">{profile.moovieListCount}</td>
             <td className="col">{profile.reviewsCount}</td>
