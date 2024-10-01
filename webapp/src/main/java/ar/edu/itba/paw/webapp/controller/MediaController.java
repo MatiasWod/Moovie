@@ -36,7 +36,8 @@ public class MediaController {
                              @QueryParam("pageNumber") @DefaultValue("1") final int page,
                              @QueryParam("pageSize") @DefaultValue("-1") final int pageSize,
                              @QueryParam("orderBy") final String orderBy,
-                             @QueryParam("sortOrder") final String sortOrder) {
+                             @QueryParam("sortOrder") final String sortOrder,
+                             @QueryParam("search") final String search) {
         /* int type, String search, String participant, List<String> genres, List<String> providers,
                 List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber*/
         try {
@@ -50,7 +51,7 @@ public class MediaController {
                 pageSizeQuery = PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize();
             }
 
-            List<Media> mediaList = mediaService.getMedia(typeQuery, null, null,
+            List<Media> mediaList = mediaService.getMedia(typeQuery, search, null,
                     null, null, null, null, orderBy, sortOrder, pageSizeQuery, page - 1);
 
             List<MediaDto> mediaDtoList = MediaDto.fromMediaList(mediaList, uriInfo);

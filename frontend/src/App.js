@@ -17,6 +17,7 @@ const List = lazy(() => import(views + '/list'));
 const BrowseLists = lazy(() => import(views + '/browseLists'));
 const Discover = lazy(() => import(views + '/discover'));
 const MilkyLeaderboard = lazy(() => import(views + '/milkyLeaderboard'));
+const Search = lazy(() => import(views + '/search'));
 const Profile = lazy(() => import(views + '/profile'));
 const Healthcheck = lazy(() => import(views + '/healthcheck'));
 const Error404 = lazy(() => import(views + '/errorViews/error404'));
@@ -46,6 +47,7 @@ export default function App() {
                         <Route path='/browseLists' element={<BrowseLists/>}/>
                         <Route path='/leaderboard' element={<MilkyLeaderboard/>}/>
                         <Route path='/profile/:username' element={<Profile/>}/>
+                        <Route path='/search/:search' element={<Search/>}/>
                         <Route path='/healthcheck' element={<Healthcheck/>}/>
                         <Route path='/authtest' element={<AuthTest/>}/> {/* Add AuthTest route */}
                         <Route path='*' element={<Error404/>}/>
