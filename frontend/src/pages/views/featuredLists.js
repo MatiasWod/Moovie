@@ -26,6 +26,7 @@ function FeaturedLists() {
     let orderBy;
 
     switch (type) {
+        //TODO Reviasr que parece que la media es lo mismo que para los movie
         case "topRatedMedia":
             mediaType = MediaTypes.TYPE_ALL
             orderBy = OrderBy.TMDB_RATING

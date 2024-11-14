@@ -58,7 +58,7 @@ function NavbarComponent() {
 
                         {isLoggedIn ? (
                             <NavDropdown title={`${user.username} (${user.role})`} id="basic-nav-dropdown">
-                                <NavDropdown.Item as={NavLink} to="/profile">Profile</NavDropdown.Item>
+                                <NavDropdown.Item as={NavLink} to={`/profile/${user.username}`}>Profile</NavDropdown.Item>
                                 <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
                             </NavDropdown>
                         ) : (
