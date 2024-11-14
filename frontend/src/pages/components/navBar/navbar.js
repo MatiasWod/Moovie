@@ -35,14 +35,14 @@ function NavbarComponent() {
                         <Nav.Link as={NavLink} to="/discover" activeClassName="active">Discover</Nav.Link>
                         <Nav.Link as={NavLink} to="/browseLists" activeClassName="active">Browse Lists</Nav.Link>
                         <NavDropdown title="Top Rated" id="basic-nav-dropdown">
-                            <NavDropdown.Item to="#action/3.1" activeClassName="active">Media</NavDropdown.Item>
-                            <NavDropdown.Item to="#action/3.2" activeClassName="active">Movies</NavDropdown.Item>
-                            <NavDropdown.Item to="#action/3.3" activeClassName="active">Series</NavDropdown.Item>
+                            <NavDropdown.Item as={NavLink} to="featuredLists/topRatedMedia" activeClassName="active">Media</NavDropdown.Item>
+                            <NavDropdown.Item as={NavLink} to="featuredLists/topRatedMovies" activeClassName="active">Movies</NavDropdown.Item>
+                            <NavDropdown.Item as={NavLink} to="featuredLists/topRatedSeries" activeClassName="active">Series</NavDropdown.Item>
                         </NavDropdown>
                         <NavDropdown title="Most Popular" id="basic-nav-dropdown">
-                            <NavDropdown.Item to="#action/3.1" activeClassName="active">Media</NavDropdown.Item>
-                            <NavDropdown.Item to="#action/3.2" activeClassName="active">Movies</NavDropdown.Item>
-                            <NavDropdown.Item to="#action/3.3" activeClassName="active">Series</NavDropdown.Item>
+                            <NavDropdown.Item as={NavLink} to="featuredLists/mostPopularMedia" activeClassName="active">Media</NavDropdown.Item>
+                            <NavDropdown.Item as={NavLink} to="featuredLists/mostPopularMovies" activeClassName="active">Movies</NavDropdown.Item>
+                            <NavDropdown.Item as={NavLink} to="featuredLists/mostPopularSeries" activeClassName="active">Series</NavDropdown.Item>
                         </NavDropdown>
                         <Nav.Link as={NavLink} to="/leaderboard" activeClassName="active">Leaderboard</Nav.Link>
                     </Nav>
