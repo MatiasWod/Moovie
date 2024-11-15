@@ -1,0 +1,30 @@
+@baseUrl = http://localhost:8080/list
+
+#----------------------------
+# GET
+#----------------------------
+
+### LIST BY ID
+
+# EXAMPLE: GET {{base_url}}/list/5
+
+@id0 = 37
+
+GET {{baseUrl}}/{{id0}}
+
+### LIST CONTENT
+
+# EXAMPLE: {{baseUrl}}/list/1/content?orderBy=name&sortOrder=ASC&page=1
+
+@id1 = 37
+@orderBy1 = ASC
+@sortOrder1 = name
+@page1 = 1
+
+GET {{baseUrl}}/{{id1}}/content?orderBy={{orderBy1}}&sortOrder={{sortOrder1}}&page={{page1}}
+
+### LIST LIST (Still needs a lot of work to be done aa)
+
+@page2 = 1
+
+GET {{baseUrl}}?pageNumber={{page2}}

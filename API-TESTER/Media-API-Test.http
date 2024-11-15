@@ -1,0 +1,26 @@
+@baseUrl = http://localhost:8080
+
+#----------------------------
+# GET
+#----------------------------
+
+### MEDIA BY ID
+
+# EXAMPLE: GET {{baseUrl}}/media/123
+
+@id0 = 123
+
+GET {{baseUrl}}/{{id0}}
+
+
+### MEDIA LIST
+
+# EXAMPLE: {{baseUrl}}/media?type&orderBy=name&sortOrder=ASC&page=1&pageSize=5
+
+@type1 = 1
+@orderBy1 = name
+@sortOrder1 = ASC
+@page1 = 1
+@pageSize1 = 10
+
+GET {{baseUrl}}?type={{type1}}&orderBy={{orderBy1}}&sortOrder={{sortOrder1}}&page={{page1}}&pageSize={{pageSize1}}

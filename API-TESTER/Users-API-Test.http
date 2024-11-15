@@ -1,0 +1,13 @@
+@baseUrl = http://localhost:8080
+
+#----------------------------
+# GET
+#----------------------------
+
+### PROFILE
+
+@username1 = Wancho
+
+GET {{baseUrl}}/profile/{{username1}}
+
+
