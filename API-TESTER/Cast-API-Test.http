@@ -1,0 +1,13 @@
+@baseUrl = http://localhost:8080/cast
+
+#----------------------------
+# GET
+#----------------------------
+
+### ACTOR BY ID
+
+# EXAMPLE: GET {{base_url}}/actor/300
+
+@actorId1 = 39459
+
+GET {{baseUrl}}/actor/{{actorId1}}
