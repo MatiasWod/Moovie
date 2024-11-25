@@ -11,3 +11,12 @@
 @actorId1 = 39459
 
 GET {{baseUrl}}/actor/{{actorId1}}
+
+
+### MEDIA OF ACTOR BY ID
+
+# EXAMPLE: GET {{base_url}}/actor/300/medias
+
+@actorId2 = 39459
+
+GET {{baseUrl}}/actor/{{actorId1}}/medias
