@@ -78,9 +78,11 @@ public class WebConfig {
 
     private DatabasePopulator databasePopulator(){
         final ResourceDatabasePopulator dbp =  new ResourceDatabasePopulator();
+        // TODO UNCOMMENT THIS
         //dbp.addScript(schemaSql);
         //dbp.addScript(mediaSql);
         //dbp.addScript(featuredLists);
+        // UNTIL HERE 
         return dbp;
     }
 
@@ -112,7 +114,7 @@ public class WebConfig {
     public DataSource dataSource(){
         final SimpleDriverDataSource ds = new SimpleDriverDataSource();
         ds.setDriverClass(org.postgresql.Driver.class);
-        ds.setUrl("jdbc:postgresql://localhost:5433/paw");
+        ds.setUrl("jdbc:postgresql://localhost:5432/paw");
         ds.setUsername("postgres");
         ds.setUsername("postgres");
         ds.setPassword("admin");
