@@ -14,7 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -182,12 +185,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getInfoOfMyUser() {
-        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
-            org.springframework.security.core.userdetails.User userDetails = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            return findUserByUsername(userDetails.getUsername());
-        } else {
-            throw new UserNotLoggedException("User is not logged when its supposed");
+        SecurityContext context = SecurityContextHolder.getContext();
+        if (context == null) {
+            throw new UserNotLoggedException("Security context is null");
         }
+
+        Authentication authentication = context.getAuthentication();
+        if (authentication == null) {
+            throw new UserNotLoggedException("User is not authenticated");
+        }
+
+        Object principal = authentication.getPrincipal();
+        String username;
+
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else if (principal instanceof String) {
+            username = (String) principal;
+        } else {
+            throw new UserNotLoggedException("Unknown principal type");
+        }
+
+        // Fetch and return the user by username
+        return findUserByUsername(username);
     }
 
     @Override

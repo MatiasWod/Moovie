@@ -69,9 +69,7 @@ function List() {
 
     return (
         <div className="default-container moovie-default">
-            <h1>Details Page</h1>
             <ListHeader list={list}/>
-            <h1>------</h1>
 
             <DropdownMenu setOrderBy={setOrderBy} setSortOrder={setSortOrder} currentOrderDefault={currentSortOrder} values={Object.values(OrderBy)}/>
 

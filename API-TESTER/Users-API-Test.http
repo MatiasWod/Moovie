@@ -21,11 +21,12 @@ GET {{baseUrl}}/profile/{{username1}}
 @username2 = Wancho
 @password2 = pass12
 
+@auth2 = V2FuY2hvOnBhc3MxMg==
+
 GET {{baseUrl}}/users/username/{{username2}}
-Authorization: Basic $(echo -n '{{username2}}:{{password2}}' | base64)
+Authorization: Basic {{auth2}}
 
 
-###
 
 
 

@@ -1,0 +1,40 @@
+.list-content {
+    margin: 20px;
+}
+
+.media-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.media-table th,
+.media-table td {
+    text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.media-title {
+    display: flex;
+    align-items: center;
+}
+
+.media-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 10px;
+    border-radius: 5px;
+}
+
+.star {
+    color: #f39c12;
+}
+
+.list-card-images {
+    width: 100px;
+    height: 150px;
+    object-fit: contain;
+    border-radius: 5px;
+    margin-right: 10px;
+}

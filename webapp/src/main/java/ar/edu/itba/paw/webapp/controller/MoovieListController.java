@@ -55,6 +55,7 @@ public class MoovieListController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMoovieListById(@PathParam("id") final int id) {
         try{
+            System.out.println("ashuaa");
             return Response.ok(MoovieListDto.fromMoovieList(moovieListService.getMoovieListCardById(id), uriInfo)).build();
         } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -96,7 +97,11 @@ public class MoovieListController {
                     listDto.getDescription()
             ).getMoovieListId();
             UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder().path(String.valueOf(listId));
-            return Response.created(uriBuilder.build()).build();
+
+            return Response.created(uriBuilder.build())
+                    .entity("{\"message\":\"Movie list created successfully.\", \"url\": \"" + uriBuilder.build().toString() + "\"}")
+                    .build();
+
 
         } catch (DuplicateKeyException e) {
             return Response.status(Response.Status.CONFLICT)
