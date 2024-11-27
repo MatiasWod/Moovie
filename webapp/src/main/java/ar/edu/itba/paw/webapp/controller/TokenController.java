@@ -2,7 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.services.VerificationTokenService;
-import ar.edu.itba.paw.webapp.dto.UserCreateDto;
+import ar.edu.itba.paw.webapp.dto.in.UserCreateDto;
 //TODO CHECK LOGGERS
 //import com.sun.org.slf4j.internal.Logger;
 //import com.sun.org.slf4j.internal.LoggerFactory;

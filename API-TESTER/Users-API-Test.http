@@ -11,3 +11,22 @@
 GET {{baseUrl}}/profile/{{username1}}
 
 
+### LOGIN
+
+# EXAMPLE
+# curl -X GET
+#     -H "Authorization: Basic $(echo -n 'username:password' | base64)"
+#     http://localhost:8080/users/username/username
+
+@username2 = Wancho
+@password2 = pass12
+
+GET {{baseUrl}}/users/username/{{username2}}
+Authorization: Basic $(echo -n '{{username2}}:{{password2}}' | base64)
+
+
+###
+
+
+
+

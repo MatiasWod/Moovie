@@ -1,9 +1,7 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.out;
 
-import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.Movie;
 
-import javax.persistence.Column;
 import javax.ws.rs.core.UriInfo;
 
 public class MovieDto extends MediaDto{

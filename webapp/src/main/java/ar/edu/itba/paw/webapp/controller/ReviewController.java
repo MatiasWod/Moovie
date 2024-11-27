@@ -3,8 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.services.ReviewService;
-import ar.edu.itba.paw.webapp.dto.MediaDto;
-import ar.edu.itba.paw.webapp.dto.ReviewDto;
+import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

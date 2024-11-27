@@ -1,10 +1,8 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.out;
 
 import ar.edu.itba.paw.models.Cast.Actor;
-import ar.edu.itba.paw.models.Media.Media;
 
 import javax.ws.rs.core.UriInfo;
-import java.util.List;
 
 
 public class ActorDto {

@@ -1,8 +1,6 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.out;
 
 import ar.edu.itba.paw.models.Media.Media;
-import ar.edu.itba.paw.models.Media.MediaTypes;
-import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.models.Provider.Provider;
 
 import javax.ws.rs.core.UriInfo;

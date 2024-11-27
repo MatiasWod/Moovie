@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.out;
 
 import ar.edu.itba.paw.models.Comments.Comment;
 import ar.edu.itba.paw.models.Review.Review;

@@ -28,3 +28,32 @@ GET {{baseUrl}}/{{id1}}/content?orderBy={{orderBy1}}&sortOrder={{sortOrder1}}&pa
 @page2 = 1
 
 GET {{baseUrl}}?pageNumber={{page2}}
+
+#----------------------------
+# POST
+#----------------------------
+
+
+### CREATE LIST
+
+# POST http://localhost:8080/list
+# Authorization: Bearer <your_token>
+# Content-Type: application/json
+#{
+#  "name": "My Favorite Movies",
+#  "description": "A collection of my favorite films."
+#}
+
+@bearer_token1
+
+POST {{baseUrl}}
+Authorization: {{bearer_token1}}
+Content-Type: application/json
+
+{
+  "name": "My Favorite Movies",
+  "description": "A collection of my favorite films."
+}
+
+###
+

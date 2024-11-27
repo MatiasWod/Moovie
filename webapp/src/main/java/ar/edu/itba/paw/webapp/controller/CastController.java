@@ -2,9 +2,8 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.services.ActorService;
-import ar.edu.itba.paw.webapp.dto.ActorDto;
-import ar.edu.itba.paw.webapp.dto.MediaDto;
-import ar.edu.itba.paw.webapp.dto.MoovieListDto;
+import ar.edu.itba.paw.webapp.dto.out.ActorDto;
+import ar.edu.itba.paw.webapp.dto.out.MediaDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

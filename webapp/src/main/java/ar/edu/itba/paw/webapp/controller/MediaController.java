@@ -4,9 +4,9 @@ import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.services.MediaService;
-import ar.edu.itba.paw.webapp.dto.MediaDto;
-import ar.edu.itba.paw.webapp.dto.MovieDto;
-import ar.edu.itba.paw.webapp.dto.TVSerieDto;
+import ar.edu.itba.paw.webapp.dto.out.MediaDto;
+import ar.edu.itba.paw.webapp.dto.out.MovieDto;
+import ar.edu.itba.paw.webapp.dto.out.TVSerieDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

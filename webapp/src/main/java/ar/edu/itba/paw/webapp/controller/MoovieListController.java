@@ -1,16 +1,18 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.UserNotLoggedException;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.services.MoovieListService;
-import ar.edu.itba.paw.webapp.dto.MediaDto;
-import ar.edu.itba.paw.webapp.dto.MoovieListDto;
-import ar.edu.itba.paw.webapp.dto.UserDto;
-import org.hibernate.annotations.GeneratorType;
+import ar.edu.itba.paw.webapp.dto.in.MoovieListCreateDto;
+import ar.edu.itba.paw.webapp.dto.out.MediaDto;
+import ar.edu.itba.paw.webapp.dto.out.MoovieListDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
@@ -82,4 +84,61 @@ public class MoovieListController {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createMoovieList(@Valid final MoovieListCreateDto listDto) {
+        try {
+            int listId = moovieListService.createMoovieList(
+                    listDto.getName(),
+                    MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
+                    listDto.getDescription()
+            ).getMoovieListId();
+            UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder().path(String.valueOf(listId));
+            return Response.created(uriBuilder.build()).build();
+
+        } catch (DuplicateKeyException e) {
+            return Response.status(Response.Status.CONFLICT)
+                    .entity("A movie list with the same name already exists.")
+                    .build();
+
+        } catch (UserNotLoggedException e) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("User must be logged in to create a movie list.")
+                    .build();
+
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .build();
+        }
+    }
+
+
+
+/*
+    @POST
+    @Path("/{id}/content")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addMediaToMoovieList(@PathParam("moovieListId") final int listId, @PathParam("mediaId") final int mediaId) {
+        try {
+
+            moovieListService.insertMediaIntoMoovieList(listId, mediaId);
+
+            return Response.status(Response.Status.CREATED)
+                    .entity("Media successfully added to the list with ID: " + listId)
+                    .build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Invalid media or list ID: " + e.getMessage())
+                    .build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An error occurred while adding media to the list: " + e.getMessage())
+                    .build();
+        }
+    }
+*/
 }
