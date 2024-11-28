@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
 import ar.edu.itba.paw.exceptions.UserNotLoggedException;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
@@ -119,6 +120,32 @@ public class MoovieListController {
                     .build();
         }
     }
+
+
+    @DELETE
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteMoovieList(@PathParam("id") final int id) {
+        try {
+            moovieListService.deleteMoovieList(id);
+            return Response.noContent().build();
+        } catch (UserNotLoggedException e) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"error\":\"User must be logged in to delete a movie list.\"}")
+                    .build();
+        } catch (InvalidAccessToResourceException e) {
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity("{\"error\":\"User does not have permission to delete this movie list.\"}")
+                    .build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"error\":\"An unexpected error occurred. Please try again later.\"}")
+                    .build();
+        }
+    }
+
+
 
 
 
