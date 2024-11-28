@@ -29,6 +29,9 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private MediaService mediaService;
+
     private static final int EVERY_THIS_AMOUNT_OF_LIKES_SEND_EMAIL = 5;
 
     private static final int EVERY_THIS_AMOUNT_OF_FOLLOWS_SEND_EMAIL = 5;
@@ -76,12 +79,8 @@ public class MoovieListServiceImpl implements MoovieListService{
     public List<Media> getMoovieListContent(int moovieListId, String orderBy, String sortOrder, int size, int pageNumber) {
         MoovieList ml = getMoovieListById(moovieListId);
         //If the previous didnt throw exception, we have the permissions needed to perform the next action
-        try{
-            int userid = userService.getInfoOfMyUser().getUserId();
-            return moovieListDao.getMoovieListContent(moovieListId, userid , setOrderMediaBy(orderBy) , setSortOrder(sortOrder)  ,size, pageNumber-1);
-        } catch(UserNotLoggedException e){
-            return moovieListDao.getMoovieListContent(moovieListId, -1 , setOrderMediaBy(orderBy) , setSortOrder(sortOrder) ,size, pageNumber-1);
-        }
+        int userid = userService.tryToGetCurrentUserId();
+        return moovieListDao.getMoovieListContent(moovieListId, -1 , setOrderMediaBy(orderBy) , setSortOrder(sortOrder) ,size, pageNumber-1);
     }
 
     @Transactional(readOnly = true)
@@ -202,6 +201,11 @@ public class MoovieListServiceImpl implements MoovieListService{
         MoovieList ml = getMoovieListById(moovieListId);
         User currentUser = userService.getInfoOfMyUser();
         if(ml.getUserId() == currentUser.getUserId()){
+            // Validate the medias
+            for(int mId : mediaIdList){
+                mediaService.getMediaById(mId);
+
+            }
             List<User> followers = moovieListDao.getMoovieListFollowers(moovieListId);
             followers.forEach( user -> {
                 emailService.sendMediaAddedToFollowedListMail(user,ml, LocaleContextHolder.getLocale());

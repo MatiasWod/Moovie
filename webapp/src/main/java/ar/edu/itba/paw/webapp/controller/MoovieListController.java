@@ -1,11 +1,12 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
-import ar.edu.itba.paw.exceptions.UserNotLoggedException;
+import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.services.MoovieListService;
+import ar.edu.itba.paw.webapp.dto.in.MediaListDto;
 import ar.edu.itba.paw.webapp.dto.in.MoovieListCreateDto;
 import ar.edu.itba.paw.webapp.dto.out.MediaDto;
 import ar.edu.itba.paw.webapp.dto.out.MoovieListDto;
@@ -115,6 +116,47 @@ public class MoovieListController {
                     .build();
 
         } catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .build();
+        }
+    }
+
+
+    @POST
+    @Path("/{moovieListId}/content")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response insertMediaIntoMoovieList(@PathParam("moovieListId") int moovieListId, @Valid MediaListDto mediaIdListDto) {
+        List<Integer> mediaIdList = mediaIdListDto.getMediaIdList();
+        try {
+            MoovieList updatedList = moovieListService.insertMediaIntoMoovieList(moovieListId, mediaIdList);
+
+            if(mediaIdList == null || mediaIdList.isEmpty()){
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("No media IDs provided.")
+                        .build();
+            }
+
+            return Response.ok(updatedList).build();
+        } catch (MoovieListNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Movie list not found for ID: " + moovieListId)
+                    .build();
+        } catch (MediaNotFoundException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Invalid media IDs provided.")
+                    .build();
+        } catch( UnableToInsertIntoDatabase e){
+            if(mediaIdList.size()==1){
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("Media already in list.")
+                        .build();
+            }
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("One of the media provided already in the list.")
+                    .build();
+        } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An unexpected error occurred: " + e.getMessage())
                     .build();

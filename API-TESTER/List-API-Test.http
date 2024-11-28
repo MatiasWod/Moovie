@@ -58,6 +58,32 @@ Content-Type: application/json
 
 > response.json
 
+
+
+### INSERT MEDIA INTO LIST
+
+# POST http://localhost:8080/list/{{moovieListId1}}/content
+# Authorization: Bearer <your_token>
+# Content-Type: application/json
+#{
+#  "name": "My Favorite Movies",
+#  "description": "A collection of my favorite films."
+#}
+
+@bearer_token3 = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJXYW5jaG8iLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjc0MDc0NywiZXhwIjoxNzMzMzQ1NTQ3fQ.OKFjYIuVZktDJ6rw3XbgW2aqO0brzGhjpOkU2sJJfgFVvauDxz7hCFwnVnUnJCW_ZW8EWw6BBfcg-AFyiCh_7Q
+@moovieListId1 = 45
+
+POST {{baseUrl}}/{{moovieListId1}}/content
+Authorization: Bearer {{bearer_token3}}
+Content-Type: application/json
+
+{
+  "mediaIdList": [90000]
+}
+
+
+> response.json
+
 #----------------------------
 # DELETE
 #----------------------------
