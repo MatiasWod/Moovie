@@ -214,7 +214,7 @@ public class UserServiceImpl implements UserService {
     public int tryToGetCurrentUserId() {
         try {
             return getInfoOfMyUser().getUserId();
-        } catch (UserNotLoggedException e) {
+        } catch (UserNotLoggedException | UnableToFindUserException e ) {
             return -1;
         }
     }
