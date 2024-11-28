@@ -78,7 +78,7 @@ Authorization: Bearer {{bearer_token3}}
 Content-Type: application/json
 
 {
-  "mediaIdList": [90000]
+  "mediaIdList": [5,6,7,8]
 }
 
 
@@ -96,3 +96,20 @@ Content-Type: application/json
 
 DELETE {{baseUrl}}/{{id2}}
 Authorization: Bearer {{bearer_token2}}
+
+
+
+
+### DELETE MEDIA FROM LIST
+
+@bearer_token4 = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJXYW5jaG8iLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjc0MDc0NywiZXhwIjoxNzMzMzQ1NTQ3fQ.OKFjYIuVZktDJ6rw3XbgW2aqO0brzGhjpOkU2sJJfgFVvauDxz7hCFwnVnUnJCW_ZW8EWw6BBfcg-AFyiCh_7Q
+
+@id4 = 45
+
+DELETE {{baseUrl}}/{{id4}}/content
+Authorization: Bearer {{bearer_token4}}
+Content-Type: application/json
+
+{
+  "mediaIdList": [6]
+}

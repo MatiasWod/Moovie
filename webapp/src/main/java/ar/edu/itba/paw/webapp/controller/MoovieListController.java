@@ -33,21 +33,27 @@ public class MoovieListController {
         this.moovieListService = moovieListService;
     }
 
+
+    /**
+     * GET METHODS
+     */
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getMoovieList(@QueryParam("search")  String search,
-                                    @QueryParam("ownerUsername") String ownerUsername,
-                                    @QueryParam("type") @DefaultValue("-1") int type,
-                                    @QueryParam("orderBy") String orderBy,
-                                    @QueryParam("order") String order,
-                                    @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber){
-        try{
-            if(type<1 || type>4){
+    public Response getMoovieList(@QueryParam("search") String search,
+                                  @QueryParam("ownerUsername") String ownerUsername,
+                                  @QueryParam("type") @DefaultValue("-1") int type,
+                                  @QueryParam("orderBy") String orderBy,
+                                  @QueryParam("order") String order,
+                                  @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
+        try {
+            if (type < 1 || type > 4) {
                 type = MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType();
             }
             List<MoovieListDto> mlcDto = MoovieListDto.fromMoovieListList(moovieListService.getMoovieListCards(search, ownerUsername, type, orderBy, order, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), pageNumber), uriInfo);
-            return Response.ok(new GenericEntity<List<MoovieListDto>>(mlcDto){}).build();
-        }catch (RuntimeException e){
+            return Response.ok(new GenericEntity<List<MoovieListDto>>(mlcDto) {
+            }).build();
+        } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
@@ -56,7 +62,7 @@ public class MoovieListController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMoovieListById(@PathParam("id") final int id) {
-        try{
+        try {
             System.out.println("ashuaa");
             return Response.ok(MoovieListDto.fromMoovieList(moovieListService.getMoovieListCardById(id), uriInfo)).build();
         } catch (Exception e) {
@@ -72,10 +78,10 @@ public class MoovieListController {
                                        @QueryParam("orderBy") @DefaultValue("customOrder") final String orderBy,
                                        @QueryParam("sortOrder") @DefaultValue("DESC") final String sortOrder,
                                        @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber,
-                                       @QueryParam("pageSize") @DefaultValue("-1") final int pageSize){
-        try{
+                                       @QueryParam("pageSize") @DefaultValue("-1") final int pageSize) {
+        try {
             int pageSizeQuery = pageSize;
-            if( pageSize < 1 || pageSize > PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize() ){
+            if (pageSize < 1 || pageSize > PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize()) {
                 pageSizeQuery = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
             }
 
@@ -83,10 +89,15 @@ public class MoovieListController {
             List<MediaDto> mediaDtoList = MediaDto.fromMediaList(mediaList, uriInfo);
             return Response.ok(new GenericEntity<List<MediaDto>>(mediaDtoList) {
             }).build();
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
+
+
+    /**
+     * POST METHODS
+     */
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -132,13 +143,13 @@ public class MoovieListController {
         try {
             MoovieList updatedList = moovieListService.insertMediaIntoMoovieList(moovieListId, mediaIdList);
 
-            if(mediaIdList == null || mediaIdList.isEmpty()){
+            if (mediaIdList == null || mediaIdList.isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity("No media IDs provided.")
                         .build();
             }
 
-            return Response.ok(updatedList).build();
+            return Response.ok(updatedList).entity("Media added succesfully to the list.").build();
         } catch (MoovieListNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("Movie list not found for ID: " + moovieListId)
@@ -147,8 +158,8 @@ public class MoovieListController {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Invalid media IDs provided.")
                     .build();
-        } catch( UnableToInsertIntoDatabase e){
-            if(mediaIdList.size()==1){
+        } catch (UnableToInsertIntoDatabase e) {
+            if (mediaIdList.size() == 1) {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity("Media already in list.")
                         .build();
@@ -163,6 +174,10 @@ public class MoovieListController {
         }
     }
 
+
+    /**
+     * DELETE METHODS
+     */
 
     @DELETE
     @Path("/{id}")
@@ -187,6 +202,32 @@ public class MoovieListController {
         }
     }
 
+
+    @DELETE
+    @Path("/{id}/content")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteMediaMoovieList(@PathParam("id") final int id, @Valid MediaListDto mediaIdListDto) {
+        List<Integer> mediaIdList = mediaIdListDto.getMediaIdList();
+        try {
+            for (int media: mediaIdList){
+                moovieListService.deleteMediaFromMoovieList(id, media);
+            }
+            return Response.noContent().build();
+        } catch (UserNotLoggedException e) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"error\":\"User must be logged in to delete media from a movie list.\"}")
+                    .build();
+        } catch (InvalidAccessToResourceException e) {
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity("{\"error\":\"User does not have permission to delete this media from the movie list.\"}")
+                    .build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"error\":\"An unexpected error occurred. Please try again later.\"}")
+                    .build();
+        }
+    }
 
 
 
