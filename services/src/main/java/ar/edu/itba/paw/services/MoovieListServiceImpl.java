@@ -45,8 +45,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         MoovieList ml = moovieListDao.getMoovieListById(moovieListId).orElseThrow( () -> new MoovieListNotFoundException("Moovie list by id: " + moovieListId + " not found"));
         if( ml.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.getType() || ml.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType() ){
             try{
-                User currentUser = userService.getInfoOfMyUser();
-                if(ml.getUserId() != currentUser.getUserId()){
+                if(ml.getUserId() != userService.tryToGetCurrentUserId()){
                     throw new InvalidAccessToResourceException("User is not owner of the list and its private");
                 }
             } catch (UserNotLoggedException e){
@@ -63,11 +62,10 @@ public class MoovieListServiceImpl implements MoovieListService{
         MoovieListCard mlc = moovieListDao.getMoovieListCardById(moovieListId, currentUserId);
         if( mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.getType() || mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType()){
             try {
-                User currentUser = userService.getInfoOfMyUser();
-                if(!mlc.getUsername().equals(currentUser.getUsername()) ){
+                if( mlc.getUserId() != currentUserId){
                     throw new InvalidAccessToResourceException("User is not owner of the list and its private");
                 }
-            }catch (UserNotLoggedException e){
+            }catch (UserNotLoggedException e ){
                 throw new InvalidAccessToResourceException("User is not owner of the list and its private");
             }
         }
@@ -199,8 +197,8 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public MoovieList insertMediaIntoMoovieList(int moovieListId, List<Integer> mediaIdList) {
         MoovieList ml = getMoovieListById(moovieListId);
-        User currentUser = userService.getInfoOfMyUser();
-        if(ml.getUserId() == currentUser.getUserId()){
+        int currentUserId = userService.tryToGetCurrentUserId();
+        if(ml.getUserId() == currentUserId){
             // Validate the medias
             for(int mId : mediaIdList){
                 mediaService.getMediaById(mId);
@@ -224,8 +222,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public void deleteMediaFromMoovieList(int moovieListId, int mediaId) {
         MoovieList ml = getMoovieListById(moovieListId);
-        User currentUser = userService.getInfoOfMyUser();
-        if(ml.getUserId() == currentUser.getUserId()){
+        if(ml.getUserId() == userService.tryToGetCurrentUserId()){
             moovieListDao.deleteMediaFromMoovieList(moovieListId, mediaId);
             LOGGER.info("Succesfully deleted media: {} from list: {}.", mediaId,moovieListId);
         }
@@ -238,8 +235,8 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public void deleteMoovieList(int moovieListId) {
         MoovieList ml = getMoovieListById(moovieListId);
-        User currentUser = userService.getInfoOfMyUser();
-        if(currentUser.getRole() == UserRoles.MODERATOR.getRole() || currentUser.getUserId() == ml.getUserId()){
+        int currentUserId = userService.tryToGetCurrentUserId();
+        if(userService.getInfoOfMyUser().getRole() == UserRoles.MODERATOR.getRole() || currentUserId == ml.getUserId()){
             moovieListDao.deleteMoovieList(moovieListId);
             LOGGER.info("Succesfully deleted list: {}.",moovieListId);
 
@@ -313,7 +310,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Transactional
     @Override
     public void likeMoovieList(int moovieListId) {
-        int userId = userService.getInfoOfMyUser().getUserId();
+        int userId = userService.tryToGetCurrentUserId();
         MoovieListCard mlc = getMoovieListCardById(moovieListId);
         LOGGER.info("userID: {} -- will like {}  -- likestate is: {}",userId,mlc.getName(), mlc.isCurrentUserHasLiked());
         if(mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType()){
@@ -337,7 +334,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Transactional
     @Override
     public void removeLikeMoovieList(int moovieListId) {
-        moovieListDao.removeLikeMoovieList(userService.getInfoOfMyUser().getUserId(), moovieListId);
+        moovieListDao.removeLikeMoovieList(userService.tryToGetCurrentUserId(), moovieListId);
         LOGGER.info("Succesfully removed like in list: {}, user: {}.",moovieListId,userService.tryToGetCurrentUserId());
     }
 

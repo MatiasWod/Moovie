@@ -207,7 +207,11 @@ public class UserServiceImpl implements UserService {
         }
 
         // Fetch and return the user by username
-        return findUserByUsername(username);
+        try{
+            return findUserByUsername(username);
+        } catch (UnableToFindUserException e) {
+            throw new UserNotLoggedException("User not found");
+        }
     }
 
     @Override
