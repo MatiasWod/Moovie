@@ -175,6 +175,33 @@ public class MoovieListController {
     }
 
 
+    @POST
+    @Path("/{id}/like")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response likeMoovieList(@PathParam("id") int moovieListId) {
+        try{
+            boolean like = moovieListService.likeMoovieList(moovieListId);
+            if (like){
+                return Response.ok()
+                        .entity("{\"message\":\"Succesfully liked list.\"}").build();
+            }
+            return Response.ok()
+                    .entity("{\"message\":\"Succesfully unliked list.\"}").build();
+        } catch(UserNotLoggedException e){
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"error\":\"User must be logged in to like a movie list.\"}")
+                    .build();
+        } catch ( MoovieListNotFoundException e ){
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Movie list not found for ID: " + moovieListId)
+                    .build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .build();
+        }
+    }
+
     /**
      * DELETE METHODS
      */
@@ -190,6 +217,10 @@ public class MoovieListController {
         } catch (UserNotLoggedException e) {
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"error\":\"User must be logged in to delete a movie list.\"}")
+                    .build();
+        } catch ( MoovieListNotFoundException e ){
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Movie list not found for ID: " + id)
                     .build();
         } catch (InvalidAccessToResourceException e) {
             return Response.status(Response.Status.FORBIDDEN)

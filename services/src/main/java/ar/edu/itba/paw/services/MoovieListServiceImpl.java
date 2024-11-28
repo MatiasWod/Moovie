@@ -309,14 +309,18 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Transactional
     @Override
-    public void likeMoovieList(int moovieListId) {
+    public boolean likeMoovieList(int moovieListId) {
         int userId = userService.tryToGetCurrentUserId();
+        if(userId==-1){
+            throw new UserNotLoggedException();
+        }
         MoovieListCard mlc = getMoovieListCardById(moovieListId);
         LOGGER.info("userID: {} -- will like {}  -- likestate is: {}",userId,mlc.getName(), mlc.isCurrentUserHasLiked());
         if(mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType()){
             if(mlc.isCurrentUserHasLiked()){
                 moovieListDao.removeLikeMoovieList(userId, moovieListId);
-                LOGGER.info("Succesfully liked list: {}, user: {}.",moovieListId,userService.tryToGetCurrentUserId());
+                LOGGER.info("Succesfully unliked list: {}, user: {}.",moovieListId,userService.tryToGetCurrentUserId());
+                return false;
             } else {
                 moovieListDao.likeMoovieList(userId, moovieListId);
                 int likeCountForMoovieList = mlc.getLikeCount();
@@ -326,8 +330,11 @@ public class MoovieListServiceImpl implements MoovieListService{
                     emailService.sendNotificationLikeMilestoneMoovieListMail(toUser,likeCountForMoovieList,mvlAux,LocaleContextHolder.getLocale());
                     LOGGER.info("notificationLikeMilestoneMoovieList mail was sent to user : {} for the list: {}.", toUser.getUsername(), moovieListId);
                 }
+                return true;
+
             }
         }
+        return false;
     }
 
 

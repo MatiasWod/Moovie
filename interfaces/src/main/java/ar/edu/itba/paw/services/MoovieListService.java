@@ -60,7 +60,7 @@ public interface MoovieListService {
     void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrevPage, int[] currentPage, int[] toNextPage);
 
     //Likes functions
-    void likeMoovieList( int moovieListId);
+    boolean likeMoovieList(int moovieListId);
     void removeLikeMoovieList(int moovieListId);
 
     void followMoovieList( int moovieListId);

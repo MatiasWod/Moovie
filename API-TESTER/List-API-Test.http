@@ -82,10 +82,17 @@ Content-Type: application/json
 }
 
 
-> response.json
+### LIKE LIST
+
+@moovieListId5 = 45
+
+POST {{baseUrl}}/{{moovieListId5}}/like
+Authorization: Bearer {{bearer_token3}}
+Content-Type: application/json
+
 
 #----------------------------
-# DELETE
+# DELETE METHODS
 #----------------------------
 
 ### DELETE LIST
@@ -113,3 +120,4 @@ Content-Type: application/json
 {
   "mediaIdList": [6]
 }
+
