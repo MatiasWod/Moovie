@@ -214,6 +214,10 @@ public class MoovieListController {
                 moovieListService.deleteMediaFromMoovieList(id, media);
             }
             return Response.noContent().build();
+        } catch ( MoovieListNotFoundException e ){
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Movie list not found for ID: " + id)
+                    .build();
         } catch (UserNotLoggedException e) {
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"error\":\"User must be logged in to delete media from a movie list.\"}")
