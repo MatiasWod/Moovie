@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
+import ar.edu.itba.paw.exceptions.ReviewAlreadyCreatedException;
 import ar.edu.itba.paw.exceptions.ReviewNotFoundException;
 import ar.edu.itba.paw.models.Comments.Comment;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
@@ -96,7 +97,8 @@ public class ReviewServiceImpl implements ReviewService{
     @Transactional
     @Override
     public boolean likeReview(int reviewId, ReviewTypes type) {
-        Review review = getReviewById(reviewId);
+
+        Review review = reviewDao.getReviewById( userService.tryToGetCurrentUserId(), reviewId).orElseThrow( ()-> new ReviewNotFoundException("Review not found for id: " + reviewId));
         if(review.isCurrentUserHasLiked()){
             removeLikeReview(reviewId, type);
             return false;
@@ -109,6 +111,7 @@ public class ReviewServiceImpl implements ReviewService{
     @Transactional
     @Override
     public void removeLikeReview(int reviewId, ReviewTypes type) {
+        Review review = reviewDao.getReviewById( userService.tryToGetCurrentUserId(), reviewId).orElseThrow( ()-> new ReviewNotFoundException("Review not found for id: " + reviewId));
         reviewDao.removeLikeReview(userService.getInfoOfMyUser().getUserId(),reviewId,type);
         LOGGER.info("Succesfully removed like in review: {}, user: {}.", reviewId, userService.getInfoOfMyUser().getUserId());
     }
@@ -117,6 +120,14 @@ public class ReviewServiceImpl implements ReviewService{
     @Override
     public void createReview(int mediaId, int rating, String reviewContent, ReviewTypes type) {
         User user = userService.getInfoOfMyUser();
+
+        if (rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("Rating must be between 1 and 5");
+        }
+
+        if (reviewDao.getReviewByMediaIdAndUsername(mediaId ,user.getUserId(), type)!=null){
+            throw new ReviewAlreadyCreatedException("Review already created in media with id: " + mediaId);
+        }
         reviewDao.createReview(user, mediaId, rating, reviewContent,type);
         LOGGER.info("Succesfully created review in media: {}, user: {}.", mediaId , userService.getInfoOfMyUser().getUserId());
 
@@ -126,6 +137,9 @@ public class ReviewServiceImpl implements ReviewService{
     @Override
     public void editReview( int mediaId, int rating, String reviewContent, ReviewTypes type){
         int userId = userService.getInfoOfMyUser().getUserId();
+        if (reviewDao.getReviewByMediaIdAndUsername(mediaId ,userId, type)==null){
+            throw new ReviewNotFoundException("Review not found");
+        }
         reviewDao.editReview(userId, mediaId, rating, reviewContent,type);
         LOGGER.info("Succesfully edited review in media: {}, user: {}.", mediaId , userService.getInfoOfMyUser().getUserId());
     }
