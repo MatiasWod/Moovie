@@ -7,44 +7,61 @@ import ListCard from "../components/listCard/ListCard";
 import "./browseLists.css"
 import SearchBar from "../components/searchBar/SearchBar";
 import "./../components/mainStyle.css"
+import PaginationButton from "../components/paginationButton/PaginationButton";
+import {createSearchParams, useNavigate, useSearchParams} from "react-router-dom";
+import ListService from "../../services/ListService";
+import pagingSizes from "../../api/values/PagingSizes";
 
 function BrowseLists(){
+
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
 
     const [search, setSearch] = useState(null);
     const [ownerUsername, setOwnerUsername] = useState(null);
     const [type, setType] = useState(null);
     const [orderBy, setOrderBy] = useState(CardsListOrderBy.LIKE_COUNT);
-    const [order, setOrder] = useState(SortOrder.DESC);
-    const [pageNumber, setPageNumber] = useState(1);
+    const [sortOrder, setSortOrder] = useState(SortOrder.DESC);
+    const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
 
 
-    const [mlcList, setMlcList] = useState([]);
+    const [mlcList, setMlcList] = useState(undefined);
     const [mlcListLoading, setMlcListLoading] = useState(true);
     const [mlcListError, setMlcListError] = useState(null);
 
-    const fetchMlcList = async () => {
-        try {
-            const response = await listApi.getLists(
-                {
-                    search: search,
-                    ownerUsername: ownerUsername,
-                    type: type,
-                    orderBy: orderBy,
-                    order: order,
-                    pageNumber: pageNumber
-                }
-            );
-            setMlcList(response.data);
-        } catch (err) {
-            setMlcListError(err);
-        } finally {
-            setMlcListLoading(false);
-        }
+    const handlePageChange = (newPage) => {
+        setPage(newPage);
+        navigate({
+            pathname: `/browselists`,
+            search: createSearchParams({
+                orderBy:orderBy,
+                sortOrder: sortOrder,
+                page: newPage.toString(),
+            }).toString(),
+        });
     };
 
     useEffect(() => {
-        fetchMlcList();
-    }, [order, orderBy, pageNumber]);
+        async function getData() {
+            try {
+                const data = await ListService.getLists({
+                    orderBy: orderBy,
+                    ownerUsername: ownerUsername,
+                    pageNumber: page,
+                    pageSize: pagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS,
+                    search: search,
+                    type: type,
+                    order: sortOrder
+                });
+                setMlcList(data);
+                setMlcListLoading(false);
+            } catch (error) {
+                setMlcListError(error);
+                setMlcListLoading(false);
+            }
+        }
+        getData();
+    }, [search,orderBy,sortOrder,page]);
 
     return (
         <div className="moovie-default default-container">
@@ -55,17 +72,28 @@ function BrowseLists(){
                     <SearchBar />
                     <div style={{display:"flex", float:"right"}}>
                         <div style={{marginInline:"10px"}}>Order By </div>
-                        <DropdownMenu setOrderBy={setOrderBy} setSortOrder={setOrder} currentOrderDefault={order} values={Object.values(CardsListOrderBy)}/>
+                        <DropdownMenu setOrderBy={setOrderBy} setSortOrder={setSortOrder} currentOrderDefault={SortOrder.DESC} values={Object.values(CardsListOrderBy)}/>
                     </div>
                 </div>
             </div>
 
             <div className="list-card-container">
-                {mlcList.map(list => (
+                {mlcList?.data?.map(list => (
                     <ListCard listCard={list}/>
                 ))}
             </div>
+
+            <div className="flex justify-center pt-4">
+                {mlcList?.data?.length > 0 && mlcList.links?.last?.page > 1 && (
+                    <PaginationButton
+                        page={page}
+                        lastPage={mlcList.links.last.page}
+                        setPage={handlePageChange}
+                    />
+                )}
+            </div>
         </div>
+
 )
     ;
 }
