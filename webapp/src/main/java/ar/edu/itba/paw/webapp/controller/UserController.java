@@ -1,14 +1,17 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.PagingSizes;
+import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.services.ReviewService;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.services.VerificationTokenService;
 import ar.edu.itba.paw.webapp.auth.JwtTokenProvider;
-import ar.edu.itba.paw.webapp.dto.out.ProfileDto;
 import ar.edu.itba.paw.webapp.dto.in.UserCreateDto;
+import ar.edu.itba.paw.webapp.dto.out.ProfileDto;
+import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
 import ar.edu.itba.paw.webapp.dto.out.UserDto;
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
 import org.slf4j.Logger;
@@ -30,6 +33,7 @@ public class UserController {
     private static int DEFAULT_PAGE_INT = 1;
 
     private final UserService userService;
+    private final ReviewService reviewService;
     private final VerificationTokenService verificationTokenService;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -39,8 +43,9 @@ public class UserController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public UserController(final UserService userService, VerificationTokenService verificationTokenService, JwtTokenProvider jwtTokenProvider) {
+    public UserController(final UserService userService, ReviewService reviewService, VerificationTokenService verificationTokenService, JwtTokenProvider jwtTokenProvider) {
         this.userService = userService;
+        this.reviewService = reviewService;
         this.verificationTokenService = verificationTokenService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
@@ -216,4 +221,19 @@ public class UserController {
             return Response.serverError().entity(e.getMessage()).build();
         }
     }
+
+    @GET
+    @Path("/{id}/reviews")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMovieReviewsFromUser(@PathParam("id") final int userId, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
+        try {
+            final List<Review> reviews = reviewService.getMovieReviewsFromUser(userId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page-1);
+            final List<ReviewDto> reviewDtos = ReviewDto.fromReviewList(reviews, uriInfo);
+            return Response.ok(new GenericEntity<List<ReviewDto>>(reviewDtos) {}).build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+
+
 }

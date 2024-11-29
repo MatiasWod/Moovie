@@ -5,6 +5,7 @@ import {useParams} from "react-router-dom";
 import mediaApi from "../../api/MediaApi";
 import SearchableMediaTag from "../components/searchableMediaTag/searchableMediaTag";
 import MediaTypes from "../../api/values/MediaTypes";
+import Reviews from "../components/ReviewsSection/Reviews";
 
 function Details() {
 
@@ -101,6 +102,8 @@ function Details() {
                 {detailsColumn}
 
             </div>
+
+            <Reviews id={id} source={'media'}></Reviews>
 
         </div>
     );

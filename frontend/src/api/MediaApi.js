@@ -21,9 +21,20 @@ const mediaApi = (()=> {
         return api.get(`/media/${id}`);
     }
 
+    const getReviewsByMediaId = (mediaId,page= 1) => {
+        return api.get(`/media/${mediaId}/reviews`);
+    }
+
+    // const createReview = (mediaId,page=1) => {
+    //     return api.post(`/media/${mediaId}/review`, page);
+    // }
+
+
+
     return {
         getMedia,
-        getMediaById
+        getMediaById,
+        getReviewsByMediaId,
     }
 
 })();

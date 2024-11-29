@@ -1,15 +1,19 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.PagingSizes;
+import ar.edu.itba.paw.exceptions.ReviewNotFoundException;
+import ar.edu.itba.paw.exceptions.UserNotLoggedException;
 import ar.edu.itba.paw.models.Review.Review;
+import ar.edu.itba.paw.models.Review.ReviewTypes;
 import ar.edu.itba.paw.services.ReviewService;
 import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import java.util.List;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 //TODO CHECK LOGGERS
 //import com.sun.org.slf4j.internal.Logger;
 //import com.sun.org.slf4j.internal.LoggerFactory;
@@ -30,6 +34,7 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
+
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -46,20 +51,101 @@ public class ReviewController {
         }
     }
 
-    @GET
-    @Path("/media/{mediaId}")
+    @DELETE
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getReviewsByMediaId(@PathParam("mediaId") final int mediaId, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
+    public Response deleteReviewById(@PathParam("id") final int reviewId) {
         try {
-            final List<Review> reviews = reviewService.getReviewsByMediaId(mediaId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page-1);
-            if (reviews.isEmpty() && page == 1) {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-            final List<ReviewDto> reviewDtos = ReviewDto.fromReviewList(reviews, uriInfo);
-            return Response.ok(new GenericEntity<List<ReviewDto>>(reviewDtos) {}).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+            reviewService.deleteReview(reviewId, ReviewTypes.REVIEW_MEDIA);
+
+            return Response.ok()
+                    .entity("Review successfully deleted.")
+                    .build();
+
+        } catch (UserNotLoggedException e) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"error\":\"User must be logged in to delete a review.\"}")
+                    .build();
+        } catch (ReviewNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\":\"Review not found or you do not have permission to delete.\"}")
+                    .build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .build();
+        }
+    }
+
+    @POST
+    @Path("/{id}/like")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response likeReview(@PathParam("id") final int id) {
+        try {
+            reviewService.likeReview(id, ReviewTypes.REVIEW_MEDIA);
+            return Response.ok()
+                    .entity("Review successfully liked.")
+                    .build();
+
+        } catch (UserNotLoggedException e) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"error\":\"User must be logged in to like a review.\"}")
+                    .build();
+        } catch (ReviewNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\":\"Review not found or you do not have permission to like.\"}")
+                    .build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .build();
+        }
+    }
+
+    @DELETE
+    @Path("/{id}/unlike")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response unlikeReview(@PathParam("id") final int id) {
+        try {
+            reviewService.removeLikeReview(id, ReviewTypes.REVIEW_MEDIA);
+            return Response.ok()
+                    .entity("Review successfully unliked.")
+                    .build();
+
+        } catch (UserNotLoggedException e) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"error\":\"User must be logged in to unliked a review.\"}")
+                    .build();
+        } catch (ReviewNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\":\"Review not found or you do not have permission to unliked.\"}")
+                    .build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .build();
         }
     }
 
 }
+
+//    @GET
+//    @Path("/{id}/moovieListReviews")
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getMoovieListReviewsFromUser(@PathParam("id") final int userId, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
+//        try {
+//            final List<MoovieListReview> reviews = reviewService.getMoovieListReviewsFromUser(userId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page-1);
+//            final List<ReviewDto> reviewDtos = ReviewDto.fromReviewList(reviews, uriInfo);
+//            return Response.ok(new GenericEntity<List<ReviewDto>>(reviewDtos) {}).build();
+//        } catch (RuntimeException e) {
+//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+//        }
+//    }
+
+//    List<MoovieListReview> getMoovieListReviewsFromUser(int userId, int size, int pageNumber);
+//    MoovieListReview getMoovieListReviewById(int moovieListReviewId);
+
+//moovielist/1/reviews
+//    List<MoovieListReview> getMoovieListReviewsByMoovieListId(int moovieListId, int size, int pageNumber) ;
+
+

@@ -70,6 +70,11 @@ const userApi = (() => {
             });
     }
 
+    const getMovieReviewsFromUser = (userId,page= 1) => {
+        return api.get(`/users/${userId}/reviews`);
+    }
+
+
     return {
         login,
         register,
@@ -77,7 +82,8 @@ const userApi = (() => {
         authTest,
         getProfileByUsername,
         getUsersCount,
-        getMilkyLeaderboard
+        getMilkyLeaderboard,
+        getMovieReviewsFromUser
     };
 
 })();

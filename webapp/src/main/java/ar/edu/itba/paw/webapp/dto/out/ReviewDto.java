@@ -34,6 +34,16 @@ public class ReviewDto {
 
     private boolean hasBadge;
 
+    private int totalReports;
+
+    private int spamReports;
+
+    private int hateReports;
+
+    private int privacyReports;
+
+    private int abuseReports;
+
     private String imageUrl;
 
     private String url;
@@ -58,6 +68,13 @@ public class ReviewDto {
         reviewDto.likes = review.getReviewLikes();
         reviewDto.username = review.getUser().getUsername();
         reviewDto.hasBadge = review.getUser().isHasBadge();
+
+        reviewDto.totalReports = review.getTotalReports();
+        reviewDto.spamReports = review.getSpamReports();
+        reviewDto.hateReports = review.getHateReports();
+        reviewDto.privacyReports = review.getPrivacyReports();
+        reviewDto.abuseReports=review.getAbuseReports();
+
 
         reviewDto.url = uriInfo.getBaseUriBuilder().path("/review/{id}").build(review.getReviewId()).toString();
         reviewDto.userUrl = uriInfo.getBaseUriBuilder().path("/users/username/{username}").build(review.getUser().getUsername()).toString();
@@ -176,6 +193,26 @@ public class ReviewDto {
         this.hasBadge = hasBadge;
     }
 
+    public int getTotalReports() {return totalReports;}
+
+    public void setTotalReports(int totalReports) {this.totalReports = totalReports;}
+
+    public int getSpamReports() {return spamReports;}
+
+    public void setSpamReports(int spamReports) {this.spamReports = spamReports;}
+
+    public int getHateReports() {return hateReports;}
+
+    public void setHateReports(int hateReports) {this.hateReports = hateReports;}
+
+    public int getPrivacyReports() {return privacyReports;}
+
+    public void setPrivacyReports(int privacyReports) {this.privacyReports = privacyReports;}
+
+    public int getAbuseReports() {return abuseReports;}
+
+    public void setAbuseReports(int abuseReports){this.abuseReports=abuseReports;}
+
     public String getImageUrl() {
         return imageUrl;
     }
@@ -207,5 +244,6 @@ public class ReviewDto {
     public void setMediaUrl(String mediaUrl) {
         this.mediaUrl = mediaUrl;
     }
+
 
 }

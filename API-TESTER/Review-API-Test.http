@@ -1,59 +1,45 @@
-@baseUrl = http://localhost:8080/media
+@baseUrl = http://localhost:8080/review
 
 #----------------------------
 # GET
 #----------------------------
 
-### MEDIA BY ID
+### REVIEW BY ID
 
-# EXAMPLE: GET {{baseUrl}}/media/123
+# EXAMPLE: GET {{baseUrl}}/review/123
 
-@id0 = 123
+@id0 = 1
 
 GET {{baseUrl}}/{{id0}}
 
 
 ### MEDIA LIST
 
-# EXAMPLE: {{baseUrl}}/media?type&orderBy=name&sortOrder=ASC&page=1&pageSize=5
-
-@type1 = 1
-@orderBy1 = name
-@sortOrder1 = ASC
-@page1 = 1
-@pageSize1 = 10
-
-GET {{baseUrl}}?type={{type1}}&orderBy={{orderBy1}}&sortOrder={{sortOrder1}}&page={{page1}}&pageSize={{pageSize1}}
-
 #----------------------------
 # POST
 #----------------------------
-
-### REVIEW POST
-@id=3
+### LIKE REVIEW
+@id1=4
 @bearer_token1 =  eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNb292aWUiLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjgzNjEyMiwiZXhwIjoxNzMzNDQwOTIyfQ.DH67__vKqJhHSWunS362U0O1qRptW4Gfjw35LCUqy0z8CtLlmIE-MaxkqXscQZQtE4ILqyEmRaiRaofmCXd4oA
 
-POST {{baseUrl}}/{{id}}/review
+POST {{baseUrl}}/{{id1}}/like
 Authorization: Bearer {{bearer_token1}}
-Content-Type: application/json
 
-{
-  "rating": 2
-}
+#----------------------------
+# DELETE
+#----------------------------
 
-> response.json
-
-### REVIEW EDIT
-@id2=3
+### DELETE REVIEW
+@id2=1
 @bearer_token2 =  eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNb292aWUiLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjgzNjEyMiwiZXhwIjoxNzMzNDQwOTIyfQ.DH67__vKqJhHSWunS362U0O1qRptW4Gfjw35LCUqy0z8CtLlmIE-MaxkqXscQZQtE4ILqyEmRaiRaofmCXd4oA
 
-PUT {{baseUrl}}/{{id2}}/review
+DELETE {{baseUrl}}/{{id2}}
 Authorization: Bearer {{bearer_token2}}
-Content-Type: application/json
 
-{
-  "rating": 2,
-  "reviewContent": "Hello world"
-}
+### DELETE LIKE
+@id3=4
+@bearer_token3 =  eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNb292aWUiLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjgzNjEyMiwiZXhwIjoxNzMzNDQwOTIyfQ.DH67__vKqJhHSWunS362U0O1qRptW4Gfjw35LCUqy0z8CtLlmIE-MaxkqXscQZQtE4ILqyEmRaiRaofmCXd4oA
 
-> response.json
+DELETE {{baseUrl}}/{{id3}}/unlike
+Authorization: Bearer {{bearer_token3}}
+
