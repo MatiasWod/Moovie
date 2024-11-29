@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
+import ar.edu.itba.paw.exceptions.ReviewNotFoundException;
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
@@ -30,7 +31,7 @@ public class ReviewHibernateDao implements ReviewDao {
 
     @Override
     public Optional<Review> getReviewById(int currentUserId, int reviewId) {
-        Review review = Optional.ofNullable(em.find(Review.class, reviewId)).orElseThrow(() -> new MoovieListNotFoundException("Review by id: " + reviewId + " not found"));
+        Review review = Optional.ofNullable(em.find(Review.class, reviewId)).orElseThrow(() -> new ReviewNotFoundException("Review by id: " + reviewId + " not found"));
 
         String sqlQuery = "SELECT CASE WHEN EXISTS (SELECT 1 FROM reviewslikes rl WHERE rl.reviewid= :reviewId  AND rl.userid = :userId) THEN true ELSE false END";
         Query query = em.createNativeQuery(sqlQuery);

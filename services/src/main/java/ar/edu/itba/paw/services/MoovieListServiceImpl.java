@@ -347,7 +347,7 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Transactional
     @Override
-    public void followMoovieList(int moovieListId) {
+    public boolean followMoovieList(int moovieListId) {
         int userId = userService.tryToGetCurrentUserId();
         MoovieListCard mlc = getMoovieListCardById(moovieListId);
 
@@ -355,6 +355,7 @@ public class MoovieListServiceImpl implements MoovieListService{
             if (mlc.isCurrentUserHasFollowed()) {
                 moovieListDao.removeFollowMoovieList(userId, moovieListId);
                 LOGGER.info("Succesfully followed list: {}, user: {}.",moovieListId,userService.tryToGetCurrentUserId());
+                return false;
             } else {
                 moovieListDao.followMoovieList(userId, moovieListId);
                 int followCountForMoovieList = mlc.getFollowerCount();
@@ -364,8 +365,10 @@ public class MoovieListServiceImpl implements MoovieListService{
                     emailService.sendNotificationFollowMilestoneMoovieListMail(toUser,followCountForMoovieList,mvlAux,LocaleContextHolder.getLocale());
                     LOGGER.info("notificationFollowMilestoneMoovieList mail was sent to user : {} for the list: {}.", toUser.getUsername(), moovieListId);
                 }
+                return true;
             }
         }
+        return false;
     }
 
     @Transactional

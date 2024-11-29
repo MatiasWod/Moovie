@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.dto.out;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 
+import javax.persistence.Transient;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
@@ -35,6 +36,13 @@ public class MoovieListDto {
 
     private String creatorUrl;
 
+    private int currentUserWatchAmount;
+
+    private boolean currentUserHasLiked;
+
+    private boolean currentUserHasFollowed;
+
+
     public static MoovieListDto fromMoovieList(MoovieListCard moovieList, UriInfo uriInfo) {
         MoovieListDto dto = new MoovieListDto();
         dto.name = moovieList.getName();
@@ -50,6 +58,9 @@ public class MoovieListDto {
         dto.url = uriInfo.getBaseUriBuilder().path("list/{moovieListId}").build(moovieList.getMoovieListId()).toString();
         dto.contentUrl = uriInfo.getBaseUriBuilder().path("list/{moovieListId}/content").build(moovieList.getMoovieListId()).toString();
         dto.creatorUrl = uriInfo.getBaseUriBuilder().path("users/username/{username}").build(moovieList.getUsername()).toString();
+        dto.currentUserHasFollowed = moovieList.isCurrentUserHasLiked();
+        dto.currentUserHasLiked = moovieList.isCurrentUserHasLiked();
+        dto.currentUserWatchAmount = moovieList.getCurrentUserWatchAmount();
         return dto;
     }
 
@@ -159,5 +170,29 @@ public class MoovieListDto {
 
     public void setCreatorUrl(String creatorUrl) {
         this.creatorUrl = creatorUrl;
+    }
+
+    public int getCurrentUserWatchAmount() {
+        return currentUserWatchAmount;
+    }
+
+    public void setCurrentUserWatchAmount(int currentUserWatchAmount) {
+        this.currentUserWatchAmount = currentUserWatchAmount;
+    }
+
+    public boolean isCurrentUserHasLiked() {
+        return currentUserHasLiked;
+    }
+
+    public void setCurrentUserHasLiked(boolean currentUserHasLiked) {
+        this.currentUserHasLiked = currentUserHasLiked;
+    }
+
+    public boolean isCurrentUserHasFollowed() {
+        return currentUserHasFollowed;
+    }
+
+    public void setCurrentUserHasFollowed(boolean currentUserHasFollowed) {
+        this.currentUserHasFollowed = currentUserHasFollowed;
     }
 }

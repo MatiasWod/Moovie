@@ -91,6 +91,13 @@ Authorization: Bearer {{bearer_token3}}
 Content-Type: application/json
 
 
+### FOLLOW LIST
+
+POST {{baseUrl}}/{{moovieListId5}}/follow
+Authorization: Bearer {{bearer_token3}}
+Content-Type: application/json
+
+
 #----------------------------
 # DELETE METHODS
 #----------------------------

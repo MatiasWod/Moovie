@@ -19,8 +19,8 @@ GET {{baseUrl}}/{{id0}}
 # POST
 #----------------------------
 ### LIKE REVIEW
-@id1=4
-@bearer_token1 =  eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNb292aWUiLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjgzNjEyMiwiZXhwIjoxNzMzNDQwOTIyfQ.DH67__vKqJhHSWunS362U0O1qRptW4Gfjw35LCUqy0z8CtLlmIE-MaxkqXscQZQtE4ILqyEmRaiRaofmCXd4oA
+@id1=6
+@bearer_token1 =  eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJXYW5jaG8iLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjc0MDc0NywiZXhwIjoxNzMzMzQ1NTQ3fQ.OKFjYIuVZktDJ6rw3XbgW2aqO0brzGhjpOkU2sJJfgFVvauDxz7hCFwnVnUnJCW_ZW8EWw6BBfcg-AFyiCh_7Q
 
 POST {{baseUrl}}/{{id1}}/like
 Authorization: Bearer {{bearer_token1}}
@@ -36,10 +36,5 @@ Authorization: Bearer {{bearer_token1}}
 DELETE {{baseUrl}}/{{id2}}
 Authorization: Bearer {{bearer_token2}}
 
-### DELETE LIKE
-@id3=4
-@bearer_token3 =  eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNb292aWUiLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjgzNjEyMiwiZXhwIjoxNzMzNDQwOTIyfQ.DH67__vKqJhHSWunS362U0O1qRptW4Gfjw35LCUqy0z8CtLlmIE-MaxkqXscQZQtE4ILqyEmRaiRaofmCXd4oA
 
-DELETE {{baseUrl}}/{{id3}}/unlike
-Authorization: Bearer {{bearer_token3}}
 

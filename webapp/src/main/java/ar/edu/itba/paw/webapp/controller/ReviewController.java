@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.ReviewNotFoundException;
+import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.exceptions.UserNotLoggedException;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
@@ -82,18 +83,23 @@ public class ReviewController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response likeReview(@PathParam("id") final int id) {
         try {
-            reviewService.likeReview(id, ReviewTypes.REVIEW_MEDIA);
+            boolean liked = reviewService.likeReview(id, ReviewTypes.REVIEW_MEDIA);
+            if(liked){
+                return Response.ok()
+                        .entity("Review successfully liked.")
+                        .build();
+            }
             return Response.ok()
-                    .entity("Review successfully liked.")
+                    .entity("Review successfully unliked.")
                     .build();
 
-        } catch (UserNotLoggedException e) {
+        } catch (UserNotLoggedException | UnableToFindUserException e) {
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"error\":\"User must be logged in to like a review.\"}")
                     .build();
         } catch (ReviewNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"Review not found or you do not have permission to like.\"}")
+                    .entity("{\"error\":\"Review not found.\"}")
                     .build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -102,30 +108,6 @@ public class ReviewController {
         }
     }
 
-    @DELETE
-    @Path("/{id}/unlike")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response unlikeReview(@PathParam("id") final int id) {
-        try {
-            reviewService.removeLikeReview(id, ReviewTypes.REVIEW_MEDIA);
-            return Response.ok()
-                    .entity("Review successfully unliked.")
-                    .build();
-
-        } catch (UserNotLoggedException e) {
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\":\"User must be logged in to unliked a review.\"}")
-                    .build();
-        } catch (ReviewNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"Review not found or you do not have permission to unliked.\"}")
-                    .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
-        }
-    }
 
 }
 

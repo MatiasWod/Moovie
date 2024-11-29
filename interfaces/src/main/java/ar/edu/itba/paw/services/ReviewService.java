@@ -26,7 +26,7 @@ public interface ReviewService {
     void editReview(int mediaId, int rating, String reviewContent, ReviewTypes type);
     void deleteReview(int reviewId, ReviewTypes type);
 
-    void likeReview(int reviewId, ReviewTypes type);
+    boolean likeReview(int reviewId, ReviewTypes type);
     void removeLikeReview(int reviewId, ReviewTypes type);
 
     Review getReviewByMediaIdAndUsername(int mediaId, int userId, ReviewTypes type);

@@ -95,9 +95,15 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Transactional
     @Override
-    public void likeReview(int reviewId, ReviewTypes type) {
+    public boolean likeReview(int reviewId, ReviewTypes type) {
+        Review review = getReviewById(reviewId);
+        if(review.isCurrentUserHasLiked()){
+            removeLikeReview(reviewId, type);
+            return false;
+        }
         reviewDao.likeReview(userService.getInfoOfMyUser().getUserId(),reviewId,type);
         LOGGER.info("Succesfully liked review: {}, user: {}.", reviewId, userService.getInfoOfMyUser().getUserId());
+        return true;
     }
 
     @Transactional
