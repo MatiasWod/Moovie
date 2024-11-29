@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.ReviewAlreadyCreatedException;
 import ar.edu.itba.paw.exceptions.ReviewNotFoundException;
 import ar.edu.itba.paw.exceptions.UserNotLoggedException;
 import ar.edu.itba.paw.models.Media.Media;
@@ -131,7 +132,12 @@ public class MediaController {
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"error\":\"User must be logged in to review a movie.\"}")
                     .build();
-        } catch (Exception e) {
+        } catch(ReviewAlreadyCreatedException e){
+            return Response.status(Response.Status.CONFLICT)
+                    .entity("{\"error\":\"Review already exists.\"}")
+                    .build();
+        }
+        catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An unexpected error occurred: " + e.getMessage())
                     .build();
@@ -163,7 +169,7 @@ public class MediaController {
                     .build();
         } catch (ReviewNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"Review not found or you do not have permission to edit.\"}")
+                    .entity("{\"error\":\"Review not found.\"}")
                     .build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
