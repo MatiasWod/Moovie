@@ -38,7 +38,7 @@ public interface MoovieListService {
 
     //Get the MoovieListCard, which contains the element presented in searchs, has a lot of arguments for searchs/querys
     List<MoovieListCard> getMoovieListCards(String search, String ownerUsername , int type , String orderBy, String order, int size, int pageNumber);
-    int getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber);
+    int getMoovieListCardsCount(String search, String ownerUsername , int type);
 
 
     //Get the content of media of some moovieList by its id

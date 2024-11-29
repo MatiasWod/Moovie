@@ -54,7 +54,7 @@ public class MoovieListController {
                 type = MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType();
             }
             List<MoovieListCard> moovieListCardList = moovieListService.getMoovieListCards(search, ownerUsername, type, orderBy, order, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), pageNumber);
-            final int moovieListCardCount = moovieListService.getMoovieListCardsCount(search, ownerUsername, type,PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), pageNumber);
+            final int moovieListCardCount = moovieListService.getMoovieListCardsCount(search, ownerUsername, type);
             List<MoovieListDto> mlcDto = MoovieListDto.fromMoovieListList(moovieListCardList, uriInfo);
             Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(mlcDto) {
             });

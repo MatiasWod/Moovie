@@ -107,8 +107,8 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Transactional(readOnly = true)
     @Override
-    public int getMoovieListCardsCount(String search, String ownerUsername , int type , int size, int pageNumber){
-        return moovieListDao.getMoovieListCardsCount(search,ownerUsername,type,size,pageNumber);
+    public int getMoovieListCardsCount(String search, String ownerUsername , int type){
+        return moovieListDao.getMoovieListCardsCount(search,ownerUsername,type);
     }
 
     @Transactional(readOnly = true)

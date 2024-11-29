@@ -249,7 +249,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
     }
 
     @Override
-    public int getMoovieListCardsCount(String search, String ownerUsername, int type, int size, int pageNumber) {
+    public int getMoovieListCardsCount(String search, String ownerUsername, int type) {
         String jpql = "SELECT COUNT(mlc) " +
                 "FROM MoovieListCard mlc "
                 +"WHERE mlc.type = :type ";
