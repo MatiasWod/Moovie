@@ -42,6 +42,17 @@ function BrowseLists(){
     };
 
     useEffect(() => {
+        navigate({
+            pathname: `/browselists`,
+            search: createSearchParams({
+                orderBy: orderBy,
+                sortOrder: sortOrder,
+                page: page.toString(),
+            }).toString(),
+        });
+    }, [orderBy, sortOrder, page, navigate]);
+
+    useEffect(() => {
         async function getData() {
             try {
                 const data = await ListService.getLists({
@@ -72,7 +83,7 @@ function BrowseLists(){
                     <SearchBar />
                     <div style={{display:"flex", float:"right"}}>
                         <div style={{marginInline:"10px"}}>Order By </div>
-                        <DropdownMenu setOrderBy={setOrderBy} setSortOrder={setSortOrder} currentOrderDefault={SortOrder.DESC} values={Object.values(CardsListOrderBy)}/>
+                        <DropdownMenu setOrderBy={setOrderBy} setSortOrder={setSortOrder} currentOrderDefault={sortOrder} values={Object.values(CardsListOrderBy)}/>
                     </div>
                 </div>
             </div>
