@@ -1,25 +1,15 @@
 import React from "react";
+import {Pagination} from "@mui/material";
 
-const PaginationButton = (({currentPage, setCurrentPage, totalPages}) =>{
-    const handleNext = () => {
-        if(currentPage<totalPages){
-            setCurrentPage(currentPage + 1);
-        }
+const PaginationButton = (props) =>{
+    const handleChange = (event, value) => {
+        props.setPage(value);
     };
 
-    const handlePrevious = () => {
-        if(currentPage>1){
-            setCurrentPage(currentPage - 1);
-        }
-    };
-
-
-    return(
-        <div style={{display: "flex"}}>
-            <button onClick={handlePrevious}>←</button>
-            <div>{currentPage}</div>
-        </div>
-    )
-});
+    return (<Pagination count={parseInt(props.lastPage)} variant="outlined"
+                        color="secondary"
+                        page={parseInt(props.page)}
+                        onChange={handleChange}/>);
+}
 
 export default PaginationButton;

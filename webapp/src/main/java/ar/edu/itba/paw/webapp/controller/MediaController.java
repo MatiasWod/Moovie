@@ -5,6 +5,7 @@ import ar.edu.itba.paw.exceptions.UserNotLoggedException;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.PagingSizes;
+import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
 import ar.edu.itba.paw.services.MediaService;
@@ -14,6 +15,7 @@ import ar.edu.itba.paw.webapp.dto.out.MediaDto;
 import ar.edu.itba.paw.webapp.dto.out.MovieDto;
 import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
 import ar.edu.itba.paw.webapp.dto.out.TVSerieDto;
+import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -64,9 +66,15 @@ public class MediaController {
             List<Media> mediaList = mediaService.getMedia(typeQuery, search, null,
                     null, null, null, null, orderBy, sortOrder, pageSizeQuery, page - 1);
 
+            final int mediaCount = mediaService.getMediaCount(typeQuery, search, null,
+                    null, null, null, null);
+
             List<MediaDto> mediaDtoList = MediaDto.fromMediaList(mediaList, uriInfo);
-            return Response.ok(new GenericEntity<List<MediaDto>>(mediaDtoList) {
-            }).build();
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaDto>>(mediaDtoList) {
+            });
+            final PagingUtils<Media> toReturnMediaList = new PagingUtils<>(mediaList,page - 1, pageSizeQuery, mediaCount);
+            ResponseUtils.setPaginationLinks(res,toReturnMediaList,uriInfo);
+            return res.build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
