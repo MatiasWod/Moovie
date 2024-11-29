@@ -5,11 +5,13 @@ import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
+import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.services.MoovieListService;
 import ar.edu.itba.paw.webapp.dto.in.MediaListDto;
 import ar.edu.itba.paw.webapp.dto.in.MoovieListCreateDto;
 import ar.edu.itba.paw.webapp.dto.out.MediaDto;
 import ar.edu.itba.paw.webapp.dto.out.MoovieListDto;
+import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
@@ -63,7 +65,6 @@ public class MoovieListController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMoovieListById(@PathParam("id") final int id) {
         try {
-            System.out.println("ashuaa");
             return Response.ok(MoovieListDto.fromMoovieList(moovieListService.getMoovieListCardById(id), uriInfo)).build();
         } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -86,9 +87,13 @@ public class MoovieListController {
             }
 
             List<Media> mediaList = moovieListService.getMoovieListContent(id, orderBy, sortOrder, pageSizeQuery, pageNumber);
+            final int mediaCount = moovieListService.getMoovieListCardById(id).getSize();
             List<MediaDto> mediaDtoList = MediaDto.fromMediaList(mediaList, uriInfo);
-            return Response.ok(new GenericEntity<List<MediaDto>>(mediaDtoList) {
-            }).build();
+            Response.ResponseBuilder res =  Response.ok(new GenericEntity<List<MediaDto>>(mediaDtoList) {
+            });
+            final PagingUtils<Media> toReturnMediaList = new PagingUtils<>(mediaList,pageNumber,pageSizeQuery,mediaCount);
+            ResponseUtils.setPaginationLinks(res,toReturnMediaList,uriInfo);
+            return res.build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }

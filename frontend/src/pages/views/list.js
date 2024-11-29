@@ -1,82 +1,112 @@
 import React, {useEffect, useState} from 'react';
-import {useParams} from "react-router-dom";
-import listApi from '../../api/ListApi'
+import {createSearchParams, useNavigate, useParams, useSearchParams} from "react-router-dom";
 import ListHeader from "../components/listHeader/ListHeader";
 import ListContent from "../components/listContent/ListContent";
 import PaginationButton from "../components/paginationButton/PaginationButton";
-import PagingSizes from "../../api/values/PagingSizes";
 import OrderBy from "../../api/values/MediaOrderBy";
 import SortOrder from "../../api/values/SortOrder";
 import DropdownMenu from "../components/dropdownMenu/DropdownMenu";
 import "../components/mainStyle.css"
+import ListService from "../../services/ListService";
+import pagingSizes from "../../api/values/PagingSizes";
 
 
 function List() {
-    const {id} = useParams();
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
 
-    const [currentPage, setCurrentPage] = useState(1);
+    const {id} = useParams();
     const [currentOrderBy, setOrderBy] = useState(OrderBy.CUSTOM_ORDER);
     const [currentSortOrder, setSortOrder] = useState(SortOrder.DESC);
+    const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
 
 
     //GET VALUES FOR LIST
-    const [list, setList] = useState([]);
+    const [list, setList] = useState(undefined);
     const [listLoading, setListLoading] = useState(true);
     const [listError, setListError] = useState(null);
 
-    const fetchList = async () => {
-        try {
-            const response = await listApi.getListById(id);
-            setList(response.data);
-        } catch (err) {
-            setListError(err);
-        } finally {
-            setListLoading(false);
-        }
+
+    const handlePageChange = (newPage) => {
+        setPage(newPage);
+        navigate({
+            pathname: `/list/${id}`,
+            search: createSearchParams({
+                orderBy:currentOrderBy,
+                sortOrder: currentSortOrder,
+                page: newPage.toString(),
+            }).toString(),
+        });
     };
 
     useEffect(() => {
-        fetchList();
-    }, []);
+        navigate({
+            pathname: `/list/${id}`,
+            search: createSearchParams({
+                orderBy: currentOrderBy,
+                sortOrder: currentSortOrder,
+                page: page.toString(),
+            }).toString(),
+        });
+    }, [id, currentOrderBy, currentSortOrder, page, navigate]);
+
+    useEffect(() => {
+        async function getData() {
+            try {
+                const data = await ListService.getListById(id);
+                setList(data);
+                setListLoading(false);
+            } catch (error) {
+                setListError(error);
+                setListLoading(false);
+            }
+        }
+        getData();
+    }, [id]);
 
 
     //GET VALUES FOR LIST CONTENT
-    const [listContent, setListContent] = useState([]);
+    const [listContent, setListContent] = useState(undefined);
     const [listContentLoading, setListContentLoading] = useState(true);
     const [listContentError, setListContentError] = useState(null);
 
-    const fetchListContent = async () => {
-        try {
-            const response = await listApi.getListContentById({
-                id: id,
-                orderBy: currentOrderBy,
-                sortOrder: currentSortOrder,
-                pageNumber: currentPage,
-                pageSize: PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT
-            });
-            setListContent(response.data);
-        } catch (err) {
-            setListContentError(err);
-        } finally {
-            setListContentLoading(false);
-        }
-    };
-
     useEffect(() => {
-        fetchListContent();
-    }, [currentPage, currentSortOrder, currentOrderBy]);
+        async function getData() {
+            try {
+                const data = await ListService.getListContentById({
+                    id: id,
+                    orderBy: currentOrderBy,
+                    sortOrder: currentSortOrder,
+                    pageNumber: page,
+                    pageSize: pagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT
+                });
+                setListContent(data);
+                setListContentLoading(false);
+            } catch (error) {
+                setListContentError(error);
+                setListContentLoading(false);
+            }
+        }
+        getData();
+    }, [currentOrderBy,currentSortOrder,page]);
 
 
     return (
         <div className="default-container moovie-default">
-            <ListHeader list={list}/>
+            <ListHeader list={list?.data || []}/>
 
             <DropdownMenu setOrderBy={setOrderBy} setSortOrder={setSortOrder} currentOrderDefault={currentSortOrder} values={Object.values(OrderBy)}/>
 
-            <ListContent listContent={listContent}/>
-
-            <PaginationButton currentPage={currentPage} setCurrentPage={setCurrentPage}
-                              totalPages={Math.ceil(list.mediaCount / PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT)}/>
+            <ListContent listContent={listContent?.data || []} />
+            <div className="flex justify-center pt-4">
+                {listContent?.data?.length > 0 && listContent.links?.last?.page > 1 && (
+                    <PaginationButton
+                        page={page}
+                        lastPage={listContent.links.last.page}
+                        setPage={handlePageChange}
+                    />
+                )}
+            </div>
 
         </div>
     );
