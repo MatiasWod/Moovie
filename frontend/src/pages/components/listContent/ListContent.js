@@ -1,7 +1,26 @@
-import React from "react";
+import React,{useState} from "react";
 import "./listContent.css";
+import SortOrder from "../../../api/values/SortOrder";
+import {useNavigate} from "react-router-dom";
 
 const ListContent = ({ listContent }) => {
+
+    const navigate = useNavigate();
+
+    const handleClick = (id) => {
+        navigate(`/details/${id}`);
+    };
+
+    const [hoveredId, setHoveredId] = useState(null);
+
+    const handleMouseEnter = (id) => {
+        setHoveredId(id);
+    };
+
+    const handleMouseLeave = () => {
+        setHoveredId(null);
+    };
+
     return (
         <div className="list-content">
             <table className="media-table">
@@ -18,8 +37,23 @@ const ListContent = ({ listContent }) => {
                 {listContent.map((media, index) => (
                     <tr key={index}>
                         <td className="media-title">
-                            <img className="list-card-images" src={media.posterPath} alt={media.name}/>
-                            <span>{media.name}</span>
+                            <div
+                                className="image-container"
+                                onMouseEnter={() => handleMouseEnter(media.id)}
+                                onMouseLeave={handleMouseLeave}
+                            >
+                                <img
+                                    className="list-card-images"
+                                    src={media.posterPath}
+                                    alt={media.name}
+                                    onClick={() => handleClick(media.id)}
+                                />
+                            </div>
+                            <span
+                                className="media-name"
+                                onClick={() => handleClick(media.id)}>
+                                {media.name}
+                            </span>
                         </td>
                         <td>{media.type}</td>
                         <td>

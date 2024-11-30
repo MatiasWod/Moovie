@@ -1,25 +1,33 @@
-.list-card{
+.list-card {
     border: solid darkgrey;
     border-radius: 3%;
     margin: 10px;
     width: 20rem;
     cursor: pointer;
     background-color: white;
-    transition: background-color 0.3s ease;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    position: relative;
 }
 
-.list-card:hover{
+.list-card:hover {
     background-color: lightgray;
+    transform: scale(1.05);
+    opacity: 0.9;
+    cursor: pointer;
 }
 
-.list-card-images{
+.list-card-images {
+    border: solid darkgrey;
+    border-radius: 3%;
     object-fit: cover;
     object-position: center;
+    margin: 10px;
     width: 8rem;
     height: 9rem;
+    transition: none;
 }
 
-.image-grid{
+.image-grid {
     margin-top: 20px;
     display: flex;
     flex-direction: row;
@@ -29,10 +37,14 @@
     height: auto;
 }
 
-.list-card-body{
+.list-card-body {
     padding: 5%;
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
     flex: 1 1 auto;
+}
+
+.list-card:hover .image-grid {
+    transform: none;
 }
