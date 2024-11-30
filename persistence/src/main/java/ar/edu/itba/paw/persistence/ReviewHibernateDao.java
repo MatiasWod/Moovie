@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -212,6 +209,7 @@ public class ReviewHibernateDao implements ReviewDao {
 
     @Override
     public Review getReviewByMediaIdAndUsername(int mediaId, int userId, ReviewTypes type){
+        try{
         if(type.getType() == ReviewTypes.REVIEW_MEDIA.getType()) {
             return em.createQuery("SELECT r FROM Review r WHERE r.user.userId = :userId AND r.mediaId = :mediaId", Review.class)
                     .setParameter("userId", userId)
@@ -222,6 +220,8 @@ public class ReviewHibernateDao implements ReviewDao {
                     .setParameter("userId", userId)
                     .setParameter("mediaId", mediaId)
                     .getSingleResult();
-    }
+    }}catch(NoResultException e){
+            return null;
+        }
     }
 }

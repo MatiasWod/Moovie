@@ -136,8 +136,7 @@ public class MediaController {
             return Response.status(Response.Status.CONFLICT)
                     .entity("{\"error\":\"Review already exists.\"}")
                     .build();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An unexpected error occurred: " + e.getMessage())
                     .build();
