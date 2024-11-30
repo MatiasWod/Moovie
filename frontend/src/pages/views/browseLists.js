@@ -78,6 +78,7 @@ function BrowseLists(){
 
             <div className="browse-lists-header">
                 <div className="title">Community Lists</div>
+
                 <div className="browse-list-header-searchable">
                     <SearchBar />
                     <div style={{display:"flex", float:"right"}}>

@@ -7,6 +7,7 @@ import ProfileTabNavigation from "../components/profileTabNavigation/profileTabN
 import Reviews from "../components/ReviewsSection/Reviews";
 import ProfileHeader from "../components/profileHeader/ProfileHeader";
 import ProfileTabMediaLists from "../components/profileTab/ProfileTabMediaLists";
+import ProfileTabMoovieLists from "../components/profileTab/ProfileTabMoovieLists";
 
 function ProfileTab({selectedTab, profile}){
     switch (selectedTab.toLowerCase()) {
@@ -15,9 +16,9 @@ function ProfileTab({selectedTab, profile}){
         case "watchlist":
             return <ProfileTabMediaLists username={profile.username} type={"watchlist"}/>
         case "public-lists":
-            return <div>{selectedTab}</div>
+            return <ProfileTabMoovieLists username={profile.username} type={"public-lists"}/>
         case "private-lists":
-            return <div>{selectedTab}</div>
+            return <ProfileTabMoovieLists username={profile.username} type={"private-lists"}/>
         case "liked-lists":
             return <div>{selectedTab}</div>
         case "followed-lists":
