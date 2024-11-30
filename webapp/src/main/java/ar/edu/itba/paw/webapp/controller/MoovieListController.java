@@ -78,6 +78,7 @@ public class MoovieListController {
     }
 
     //We have a separate endpoint for content to be able to use filters and no need to do it every time we want to find a list
+    // PROBLEM WHEN SORT ORDER AND OR ORDER BY ARE NULL
     @GET
     @Path("/{id}/content")
     @Produces(MediaType.APPLICATION_JSON)
