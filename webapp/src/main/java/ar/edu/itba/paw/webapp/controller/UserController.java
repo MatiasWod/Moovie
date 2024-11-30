@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.PagingSizes;
+import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.Token;
@@ -10,6 +12,7 @@ import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.services.VerificationTokenService;
 import ar.edu.itba.paw.webapp.auth.JwtTokenProvider;
 import ar.edu.itba.paw.webapp.dto.in.UserCreateDto;
+import ar.edu.itba.paw.webapp.dto.out.MoovieListReviewDto;
 import ar.edu.itba.paw.webapp.dto.out.ProfileDto;
 import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
 import ar.edu.itba.paw.webapp.dto.out.UserDto;
@@ -222,6 +225,7 @@ public class UserController {
         }
     }
 
+    /* REVIEWS */
     @GET
     @Path("/{id}/reviews")
     @Produces(MediaType.APPLICATION_JSON)
@@ -235,5 +239,21 @@ public class UserController {
         }
     }
 
+    /* MOOVIELISTREVIEWS */
+    @GET
+    @Path("/{id}/moovieListReviews")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMoovieListReviewsFromUser(@PathParam("id") final int userId, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
 
+        try {
+            final List<MoovieListReview> moovieListReviews = reviewService.getMoovieListReviewsFromUser(userId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page-1);
+            final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto.fromMoovieListReviewList(moovieListReviews, uriInfo);
+            return Response.ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {}).build();
+        } catch (UnableToFindUserException e){
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
 }

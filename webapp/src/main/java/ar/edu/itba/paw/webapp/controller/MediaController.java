@@ -7,15 +7,13 @@ import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
+import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
 import ar.edu.itba.paw.services.MediaService;
 import ar.edu.itba.paw.services.ReviewService;
 import ar.edu.itba.paw.webapp.dto.in.ReviewCreateDto;
-import ar.edu.itba.paw.webapp.dto.out.MediaDto;
-import ar.edu.itba.paw.webapp.dto.out.MovieDto;
-import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
-import ar.edu.itba.paw.webapp.dto.out.TVSerieDto;
+import ar.edu.itba.paw.webapp.dto.out.*;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -96,7 +94,7 @@ public class MediaController {
         }
     }
 
-
+    /* REVIEWS */
     @GET
     @Path("/{id}/reviews")
     @Produces(MediaType.APPLICATION_JSON)

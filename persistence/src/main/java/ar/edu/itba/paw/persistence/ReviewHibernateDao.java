@@ -208,19 +208,25 @@ public class ReviewHibernateDao implements ReviewDao {
     }
 
     @Override
-    public Review getReviewByMediaIdAndUsername(int mediaId, int userId, ReviewTypes type){
+    public Review getReviewByMediaIdAndUsername(int mediaId, int userId){
         try{
-        if(type.getType() == ReviewTypes.REVIEW_MEDIA.getType()) {
             return em.createQuery("SELECT r FROM Review r WHERE r.user.userId = :userId AND r.mediaId = :mediaId", Review.class)
                     .setParameter("userId", userId)
                     .setParameter("mediaId", mediaId)
                     .getSingleResult();
-        }else{
-            return em.createQuery("SELECT r FROM MoovieListReview r WHERE r.user.userId = :userId AND r.moovieListId = :mediaId", Review.class)
-                    .setParameter("userId", userId)
-                    .setParameter("mediaId", mediaId)
-                    .getSingleResult();
-    }}catch(NoResultException e){
+        }catch(NoResultException e){
+            return null;
+        }
+    }
+
+    @Override
+    public MoovieListReview getMoovieListReviewByListIdAndUsername(int listId, int userId){
+        try{
+                return em.createQuery("SELECT r FROM MoovieListReview r WHERE r.user.userId = :userId AND r.moovieListId = :listId", MoovieListReview.class)
+                        .setParameter("userId", userId)
+                        .setParameter("listId", listId)
+                        .getSingleResult();
+            }catch(NoResultException e){
             return null;
         }
     }

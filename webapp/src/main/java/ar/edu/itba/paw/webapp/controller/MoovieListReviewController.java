@@ -1,12 +1,13 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.exceptions.ReviewNotFoundException;
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.exceptions.UserNotLoggedException;
-import ar.edu.itba.paw.models.Review.Review;
+import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
 import ar.edu.itba.paw.services.ReviewService;
-import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
+import ar.edu.itba.paw.webapp.dto.out.MoovieListReviewDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,38 +16,31 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-//TODO CHECK LOGGERS
-//import com.sun.org.slf4j.internal.Logger;
-//import com.sun.org.slf4j.internal.LoggerFactory;
 
-
-@Path("review")
+@Path("moovieListReview")
 @Component
-public class ReviewController {
+public class MoovieListReviewController {
     private final ReviewService reviewService;
 
     @Context
     UriInfo uriInfo;
 
-    //private static final Logger LOGGER = LoggerFactory.getLogger(ReviewController.class);
-
     @Autowired
-    public ReviewController(ReviewService reviewService) {
+    public MoovieListReviewController(ReviewService reviewService) {
         this.reviewService = reviewService;
     }
-
 
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getReviewById(@PathParam("id") final int id) {
+    public Response getMoovieListReviewById(@PathParam("id") int id) {
         try {
-            final Review review = reviewService.getReviewById(id);
-            final ReviewDto reviewDto = ReviewDto.fromReview(review, uriInfo);
-            return Response.ok(reviewDto).build();
-        }catch (ReviewNotFoundException e){
+            final MoovieListReview moovieListReview = reviewService.getMoovieListReviewById(id);
+            final MoovieListReviewDto moovieListReviewDto = MoovieListReviewDto.fromMoovieListReview(moovieListReview, uriInfo);
+            return Response.ok(moovieListReviewDto).build();
+        } catch (ReviewNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"Review not found.\"}")
+                    .entity("{\"error\":\"MoovieList review not found.\"}")
                     .build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
@@ -56,9 +50,9 @@ public class ReviewController {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteReviewById(@PathParam("id") final int reviewId) {
+    public Response deleteMoovieListReviewById(@PathParam("id") final int moovieListReview) {
         try {
-            reviewService.deleteReview(reviewId, ReviewTypes.REVIEW_MEDIA);
+            reviewService.deleteReview(moovieListReview, ReviewTypes.REVIEW_MOOVIE_LIST);
 
             return Response.ok()
                     .entity("Review successfully deleted.")
@@ -70,7 +64,11 @@ public class ReviewController {
                     .build();
         } catch (ReviewNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"Review not found or you do not have permission to delete.\"}")
+                    .entity("{\"error\":\"MoovieList review not found or you do not have permission to delete.\"}")
+                    .build();
+        } catch (MoovieListNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\":\"MoovieList not found or you do not have permission to delete.\"}")
                     .build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -79,19 +77,20 @@ public class ReviewController {
         }
     }
 
+
     @POST
     @Path("/{id}/like")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response likeReview(@PathParam("id") final int id) {
+    public Response likeMoovieListReview(@PathParam("id") final int id) {
         try {
-            boolean liked = reviewService.likeReview(id, ReviewTypes.REVIEW_MEDIA);
-            if(liked){
+            boolean liked = reviewService.likeReview(id, ReviewTypes.REVIEW_MOOVIE_LIST);
+            if (liked) {
                 return Response.ok()
-                        .entity("Review successfully liked.")
+                        .entity("MoovieList review successfully liked.")
                         .build();
             }
             return Response.ok()
-                    .entity("Review successfully unliked.")
+                    .entity("MoovieList review successfully unliked.")
                     .build();
 
         } catch (UserNotLoggedException | UnableToFindUserException e) {
@@ -100,15 +99,23 @@ public class ReviewController {
                     .build();
         } catch (ReviewNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"Review not found.\"}")
+                    .entity("{\"error\":\"MoovieList review not found.\"}")
                     .build();
-        } catch (Exception e) {
+        } catch (MoovieListNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\":\"MoovieList not found or you do not have permission to delete.\"}")
+                    .build();
+        }catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An unexpected error occurred: " + e.getMessage())
                     .build();
         }
     }
 
-
 }
+
+
+
+
+
 

@@ -29,5 +29,7 @@ public interface ReviewService {
     boolean likeReview(int reviewId, ReviewTypes type);
     void removeLikeReview(int reviewId, ReviewTypes type);
 
-    Review getReviewByMediaIdAndUsername(int mediaId, int userId, ReviewTypes type);
+    Review getReviewByMediaIdAndUsername(int mediaId, int userId);
+    MoovieListReview getMoovieListReviewByListIdAndUsername(int listId, int userId);
+
 }

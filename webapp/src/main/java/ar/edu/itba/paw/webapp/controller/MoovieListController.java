@@ -7,11 +7,17 @@ import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
+import ar.edu.itba.paw.models.Review.MoovieListReview;
+import ar.edu.itba.paw.models.Review.ReviewTypes;
 import ar.edu.itba.paw.services.MoovieListService;
+import ar.edu.itba.paw.services.ReviewService;
 import ar.edu.itba.paw.webapp.dto.in.MediaListDto;
 import ar.edu.itba.paw.webapp.dto.in.MoovieListCreateDto;
+import ar.edu.itba.paw.webapp.dto.in.MoovieListReviewCreateDto;
+import ar.edu.itba.paw.webapp.dto.in.ReviewCreateDto;
 import ar.edu.itba.paw.webapp.dto.out.MediaDto;
 import ar.edu.itba.paw.webapp.dto.out.MoovieListDto;
+import ar.edu.itba.paw.webapp.dto.out.MoovieListReviewDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -27,13 +33,15 @@ import java.util.List;
 public class MoovieListController {
 
     private final MoovieListService moovieListService;
+    private final ReviewService reviewService;
 
     @Context
     UriInfo uriInfo;
 
     @Autowired
-    public MoovieListController(MoovieListService moovieListService) {
+    public MoovieListController(MoovieListService moovieListService,ReviewService reviewService) {
         this.moovieListService = moovieListService;
+        this.reviewService = reviewService;
     }
 
 
@@ -105,6 +113,19 @@ public class MoovieListController {
         }
     }
 
+    /* MOOVIELISTREVIEWS */
+    @GET
+    @Path("/{id}/moovieListReviews")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMoovieListReviewsFromListId(@PathParam("id") final int listId, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
+        try {
+            final List<MoovieListReview> moovieListReviews = reviewService.getMoovieListReviewsByMoovieListId(listId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page-1);
+            final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto.fromMoovieListReviewList(moovieListReviews, uriInfo);
+            return Response.ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {}).build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
 
     /**
      * POST METHODS
@@ -233,6 +254,74 @@ public class MoovieListController {
         } catch ( MoovieListNotFoundException e ){
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("Movie list not found for ID: " + moovieListId)
+                    .build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .build();
+        }
+    }
+
+    @POST
+    @Path("{id}/moovieListReview")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createMoovieListReview(@PathParam("id") int listId,@Valid final MoovieListReviewCreateDto moovieListReviewDto) {
+        try {
+            reviewService.createReview(
+                    listId,
+                    0,
+                    moovieListReviewDto.getReviewContent(),
+                    ReviewTypes.REVIEW_MOOVIE_LIST
+            );
+
+            return Response.status(Response.Status.CREATED)
+                    .entity("MoovieList review successfully created to the list with ID: " + listId)
+                    .build();
+
+        } catch(UserNotLoggedException e){
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"error\":\"User must be logged in to review a list.\"}")
+                    .build();
+        } catch(ReviewAlreadyCreatedException e){
+            return Response.status(Response.Status.CONFLICT)
+                    .entity("{\"error\":\"MoovieList review already exists.\"}")
+                    .build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .build();
+        }
+    }
+
+    /**
+     * PUT METHODS
+     */
+
+    @PUT
+    @Path("{id}/moovieListReview")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response editReview(@PathParam("id") int listId,@Valid final MoovieListReviewCreateDto moovieListReviewDto) {
+        try {
+            reviewService.editReview(
+                    listId,
+                    0,
+                    moovieListReviewDto.getReviewContent(),
+                    ReviewTypes.REVIEW_MOOVIE_LIST
+            );
+
+            return Response.ok()
+                    .entity("MoovieList review successfully updated for media with ID: " + listId)
+                    .build();
+
+        } catch (UserNotLoggedException e) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"error\":\"User must be logged in to edit a review.\"}")
+                    .build();
+        } catch (ReviewNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\":\"MoovieList review not found.\"}")
                     .build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

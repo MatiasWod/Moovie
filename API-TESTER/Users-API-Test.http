@@ -18,15 +18,21 @@ GET {{baseUrl}}/profile/{{username1}}
 #     -H "Authorization: Basic $(echo -n 'username:password' | base64)"
 #     http://localhost:8080/users/username/username
 
-@username2 = Wancho
-@password2 = pass12
+@username2 = Moovie
+@password2 = admin123
 
-@auth2 = V2FuY2hvOnBhc3MxMg==
+@auth2 = TW9vdmllOmFkbWluMTIz
 
 GET {{baseUrl}}/users/username/{{username2}}
 Authorization: Basic {{auth2}}
 
 
+
+### GET moovieListReviews
+@id1=21
+@bearer_token1 =  eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNb292aWUiLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjgzNjEyMiwiZXhwIjoxNzMzNDQwOTIyfQ.DH67__vKqJhHSWunS362U0O1qRptW4Gfjw35LCUqy0z8CtLlmIE-MaxkqXscQZQtE4ILqyEmRaiRaofmCXd4oA
+
+GET {{baseUrl}}/users/{{id1}}/moovieListReviews
 
 
 
