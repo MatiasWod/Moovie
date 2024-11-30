@@ -5,6 +5,31 @@ import ProfileImage from "../components/profileImage/ProfileImage";
 import "../components/mainStyle.css";
 import ProfileTabNavigation from "../components/profileTabNavigation/profileTabNavigation";
 import Reviews from "../components/ReviewsSection/Reviews";
+import ProfileHeader from "../components/profileHeader/ProfileHeader";
+import ProfileTabMediaLists from "../components/profileTab/ProfileTabMediaLists";
+import ProfileTabMoovieLists from "../components/profileTab/ProfileTabMoovieLists";
+
+function ProfileTab({selectedTab, profile}){
+    switch (selectedTab.toLowerCase()) {
+        case "watched":
+            return <ProfileTabMediaLists username={profile.username} type={"watched"}/>
+        case "watchlist":
+            return <ProfileTabMediaLists username={profile.username} type={"watchlist"}/>
+        case "public-lists":
+            return <ProfileTabMoovieLists username={profile.username} type={"public-lists"}/>
+        case "private-lists":
+            return <ProfileTabMoovieLists username={profile.username} type={"private-lists"}/>
+        case "liked-lists":
+            return <div>{selectedTab}</div>
+        case "followed-lists":
+            return <div>{selectedTab}</div>
+        case "reviews":
+            return <Reviews id={profile.userId} source="user" />;
+        default:
+            return <div>{selectedTab}</div>
+    }
+
+}
 
 function Profile() {
     const { username } = useParams();
@@ -30,17 +55,16 @@ function Profile() {
     }, []);
 
     // For tracking the selected tab
-    const [selectedTab, setSelectedTab] = useState("visto");
+    const [selectedTab, setSelectedTab] = useState("public-lists");
     const handleTabSelect = (tab) => {
         setSelectedTab(tab);
     };
 
     return (
         <div className="default-container moovie-default">
-            <div>Perfil de {profile.username}</div>
-            <ProfileImage image={profile.pictureUrl} size={100} />
+            <ProfileHeader profile={profile}/>
             <ProfileTabNavigation selectedTab={selectedTab} onTabSelect={handleTabSelect} />
-            <Reviews id={profile.userId} source={'user'}></Reviews>
+            <ProfileTab selectedTab={selectedTab} profile={profile}></ProfileTab>
         </div>
     );
 }

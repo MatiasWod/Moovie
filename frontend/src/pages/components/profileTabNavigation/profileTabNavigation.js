@@ -11,25 +11,25 @@ function ProfileTabNavigation({ selectedTab, onTabSelect }) {
             className="custom-nav"
         >
             <Nav.Item>
-                <Nav.Link eventKey="visto">Visto</Nav.Link>
+                <Nav.Link eventKey="watched">Watched</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-                <Nav.Link eventKey="listasPublicas">Listas públicas</Nav.Link>
+                <Nav.Link eventKey="public-lists">Public</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-                <Nav.Link eventKey="listasPrivadas">Listas privadas</Nav.Link>
+                <Nav.Link eventKey="private-lists">Private</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-                <Nav.Link eventKey="listasQueTeGustaron">Listas que te gustaron</Nav.Link>
+                <Nav.Link eventKey="liked-lists">Liked</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-                <Nav.Link eventKey="listasSeguidas">Listas seguidas</Nav.Link>
+                <Nav.Link eventKey="followed-lists">Followed</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-                <Nav.Link eventKey="resenas">Reseñas</Nav.Link>
+                <Nav.Link eventKey="reviews">Reviews</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-                <Nav.Link eventKey="porVer">Por ver</Nav.Link>
+                <Nav.Link eventKey="watchlist">Watchlist</Nav.Link>
             </Nav.Item>
         </Nav>
     );

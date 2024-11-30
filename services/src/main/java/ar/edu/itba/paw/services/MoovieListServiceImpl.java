@@ -78,7 +78,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         MoovieList ml = getMoovieListById(moovieListId);
         //If the previous didnt throw exception, we have the permissions needed to perform the next action
         int userid = userService.tryToGetCurrentUserId();
-        return moovieListDao.getMoovieListContent(moovieListId, -1 , setOrderMediaBy(orderBy) , setSortOrder(sortOrder) ,size, pageNumber-1);
+        return moovieListDao.getMoovieListContent(moovieListId, userid , setOrderMediaBy(orderBy) , setSortOrder(sortOrder) ,size, pageNumber-1);
     }
 
     @Transactional(readOnly = true)

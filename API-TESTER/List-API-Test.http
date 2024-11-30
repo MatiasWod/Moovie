@@ -7,21 +7,23 @@
 ### LIST BY ID
 
 # EXAMPLE: GET {{base_url}}/list/5
-
-@id0 = 37
+@bearer_token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJXYW5jaG8iLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjc0MDc0NywiZXhwIjoxNzMzMzQ1NTQ3fQ.OKFjYIuVZktDJ6rw3XbgW2aqO0brzGhjpOkU2sJJfgFVvauDxz7hCFwnVnUnJCW_ZW8EWw6BBfcg-AFyiCh_7Q
+@id0 = 3
 
 GET {{baseUrl}}/{{id0}}
+Authorization: Bearer {{bearer_token}}
 
 ### LIST CONTENT
 
 # EXAMPLE: {{baseUrl}}/list/1/content?orderBy=name&sortOrder=ASC&page=1
 
-@id1 = 37
+@id1 = 3
 @orderBy1 = ASC
 @sortOrder1 = name
 @page1 = 1
 
 GET {{baseUrl}}/{{id1}}/content?orderBy={{orderBy1}}&sortOrder={{sortOrder1}}&page={{page1}}
+Authorization: Bearer {{bearer_token}}
 
 ### LIST LIST (Still needs a lot of work to be done aa)
 
@@ -73,7 +75,7 @@ Content-Type: application/json
 #}
 
 @bearer_token3 = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJXYW5jaG8iLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjc0MDc0NywiZXhwIjoxNzMzMzQ1NTQ3fQ.OKFjYIuVZktDJ6rw3XbgW2aqO0brzGhjpOkU2sJJfgFVvauDxz7hCFwnVnUnJCW_ZW8EWw6BBfcg-AFyiCh_7Q
-@moovieListId1 = 45
+@moovieListId1 = 4
 
 POST {{baseUrl}}/{{moovieListId1}}/content
 Authorization: Bearer {{bearer_token3}}

@@ -74,6 +74,10 @@ const userApi = (() => {
         return api.get(`/users/${userId}/reviews`);
     }
 
+    // This is for getting the watched or watchlist from an user
+    const getSpecialListFromUser = (username,type) => {
+        return api.get(`/users/${username}/${type}`);
+    }
 
     return {
         login,
@@ -83,7 +87,8 @@ const userApi = (() => {
         getProfileByUsername,
         getUsersCount,
         getMilkyLeaderboard,
-        getMovieReviewsFromUser
+        getMovieReviewsFromUser,
+        getSpecialListFromUser
     };
 
 })();

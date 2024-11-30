@@ -3,6 +3,10 @@ import api from './api'
 const listApi = (() => {
 
     const getLists = ({search, ownerUsername, type, orderBy, order, pageNumber, pageSize}) =>{
+
+        console.log(ownerUsername);
+        console.log(type);
+
         return api.get('list',
             {
                 params:{

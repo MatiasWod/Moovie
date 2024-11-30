@@ -1,25 +1,31 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
+import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
+import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.services.MoovieListService;
 import ar.edu.itba.paw.services.ReviewService;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.services.VerificationTokenService;
 import ar.edu.itba.paw.webapp.auth.JwtTokenProvider;
 import ar.edu.itba.paw.webapp.dto.in.UserCreateDto;
 import ar.edu.itba.paw.webapp.dto.out.MoovieListReviewDto;
+import ar.edu.itba.paw.webapp.dto.out.MoovieListDto;
 import ar.edu.itba.paw.webapp.dto.out.ProfileDto;
 import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
 import ar.edu.itba.paw.webapp.dto.out.UserDto;
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
+import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.token.TokenService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,6 +43,7 @@ public class UserController {
 
     private final UserService userService;
     private final ReviewService reviewService;
+    private final MoovieListService moovieListService;
     private final VerificationTokenService verificationTokenService;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -46,9 +53,10 @@ public class UserController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public UserController(final UserService userService, ReviewService reviewService, VerificationTokenService verificationTokenService, JwtTokenProvider jwtTokenProvider) {
+    public UserController(final UserService userService, ReviewService reviewService, MoovieListService moovieListService, VerificationTokenService verificationTokenService, JwtTokenProvider jwtTokenProvider) {
         this.userService = userService;
         this.reviewService = reviewService;
+        this.moovieListService = moovieListService;
         this.verificationTokenService = verificationTokenService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
@@ -226,6 +234,7 @@ public class UserController {
     }
 
     /* REVIEWS */
+    // TODO CHANGE THIS SO THE ID IS THE USERNAME
     @GET
     @Path("/{id}/reviews")
     @Produces(MediaType.APPLICATION_JSON)
@@ -233,7 +242,12 @@ public class UserController {
         try {
             final List<Review> reviews = reviewService.getMovieReviewsFromUser(userId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page-1);
             final List<ReviewDto> reviewDtos = ReviewDto.fromReviewList(reviews, uriInfo);
-            return Response.ok(new GenericEntity<List<ReviewDto>>(reviewDtos) {}).build();
+            final int reviewCount = userService.getProfileByUsername(userService.findUserById(userId).getUsername()).getReviewsCount();
+
+            Response.ResponseBuilder res =  Response.ok(new GenericEntity<List<ReviewDto>>(reviewDtos) {});
+            final PagingUtils<Review> reviewPagingUtils = new PagingUtils<>(reviews,page,PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(),reviewCount);
+            ResponseUtils.setPaginationLinks(res,reviewPagingUtils,uriInfo);
+            return res.build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
@@ -254,6 +268,32 @@ public class UserController {
         }
         catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+
+
+    // TODO add the correct catching of errors
+    @GET
+    @Path("/{username}/watched")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getWatchedMovies(@PathParam("username") final String username) {
+        try{
+            return  Response.ok(MoovieListDto.fromMoovieList((moovieListService.getMoovieListCards("Watched",username, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),
+                    null,null,PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),1)).get(0), uriInfo)).build();
+        } catch (Exception e){
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    @GET
+    @Path("/{username}/watchlist")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getWatchlistMovies(@PathParam("username") final String username) {
+        try{
+            return  Response.ok(MoovieListDto.fromMoovieList((moovieListService.getMoovieListCards("Watchlist",username, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),
+                    null,null,PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),1)).get(0), uriInfo)).build();
+        } catch (Exception e){
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 }

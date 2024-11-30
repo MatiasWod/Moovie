@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:8080
+@baseUrl = http://localhost:8080/users
 
 #----------------------------
 # GET
@@ -7,9 +7,10 @@
 ### PROFILE
 
 @username1 = Wancho
+@bearer_token2 =  eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNb292aWUiLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjgzNjEyMiwiZXhwIjoxNzMzNDQwOTIyfQ.DH67__vKqJhHSWunS362U0O1qRptW4Gfjw35LCUqy0z8CtLlmIE-MaxkqXscQZQtE4ILqyEmRaiRaofmCXd4oA
 
 GET {{baseUrl}}/profile/{{username1}}
-
+Authorization: Bearer {{bearer_token2}}
 
 ### LOGIN
 
@@ -23,10 +24,18 @@ GET {{baseUrl}}/profile/{{username1}}
 
 @auth2 = TW9vdmllOmFkbWluMTIz
 
-GET {{baseUrl}}/users/username/{{username2}}
+GET {{baseUrl}}/username/{{username2}}
 Authorization: Basic {{auth2}}
 
 
+### WATCHED / WATCHLIST
+
+@username3 = Wancho
+@bearer_token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJXYW5jaG8iLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjc0MDc0NywiZXhwIjoxNzMzMzQ1NTQ3fQ.OKFjYIuVZktDJ6rw3XbgW2aqO0brzGhjpOkU2sJJfgFVvauDxz7hCFwnVnUnJCW_ZW8EWw6BBfcg-AFyiCh_7Q
+@type = watchlist
+
+GET {{baseUrl}}/{{username3}}/{{type}}
+Authorization: Bearer {{bearer_token}}
 
 ### GET moovieListReviews
 @id1=21

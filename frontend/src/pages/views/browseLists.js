@@ -24,7 +24,6 @@ function BrowseLists(){
     const [sortOrder, setSortOrder] = useState(SortOrder.DESC);
     const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
 
-
     const [mlcList, setMlcList] = useState(undefined);
     const [mlcListLoading, setMlcListLoading] = useState(true);
     const [mlcListError, setMlcListError] = useState(null);
@@ -79,6 +78,7 @@ function BrowseLists(){
 
             <div className="browse-lists-header">
                 <div className="title">Community Lists</div>
+
                 <div className="browse-list-header-searchable">
                     <SearchBar />
                     <div style={{display:"flex", float:"right"}}>

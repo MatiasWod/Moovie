@@ -1,14 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {createSearchParams, useNavigate, useParams, useSearchParams} from "react-router-dom";
 import ListHeader from "../components/listHeader/ListHeader";
-import ListContent from "../components/listContent/ListContent";
-import PaginationButton from "../components/paginationButton/PaginationButton";
 import OrderBy from "../../api/values/MediaOrderBy";
 import SortOrder from "../../api/values/SortOrder";
 import DropdownMenu from "../components/dropdownMenu/DropdownMenu";
 import "../components/mainStyle.css"
 import ListService from "../../services/ListService";
 import pagingSizes from "../../api/values/PagingSizes";
+import ListContentPaginated from "../components/listContentPaginated/ListContentPaginated";
 
 
 function List() {
@@ -95,18 +94,16 @@ function List() {
         <div className="default-container moovie-default">
             <ListHeader list={list?.data || []}/>
 
-            <DropdownMenu setOrderBy={setOrderBy} setSortOrder={setSortOrder} currentOrderDefault={currentSortOrder} values={Object.values(OrderBy)}/>
-
-            <ListContent listContent={listContent?.data || []} />
-            <div className="flex justify-center pt-4">
-                {listContent?.data?.length > 0 && listContent.links?.last?.page > 1 && (
-                    <PaginationButton
-                        page={page}
-                        lastPage={listContent.links.last.page}
-                        setPage={handlePageChange}
-                    />
-                )}
-            </div>
+            <ListContentPaginated
+                listContent={listContent}
+                page={page}
+                lastPage={listContent?.links?.last?.page}
+                handlePageChange={handlePageChange}
+                currentOrderBy={currentOrderBy}
+                setOrderBy={setOrderBy}
+                currentSortOrder={currentSortOrder}
+                setSortOrder={setSortOrder}
+            />
 
         </div>
     );

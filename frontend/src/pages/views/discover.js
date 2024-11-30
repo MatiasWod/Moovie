@@ -36,6 +36,17 @@ const Discover = () => {
     };
 
     useEffect(() => {
+        navigate({
+            pathname: `/discover`,
+            search: createSearchParams({
+                orderBy: orderBy,
+                sortOrder: sortOrder,
+                page: page.toString(),
+            }).toString(),
+        });
+    }, [orderBy, sortOrder, page, navigate]);
+
+    useEffect(() => {
         async function getData() {
             try {
                 const data = await MediaService.getMedia({
