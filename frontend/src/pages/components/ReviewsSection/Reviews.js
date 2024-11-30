@@ -51,7 +51,7 @@ function Reviews({ id, source }) {
 
 
     if (reviewsLoading) return <div>Cargando reseñas...</div>;
-    if (reviewsError) return <div>Error al cargar reseñas: {reviewsError}</div>;
+    if (reviewsError) return <div>Error al cargar reseñas: {reviewsError.message}</div>;
     if (reviews.length === 0) return <div>No hay reseñas disponibles.</div>;
 
     return (

@@ -103,8 +103,12 @@ public class MediaController {
     public Response getReviewsByMediaId(@PathParam("id") final int mediaId, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
         try {
             final List<Review> reviews = reviewService.getReviewsByMediaId(mediaId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page-1);
+            final int reviewCount = reviewService.getReviewsByMediaIdCount(mediaId);
             final List<ReviewDto> reviewDtos = ReviewDto.fromReviewList(reviews, uriInfo);
-            return Response.ok(new GenericEntity<List<ReviewDto>>(reviewDtos) {}).build();
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ReviewDto>>(reviewDtos) {});
+            final PagingUtils<Review> reviewPagingUtils = new PagingUtils<>(reviews,page,PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(),reviewCount);
+            ResponseUtils.setPaginationLinks(res,reviewPagingUtils,uriInfo);
+            return res.build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }

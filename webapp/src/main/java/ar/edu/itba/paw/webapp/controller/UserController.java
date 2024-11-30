@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
+import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.Token;
@@ -17,6 +18,7 @@ import ar.edu.itba.paw.webapp.dto.out.ProfileDto;
 import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
 import ar.edu.itba.paw.webapp.dto.out.UserDto;
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
+import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -236,7 +238,12 @@ public class UserController {
         try {
             final List<Review> reviews = reviewService.getMovieReviewsFromUser(userId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page-1);
             final List<ReviewDto> reviewDtos = ReviewDto.fromReviewList(reviews, uriInfo);
-            return Response.ok(new GenericEntity<List<ReviewDto>>(reviewDtos) {}).build();
+            final int reviewCount = userService.getProfileByUsername(userService.findUserById(userId).getUsername()).getReviewsCount();
+
+            Response.ResponseBuilder res =  Response.ok(new GenericEntity<List<ReviewDto>>(reviewDtos) {});
+            final PagingUtils<Review> reviewPagingUtils = new PagingUtils<>(reviews,page,PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(),reviewCount);
+            ResponseUtils.setPaginationLinks(res,reviewPagingUtils,uriInfo);
+            return res.build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
