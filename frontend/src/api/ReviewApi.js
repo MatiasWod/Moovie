@@ -16,16 +16,11 @@ const reviewApi = (()=> {
         return api.post(`/review/${id}/like`);
     }
 
-    const unlikeReview = (id) => {
-        return api.delete(`/review/${id}/unlike`);
-    }
-
 
     return {
         getReviewById,
         deleteReviewById,
         likeReview,
-        unlikeReview,
     }
 
 })();

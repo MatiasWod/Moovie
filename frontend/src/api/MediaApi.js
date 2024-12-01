@@ -25,16 +25,30 @@ const mediaApi = (()=> {
         return api.get(`/media/${mediaId}/reviews`);
     }
 
-    // const createReview = (mediaId,page=1) => {
-    //     return api.post(`/media/${mediaId}/review`, page);
-    // }
+    const createReview = (mediaId,page=1) => {
+        return api.post(`/media/${mediaId}/review`,
+            {
+                params:{
+                    'pageNumber': page,
+                }
+            });
+    }
 
-
+    const getMoovieListReviewsFromUser = (mediaId,page) => {
+        return api.get(`/media/${mediaId}/moovieListReviews`,
+            {
+                params:{
+                    'pageNumber': page,
+                }
+            });
+    }
 
     return {
         getMedia,
         getMediaById,
         getReviewsByMediaId,
+        createReview,
+        getMoovieListReviewsFromUser
     }
 
 })();
