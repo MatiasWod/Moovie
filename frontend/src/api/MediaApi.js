@@ -34,21 +34,11 @@ const mediaApi = (()=> {
             });
     }
 
-    const getMoovieListReviewsFromUser = (mediaId,page) => {
-        return api.get(`/media/${mediaId}/moovieListReviews`,
-            {
-                params:{
-                    'pageNumber': page,
-                }
-            });
-    }
-
     return {
         getMedia,
         getMediaById,
         getReviewsByMediaId,
-        createReview,
-        getMoovieListReviewsFromUser
+        createReview
     }
 
 })();
