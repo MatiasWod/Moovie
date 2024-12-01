@@ -25,16 +25,20 @@ const mediaApi = (()=> {
         return api.get(`/media/${mediaId}/reviews`);
     }
 
-    // const createReview = (mediaId,page=1) => {
-    //     return api.post(`/media/${mediaId}/review`, page);
-    // }
-
-
+    const createReview = (mediaId,page=1) => {
+        return api.post(`/media/${mediaId}/review`,
+            {
+                params:{
+                    'pageNumber': page,
+                }
+            });
+    }
 
     return {
         getMedia,
         getMediaById,
         getReviewsByMediaId,
+        createReview
     }
 
 })();

@@ -38,10 +38,45 @@ const listApi = (() => {
             });
     }
 
+    const getMoovieListReviewsFromListId = ({id,pageNumber}) => {
+        return api.get(`/list/${id}/moovieListReviews`,
+            {
+                params: {
+                    'pageNumber': pageNumber
+                }
+            });
+    }
+
+
+    //POST
+
+    const createMoovieListReview = (id,page=1) => {
+        return api.post(`/list/${mediaId}/moovieListReview`,
+            {
+                params:{
+                    'pageNumber': page,
+                }
+            });
+    }
+
+    //PUT
+
+    const editReview = (id,page=1) => {
+        return api.put(`/list/${mediaId}/moovieListReview`,
+            {
+                params:{
+                    'pageNumber': page,
+                }
+            });
+    }
+
     return{
         getLists,
         getListById,
-        getListContentById
+        getListContentById,
+        getMoovieListReviewsFromListId,
+        createMoovieListReview,
+        editReview
     }
 })();
 

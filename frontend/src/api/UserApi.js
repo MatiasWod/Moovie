@@ -79,6 +79,16 @@ const userApi = (() => {
         return api.get(`/users/${username}/${type}`);
     }
 
+
+    const getMoovieListReviewsFromUser = (userId,page) => {
+        return api.get(`/media/${userId}/moovieListReviews`,
+            {
+                params:{
+                    'pageNumber': page,
+                }
+            });
+    }
+
     return {
         login,
         register,
@@ -88,7 +98,8 @@ const userApi = (() => {
         getUsersCount,
         getMilkyLeaderboard,
         getMovieReviewsFromUser,
-        getSpecialListFromUser
+        getSpecialListFromUser,
+        getMoovieListReviewsFromUser
     };
 
 })();

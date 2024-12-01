@@ -69,16 +69,19 @@ public class UserController {
             LOGGER.warn("Invalid page number: {}. Returning BAD_REQUEST.", page);
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
+        try {
+            final List<User> all = userService.listAll(page);
+            if (all.isEmpty()) {
+                LOGGER.info("No users found. Returning NOT_FOUND.");
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
 
-        final List<User> all = userService.listAll(page);
-        if (all.isEmpty()) {
-            LOGGER.info("No users found. Returning NOT_FOUND.");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            List<UserDto> dtoList = UserDto.fromUserList(all, uriInfo);
+            return Response.ok(new GenericEntity<List<UserDto>>(dtoList) {
+            }).build();
+        }catch (RuntimeException e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
-
-        List<UserDto> dtoList = UserDto.fromUserList(all, uriInfo);
-        return Response.ok(new GenericEntity<List<UserDto>>(dtoList) {
-        }).build();
     }
 
     @GET
@@ -92,36 +95,50 @@ public class UserController {
     @Path("/{id}")
     public Response findUserById(@PathParam("id") final int id) {
         LOGGER.info("Method: findUserById, Path: /users/{id}, ID: {}", id);
-        final User user = userService.findUserById(id);
-        if (user == null) {
-            LOGGER.info("User with ID {} not found. Returning NOT_FOUND.", id);
-            return Response.status(Response.Status.NOT_FOUND).build();
+        try {
+            final User user = userService.findUserById(id);
+            if (user == null) {
+                LOGGER.info("User with ID {} not found. Returning NOT_FOUND.", id);
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            return Response.ok(UserDto.fromUser(user, uriInfo)).build();
+        }catch (RuntimeException e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
-        return Response.ok(UserDto.fromUser(user, uriInfo)).build();
     }
 
     @GET
     @Path("/email/{email}")
     public Response findUserByEmail(@PathParam("email") final String email) {
-        LOGGER.info("Method: findUserByEmail, Path: /users/email/{email}, Email: {}", email);
-        final User user = userService.findUserByEmail(email);
-        if (user == null) {
-            LOGGER.info("User with email {} not found. Returning NOT_FOUND.", email);
-            return Response.status(Response.Status.NOT_FOUND).build();
+        try {
+            LOGGER.info("Method: findUserByEmail, Path: /users/email/{email}, Email: {}", email);
+            final User user = userService.findUserByEmail(email);
+            if (user == null) {
+                LOGGER.info("User with email {} not found. Returning NOT_FOUND.", email);
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            return Response.ok(UserDto.fromUser(user, uriInfo)).build();
+        }catch (RuntimeException e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
-        return Response.ok(UserDto.fromUser(user, uriInfo)).build();
+
     }
 
     @GET
     @Path("/username/{username}")
     public Response findUserByUsername(@PathParam("username") final String username) {
-        LOGGER.info("Method: findUserByUsername, Path: /users/username/{username}, Username: {}", username);
-        final User user = userService.findUserByUsername(username);
-        if (user == null) {
-            LOGGER.info("User with username {} not found. Returning NOT_FOUND.", username);
-            return Response.status(Response.Status.NOT_FOUND).build();
+        try {
+            LOGGER.info("Method: findUserByUsername, Path: /users/username/{username}, Username: {}", username);
+            final User user = userService.findUserByUsername(username);
+            if (user == null) {
+                LOGGER.info("User with username {} not found. Returning NOT_FOUND.", username);
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            return Response.ok(UserDto.fromUser(user, uriInfo)).build();
+        } catch (RuntimeException e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
-        return Response.ok(UserDto.fromUser(user, uriInfo)).build();
+
     }
 
     @GET
@@ -198,19 +215,30 @@ public class UserController {
     @Path("/{username}/image")
     @Produces("image/png")
     public Response getProfileImage(@PathParam("username") final String username) {
-        LOGGER.info("Method: getProfileImage, Path: /users/{username}/image, Username: {}", username);
-        final byte[] image = userService.getProfilePicture(username);
-        return Response.ok(image).build();
+        try {
+            LOGGER.info("Method: getProfileImage, Path: /users/{username}/image, Username: {}", username);
+            final byte[] image = userService.getProfilePicture(username);
+            return Response.ok(image).build();
+        } catch (RuntimeException e){
+            LOGGER.error("Error retrieving profile image: {}", e.getMessage());
+            return Response.serverError().entity(e.getMessage()).build();
+        }
     }
 
     @PUT
     @Path("/{username}/image")
     @Consumes("image/png")
     public Response setProfileImage(@PathParam("username") final String username, final MultipartFile image) {
-        LOGGER.info("Method: setProfileImage, Path: /users/{username}/image, Username: {}", username);
-        userService.setProfilePicture(image);
-        LOGGER.info("Profile image updated for username: {}", username);
-        return Response.ok().build();
+        try {
+            LOGGER.info("Method: setProfileImage, Path: /users/{username}/image, Username: {}", username);
+            userService.setProfilePicture(image);
+            LOGGER.info("Profile image updated for username: {}", username);
+            return Response.ok().build();
+        } catch (RuntimeException e){
+            LOGGER.error("Error updating profile image: {}", e.getMessage());
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+
     }
 
     @GET
