@@ -1,25 +1,23 @@
-@baseUrl = http://localhost:8080/moovieListReview
+@baseUrl = http://localhost:8080/comment
 
 #----------------------------
 # GET
 #----------------------------
 
-### REVIEW BY ID
+### COMMENT BY ID
 
-# EXAMPLE: GET {{baseUrl}}/review/123
+# EXAMPLE: GET {{baseUrl}}/comment/123
 
-@id0 =9
+@id0 =4
 
 GET {{baseUrl}}/{{id0}}
 
 
-### MEDIA LIST
-
 #----------------------------
 # POST
 #----------------------------
-### LIKE REVIEW
-@id1=3
+### LIKE COMMENT
+@id1=4
 @bearer_token1 =  eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNb292aWUiLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjgzNjEyMiwiZXhwIjoxNzMzNDQwOTIyfQ.DH67__vKqJhHSWunS362U0O1qRptW4Gfjw35LCUqy0z8CtLlmIE-MaxkqXscQZQtE4ILqyEmRaiRaofmCXd4oA
 
 POST {{baseUrl}}/{{id1}}/like
@@ -29,12 +27,20 @@ Authorization: Bearer {{bearer_token1}}
 # DELETE
 #----------------------------
 
-### DELETE REVIEW
-@id2=2
+### DELETE COMMENT
+@id2=4
 @bearer_token2 =  eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNb292aWUiLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjgzNjEyMiwiZXhwIjoxNzMzNDQwOTIyfQ.DH67__vKqJhHSWunS362U0O1qRptW4Gfjw35LCUqy0z8CtLlmIE-MaxkqXscQZQtE4ILqyEmRaiRaofmCXd4oA
 
 DELETE {{baseUrl}}/{{id2}}
 Authorization: Bearer {{bearer_token2}}
 
+
+### UNLIKE COMMENT
+DELETE {{baseUrl}}/{{id2}}/removeLikeComment
+Authorization: Bearer {{bearer_token2}}
+
+### UNDISLIKE COMMENT
+DELETE {{baseUrl}}/{{id2}}/removeUnlikeComment
+Authorization: Bearer {{bearer_token2}}
 
 

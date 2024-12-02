@@ -8,29 +8,42 @@
 
 # EXAMPLE: GET {{baseUrl}}/review/123
 
-@id0 = 1
+@id0 =9
 
 GET {{baseUrl}}/{{id0}}
 
-
-### MEDIA LIST
+### GET COMMENTS
+@id0_comment =9
+GET {{baseUrl}}/{{id0_comment}}/comments
 
 #----------------------------
 # POST
 #----------------------------
 ### LIKE REVIEW
-@id1=6
-@bearer_token1 =  eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJXYW5jaG8iLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjc0MDc0NywiZXhwIjoxNzMzMzQ1NTQ3fQ.OKFjYIuVZktDJ6rw3XbgW2aqO0brzGhjpOkU2sJJfgFVvauDxz7hCFwnVnUnJCW_ZW8EWw6BBfcg-AFyiCh_7Q
+@id1=9
+@bearer_token1 =  eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNb292aWUiLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjgzNjEyMiwiZXhwIjoxNzMzNDQwOTIyfQ.DH67__vKqJhHSWunS362U0O1qRptW4Gfjw35LCUqy0z8CtLlmIE-MaxkqXscQZQtE4ILqyEmRaiRaofmCXd4oA
 
 POST {{baseUrl}}/{{id1}}/like
 Authorization: Bearer {{bearer_token1}}
+
+### COMMENT REVIEW
+@id1_comment=9
+@bearer_token_comment1 =  eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNb292aWUiLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjgzNjEyMiwiZXhwIjoxNzMzNDQwOTIyfQ.DH67__vKqJhHSWunS362U0O1qRptW4Gfjw35LCUqy0z8CtLlmIE-MaxkqXscQZQtE4ILqyEmRaiRaofmCXd4oA
+
+POST {{baseUrl}}/{{id1_comment}}/comment
+Authorization: Bearer {{bearer_token_comment1}}
+Content-Type: application/json
+
+{
+  "commentContent": "Hello world"
+}
 
 #----------------------------
 # DELETE
 #----------------------------
 
 ### DELETE REVIEW
-@id2=1
+@id2=8
 @bearer_token2 =  eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNb292aWUiLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjgzNjEyMiwiZXhwIjoxNzMzNDQwOTIyfQ.DH67__vKqJhHSWunS362U0O1qRptW4Gfjw35LCUqy0z8CtLlmIE-MaxkqXscQZQtE4ILqyEmRaiRaofmCXd4oA
 
 DELETE {{baseUrl}}/{{id2}}
