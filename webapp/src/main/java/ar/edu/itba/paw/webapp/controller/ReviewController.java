@@ -125,7 +125,7 @@ public class ReviewController {
     public Response getComments(@PathParam("id") final int id, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
         try{
             final int commentCount=reviewService.getReviewById(id).getCommentCount().intValue();
-            final List<Comment> commentList= commentService.getComments(id, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(),page);
+            final List<Comment> commentList= commentService.getComments(id, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(),page-1);
             final List<CommentDto> commentDtoList=CommentDto.fromCommentList(commentList,uriInfo);
 
             Response.ResponseBuilder res = Response.ok(new GenericEntity<List<CommentDto>>(commentDtoList) {});
