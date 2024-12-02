@@ -8,6 +8,7 @@ import "../components/mainStyle.css"
 import ListService from "../../services/ListService";
 import pagingSizes from "../../api/values/PagingSizes";
 import ListContentPaginated from "../components/listContentPaginated/ListContentPaginated";
+import Reviews from "../components/ReviewsSection/Reviews";
 
 
 function List() {
@@ -104,6 +105,8 @@ function List() {
                 currentSortOrder={currentSortOrder}
                 setSortOrder={setSortOrder}
             />
+
+            <Reviews id={id} source={'list'}></Reviews>
 
         </div>
     );

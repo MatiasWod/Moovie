@@ -1,5 +1,6 @@
 import listApi from "../api/ListApi";
 import {parsePaginatedResponse} from "../utils/ResponseUtils";
+import api from "../api/api";
 
 const ListService = (() => {
 
@@ -18,10 +19,16 @@ const ListService = (() => {
         return parsePaginatedResponse(res);
     }
 
+    const getMoovieListReviewsFromListId = async ({id,pageNumber}) => {
+        const res = await listApi.getMoovieListReviewsFromListId({id,pageNumber});
+        return parsePaginatedResponse(res);
+    }
+
    return{
         getLists,
         getListById,
-        getListContentById
+        getListContentById,
+       getMoovieListReviewsFromListId
    }
 })();
 

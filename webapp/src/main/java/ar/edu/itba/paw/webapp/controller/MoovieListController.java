@@ -121,8 +121,12 @@ public class MoovieListController {
     public Response getMoovieListReviewsFromListId(@PathParam("id") final int listId, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
         try {
             final List<MoovieListReview> moovieListReviews = reviewService.getMoovieListReviewsByMoovieListId(listId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page-1);
+            final int moovieListReviewsCount = reviewService.getMoovieListReviewByMoovieListIdCount(listId);
             final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto.fromMoovieListReviewList(moovieListReviews, uriInfo);
-            return Response.ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {}).build();
+            Response.ResponseBuilder res =  Response.ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {});
+            final PagingUtils<MoovieListReview> toReturnMoovieListReviews = new PagingUtils<>(moovieListReviews,page - 1,PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(),moovieListReviewsCount);
+            ResponseUtils.setPaginationLinks(res,toReturnMoovieListReviews,uriInfo);
+            return res.build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }

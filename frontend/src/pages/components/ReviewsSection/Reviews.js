@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import mediaApi from "../../../api/MediaApi";
 import userApi from "../../../api/UserApi";
 import mediaService from "../../../services/MediaService";
 import {createSearchParams, useNavigate, useSearchParams} from "react-router-dom";
-import ListService from "../../../services/ListService";
 import PaginationButton from "../paginationButton/PaginationButton";
+import listService from "../../../services/ListService";
 
 function Reviews({ id, source }) {
     const navigate = useNavigate();
@@ -15,26 +14,26 @@ function Reviews({ id, source }) {
     const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
 
 
-    const handlePageChange = (newPage) => {
-        setPage(newPage);
-        navigate({
-            pathname: `/list/${id}`,
-            search: createSearchParams({
-                page: newPage.toString(),
-            }).toString(),
-        });
-    };
-
     useEffect(() => {
         async function getData() {
             try {
                 let response;
                 switch (source) {
                     case 'media':
-                        response = await mediaService.getReviewsByMediaId(id);
+                        console.log(id,page);
+                        response = await mediaService.getReviewsByMediaId(id,page);
                         break;
+
+                    case 'list':
+                        response = await listService.getMoovieListReviewsFromListId({
+                            id : id,
+                            pageNumber : page
+                        });
+                        break;
+
                     case 'user':
-                        response = await userApi.getMovieReviewsFromUser(id);
+                        response = await userApi.getMovieReviewsFromUser(id,page);
+                        source = 'profile';
                         break;
                     default:
                         throw new Error(`Unsupported source: ${source}`);
@@ -48,6 +47,16 @@ function Reviews({ id, source }) {
         }
         getData();
     }, [id]);
+
+    const handlePageChange = (newPage) => {
+        setPage(newPage);
+        navigate({
+            pathname: `/${source}/${id}`,
+            search: createSearchParams({
+                page: newPage.toString(),
+            }).toString(),
+        });
+    };
 
 
     if (reviewsLoading) return <div>Cargando reseñas...</div>;

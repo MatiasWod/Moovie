@@ -51,7 +51,7 @@ const listApi = (() => {
     //POST
 
     const createMoovieListReview = (id,page=1) => {
-        return api.post(`/list/${mediaId}/moovieListReview`,
+        return api.post(`/list/${id}/moovieListReview`,
             {
                 params:{
                     'pageNumber': page,
@@ -62,7 +62,7 @@ const listApi = (() => {
     //PUT
 
     const editReview = (id,page=1) => {
-        return api.put(`/list/${mediaId}/moovieListReview`,
+        return api.put(`/list/${id}/moovieListReview`,
             {
                 params:{
                     'pageNumber': page,
