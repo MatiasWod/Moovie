@@ -5,9 +5,13 @@ import MediaTypes from "../../api/values/MediaTypes";
 import OrderBy from "../../api/values/MediaOrderBy";
 import SortOrder from "../../api/values/SortOrder";
 import "../components/mainStyle.css"
+import Button from "react-bootstrap/Button";
+import {useNavigate} from "react-router-dom";
 
 
 function Home() {
+
+    const navigate = useNavigate();
 
     //GET VALUES FOT Top Rated Movies
     const [topRatedMovies, setTopRatedMovies] = useState([]);
@@ -30,6 +34,9 @@ function Home() {
         fetchTopRatedMovies();
     }, []);
 
+    const handleTopRatedMoviesButtonClick = () => {
+        navigate('/featuredLists/topRatedMovies');
+    }
 
     //GET VALUES FOT Mos Popular Movies
     const [mostPopularMovies, setMostPopularMovies] = useState([]);
@@ -52,6 +59,9 @@ function Home() {
         fetchMostPopularMovies();
     }, []);
 
+    const handleMostPopularMoviesButtonClick = () => {
+        navigate('/featuredLists/mostPopularMovies');
+    }
 
     //GET VALUES FOT Top Rated Series
     const [topRatedSeries, setTopRatedSeries] = useState([]);
@@ -74,6 +84,9 @@ function Home() {
         fetchTopRatedSeries();
     }, []);
 
+    const handleTopRatedSeriesButtonClick = () => {
+        navigate('/featuredLists/topRatedSeries');
+    }
 
     //GET VALUES FOT Most Popular Series
     const [mostPopularSeries, setMostPopularSeries] = useState([]);
@@ -96,6 +109,9 @@ function Home() {
         fetchMostPopularSeries();
     }, []);
 
+    const handleMostPopularSeriesButtonClick = () => {
+        navigate('/featuredLists/mostPopularSeries');
+    }
 
     return (
         <main className="moovie-default default-container">
@@ -104,25 +120,45 @@ function Home() {
             </div>
             <div>Home Page of Moovie, Welcome!</div>
             <div>
-                <div>Top Rated Movies by IMDB</div>
+                <div className="container d-flex justify-content-between p-2">
+                    <h3>Top Rated Movies by TMDB</h3>
+                    <Button variant="contained" color="success" onClick={handleTopRatedMoviesButtonClick}>
+                        See more
+                    </Button>
+                </div>
                 <CardsHorizontalContainer mediaList={topRatedMovies} loading={topRatedMoviesLoading}
                                           error={topRatedMoviesError}/>
             </div>
 
             <div>
-                <div>Most Popular Movies</div>
+                <div className="container d-flex justify-content-between p-2">
+                    <h3>Most Popular Movies by TMDB</h3>
+                    <Button variant="contained" color="success" onClick={handleMostPopularMoviesButtonClick}>
+                        See more
+                    </Button>
+                </div>
                 <CardsHorizontalContainer mediaList={mostPopularMovies} loading={mostPopularMoviesLoading}
                                           error={mostPopularMoviesError}/>
             </div>
 
             <div>
-                <div>Top Rated Series by IMDB</div>
+                <div className="container d-flex justify-content-between p-2">
+                    <h3>Most Popular Movies by TMDB</h3>
+                    <Button variant="contained" color="success" onClick={handleTopRatedSeriesButtonClick}>
+                        See more
+                    </Button>
+                </div>
                 <CardsHorizontalContainer mediaList={topRatedSeries} loading={topRatedSeriesLoading}
                                           error={topRatedSeriesError}/>
             </div>
 
             <div>
-                <div>Most Popular Series</div>
+                <div className="container d-flex justify-content-between p-2">
+                    <h3>Most Popular Movies by TMDB</h3>
+                    <Button variant="contained" color="success" onClick={handleMostPopularSeriesButtonClick}>
+                        See more
+                    </Button>
+                </div>
                 <CardsHorizontalContainer mediaList={mostPopularSeries} loading={mostPopularSeriesLoading}
                                           error={mostPopularSeriesError}/>
             </div>
