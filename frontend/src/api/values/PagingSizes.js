@@ -6,6 +6,9 @@ const PagingSizes = {
     REVIEW_DEFAULT_PAGE_SIZE: 5,
     USER_LIST_DEFAULT_PAGE_SIZE: 6,
     MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE: 25,
+    MEDIA_SEARCH_PAGE_SIZE: 5,
+    MOOVIE_LIST_SEARCH_PAGE_SIZE: 5,
+    USER_SEARCH_PAGE_SIZE: 5,
 
     getSize: function(sizeName) {
         return this[sizeName];

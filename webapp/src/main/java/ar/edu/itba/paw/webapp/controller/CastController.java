@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.models.Cast.Actor;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.services.ActorService;
 import ar.edu.itba.paw.webapp.dto.out.ActorDto;
@@ -59,6 +60,20 @@ public class CastController {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An unexpected error occurred: " + e.getMessage())
                     .build();
+        }
+    }
+
+    @GET
+    @Path("/actor")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getActorsForQuery(@QueryParam("search") final String search){
+        try{
+            List<Actor> actorList = actorService.getActorsForQuery(search);
+            List<ActorDto> actorDtoList = ActorDto.fromActorList(actorList,uriInfo);
+            return Response.ok(new GenericEntity<List<ActorDto>>(actorDtoList){}).build();
+        }
+        catch (RuntimeException e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
 

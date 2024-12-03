@@ -3,6 +3,8 @@ package ar.edu.itba.paw.webapp.dto.out;
 import ar.edu.itba.paw.models.Cast.Actor;
 
 import javax.ws.rs.core.UriInfo;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class ActorDto {
@@ -18,6 +20,10 @@ public class ActorDto {
         dto.profilePath = actor.getProfilePath();
         dto.url = uriInfo.getBaseUriBuilder().path("actor/{actorId}").build(actor.getActorId()).toString();
         return dto;
+    }
+
+    public static List<ActorDto> fromActorList(List<Actor> actorList, UriInfo uriInfo) {
+        return actorList.stream().map(m -> fromActor(m, uriInfo)).collect(java.util.stream.Collectors.toList());
     }
 
     public int getActorId() {

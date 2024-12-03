@@ -89,6 +89,19 @@ const userApi = (() => {
             });
     }
 
+    const getSearchedUsers = (username,orderBy,sortOrder,page) => {
+        return api.get(`/users/search`,
+            {
+                params: {
+                    'username': username,
+                    'orderBy': orderBy,
+                    'sortOrder': sortOrder,
+                    'pageNumber': page
+                }
+            }
+        );
+    }
+
     return {
         login,
         register,
@@ -99,7 +112,8 @@ const userApi = (() => {
         getMilkyLeaderboard,
         getMovieReviewsFromUser,
         getSpecialListFromUser,
-        getMoovieListReviewsFromUser
+        getMoovieListReviewsFromUser,
+        getSearchedUsers
     };
 
 })();

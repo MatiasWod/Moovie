@@ -15,11 +15,7 @@ import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.services.VerificationTokenService;
 import ar.edu.itba.paw.webapp.auth.JwtTokenProvider;
 import ar.edu.itba.paw.webapp.dto.in.UserCreateDto;
-import ar.edu.itba.paw.webapp.dto.out.MoovieListReviewDto;
-import ar.edu.itba.paw.webapp.dto.out.MoovieListDto;
-import ar.edu.itba.paw.webapp.dto.out.ProfileDto;
-import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
-import ar.edu.itba.paw.webapp.dto.out.UserDto;
+import ar.edu.itba.paw.webapp.dto.out.*;
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import org.slf4j.Logger;
@@ -324,4 +320,26 @@ public class UserController {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
+
+    @GET
+    @Path("/search")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchUsers(@QueryParam("username") final String username,
+                                @QueryParam("orderBy") final String orderBy,
+                                @QueryParam("sortOrder") final String sortOrder,
+                                @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber){
+    try {
+        List<Profile> profileList = userService.searchUsers(username,orderBy,sortOrder,PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber);
+        final int profileCount = userService.getSearchCount(username);
+        List<ProfileDto> profileDtoList = ProfileDto.fromProfileList(profileList, uriInfo);
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ProfileDto>>(profileDtoList){});
+        final PagingUtils<Profile> toReturnProfileList = new PagingUtils<>(profileList,pageNumber,PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), profileCount);
+        ResponseUtils.setPaginationLinks(res,toReturnProfileList,uriInfo);
+        return res.build();
+    }
+    catch (RuntimeException e){
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+    }
+
 }
