@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
+import ar.edu.itba.paw.exceptions.UserNotLoggedException;
+import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
@@ -15,13 +17,18 @@ import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.services.VerificationTokenService;
 import ar.edu.itba.paw.webapp.auth.JwtTokenProvider;
 import ar.edu.itba.paw.webapp.dto.in.UserCreateDto;
-import ar.edu.itba.paw.webapp.dto.out.*;
+import ar.edu.itba.paw.webapp.dto.out.MoovieListReviewDto;
+import ar.edu.itba.paw.webapp.dto.out.MoovieListDto;
+import ar.edu.itba.paw.webapp.dto.out.ProfileDto;
+import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
+import ar.edu.itba.paw.webapp.dto.out.UserDto;
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.token.TokenService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -342,4 +349,65 @@ public class UserController {
     }
     }
 
+
+    @GET
+    @Path("/{username}/likedLists")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getLikedLists(@PathParam("username") final String username,
+                                  @QueryParam("orderBy") String orderBy,
+                                  @QueryParam("order") String order,
+                                  @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber){
+        try{
+            List<MoovieListCard> mlcList = moovieListService.getLikedMoovieListCards(username, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
+                    PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1);
+            int listCount = userService.getLikedMoovieListCountForUser(username);
+
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(MoovieListDto.fromMoovieListList(mlcList, uriInfo)) {
+            });
+            final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList,pageNumber,PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(),listCount);
+            ResponseUtils.setPaginationLinks(res,toReturnMoovieListCardList,uriInfo);
+            return res.build();
+        } catch(UserNotLoggedException e){
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("User must be logged in to perform this action.")
+                    .build();
+        } catch(UsernameNotFoundException e){
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("User by the username: "+ username + " not found.")
+                    .build();
+        } catch(RuntimeException e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+
+    @GET
+    @Path("/{username}/followedLists")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getFollowedLists(@PathParam("username") final String username,
+                                  @QueryParam("orderBy") String orderBy,
+                                  @QueryParam("order") String order,
+                                  @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber){
+        try{
+            int userid = userService.getProfileByUsername(username).getUserId();
+            List<MoovieListCard> mlcList = moovieListService.getFollowedMoovieListCards(userid, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
+                    PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1);
+            int listCount = moovieListService.getFollowedMoovieListCardsCount(userid,MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
+
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(MoovieListDto.fromMoovieListList(mlcList, uriInfo)) {
+            });
+            final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList,pageNumber,PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(),listCount);
+            ResponseUtils.setPaginationLinks(res,toReturnMoovieListCardList,uriInfo);
+            return res.build();
+        } catch(UserNotLoggedException e){
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("User must be logged in to perform this action.")
+                    .build();
+        } catch(UsernameNotFoundException e){
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("User by the username: "+ username + " not found.")
+                    .build();
+        } catch(RuntimeException e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
 }

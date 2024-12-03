@@ -102,6 +102,20 @@ const userApi = (() => {
         );
     }
 
+    const getLikedOrFollowedListFromUser = (username, type, orderBy, sortOrder, pageNumber = 1) => {
+        if (type !== "followed" && type !== "liked") {
+            throw new Error(`Invalid type: ${type}. Expected "followed" or "liked".`);
+        }
+        const endpoint = type === "followed" ? "followedLists" : "likedLists";
+        return api.get(`/users/${username}/${endpoint}`, {
+            params: {
+                orderBy,
+                sortOrder,
+                pageNumber
+            }
+        });
+    };
+
     return {
         login,
         register,
@@ -113,7 +127,8 @@ const userApi = (() => {
         getMovieReviewsFromUser,
         getSpecialListFromUser,
         getMoovieListReviewsFromUser,
-        getSearchedUsers
+        getSearchedUsers,
+        getLikedOrFollowedListFromUser
     };
 
 })();

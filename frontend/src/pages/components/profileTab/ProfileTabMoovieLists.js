@@ -8,6 +8,7 @@ import ListContentPaginated from "../listContentPaginated/ListContentPaginated";
 import CardsListOrderBy from "../../../api/values/CardsListOrderBy";
 import MoovieListTypes from "../../../api/values/MoovieListTypes";
 import ListCardsPaginated from "../ListCardsPaginated/ListCardsPaginated";
+import UserService from "../../../services/UserService";
 
 function ProfileTabMediaLists({ type, username }) {
 
@@ -22,6 +23,7 @@ function ProfileTabMediaLists({ type, username }) {
 
 
     let typeQuery = MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.type;
+    let typeString = "null"
 
     switch (type){
         case("public-lists"):
@@ -30,6 +32,14 @@ function ProfileTabMediaLists({ type, username }) {
         case("private-lists"):
             typeQuery = MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.type;
             break;
+        case("followed-lists"):
+            typeQuery = 0;
+            typeString = "followed";
+            break;
+        case("liked-lists"):
+            typeQuery = 0;
+            typeString = "liked";
+            break;
         default:
             typeQuery = -1;
     }
@@ -37,27 +47,45 @@ function ProfileTabMediaLists({ type, username }) {
     useEffect(() => {
         async function getData() {
             try {
-                    if(typeQuery===-1){
-                        return <div>Error</div>
-                    } else{
-                        const data = await ListService.getLists({
-                            orderBy: orderBy,
-                            ownerUsername: username,
-                            pageNumber: page,
-                            pageSize: pagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS,
-                            search: search,
-                            type: typeQuery,
-                            order: sortOrder
-                        });
-                        setLists(data);
-                        setListsLoading(false);
-                    }
-            } catch {
+                setListsLoading(true);
+                if (typeQuery === -1) {
+                    setListError(true);
+                    setListsLoading(false);
+                    return;
+                }
+                let data;
+                if (typeQuery !== 0) {
+                    data = await ListService.getLists({
+                        orderBy,
+                        ownerUsername: username,
+                        pageNumber: page,
+                        pageSize: pagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS,
+                        search,
+                        type: typeQuery,
+                        order: sortOrder
+                    });
+                } else {
+                    console.log("Liked or followed");
+                    data = await UserService.getLikedOrFollowedListFromUser(
+                        username,
+                        typeString,
+                        orderBy,
+                        sortOrder,
+                        page
+                    );
+                }
+                setLists(data);
                 setListError(false);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                setListError(true);
+            } finally {
+                setListsLoading(false);
             }
         }
         getData();
-    }, [orderBy, sortOrder, page, type, username]);
+    }, [orderBy, sortOrder, page, typeQuery, typeString, username, search, pagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS]);
+
 
     return (
         <ListCardsPaginated

@@ -20,9 +20,9 @@ function ProfileTab({selectedTab, profile}){
         case "private-lists":
             return <ProfileTabMoovieLists username={profile.username} type={"private-lists"}/>
         case "liked-lists":
-            return <div>{selectedTab}</div>
+            return <ProfileTabMoovieLists username={profile.username} type={"followed-lists"}/>
         case "followed-lists":
-            return <div>{selectedTab}</div>
+            return <ProfileTabMoovieLists username={profile.username} type={"liked-lists"}/>
         case "reviews":
             return <Reviews id={profile.userId} source="user" />;
         default:

@@ -21,7 +21,7 @@ public interface MoovieListService {
     MoovieListCard getMoovieListCardById(int moovieListId);
 
     //Bro, just read the function name!
-    List<MoovieListCard> getLikedMoovieListCards(int userId, int type, int size, int pageNumber);
+    List<MoovieListCard> getLikedMoovieListCards(String userId, int type, int size, int pageNumber);
 
     //Returns the followed MoovieListsCards
     List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber);
