@@ -38,7 +38,7 @@ public class MediaDto {
 
     private int voteCount;
 
-    private List<Provider> providers = new ArrayList<>();
+    private final List<ProviderDto> providers = new ArrayList<>();
 
     private List<String> genres = new ArrayList<>();
 
@@ -63,11 +63,11 @@ public class MediaDto {
         mediaDTO.tmdbRating = media.getTmdbRating();
         mediaDTO.status = media.getStatus();
         mediaDTO.totalRating = media.getTotalRating();
-        mediaDTO.providers.addAll(media.getProviders()); //TODO FIX THIS
         mediaDTO.watched = media.isWatched();
         mediaDTO.watchlist = media.isWatchlist();
         mediaDTO.originalLanguage = media.getOriginalLanguage();
         mediaDTO.url = uriInfo.getBaseUriBuilder().path("media/{mediaId}").build(media.getMediaId()).toString();
+        mediaDTO.setProviders(media.getProviders());
         return mediaDTO;
     }
 
@@ -85,10 +85,10 @@ public class MediaDto {
         mediaDTO.setTmdbRating(media.getTmdbRating());
         mediaDTO.setStatus(media.getStatus());
         mediaDTO.setTotalRating(media.getTotalRating());
-        mediaDTO.setProviders(media.getProviders());
         mediaDTO.setWatched(media.isWatched());
         mediaDTO.setWatchlist(media.isWatchlist());
         mediaDTO.setOriginalLanguage(media.getOriginalLanguage());
+        mediaDTO.setProviders(media.getProviders());
         mediaDTO.setUrl(uriInfo.getBaseUriBuilder().path("media/{mediaId}").build(media.getMediaId()).toString());
     }
 
@@ -208,12 +208,17 @@ public class MediaDto {
         this.voteCount = voteCount;
     }
 
-    public List<Provider> getProviders() {
+    public List<ProviderDto> getProviders() {
         return providers;
     }
 
     public void setProviders(List<Provider> providers) {
-        this.providers = providers;
+        this.providers.clear();
+        if (providers != null) {
+            for (Provider p : providers){
+                this.providers.add(ProviderDto.fromProvider(p));
+            }
+        }
     }
 
     public List<String> getGenres() {

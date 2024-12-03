@@ -8,7 +8,7 @@
 
 # EXAMPLE: GET {{baseUrl}}/media/123
 
-@id0 = 123
+@id0 = 10
 
 GET {{baseUrl}}/{{id0}}
 

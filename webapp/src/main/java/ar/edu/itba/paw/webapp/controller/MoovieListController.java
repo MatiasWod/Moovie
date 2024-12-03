@@ -104,13 +104,55 @@ public class MoovieListController {
             List<Media> mediaList = moovieListService.getMoovieListContent(id, orderBy, sortOrder, pageSizeQuery, pageNumber);
             final int mediaCount = moovieListService.getMoovieListCardById(id).getSize();
             List<MediaDto> mediaDtoList = MediaDto.fromMediaList(mediaList, uriInfo);
-            Response.ResponseBuilder res =  Response.ok(new GenericEntity<List<MediaDto>>(mediaDtoList) {
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaDto>>(mediaDtoList) {
             });
-            final PagingUtils<Media> toReturnMediaList = new PagingUtils<>(mediaList,pageNumber,pageSizeQuery,mediaCount);
-            ResponseUtils.setPaginationLinks(res,toReturnMediaList,uriInfo);
+            final PagingUtils<Media> toReturnMediaList = new PagingUtils<>(mediaList, pageNumber, pageSizeQuery, mediaCount);
+            ResponseUtils.setPaginationLinks(res, toReturnMediaList, uriInfo);
             return res.build();
-        } catch (RuntimeException e) {
+        } catch(MoovieListNotFoundException m){
             return Response.status(Response.Status.NOT_FOUND).build();
+        } catch(UserNotLoggedException | InvalidAccessToResourceException e) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    //Only returns the 5 more relatedLists. They are related in
+    @GET
+    @Path("{id}/recommendedLists")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRecommendedLists(@PathParam("id") final int id) {
+        try{
+            List<MoovieListDto> mlcList = MoovieListDto.fromMoovieListList(moovieListService.getRecommendedMoovieListCards(id, 4,0), uriInfo);
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(mlcList) {
+            });
+            return res.build();
+        } catch(MoovieListNotFoundException m){
+            return Response.status(Response.Status.NOT_FOUND).build();
+        } catch(UserNotLoggedException | InvalidAccessToResourceException e) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    //Only returns the 5 more relatedLists. They are related in
+    @GET
+    @Path("{id}/recommendedMedia")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRecommendedMediaToAdd(@PathParam("id") final int id) {
+        try{
+            List<MediaDto> mlcList = MediaDto.fromMediaList(moovieListService.getRecommendedMediaToAdd(id, 5), uriInfo);
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaDto>>(mlcList) {
+            });
+            return res.build();
+        } catch(MoovieListNotFoundException m){
+            return Response.status(Response.Status.NOT_FOUND).build();
+        } catch(UserNotLoggedException | InvalidAccessToResourceException e) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 

@@ -35,6 +35,17 @@ GET {{baseUrl}}?pageNumber={{page2}}
 @id1review = 37
 GET {{baseUrl}}/{{id1review}}/moovieListReviews
 
+
+### GET RECOMENDED LIST
+@id21 = 37
+
+GET {{baseUrl}}/{{id21}}/recommendedLists
+
+### GET RECOMENDED MEDIA TO ADD TO LIST
+@id22 = 37
+
+GET {{baseUrl}}/{{id22}}/recommendedMedia
+
 #----------------------------
 # POST
 #----------------------------

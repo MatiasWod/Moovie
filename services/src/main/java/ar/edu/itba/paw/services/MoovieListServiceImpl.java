@@ -133,6 +133,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Transactional(readOnly = true)
     @Override
     public List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber){
+        getMoovieListById(moovieListId);
         List<MoovieListCard> mlc =  moovieListDao.getRecommendedMoovieListCards(moovieListId, size, pageNumber, userService.tryToGetCurrentUserId());
         if(mlc.size()<size){
             // 5 are searched in order to be 100% sure there wont be repeating elements
