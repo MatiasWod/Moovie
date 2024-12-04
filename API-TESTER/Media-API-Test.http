@@ -25,6 +25,14 @@ GET {{baseUrl}}/{{id0}}
 
 GET {{baseUrl}}?type={{type1}}&orderBy={{orderBy1}}&sortOrder={{sortOrder1}}&page={{page1}}&pageSize={{pageSize1}}
 
+
+### GET ACTORS IN MEDIA
+
+@mediaId92 = 379
+
+GET {{baseUrl}}/{{id}}/actors
+Content-Type: */*
+
 #----------------------------
 # POST
 #----------------------------

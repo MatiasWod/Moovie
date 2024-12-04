@@ -9,6 +9,7 @@ import Reviews from "../components/ReviewsSection/Reviews";
 import AddMediaToListButton from "../components/buttons/addMediaToListButton/AddMediaToListButton";
 import CreateReviewButton from "../components/buttons/createReviewButton/CreateReviewButton";
 import ReviewForm from "../components/forms/reviewForm/ReviewForm";
+import ActorCardList from "../components/actorCards/ActorCardList";
 
 function Details() {
 
@@ -129,7 +130,9 @@ function Details() {
 
             </div>
 
-            <Reviews id={id} source={'media'}></Reviews>
+            <ActorCardList mediaId={id}/>
+
+            <Reviews id={id} source={'media'}/>
 
         </div>
     );

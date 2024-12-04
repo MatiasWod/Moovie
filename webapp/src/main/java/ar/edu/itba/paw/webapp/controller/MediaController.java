@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.*;
+import ar.edu.itba.paw.models.Cast.Actor;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.PagingSizes;
@@ -8,6 +9,7 @@ import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
+import ar.edu.itba.paw.services.ActorService;
 import ar.edu.itba.paw.services.MediaService;
 import ar.edu.itba.paw.services.ReviewService;
 import ar.edu.itba.paw.webapp.dto.in.ReviewCreateDto;
@@ -28,14 +30,16 @@ public class MediaController {
 
     private final MediaService mediaService;
     private final ReviewService reviewService;
+    private final ActorService actorService;
 
     @Context
     UriInfo uriInfo;
 
     @Autowired
-    public MediaController(MediaService mediaService, ReviewService reviewService) {
+    public MediaController(MediaService mediaService, ReviewService reviewService, ActorService actorService) {
         this.mediaService = mediaService;
         this.reviewService = reviewService;
+        this.actorService = actorService;
     }
 
     //TODO capaz considerar en listAll poder pedir paginas de distintos tamaños, tambien filtros y ordenado, hasta se podria devolder el count en esta misma query....
@@ -108,6 +112,20 @@ public class MediaController {
             return res.build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+
+
+    @GET
+    @Path("/{id}/actors")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getActorsByMediaId(@PathParam("id") final int mediaId) {
+        try{
+            final List<ActorDto> actorDtoList = ActorDto.fromActorList(actorService.getAllActorsForMedia(mediaId), uriInfo);
+            return Response.ok(new GenericEntity<List<ActorDto>>( actorDtoList ) {}).build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(new ResponseMessage(e.getMessage())).build();
         }
     }
 

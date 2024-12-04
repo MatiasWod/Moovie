@@ -25,6 +25,12 @@ const mediaApi = (()=> {
         return api.get(`/media/${mediaId}/reviews`);
     }
 
+    const getActorsInMedia = (mediaId) =>{
+        return api.get(
+            `media/${mediaId}/actors`
+        )
+    }
+
     const createReview = ({mediaId, rating, reviewContent}) => {
         return api.post(`/media/${Number(mediaId)}/review`,
             { rating: Number(rating), reviewContent: reviewContent },
@@ -37,10 +43,12 @@ const mediaApi = (()=> {
     }
 
 
+
     return {
         getMedia,
         getMediaById,
         getReviewsByMediaId,
+        getActorsInMedia,
         createReview
     }
 

@@ -20,7 +20,6 @@ function Reviews({ id, source }) {
                 let response;
                 switch (source) {
                     case 'media':
-                        console.log(id,page);
                         response = await mediaService.getReviewsByMediaId(id,page);
                         break;
 
