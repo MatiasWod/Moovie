@@ -25,14 +25,17 @@ const mediaApi = (()=> {
         return api.get(`/media/${mediaId}/reviews`);
     }
 
-    const createReview = (mediaId,page=1) => {
-        return api.post(`/media/${mediaId}/review`,
+    const createReview = ({mediaId, rating, reviewContent}) => {
+        return api.post(`/media/${Number(mediaId)}/review`,
+            { rating: Number(rating), reviewContent: reviewContent },
             {
-                params:{
-                    'pageNumber': page,
-                }
-            });
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
     }
+
 
     return {
         getMedia,

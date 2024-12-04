@@ -82,8 +82,6 @@ const AddMediaToListButton = ({ currentId }) => {
                 mediaIds: [Number(currentId)],
             });
 
-            console.log(response)
-
             if (response.status === 200) {
                 setPopupType("success");
                 setPopupMessage("Media successfully added to the list.");

@@ -7,6 +7,8 @@ import SearchableMediaTag from "../components/searchableMediaTag/searchableMedia
 import MediaTypes from "../../api/values/MediaTypes";
 import Reviews from "../components/ReviewsSection/Reviews";
 import AddMediaToListButton from "../components/buttons/addMediaToListButton/AddMediaToListButton";
+import CreateReviewButton from "../components/buttons/createReviewButton/CreateReviewButton";
+import ReviewForm from "../components/forms/reviewForm/ReviewForm";
 
 function Details() {
 
@@ -16,6 +18,7 @@ function Details() {
     const [media, setMedia] = useState([]);
     const [mediaLoading, setMediaLoading] = useState(true);
     const [mediaError, setMediaError] = useState(null);
+
 
     const fetchMedia = async () => {
         try {
@@ -90,6 +93,17 @@ function Details() {
     }
 
 
+    //Buttons for creating reviews
+    const [showReviewForm, setShowReviewForm] = useState(false);
+
+    const handleOpenReviewForm = () => {
+        setShowReviewForm(true);
+    };
+
+    const handleCloseReviewForm = () => {
+        setShowReviewForm(false);
+    };
+
     return (
         <div className="moovie-default default-container">
             <div className="row">
@@ -103,6 +117,15 @@ function Details() {
                 {detailsColumn}
 
                 <AddMediaToListButton currentId={id}/>
+
+                <CreateReviewButton handleOpenReviewForm={handleOpenReviewForm}></CreateReviewButton>
+
+                {showReviewForm && (
+                    <div className="overlay">
+                        <ReviewForm mediaName={media.name} mediaId={id} closeReview={handleCloseReviewForm} />
+                    </div>
+                )}
+
 
             </div>
 

@@ -36,7 +36,7 @@ public class TokenController {
     public Response sendVerificationEmail(@Valid final UserCreateDto userCreateDto) {
 //        final User user = userService.findUserByEmail(userCreateDto.getEmail());
 //        if(user == null)
-//            return Response.status(Response.Status.NOT_FOUND).build();
+//            return ResponseMessage.status(ResponseMessage.Status.NOT_FOUND).build();
 //
 //        final String token = userService.createUser(userCreateDto.getUsername(), userCreateDto.getEmail(), userCreateDto.getPassword());
 //

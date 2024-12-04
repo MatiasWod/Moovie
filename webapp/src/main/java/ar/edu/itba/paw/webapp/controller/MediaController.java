@@ -1,8 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.exceptions.ReviewAlreadyCreatedException;
-import ar.edu.itba.paw.exceptions.ReviewNotFoundException;
-import ar.edu.itba.paw.exceptions.UserNotLoggedException;
+import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.PagingSizes;
@@ -16,6 +14,7 @@ import ar.edu.itba.paw.webapp.dto.in.ReviewCreateDto;
 import ar.edu.itba.paw.webapp.dto.out.*;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
@@ -130,17 +129,26 @@ public class MediaController {
                      .entity("Review successfully created to the media with ID: " + mediaId)
                      .build();
 
-        } catch(UserNotLoggedException e){
+        } catch(UserNotLoggedException | UsernameNotFoundException e){
             return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\":\"User must be logged in to review a movie.\"}")
+                    .entity(new ResponseMessage("User is  unauthorized to perform this action."))
                     .build();
-        } catch(ReviewAlreadyCreatedException e){
-            return Response.status(Response.Status.CONFLICT)
-                    .entity("{\"error\":\"Review already exists.\"}")
+        } catch (MediaNotFoundException e) {
+            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Invalid media IDs provided."))
                     .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
+        } catch (UnableToInsertIntoDatabase e) {
+            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Error creating review."))
+                    .build();
+        } catch (ReviewAlreadyCreatedException e){
+            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("User already has a review for this media."))
+                    .build();
+        }
+        catch (Exception e) {
+            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(new ResponseMessage("An unexpected error occurred: " + e.getMessage()))
                     .build();
         }
     }

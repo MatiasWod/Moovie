@@ -9,19 +9,27 @@ const MediaService = (() => {
     }
 
     const getMediaById = async (id) => {
-        const res = await api.get(`/media/${id}`);
-        return res;
+        const res = await mediaApi.getMediaById(id);
+        return parsePaginatedResponse(res);
     }
 
     const getReviewsByMediaId = async (mediaId,page= 1) => {
-        const res = await api.get(`/media/${mediaId}/reviews`);
+        const res = await mediaApi.getReviewsByMediaId(mediaId);
         return parsePaginatedResponse(res);
     }
+
+    const createReview = async (mediaId,rating, reviewContent) => {
+        const res = await mediaApi.createReview({mediaId,rating,reviewContent});
+        return res;
+    }
+
+
 
     return {
         getMedia,
         getMediaById,
-        getReviewsByMediaId
+        getReviewsByMediaId,
+        createReview
     }
 })();
 

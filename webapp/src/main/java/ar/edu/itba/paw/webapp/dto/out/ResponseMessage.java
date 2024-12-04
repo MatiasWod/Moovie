@@ -1,12 +1,12 @@
 package ar.edu.itba.paw.webapp.dto.out;
 
-public class Response {
+public class ResponseMessage {
     private String message;
 
-    public Response() {
+    public ResponseMessage() {
     }
 
-    public Response(String message) {
+    public ResponseMessage(String message) {
         this.message = message;
     }
 

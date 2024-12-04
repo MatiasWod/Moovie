@@ -14,13 +14,14 @@ import ar.edu.itba.paw.services.ReviewService;
 import ar.edu.itba.paw.webapp.dto.in.MediaListDto;
 import ar.edu.itba.paw.webapp.dto.in.MoovieListCreateDto;
 import ar.edu.itba.paw.webapp.dto.in.MoovieListReviewCreateDto;
-import ar.edu.itba.paw.webapp.dto.out.Response;
+import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
 import ar.edu.itba.paw.webapp.dto.out.MediaDto;
 import ar.edu.itba.paw.webapp.dto.out.MoovieListDto;
 import ar.edu.itba.paw.webapp.dto.out.MoovieListReviewDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
@@ -225,31 +226,35 @@ public class MoovieListController {
 
             if (mediaIdList == null || mediaIdList.isEmpty()) {
                 return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.BAD_REQUEST)
-                        .entity(new Response("No media IDs provided."))
+                        .entity(new ResponseMessage("No media IDs provided."))
                         .build();
             }
 
-            return javax.ws.rs.core.Response.ok(updatedList).entity(new Response("Media added successfully to the list.")).build();
+            return javax.ws.rs.core.Response.ok(updatedList).entity(new ResponseMessage("Media added successfully to the list.")).build();
+        } catch(UserNotLoggedException | UsernameNotFoundException e){
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(new ResponseMessage("User is  unauthorized to perform this action."))
+                    .build();
         } catch (MoovieListNotFoundException e) {
             return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.NOT_FOUND)
-                    .entity(new Response("Movie list not found for ID: " + moovieListId))
+                    .entity(new ResponseMessage("Movie list not found for ID: " + moovieListId))
                     .build();
         } catch (MediaNotFoundException e) {
             return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.BAD_REQUEST)
-                    .entity(new Response("Invalid media IDs provided."))
+                    .entity(new ResponseMessage("Invalid media IDs provided."))
                     .build();
         } catch (UnableToInsertIntoDatabase e) {
             if (mediaIdList.size() == 1) {
                 return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.BAD_REQUEST)
-                        .entity(new Response("Media already in list."))
+                        .entity(new ResponseMessage("Media already in list."))
                         .build();
             }
             return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.BAD_REQUEST)
-                    .entity(new Response("One of the media provided already in the list."))
+                    .entity(new ResponseMessage("One of the media provided already in the list."))
                     .build();
         } catch (Exception e) {
             return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new Response("An unexpected error occurred: " + e.getMessage()))
+                    .entity(new ResponseMessage("An unexpected error occurred: " + e.getMessage()))
                     .build();
         }
     }
@@ -449,20 +454,20 @@ public class MoovieListController {
     @Path("/{id}/content")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addMediaToMoovieList(@PathParam("moovieListId") final int listId, @PathParam("mediaId") final int mediaId) {
+    public ResponseMessage addMediaToMoovieList(@PathParam("moovieListId") final int listId, @PathParam("mediaId") final int mediaId) {
         try {
 
             moovieListService.insertMediaIntoMoovieList(listId, mediaId);
 
-            return Response.status(Response.Status.CREATED)
+            return ResponseMessage.status(ResponseMessage.Status.CREATED)
                     .entity("Media successfully added to the list with ID: " + listId)
                     .build();
         } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST)
+            return ResponseMessage.status(ResponseMessage.Status.BAD_REQUEST)
                     .entity("Invalid media or list ID: " + e.getMessage())
                     .build();
         } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+            return ResponseMessage.status(ResponseMessage.Status.INTERNAL_SERVER_ERROR)
                     .entity("An error occurred while adding media to the list: " + e.getMessage())
                     .build();
         }
