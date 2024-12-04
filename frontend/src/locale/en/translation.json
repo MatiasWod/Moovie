@@ -10,5 +10,19 @@
   "error500_title": "Error 500",
   "error500_message": "Error 500",
   "error500_description": "Cant access this page (missing permissions)",
-  "error500_call_to_action": "Go back"
+  "error500_call_to_action": "Go back",
+  "login.title": "Moovie - Login!",
+  "login.banned": "Account was banned",
+  "login.emailVerificationPending": "Email Verification Pending",
+  "login.passwordDoesNotMatchUsername": "Password doesn't match username",
+  "login.usernameNotVerified": "Username not verified",
+  "login.loginFailed": "Login Failed",
+  "login.username": "Username:",
+  "login.password": "Password:",
+  "login.rememberMe": "Remember Me",
+  "login.noAccount": "Don't have an account?",
+  "login.signUp": "Sign Up!",
+  "login.continue": "Continue",
+  "login.without": "without logging in",
+  "login.login": "Login!"
 }
