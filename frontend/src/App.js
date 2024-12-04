@@ -11,7 +11,7 @@ const views = './pages/views';
 
 
 const Home = lazy(() => import(views + '/home'));
-const Login = lazy(() => import(views + '/login'));
+const Login = lazy(() => import(views + '/authViews/login'));
 const Details = lazy(() => import(views + '/details'));
 const List = lazy(() => import(views + '/list'));
 const BrowseLists = lazy(() => import(views + '/browseLists'));

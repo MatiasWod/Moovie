@@ -10,5 +10,19 @@
   "error500_title": "Error 500",
   "error500_message": "Error 500",
   "error500_description": "No puedes acceder a esta página (permisos insuficientes)",
-  "error500_call_to_action": "Volver"
+  "error500_call_to_action": "Volver",
+  "login.title": "¡Moovie - Iniciar sesión!",
+  "login.banned": "Cuenta bloqueada",
+  "login.emailVerificationPending": "Verificación de correo electrónico pendiente",
+  "login.passwordDoesNotMatchUsername": "La contraseña no coincide con el nombre de usuario",
+  "login.usernameNotVerified": "Nombre de usuario no verificado",
+  "login.loginFailed": "Inicio de sesión fallido",
+  "login.username": "Nombre de usuario:",
+  "login.password": "Contraseña:",
+  "login.rememberMe": "Recordarme",
+  "login.noAccount": "¿No tienes una cuenta?",
+  "login.signUp": "¡Regístrate!",
+  "login.continue": "Continuar",
+  "login.without": "sin iniciar sesión",
+  "login.login": "¡Iniciar sesión!"
 }
