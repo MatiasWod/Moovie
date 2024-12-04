@@ -16,4 +16,6 @@
     justify-content: center;
     margin: 5px auto;
     width: 90%;
+    align-items: stretch;
+    gap: 15px;
 }

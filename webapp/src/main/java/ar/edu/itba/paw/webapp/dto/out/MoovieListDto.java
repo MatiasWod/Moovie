@@ -26,6 +26,8 @@ public class MoovieListDto {
 
     private int mediaCount;
 
+    private int movieCount;
+
     private List<MoovieListReview> reviews;
 
     private List<String> images;
@@ -53,7 +55,8 @@ public class MoovieListDto {
         dto.type = moovieList.getType();
         dto.likes = moovieList.getLikeCount();
         dto.followers = moovieList.getFollowerCount();
-        dto.mediaCount =  moovieList.getMoviesAmount();
+        dto.mediaCount =  moovieList.getSize();
+        dto.movieCount = moovieList.getMoviesAmount();
         dto.images =  moovieList.getImages();
         dto.url = uriInfo.getBaseUriBuilder().path("list/{moovieListId}").build(moovieList.getMoovieListId()).toString();
         dto.contentUrl = uriInfo.getBaseUriBuilder().path("list/{moovieListId}/content").build(moovieList.getMoovieListId()).toString();
@@ -118,6 +121,14 @@ public class MoovieListDto {
 
     public int getMediaCount() {
         return mediaCount;
+    }
+
+    public int getMovieCount() {
+        return movieCount;
+    }
+
+    public void setMovieCount(int movieCount) {
+        this.movieCount = movieCount;
     }
 
     public void setMediaCount(int mediaCount) {

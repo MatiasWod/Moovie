@@ -112,8 +112,6 @@ function FeaturedLists() {
     return (
         <div className="default-container moovie-default">
             <h1>Featured List </h1>
-            <h1>------</h1>
-
 
             <ListContent listContent={featuredMedia?.data || []} />
             <div className="flex justify-center pt-4">

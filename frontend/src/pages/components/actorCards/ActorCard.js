@@ -1,20 +1,38 @@
 import React from 'react';
+import altImage from "../../../images/defaultPoster.png";
 
-const ActorCard = ({ name, image }) => (
-    <div style={{
-        border: '1px solid #ccc',
-        borderRadius: '8px',
-        padding: '16px',
-        textAlign: 'center',
-        width: '200px'
-    }}>
-        <img
-            src={image}
-            alt={name}
-            style={{ borderRadius: '8px', width: '100%' }}
-        />
-        <h3 style={{ margin: '8px 0' }}>{name}</h3>
-    </div>
-);
+const ActorCard = ({ name, image }) => {
+    // Default to altImage if no image is provided
+    let imageSrc = image;
+
+    if(!imageSrc || imageSrc.length < 10){
+        imageSrc = altImage;
+    }
+
+
+
+    return (
+        <div style={{
+            border: '1px solid #ccc',
+            borderRadius: '8px',
+            padding: '16px',
+            textAlign: 'center',
+            width: '200px',
+            backgroundColor: '#fff',
+            boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+        }}>
+            <img
+                src={imageSrc}
+                alt={name || 'Actor'} // Default alt text if name is not provided
+                style={{
+                    borderRadius: '8px',
+                    width: '100%',
+                    height: 'auto',
+                }}
+            />
+            <h3 style={{ margin: '8px 0', fontSize: '1.1rem', fontWeight: '600' }}>{name}</h3>
+        </div>
+    );
+};
 
 export default ActorCard;

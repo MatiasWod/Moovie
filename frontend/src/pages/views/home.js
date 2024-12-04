@@ -5,6 +5,7 @@ import MediaTypes from "../../api/values/MediaTypes";
 import OrderBy from "../../api/values/MediaOrderBy";
 import SortOrder from "../../api/values/SortOrder";
 import "../components/mainStyle.css"
+import "./home.css"
 import Button from "react-bootstrap/Button";
 import {useNavigate} from "react-router-dom";
 
@@ -115,10 +116,10 @@ function Home() {
 
     return (
         <main className="moovie-default default-container">
-            <div>Sumérgete en Películas y Series,
-                Descubre tu Próxima Experiencia Favorita.
+            <div className="hero-text">
+                <h1>Sumérgete en Películas y Series</h1>
+                <p>Descubre tu Próxima Experiencia Favorita.</p>
             </div>
-            <div>Home Page of Moovie, Welcome!</div>
             <div>
                 <div className="container d-flex justify-content-between p-2">
                     <h3>Top Rated Movies by TMDB</h3>
