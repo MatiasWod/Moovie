@@ -3,10 +3,6 @@ import api from './api'
 const listApi = (() => {
 
     const getLists = ({search, ownerUsername, type, orderBy, order, pageNumber, pageSize}) =>{
-
-        console.log(ownerUsername);
-        console.log(type);
-
         return api.get('list',
             {
                 params:{
@@ -50,7 +46,7 @@ const listApi = (() => {
 
     //POST
 
-    const createMoovieListReview = (id,page=1) => {
+    const createMoovieListReview = ({id,page=1}) => {
         return api.post(`/list/${id}/moovieListReview`,
             {
                 params:{
@@ -58,6 +54,18 @@ const listApi = (() => {
                 }
             });
     }
+
+    const insertMediaIntoMoovieList = ({ id, mediaIds }) => {
+        return api.post(
+            `/list/${id}/content`,
+            { mediaIdList: mediaIds },  // Rename `mediaIds` to `mediaIdList`
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+    };
 
     //PUT
 
@@ -70,12 +78,15 @@ const listApi = (() => {
             });
     }
 
+
+
     return{
         getLists,
         getListById,
         getListContentById,
         getMoovieListReviewsFromListId,
         createMoovieListReview,
+        insertMediaIntoMoovieList,
         editReview
     }
 })();

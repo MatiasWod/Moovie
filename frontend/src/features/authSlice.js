@@ -22,7 +22,7 @@ export const fetchUserData = createAsyncThunk('auth/fetchUserData', async (usern
 export const attemptReconnect = createAsyncThunk('auth/attemptReconnect', async (_, {dispatch}) => {
     const token = sessionStorage.getItem('jwtToken');
     const username = sessionStorage.getItem('username');
-    console.log('Retrieved token:', token, 'Retrieved username:', username);
+    //console.log('Retrieved token:', token, 'Retrieved username:', username);
     if (token) {
         try {
             const isValid = await userApi.authTest();

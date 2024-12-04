@@ -16,9 +16,7 @@ const userApi = (() => {
                     'Authorization': `Basic ${credentials}`,
                 }
             });
-            console.log('response', response);
             const token = response.headers.get('Authorization');
-            console.log('token to set', token);
             if (token) {
                 sessionStorage.setItem('jwtToken', token);
                 sessionStorage.setItem('username', username);
@@ -27,7 +25,6 @@ const userApi = (() => {
             }
             return response;
         } catch (error) {
-            console.error('Login error:', error);
             throw error;
         }
     };

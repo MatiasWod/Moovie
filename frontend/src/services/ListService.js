@@ -24,11 +24,17 @@ const ListService = (() => {
         return parsePaginatedResponse(res);
     }
 
+    const insertMediaIntoMoovieList = async ({id, mediaIds}) => {
+        const res = await listApi.insertMediaIntoMoovieList({id,mediaIds});
+        return res;
+    }
+
    return{
         getLists,
         getListById,
         getListContentById,
-       getMoovieListReviewsFromListId
+        getMoovieListReviewsFromListId,
+        insertMediaIntoMoovieList
    }
 })();
 

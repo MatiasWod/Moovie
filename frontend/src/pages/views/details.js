@@ -6,6 +6,7 @@ import mediaApi from "../../api/MediaApi";
 import SearchableMediaTag from "../components/searchableMediaTag/searchableMediaTag";
 import MediaTypes from "../../api/values/MediaTypes";
 import Reviews from "../components/ReviewsSection/Reviews";
+import AddMediaToListButton from "../components/buttons/addMediaToListButton/AddMediaToListButton";
 
 function Details() {
 
@@ -100,6 +101,8 @@ function Details() {
 
                 {/*MEDIA DETAILS COLUMN*/}
                 {detailsColumn}
+
+                <AddMediaToListButton currentId={id}/>
 
             </div>
 

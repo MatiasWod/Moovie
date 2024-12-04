@@ -11,7 +11,7 @@ const api = axios.create({
 api.interceptors.request.use(
     config => {
         const token = sessionStorage.getItem('jwtToken');
-        console.log('Retrieved token:', token);
+        //console.log('Retrieved token:', token);
         if (token === undefined || token === null || token === 'undefined') {
             console.log('No token');
             return config;
@@ -23,6 +23,15 @@ api.interceptors.request.use(
     },
     error => {
         return Promise.reject(error);
+    }
+);
+
+api.interceptors.response.use(
+    response => {
+        return response;
+    },
+    error => {
+        return error.response;
     }
 );
 
