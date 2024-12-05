@@ -17,16 +17,11 @@ const UserService = (() => {
         return parsePaginatedResponse(res);
     }
 
-    const getLikedOrFollowedListFromUser = async (username, type, orderBy, sortOrder, pageNumber) =>{
-        const res = await userApi.getLikedOrFollowedListFromUser(username, type, orderBy, sortOrder, pageNumber);
-        return parsePaginatedResponse(res);
-    }
 
     return {
         getMilkyLeaderboard,
         getMovieReviewsFromUser,
-        getSearchedUsers,
-        getLikedOrFollowedListFromUser
+        getSearchedUsers
     }
 })();
 

@@ -5,6 +5,8 @@
 .default-container{
     padding-top: 1%;
     padding-inline: 4%;
+    padding-left: 10%;
+    padding-right: 10%;
 }
 
 .title {

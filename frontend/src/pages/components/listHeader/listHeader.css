@@ -48,3 +48,36 @@
     font-size: 0.875rem;
     margin-top: 8px;
 }
+
+.list-header-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.like-button,
+.follow-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.like-button.liked,
+.follow-button.followed {
+    background-color: #28a745;
+}
+
+.like-button:hover,
+.follow-button:hover {
+    background-color: #0056b3;
+}
+
+.like-button.liked:hover,
+.follow-button.followed:hover {
+    background-color: #218838;
+}

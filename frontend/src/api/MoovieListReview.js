@@ -17,11 +17,10 @@ const moovieListReviewApi = (()=> {
     }
 
 
-
     return {
         getMoovieListReviewById,
         deleteMoovieListReviewById,
-        likeMoovieListReview,
+        likeMoovieListReview
     }
 
 })();

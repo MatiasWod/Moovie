@@ -43,20 +43,7 @@ Authorization: Bearer {{bearer_token}}
 
 GET {{baseUrl}}/{{id1}}/moovieListReviews
 
-### GET likedists
 
-@username4=Wancho
-@bearerToken = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNb292aWUiLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjgzNjEyMiwiZXhwIjoxNzMzNDQwOTIyfQ.DH67__vKqJhHSWunS362U0O1qRptW4Gfjw35LCUqy0z8CtLlmIE-MaxkqXscQZQtE4ILqyEmRaiRaofmCXd4oA
-
-GET {{baseUrl}}/{{username4}}/likedLists
-Authorization: Bearer {{bearerToken}}
-Content-Type: */*
-
-### GET followedLists
-
-GET {{baseUrl}}/{{username4}}/followedList
-Authorization: Bearer {{bearerToken}}
-Content-Type: */*
 
 
 

@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListDetails;
+import ar.edu.itba.paw.models.MoovieList.UserMoovieListId;
 
 import java.util.List;
 
@@ -22,9 +23,11 @@ public interface MoovieListService {
 
     //Bro, just read the function name!
     List<MoovieListCard> getLikedMoovieListCards(String userId, int type, int size, int pageNumber);
+    UserMoovieListId currentUserHasLiked( int moovieListId);
 
     //Returns the followed MoovieListsCards
     List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber);
+    UserMoovieListId currentUserHasFollowed( int moovieListId);
 
     int getFollowedMoovieListCardsCount(int userId, int type);
 

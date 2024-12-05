@@ -65,8 +65,7 @@ function ProfileTabMediaLists({ type, username }) {
                         order: sortOrder
                     });
                 } else {
-                    console.log("Liked or followed");
-                    data = await UserService.getLikedOrFollowedListFromUser(
+                    data = await ListService.getLikedOrFollowedListFromUser(
                         username,
                         typeString,
                         orderBy,

@@ -158,6 +158,8 @@ public class MoovieListServiceImpl implements MoovieListService{
         return mlc;
     }
 
+
+
     @Transactional(readOnly = true)
     @Override
     public List<Media> getRecommendedMediaToAdd(int moovieListId, int size) {
@@ -319,8 +321,6 @@ public class MoovieListServiceImpl implements MoovieListService{
         LOGGER.info("userID: {} -- will like {}  -- likestate is: {}",userId,mlc.getName(), mlc.isCurrentUserHasLiked());
         if(mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType()){
             if(mlc.isCurrentUserHasLiked()){
-                moovieListDao.removeLikeMoovieList(userId, moovieListId);
-                LOGGER.info("Succesfully unliked list: {}, user: {}.",moovieListId,userService.tryToGetCurrentUserId());
                 return false;
             } else {
                 moovieListDao.likeMoovieList(userId, moovieListId);
@@ -332,19 +332,34 @@ public class MoovieListServiceImpl implements MoovieListService{
                     LOGGER.info("notificationLikeMilestoneMoovieList mail was sent to user : {} for the list: {}.", toUser.getUsername(), moovieListId);
                 }
                 return true;
-
             }
         }
         return false;
     }
 
-
     @Transactional
     @Override
     public void removeLikeMoovieList(int moovieListId) {
         moovieListDao.removeLikeMoovieList(userService.tryToGetCurrentUserId(), moovieListId);
-        LOGGER.info("Succesfully removed like in list: {}, user: {}.",moovieListId,userService.tryToGetCurrentUserId());
+        LOGGER.info("Succesfully unliked list: {}, user: {}.",moovieListId,userService.tryToGetCurrentUserId());
     }
+
+
+
+    @Transactional
+    @Override
+    public UserMoovieListId currentUserHasLiked( int moovieListId){
+        String currentUsername = userService.getInfoOfMyUser().getUsername();
+        MoovieListCard mlc = getMoovieListCardById(moovieListId);
+
+        if(mlc.isCurrentUserHasLiked()){
+            return new UserMoovieListId(mlc.getMoovieListId(), currentUsername);
+        }
+        return null;
+    }
+
+
+
 
     @Transactional
     @Override
@@ -354,8 +369,6 @@ public class MoovieListServiceImpl implements MoovieListService{
 
         if(mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType()) {
             if (mlc.isCurrentUserHasFollowed()) {
-                moovieListDao.removeFollowMoovieList(userId, moovieListId);
-                LOGGER.info("Succesfully followed list: {}, user: {}.",moovieListId,userService.tryToGetCurrentUserId());
                 return false;
             } else {
                 moovieListDao.followMoovieList(userId, moovieListId);
@@ -370,6 +383,18 @@ public class MoovieListServiceImpl implements MoovieListService{
             }
         }
         return false;
+    }
+
+    @Transactional
+    @Override
+    public UserMoovieListId currentUserHasFollowed( int moovieListId){
+        String currentUsername = userService.getInfoOfMyUser().getUsername();
+        MoovieListCard mlc = getMoovieListCardById(moovieListId);
+
+        if(mlc.isCurrentUserHasFollowed()){
+            return new UserMoovieListId(mlc.getMoovieListId(), currentUsername);
+        }
+        return null;
     }
 
     @Transactional

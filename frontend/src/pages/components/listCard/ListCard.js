@@ -1,17 +1,29 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import defaultPoster from "../../../images/defaultPoster.png";
 import { Link } from "react-router-dom";
 import "./listCard.css";
 import ProfileImage from "../profileImage/ProfileImage";
+import listService from "../../../services/ListService";
 
 const ListCard = ({ listCard }) => {
-    let images = [...listCard.images]; // Copy the array to avoid mutating the original
-    let imgLength = images.length;
+    const [hasLikedAndFollowed, setHasLikedAndFollowed] = useState({liked:false,followed:false});
 
-    while (imgLength < 4) {
+    let images = [...listCard.images];
+    while (images.length < 4) {
         images.push(defaultPoster);
-        imgLength++;
     }
+
+    useEffect(() => {
+        const fetchHasLikedAndFollowed = async () => {
+            try {
+                const likedAndFollowed = await listService.currentUserLikeFollowStatus(listCard.id);
+                setHasLikedAndFollowed(likedAndFollowed);
+            } catch (error) {
+            }
+        };
+
+        fetchHasLikedAndFollowed();
+    }, [listCard.id]);
 
     return (
         <Link to={"/list/" + listCard.id} className="not-link">
@@ -27,9 +39,11 @@ const ListCard = ({ listCard }) => {
                         <span>{listCard.movieCount} Películas</span> • <span>{listCard.mediaCount - listCard.movieCount} Series</span>
                     </div>
                     <div className="list-card-footer">
-                        <span>por {listCard.createdBy} <ProfileImage username={listCard.createdBy}/> </span>
+                        <span>
+                            por {listCard.createdBy} <ProfileImage username={listCard.createdBy} />
+                        </span>
                         <span className="list-card-likes">
-                            👍 {listCard.likes}
+                            👍 {listCard.likes} {hasLikedAndFollowed.liked ? "(You liked this)" : ""}
                         </span>
                     </div>
                 </div>

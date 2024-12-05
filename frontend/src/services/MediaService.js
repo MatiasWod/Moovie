@@ -2,6 +2,7 @@ import mediaApi from "../api/MediaApi";
 import {parsePaginatedResponse} from "../utils/ResponseUtils";
 import api from "../api/api";
 import mediaService from "./MediaService";
+import userApi from "../api/UserApi";
 
 const MediaService = (() => {
     const getMedia = async ({type, page, pageSize, orderBy, sortOrder, search}) => {
@@ -28,6 +29,8 @@ const MediaService = (() => {
         const res = await mediaApi.createReview({mediaId,rating,reviewContent});
         return res;
     }
+
+
 
 
 
