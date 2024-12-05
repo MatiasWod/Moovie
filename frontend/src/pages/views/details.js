@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import './details.css';
 import "../components/mainStyle.css"
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import mediaApi from "../../api/MediaApi";
 import SearchableMediaTag from "../components/searchableMediaTag/searchableMediaTag";
 import MediaTypes from "../../api/values/MediaTypes";
@@ -10,6 +10,7 @@ import AddMediaToListButton from "../components/buttons/addMediaToListButton/Add
 import CreateReviewButton from "../components/buttons/createReviewButton/CreateReviewButton";
 import ReviewForm from "../components/forms/reviewForm/ReviewForm";
 import ActorCardList from "../components/actorCards/ActorCardList";
+import {useDispatch, useSelector} from "react-redux";
 
 function Details() {
 
@@ -19,6 +20,8 @@ function Details() {
     const [media, setMedia] = useState([]);
     const [mediaLoading, setMediaLoading] = useState(true);
     const [mediaError, setMediaError] = useState(null);
+
+    const {isLoggedIn, user} = useSelector(state => state.auth);
 
 
     const fetchMedia = async () => {
@@ -96,8 +99,11 @@ function Details() {
 
     //Buttons for creating reviews
     const [showReviewForm, setShowReviewForm] = useState(false);
-
+    const navigate = useNavigate();
     const handleOpenReviewForm = () => {
+        if(!isLoggedIn){
+            navigate('/login');
+        }
         setShowReviewForm(true);
     };
 
@@ -123,7 +129,7 @@ function Details() {
 
                 {showReviewForm && (
                     <div className="overlay">
-                        <ReviewForm mediaName={media.name} mediaId={id} closeReview={handleCloseReviewForm} />
+                        <ReviewForm mediaName={media.name} mediaId={id} closeReview={handleCloseReviewForm}/>
                     </div>
                 )}
 

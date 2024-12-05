@@ -5,8 +5,13 @@ import MoovieListTypes from "../../../../api/values/MoovieListTypes";
 import CardsListOrderBy from "../../../../api/values/CardsListOrderBy";
 import SortOrder from "../../../../api/values/SortOrder";
 import ResponsePopup from "../reponsePopup/ReponsePopup";
+import {useSelector} from "react-redux";
+import {useNavigate} from "react-router-dom";
 
 const AddMediaToListButton = ({ currentId }) => {
+    const {isLoggedIn, user} = useSelector(state => state.auth);
+
+
     const [lists, setLists] = useState([]);
     const [listsLoading, setListsLoading] = useState(true);
     const [listsError, setListsError] = useState(null);
@@ -20,7 +25,7 @@ const AddMediaToListButton = ({ currentId }) => {
         try {
             const response0 = await listService.getLists({
                 search: null,
-                ownerUsername: "Wancho",
+                ownerUsername: user.username,
                 type: MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.type,
                 orderBy: CardsListOrderBy.MOOVIE_LIST_ID,
                 order: SortOrder.DESC,
@@ -29,7 +34,7 @@ const AddMediaToListButton = ({ currentId }) => {
             });
             const response1 = await listService.getLists({
                 search: null,
-                ownerUsername: "Wancho",
+                ownerUsername: user.username,
                 type: MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.type,
                 orderBy: CardsListOrderBy.MOOVIE_LIST_ID,
                 order: SortOrder.DESC,
@@ -38,7 +43,7 @@ const AddMediaToListButton = ({ currentId }) => {
             });
             const response2 = await listService.getLists({
                 search: null,
-                ownerUsername: "Wancho",
+                ownerUsername: user.username,
                 type: MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.type,
                 orderBy: CardsListOrderBy.MOOVIE_LIST_ID,
                 order: SortOrder.DESC,
@@ -65,7 +70,12 @@ const AddMediaToListButton = ({ currentId }) => {
     }, []);
 
     const [isOpen, setIsOpen] = useState(false);
+    const navigate = useNavigate();
+
     const handleToggle = () => {
+        if(!isLoggedIn){
+            navigate(`/login`);
+        }
         setIsOpen(!isOpen);
     };
 
