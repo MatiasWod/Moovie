@@ -101,24 +101,28 @@ Content-Type: application/json
 
 @moovieListId5 = 45
 
-POST {{baseUrl}}/{{moovieListId5}}/like
+POST {{baseUrl}}/{{moovieListId5}}/liked
 Authorization: Bearer {{bearer_token3}}
 Content-Type: application/json
 
 ### LIKE LIST
 
-@moovieListId5 = 45
 
-DELETE {{baseUrl}}/{{moovieListId5}}/like
+DELETE {{baseUrl}}/{{moovieListId5}}/liked
 Authorization: Bearer {{bearer_token3}}
 Content-Type: application/json
 
 ### FOLLOW LIST
 
-POST {{baseUrl}}/{{moovieListId5}}/follow
+POST {{baseUrl}}/{{moovieListId1}}/followed
 Authorization: Bearer {{bearer_token3}}
 Content-Type: application/json
 
+### UNFOLLOW LIST
+
+DELETE {{baseUrl}}/{{moovieListId1}}/unfollowed
+Authorization: Bearer {{bearer_token3}}
+Content-Type: application/json
 
 ### REVIEW LIST
 @bearer_token2_review =  eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNb292aWUiLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjgzNjEyMiwiZXhwIjoxNzMzNDQwOTIyfQ.DH67__vKqJhHSWunS362U0O1qRptW4Gfjw35LCUqy0z8CtLlmIE-MaxkqXscQZQtE4ILqyEmRaiRaofmCXd4oA
