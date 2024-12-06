@@ -86,7 +86,7 @@ const userApi = (() => {
             });
     }
 
-    const getSearchedUsers = (username,orderBy,sortOrder,page) => {
+    const getSearchedUsers = ({username,orderBy,sortOrder,page}) => {
         return api.get(`/users/search`,
             {
                 params: {

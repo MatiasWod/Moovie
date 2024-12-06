@@ -3,13 +3,13 @@ import {createSearchParams, useNavigate, useParams, useSearchParams} from "react
 import ListHeader from "../components/listHeader/ListHeader";
 import OrderBy from "../../api/values/MediaOrderBy";
 import SortOrder from "../../api/values/SortOrder";
-import DropdownMenu from "../components/dropdownMenu/DropdownMenu";
 import "../components/mainStyle.css"
 import ListService from "../../services/ListService";
 import pagingSizes from "../../api/values/PagingSizes";
 import ListContentPaginated from "../components/listContentPaginated/ListContentPaginated";
 import Reviews from "../components/ReviewsSection/Reviews";
-
+import ListCard from "../components/listCard/ListCard";
+import {ProgressBar} from "react-bootstrap"
 
 function List() {
     const navigate = useNavigate();
@@ -64,6 +64,9 @@ function List() {
         getData();
     }, [id]);
 
+    useEffect(() => {
+        console.log(list)
+    }, [list]);
 
     //GET VALUES FOR LIST CONTENT
     const [listContent, setListContent] = useState(undefined);
@@ -90,10 +93,33 @@ function List() {
         getData();
     }, [currentOrderBy,currentSortOrder,page]);
 
+    const [listRecommendations, setListRecommendations] = useState(undefined);
+    const [listRecommendationsLoading, setlistRecommendationsLoading] = useState(true);
+    const [listRecommendationsError, setlistRecommendationsError] = useState(null);
+
+    useEffect(() => {
+        async function getData() {
+            try {
+                const data = await ListService.getRecommendedLists(id)
+                setListRecommendations(data);
+                setlistRecommendationsLoading(false);
+            } catch (error) {
+                setlistRecommendationsError(error);
+                setlistRecommendationsLoading(false);
+            }
+        }
+        getData();
+    }, [id]);
 
     return (
         <div className="default-container moovie-default">
             <ListHeader list={list?.data || []}/>
+
+            <ProgressBar
+                now={list?.data?.mediaCount === 0 ? 100 : (list?.data?.currentUserWatchAmount / list?.data?.mediaCount) * 100}
+                label={`${Math.round(list?.data?.mediaCount === 0 ? 100 : (list?.data?.currentUserWatchAmount / list?.data?.mediaCount) * 100)}%`}
+            />
+
 
             <ListContentPaginated
                 listContent={listContent}
@@ -105,6 +131,15 @@ function List() {
                 currentSortOrder={currentSortOrder}
                 setSortOrder={setSortOrder}
             />
+
+            <h3>Si te gustó esta, también te podría gustar...</h3>
+            <div className="moovie-default default-container">
+                <div className="list-card-container">
+                    {listRecommendations?.data?.map(list => (
+                        <ListCard listCard={list}/>
+                    ))}
+                </div>
+            </div>
 
             <Reviews id={id} source={'list'}></Reviews>
 

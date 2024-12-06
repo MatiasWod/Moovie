@@ -117,6 +117,15 @@ const listApi = (() => {
         return api.delete(`list/${moovieListId}/followed`);
     }
 
+    const getRecommendedLists = (id) => {
+        return api.get(`/list/${id}/recommendedLists`,
+            {
+                params:{
+                    'id': id
+                }
+            })
+    }
+
 
     return{
         getLists,
@@ -132,7 +141,8 @@ const listApi = (() => {
         unlikeList,
         likeList,
         followList,
-        unfollowList
+        unfollowList,
+        getRecommendedLists
     }
 })();
 

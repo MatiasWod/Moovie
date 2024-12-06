@@ -5,6 +5,7 @@ import "../components/mainStyle.css";
 import "./milkyLeaderboard.css";
 import ProfileImage from "../components/profileImage/ProfileImage";
 import logo from "../../images/logo.png"
+import {useNavigate} from "react-router-dom";
 
 function MilkyLeaderboard() {
     const [milkyLeaderboard, setMilkyLeaderboard] = useState([]);
@@ -64,12 +65,19 @@ function MilkyLeaderboard() {
 export default MilkyLeaderboard;
 
 function MilkyLeaderboardProfile({profile}) {
+
+    const navigate = useNavigate();
+
+    const handleUsernameClick = (username) => {
+        navigate(`/profile/${username}`);
+    }
+
     return (
         <tr className="milky-leaderboard-profile">
             <td className="col">
                 <ProfileImage image={profile.pictureUrl} username={profile.username} size={75}/>
             </td>
-            <td className="col">{profile.username}</td>
+            <td className="col" style={{ cursor: 'pointer' }} onClick={() => handleUsernameClick(profile.username)}>{profile.username}</td>
             <td className="col">{profile.moovieListCount}</td>
             <td className="col">{profile.reviewsCount}</td>
             <td className="col">{profile.milkyPoints}</td>

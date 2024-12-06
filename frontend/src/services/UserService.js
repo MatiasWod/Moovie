@@ -12,7 +12,7 @@ const UserService = (() => {
         return parsePaginatedResponse(res);
     }
 
-    const getSearchedUsers = async (username,orderBy,sortOrder,page=1) => {
+    const getSearchedUsers = async ({username,orderBy,sortOrder,page=1}) => {
         const res = await userApi.getSearchedUsers({username,orderBy,sortOrder,page});
         return parsePaginatedResponse(res);
     }

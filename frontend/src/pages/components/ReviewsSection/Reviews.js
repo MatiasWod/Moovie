@@ -65,14 +65,18 @@ function Reviews({ id, source }) {
     return (
         <div className="reviews-container">
             <h2>Reseñas</h2>
-            {reviews?.data?.map((review) => (
-                <div key={review.id} className="review">
-                    <div className="review-header">
-                        <strong>{review.username}</strong> - <small>{review.rating}</small>
+            {reviews?.data?.length > 0 ? (
+                reviews.data.map((review) => (
+                    <div key={review.id} className="review">
+                        <div className="review-header">
+                            <strong>{review.username}</strong> - <small>{review.rating}</small>
+                        </div>
+                        <div className="review-content">{review.reviewContent}</div>
                     </div>
-                    <div className="review-content">{review.reviewContent}</div>
-                </div>
-            ))}
+                ))
+            ) : (
+                <p>No se encontraron reseñas.</p>
+            )}
             <div className="flex justify-center pt-4">
                 {reviews?.data?.length > 0 && reviews.links?.last?.page > 1 && (
                     <PaginationButton
@@ -83,6 +87,7 @@ function Reviews({ id, source }) {
                 )}
             </div>
         </div>
+
     );
 }
 

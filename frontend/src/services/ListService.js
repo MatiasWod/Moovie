@@ -111,6 +111,10 @@ const ListService = (() => {
         }
     }
 
+    const getRecommendedLists = async (id) => {
+        return await listApi.getRecommendedLists(id);
+    }
+
 
 
    return{
@@ -126,7 +130,8 @@ const ListService = (() => {
         likeList,
         unlikeList,
         unfollowList,
-        followList
+        followList,
+       getRecommendedLists
    }
 })();
 

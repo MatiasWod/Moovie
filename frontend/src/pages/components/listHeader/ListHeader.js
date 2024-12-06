@@ -57,7 +57,7 @@ const ListHeader = ({ list }) => {
             <div className="list-header-content">
                 <h1 className="list-header-title">{list.name}</h1>
                 <p className="list-header-description">{list.description}</p>
-                <span className="list-header-username">por {list.username}</span>
+                <span className="list-header-username">por {list.createdBy}</span>
                 <div className="list-header-buttons">
                     <button
                         className={`like-button ${hasLikedAndFollowed.liked ? "liked" : ""}`}
