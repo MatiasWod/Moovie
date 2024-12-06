@@ -43,7 +43,11 @@ Authorization: Bearer {{bearer_token}}
 
 GET {{baseUrl}}/{{id1}}/moovieListReviews
 
+### SEARCH USERS
 
+@searchParam = Wancho
+
+GET {{baseUrl}}/search?username={{searchParam}}
 
 
 

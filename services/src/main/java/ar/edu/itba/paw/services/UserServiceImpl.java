@@ -148,7 +148,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public List<Profile> searchUsers(String username, String orderBy, String sortOrder, int size, int pageNumber) {
-        return userDao.searchUsers(username, setOrderBy(orderBy), setSortOrder(sortOrder), size, pageNumber);
+        return userDao.searchUsers(username, setOrderBy(orderBy), setSortOrder(sortOrder), size, pageNumber-1);
     }
 
     @Transactional(readOnly = true)
@@ -278,7 +278,7 @@ public class UserServiceImpl implements UserService {
 
     private String setSortOrder(String sortOrder) {
         if (sortOrder == null || sortOrder.isEmpty()) {
-            return null;
+            return "desc";
         }
         sortOrder = sortOrder.replaceAll(" ", "");
         if (sortOrder.toLowerCase().equals("asc")) {
@@ -292,7 +292,7 @@ public class UserServiceImpl implements UserService {
 
     private String setOrderBy(String orderBy) {
         if (orderBy == null || orderBy.isEmpty()) {
-            return null;
+            return "milkyPoints";
         }
         orderBy = orderBy.replaceAll(" ", "");
         if (orderBy.toLowerCase().equals("milkypoints")) {
