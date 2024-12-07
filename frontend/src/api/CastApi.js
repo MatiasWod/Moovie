@@ -12,8 +12,13 @@ const castApi = (() => {
         );
     }
 
+    const getMediasForActor = ({id}) => {
+        return api.get(`/cast/actor/${id}/medias`)
+    }
+
     return{
-        getActorsForQuery
+        getActorsForQuery,
+        getMediasForActor
     }
 })();
 

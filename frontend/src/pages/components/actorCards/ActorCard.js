@@ -1,7 +1,11 @@
 import React from 'react';
 import altImage from "../../../images/defaultPoster.png";
+import {useNavigate} from "react-router-dom";
 
 const ActorCard = ({ name, image }) => {
+
+
+
     // Default to altImage if no image is provided
     let imageSrc = image;
 
@@ -20,7 +24,7 @@ const ActorCard = ({ name, image }) => {
             width: '200px',
             backgroundColor: '#fff',
             boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
-        }}>
+        }} >
             <img
                 src={imageSrc}
                 alt={name || 'Actor'} // Default alt text if name is not provided

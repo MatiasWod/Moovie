@@ -47,6 +47,13 @@ function Healthcheck() {
         });
     }, [navigate, search]);
 
+    const handleUserCardClick = (user) =>{
+        navigate(`/profile/${user.username}`);
+    }
+
+    const handleActorCardClick = (actor) =>{
+        navigate(`/cast/actor/${actor.actorId}`);
+    }
 
     useEffect(() => {
         async function getData() {
@@ -99,6 +106,7 @@ function Healthcheck() {
                 const data = await CastService.getActorsForQuery({
                     search: search
                 });
+                console.log(data)
                 setActors(data.data);
                 setActorLoading(false);
             } catch (error) {
@@ -133,15 +141,40 @@ function Healthcheck() {
     }, [search,page]);
 
     return (
-        <div class="discover-media-card-container">
-            {medias?.data?.map((media) => (
-                <div className="discover-media-card"><MediaCard media={media}/></div>
-            ))}
-            <div className="list-card-container">
-                {lists?.data?.map(list => (
-                    <ListCard listCard={list}/>
-                ))}
-            </div>
+        <div className="discover-media-card-container">
+            <>
+                {medias?.data?.length > 0 ? (
+                    <>
+                        <h3>Medias for: {search}</h3>
+                        {medias.data.map((media) => (
+                            <div className="discover-media-card" key={media.id}>
+                                <MediaCard media={media} />
+                            </div>
+                        ))}
+                    </>
+                ) : (
+                    <p>No medias found.</p>
+                )}
+            </>
+
+
+            <>
+                {lists?.data?.length > 0 ? (
+                    <>
+                        <h3>Lists for: {search}</h3>
+                        <div className="list-card-container">
+                            {lists.data.map((list) => (
+                                <div key={list.id}>
+                                    <ListCard listCard={list} />
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                ) : (
+                    <p>No lists found.</p>
+                )}
+            </>
+
             <div
                 style={{
                     display: 'flex',
@@ -151,15 +184,21 @@ function Healthcheck() {
                 }}
             >
                 {actors && actors.length > 0 ? (
-                    actors.map((actor) => {
-                        return (
-                            <ActorCard
+                    <>
+                        <h3>Actors for: {search}</h3>
+                        {actors.map((actor) => (
+                            <div
                                 key={actor.actorId}
-                                name={actor.actorName}
-                                image={actor.profilePath}
-                            />
-                        );
-                    })
+                                onClick={() => handleActorCardClick(actor)}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <ActorCard
+                                    name={actor.actorName}
+                                    image={actor.profilePath}
+                                />
+                            </div>
+                        ))}
+                    </>
                 ) : (
                     <p>No actors found.</p>
                 )}
@@ -173,10 +212,24 @@ function Healthcheck() {
                 }}
             >
                 <div>
-                {users?.data?.map(user => (
-                    <ActorCard name={user.username}/>
-                ))}
+                    {users?.data?.length > 0 ? (
+                        <>
+                            <h3>Users for: {search}</h3>
+                            {users.data.map((user) => (
+                                <div
+                                    key={user.username}
+                                    onClick={() => handleUserCardClick(user)}
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    <ActorCard name={user.username} />
+                                </div>
+                            ))}
+                        </>
+                    ) : (
+                        <p>No users found.</p>
+                    )}
                 </div>
+
             </div>
         </div>
     )
