@@ -27,7 +27,7 @@ public class MediaHibernateDao implements MediaDao{
     private static final String moviesQueryParams = " media.mediaId, type, name, originalLanguage, adult, releaseDate, overview, backdropPath, posterPath, trailerLink, tmdbRating, status, runtime, budget, revenue, directorId, director ";
 
     @Override
-    public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber, int currentUserId) {
+    public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<Integer> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber, int currentUserId) {
 
         ArrayList<String> argtype = new ArrayList<>();
         ArrayList<Object> args = new ArrayList<>();
@@ -68,7 +68,7 @@ public class MediaHibernateDao implements MediaDao{
         }
 
         if (providers != null && !providers.isEmpty()) {
-            sql += " AND m IN (SELECT media FROM Media media JOIN media.providers providers WHERE providers.providerName IN :providers) ";
+            sql += " AND m IN (SELECT media FROM Media media JOIN media.providers providers WHERE providers.providerId IN :providers) ";
             argtype.add("providers");
             args.add(providers);
         }
@@ -159,7 +159,7 @@ public class MediaHibernateDao implements MediaDao{
     }
 
     @Override
-    public int getMediaCount(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang){
+    public int getMediaCount(int type, String search, String participant, List<String> genres, List<Integer> providers, List<String> status, List<String> lang){
 //        (int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber, int currentUserId)
         ArrayList<String> argtype = new ArrayList<>();
         ArrayList<Object> args = new ArrayList<>();
@@ -193,7 +193,7 @@ public class MediaHibernateDao implements MediaDao{
         }
 
         if (providers != null && !providers.isEmpty()) {
-            sql += " AND m IN (SELECT media FROM Media media JOIN media.providers providers WHERE providers.providerName IN :providers) ";
+            sql += " AND m IN (SELECT media FROM Media media JOIN media.providers providers WHERE providers.providerId IN :providers) ";
             argtype.add("providers");
             args.add(providers);
         }

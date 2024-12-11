@@ -67,7 +67,7 @@ public class MediaDto {
         mediaDTO.watchlist = media.isWatchlist();
         mediaDTO.originalLanguage = media.getOriginalLanguage();
         mediaDTO.url = uriInfo.getBaseUriBuilder().path("media/{mediaId}").build(media.getMediaId()).toString();
-        mediaDTO.setProviders(media.getProviders());
+        mediaDTO.setProviders(media.getProviders(),uriInfo);
         return mediaDTO;
     }
 
@@ -88,7 +88,7 @@ public class MediaDto {
         mediaDTO.setWatched(media.isWatched());
         mediaDTO.setWatchlist(media.isWatchlist());
         mediaDTO.setOriginalLanguage(media.getOriginalLanguage());
-        mediaDTO.setProviders(media.getProviders());
+        mediaDTO.setProviders(media.getProviders(),uriInfo);
         mediaDTO.setUrl(uriInfo.getBaseUriBuilder().path("media/{mediaId}").build(media.getMediaId()).toString());
     }
 
@@ -212,11 +212,12 @@ public class MediaDto {
         return providers;
     }
 
-    public void setProviders(List<Provider> providers) {
+    //TODO REVISAR SI ESTA BIEN PASARLE URIINFO ACA
+    public void setProviders(List<Provider> providers, UriInfo uriInfo) {
         this.providers.clear();
         if (providers != null) {
             for (Provider p : providers){
-                this.providers.add(ProviderDto.fromProvider(p));
+                this.providers.add(ProviderDto.fromProvider(p,uriInfo));
             }
         }
     }

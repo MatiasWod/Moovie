@@ -13,10 +13,10 @@ public interface MediaService {
     // The participant checks in actor OR director OR creator
     // Search is ny name
     // Provider and genres are OR in the list
-    List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber);
+    List<Media> getMedia(int type, String search, String participant, List<String> genres, List<Integer> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber);
 
     //The amount of results that a query of getMedia will give
-    int getMediaCount(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang);
+    int getMediaCount(int type, String search, String participant, List<String> genres, List<Integer> providers, List<String> status, List<String> lang);
 
     //Return a list of media that are in a moovie list
     List<Media> getMediaInMoovieList(int moovieListId, int size, int pageNumber);

@@ -24,7 +24,7 @@ public class MediaServiceImpl implements MediaService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber){
+    public List<Media> getMedia(int type, String search, String participant, List<String> genres, List<Integer> providers, List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber){
         return mediaDao.getMedia(type, search, participant,  genres, providers, status, lang,setOrderBy(orderBy) , setSortOrder(sortOrder) , size, pageNumber, userService.tryToGetCurrentUserId());
     }
 
@@ -77,7 +77,7 @@ public class MediaServiceImpl implements MediaService{
 
     @Transactional(readOnly = true)
     @Override
-    public int getMediaCount(int type, String search, String participant, List<String> genres, List<String> providers, List<String> status, List<String> lang) {
+    public int getMediaCount(int type, String search, String participant, List<String> genres, List<Integer> providers, List<String> status, List<String> lang) {
         return mediaDao.getMediaCount(type, search, participant,  genres,  providers, status,  lang);
     }
 

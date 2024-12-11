@@ -5,8 +5,8 @@ import mediaService from "./MediaService";
 import userApi from "../api/UserApi";
 
 const MediaService = (() => {
-    const getMedia = async ({type, page, pageSize, orderBy, sortOrder, search}) => {
-        const res = await mediaApi.getMedia({type, page, pageSize, orderBy, sortOrder, search});
+    const getMedia = async ({type, page, pageSize, orderBy, sortOrder, search, providers}) => {
+        const res = await mediaApi.getMedia({type, page, pageSize, orderBy, sortOrder, search, providers});
         return parsePaginatedResponse(res)
     }
 
