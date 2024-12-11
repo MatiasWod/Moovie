@@ -78,11 +78,22 @@ button {
 }
 
 button.cancel {
-    background-color: #e74c3c;
+    background-color: red;
+    color: white;
+}
+
+button.cancel:hover {
+    background-color: darkred;
     color: white;
 }
 
 button.submit {
-    background-color: #7f8c8d;
+    background-color: green;
     color: white;
+}
+
+button.submit:hover {
+    background-color: darkgreen;
+    color: white;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
