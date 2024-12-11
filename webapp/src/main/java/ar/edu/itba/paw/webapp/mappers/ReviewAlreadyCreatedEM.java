@@ -15,7 +15,7 @@ import javax.ws.rs.ext.Provider;
 public class ReviewAlreadyCreatedEM implements ExceptionMapper<ReviewAlreadyCreatedException> {
     @Override
     public Response toResponse(ReviewAlreadyCreatedException exception) {
-        return Response.status(Response.Status.NOT_FOUND)
+        return Response.status(Response.Status.CONFLICT)
                 .entity(new ResponseMessage(exception.getMessage()))
                 .build();
     }
