@@ -27,29 +27,17 @@ public class ProviderController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllProviders(){
-        try {
-            final List<Provider> providerList = providerService.getAllProviders();
-            final List<ProviderDto> providerDtoList = ProviderDto.fromProviderList(providerList,uriInfo);
-            return Response.ok(new GenericEntity<List<ProviderDto>>(providerDtoList){}).build();
-        }
-        catch (RuntimeException e){
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ResponseMessage(e.getMessage())).build();
-        }
+        final List<Provider> providerList = providerService.getAllProviders();
+        final List<ProviderDto> providerDtoList = ProviderDto.fromProviderList(providerList,uriInfo);
+        return Response.ok(new GenericEntity<List<ProviderDto>>(providerDtoList){}).build();
     }
 
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllProviders(@PathParam("id") final int mediaId){
-        try {
             final List<Provider> providerList = providerService.getProvidersForMedia(mediaId);
             final List<ProviderDto> providerDtoList = ProviderDto.fromProviderList(providerList,uriInfo);
             return Response.ok(new GenericEntity<List<ProviderDto>>(providerDtoList){}).build();
-        }
-        catch (RuntimeException e){
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ResponseMessage(e.getMessage())).build();
-        }
     }
 }

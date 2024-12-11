@@ -46,7 +46,7 @@
       <param-value>
         ar.edu.itba.paw.webapp.config,
         ar.edu.itba.paw.webapp.controller,
-        ar.edu.itba.paw.webapp.exceptionMappers
+        ar.edu.itba.paw.webapp.mappers
       </param-value>
     </init-param>
 

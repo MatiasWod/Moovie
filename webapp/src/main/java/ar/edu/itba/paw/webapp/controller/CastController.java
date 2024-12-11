@@ -33,6 +33,7 @@ public class CastController {
         try{
             return Response.ok(ActorDto.fromActor(actorService.getActorById(id), uriInfo)).build();
         } catch (Exception e) {
+            // TODO CHECK THIS IS CATCHING WELL
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
@@ -41,41 +42,25 @@ public class CastController {
     @Path("actor/{id}/medias")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMediaForActor(@PathParam("id") final int id) {
-        try {
-            List<Media> mediaList = actorService.getMediaForActor(id);
+        List<Media> mediaList = actorService.getMediaForActor(id);
 
-            if (mediaList == null || mediaList.isEmpty()) {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("No media found for actor with ID: " + id)
-                        .build();
-            }
-
-            List<MediaDto> mediaDtos = MediaDto.fromMediaList(mediaList, uriInfo);
-            return Response.ok(new GenericEntity<List<MediaDto>>(mediaDtos) {}).build();
-        } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Invalid actor ID: " + id)
-                    .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
+        if (mediaList == null || mediaList.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("No media found for actor with ID: " + id)
                     .build();
         }
+
+        List<MediaDto> mediaDtos = MediaDto.fromMediaList(mediaList, uriInfo);
+        return Response.ok(new GenericEntity<List<MediaDto>>(mediaDtos) {}).build();
     }
 
     @GET
     @Path("/actor")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getActorsForQuery(@QueryParam("search") final String search){
-        try{
-            List<Actor> actorList = actorService.getActorsForQuery(search);
-            List<ActorDto> actorDtoList = ActorDto.fromActorList(actorList,uriInfo);
-            return Response.ok(new GenericEntity<List<ActorDto>>(actorDtoList){}).build();
-        }
-        catch (RuntimeException e){
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
+        List<Actor> actorList = actorService.getActorsForQuery(search);
+        List<ActorDto> actorDtoList = ActorDto.fromActorList(actorList,uriInfo);
+        return Response.ok(new GenericEntity<List<ActorDto>>(actorDtoList){}).build();
     }
-
 }
 

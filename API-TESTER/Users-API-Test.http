@@ -22,7 +22,7 @@ Authorization: Bearer {{bearer_token2}}
 @username2 = Moovie
 @password2 = admin123
 
-@auth2 = TW9vdmllOmFkbWluMTIz
+@auth2 = V2FuY2hvOnBhc3MxMg==
 
 GET {{baseUrl}}/username/{{username2}}
 Authorization: Basic {{auth2}}

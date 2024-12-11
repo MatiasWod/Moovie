@@ -49,73 +49,36 @@ public class ReviewController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getReviewById(@PathParam("id") final int id) {
-        try {
-            final Review review = reviewService.getReviewById(id);
-            final ReviewDto reviewDto = ReviewDto.fromReview(review, uriInfo);
-            return Response.ok(reviewDto).build();
-        }catch (ReviewNotFoundException e){
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"Review not found.\"}")
-                    .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
+        final Review review = reviewService.getReviewById(id);
+        final ReviewDto reviewDto = ReviewDto.fromReview(review, uriInfo);
+        return Response.ok(reviewDto).build();
     }
 
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteReviewById(@PathParam("id") final int reviewId) {
-        try {
-            reviewService.deleteReview(reviewId, ReviewTypes.REVIEW_MEDIA);
+        reviewService.deleteReview(reviewId, ReviewTypes.REVIEW_MEDIA);
 
-            return Response.ok()
-                    .entity("Review successfully deleted.")
-                    .build();
+        return Response.ok()
+                .entity("Review successfully deleted.")
+                .build();
 
-        } catch (UserNotLoggedException e) {
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\":\"User must be logged in to delete a review.\"}")
-                    .build();
-        } catch (ReviewNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"Review not found or you do not have permission to delete.\"}")
-                    .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
-        }
     }
 
     @POST
     @Path("/{id}/like")
     @Produces(MediaType.APPLICATION_JSON)
     public Response likeReview(@PathParam("id") final int id) {
-        try {
-            boolean liked = reviewService.likeReview(id, ReviewTypes.REVIEW_MEDIA);
-            if(liked){
-                return Response.ok()
-                        .entity("Review successfully liked.")
-                        .build();
-            }
+        boolean liked = reviewService.likeReview(id, ReviewTypes.REVIEW_MEDIA);
+        if(liked){
             return Response.ok()
-                    .entity("Review successfully unliked.")
-                    .build();
-
-        } catch (UserNotLoggedException | UnableToFindUserException e) {
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\":\"User must be logged in to like a review.\"}")
-                    .build();
-        } catch (ReviewNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"Review not found.\"}")
-                    .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .entity("Review successfully liked.")
                     .build();
         }
+        return Response.ok()
+                .entity("Review successfully unliked.")
+                .build();
     }
 
     /* COMMENTS */
@@ -123,24 +86,14 @@ public class ReviewController {
     @Path("/{id}/comments")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getComments(@PathParam("id") final int id, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
-        try{
-            final int commentCount=reviewService.getReviewById(id).getCommentCount().intValue();
-            final List<Comment> commentList= commentService.getComments(id, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(),page-1);
-            final List<CommentDto> commentDtoList=CommentDto.fromCommentList(commentList,uriInfo);
+        final int commentCount=reviewService.getReviewById(id).getCommentCount().intValue();
+        final List<Comment> commentList= commentService.getComments(id, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(),page-1);
+        final List<CommentDto> commentDtoList=CommentDto.fromCommentList(commentList,uriInfo);
 
-            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<CommentDto>>(commentDtoList) {});
-            final PagingUtils<Comment> reviewPagingUtils = new PagingUtils<>(commentList,page,PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(),commentCount);
-            ResponseUtils.setPaginationLinks(res,reviewPagingUtils,uriInfo);
-            return res.build();
-        } catch(ReviewNotFoundException e){
-            return Response.status(Response.Status.CONFLICT)
-                    .entity("{\"error\":\"Review doesn't exists.\"}")
-                    .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
-        }
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<CommentDto>>(commentDtoList) {});
+        final PagingUtils<Comment> reviewPagingUtils = new PagingUtils<>(commentList,page,PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(),commentCount);
+        ResponseUtils.setPaginationLinks(res,reviewPagingUtils,uriInfo);
+        return res.build();
     }
 
     @POST
@@ -148,27 +101,13 @@ public class ReviewController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createComment(@PathParam("id") final int id,@Valid final CommentCreateDto commentDto){
-        try {
-            commentService.createComment(
-                    id,
-                    commentDto.getCommentContent()
-            );
-            return Response.status(Response.Status.CREATED)
-                    .entity("Comment successfully created to review with id:" + id)
-                    .build();
-        }catch(UserNotLoggedException e){
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\":\"User must be logged in to create a comment.\"}")
-                    .build();
-        } catch(ReviewNotFoundException e){
-            return Response.status(Response.Status.CONFLICT)
-                    .entity("{\"error\":\"Review doesn't exists.\"}")
-                    .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
-        }
+        commentService.createComment(
+                id,
+                commentDto.getCommentContent()
+        );
+        return Response.status(Response.Status.CREATED)
+                .entity("Comment successfully created to review with id:" + id)
+                .build();
     }
 
 }

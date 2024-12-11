@@ -85,9 +85,10 @@ Content-Type: application/json
 #  "description": "A collection of my favorite films."
 #}
 
-@bearer_token3 = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJXYW5jaG8iLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjc0MDc0NywiZXhwIjoxNzMzMzQ1NTQ3fQ.OKFjYIuVZktDJ6rw3XbgW2aqO0brzGhjpOkU2sJJfgFVvauDxz7hCFwnVnUnJCW_ZW8EWw6BBfcg-AFyiCh_7Q
-@moovieListId1 = 4
 
+
+@bearer_token3 = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJXYW5jaG8iLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMzkyNDk4NSwiZXhwIjoxNzM0NTI5Nzg1fQ.xW2IMFg-_W0a_jy5DgwNCBRtrMWcDFoVdiNNPj9oEj3c3FdP8iJGWpXtFp_M5GWvOvXqRHN2JWUVO_8UcMHTPA
+@moovieListId1 = 4
 POST {{baseUrl}}/{{moovieListId1}}/content
 Authorization: Bearer {{bearer_token3}}
 Content-Type: application/json

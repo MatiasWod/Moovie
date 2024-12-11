@@ -26,31 +26,17 @@ public class GenreController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllGenres(){
-        try {
             final List<Genre> genreList = genreService.getAllGenres();
             final List<GenreDto> genreDtoList = GenreDto.fromGenreList(genreList,uriInfo);
             return Response.ok(new GenericEntity<List<GenreDto>>(genreDtoList){}).build();
-        }
-        catch (RuntimeException e){
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ResponseMessage(e.getMessage())).build();
-        }
-
     }
 
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getGenresForMedia(@PathParam("id") final int mediaId){
-        try {
             final List<Genre> genreList = genreService.getGenresForMedia(mediaId);
             final List<GenreDto> genreDtoList = GenreDto.fromGenreList(genreList,uriInfo);
             return Response.ok(new GenericEntity<List<GenreDto>>(genreDtoList){}).build();
-        }
-        catch (RuntimeException e){
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ResponseMessage(e.getMessage())).build();
-        }
-
     }
 }

@@ -202,11 +202,6 @@ public class MoovieListController {
                     .entity("A movie list with the same name already exists.")
                     .build();
 
-        } catch (UserNotLoggedException e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.UNAUTHORIZED)
-                    .entity("User must be logged in to create a movie list.")
-                    .build();
-
         } catch (RuntimeException e) {
             return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An unexpected error occurred: " + e.getMessage())
@@ -222,42 +217,14 @@ public class MoovieListController {
     public javax.ws.rs.core.Response insertMediaIntoMoovieList(@PathParam("moovieListId") int moovieListId,
                                                                @Valid MediaListDto mediaIdListDto) {
         List<Integer> mediaIdList = mediaIdListDto.getMediaIdList();
-        try {
-            MoovieList updatedList = moovieListService.insertMediaIntoMoovieList(moovieListId, mediaIdList);
-
-            if (mediaIdList == null || mediaIdList.isEmpty()) {
-                return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.BAD_REQUEST)
-                        .entity(new ResponseMessage("No media IDs provided."))
-                        .build();
-            }
-
-            return javax.ws.rs.core.Response.ok(updatedList).entity(new ResponseMessage("Media added successfully to the list.")).build();
-        } catch(UserNotLoggedException | UsernameNotFoundException e){
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity(new ResponseMessage("User is  unauthorized to perform this action."))
-                    .build();
-        } catch (MoovieListNotFoundException e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.NOT_FOUND)
-                    .entity(new ResponseMessage("Movie list not found for ID: " + moovieListId))
-                    .build();
-        } catch (MediaNotFoundException e) {
+        MoovieList updatedList = moovieListService.insertMediaIntoMoovieList(moovieListId, mediaIdList);
+        if (mediaIdList == null || mediaIdList.isEmpty()) {
             return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.BAD_REQUEST)
-                    .entity(new ResponseMessage("Invalid media IDs provided."))
-                    .build();
-        } catch (UnableToInsertIntoDatabase e) {
-            if (mediaIdList.size() == 1) {
-                return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.BAD_REQUEST)
-                        .entity(new ResponseMessage("Media already in list."))
-                        .build();
-            }
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.BAD_REQUEST)
-                    .entity(new ResponseMessage("One of the media provided already in the list."))
-                    .build();
-        } catch (Exception e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ResponseMessage("An unexpected error occurred: " + e.getMessage()))
+                    .entity(new ResponseMessage("No media IDs provided."))
                     .build();
         }
+        return javax.ws.rs.core.Response.ok(updatedList).entity(new ResponseMessage("Media added successfully to the list.")).build();
+
     }
 
 
@@ -266,50 +233,23 @@ public class MoovieListController {
     @Path("/{id}/liked")
     @Produces(MediaType.APPLICATION_JSON)
     public javax.ws.rs.core.Response likeMoovieList(@PathParam("id") int moovieListId) {
-        try{
-            boolean like = moovieListService.likeMoovieList(moovieListId);
-            if (like){
-                return Response.ok()
-                        .entity("{\"message\":\"Succesfully liked list.\"}").build();
-            }
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("{\"message\":\"Lista is already liked.\"}").build();
-        } catch(UserNotLoggedException e){
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\":\"User must be logged in to like a movie list.\"}")
-                    .build();
-        } catch ( MoovieListNotFoundException e ){
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Movie list not found for ID: " + moovieListId)
-                    .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
+        boolean like = moovieListService.likeMoovieList(moovieListId);
+        if (like){
+            return Response.ok()
+                    .entity("{\"message\":\"Succesfully liked list.\"}").build();
         }
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity("{\"message\":\"Lista is already liked.\"}").build();
     }
+
 
     @DELETE
     @Path("/{id}/liked")
     @Produces(MediaType.APPLICATION_JSON)
     public javax.ws.rs.core.Response unlikeMoovieList(@PathParam("id") int moovieListId) {
-        try{
-            moovieListService.removeLikeMoovieList(moovieListId);
-            return Response.ok()
-                    .entity("{\"message\":\"Succesfully unliked list.\"}").build();
-        } catch(UserNotLoggedException e){
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\":\"User must be logged in to unlike a movie list.\"}")
-                    .build();
-        } catch ( MoovieListNotFoundException e ){
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Movie list not found for ID: " + moovieListId)
-                    .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
-        }
+        moovieListService.removeLikeMoovieList(moovieListId);
+        return Response.ok()
+                .entity("{\"message\":\"Succesfully unliked list.\"}").build();
     }
 
 
@@ -317,50 +257,22 @@ public class MoovieListController {
     @Path("/{id}/followed")
     @Produces(MediaType.APPLICATION_JSON)
     public javax.ws.rs.core.Response followMoovieList(@PathParam("id") int moovieListId) {
-        try{
-            boolean like = moovieListService.followMoovieList(moovieListId);
-            if (like){
-                return Response.ok()
-                        .entity("{\"message\":\"Succesfully followed list.\"}").build();
-            }
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("{\"message\":\"List is already followed.\"}").build();
-        } catch(UserNotLoggedException e){
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\":\"User must be logged in to follow a movie list.\"}")
-                    .build();
-        } catch ( MoovieListNotFoundException e ){
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Movie list not found for ID: " + moovieListId)
-                    .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
+        boolean like = moovieListService.followMoovieList(moovieListId);
+        if (like){
+            return Response.ok()
+                    .entity("{\"message\":\"Succesfully followed list.\"}").build();
         }
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity("{\"message\":\"List is already followed.\"}").build();
     }
 
     @DELETE
     @Path("/{id}/followed")
     @Produces(MediaType.APPLICATION_JSON)
     public javax.ws.rs.core.Response unfollowMoovieList(@PathParam("id") int moovieListId) {
-        try{
-            moovieListService.removeFollowMoovieList(moovieListId);
-            return Response.ok()
-                    .entity("{\"message\":\"Succesfully unfollowed list.\"}").build();
-        } catch(UserNotLoggedException e){
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\":\"User must be logged in to unfollow a movie list.\"}")
-                    .build();
-        } catch ( MoovieListNotFoundException e ){
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Movie list not found for ID: " + moovieListId)
-                    .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
-        }
+        moovieListService.removeFollowMoovieList(moovieListId);
+        return Response.ok()
+                .entity("{\"message\":\"Succesfully unfollowed list.\"}").build();
     }
 
     @POST
@@ -368,31 +280,16 @@ public class MoovieListController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public javax.ws.rs.core.Response createMoovieListReview(@PathParam("id") int listId, @Valid final MoovieListReviewCreateDto moovieListReviewDto) {
-        try {
-            reviewService.createReview(
-                    listId,
-                    0,
-                    moovieListReviewDto.getReviewContent(),
-                    ReviewTypes.REVIEW_MOOVIE_LIST
-            );
+        reviewService.createReview(
+                listId,
+                0,
+                moovieListReviewDto.getReviewContent(),
+                ReviewTypes.REVIEW_MOOVIE_LIST
+        );
 
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.CREATED)
-                    .entity("MoovieList review successfully created to the list with ID: " + listId)
-                    .build();
-
-        } catch(UserNotLoggedException e){
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\":\"User must be logged in to review a list.\"}")
-                    .build();
-        } catch(ReviewAlreadyCreatedException e){
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.CONFLICT)
-                    .entity("{\"error\":\"MoovieList review already exists.\"}")
-                    .build();
-        } catch (Exception e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
-        }
+        return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.CREATED)
+                .entity("MoovieList review successfully created to the list with ID: " + listId)
+                .build();
     }
 
     /**
@@ -404,31 +301,16 @@ public class MoovieListController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public javax.ws.rs.core.Response editReview(@PathParam("id") int listId, @Valid final MoovieListReviewCreateDto moovieListReviewDto) {
-        try {
-            reviewService.editReview(
-                    listId,
-                    0,
-                    moovieListReviewDto.getReviewContent(),
-                    ReviewTypes.REVIEW_MOOVIE_LIST
-            );
+        reviewService.editReview(
+                listId,
+                0,
+                moovieListReviewDto.getReviewContent(),
+                ReviewTypes.REVIEW_MOOVIE_LIST
+        );
 
-            return javax.ws.rs.core.Response.ok()
-                    .entity("MoovieList review successfully updated for media with ID: " + listId)
-                    .build();
-
-        } catch (UserNotLoggedException e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\":\"User must be logged in to edit a review.\"}")
-                    .build();
-        } catch (ReviewNotFoundException e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"MoovieList review not found.\"}")
-                    .build();
-        } catch (Exception e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
-        }
+        return javax.ws.rs.core.Response.ok()
+                .entity("MoovieList review successfully updated for media with ID: " + listId)
+                .build();
     }
 
     /**
@@ -440,26 +322,8 @@ public class MoovieListController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public javax.ws.rs.core.Response deleteMoovieList(@PathParam("id") final int id) {
-        try {
-            moovieListService.deleteMoovieList(id);
-            return javax.ws.rs.core.Response.noContent().build();
-        } catch (UserNotLoggedException e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\":\"User must be logged in to delete a movie list.\"}")
-                    .build();
-        } catch ( MoovieListNotFoundException e ){
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.NOT_FOUND)
-                    .entity("Movie list not found for ID: " + id)
-                    .build();
-        } catch (InvalidAccessToResourceException e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.FORBIDDEN)
-                    .entity("{\"error\":\"User does not have permission to delete this movie list.\"}")
-                    .build();
-        } catch (RuntimeException e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"error\":\"An unexpected error occurred. Please try again later.\"}")
-                    .build();
-        }
+        moovieListService.deleteMoovieList(id);
+        return javax.ws.rs.core.Response.noContent().build();
     }
 
 
@@ -469,28 +333,10 @@ public class MoovieListController {
     @Produces(MediaType.APPLICATION_JSON)
     public javax.ws.rs.core.Response deleteMediaMoovieList(@PathParam("id") final int id, @Valid MediaListDto mediaIdListDto) {
         List<Integer> mediaIdList = mediaIdListDto.getMediaIdList();
-        try {
-            for (int media: mediaIdList){
-                moovieListService.deleteMediaFromMoovieList(id, media);
-            }
-            return javax.ws.rs.core.Response.noContent().build();
-        } catch ( MoovieListNotFoundException e ){
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.NOT_FOUND)
-                    .entity("Movie list not found for ID: " + id)
-                    .build();
-        } catch (UserNotLoggedException e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\":\"User must be logged in to delete media from a movie list.\"}")
-                    .build();
-        } catch (InvalidAccessToResourceException e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.FORBIDDEN)
-                    .entity("{\"error\":\"User does not have permission to delete this media from the movie list.\"}")
-                    .build();
-        } catch (RuntimeException e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"error\":\"An unexpected error occurred. Please try again later.\"}")
-                    .build();
+        for (int media: mediaIdList){
+            moovieListService.deleteMediaFromMoovieList(id, media);
         }
+        return javax.ws.rs.core.Response.noContent().build();
     }
 
     @GET
@@ -500,46 +346,26 @@ public class MoovieListController {
                                   @QueryParam("orderBy") String orderBy,
                                   @QueryParam("order") String order,
                                   @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber){
-        try{
-            List<MoovieListCard> mlcList = moovieListService.getLikedMoovieListCards(username, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
-                    PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1);
-            int listCount = userService.getLikedMoovieListCountForUser(username);
+        List<MoovieListCard> mlcList = moovieListService.getLikedMoovieListCards(username, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
+                PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1);
+        int listCount = userService.getLikedMoovieListCountForUser(username);
 
-            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(MoovieListDto.fromMoovieListList(mlcList, uriInfo)) {
-            });
-            final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList,pageNumber,PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(),listCount);
-            ResponseUtils.setPaginationLinks(res,toReturnMoovieListCardList,uriInfo);
-            return res.build();
-        } catch(UserNotLoggedException e){
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("User must be logged in to perform this action.")
-                    .build();
-        } catch(UsernameNotFoundException e){
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("User by the username: "+ username + " not found.")
-                    .build();
-        } catch(RuntimeException e){
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(MoovieListDto.fromMoovieListList(mlcList, uriInfo)) {
+        });
+        final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList,pageNumber,PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(),listCount);
+        ResponseUtils.setPaginationLinks(res,toReturnMoovieListCardList,uriInfo);
+        return res.build();
     }
 
     @GET
     @Path("/{id}/liked")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserLikedListById(@PathParam("id") final int id){
-        try{
-            UserMoovieListId userMoovieListId =  moovieListService.currentUserHasLiked(id);
-            if (userMoovieListId != null){
-                return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId)).build();
-            }
-            return Response.noContent().build();
-        } catch(UserNotLoggedException | UsernameNotFoundException e){
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity( new ResponseMessage("Unathorized to do this action.")).build();
-        } catch (Exception e){
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity( new ResponseMessage("Unexpected error")).build();
+        UserMoovieListId userMoovieListId =  moovieListService.currentUserHasLiked(id);
+        if (userMoovieListId != null){
+            return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId)).build();
         }
+        return Response.noContent().build();
     }
 
     @GET
@@ -549,47 +375,27 @@ public class MoovieListController {
                                      @QueryParam("orderBy") String orderBy,
                                      @QueryParam("order") String order,
                                      @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber){
-        try{
-            int userid = userService.getProfileByUsername(username).getUserId();
-            List<MoovieListCard> mlcList = moovieListService.getFollowedMoovieListCards(userid, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
-                    PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1);
-            int listCount = moovieListService.getFollowedMoovieListCardsCount(userid,MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
+        int userid = userService.getProfileByUsername(username).getUserId();
+        List<MoovieListCard> mlcList = moovieListService.getFollowedMoovieListCards(userid, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
+                PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1);
+        int listCount = moovieListService.getFollowedMoovieListCardsCount(userid,MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
 
-            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(MoovieListDto.fromMoovieListList(mlcList, uriInfo)) {
-            });
-            final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList,pageNumber,PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(),listCount);
-            ResponseUtils.setPaginationLinks(res,toReturnMoovieListCardList,uriInfo);
-            return res.build();
-        } catch(UserNotLoggedException e){
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("User must be logged in to perform this action.")
-                    .build();
-        } catch(UsernameNotFoundException e){
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("User by the username: "+ username + " not found.")
-                    .build();
-        } catch(RuntimeException e){
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(MoovieListDto.fromMoovieListList(mlcList, uriInfo)) {
+        });
+        final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList,pageNumber,PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(),listCount);
+        ResponseUtils.setPaginationLinks(res,toReturnMoovieListCardList,uriInfo);
+        return res.build();
     }
 
     @GET
     @Path("/{id}/followed")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserFollowedListById(@PathParam("id") final int id){
-        try{
-            UserMoovieListId userMoovieListId =  moovieListService.currentUserHasFollowed(id);
-            if (userMoovieListId != null){
-                return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId)).build();
-            }
-            return Response.noContent().build();
-        } catch(UserNotLoggedException | UsernameNotFoundException e){
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity( new ResponseMessage("Unathorized to do this action.")).build();
-        } catch (Exception e){
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity( new ResponseMessage("Unexpected error")).build();
+        UserMoovieListId userMoovieListId =  moovieListService.currentUserHasFollowed(id);
+        if (userMoovieListId != null){
+            return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId)).build();
         }
+        return Response.noContent().build();
     }
 
 
