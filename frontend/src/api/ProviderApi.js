@@ -6,8 +6,13 @@ const providerApi = (() => {
         return api.get('/providers');
     }
 
+    const getProvidersForMedia = (id) => {
+        return api.get(`/providers/${id}`);
+    }
+
     return{
-        getAllProviders
+        getAllProviders,
+        getProvidersForMedia
     }
 })();
 

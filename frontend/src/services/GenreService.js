@@ -6,8 +6,13 @@ const GenreService = (() => {
         return await genreApi.getAllGenres();
     }
 
+    const getGenresForMedia = async (id) =>{
+        return await genreApi.getGenresForMedia(id);
+    }
+
     return{
-        getAllGenres
+        getAllGenres,
+        getGenresForMedia
     }
 })();
 

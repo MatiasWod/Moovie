@@ -23,4 +23,12 @@ public class ProviderHibernateDao implements ProviderDao{
         return em.createQuery("SELECT p FROM Provider p JOIN p.medias GROUP BY p.providerId, p.providerName, p.logoPath ORDER BY COUNT(*) DESC", Provider.class)
                 .getResultList();
     }
+
+    @Override
+    public List<Provider> getProvidersForMedia(final int mediaId) {
+        return em.createQuery(
+                        "SELECT p FROM Provider p JOIN p.medias m WHERE m.id = :mediaId GROUP BY p.providerId, p.providerName, p.logoPath", Provider.class)
+                .setParameter("mediaId", mediaId)
+                .getResultList();
+    }
 }

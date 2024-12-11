@@ -18,4 +18,10 @@ public class ProviderServiceImpl implements ProviderService{
     public List<Provider> getAllProviders() {
         return providerDao.getAllProviders();
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Provider> getProvidersForMedia(final int mediaId) {
+        return providerDao.getProvidersForMedia(mediaId);
+    }
 }

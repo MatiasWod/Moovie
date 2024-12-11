@@ -6,8 +6,13 @@ const ProviderService = (() => {
         return await providerApi.getAllProviders();
     }
 
+    const getProvidersForMedia = async (id) => {
+        return await providerApi.getProvidersForMedia(id);
+    }
+
     return{
-        getAllProviders
+        getAllProviders,
+        getProvidersForMedia
     }
 })();
 

@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface ProviderDao {
     List<Provider> getAllProviders();
-
+    List<Provider> getProvidersForMedia(final int mediaId);
 }
