@@ -16,11 +16,17 @@ const reviewApi = (()=> {
         return api.post(`/review/${id}/like`);
     }
 
+    const getComments = (id,page=1,) =>{
+        return api.get(`/review/${id}/comments`);
+    }
+
+
 
     return {
         getReviewById,
         deleteReviewById,
         likeReview,
+        getComments,
     }
 
 })();
