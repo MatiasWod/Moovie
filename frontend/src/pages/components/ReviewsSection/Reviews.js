@@ -18,6 +18,7 @@ function Reviews({ id, source }) {
     const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
     const [selectedReviewId, setSelectedReviewId] = useState(null);
     const {isLoggedIn, user} = useSelector(state => state.auth);
+    const [reload, setReload] = useState(false);
 
     const fetchReviews = async (currentPage) => {
         try {
@@ -51,7 +52,7 @@ function Reviews({ id, source }) {
 
     useEffect(() => {
         fetchReviews(page);
-    }, [id, page]);
+    }, [id,reload,page]);
 
     const handlePageChange = (newPage) => {
         setPage(newPage);
@@ -77,7 +78,7 @@ function Reviews({ id, source }) {
 
     const handleConfirmDelete = () => {
         // Reload reviews after successful deletion
-        fetchReviews(page);
+        setReload(!reload);
         handleCloseConfirmationDelete();
     };
 
