@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.*;
 import java.util.List;
@@ -27,6 +28,22 @@ public class GenreController {
     public Response getAllGenres(){
         try {
             final List<Genre> genreList = genreService.getAllGenres();
+            final List<GenreDto> genreDtoList = GenreDto.fromGenreList(genreList,uriInfo);
+            return Response.ok(new GenericEntity<List<GenreDto>>(genreDtoList){}).build();
+        }
+        catch (RuntimeException e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(new ResponseMessage(e.getMessage())).build();
+        }
+
+    }
+
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getGenresForMedia(@PathParam("id") final int mediaId){
+        try {
+            final List<Genre> genreList = genreService.getGenresForMedia(mediaId);
             final List<GenreDto> genreDtoList = GenreDto.fromGenreList(genreList,uriInfo);
             return Response.ok(new GenericEntity<List<GenreDto>>(genreDtoList){}).build();
         }
