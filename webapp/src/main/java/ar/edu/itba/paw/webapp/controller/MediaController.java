@@ -52,7 +52,8 @@ public class MediaController {
                              @QueryParam("orderBy") final String orderBy,
                              @QueryParam("sortOrder") final String sortOrder,
                              @QueryParam("search") final String search,
-                             @QueryParam("providers") final List<Integer> providers) {
+                             @QueryParam("providers") final List<Integer> providers,
+                             @QueryParam("genres") final List<Integer> genres) {
         /* int type, String search, String participant, List<String> genres, List<String> providers,
                 List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber*/
         try {
@@ -67,10 +68,10 @@ public class MediaController {
             }
 
             List<Media> mediaList = mediaService.getMedia(typeQuery, search, null,
-                    null, providers, null, null, orderBy, sortOrder, pageSizeQuery, page - 1);
+                    genres, providers, null, null, orderBy, sortOrder, pageSizeQuery, page - 1);
 
             final int mediaCount = mediaService.getMediaCount(typeQuery, search, null,
-                    null, providers, null, null);
+                    genres, providers, null, null);
 
             List<MediaDto> mediaDtoList = MediaDto.fromMediaList(mediaList, uriInfo);
             Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaDto>>(mediaDtoList) {

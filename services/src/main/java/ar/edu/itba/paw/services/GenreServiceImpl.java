@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.models.Genre.Genre;
 import ar.edu.itba.paw.persistence.GenreDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,13 +15,13 @@ public class GenreServiceImpl implements GenreService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<String> getAllGenres() {
+    public List<Genre> getAllGenres() {
         return genreDao.getAllGenres();
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<String> getGenresForMedia(int mediaId) {
+    public List<Genre> getGenresForMedia(int mediaId) {
         return genreDao.getGenresForMedia(mediaId);
     }
 }

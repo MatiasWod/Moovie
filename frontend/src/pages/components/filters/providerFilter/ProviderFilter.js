@@ -3,13 +3,13 @@ import './providerFilter.css';
 
 const ProviderFilter = ({ providers, selectedProviders, setSelectedProviders }) => {
     const handleProviderClick = (provider) => {
-        const updatedProviders = new Set(selectedProviders); // Clone the Set
+        const updatedProviders = new Set(selectedProviders);
         if (updatedProviders.has(provider.providerId)) {
-            updatedProviders.delete(provider.providerId); // Deselect if already selected
+            updatedProviders.delete(provider.providerId);
         } else {
-            updatedProviders.add(provider.providerId); // Select the provider
+            updatedProviders.add(provider.providerId);
         }
-        setSelectedProviders(updatedProviders); // Update the state
+        setSelectedProviders(updatedProviders);
     };
 
     return (

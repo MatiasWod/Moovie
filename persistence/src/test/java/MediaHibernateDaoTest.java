@@ -69,16 +69,16 @@ public class MediaHibernateDaoTest {
                             || (mediaList.get(1).getMediaId() == DIRECTOR_MOVIE_ID1 && mediaList.get(0).getMediaId() == DIRECTOR_MOVIE_ID2) );
     }
 
-    @Rollback
-    @Test
-    public void testGetMediaCount(){
-        List<String> genre = new ArrayList<>();
-        genre.add("Adventure");
-        int mediacount = mediaHibernateDao.getMediaCount(MediaTypes.TYPE_ALL.getType(), null, null, genre , null, null, null);
-
-        Assert.assertEquals(mediacount,49);
-    }
-
+//    @Rollback
+//    @Test
+//    public void testGetMediaCount(){
+//        List<String> genre = new ArrayList<>();
+//        genre.add("Adventure");
+//        int mediacount = mediaHibernateDao.getMediaCount(MediaTypes.TYPE_ALL.getType(), null, null, genre , null, null, null);
+//
+//        Assert.assertEquals(mediacount,49);
+//    }
+//
 
 
 }

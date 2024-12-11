@@ -10,6 +10,8 @@ import {createSearchParams, useNavigate, useSearchParams} from "react-router-dom
 import pagingSizes from "../../api/values/PagingSizes";
 import ProviderService from "../../services/ProviderService";
 import ProviderFilter from "../components/filters/providerFilter/ProviderFilter";
+import GenreService from "../../services/GenreService";
+import GenreFilter from "../components/filters/genreFilter/GenreFilter";
 
 
 const Discover = () => {
@@ -20,6 +22,7 @@ const Discover = () => {
     const [orderBy, setOrderBy] = useState(searchParams.get("orderBy") || [OrderBy.TMDB_RATING])
     const [sortOrder, setSortOrder] = useState(searchParams.get("sortOrder") || [SortOrder.DESC])
     const [selectedProviders, setSelectedProviders] = useState(new Set(searchParams.get("providers") ? JSON.parse(searchParams.get("providers")) : []));
+    const [selectedGenres, setSelectedGenres] = useState(new Set(searchParams.get("genres") ? JSON.parse(searchParams.get("genres")) : []));
     const [page, setPage] = useState(searchParams.get("page") || 1);
 
     const [medias, setMedias] = useState(undefined);
@@ -30,6 +33,10 @@ const Discover = () => {
     const [providersLoading, setProvidersLoading] = useState(true);
     const [providersError, setProvidersError] = useState(null);
 
+    const [genres, setGenres] = useState(undefined);
+    const [genresLoading, setGenresLoading] = useState(true);
+    const [genresError, setGenresError] = useState(null);
+
     const handlePageChange = (newPage) => {
         setPage(newPage);
         navigate({
@@ -39,6 +46,7 @@ const Discover = () => {
                 orderBy,
                 sortOrder,
                 providers: JSON.stringify(Array.from(selectedProviders)),
+                genres: JSON.stringify(Array.from(selectedGenres)),
                 page: newPage.toString(),
             }).toString(),
         });
@@ -48,8 +56,8 @@ const Discover = () => {
         const providersFromUrl = searchParams.get("providers");
         if (providersFromUrl) {
             try {
-                const providerIds = JSON.parse(providersFromUrl); // Parse the array of provider IDs
-                setSelectedProviders(new Set(providerIds)); // Set the state as a Set
+                const providerIds = JSON.parse(providersFromUrl);
+                setSelectedProviders(new Set(providerIds));
             } catch (error) {
                 console.error("Error parsing providers from URL:", error);
             }
@@ -57,7 +65,20 @@ const Discover = () => {
     }, [searchParams]);
 
     useEffect(() => {
-        const providerIds = Array.from(selectedProviders); // Convert Set to Array
+        const genresFromUrl = searchParams.get("genres");
+        if (genresFromUrl) {
+            try {
+                const genreIds = JSON.parse(genresFromUrl);
+                setSelectedGenres(new Set(genreIds));
+            } catch (error) {
+                console.error("Error parsing genres from URL:", error);
+            }
+        }
+    }, [searchParams]);
+
+    useEffect(() => {
+        const providerIds = Array.from(selectedProviders);
+        const genreIds = Array.from(selectedGenres);
 
         const queryParams = {
             orderBy,
@@ -66,14 +87,18 @@ const Discover = () => {
         };
 
         if (providerIds.length > 0) {
-            queryParams.providers = JSON.stringify(providerIds); // Include providers only if non-empty
+            queryParams.providers = JSON.stringify(providerIds);
+        }
+
+        if (genreIds.length > 0) {
+            queryParams.genres = JSON.stringify(genreIds);
         }
 
         navigate({
             pathname: `/discover`,
             search: createSearchParams(queryParams).toString(),
         });
-    }, [orderBy, sortOrder, selectedProviders, page, navigate]);
+    }, [orderBy, sortOrder, selectedProviders, selectedGenres, page, navigate]);
 
 
     useEffect(() => {
@@ -91,10 +116,22 @@ const Discover = () => {
         getData();
     }, []);
 
-// Log providers after it has been updated
     useEffect(() => {
-        console.log(providers); // This will log the updated providers state
-    }, [providers]); // This runs whenever `providers` changes
+        async function getData() {
+            try {
+                const data = await GenreService.getAllGenres();
+                setGenres(data);
+                setGenresLoading(false);
+            } catch (error) {
+                setGenresError(error);
+                setGenresLoading(false);
+            }
+        }
+
+        getData();
+    }, []);
+
+
 
     useEffect(() => {
         async function getData() {
@@ -106,8 +143,9 @@ const Discover = () => {
                     sortOrder: sortOrder,
                     orderBy: orderBy,
                     providers: Array.from(selectedProviders),
+                    genres: Array.from(selectedGenres)
                 });
-                setMedias(data);  // Update the media state
+                setMedias(data);
                 setMediasLoading(false);
             } catch (error) {
                 setMediasError(error);
@@ -116,7 +154,7 @@ const Discover = () => {
         }
 
         getData();
-    }, [type, page, sortOrder, orderBy, selectedProviders]);
+    }, [type, page, sortOrder, orderBy, selectedProviders, selectedGenres]);
 
 
 
@@ -135,6 +173,11 @@ const Discover = () => {
                                     selectedProviders={selectedProviders}
                                     setSelectedProviders={setSelectedProviders}
                                     ></ProviderFilter></div>
+                    <div>Genres
+                        <GenreFilter genres={genres?.data}
+                                        selectedGenres={selectedGenres}
+                                        setSelectedGenres={setSelectedGenres}
+                        ></GenreFilter></div>
 
                 </div>
 

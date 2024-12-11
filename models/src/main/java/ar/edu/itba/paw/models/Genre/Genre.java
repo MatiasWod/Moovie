@@ -11,10 +11,10 @@ public class Genre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "genreId")
-    private Integer id;
+    private Integer genreId;
 
     @Column(name = "genreName", length = 100, nullable = false)
-    private String genre;
+    private String genreName;
 
 
     @ManyToMany
@@ -31,7 +31,7 @@ public class Genre {
     }
 
     public Genre( final String genre) {
-        this.genre = genre;
+        this.genreName = genre;
     }
 
     public List<Media> getMedias() {
@@ -39,10 +39,10 @@ public class Genre {
     }
 
     public Integer getId() {
-        return id;
+        return genreId;
     }
 
     public String getGenre() {
-        return genre;
+        return genreName;
     }
 }

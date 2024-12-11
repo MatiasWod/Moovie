@@ -3,7 +3,7 @@ import search from "../pages/views/search";
 
 const mediaApi = (()=> {
 
-    const getMedia = ({type, page, pageSize, orderBy, sortOrder, search, providers}) => {
+    const getMedia = ({type, page, pageSize, orderBy, sortOrder, search, providers, genres}) => {
         return api.get('/media',
             {
                 params: {
@@ -13,7 +13,8 @@ const mediaApi = (()=> {
                     'pageNumber': page,
                     'pageSize': pageSize,
                     'search': search,
-                    'providers': providers
+                    'providers': providers,
+                    'genres': genres
                 }
             });
     }
