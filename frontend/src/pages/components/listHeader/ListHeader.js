@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./listHeader.css";
 import listService from "../../../services/ListService";
+import {useSelector} from "react-redux";
 
 const ListHeader = ({ list }) => {
+    const {isLoggedIn, user} = useSelector(state => state.auth);
+
     const [hasLikedAndFollowed, setHasLikedAndFollowed] = useState({
         liked: false,
         followed: false,
@@ -13,7 +16,7 @@ const ListHeader = ({ list }) => {
     useEffect(() => {
         const fetchHasLikedAndFollowed = async () => {
             try {
-                const likedAndFollowed = await listService.currentUserLikeFollowStatus(list.id);
+                const likedAndFollowed = await listService.currentUserLikeFollowStatus(list.id, user.username);
                 setHasLikedAndFollowed(likedAndFollowed);
             } catch (error) {
             }
@@ -25,9 +28,9 @@ const ListHeader = ({ list }) => {
     const handleLike = async () => {
         try {
             if (hasLikedAndFollowed.liked) {
-                await listService.unlikeList(list.id);
+                await listService.unlikeList(list.id, user.username);
             } else {
-                await listService.likeList(list.id);
+                await listService.likeList(list.id, user.username);
             }
             setPing(!ping)
         } catch (error) {
@@ -37,9 +40,9 @@ const ListHeader = ({ list }) => {
     const handleFollow = async () => {
         try {
             if (hasLikedAndFollowed.followed) {
-                await listService.unfollowList(list.id);
+                await listService.unfollowList(list.id, user.username);
             } else {
-                await listService.followList(list.id);
+                await listService.followList(list.id, user.username);
             }
             setPing(!ping)
         } catch (error) {

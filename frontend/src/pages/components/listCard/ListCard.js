@@ -4,9 +4,12 @@ import { Link } from "react-router-dom";
 import "./listCard.css";
 import ProfileImage from "../profileImage/ProfileImage";
 import listService from "../../../services/ListService";
+import {useSelector} from "react-redux";
 
 const ListCard = ({ listCard }) => {
     const [hasLikedAndFollowed, setHasLikedAndFollowed] = useState({liked:false,followed:false});
+    const {isLoggedIn, user} = useSelector(state => state.auth);
+
 
     let images = [...listCard.images];
     while (images.length < 4) {
@@ -16,7 +19,7 @@ const ListCard = ({ listCard }) => {
     useEffect(() => {
         const fetchHasLikedAndFollowed = async () => {
             try {
-                const likedAndFollowed = await listService.currentUserLikeFollowStatus(listCard.id);
+                const likedAndFollowed = await listService.currentUserLikeFollowStatus(listCard.id, user.username);
                 setHasLikedAndFollowed(likedAndFollowed);
             } catch (error) {
             }
