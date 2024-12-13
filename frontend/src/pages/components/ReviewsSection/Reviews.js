@@ -6,7 +6,7 @@ import PaginationButton from "../paginationButton/PaginationButton";
 import listService from "../../../services/ListService";
 import ProfileImage from "../profileImage/ProfileImage";
 import {useSelector} from "react-redux";
-import ConfirmationForm from "../forms/confirmationForm/confirmation Form";
+import ConfirmationForm from "../forms/confirmationForm/confirmationForm";
 import reviewService from "../../../services/ReviewService";
 
 function Reviews({ id, source }) {
