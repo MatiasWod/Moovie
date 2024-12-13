@@ -141,14 +141,14 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public User findUserByUsername(String username) {
+    public User findUserByUsername(String username) throws UnableToFindUserException {
         return userDao.findUserByUsername(username).orElseThrow(() -> new UnableToFindUserException("User with username: " + username + " not found"));
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<Profile> searchUsers(String username, String orderBy, String sortOrder, int size, int pageNumber) {
-        return userDao.searchUsers(username, setOrderBy(orderBy), setSortOrder(sortOrder), size, pageNumber-1);
+        return userDao.searchUsers(username, setOrderBy(orderBy), setSortOrder(sortOrder), size, pageNumber - 1);
     }
 
     @Transactional(readOnly = true)
@@ -178,7 +178,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public List<Profile> getMilkyPointsLeaders(int size, int pageNumber) {
-        return userDao.getMilkyPointsLeaders(size, pageNumber-1);
+        return userDao.getMilkyPointsLeaders(size, pageNumber - 1);
     }
 
     //AUTHENTICATION INFO
@@ -207,7 +207,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // Fetch and return the user by username
-        try{
+        try {
             return findUserByUsername(username);
         } catch (UnableToFindUserException e) {
             throw new UserNotLoggedException("User not found");
@@ -218,7 +218,7 @@ public class UserServiceImpl implements UserService {
     public int tryToGetCurrentUserId() {
         try {
             return getInfoOfMyUser().getUserId();
-        } catch (UserNotLoggedException | UnableToFindUserException e ) {
+        } catch (UserNotLoggedException | UnableToFindUserException e) {
             return -1;
         }
     }

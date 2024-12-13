@@ -100,6 +100,20 @@ const userApi = (() => {
     }
 
 
+    // MODERATION STUFF
+
+    const banUser = (username) => {
+        const banUserDTO = {
+            banMessage: "User banned by moderator"
+        };
+        return api.put(`/users/${username}/ban`, banUserDTO);
+    }
+
+    const unbanUser = (username) => {
+        return api.put(`/users/${username}/unban`);
+    }
+
+
 
     return {
         login,
@@ -112,7 +126,9 @@ const userApi = (() => {
         getMovieReviewsFromUser,
         getSpecialListFromUser,
         getMoovieListReviewsFromUser,
-        getSearchedUsers
+        getSearchedUsers,
+        banUser,
+        unbanUser
     };
 
 })();
