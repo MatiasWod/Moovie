@@ -9,7 +9,7 @@ import {useSelector} from "react-redux";
 import ConfirmationForm from "../forms/confirmationForm/confirmationForm";
 import reviewService from "../../../services/ReviewService";
 
-function Reviews({ id, source }) {
+function Reviews({ id, source , handleParentReload }) {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const [reviews, setReviews] = useState(undefined);
@@ -50,8 +50,10 @@ function Reviews({ id, source }) {
         }
     };
 
+
     useEffect(() => {
         fetchReviews(page);
+        const foundReview = reviews.find(review => review.userId === user.id);
     }, [id,reload,page]);
 
     const handlePageChange = (newPage) => {
@@ -79,6 +81,7 @@ function Reviews({ id, source }) {
     const handleConfirmDelete = () => {
         // Reload reviews after successful deletion
         setReload(!reload);
+        handleParentReload();
         handleCloseConfirmationDelete();
     };
 

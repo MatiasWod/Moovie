@@ -114,22 +114,26 @@ const AddMediaToListButton = ({ currentId }) => {
 
     return (
         <div className="dropdown">
-            <button className="dropdown-button" onClick={handleToggle}>
-                + Añadir a la lista
-            </button>
-            {isOpen && (
-                <div className="dropdown-content scrollable-options">
-                    {options.map((option, index) => (
-                        <div
-                            key={index}
-                            className="dropdown-item"
-                            onClick={() => handleOptionClick(option)}
-                        >
-                            {option.name}
-                        </div>
-                    ))}
+            <div className="dropdown">
+                <div Class="btn btn-dark dropdown-toggle" style={{marginRight: '10px'}}>
+                    <i Class="bi bi-plus-circle-fill"></i> Add to list
                 </div>
-            )}
+            </div>
+
+
+            {/*{isOpen && (*/}
+            {/*    <div className="dropdown-content scrollable-options">*/}
+            {/*        {options.map((option, index) => (*/}
+            {/*            <div*/}
+            {/*                key={index}*/}
+            {/*                className="dropdown-item"*/}
+            {/*                onClick={() => handleOptionClick(option)}*/}
+            {/*            >*/}
+            {/*                {option.name}*/}
+            {/*            </div>*/}
+            {/*        ))}*/}
+            {/*    </div>*/}
+            {/*)}*/}
             {popupVisible && (
                 <ResponsePopup
                     message={popupMessage}

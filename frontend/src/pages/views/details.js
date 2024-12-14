@@ -1,28 +1,39 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import './details.css';
 import "../components/mainStyle.css"
-import { useNavigate, useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import mediaApi from "../../api/MediaApi";
-import SearchableMediaTag from "../components/searchableMediaTag/searchableMediaTag";
-import MediaTypes from "../../api/values/MediaTypes";
 import Reviews from "../components/ReviewsSection/Reviews";
 import AddMediaToListButton from "../components/buttons/addMediaToListButton/AddMediaToListButton";
 import CreateReviewButton from "../components/buttons/createReviewButton/CreateReviewButton";
 import ReviewForm from "../components/forms/reviewForm/ReviewForm";
 import ActorCardList from "../components/actorCards/ActorCardList";
-import { useDispatch, useSelector } from "react-redux";
+import {useSelector} from "react-redux";
+import MediaTag from "../components/detailsSection/mediaTag/mediaTag";
+import Popover from 'react-bootstrap/Popover';
+import {OverlayTrigger} from "react-bootstrap";
 
 function Details() {
     const { id } = useParams();
 
     //GET VALUES FOR Media
-    const [media, setMedia] = useState([]);
+    const [media, setMedia] = useState({});
     const [mediaLoading, setMediaLoading] = useState(true);
     const [mediaError, setMediaError] = useState(null);
+    const [reload, setReload] = useState(false)
 
     const { isLoggedIn, user } = useSelector(state => state.auth);
 
     const [reloadReviews, setReloadReviews] = useState(false); // state to trigger re-render of Reviews component
+
+    const popoverMoovieRating = (<Popover id="popover-basic">
+        <Popover.Body as="h6">Moovie rating</Popover.Body>
+    </Popover>);
+
+    const popoverUserRating = (<Popover id="popover-basic">
+        <Popover.Body as="h6">Users rating</Popover.Body>
+    </Popover>);
+
 
     const fetchMedia = async () => {
         try {
@@ -37,44 +48,45 @@ function Details() {
 
     useEffect(() => {
         fetchMedia();
-    }, [id]);
+    }, [id, reload]);
 
     const trailerLink = (media.trailerLink === 'None' ? null : media.trailerLink);
     const releaseYear = new Date(media.releaseDate).getFullYear();
 
     let detailsColumn = <div />;
+    let info = <div/>;
 
     if (media.type === "Movie") {
-        detailsColumn =
-            <div className="col">
-                <h1>{media.name}
-                    <SearchableMediaTag link={'status'} text={media.status} />
-                    <SearchableMediaTag link={'l'} text={media.originalLanguage} />
-                </h1>
-                <h1>{releaseYear} • Película • {media.runtime} m </h1>
+        detailsColumn = <span><div className="d-flex flex-row align-items-center ">
+                    </div>
 
-                <div>Generos:</div>
-                <div>Director: <SearchableMediaTag link={'cast/director'} text={media.director} /></div>
-                <div>Presupuesto: {media.budget}</div>
-                <div>Ingresos: {media.revenue}</div>
+                    <div className="d-flex flex-row align-items-center ">
+                        <h5>Director:</h5>
+                        <MediaTag link={'cast/director'} text={media.director}/>
+                    </div>
 
-                {trailerLink && (
-                    <iframe src={trailerLink.replace("watch?v=", "embed/")} />
-                )}
+                    <div className="d-flex flex-row align-items-center ">
+                        <h5>Budget: </h5>
+                        <MediaTag text={new Intl.NumberFormat('en-US', {
+                            style: 'currency', currency: 'USD', maximumFractionDigits: 0
+                        }).format(media.budget)}/>
+                    </div>
 
-                <div>{media.overview}</div>
-            </div>
+                    <div className="d-flex flex-row align-items-center ">
+                        <h5>Revenue: </h5>
+                        <MediaTag text={new Intl.NumberFormat('en-US', {
+                            style: 'currency', currency: 'USD', maximumFractionDigits: 0
+                        }).format(media.revenue)}/>
+                    </div>
+        </span>
+
+        info = <h5>{releaseYear} • {media.runtime} m • Movie</h5>
+
 
     } else {
         detailsColumn =
             <div className="col">
-                <h1>{media.name}
-                    <SearchableMediaTag link={'status'} text={media.status} />
-                    <SearchableMediaTag link={'l'} text={media.originalLanguage} />
-                </h1>
-                <h1>{releaseYear} • Serie • {media.numberOfSeasons} Temporadas • {media.numberOfEpisodes} Episodios</h1>
 
-                <div>Generos:</div>
                 <div>Creadores:</div>
 
                 {media.lastAirDate && (
@@ -85,12 +97,10 @@ function Details() {
                     <div>Próximo Episodio a Emitir: {media.nextEpisodeToAir}</div>
                 )}
 
-                {trailerLink && (
-                    <iframe src={trailerLink.replace("watch?v=", "embed/")} />
-                )}
-
-                <div>{media.overview}</div>
             </div>
+
+        info = <h1>{releaseYear} • Serie • {media.numberOfSeasons} Temporadas • {media.numberOfEpisodes} Episodios</h1>
+
     }
 
     // Buttons for creating reviews
@@ -110,7 +120,12 @@ function Details() {
 
     const handleReviewSubmit = () => {
         setReloadReviews(prevState => !prevState); // Toggle the state to force re-render of Reviews component
+        setReload(!reload);
         handleCloseReviewForm(); // Close the review form after submission
+    };
+
+    const handleParentReload = () => {
+        setReload(!reload);
     };
 
     return (
@@ -119,15 +134,54 @@ function Details() {
 
                 {/* POSTER COLUMN */}
                 <div className="col">
-                    <img src={media.posterPath} className="posterStyle" />
+                    <img src={media.posterPath} className="posterStyle"/>
                 </div>
 
                 {/* MEDIA DETAILS COLUMN */}
-                {detailsColumn}
+                <div className="col">
+                    <h1>{media.name}
+                        <MediaTag style={{fontSize: '14px'}} link={'status'} text={media.status}/>
+                        <MediaTag style={{fontSize: '14px'}} link={'l'} text={media.originalLanguage}/>
+                    </h1>
 
-                <AddMediaToListButton currentId={id} />
+                    {info}
 
-                <CreateReviewButton handleOpenReviewForm={handleOpenReviewForm} />
+                    <div>
+                        <h1 className="d-flex flex-row align-items-center ">
+                            <OverlayTrigger trigger="hover" placement="right" overlay={popoverMoovieRating}>
+                                <div className="me-3"><i className={"bi bi-star-fill"}/> {media.tmdbRating}</div>
+                            </OverlayTrigger>
+
+                            {(media.voteCount > 0) && (
+                                <>
+                                    <span>•</span>
+                                    <OverlayTrigger trigger="hover" placement="right" overlay={popoverUserRating}>
+                                        <div className="m-3"><i className={"bi bi-star"}/> {media.totalRating}</div>
+                                    </OverlayTrigger>
+                                </>
+                            )
+                            }
+
+                        </h1>
+                    </div>
+
+                    <h5>Genres:</h5>
+                    {detailsColumn}
+
+                    {trailerLink && (<div style={{marginBottom: '5px', marginTop: '5px'}}>
+                        <iframe style={{width: '85%', height: '315px'}}
+                                src={trailerLink.replace("watch?v=", "embed/")}/>
+                    </div>)}
+                    <span></span>
+                    <p> {media.overview} </p>
+
+                    <div Class="flex-row d-flex">
+                        <AddMediaToListButton currentId={id}/>
+
+                        <CreateReviewButton handleOpenReviewForm={handleOpenReviewForm} rated={}/>
+                    </div>
+                </div>
+
 
                 {showReviewForm && (
                     <div className="overlay">
@@ -141,10 +195,11 @@ function Details() {
                 )}
             </div>
 
-            <ActorCardList mediaId={id} />
+            <ActorCardList mediaId={id}/>
 
             {/* Pass reloadReviews as a key to force re-render */}
-            <Reviews key={reloadReviews ? id : undefined} id={id} source="media" />
+            <Reviews key={reloadReviews ? id : undefined} id={id} handleParentReload={handleParentReload}
+                     source="media"/>
         </div>
     );
 }
