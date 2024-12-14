@@ -22,14 +22,12 @@ export const fetchUserData = createAsyncThunk('auth/fetchUserData', async (usern
 export const attemptReconnect = createAsyncThunk('auth/attemptReconnect', async (_, {dispatch}) => {
     const token = sessionStorage.getItem('jwtToken');
     const username = sessionStorage.getItem('username');
-    //console.log('Retrieved token:', token, 'Retrieved username:', username);
-    if (token) {
+    
+    if (token && username) {
         try {
-            const isValid = await userApi.authTest();
-            if (isValid) {
-                if (username) {
-                    return dispatch(fetchUserData(username)).unwrap();
-                }
+            const response = await api.get(`/users/username/${username}`);
+            if (response.status === 200) {
+                return response.data;
             }
         } catch (error) {
             console.error('Reconnect failed:', error);

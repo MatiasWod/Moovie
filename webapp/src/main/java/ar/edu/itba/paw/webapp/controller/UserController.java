@@ -88,7 +88,6 @@ public class UserController {
     @GET
     @Path("/authtest")
     public Response authTest() {
-        LOGGER.info("Method: authTest, Path: /users/authtest");
         return Response.ok("Hello authenticated user").build();
     }
 
@@ -410,15 +409,15 @@ public class UserController {
     public Response getLikedLists(@PathParam("username") final String username,
                                   @QueryParam("orderBy") String orderBy,
                                   @QueryParam("order") String order,
-                                  @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber){
+                                  @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
         List<MoovieListCard> mlcList = moovieListService.getLikedMoovieListCards(username, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
-                PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1);
+                PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1);
         int listCount = userService.getLikedMoovieListCountForUser(username);
 
         Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(MoovieListDto.fromMoovieListList(mlcList, uriInfo)) {
         });
-        final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList,pageNumber,PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(),listCount);
-        ResponseUtils.setPaginationLinks(res,toReturnMoovieListCardList,uriInfo);
+        final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), listCount);
+        ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);
         return res.build();
     }
 
@@ -427,9 +426,9 @@ public class UserController {
     @Path("/{username}/listLikes/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserLikedListById(@PathParam("id") final int id,
-                                         @PathParam("username") final String username){
-        UserMoovieListId userMoovieListId =  moovieListService.currentUserHasLiked(id);
-        if(userMoovieListId != null && userMoovieListId.getUsername().equals(username)){
+                                         @PathParam("username") final String username) {
+        UserMoovieListId userMoovieListId = moovieListService.currentUserHasLiked(id);
+        if (userMoovieListId != null && userMoovieListId.getUsername().equals(username)) {
             return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId)).build();
         }
         return Response.noContent().build();
@@ -442,7 +441,7 @@ public class UserController {
                                                     @Valid MoovieListIdDto idDto) {
         userService.isUsernameMe(username);
         boolean like = moovieListService.likeMoovieList(idDto.getId());
-        if (like){
+        if (like) {
             return Response.ok()
                     .entity("{\"message\":\"Succesfully liked list.\"}").build();
         }
@@ -472,16 +471,16 @@ public class UserController {
     public Response getFollowedLists(@PathParam("username") final String username,
                                      @QueryParam("orderBy") String orderBy,
                                      @QueryParam("order") String order,
-                                     @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber){
+                                     @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
         int userid = userService.getProfileByUsername(username).getUserId();
         List<MoovieListCard> mlcList = moovieListService.getFollowedMoovieListCards(userid, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
-                PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1);
-        int listCount = moovieListService.getFollowedMoovieListCardsCount(userid,MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
+                PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1);
+        int listCount = moovieListService.getFollowedMoovieListCardsCount(userid, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
 
         Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(MoovieListDto.fromMoovieListList(mlcList, uriInfo)) {
         });
-        final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList,pageNumber,PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(),listCount);
-        ResponseUtils.setPaginationLinks(res,toReturnMoovieListCardList,uriInfo);
+        final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), listCount);
+        ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);
         return res.build();
     }
 
@@ -489,9 +488,9 @@ public class UserController {
     @Path("/{username}/listFollows/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserFollowedListById(@PathParam("username") String username,
-                                            @PathParam("id") final int id){
-        UserMoovieListId userMoovieListId =  moovieListService.currentUserHasFollowed(id);
-        if(userMoovieListId != null && userMoovieListId.getUsername().equals(username)){
+                                            @PathParam("id") final int id) {
+        UserMoovieListId userMoovieListId = moovieListService.currentUserHasFollowed(id);
+        if (userMoovieListId != null && userMoovieListId.getUsername().equals(username)) {
             return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId)).build();
         }
         return Response.noContent().build();
@@ -504,7 +503,7 @@ public class UserController {
                                                       @Valid MoovieListIdDto idDto) {
         userService.isUsernameMe(username);
         boolean like = moovieListService.followMoovieList(idDto.getId());
-        if (like){
+        if (like) {
             return Response.ok()
                     .entity("{\"message\":\"Succesfully followed list.\"}").build();
         }

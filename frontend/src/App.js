@@ -1,6 +1,6 @@
 import {HelmetProvider} from "react-helmet-async";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import React, {lazy, Suspense, useEffect} from "react";
+import React, {lazy, Suspense, useEffect, useState} from "react";
 import Loader from "./pages/Loader";
 import Nav from "./pages/components/navBar/navbar";
 import {useDispatch} from "react-redux";
@@ -28,12 +28,19 @@ const AuthTest = lazy(() => import(views + '/AuthTest')); // Import AuthTest
 
 export default function App() {
     const helmetContext = {};
-
     const dispatch = useDispatch();
+    const [isInitialized, setIsInitialized] = useState(false);
 
     useEffect(() => {
-        dispatch(attemptReconnect());
+        dispatch(attemptReconnect())
+            .finally(() => {
+                setIsInitialized(true);
+            });
     }, [dispatch]);
+
+    if (!isInitialized) {
+        return <Loader />;
+    }
 
     return (
         <HelmetProvider context={helmetContext}>
