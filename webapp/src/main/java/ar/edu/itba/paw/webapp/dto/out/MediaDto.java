@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.dto.out;
 
+import ar.edu.itba.paw.models.Genre.Genre;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Provider.Provider;
 
@@ -38,9 +39,9 @@ public class MediaDto {
 
     private int voteCount;
 
-    private final List<ProviderDto> providers = new ArrayList<>();
+    private String providersUrl;
 
-    private List<String> genres = new ArrayList<>();
+    private String genresUrl;
 
     private boolean watched;
 
@@ -67,7 +68,8 @@ public class MediaDto {
         mediaDTO.watchlist = media.isWatchlist();
         mediaDTO.originalLanguage = media.getOriginalLanguage();
         mediaDTO.url = uriInfo.getBaseUriBuilder().path("media/{mediaId}").build(media.getMediaId()).toString();
-        mediaDTO.setProviders(media.getProviders(),uriInfo);
+        mediaDTO.providersUrl = uriInfo.getBaseUriBuilder().path("providers/{mediaId}").build(media.getMediaId()).toString();
+        mediaDTO.genresUrl = uriInfo.getBaseUriBuilder().path("genres/{mediaId}").build(media.getMediaId()).toString();
         return mediaDTO;
     }
 
@@ -88,7 +90,6 @@ public class MediaDto {
         mediaDTO.setWatched(media.isWatched());
         mediaDTO.setWatchlist(media.isWatchlist());
         mediaDTO.setOriginalLanguage(media.getOriginalLanguage());
-        mediaDTO.setProviders(media.getProviders(),uriInfo);
         mediaDTO.setUrl(uriInfo.getBaseUriBuilder().path("media/{mediaId}").build(media.getMediaId()).toString());
     }
 
@@ -208,26 +209,20 @@ public class MediaDto {
         this.voteCount = voteCount;
     }
 
-    public List<ProviderDto> getProviders() {
-        return providers;
+    public String getProvidersUrl() {
+        return providersUrl;
     }
 
-    //TODO REVISAR SI ESTA BIEN PASARLE URIINFO ACA
-    public void setProviders(List<Provider> providers, UriInfo uriInfo) {
-        this.providers.clear();
-        if (providers != null) {
-            for (Provider p : providers){
-                this.providers.add(ProviderDto.fromProvider(p,uriInfo));
-            }
-        }
+    public void setProvidersUrl(String providersUrl) {
+        this.providersUrl = providersUrl;
     }
 
-    public List<String> getGenres() {
-        return genres;
+    public String getGenresUrl() {
+        return genresUrl;
     }
 
-    public void setGenres(List<String> genres) {
-        return;
+    public void setGenresUrl(String genresUrl) {
+        this.genresUrl = genresUrl;
     }
 
     public boolean isWatched() {
