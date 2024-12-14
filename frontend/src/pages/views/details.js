@@ -12,6 +12,11 @@ import {useSelector} from "react-redux";
 import MediaTag from "../components/detailsSection/mediaTag/mediaTag";
 import Popover from 'react-bootstrap/Popover';
 import {OverlayTrigger} from "react-bootstrap";
+import genreApi from "../../api/GenreApi";
+import providerApi from "../../api/ProviderApi";
+import MediaService from "../../services/MediaService";
+import GenreService from "../../services/GenreService";
+import ProviderService from "../../services/ProviderService";
 
 function Details() {
     const { id } = useParams();
@@ -20,8 +25,18 @@ function Details() {
     const [media, setMedia] = useState({});
     const [mediaLoading, setMediaLoading] = useState(true);
     const [mediaError, setMediaError] = useState(null);
-    const [reload, setReload] = useState(false)
 
+    //GET VALUES FOR Genres
+    const [genres, setGenres] = useState({});
+    const [genresLoading, setGenresLoading] = useState(true);
+    const [genreError, setGenreError] = useState(null);
+
+    //GET VALUES FOR PROVIDERS
+    const [providers,setProviders] = useState({});
+    const [providersLoading,setProvidersLoading] = useState(true);
+    const [providersError,setProvidersError] = useState(null);
+
+    const [reload, setReload] = useState(false)
     const { isLoggedIn, user } = useSelector(state => state.auth);
 
     const [reloadReviews, setReloadReviews] = useState(false); // state to trigger re-render of Reviews component
@@ -37,7 +52,7 @@ function Details() {
 
     const fetchMedia = async () => {
         try {
-            const response = await mediaApi.getMediaById(id);
+            const response = await MediaService.getMediaById(id);
             setMedia(response.data);
         } catch (err) {
             setMediaError(err);
@@ -46,9 +61,36 @@ function Details() {
         }
     };
 
+    const fetchGenres = async () => {
+        try {
+            const response = await GenreService.getGenresForMedia(id);
+            setGenres(response.data);
+        } catch (err) {
+            setGenreError(err)
+        }finally {
+            setGenresLoading(false)
+        }
+    }
+
+    const fetchProviders = async () => {
+        try{
+            const response = await ProviderService.getProvidersForMedia(id);
+            setProviders(response.data)
+        }catch (err){
+            setProvidersError(err);
+        }finally {
+            setProvidersLoading(false)
+        }
+    }
+
     useEffect(() => {
         fetchMedia();
     }, [id, reload]);
+
+    useEffect(() => {
+        fetchGenres();
+        fetchProviders();
+    },[id]);
 
     const trailerLink = (media.trailerLink === 'None' ? null : media.trailerLink);
     const releaseYear = new Date(media.releaseDate).getFullYear();
@@ -128,17 +170,18 @@ function Details() {
         setReload(!reload);
     };
 
+
     return (
-        <div className="moovie-default default-container">
-            <div className="row">
+        <div className="container my-1">
+            <div className="row align-items-center justify-content-center" style={{marginBottom:'20px'}}>
 
                 {/* POSTER COLUMN */}
-                <div className="col">
-                    <img src={media.posterPath} className="posterStyle"/>
+                <div className="col text-center">
+                    <img src={media.posterPath} className="posterStyle" alt={`${media.name} poster`}/>
                 </div>
 
                 {/* MEDIA DETAILS COLUMN */}
-                <div className="col">
+                <div className="col" style={{marginBottom:'10px'}}>
                     <h1>{media.name}
                         <MediaTag style={{fontSize: '14px'}} link={'status'} text={media.status}/>
                         <MediaTag style={{fontSize: '14px'}} link={'l'} text={media.originalLanguage}/>
@@ -165,17 +208,24 @@ function Details() {
                         </h1>
                     </div>
 
-                    <h5>Genres:</h5>
+                    <div className="d-flex flex-row align-items-center" style={{marginBottom:'10px'}}>
+                            {providers.length > 0 ? providers.map((provider) =>  <MediaTag link={"l"} text={ provider.providerName} image={provider.logoPath}/>) :  <MediaTag text="No providers available"/>}
+                    </div>
+
+                    <div className="d-flex flex-row align-items-center ">
+                        <h5>Genres:</h5>
+                        {genres.length > 0 ? genres.map((genre) =>  <MediaTag darkmode={true} link={"l"} text={genre.genreName}/>) :  <MediaTag darkmode={true} text="No genres available"/>}
+                    </div>
                     {detailsColumn}
 
                     {trailerLink && (<div style={{marginBottom: '5px', marginTop: '5px'}}>
-                        <iframe style={{width: '85%', height: '315px'}}
+                    <iframe style={{width: '85%', height: '315px'}}
                                 src={trailerLink.replace("watch?v=", "embed/")}/>
                     </div>)}
                     <span></span>
                     <p> {media.overview} </p>
 
-                    <div Class="flex-row d-flex">
+                    <div className="flex-row d-flex">
                         <AddMediaToListButton currentId={id}/>
 
                         <CreateReviewButton handleOpenReviewForm={handleOpenReviewForm} rated={null}/>
