@@ -1,5 +1,7 @@
 import listApi from "../api/ListApi";
 import {parsePaginatedResponse} from "../utils/ResponseUtils";
+import userApi from "../api/UserApi";
+import store from "../store/store";
 
 const ListService = (() => {
 
@@ -33,9 +35,9 @@ const ListService = (() => {
         return parsePaginatedResponse(res);
     }
 
-    const currentUserHasLiked = async (moovieListId) => {
+    const currentUserHasLiked = async (moovieListId, username) => {
         try {
-            const res = await listApi.currentUserHasLiked(moovieListId);
+            const res = await userApi.currentUserHasLikedList(moovieListId, username);
             const parsedResponse = parsePaginatedResponse(res);
             if (!parsedResponse || res.status === 204) {
                 return false;
@@ -46,9 +48,9 @@ const ListService = (() => {
         }
     };
 
-    const currentUserHasFollowed = async (moovieListId) => {
+    const currentUserHasFollowed = async (moovieListId, username) => {
         try {
-            const res = await listApi.currentUserHasLFollowed(moovieListId);
+            const res = await userApi.currentUserHasFollowedList(moovieListId, username);
             const parsedResponse = parsePaginatedResponse(res);
             if (!parsedResponse || res.status === 204) {
                 return false;
@@ -59,14 +61,14 @@ const ListService = (() => {
         }
     };
 
-    const currentUserLikeFollowStatus = async (moovieListId) => {
+    const currentUserLikeFollowStatus = async (moovieListId, username) => {
         try {
+
             const [likedStatus, followedStatus] = await Promise.all([
-                currentUserHasLiked(moovieListId),
-                currentUserHasFollowed(moovieListId)
+                currentUserHasLiked(moovieListId, username),
+                currentUserHasFollowed(moovieListId, username)
             ]);
 
-            console.log(likedStatus + " " + followedStatus)
             return {
                 liked: likedStatus,
                 followed: followedStatus
@@ -79,33 +81,34 @@ const ListService = (() => {
         }
     };
 
-    const likeList = async (moovieListId) => {
+    const likeList = async (moovieListId, username) => {
         try {
-            return await listApi.likeList(moovieListId)
+
+            return await userApi.likeList(moovieListId, username)
         } catch (error){
             return null;
         }
     }
 
-    const unlikeList = async (moovieListId) => {
+    const unlikeList = async (moovieListId, username) => {
         try {
-            return await listApi.unlikeList(moovieListId)
+            return await userApi.unlikeList(moovieListId, username)
         } catch (error){
             return null;
         }
     }
 
-    const followList = async (moovieListId) => {
+    const followList = async (moovieListId, username) => {
         try {
-            return await listApi.followList(moovieListId)
+            return await userApi.followList(moovieListId, username)
         } catch (error){
             return null;
         }
     }
 
-    const unfollowList = async (moovieListId) => {
+    const unfollowList = async (moovieListId, username) => {
         try {
-            return await listApi.unfollowList(moovieListId)
+            return await userApi.unfollowList(moovieListId, username)
         } catch (error){
             return null;
         }

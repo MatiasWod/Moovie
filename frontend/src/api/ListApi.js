@@ -78,44 +78,7 @@ const listApi = (() => {
             });
     }
 
-    const getLikedOrFollowedListFromUser = (username, type, orderBy, sortOrder, pageNumber = 1) => {
-        if (type !== "followed" && type !== "liked") {
-            throw new Error(`Invalid type: ${type}. Expected "followed" or "liked".`);
-        }
-        const endpoint = type === "followed" ? "liked" : "followed";
-        return api.get(`/list/${endpoint}`, {
-            params: {
-                username,
-                orderBy,
-                sortOrder,
-                pageNumber
-            }
-        });
-    };
 
-    const currentUserHasLiked = (moovieListId) => {
-        return api.get(`list/${moovieListId}/liked`);
-    }
-
-    const currentUserHasLFollowed = (moovieListId) => {
-        return api.get(`list/${moovieListId}/followed`);
-    }
-
-    const likeList = (moovieListId) =>{
-        return api.post(`list/${moovieListId}/liked`);
-    }
-
-    const unlikeList = (moovieListId) =>{
-        return api.delete(`list/${moovieListId}/liked`);
-    }
-
-    const followList = (moovieListId) =>{
-        return api.post(`list/${moovieListId}/followed`);
-    }
-
-    const unfollowList = (moovieListId) =>{
-        return api.delete(`list/${moovieListId}/followed`);
-    }
 
     const getRecommendedLists = (id) => {
         return api.get(`/list/${id}/recommendedLists`,
@@ -135,13 +98,7 @@ const listApi = (() => {
         createMoovieListReview,
         insertMediaIntoMoovieList,
         editReview,
-        getLikedOrFollowedListFromUser,
-        currentUserHasLiked,
-        currentUserHasLFollowed,
-        unlikeList,
-        likeList,
-        followList,
-        unfollowList,
+
         getRecommendedLists
     }
 })();

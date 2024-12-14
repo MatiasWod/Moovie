@@ -64,10 +64,6 @@ function List() {
         getData();
     }, [id]);
 
-    useEffect(() => {
-        console.log(list)
-    }, [list]);
-
     //GET VALUES FOR LIST CONTENT
     const [listContent, setListContent] = useState(undefined);
     const [listContentLoading, setListContentLoading] = useState(true);

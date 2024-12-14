@@ -228,7 +228,7 @@ public class UserServiceImpl implements UserService {
         if (getInfoOfMyUser().getUsername().equals(username)) {
             return true;
         }
-        return false;
+        throw new InvalidAccessToResourceException("Username provided doesnt match with current user.");
     }
 
 
