@@ -30,7 +30,7 @@ public interface ReportService {
 
     ReviewReport reportReview(int reviewId, int userId, int type, String content);
 
-    void resolveReviewReport(int reportId);
+    void resolveReviewReport(int reviewId);
 
     // MoovieListReviews
 
@@ -42,7 +42,7 @@ public interface ReportService {
 
     MoovieListReviewReport reportMoovieListReview(int moovieListReviewId, int userId, int type, String content);
 
-    void resolveMoovieListReviewReport(int reportId);
+    void resolveMoovieListReviewReport(int mlrId);
 
     // MoovieLists
 
@@ -54,7 +54,7 @@ public interface ReportService {
 
     MoovieListReport reportMoovieList(int moovieListId, int userId, int type, String content);
 
-    void resolveMoovieListReport(int reportId);
+    void resolveMoovieListReport(int mlId);
 
     // (Review) Comments
 
@@ -66,5 +66,5 @@ public interface ReportService {
 
     CommentReport reportComment(int commentId, int userId, int type, String content);
 
-    void resolveCommentReport(int reportId);
+    void resolveCommentReport(int commentId);
 }

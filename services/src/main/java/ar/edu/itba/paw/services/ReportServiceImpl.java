@@ -99,9 +99,9 @@ public class ReportServiceImpl implements ReportService {
 
     @Transactional
     @Override
-    public void resolveReviewReport(int reportId) {
+    public void resolveReviewReport(int reviewId) {
 
-        reportDao.resolveReviewReport(reportId);
+        reportDao.resolveReviewReport(reviewId);
     }
 
     @Transactional(readOnly = true)
@@ -132,9 +132,9 @@ public class ReportServiceImpl implements ReportService {
 
     @Transactional
     @Override
-    public void resolveMoovieListReviewReport(int reportId) {
+    public void resolveMoovieListReviewReport(int mlrId) {
 
-        reportDao.resolveMoovieListReviewReport(reportId);
+        reportDao.resolveMoovieListReviewReport(mlrId);
     }
 
     @Transactional(readOnly = true)
@@ -164,9 +164,9 @@ public class ReportServiceImpl implements ReportService {
 
     @Transactional
     @Override
-    public void resolveMoovieListReport(int reportId) {
+    public void resolveMoovieListReport(int mlId) {
 
-        reportDao.resolveMoovieListReport(reportId);
+        reportDao.resolveMoovieListReport(mlId);
     }
 
     @Transactional(readOnly = true)
@@ -195,8 +195,8 @@ public class ReportServiceImpl implements ReportService {
 
     @Transactional
     @Override
-    public void resolveCommentReport(int reportId) {
+    public void resolveCommentReport(int commentId) {
 
-        reportDao.resolveCommentReport(reportId);
+        reportDao.resolveCommentReport(commentId);
     }
 }

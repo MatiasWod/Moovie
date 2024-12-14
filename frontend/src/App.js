@@ -24,7 +24,7 @@ const Cast = lazy(() => import(views + '/cast'));
 const Healthcheck = lazy(() => import(views + '/healthcheck'));
 const Error404 = lazy(() => import(views + '/errorViews/error404'));
 const AuthTest = lazy(() => import(views + '/AuthTest')); // Import AuthTest
-
+const ReportsDashboard = lazy(() => import(views + '/reportsDashboard/ReportsDashboard'));
 
 export default function App() {
     const helmetContext = {};
@@ -61,6 +61,7 @@ export default function App() {
                         <Route path='/cast/actor/:id' element={<Cast/>}/>
                         <Route path='/healthcheck' element={<Healthcheck/>}/>
                         <Route path='/authtest' element={<AuthTest/>}/> {/* Add AuthTest route */}
+                        <Route path='/reports' element={<ReportsDashboard/>}/>
                         <Route path='*' element={<Error404/>}/>
                     </Routes>
                 </Suspense>

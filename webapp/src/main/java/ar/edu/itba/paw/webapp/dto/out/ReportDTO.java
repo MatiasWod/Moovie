@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class ReportDTO {
 
     //    URL for the object that was reported
-    //    /list/{id}, /reviews/{id}, etc...
+    //    /comment/{id}, /review/{id}, etc...
     private String url;
     private Boolean resolved;
     private LocalDateTime report_date;

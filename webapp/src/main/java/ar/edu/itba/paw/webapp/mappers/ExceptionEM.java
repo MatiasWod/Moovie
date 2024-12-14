@@ -14,7 +14,7 @@ import javax.ws.rs.ext.Provider;
 public class ExceptionEM implements ExceptionMapper<Exception> {
     @Override
     public Response toResponse(Exception exception) {
-        return Response.status(Response.Status.NOT_FOUND)
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(new ResponseMessage(exception.getMessage()))
                 .build();
     }

@@ -141,5 +141,16 @@ public class ReviewController {
 
     }
 
+    @DELETE
+    @Path("/{id}/report")
+    public Response resolveReport(@PathParam("id") final int reviewId) {
+        try {
+            reportService.resolveReviewReport(reviewId);
+        } catch (Exception e) {
+            return new ExceptionEM().toResponse(e);
+        }
+        return Response.ok().build();
+    }
+
 }
 

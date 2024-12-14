@@ -3,6 +3,8 @@ import api from './api.js';
 const reportApi = (() => {
 
 
+    // --------------- REPORTING ---------------
+
     const reportReview = async ({reviewId, reportedBy, content, type}) => {
         const reportDTO = {
             reportedBy: reportedBy,
@@ -31,7 +33,7 @@ const reportApi = (() => {
             content: content,
             type: type
         }
-        const response = await api.post('/moovieList/' + moovieListId + '/report', reportDTO);
+        const response = await api.post('/list/' + moovieListId + '/report', reportDTO);
         return response;
     }
 
@@ -46,8 +48,33 @@ const reportApi = (() => {
         return response;
     }
 
+    // --------------- GET REPORTS ---------------
+
     const getReports = async ({contentType}) => {
         const response = await api.get('/reports', {params: {contentType}});
+        return response;
+    }
+
+
+    // --------------- ACTIONS ---------------
+
+    const resolveReviewReport = async ({reviewId}) => {
+        const response = await api.delete('/review/' + reviewId + '/report');
+        return response;
+    }
+
+    const resolveCommentReport = async ({commentId}) => {
+        const response = await api.delete('/comment/' + commentId + '/report');
+        return response;
+    }
+
+    const resolveMoovieListReport = async ({moovieListId}) => {
+        const response = await api.delete('/list/' + moovieListId + '/report');
+        return response;
+    }
+
+    const resolveMoovieListReviewReport = async ({moovieListReviewId}) => {
+        const response = await api.delete('/moovieListReview/' + moovieListReviewId + '/report');
         return response;
     }
 
@@ -56,7 +83,11 @@ const reportApi = (() => {
         reportComment,
         reportMoovieList,
         reportMoovieListReview,
-        getReports
+        getReports,
+        resolveReviewReport,
+        resolveCommentReport,
+        resolveMoovieListReport,
+        resolveMoovieListReviewReport
     }
 })();
 

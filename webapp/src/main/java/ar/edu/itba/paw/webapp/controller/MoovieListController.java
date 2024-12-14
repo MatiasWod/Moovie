@@ -322,6 +322,17 @@ public class MoovieListController {
 
     }
 
+    @DELETE
+    @Path("/{id}/report")
+    public Response resolveReport(@PathParam("id") final int mlId) {
+        try {
+            reportService.resolveMoovieListReport(mlId);
+        } catch (Exception e) {
+            return new ExceptionEM().toResponse(e);
+        }
+        return Response.ok().build();
+    }
+
 /*
     @POST
     @Path("/{id}/content")
