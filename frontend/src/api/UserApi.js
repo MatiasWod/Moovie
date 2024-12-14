@@ -99,6 +99,63 @@ const userApi = (() => {
         );
     }
 
+    /*
+    LIKES AND FOLLOWED
+     */
+    const getLikedOrFollowedListFromUser = (username, type, orderBy, sortOrder, pageNumber = 1) => {
+        if (type !== "followed" && type !== "liked") {
+            throw new Error(`Invalid type: ${type}. Expected "followed" or "liked".`);
+        }
+        const endpoint = type === "followed" ? "listLikes" : "listFollows";
+        return api.get(`/users/${username}/${endpoint}`, {
+            params: {
+                username,
+                orderBy,
+                sortOrder,
+                pageNumber
+            }
+        });
+    };
+
+    const currentUserHasLikedList = (moovieListId, username) => {
+        return api.get(`/users/${username}/listLikes/${moovieListId}`);
+    }
+    const likeList = (moovieListId, username) =>{
+        return api.post(`/users/${username}/listLikes`,
+            {"id":moovieListId});
+    }
+
+    const unlikeList = (moovieListId, username) =>{
+        return api.delete(`/users/${username}/listLikes/${moovieListId}`);
+    }
+
+    const currentUserHasFollowedList = (moovieListId, username) => {
+        return api.get(`/users/${username}/listFollows/${moovieListId}`);
+    }
+
+    const followList = (moovieListId, username) =>{
+        return api.post(`/users/${username}/listFollows`,
+            {"id":moovieListId});
+    }
+
+    const unfollowList = (moovieListId, username) =>{
+        return api.delete(`/users/${username}/listFollows/${moovieListId}`);
+    }
+
+
+    // MODERATION STUFF
+
+    const banUser = (username) => {
+        const banUserDTO = {
+            banMessage: "User banned by moderator"
+        };
+        return api.put(`/users/${username}/ban`, banUserDTO);
+    }
+
+    const unbanUser = (username) => {
+        return api.put(`/users/${username}/unban`);
+    }
+
 
 
     return {
@@ -112,7 +169,16 @@ const userApi = (() => {
         getMovieReviewsFromUser,
         getSpecialListFromUser,
         getMoovieListReviewsFromUser,
-        getSearchedUsers
+        getSearchedUsers,
+        banUser,
+        unbanUser,
+        currentUserHasLikedList,
+        likeList,
+        unlikeList,
+        getLikedOrFollowedListFromUser,
+        currentUserHasFollowedList,
+        followList,
+        unfollowList
     };
 
 })();

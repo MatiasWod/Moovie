@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class ModeratorServiceImpl implements ModeratorService{
+public class ModeratorServiceImpl implements ModeratorService {
     @Autowired
     private UserService userService;
     @Autowired
@@ -55,8 +55,8 @@ public class ModeratorServiceImpl implements ModeratorService{
         Review r = reviewService.getReviewById(reviewId);
         User u = userService.findUserById(r.getUserId());
 
-        emailService.sendDeletedReviewMail(u,m, LocaleContextHolder.getLocale());
-        reviewDao.deleteReview(reviewId,type);
+        emailService.sendDeletedReviewMail(u, m, LocaleContextHolder.getLocale());
+        reviewDao.deleteReview(reviewId, type);
         LOGGER.info("Succesfully removed review: {}. (by mod)", reviewId);
     }
 
@@ -68,7 +68,7 @@ public class ModeratorServiceImpl implements ModeratorService{
         MoovieList m = moovieListService.getMoovieListById(moovieListId);
         User u = userService.findUserById(m.getUserId());
 
-        emailService.sendDeletedListMail(u,m,LocaleContextHolder.getLocale());
+        emailService.sendDeletedListMail(u, m, LocaleContextHolder.getLocale());
 
         moovieListDao.deleteMoovieList(moovieListId);
         LOGGER.info("Succesfully removed list: {}. (by mod)", moovieListId);
@@ -76,50 +76,49 @@ public class ModeratorServiceImpl implements ModeratorService{
 
     @Transactional
     @Override
-    public void banUser(int userId, String message) {
+    public void banUser(int userId, String message) throws UnableToBanUserException, InvalidAuthenticationLevelRequiredToPerformActionException {
         amIModerator();
-        User u = userDao.findUserById(userId).orElseThrow(() -> new UnableToFindUserException("No user for the id = " + userId ));
-        if(u.getRole() == UserRoles.MODERATOR.getRole() || u.getRole() == UserRoles.MODERATOR_NOT_REGISTERED.getRole()){
+        User u = userDao.findUserById(userId).orElseThrow(() -> new UnableToFindUserException("No user for the id = " + userId));
+        if (u.getRole() == UserRoles.MODERATOR.getRole() || u.getRole() == UserRoles.MODERATOR_NOT_REGISTERED.getRole()) {
             throw new UnableToBanUserException("Cannot ban another moderator");
         }
 
-        if(u.getRole() == UserRoles.NOT_AUTHENTICATED.getRole()){
+        if (u.getRole() == UserRoles.NOT_AUTHENTICATED.getRole()) {
             throw new UnableToBanUserException("Cannot ban an unantheuticated user.");
         }
 
-        if(u.getRole() == UserRoles.UNREGISTERED.getRole()){
+        if (u.getRole() == UserRoles.UNREGISTERED.getRole()) {
             userDao.changeUserRole(userId, UserRoles.BANNED_NOT_REGISTERED.getRole());
-        }
-        else{
+        } else {
             userDao.changeUserRole(userId, UserRoles.BANNED.getRole());
         }
         User currentUser = userService.getInfoOfMyUser();
         bannedDao.createBannedMessage(userId, currentUser.getUserId(), message, currentUser.getUsername());
         LOGGER.info("Succesfully banned user: {}.", userId);
 
-        emailService.sendBannedUserMail(u,userService.getInfoOfMyUser(),message,LocaleContextHolder.getLocale());
+        emailService.sendBannedUserMail(u, userService.getInfoOfMyUser(), message, LocaleContextHolder.getLocale());
     }
 
     @Transactional
     @Override
-    public void unbanUser(int userId) {
+    public void unbanUser(int userId) throws UnableToFindUserException, UnableToChangeRoleException, InvalidAuthenticationLevelRequiredToPerformActionException {
         amIModerator();
-        User u = userDao.findUserById(userId).orElseThrow(() -> new UnableToFindUserException("No user for the id = " + userId ));
+        User u = userDao.findUserById(userId).orElseThrow(() -> new UnableToFindUserException("No user for the id = " + userId));
 
-        if(u.getRole() == UserRoles.UNREGISTERED.getRole() || u.getRole() == UserRoles.USER.getRole() || u.getRole() == UserRoles.NOT_AUTHENTICATED.getRole() ){
+        if (u.getRole() == UserRoles.UNREGISTERED.getRole() || u.getRole() == UserRoles.USER.getRole() || u.getRole() == UserRoles.NOT_AUTHENTICATED.getRole()) {
             throw new UnableToChangeRoleException("Cant unban if its not banned");
         }
 
-        if(u.getRole() == UserRoles.BANNED_NOT_REGISTERED.getRole()){
+        if (u.getRole() == UserRoles.BANNED_NOT_REGISTERED.getRole()) {
             userDao.changeUserRole(userId, UserRoles.UNREGISTERED.getRole());
-        } else if (u.getRole() == UserRoles.BANNED.getRole()){
+        } else if (u.getRole() == UserRoles.BANNED.getRole()) {
             userDao.changeUserRole(userId, UserRoles.USER.getRole());
         }
         bannedDao.deleteBannedMessage(userId);
 
         LOGGER.info("Succesfully unbanned user: {}.", userId);
 
-        emailService.sendUnbannedUserMail(u,LocaleContextHolder.getLocale());
+        emailService.sendUnbannedUserMail(u, LocaleContextHolder.getLocale());
     }
 
 
@@ -127,16 +126,16 @@ public class ModeratorServiceImpl implements ModeratorService{
     @Override
     public void makeUserModerator(int userId) {
         amIModerator();
-        User u = userDao.findUserById(userId).orElseThrow(() -> new UnableToFindUserException("No user for the id = " + userId ));
+        User u = userDao.findUserById(userId).orElseThrow(() -> new UnableToFindUserException("No user for the id = " + userId));
 
-        if(u.getRole() == UserRoles.MODERATOR.getRole() || u.getRole() == UserRoles.MODERATOR_NOT_REGISTERED.getRole()){
+        if (u.getRole() == UserRoles.MODERATOR.getRole() || u.getRole() == UserRoles.MODERATOR_NOT_REGISTERED.getRole()) {
             throw new UnableToChangeRoleException("Unable to change role of uid: " + userId + ", user must not be ROLE_MODERATOR");
         }
 
-        if(u.getRole() == UserRoles.UNREGISTERED.getRole()){
+        if (u.getRole() == UserRoles.UNREGISTERED.getRole()) {
             userDao.changeUserRole(userId, UserRoles.MODERATOR_NOT_REGISTERED.getRole());
             return;
-        } else if(u.getRole() == UserRoles.USER.getRole()){
+        } else if (u.getRole() == UserRoles.USER.getRole()) {
             userDao.changeUserRole(userId, UserRoles.MODERATOR.getRole());
         }
 
@@ -144,15 +143,15 @@ public class ModeratorServiceImpl implements ModeratorService{
 
     }
 
-    private void amIModerator(){
-        if(userService.getInfoOfMyUser().getRole() != UserRoles.MODERATOR.getRole()){
+    private void amIModerator() throws InvalidAuthenticationLevelRequiredToPerformActionException {
+        if (userService.getInfoOfMyUser().getRole() != UserRoles.MODERATOR.getRole()) {
             throw new InvalidAuthenticationLevelRequiredToPerformActionException("To perform this action you must have role: moderator");
         }
     }
 
     @Transactional
     @Override
-   public void deleteListReview(int moovieListReviewId){
+    public void deleteListReview(int moovieListReviewId) {
         amIModerator();
         moovieListDao.deleteListReview(moovieListReviewId);
         LOGGER.info("Succesfully deleted report for review: {}.", moovieListReviewId);

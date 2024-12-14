@@ -1,9 +1,9 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.exceptions.UnableToFindUserException;
-import ar.edu.itba.paw.exceptions.UserNotLoggedException;
+import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
+import ar.edu.itba.paw.models.MoovieList.UserMoovieListId;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.PagingUtils;
@@ -11,18 +11,14 @@ import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
-import ar.edu.itba.paw.services.MoovieListService;
-import ar.edu.itba.paw.services.ReviewService;
-import ar.edu.itba.paw.services.UserService;
-import ar.edu.itba.paw.services.VerificationTokenService;
+import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.JwtTokenProvider;
+import ar.edu.itba.paw.webapp.dto.in.BanUserDTO;
+import ar.edu.itba.paw.webapp.dto.in.MoovieListIdDto;
 import ar.edu.itba.paw.webapp.dto.in.UserCreateDto;
-import ar.edu.itba.paw.webapp.dto.out.MoovieListReviewDto;
-import ar.edu.itba.paw.webapp.dto.out.MoovieListDto;
-import ar.edu.itba.paw.webapp.dto.out.ProfileDto;
-import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
-import ar.edu.itba.paw.webapp.dto.out.UserDto;
+import ar.edu.itba.paw.webapp.dto.out.*;
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
+import ar.edu.itba.paw.webapp.mappers.*;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +45,7 @@ public class UserController {
     private final MoovieListService moovieListService;
     private final VerificationTokenService verificationTokenService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final ModeratorService moderatorService;
 
     @Context
     private UriInfo uriInfo;
@@ -56,12 +53,13 @@ public class UserController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public UserController(final UserService userService, ReviewService reviewService, MoovieListService moovieListService, VerificationTokenService verificationTokenService, JwtTokenProvider jwtTokenProvider) {
+    public UserController(final UserService userService, ReviewService reviewService, MoovieListService moovieListService, VerificationTokenService verificationTokenService, JwtTokenProvider jwtTokenProvider, ModeratorService moderatorService) {
         this.userService = userService;
         this.reviewService = reviewService;
         this.moovieListService = moovieListService;
         this.verificationTokenService = verificationTokenService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.moderatorService = moderatorService;
     }
 
     @GET
@@ -82,7 +80,7 @@ public class UserController {
             List<UserDto> dtoList = UserDto.fromUserList(all, uriInfo);
             return Response.ok(new GenericEntity<List<UserDto>>(dtoList) {
             }).build();
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
@@ -105,7 +103,7 @@ public class UserController {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
             return Response.ok(UserDto.fromUser(user, uriInfo)).build();
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
@@ -121,7 +119,7 @@ public class UserController {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
             return Response.ok(UserDto.fromUser(user, uriInfo)).build();
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
 
@@ -138,7 +136,7 @@ public class UserController {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
             return Response.ok(UserDto.fromUser(user, uriInfo)).build();
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
 
@@ -222,7 +220,7 @@ public class UserController {
             LOGGER.info("Method: getProfileImage, Path: /users/{username}/image, Username: {}", username);
             final byte[] image = userService.getProfilePicture(username);
             return Response.ok(image).build();
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
             LOGGER.error("Error retrieving profile image: {}", e.getMessage());
             return Response.serverError().entity(e.getMessage()).build();
         }
@@ -237,7 +235,7 @@ public class UserController {
             userService.setProfilePicture(image);
             LOGGER.info("Profile image updated for username: {}", username);
             return Response.ok().build();
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
             LOGGER.error("Error updating profile image: {}", e.getMessage());
             return Response.serverError().entity(e.getMessage()).build();
         }
@@ -271,13 +269,14 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMovieReviewsFromUser(@PathParam("id") final int userId, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
         try {
-            final List<Review> reviews = reviewService.getMovieReviewsFromUser(userId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page-1);
+            final List<Review> reviews = reviewService.getMovieReviewsFromUser(userId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
             final List<ReviewDto> reviewDtos = ReviewDto.fromReviewList(reviews, uriInfo);
             final int reviewCount = userService.getProfileByUsername(userService.findUserById(userId).getUsername()).getReviewsCount();
 
-            Response.ResponseBuilder res =  Response.ok(new GenericEntity<List<ReviewDto>>(reviewDtos) {});
-            final PagingUtils<Review> reviewPagingUtils = new PagingUtils<>(reviews,page,PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(),reviewCount);
-            ResponseUtils.setPaginationLinks(res,reviewPagingUtils,uriInfo);
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ReviewDto>>(reviewDtos) {
+            });
+            final PagingUtils<Review> reviewPagingUtils = new PagingUtils<>(reviews, page, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), reviewCount);
+            ResponseUtils.setPaginationLinks(res, reviewPagingUtils, uriInfo);
             return res.build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
@@ -291,13 +290,13 @@ public class UserController {
     public Response getMoovieListReviewsFromUser(@PathParam("id") final int userId, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
 
         try {
-            final List<MoovieListReview> moovieListReviews = reviewService.getMoovieListReviewsFromUser(userId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page-1);
+            final List<MoovieListReview> moovieListReviews = reviewService.getMoovieListReviewsFromUser(userId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
             final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto.fromMoovieListReviewList(moovieListReviews, uriInfo);
-            return Response.ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {}).build();
-        } catch (UnableToFindUserException e){
+            return Response.ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {
+            }).build();
+        } catch (UnableToFindUserException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
@@ -308,10 +307,10 @@ public class UserController {
     @Path("/{username}/watched")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getWatchedMovies(@PathParam("username") final String username) {
-        try{
-            return  Response.ok(MoovieListDto.fromMoovieList((moovieListService.getMoovieListCards("Watched",username, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),
-                    null,null,PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),1)).get(0), uriInfo)).build();
-        } catch (Exception e){
+        try {
+            return Response.ok(MoovieListDto.fromMoovieList((moovieListService.getMoovieListCards("Watched", username, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),
+                    null, null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 1)).get(0), uriInfo)).build();
+        } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
@@ -320,10 +319,10 @@ public class UserController {
     @Path("/{username}/watchlist")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getWatchlistMovies(@PathParam("username") final String username) {
-        try{
-            return  Response.ok(MoovieListDto.fromMoovieList((moovieListService.getMoovieListCards("Watchlist",username, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),
-                    null,null,PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),1)).get(0), uriInfo)).build();
-        } catch (Exception e){
+        try {
+            return Response.ok(MoovieListDto.fromMoovieList((moovieListService.getMoovieListCards("Watchlist", username, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),
+                    null, null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 1)).get(0), uriInfo)).build();
+        } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
@@ -334,19 +333,194 @@ public class UserController {
     public Response searchUsers(@QueryParam("username") final String username,
                                 @QueryParam("orderBy") final String orderBy,
                                 @QueryParam("sortOrder") final String sortOrder,
-                                @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber){
-    try {
-        List<Profile> profileList = userService.searchUsers(username,orderBy,sortOrder,PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber);
-        final int profileCount = userService.getSearchCount(username);
-        List<ProfileDto> profileDtoList = ProfileDto.fromProfileList(profileList, uriInfo);
-        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ProfileDto>>(profileDtoList){});
-        final PagingUtils<Profile> toReturnProfileList = new PagingUtils<>(profileList,pageNumber,PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), profileCount);
-        ResponseUtils.setPaginationLinks(res,toReturnProfileList,uriInfo);
+                                @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
+        try {
+            List<Profile> profileList = userService.searchUsers(username, orderBy, sortOrder, PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber);
+            final int profileCount = userService.getSearchCount(username);
+            List<ProfileDto> profileDtoList = ProfileDto.fromProfileList(profileList, uriInfo);
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ProfileDto>>(profileDtoList) {
+            });
+            final PagingUtils<Profile> toReturnProfileList = new PagingUtils<>(profileList, pageNumber, PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), profileCount);
+            ResponseUtils.setPaginationLinks(res, toReturnProfileList, uriInfo);
+            return res.build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+
+
+//    MODERATION
+
+    @PUT
+    @Path("/{username}/ban")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response banUser(@PathParam("username") final String username,
+                            @Valid final BanUserDTO banUserDTO) {
+        try {
+            User toBan = userService.findUserByUsername(username);
+            try {
+                this.moderatorService.banUser(toBan.getUserId(), banUserDTO.getBanMessage());
+            } catch (UnableToBanUserException e) {
+                return new UnableToBanUserEM().toResponse(e);
+            } catch (InvalidAuthenticationLevelRequiredToPerformActionException e) {
+                return new InvalidAuthenticationLevelRequiredToPerformActionEM().toResponse(e);
+            }
+            User finalUser = userService.findUserByUsername(username);
+            return Response.ok(UserDto.fromUser(finalUser, uriInfo)).build();
+        } catch (UnableToFindUserException e) {
+            return new UnableToFindUserEM().toResponse(e);
+        } catch (Exception e) {
+            return new ExceptionEM().toResponse(e);
+        }
+    }
+
+    @PUT
+    @Path("/{username}/unban")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response unbanUser(@PathParam("username") final String username) {
+
+        try {
+            User toUnban = userService.findUserByUsername(username);
+            try {
+                moderatorService.unbanUser(toUnban.getUserId());
+            } catch (InvalidAuthenticationLevelRequiredToPerformActionException e) {
+                return new InvalidAuthenticationLevelRequiredToPerformActionEM().toResponse(e);
+            } catch (UnableToChangeRoleException e) {
+                return new UnableToChangeRoleEM().toResponse(e);
+            }
+            User finalUser = userService.findUserByUsername(username);
+            return Response.ok(UserDto.fromUser(finalUser, uriInfo)).build();
+        } catch (UnableToFindUserException e) {
+            return new UnableToFindUserEM().toResponse(e);
+        } catch (Exception e) {
+            return new ExceptionEM().toResponse(e);
+        }
+    }
+
+
+    /***
+     * LIKES
+     */
+
+    // Returns a list of likes
+    @GET
+    @Path("/{username}/listLikes")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getLikedLists(@PathParam("username") final String username,
+                                  @QueryParam("orderBy") String orderBy,
+                                  @QueryParam("order") String order,
+                                  @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber){
+        List<MoovieListCard> mlcList = moovieListService.getLikedMoovieListCards(username, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
+                PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1);
+        int listCount = userService.getLikedMoovieListCountForUser(username);
+
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(MoovieListDto.fromMoovieListList(mlcList, uriInfo)) {
+        });
+        final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList,pageNumber,PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(),listCount);
+        ResponseUtils.setPaginationLinks(res,toReturnMoovieListCardList,uriInfo);
         return res.build();
     }
-    catch (RuntimeException e){
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+
+    // Returns like status for a specific media
+    @GET
+    @Path("/{username}/listLikes/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserLikedListById(@PathParam("id") final int id,
+                                         @PathParam("username") final String username){
+        UserMoovieListId userMoovieListId =  moovieListService.currentUserHasLiked(id);
+        if(userMoovieListId != null && userMoovieListId.getUsername().equals(username)){
+            return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId)).build();
+        }
+        return Response.noContent().build();
     }
+
+    @POST
+    @Path("/{username}/listLikes")
+    @Produces(MediaType.APPLICATION_JSON)
+    public javax.ws.rs.core.Response likeMoovieList(@PathParam("username") String username,
+                                                    @Valid MoovieListIdDto idDto) {
+        userService.isUsernameMe(username);
+        boolean like = moovieListService.likeMoovieList(idDto.getId());
+        if (like){
+            return Response.ok()
+                    .entity("{\"message\":\"Succesfully liked list.\"}").build();
+        }
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity("{\"message\":\"Lista is already liked.\"}").build();
+    }
+
+
+    @DELETE
+    @Path("/{username}/listLikes/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public javax.ws.rs.core.Response unlikeMoovieList(@PathParam("username") String username,
+                                                      @PathParam("id") int id) {
+        userService.isUsernameMe(username);
+        moovieListService.removeLikeMoovieList(id);
+        return Response.ok()
+                .entity("{\"message\":\"Succesfully unliked list.\"}").build();
+    }
+
+    /***
+     * FOLLOWS
+     */
+
+    @GET
+    @Path("/{username}/listFollows")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getFollowedLists(@PathParam("username") final String username,
+                                     @QueryParam("orderBy") String orderBy,
+                                     @QueryParam("order") String order,
+                                     @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber){
+        int userid = userService.getProfileByUsername(username).getUserId();
+        List<MoovieListCard> mlcList = moovieListService.getFollowedMoovieListCards(userid, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
+                PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1);
+        int listCount = moovieListService.getFollowedMoovieListCardsCount(userid,MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
+
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(MoovieListDto.fromMoovieListList(mlcList, uriInfo)) {
+        });
+        final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList,pageNumber,PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(),listCount);
+        ResponseUtils.setPaginationLinks(res,toReturnMoovieListCardList,uriInfo);
+        return res.build();
+    }
+
+    @GET
+    @Path("/{username}/listFollows/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserFollowedListById(@PathParam("username") String username,
+                                            @PathParam("id") final int id){
+        UserMoovieListId userMoovieListId =  moovieListService.currentUserHasFollowed(id);
+        if(userMoovieListId != null && userMoovieListId.getUsername().equals(username)){
+            return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId)).build();
+        }
+        return Response.noContent().build();
+    }
+
+    @POST
+    @Path("/{username}/listFollows")
+    @Produces(MediaType.APPLICATION_JSON)
+    public javax.ws.rs.core.Response followMoovieList(@PathParam("username") String username,
+                                                      @Valid MoovieListIdDto idDto) {
+        userService.isUsernameMe(username);
+        boolean like = moovieListService.followMoovieList(idDto.getId());
+        if (like){
+            return Response.ok()
+                    .entity("{\"message\":\"Succesfully followed list.\"}").build();
+        }
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity("{\"message\":\"List is already followed.\"}").build();
+    }
+
+    @DELETE
+    @Path("/{username}/listFollows/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public javax.ws.rs.core.Response unfollowMoovieList(@PathParam("username") String username,
+                                                        @PathParam("id") int id) {
+        userService.isUsernameMe(username);
+        moovieListService.removeFollowMoovieList(id);
+        return Response.ok()
+                .entity("{\"message\":\"Succesfully unfollowed list.\"}").build();
     }
 
 }

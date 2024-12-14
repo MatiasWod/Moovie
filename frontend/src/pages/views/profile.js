@@ -50,6 +50,16 @@ function Profile() {
         }
     };
 
+    const handleBanUser = async () => {
+        await userApi.banUser(username);
+        fetchProfile();
+    };
+
+    const handleUnbanUser = async () => {
+        await userApi.unbanUser(username);
+        fetchProfile();
+    };
+
     useEffect(() => {
         fetchProfile();
     }, []);
@@ -62,7 +72,7 @@ function Profile() {
 
     return (
         <div className="default-container moovie-default">
-            <ProfileHeader profile={profile}/>
+            <ProfileHeader profile={profile} handleBanUser={handleBanUser} handleUnbanUser={handleUnbanUser}/>
             <ProfileTabNavigation selectedTab={selectedTab} onTabSelect={handleTabSelect} />
             <ProfileTab selectedTab={selectedTab} profile={profile}></ProfileTab>
         </div>

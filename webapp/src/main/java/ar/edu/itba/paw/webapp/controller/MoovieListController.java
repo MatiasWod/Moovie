@@ -229,51 +229,8 @@ public class MoovieListController {
 
 
 
-    @POST
-    @Path("/{id}/liked")
-    @Produces(MediaType.APPLICATION_JSON)
-    public javax.ws.rs.core.Response likeMoovieList(@PathParam("id") int moovieListId) {
-        boolean like = moovieListService.likeMoovieList(moovieListId);
-        if (like){
-            return Response.ok()
-                    .entity("{\"message\":\"Succesfully liked list.\"}").build();
-        }
-        return Response.status(Response.Status.BAD_REQUEST)
-                .entity("{\"message\":\"Lista is already liked.\"}").build();
-    }
 
 
-    @DELETE
-    @Path("/{id}/liked")
-    @Produces(MediaType.APPLICATION_JSON)
-    public javax.ws.rs.core.Response unlikeMoovieList(@PathParam("id") int moovieListId) {
-        moovieListService.removeLikeMoovieList(moovieListId);
-        return Response.ok()
-                .entity("{\"message\":\"Succesfully unliked list.\"}").build();
-    }
-
-
-    @POST
-    @Path("/{id}/followed")
-    @Produces(MediaType.APPLICATION_JSON)
-    public javax.ws.rs.core.Response followMoovieList(@PathParam("id") int moovieListId) {
-        boolean like = moovieListService.followMoovieList(moovieListId);
-        if (like){
-            return Response.ok()
-                    .entity("{\"message\":\"Succesfully followed list.\"}").build();
-        }
-        return Response.status(Response.Status.BAD_REQUEST)
-                .entity("{\"message\":\"List is already followed.\"}").build();
-    }
-
-    @DELETE
-    @Path("/{id}/followed")
-    @Produces(MediaType.APPLICATION_JSON)
-    public javax.ws.rs.core.Response unfollowMoovieList(@PathParam("id") int moovieListId) {
-        moovieListService.removeFollowMoovieList(moovieListId);
-        return Response.ok()
-                .entity("{\"message\":\"Succesfully unfollowed list.\"}").build();
-    }
 
     @POST
     @Path("{id}/moovieListReview")
@@ -338,67 +295,6 @@ public class MoovieListController {
         }
         return javax.ws.rs.core.Response.noContent().build();
     }
-
-    @GET
-    @Path("/liked")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getLikedLists(@QueryParam("username") final String username,
-                                  @QueryParam("orderBy") String orderBy,
-                                  @QueryParam("order") String order,
-                                  @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber){
-        List<MoovieListCard> mlcList = moovieListService.getLikedMoovieListCards(username, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
-                PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1);
-        int listCount = userService.getLikedMoovieListCountForUser(username);
-
-        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(MoovieListDto.fromMoovieListList(mlcList, uriInfo)) {
-        });
-        final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList,pageNumber,PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(),listCount);
-        ResponseUtils.setPaginationLinks(res,toReturnMoovieListCardList,uriInfo);
-        return res.build();
-    }
-
-    @GET
-    @Path("/{id}/liked")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserLikedListById(@PathParam("id") final int id){
-        UserMoovieListId userMoovieListId =  moovieListService.currentUserHasLiked(id);
-        if (userMoovieListId != null){
-            return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId)).build();
-        }
-        return Response.noContent().build();
-    }
-
-    @GET
-    @Path("/followed")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getFollowedLists(@QueryParam("username") final String username,
-                                     @QueryParam("orderBy") String orderBy,
-                                     @QueryParam("order") String order,
-                                     @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber){
-        int userid = userService.getProfileByUsername(username).getUserId();
-        List<MoovieListCard> mlcList = moovieListService.getFollowedMoovieListCards(userid, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
-                PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(),pageNumber - 1);
-        int listCount = moovieListService.getFollowedMoovieListCardsCount(userid,MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
-
-        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(MoovieListDto.fromMoovieListList(mlcList, uriInfo)) {
-        });
-        final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList,pageNumber,PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(),listCount);
-        ResponseUtils.setPaginationLinks(res,toReturnMoovieListCardList,uriInfo);
-        return res.build();
-    }
-
-    @GET
-    @Path("/{id}/followed")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserFollowedListById(@PathParam("id") final int id){
-        UserMoovieListId userMoovieListId =  moovieListService.currentUserHasFollowed(id);
-        if (userMoovieListId != null){
-            return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId)).build();
-        }
-        return Response.noContent().build();
-    }
-
-
 
 
 /*
