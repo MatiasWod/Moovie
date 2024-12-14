@@ -97,3 +97,24 @@ button.submit:hover {
     color: white;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.radio-option input[type="radio"] {
+    margin: 0;
+}
+
+.radio-option label {
+    cursor: pointer;
+}

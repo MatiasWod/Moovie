@@ -8,6 +8,8 @@ import ProfileImage from "../profileImage/ProfileImage";
 import {useSelector} from "react-redux";
 import ConfirmationForm from "../forms/confirmationForm/confirmationForm";
 import reviewService from "../../../services/ReviewService";
+import ReportForm from "../forms/reportForm/reportForm";
+import reportApi from "../../../api/ReportApi";
 
 function Reviews({ id, source }) {
     const navigate = useNavigate();
@@ -19,6 +21,7 @@ function Reviews({ id, source }) {
     const [selectedReviewId, setSelectedReviewId] = useState(null);
     const {isLoggedIn, user} = useSelector(state => state.auth);
     const [reload, setReload] = useState(false);
+    const [reportedReviewId, setReportedReviewId] = useState(null);
 
     const fetchReviews = async (currentPage) => {
         try {
@@ -72,6 +75,21 @@ function Reviews({ id, source }) {
         setSelectedReviewId(reviewId);
     };
 
+    const handleReportReview = (reviewId) => {
+        console.log("Report review", reviewId);
+        setReportedReviewId(reviewId);
+    };
+
+    const handleReportReviewSubmit = async (reportReason, additionalInfo) => {
+        await reportApi.reportReview({
+            reviewId: reportedReviewId,
+            reportedBy: user.username,
+            content: additionalInfo,
+            type: reportReason
+        });
+        setReportedReviewId(null);
+    };
+
     const handleCloseConfirmationDelete = () => {
         setSelectedReviewId(null);
     };
@@ -103,6 +121,14 @@ function Reviews({ id, source }) {
                             <div>{review.rating}/5<i className="bi bi-star-fill"/>
                                 {isLoggedIn && (
                                     <button
+                                        className="btn btn-warning btn-sm mx-1"
+                                        onClick={() => handleReportReview(review.id)}
+                                    >
+                                        <i className="bi bi-flag"></i>
+                                    </button>
+                                )}
+                                {isLoggedIn && (
+                                    <button
                                         className="btn btn-danger btn-sm"
                                         onClick={() => handleOpenConfirmationDelete(review.id)}
                                     >
@@ -116,6 +142,12 @@ function Reviews({ id, source }) {
                                         actionName={"eliminar tu Review"}
                                         onConfirm={handleConfirmDelete}
                                         onCancel={handleCloseConfirmationDelete}
+                                    />
+                                )}
+                                {reportedReviewId === review.id && (
+                                    <ReportForm
+                                        onReportSubmit={handleReportReviewSubmit}
+                                        onCancel={() => setReportedReviewId(null)}
                                     />
                                 )}
                             </div>
