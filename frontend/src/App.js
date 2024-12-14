@@ -12,6 +12,7 @@ const views = './pages/views';
 
 const Home = lazy(() => import(views + '/home'));
 const Login = lazy(() => import(views + '/authViews/login'));
+const Register = lazy(() => import(views + '/authViews/register'));
 const Details = lazy(() => import(views + '/details'));
 const List = lazy(() => import(views + '/list'));
 const BrowseLists = lazy(() => import(views + '/browseLists'));
@@ -50,6 +51,7 @@ export default function App() {
                     <Routes>
                         <Route path='/' element={<Home/>}/>
                         <Route path='/login' element={<Login/>}/>
+                        <Route path='/register' element={<Register/>}/>
                         <Route path='/details/:id' element={<Details/>}/>
                         <Route path='/list/:id' element={<List/>}/>
                         <Route path='/discover' element={<Discover/>}/>

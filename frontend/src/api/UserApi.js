@@ -29,9 +29,18 @@ const userApi = (() => {
         }
     };
 
-    const register = ({email, username, password}) => {
-        // Implementar el registro
+    const register = async ({ email, username, password }) => {
+        try {
+            return await api.post('/users', {
+                email,
+                username,
+                password,
+            });
+        } catch (error) {
+            throw error
+        }
     };
+
 
     const listUsers = ({}) => {
         // Implementar la lista de usuarios
