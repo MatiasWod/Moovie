@@ -56,7 +56,6 @@ function Reviews({ id, source , handleParentReload }) {
 
     useEffect(() => {
         fetchReviews(page);
-        const foundReview = reviews.find(review => review.userId === user.id);
     }, [id,reload,page]);
 
     const handlePageChange = (newPage) => {

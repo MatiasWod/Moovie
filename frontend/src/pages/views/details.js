@@ -178,7 +178,7 @@ function Details() {
                     <div Class="flex-row d-flex">
                         <AddMediaToListButton currentId={id}/>
 
-                        <CreateReviewButton handleOpenReviewForm={handleOpenReviewForm} rated={}/>
+                        <CreateReviewButton handleOpenReviewForm={handleOpenReviewForm} rated={null}/>
                     </div>
                 </div>
 
