@@ -131,11 +131,12 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
-    public void reportMoovieListReview(int moovieListReviewId, int userId, int type, String content) {
+    public MoovieListReviewReport reportMoovieListReview(int moovieListReviewId, int userId, int type, String content) {
         MoovieListReview review = em.find(MoovieListReview.class, moovieListReviewId);
         User user = em.find(User.class, userId);
         MoovieListReviewReport report = new MoovieListReviewReport(type, content, user, review);
         em.persist(report);
+        return report;
     }
 
     @Override
@@ -180,12 +181,13 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
-    public void reportMoovieList(int moovieListId, int userId, int type, String content) {
+    public MoovieListReport reportMoovieList(int moovieListId, int userId, int type, String content) {
 
         MoovieList moovieList = em.find(MoovieList.class, moovieListId);
         User user = em.find(User.class, userId);
         MoovieListReport report = new MoovieListReport(type, content, user, moovieList);
         em.persist(report);
+        return report;
     }
 
     @Override
@@ -230,11 +232,12 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
-    public void reportComment(int commentId, int userId, int type, String content) {
+    public CommentReport reportComment(int commentId, int userId, int type, String content) {
         Comment comment = em.find(Comment.class, commentId);
         User user = em.find(User.class, userId);
         CommentReport report = new CommentReport(type, content, user, comment);
         em.persist(report);
+        return report;
     }
 
     @Override

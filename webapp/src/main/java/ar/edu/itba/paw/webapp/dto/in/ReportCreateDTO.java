@@ -2,7 +2,6 @@ package ar.edu.itba.paw.webapp.dto.in;
 
 public class ReportCreateDTO {
     String content;
-    String reportedBy;
     int type;
 
     public ReportCreateDTO() {
@@ -15,14 +14,6 @@ public class ReportCreateDTO {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public String getReportedBy() {
-        return reportedBy;
-    }
-
-    public void setReportedBy(String reportedBy) {
-        this.reportedBy = reportedBy;
     }
 
     public int getType() {

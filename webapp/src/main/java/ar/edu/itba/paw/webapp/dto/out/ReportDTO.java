@@ -41,23 +41,20 @@ public class ReportDTO {
     }
 
     public static ReportDTO fromCommentReport(CommentReport commentReport, UriInfo uriInfo) {
-//        TODO: properly build the URLs
-        String url = uriInfo.getRequestUri().toString();
-        String reportedByUrl = uriInfo.getRequestUri().toString();
+        String url = uriInfo.getBaseUriBuilder().path("/comment/" + commentReport.getComment().getCommentId()).toString();
+        String reportedByUrl = uriInfo.getBaseUriBuilder().path("/users/" + commentReport.getReportedBy().getUsername()).toString();
         return new ReportDTO(url, commentReport.getResolved(), commentReport.getReport_date(), reportedByUrl, commentReport.getContent(), commentReport.getType());
     }
 
     public static ReportDTO fromMoovieListReviewReport(MoovieListReviewReport mlrReport, UriInfo uriInfo) {
-//        TODO: properly build the URLs
-        String url = uriInfo.getRequestUri().toString();
-        String reportedByUrl = uriInfo.getRequestUri().toString();
+        String url = uriInfo.getBaseUriBuilder().path("/moovieListReview/" + mlrReport.getMoovieListReview().getMoovieListReviewId()).toString();
+        String reportedByUrl = uriInfo.getBaseUriBuilder().path("/users/" + mlrReport.getReportedBy().getUsername()).toString();
         return new ReportDTO(url, mlrReport.getResolved(), mlrReport.getReport_date(), reportedByUrl, mlrReport.getContent(), mlrReport.getType());
     }
 
     public static ReportDTO fromMoovieListReport(MoovieListReport mlReport, UriInfo uriInfo) {
-//        TODO: properly build the URLs
-        String url = uriInfo.getRequestUri().toString();
-        String reportedByUrl = uriInfo.getRequestUri().toString();
+        String url = uriInfo.getBaseUriBuilder().path("/list/" + mlReport.getMoovieList().getMoovieListId()).toString();
+        String reportedByUrl = uriInfo.getBaseUriBuilder().path("/users/" + mlReport.getReportedBy().getUsername()).toString();
         return new ReportDTO(url, mlReport.getResolved(), mlReport.getReport_date(), reportedByUrl, mlReport.getContent(), mlReport.getType());
     }
 

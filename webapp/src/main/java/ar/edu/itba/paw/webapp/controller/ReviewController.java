@@ -26,7 +26,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
 
-import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
+
 //TODO CHECK LOGGERS
 //import com.sun.org.slf4j.internal.Logger;
 //import com.sun.org.slf4j.internal.LoggerFactory;
@@ -129,14 +129,9 @@ public class ReviewController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response reportReview(@PathParam("id") final int id,
                                  @Valid final ReportCreateDTO reportDTO) {
-        LOGGER.info("----------------REPORTING A REVIEW ------------------");
         try {
-            User reportingUser = userService.findUserByUsername(reportDTO.getReportedBy());
             User currentUser = userService.getInfoOfMyUser();
-            if (reportingUser.getUserId() != currentUser.getUserId()) {
-                return new InvalidAccessToResourceEM().toResponse(new InvalidAccessToResourceException("The report indicates a different user as the reporter."));
-            }
-            ReviewReport response = reportService.reportReview(id, reportingUser.getUserId(), reportDTO.getType(), reportDTO.getContent());
+            ReviewReport response = reportService.reportReview(id, currentUser.getUserId(), reportDTO.getType(), reportDTO.getContent());
             return Response.ok(ReportDTO.fromReviewReport(response, uriInfo)).build();
         } catch (UnableToFindUserException e) {
             return new UnableToFindUserEM().toResponse(e);
