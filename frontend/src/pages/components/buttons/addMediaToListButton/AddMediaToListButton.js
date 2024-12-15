@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import "../buttonStyles.css";
 import listService from "../../../../services/ListService";
 import MoovieListTypes from "../../../../api/values/MoovieListTypes";
@@ -7,6 +7,7 @@ import SortOrder from "../../../../api/values/SortOrder";
 import ResponsePopup from "../reponsePopup/ReponsePopup";
 import {useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
+import {Dropdown} from "react-bootstrap";
 
 const AddMediaToListButton = ({ currentId }) => {
     const {isLoggedIn, user} = useSelector(state => state.auth);
@@ -112,28 +113,29 @@ const AddMediaToListButton = ({ currentId }) => {
         setPopupVisible(false);
     };
 
+    const handleOnClick = () => {
+        if (!isLoggedIn) {
+            navigate('/login');
+        }
+    };
+
     return (
         <div className="dropdown">
-            <div className="dropdown">
-                <div Class="btn btn-dark dropdown-toggle" style={{marginRight: '10px'}}>
-                    <i Class="bi bi-plus-circle-fill"></i> Add to list
-                </div>
-            </div>
+            <Dropdown onClick={handleOnClick}>
+                <Dropdown.Toggle className="btn btn-dark dropdown-toggle" id="dropdown-basic"
+                                 style={{marginRight: '10px'}}>
+                    <i className="bi bi-plus-circle-fill"></i> Add to list
+                </Dropdown.Toggle>
 
+                { isLoggedIn && (
+                    <Dropdown.Menu>
+                        {options.map((option, index) => (
+                            <Dropdown.Item key={index} onClick={ () => handleOptionClick(option)}>{option.name}</Dropdown.Item>
+                        ))}
+                    </Dropdown.Menu>
+                )}
+            </Dropdown>
 
-            {/*{isOpen && (*/}
-            {/*    <div className="dropdown-content scrollable-options">*/}
-            {/*        {options.map((option, index) => (*/}
-            {/*            <div*/}
-            {/*                key={index}*/}
-            {/*                className="dropdown-item"*/}
-            {/*                onClick={() => handleOptionClick(option)}*/}
-            {/*            >*/}
-            {/*                {option.name}*/}
-            {/*            </div>*/}
-            {/*        ))}*/}
-            {/*    </div>*/}
-            {/*)}*/}
             {popupVisible && (
                 <ResponsePopup
                     message={popupMessage}
