@@ -32,6 +32,8 @@ const RegisterForm = () => {
                 email: form.email,
                 password: form.password,
             });
+            localStorage.setItem('username', form.username);
+            sessionStorage.setItem('username', form.username);
             setSuccess('Registration successful! You can now log in.');
             setError('');
             setForm({

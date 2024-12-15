@@ -22,6 +22,8 @@ export const fetchUserData = createAsyncThunk('auth/fetchUserData', async (usern
 export const attemptReconnect = createAsyncThunk('auth/attemptReconnect', async (_, {dispatch}) => {
     const token = sessionStorage.getItem('jwtToken');
     const username = sessionStorage.getItem('username');
+
+    console.log("ABOUT TO RECONNECT ",token, username);
     
     if (token && username) {
         try {

@@ -41,6 +41,16 @@ const userApi = (() => {
         }
     };
 
+    const confirmToken = async (token) => {
+        const response = await api.put(`users/verify/${token}`);
+        const jwtToken = response.headers['authorization'];
+        if (jwtToken) {
+            sessionStorage.setItem('jwtToken', jwtToken);
+            localStorage.setItem('jwtToken', jwtToken);
+        }
+        return response;
+    }
+
 
     const listUsers = ({}) => {
         // Implementar la lista de usuarios
@@ -187,7 +197,8 @@ const userApi = (() => {
         getLikedOrFollowedListFromUser,
         currentUserHasFollowedList,
         followList,
-        unfollowList
+        unfollowList,
+        confirmToken
     };
 
 })();

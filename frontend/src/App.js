@@ -26,6 +26,8 @@ const Healthcheck = lazy(() => import(views + '/healthcheck'));
 const Error404 = lazy(() => import(views + '/errorViews/error404'));
 const AuthTest = lazy(() => import(views + '/AuthTest')); // Import AuthTest
 const ReportsDashboard = lazy(() => import(views + '/reportsDashboard/ReportsDashboard'));
+const ConfirmToken = lazy(() => import(views + '/authViews/confirmToken'));
+const AwaitEmailValidation = lazy(() => import(views + '/authViews/awaitEmailValidation'));
 
 export default function App() {
     const helmetContext = {};
@@ -52,6 +54,7 @@ export default function App() {
                         <Route path='/' element={<Home/>}/>
                         <Route path='/login' element={<Login/>}/>
                         <Route path='/register' element={<Register/>}/>
+                        <Route path='/register/confirm' element={<ConfirmToken/>}/>
                         <Route path='/details/:id' element={<Details/>}/>
                         <Route path='/list/:id' element={<List/>}/>
                         <Route path='/discover' element={<Discover/>}/>

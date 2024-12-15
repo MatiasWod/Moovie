@@ -56,7 +56,7 @@ export default function ReviewReports() {
             <div key={index} className="bg-white p-4 rounded shadow">
               <div className="flex justify-between items-center mb-2">
                 <div className="flex items-center space-x-4">
-                  <a href={review.userUrl} className="text-blue-600 font-bold hover:underline">
+                  <a href={`/profile/${review.userUrl?.split('/').pop()}`} className="text-blue-600 font-bold hover:underline">
                     {review.userUrl?.split('/').pop()}
                   </a>
                   <span className="text-gray-600">{review.rating}/5 <i className="bi bi-star-fill text-yellow-500"></i></span>
