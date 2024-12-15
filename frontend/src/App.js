@@ -12,6 +12,7 @@ const views = './pages/views';
 
 const Home = lazy(() => import(views + '/home'));
 const Login = lazy(() => import(views + '/authViews/login'));
+const Register = lazy(() => import(views + '/authViews/register'));
 const Details = lazy(() => import(views + '/details'));
 const List = lazy(() => import(views + '/list'));
 const BrowseLists = lazy(() => import(views + '/browseLists'));
@@ -25,6 +26,8 @@ const Healthcheck = lazy(() => import(views + '/healthcheck'));
 const Error404 = lazy(() => import(views + '/errorViews/error404'));
 const AuthTest = lazy(() => import(views + '/AuthTest')); // Import AuthTest
 const ReportsDashboard = lazy(() => import(views + '/reportsDashboard/ReportsDashboard'));
+const ConfirmToken = lazy(() => import(views + '/authViews/confirmToken'));
+const AwaitEmailValidation = lazy(() => import(views + '/authViews/awaitEmailValidation'));
 
 export default function App() {
     const helmetContext = {};
@@ -50,6 +53,8 @@ export default function App() {
                     <Routes>
                         <Route path='/' element={<Home/>}/>
                         <Route path='/login' element={<Login/>}/>
+                        <Route path='/register' element={<Register/>}/>
+                        <Route path='/register/confirm' element={<ConfirmToken/>}/>
                         <Route path='/details/:id' element={<Details/>}/>
                         <Route path='/list/:id' element={<List/>}/>
                         <Route path='/discover' element={<Discover/>}/>

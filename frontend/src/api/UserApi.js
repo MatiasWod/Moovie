@@ -29,9 +29,28 @@ const userApi = (() => {
         }
     };
 
-    const register = ({email, username, password}) => {
-        // Implementar el registro
+    const register = async ({ email, username, password }) => {
+        try {
+            return await api.post('/users', {
+                email,
+                username,
+                password,
+            });
+        } catch (error) {
+            throw error
+        }
     };
+
+    const confirmToken = async (token) => {
+        const response = await api.put(`users/verify/${token}`);
+        const jwtToken = response.headers['authorization'];
+        if (jwtToken) {
+            sessionStorage.setItem('jwtToken', jwtToken);
+            localStorage.setItem('jwtToken', jwtToken);
+        }
+        return response;
+    }
+
 
     const listUsers = ({}) => {
         // Implementar la lista de usuarios
@@ -178,7 +197,8 @@ const userApi = (() => {
         getLikedOrFollowedListFromUser,
         currentUserHasFollowedList,
         followList,
-        unfollowList
+        unfollowList,
+        confirmToken
     };
 
 })();
