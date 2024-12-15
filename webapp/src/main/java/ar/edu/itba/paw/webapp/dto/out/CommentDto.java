@@ -24,7 +24,7 @@ public class CommentDto {
 
     private int commentDislikes;
 
-    private  int totalReports;
+    private int totalReports;
 
     private int spamReports;
 
@@ -43,30 +43,31 @@ public class CommentDto {
 
     public static CommentDto fromComment(final Comment comment, UriInfo uriInfo) {
         CommentDto commentDto = new CommentDto();
-        commentDto.id=comment.getCommentId();
-        commentDto.reviewId=comment.getReviewId();
-        commentDto.mediaId=comment.getMediaId();
-        commentDto.content=comment.getContent();
-        commentDto.currentUserHasLiked=comment.isCurrentUserHasLiked();
-        commentDto.currentUserHasDisliked=comment.isCurrentUserHasDisliked();
-        commentDto.commentLikes=comment.getCommentLikes();
-        commentDto.commentDislikes=comment.getCommentDislikes();
-        commentDto.totalReports=comment.getTotalReports();
-        commentDto.spamReports=comment.getSpamReports();
-        commentDto.hateReports=comment.getHateReports();
-        commentDto.abuseReports=comment.getAbuseReports();
+        commentDto.id = comment.getCommentId();
+        commentDto.reviewId = comment.getReviewId();
+        commentDto.mediaId = comment.getMediaId();
+        commentDto.content = comment.getContent();
+        commentDto.currentUserHasLiked = comment.isCurrentUserHasLiked();
+        commentDto.currentUserHasDisliked = comment.isCurrentUserHasDisliked();
+        commentDto.commentLikes = comment.getCommentLikes();
+        commentDto.commentDislikes = comment.getCommentDislikes();
+        commentDto.totalReports = comment.getTotalReports();
+        commentDto.spamReports = comment.getSpamReports();
+        commentDto.hateReports = comment.getHateReports();
+        commentDto.abuseReports = comment.getAbuseReports();
 
-        commentDto.url=uriInfo.getBaseUriBuilder().path("/comment/{id}").build(comment.getCommentId()).toString();
-        commentDto.reviewUrl=uriInfo.getBaseUriBuilder().path("/review/{id}").build(comment.getReviewId()).toString();
+        commentDto.url = uriInfo.getBaseUriBuilder().path("/comment/{id}").build(comment.getCommentId()).toString();
+        commentDto.reviewUrl = uriInfo.getBaseUriBuilder().path("/review/{id}").build(comment.getReviewId()).toString();
         //TODO IMPLEMENTAR reportsURL
-        commentDto.reportsUrl="";
+        commentDto.reportsUrl = "";
+        commentDto.userUrl = uriInfo.getBaseUriBuilder().path("/user/{id}").build(comment.getUsername()).toString();
 
         return commentDto;
 
     }
 
     public static List<CommentDto> fromCommentList(final List<Comment> commentList, final UriInfo uriInfo) {
-        return commentList.stream().map(r->fromComment(r,uriInfo)).collect(java.util.stream.Collectors.toList());
+        return commentList.stream().map(r -> fromComment(r, uriInfo)).collect(java.util.stream.Collectors.toList());
     }
 
     public int getId() {

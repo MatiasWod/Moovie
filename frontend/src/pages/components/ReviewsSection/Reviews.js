@@ -10,6 +10,12 @@ import ConfirmationForm from "../forms/confirmationForm/confirmationForm";
 import reviewService from "../../../services/ReviewService";
 import ReportForm from "../forms/reportForm/reportForm";
 import reportApi from "../../../api/ReportApi";
+import CommentField from "../commentField/CommentField";
+import { Divider } from "@mui/material";
+import commentApi from "../../../api/CommentApi";
+import moovieListReviewApi from "../../../api/MoovieListReview";
+import CommentList from "../commentList/CommentList";
+
 
 function Reviews({ id, source , handleParentReload }) {
     const navigate = useNavigate();
@@ -22,7 +28,8 @@ function Reviews({ id, source , handleParentReload }) {
     const {isLoggedIn, user} = useSelector(state => state.auth);
     const [reload, setReload] = useState(false);
     const [reportedReviewId, setReportedReviewId] = useState(null);
-
+    const [commentLoading, setCommentLoading] = useState({});
+    
     const fetchReviews = async (currentPage) => {
         try {
             let response;
@@ -102,6 +109,24 @@ function Reviews({ id, source , handleParentReload }) {
         handleCloseConfirmationDelete();
     };
 
+    const handleCommentSubmit = async (reviewId, comment) => {
+        console.log("Comment submitted for review", reviewId, comment);
+        try {
+            switch (source) {
+                case 'media':
+                    await commentApi.createReviewComment(reviewId, comment);
+                    break;
+                case 'list':
+                    await moovieListReviewApi.createListReviewComment(reviewId, comment);
+                    break;
+            }
+            // Force a reload of the comments
+            setReload(!reload);
+        } catch (error) {
+            console.error("Error creating comment:", error);
+        }
+    };
+
     if (reviewsLoading) return <div>Cargando reseñas...</div>;
     if (reviewsError) return <div>Error al cargar reseñas: {reviewsError.message}</div>;
     if (!reviews || reviews.length === 0) return <div>No hay reseñas disponibles.</div>;
@@ -155,7 +180,20 @@ function Reviews({ id, source , handleParentReload }) {
                             </div>
                         </div>
                         <div className="review-content">{review.reviewContent}</div>
+                        {source === 'media' && (
+                            <>
+                                <CommentList reviewId={review.id} key={`${review.id}-${reload}`} />
+                                {isLoggedIn && (
+                                    <CommentField
+                                        onSubmit={(comment) => handleCommentSubmit(review.id, comment)}
+                                        isLoading={commentLoading[review.id]}
+                                    />
+                                )}
+                            </>
+                        )}
+                        <Divider/>
                     </div>
+                    
                 ))
             ) : (
                 <p>No se encontraron reseñas.</p>
