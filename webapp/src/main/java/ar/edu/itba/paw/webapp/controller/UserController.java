@@ -14,7 +14,7 @@ import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.JwtTokenProvider;
 import ar.edu.itba.paw.webapp.dto.in.BanUserDTO;
-import ar.edu.itba.paw.webapp.dto.in.MoovieListIdDto;
+import ar.edu.itba.paw.webapp.dto.in.JustIdDto;
 import ar.edu.itba.paw.webapp.dto.in.UserCreateDto;
 import ar.edu.itba.paw.webapp.dto.out.*;
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
@@ -44,6 +44,7 @@ public class UserController {
     private final VerificationTokenService verificationTokenService;
     private final JwtTokenProvider jwtTokenProvider;
     private final ModeratorService moderatorService;
+    private final MediaService mediaService;
 
     @Context
     private UriInfo uriInfo;
@@ -51,13 +52,16 @@ public class UserController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public UserController(final UserService userService, ReviewService reviewService, MoovieListService moovieListService, VerificationTokenService verificationTokenService, JwtTokenProvider jwtTokenProvider, ModeratorService moderatorService) {
+    public UserController(final UserService userService, ReviewService reviewService, MoovieListService moovieListService,
+                          VerificationTokenService verificationTokenService, JwtTokenProvider jwtTokenProvider, ModeratorService moderatorService,
+                          MediaService mediaService) {
         this.userService = userService;
         this.reviewService = reviewService;
         this.moovieListService = moovieListService;
         this.verificationTokenService = verificationTokenService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.moderatorService = moderatorService;
+        this.mediaService = mediaService;
     }
 
     @GET
@@ -299,30 +303,8 @@ public class UserController {
     }
 
 
-    // TODO add the correct catching of errors
-    @GET
-    @Path("/{username}/watched")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getWatchedMovies(@PathParam("username") final String username) {
-        try {
-            return Response.ok(MoovieListDto.fromMoovieList((moovieListService.getMoovieListCards("Watched", username, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),
-                    null, null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 1)).get(0), uriInfo)).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-    }
 
-    @GET
-    @Path("/{username}/watchlist")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getWatchlistMovies(@PathParam("username") final String username) {
-        try {
-            return Response.ok(MoovieListDto.fromMoovieList((moovieListService.getMoovieListCards("Watchlist", username, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),
-                    null, null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 1)).get(0), uriInfo)).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-    }
+
 
     @GET
     @Path("/search")
@@ -427,7 +409,7 @@ public class UserController {
                                          @PathParam("username") final String username) {
         UserMoovieListId userMoovieListId = moovieListService.currentUserHasLiked(id);
         if (userMoovieListId != null && userMoovieListId.getUsername().equals(username)) {
-            return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId)).build();
+            return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId, username)).build();
         }
         return Response.noContent().build();
     }
@@ -436,7 +418,7 @@ public class UserController {
     @Path("/{username}/listLikes")
     @Produces(MediaType.APPLICATION_JSON)
     public javax.ws.rs.core.Response likeMoovieList(@PathParam("username") String username,
-                                                    @Valid MoovieListIdDto idDto) {
+                                                    @Valid JustIdDto idDto) {
         userService.isUsernameMe(username);
         boolean like = moovieListService.likeMoovieList(idDto.getId());
         if (like) {
@@ -489,7 +471,7 @@ public class UserController {
                                             @PathParam("id") final int id) {
         UserMoovieListId userMoovieListId = moovieListService.currentUserHasFollowed(id);
         if (userMoovieListId != null && userMoovieListId.getUsername().equals(username)) {
-            return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId)).build();
+            return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId, username)).build();
         }
         return Response.noContent().build();
     }
@@ -498,7 +480,7 @@ public class UserController {
     @Path("/{username}/listFollows")
     @Produces(MediaType.APPLICATION_JSON)
     public javax.ws.rs.core.Response followMoovieList(@PathParam("username") String username,
-                                                      @Valid MoovieListIdDto idDto) {
+                                                      @Valid JustIdDto idDto) {
         userService.isUsernameMe(username);
         boolean like = moovieListService.followMoovieList(idDto.getId());
         if (like) {
@@ -519,5 +501,94 @@ public class UserController {
         return Response.ok()
                 .entity("{\"message\":\"Succesfully unfollowed list.\"}").build();
     }
+
+
+    /***
+     * Watched
+     */
+
+    @GET
+    @Path("/{username}/watched")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getWatchedMedia(@PathParam("username") final String username) {
+        return Response.ok(MoovieListDto.fromMoovieList((moovieListService.getMoovieListCards("Watched", username, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),
+                null, null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 1)).get(0), uriInfo)).build();
+    }
+
+    @GET
+    @Path("/{username}/watched/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getWatchedMediaByMediaId(@PathParam("username") final String username,
+                                              @PathParam("id") final int mediaId) {
+        userService.isUsernameMe(username);
+        boolean watched = mediaService.getMediaById(mediaId).isWatched();
+        if(watched){
+            return Response.ok(new MediaIdDto(mediaId, username)).build();
+        }
+        return Response.noContent().build();
+    }
+
+
+    @POST
+    @Path("/{username}/watched")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response insertIntoWatched(@PathParam("username") final String username,
+                                      @Valid  final JustIdDto justIdDto){
+        moovieListService.addMediaToWatched(justIdDto.getId(), username);
+        return Response.ok().build();
+    }
+
+    @DELETE
+    @Path("/{username}/watched/{id}")
+    public Response deleteFromWatched(@PathParam("username") final String username,
+                                      @PathParam("id") final int id){
+        moovieListService.removeMediaFromWatched(id, username);
+        return Response.ok().build();
+    }
+
+
+
+    /***
+     * Watchlist
+     */
+
+    @GET
+    @Path("/{username}/watchlist")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getWatchlistMovies(@PathParam("username") final String username) {
+        return Response.ok(MoovieListDto.fromMoovieList((moovieListService.getMoovieListCards("Watchlist", username, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),
+                null, null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 1)).get(0), uriInfo)).build();
+    }
+
+    @GET
+    @Path("/{username}/watchlist/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getWatchlistMediaByMediaId(@PathParam("username") final String username,
+                                              @PathParam("id") final int mediaId) {
+        userService.isUsernameMe(username);
+        boolean watched = mediaService.getMediaById(mediaId).isWatched();
+        if(watched){
+            return Response.ok(new MediaIdDto(mediaId, username)).build();
+        }
+        return Response.noContent().build();
+    }
+
+    @POST
+    @Path("/{username}/watchlist")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response insertIntoWatchlist(@PathParam("username") final String username,
+                                      @Valid  final JustIdDto justIdDto){
+        moovieListService.addMediaToWatchlist(justIdDto.getId(), username);
+        return Response.ok().build();
+    }
+
+    @DELETE
+    @Path("/{username}/watchlist/{id}")
+    public Response deleteFromWatchlist(@PathParam("username") final String username,
+                                      @PathParam("id") final int id){
+        moovieListService.removeMediaFromWatchlist(id, username);
+        return Response.ok().build();
+    }
+
 
 }

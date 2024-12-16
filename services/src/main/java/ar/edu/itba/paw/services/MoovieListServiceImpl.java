@@ -16,6 +16,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -417,6 +418,49 @@ public class MoovieListServiceImpl implements MoovieListService{
         }
         return null;
     }
+
+
+
+    @Transactional
+    @Override
+    public void addMediaToWatchlist(int mediaId, String username){
+        userService.isUsernameMe(username);
+        int mlId = getMoovieListCards("Watchlist",username,
+                MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId();
+        insertMediaIntoMoovieList(mlId, new ArrayList<>(mediaId));
+    }
+
+
+
+    @Transactional
+    @Override
+    public void removeMediaFromWatchlist(int movieId, String username){
+        userService.isUsernameMe(username);
+        int mlId = getMoovieListCards("Watchlist",username,
+                MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId();
+        deleteMediaFromMoovieList(mlId, movieId);
+    }
+
+
+    @Transactional
+    @Override
+    public void addMediaToWatched(int mediaId, String username){
+        userService.isUsernameMe(username);
+        int mlId = getMoovieListCards("Watched",username,
+                MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId();
+        insertMediaIntoMoovieList(mlId, new ArrayList<>(mediaId));
+    }
+
+    @Transactional
+    @Override
+    public void removeMediaFromWatched(int movieId, String username){
+        userService.isUsernameMe(username);
+        int mlId = getMoovieListCards("Watched",username,
+                MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId();
+        deleteMediaFromMoovieList(mlId, movieId);
+    }
+
+
 
     private String setOrderMediaBy(String orderBy){
         if(orderBy==null || orderBy.isEmpty()){

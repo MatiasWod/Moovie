@@ -13,10 +13,10 @@ public class UserListIdDto {
         this.username = username;
     }
 
-    public UserListIdDto fromUserMoovieList(UserMoovieListId obj){
+    public UserListIdDto fromUserMoovieList(UserMoovieListId obj, String username){
         UserListIdDto dto = new UserListIdDto();
         dto.mlId = obj.getMlId();
-        dto.username = obj.getUsername();
+        dto.username = username;
         return dto;
     }
 
