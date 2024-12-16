@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -426,8 +427,8 @@ public class MoovieListServiceImpl implements MoovieListService{
     public void addMediaToWatchlist(int mediaId, String username){
         userService.isUsernameMe(username);
         int mlId = getMoovieListCards("Watchlist",username,
-                MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId();
-        insertMediaIntoMoovieList(mlId, new ArrayList<>(mediaId));
+                MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,1).get(0).getMoovieListId();
+        insertMediaIntoMoovieList(mlId, Collections.singletonList(mediaId));
     }
 
 
@@ -437,7 +438,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     public void removeMediaFromWatchlist(int movieId, String username){
         userService.isUsernameMe(username);
         int mlId = getMoovieListCards("Watchlist",username,
-                MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId();
+                MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,1).get(0).getMoovieListId();
         deleteMediaFromMoovieList(mlId, movieId);
     }
 
@@ -447,8 +448,8 @@ public class MoovieListServiceImpl implements MoovieListService{
     public void addMediaToWatched(int mediaId, String username){
         userService.isUsernameMe(username);
         int mlId = getMoovieListCards("Watched",username,
-                MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId();
-        insertMediaIntoMoovieList(mlId, new ArrayList<>(mediaId));
+                MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,1).get(0).getMoovieListId();
+        insertMediaIntoMoovieList(mlId, Collections.singletonList(mediaId));
     }
 
     @Transactional
@@ -456,7 +457,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     public void removeMediaFromWatched(int movieId, String username){
         userService.isUsernameMe(username);
         int mlId = getMoovieListCards("Watched",username,
-                MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,0).get(0).getMoovieListId();
+                MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),null,null,1,1).get(0).getMoovieListId();
         deleteMediaFromMoovieList(mlId, movieId);
     }
 

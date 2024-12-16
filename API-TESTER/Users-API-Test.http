@@ -50,6 +50,20 @@ GET {{baseUrl}}/{{id1}}/moovieListReviews
 GET {{baseUrl}}/search?username={{searchParam}}
 
 
+### POST A WATCHED
+
+@username5 = Wancho
+@bearer = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJXYW5jaG8iLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczNDM2OTAzMSwiZXhwIjoxNzM0OTczODMxfQ.PUUwaRQa-kXeHBYe9vYVlcUEuKgio7paVwk77JIMtyX6EzYFMyDd6nYhcXGqAnXpUzUHxCNqwGHVaAC4E-iODA
+
+
+POST {{baseUrl}}/{{username5}}/watched
+Authorization: Bearer {{bearer}}
+Content-Type: application/json
+
+{
+  "id": 139
+}
+
 
 
 

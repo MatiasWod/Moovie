@@ -83,7 +83,6 @@ const ListService = (() => {
 
     const likeList = async (moovieListId, username) => {
         try {
-
             return await userApi.likeList(moovieListId, username)
         } catch (error){
             return null;

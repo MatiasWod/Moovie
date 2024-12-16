@@ -1,13 +1,95 @@
-.card{
-    margin-left: 2px;
-    margin-right: 2px;
-    transition: transform 0.5s ease, opacity 0.5s ease;
+/* Base card styles */
+.media-card {
+    position: relative;
+    width: 200px;
+    height: 300px;
+    margin: 10px;
+    overflow: hidden;
     cursor: pointer;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
 }
 
+.media-card:hover {
+    transform: scale(1.05);
+}
 
-.card:hover {
-    transform: scale(1.1);
-    opacity: 0.9;
+/* Card border */
+.media-card-border {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: 3px solid lightblue;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Image styles */
+.media-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.3s ease;
+}
+
+/* Overlay styles */
+.media-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    text-align: center;
+}
+
+/* Title and details */
+.media-card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 5px 10px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.media-card-overlay h5 {
+    margin: 5px 0;
+}
+
+/* Buttons */
+.media-card-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.media-card-button {
+    padding: 5px 15px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.media-card-button:hover {
+    background-color: #0056b3;
+}
+
+/* Hide overlay when not hovered */
+.media-card .media-card-overlay {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.media-card.hovered .media-card-overlay {
+    opacity: 1;
 }

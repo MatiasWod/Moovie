@@ -176,6 +176,20 @@ const userApi = (() => {
     }
 
 
+    //WATCHED AND WATCHLIST (WW)
+    const currentUserWW = (ww, username, mediaId) => {
+        return api.get(`/users/${username}/${ww}/${mediaId}`);
+    }
+
+    const insertMediaIntoWW = (ww, username, mediaId) => {
+        return api.post(`/users/${username}/${ww}`,
+            {"id":mediaId});
+    }
+
+    const removeMediaFromWW = (ww, username, mediaId) => {
+        return api.delete(`/users/${username}/${ww}/${mediaId}`);
+    }
+
 
     return {
         login,
@@ -198,7 +212,10 @@ const userApi = (() => {
         currentUserHasFollowedList,
         followList,
         unfollowList,
-        confirmToken
+        confirmToken,
+        currentUserWW,
+        insertMediaIntoWW,
+        removeMediaFromWW
     };
 
 })();
