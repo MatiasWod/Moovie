@@ -23,8 +23,6 @@ const MediaCard = ({ media }) => {
         };
 
         fetchWW();
-        console.log(ww)
-
     }, [media.id, ping]);
 
     const navigate = useNavigate();

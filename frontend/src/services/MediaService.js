@@ -38,6 +38,7 @@ const MediaService = (() => {
                 userWWStatus(WatchlistWatched.Watchlist, mediaId, username)
             ]);
 
+
             return {
                 watched: watchedStatus,
                 watchlist: watchlistStatus

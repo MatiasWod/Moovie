@@ -566,8 +566,8 @@ public class UserController {
     public Response getWatchlistMediaByMediaId(@PathParam("username") final String username,
                                               @PathParam("id") final int mediaId) {
         userService.isUsernameMe(username);
-        boolean watched = mediaService.getMediaById(mediaId).isWatched();
-        if(watched){
+        boolean watchlist = mediaService.getMediaById(mediaId).isWatchlist();
+        if(watchlist){
             return Response.ok(new MediaIdDto(mediaId, username)).build();
         }
         return Response.noContent().build();
