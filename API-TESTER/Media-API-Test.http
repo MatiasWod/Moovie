@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:8080/media
+@baseUrl = http://localhost:8080/medias
 
 #----------------------------
 # GET
@@ -6,12 +6,11 @@
 
 ### MEDIA BY ID
 
-# EXAMPLE: GET {{baseUrl}}/media/123
+# EXAMPLE: GET {{baseUrl}}/media
 
-@id0 = 10
 
-GET {{baseUrl}}/{{id0}}
-
+GET {{baseUrl}}?ids=2,59,8,9,5
+Content-Type: application/json
 
 ### MEDIA LIST
 
@@ -23,7 +22,7 @@ GET {{baseUrl}}/{{id0}}
 @page1 = 1
 @pageSize1 = 10
 
-GET {{baseUrl}}?type={{type1}}&orderBy={{orderBy1}}&sortOrder={{sortOrder1}}&page={{page1}}&pageSize={{pageSize1}}
+GET {{baseUrl}}/search?type={{type1}}&orderBy={{orderBy1}}&sortOrder={{sortOrder1}}&page={{page1}}&pageSize={{pageSize1}}
 
 
 ### GET ACTORS IN MEDIA

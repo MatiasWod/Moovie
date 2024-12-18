@@ -22,9 +22,10 @@ import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.util.ArrayList;
 import java.util.List;
 
-@Path("media")
+@Path("medias")
 @Component
 public class MediaController {
 
@@ -45,6 +46,38 @@ public class MediaController {
     //TODO capaz considerar en listAll poder pedir paginas de distintos tamaños, tambien filtros y ordenado, hasta se podria devolder el count en esta misma query....
 
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMediaById(@QueryParam("ids") final String ids) {
+        if (ids.length() > 100) {
+            throw new IllegalArgumentException("Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
+        }
+        List<Integer> idList = new ArrayList<>();
+        if (ids != null && !ids.isEmpty()) {
+            String[] splitIds = ids.split(",");
+            for (String id : splitIds) {
+                try {
+                    idList.add(Integer.parseInt(id.trim()));
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
+                }
+            }
+        }
+        if(idList.size() >= 25 || idList.size() < 0 ) {
+            throw new IllegalArgumentException("Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
+        }
+        List<MediaDto> mediaList = new ArrayList<>();
+        for (int id : idList) {
+            Media media = mediaService.getMediaById(id);
+            if(media.isType()){
+                mediaList.add(TVSerieDto.fromTVSerie(mediaService.getTvById(id), uriInfo));
+            }
+            mediaList.add(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo));
+        }
+        return Response.ok(new GenericEntity<List<MediaDto>>(mediaList) {}).build();
+    }
+
+    @GET
+    @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMedia(@QueryParam("type") @DefaultValue("-1") final int type,
                              @QueryParam("pageNumber") @DefaultValue("1") final int page,
@@ -78,18 +111,6 @@ public class MediaController {
         final PagingUtils<Media> toReturnMediaList = new PagingUtils<>(mediaList,page - 1, pageSizeQuery, mediaCount);
         ResponseUtils.setPaginationLinks(res,toReturnMediaList,uriInfo);
         return res.build();
-    }
-
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getMediaById(@PathParam("id") final int id) {
-        Media media = mediaService.getMediaById(id);
-        if(media.isType()){
-            return Response.ok(TVSerieDto.fromTVSerie(mediaService.getTvById(id), uriInfo)).build();
-        }
-        return Response.ok(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo)).build();
-
     }
 
     /* REVIEWS */

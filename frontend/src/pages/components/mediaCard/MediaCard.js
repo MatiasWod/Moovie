@@ -18,7 +18,7 @@ const MediaCard = ({ media }) => {
             try {
                 const WW = await mediaService.currentUserWWStatus(media.id, user.username);
                 setWW(WW);
-            } catch (error) {
+             } catch (error) {
             }
         };
 
