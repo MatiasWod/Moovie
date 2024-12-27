@@ -180,7 +180,6 @@ const Discover = () => {
                         }
                     })
                 );
-                e
                 setMedias({
                     links,
                     data: mediasWithGenres,
