@@ -31,7 +31,7 @@ Authorization: Basic {{auth2}}
 ### WATCHED / WATCHLIST
 
 @username3 = Wancho
-@bearer_token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJXYW5jaG8iLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjc0MDc0NywiZXhwIjoxNzMzMzQ1NTQ3fQ.OKFjYIuVZktDJ6rw3XbgW2aqO0brzGhjpOkU2sJJfgFVvauDxz7hCFwnVnUnJCW_ZW8EWw6BBfcg-AFyiCh_7Q
+@bearer_token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJXYW5jaG8iLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczNTMyMTMzMywiZXhwIjoxNzM1OTI2MTMzfQ.1A86G2nyz8-nHbd6ohIxv6_Ykp7A35CFAXJ0aYscaj7ekm4glmFcLw3-tTVHROPI4T7R5aQvViaTaAh7UgPXlw
 @type = watchlist
 
 GET {{baseUrl}}/{{username3}}/{{type}}
@@ -65,5 +65,18 @@ Content-Type: application/json
 }
 
 
+### GET likedists
 
+@username4=Wancho
+@bearer_token23 = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJXYW5jaG8iLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczNTMyMTMzMywiZXhwIjoxNzM1OTI2MTMzfQ.1A86G2nyz8-nHbd6ohIxv6_Ykp7A35CFAXJ0aYscaj7ekm4glmFcLw3-tTVHROPI4T7R5aQvViaTaAh7UgPXlw
+
+GET {{baseUrl}}/{{username4}}/listLikes/40
+Authorization: Bearer {{bearer_token23}}
+Content-Type: */*
+
+### GET followedLists
+
+GET {{baseUrl}}/{{username4}}/listFollows
+Authorization: Bearer {{bearer_token23}}
+Content-Type: */*
 

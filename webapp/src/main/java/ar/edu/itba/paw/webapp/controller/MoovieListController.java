@@ -32,6 +32,7 @@ import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Path("list")
@@ -60,6 +61,7 @@ public class MoovieListController {
      */
 
     @GET
+    @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
     public javax.ws.rs.core.Response getMoovieList(@QueryParam("search") String search,
                                                    @QueryParam("ownerUsername") String ownerUsername,
@@ -93,6 +95,34 @@ public class MoovieListController {
         } catch (Exception e) {
             return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.NOT_FOUND).build();
         }
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMediaById(@QueryParam("ids") final String ids) {
+        if (ids.length() > 100) {
+            throw new IllegalArgumentException("Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
+        }
+        List<Integer> idList = new ArrayList<>();
+        if (ids != null && !ids.isEmpty()) {
+            String[] splitIds = ids.split(",");
+            for (String id : splitIds) {
+                try {
+                    idList.add(Integer.parseInt(id.trim()));
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
+                }
+            }
+        }
+        if(idList.size() >= 25 || idList.size() < 0 ) {
+            throw new IllegalArgumentException("Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
+        }
+        List<MoovieListDto> mlList = new ArrayList<>();
+        for (int id : idList) {
+            MoovieListDto mlc = MoovieListDto.fromMoovieList(moovieListService.getMoovieListCardById(id),uriInfo);
+            mlList.add(mlc);
+        }
+        return Response.ok(new GenericEntity<List<MoovieListDto>>(mlList) {}).build();
     }
 
     //We have a separate endpoint for content to be able to use filters and no need to do it every time we want to find a list

@@ -43,7 +43,8 @@ public class MediaController {
         this.actorService = actorService;
     }
 
-    //TODO capaz considerar en listAll poder pedir paginas de distintos tamaños, tambien filtros y ordenado, hasta se podria devolder el count en esta misma query....
+    //TODO capaz considerar en listAll poder pedir paginas de distintos tamaños, tambien filtros y
+    // ordenado, hasta se podria devolder el count en esta misma query....
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -74,6 +75,18 @@ public class MediaController {
             mediaList.add(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo));
         }
         return Response.ok(new GenericEntity<List<MediaDto>>(mediaList) {}).build();
+    }
+
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMediaById(@PathParam("id") final int id) {
+        Media media = mediaService.getMediaById(id);
+        if(media.isType()){
+            return Response.ok(TVSerieDto.fromTVSerie(mediaService.getTvById(id), uriInfo)).build();
+        }
+        return Response.ok(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo)).build();
+
     }
 
     @GET

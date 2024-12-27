@@ -15,6 +15,20 @@ const ListService = (() => {
         return res;
     }
 
+    const getListByIdList = async (idList) => {
+        const res = await listApi.getListByIdList(idList);
+        return res;
+    }
+
+    const getIdListFromObjectList = (list) => {
+        let toRet = "";
+        for (const m of list) {
+            toRet += m.mlId + ",";
+        }
+        return toRet.slice(0, -1); // Removes the last comma
+    };
+
+
     const getListContentById= async ({id, orderBy, sortOrder, pageNumber, pageSize}) => {
         const res = await listApi.getListContentById({id, orderBy, sortOrder, pageNumber, pageSize});
         return parsePaginatedResponse(res);
@@ -31,7 +45,7 @@ const ListService = (() => {
     }
 
     const getLikedOrFollowedListFromUser = async (username, type, orderBy, sortOrder, pageNumber) =>{
-        const res = await listApi.getLikedOrFollowedListFromUser(username, type, orderBy, sortOrder, pageNumber);
+        const res = await userApi.getLikedOrFollowedListFromUser(username, type, orderBy, sortOrder, pageNumber);
         return parsePaginatedResponse(res);
     }
 
@@ -123,6 +137,8 @@ const ListService = (() => {
         getLists,
         getListById,
         getListContentById,
+        getListByIdList,
+        getIdListFromObjectList,
         getMoovieListReviewsFromListId,
         insertMediaIntoMoovieList,
         getLikedOrFollowedListFromUser,

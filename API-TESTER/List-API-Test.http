@@ -186,18 +186,5 @@ Content-Type: application/json
 }
 
 
-### GET likedists
 
-@username4=Wancho
-@bearerToken = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNb292aWUiLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjgzNjEyMiwiZXhwIjoxNzMzNDQwOTIyfQ.DH67__vKqJhHSWunS362U0O1qRptW4Gfjw35LCUqy0z8CtLlmIE-MaxkqXscQZQtE4ILqyEmRaiRaofmCXd4oA
-
-GET {{baseUrl}}/liked?username={{username4}}
-Authorization: Bearer {{bearerToken}}
-Content-Type: */*
-
-### GET followedLists
-
-GET {{baseUrl}}/followed?username={{username4}}
-Authorization: Bearer {{bearerToken}}
-Content-Type: */*
 

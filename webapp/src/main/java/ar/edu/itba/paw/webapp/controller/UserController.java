@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -392,9 +393,17 @@ public class UserController {
                                   @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
         List<MoovieListCard> mlcList = moovieListService.getLikedMoovieListCards(username, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
                 PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1);
+
+
+
         int listCount = userService.getLikedMoovieListCountForUser(username);
 
-        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(MoovieListDto.fromMoovieListList(mlcList, uriInfo)) {
+        List<UserListIdDto> listToRet = new ArrayList<UserListIdDto>();
+        for ( MoovieListCard mlc : mlcList){
+            listToRet.add(new UserListIdDto(mlc.getMoovieListId(), username));
+        }
+
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserListIdDto>>(listToRet) {
         });
         final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), listCount);
         ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);
@@ -449,15 +458,21 @@ public class UserController {
     @Path("/{username}/listFollows")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFollowedLists(@PathParam("username") final String username,
-                                     @QueryParam("orderBy") String orderBy,
-                                     @QueryParam("order") String order,
-                                     @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
+                                  @QueryParam("orderBy") String orderBy,
+                                  @QueryParam("order") String order,
+                                  @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
         int userid = userService.getProfileByUsername(username).getUserId();
         List<MoovieListCard> mlcList = moovieListService.getFollowedMoovieListCards(userid, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
                 PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1);
+
         int listCount = moovieListService.getFollowedMoovieListCardsCount(userid, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
 
-        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(MoovieListDto.fromMoovieListList(mlcList, uriInfo)) {
+        List<UserListIdDto> listToRet = new ArrayList<UserListIdDto>();
+        for ( MoovieListCard mlc : mlcList){
+            listToRet.add(new UserListIdDto(mlc.getMoovieListId(), username));
+        }
+
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserListIdDto>>(listToRet) {
         });
         final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), listCount);
         ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);

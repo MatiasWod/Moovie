@@ -4,7 +4,7 @@ import search from "../pages/views/search";
 const mediaApi = (()=> {
 
     const getMedia = ({type, page, pageSize, orderBy, sortOrder, search, providers, genres}) => {
-        return api.get('/medias',
+        return api.get('/medias/search',
             {
                 params: {
                     'type': type,

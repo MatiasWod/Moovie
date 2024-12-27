@@ -3,7 +3,7 @@ import api from './api'
 const listApi = (() => {
 
     const getLists = ({search, ownerUsername, type, orderBy, order, pageNumber, pageSize}) =>{
-        return api.get('list',
+        return api.get('list/search',
             {
                 params:{
                     'search' : search,
@@ -20,6 +20,10 @@ const listApi = (() => {
     const getListById = (id) => {
         return api.get( `/list/${id}`);
     }
+
+    const getListByIdList = (idListString) => {
+        return api.get(`/list?ids=${idListString}`);
+    };
 
 
     const getListContentById= ({id, orderBy, sortOrder, pageNumber, pageSize}) => {
@@ -93,6 +97,7 @@ const listApi = (() => {
     return{
         getLists,
         getListById,
+        getListByIdList,
         getListContentById,
         getMoovieListReviewsFromListId,
         createMoovieListReview,

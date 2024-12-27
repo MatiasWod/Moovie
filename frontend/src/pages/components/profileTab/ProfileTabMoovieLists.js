@@ -72,6 +72,8 @@ function ProfileTabMediaLists({ type, username }) {
                         sortOrder,
                         page
                     );
+                    data = await ListService.getListByIdList(ListService.getIdListFromObjectList(data.data));
+                    console.log(data);
                 }
                 setLists(data);
                 setListError(false);
