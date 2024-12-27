@@ -8,7 +8,12 @@ import WatchlistWatched from "../api/values/WatchlistWatched";
 const MediaService = (() => {
     const getMedia = async ({type, page, pageSize, orderBy, sortOrder, search, providers, genres}) => {
         const res = await mediaApi.getMedia({type, page, pageSize, orderBy, sortOrder, search, providers, genres});
-        return parsePaginatedResponse(res)
+        return parsePaginatedResponse(res);
+    }
+
+    const getProvidersForMedia = async ({url}) => {
+        const res = await mediaApi.getProvidersForMedia(url);
+        return res;
     }
 
     const getMediaById = async (id) => {
@@ -85,6 +90,7 @@ const MediaService = (() => {
 
     return {
         getMedia,
+        getProvidersForMedia,
         getMediaById,
         getReviewsByMediaId,
         getActorsByMediaId,

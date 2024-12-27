@@ -29,6 +29,14 @@ const Discover = () => {
     const [mediasLoading, setMediasLoading] = useState(true);
     const [mediasError, setMediasError] = useState(null);
 
+    const [genresForMedias, setGenresForMedias] = useState(undefined);
+    const [genresForMediasLoading, setGenresForMediasLoading] = useState(true);
+    const [genresForMediasError, setGenresForMediasError] = useState(null);
+
+    const [providersForMedias, setProvidersForMedias] = useState(undefined);
+    const [providersForMediasLoading, setProvidersForMediasLoading] = useState(true);
+    const [providersForMediasError, setProvidersForMediasError] = useState(null);
+
     const [providers, setProviders] = useState(undefined);
     const [providersLoading, setProvidersLoading] = useState(true);
     const [providersError, setProvidersError] = useState(null);
@@ -116,6 +124,8 @@ const Discover = () => {
         getData();
     }, []);
 
+
+
     useEffect(() => {
         async function getData() {
             try {
@@ -136,18 +146,48 @@ const Discover = () => {
     useEffect(() => {
         async function getData() {
             try {
-                const data = await MediaService.getMedia({
+                const mediasResponse = await MediaService.getMedia({
                     type: type,
                     page: page,
                     pageSize: pagingSizes.MEDIA_DEFAULT_PAGE_SIZE,
                     sortOrder: sortOrder,
                     orderBy: orderBy,
                     providers: Array.from(selectedProviders),
-                    genres: Array.from(selectedGenres)
+                    genres: Array.from(selectedGenres),
                 });
-                setMedias(data);
+
+
+                const { data: medias, links } = mediasResponse;
+
+                const mediasWithProviders = await Promise.all(
+                    medias.map(async (media) => {
+                        try {
+                            const providers = await ProviderService.getProvidersForMedia(media.id);
+                            return { ...media, providers };
+                        } catch (error) {
+                            return { ...media, providers: [] };
+                        }
+                    })
+                );
+
+                const mediasWithGenres = await Promise.all(
+                    mediasWithProviders.map(async (media) => {
+                        try {
+                            const genres = await GenreService.getGenresForMedia(media.id);
+                            return { ...media, genres };
+                        } catch (error) {
+                            return { ...media, genres: [] };
+                        }
+                    })
+                );
+                e
+                setMedias({
+                    links,
+                    data: mediasWithGenres,
+                });
                 setMediasLoading(false);
             } catch (error) {
+                console.error("Error in fetching media data:", error);
                 setMediasError(error);
                 setMediasLoading(false);
             }
@@ -155,6 +195,9 @@ const Discover = () => {
 
         getData();
     }, [type, page, sortOrder, orderBy, selectedProviders, selectedGenres]);
+
+
+
 
 
 

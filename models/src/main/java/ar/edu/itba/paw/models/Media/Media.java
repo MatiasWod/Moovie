@@ -285,10 +285,10 @@ public class Media {
         this.overview = overview;
     }
 
-    public List<String> getGenres() {
-        List<String> genres = new ArrayList<>();
+    public List<Genre> getGenres() {
+        List<Genre> genres = new ArrayList<>();
         for (Genre genre : this.genres) {
-            genres.add(genre.getGenre());
+            genres.add(genre);
         }
         return genres;
     }
