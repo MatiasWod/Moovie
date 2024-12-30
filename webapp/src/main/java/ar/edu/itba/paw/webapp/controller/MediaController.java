@@ -71,8 +71,9 @@ public class MediaController {
             Media media = mediaService.getMediaById(id);
             if(media.isType()){
                 mediaList.add(TVSerieDto.fromTVSerie(mediaService.getTvById(id), uriInfo));
+            } else{
+                mediaList.add(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo));
             }
-            mediaList.add(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo));
         }
         return Response.ok(new GenericEntity<List<MediaDto>>(mediaList) {}).build();
     }

@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.*;
+import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.MoovieList.UserMoovieListId;
@@ -525,10 +527,32 @@ public class UserController {
     @GET
     @Path("/{username}/watched")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getWatchedMedia(@PathParam("username") final String username) {
-        return Response.ok(MoovieListDto.fromMoovieList((moovieListService.getMoovieListCards("Watched", username, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),
-                null, null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 1)).get(0), uriInfo)).build();
+    public Response getWatched(@PathParam("username") final String username,
+                                     @QueryParam("orderBy") String orderBy,
+                                     @QueryParam("order") String order,
+                                     @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
+
+        MoovieListCard ml = moovieListService.getMoovieListCards("Watched", username,
+                MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),
+                null, null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 1).get(0);
+
+        List<Media> mediaList = moovieListService.getMoovieListContent(ml.getMoovieListId(),orderBy,order,PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber);
+
+        int mediaCount = ml.getSize();
+        List<MediaIdDto> listToRet = new ArrayList<>();
+
+        for ( Media media : mediaList){
+            listToRet.add(new MediaIdDto(media.getMediaId(), username));
+        }
+
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdDto>>(listToRet) {
+        });
+
+        final PagingUtils<Media> toReturnMoovieListCardList = new PagingUtils<>(mediaList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), mediaCount);
+        ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);
+        return res.build();
     }
+
 
     @GET
     @Path("/{username}/watched/{id}")
@@ -570,9 +594,30 @@ public class UserController {
     @GET
     @Path("/{username}/watchlist")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getWatchlistMovies(@PathParam("username") final String username) {
-        return Response.ok(MoovieListDto.fromMoovieList((moovieListService.getMoovieListCards("Watchlist", username, MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),
-                null, null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 1)).get(0), uriInfo)).build();
+    public Response getWatchlist(@PathParam("username") final String username,
+                               @QueryParam("orderBy") String orderBy,
+                               @QueryParam("order") String order,
+                               @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
+
+        MoovieListCard ml = moovieListService.getMoovieListCards("Watchlist", username,
+                MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),
+                null, null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 1).get(0);
+
+        List<Media> mediaList = moovieListService.getMoovieListContent(ml.getMoovieListId(),orderBy,order,PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber);
+
+        int mediaCount = ml.getSize();
+        List<MediaIdDto> listToRet = new ArrayList<>();
+
+        for ( Media media : mediaList){
+            listToRet.add(new MediaIdDto(media.getMediaId(), username));
+        }
+
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdDto>>(listToRet) {
+        });
+
+        final PagingUtils<Media> toReturnMoovieListCardList = new PagingUtils<>(mediaList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), mediaCount);
+        ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);
+        return res.build();
     }
 
     @GET

@@ -53,16 +53,13 @@ GET {{baseUrl}}/search?username={{searchParam}}
 ### POST A WATCHED
 
 @username5 = Wancho
-@bearer = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJXYW5jaG8iLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczNDM2OTAzMSwiZXhwIjoxNzM0OTczODMxfQ.PUUwaRQa-kXeHBYe9vYVlcUEuKgio7paVwk77JIMtyX6EzYFMyDd6nYhcXGqAnXpUzUHxCNqwGHVaAC4E-iODA
+@bearer_token26 = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJXYW5jaG8iLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczNTMyMTMzMywiZXhwIjoxNzM1OTI2MTMzfQ.1A86G2nyz8-nHbd6ohIxv6_Ykp7A35CFAXJ0aYscaj7ekm4glmFcLw3-tTVHROPI4T7R5aQvViaTaAh7UgPXlw
 
 
-POST {{baseUrl}}/{{username5}}/watched
-Authorization: Bearer {{bearer}}
-Content-Type: application/json
+GET {{baseUrl}}/{{username5}}/watched
+Authorization: Bearer {{bearer_token26}}
+Content-Type: */*
 
-{
-  "id": 139
-}
 
 
 ### GET likedists

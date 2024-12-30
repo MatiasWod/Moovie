@@ -90,10 +90,9 @@ const userApi = (() => {
         return api.get(`/users/${userId}/reviews`);
     }
 
-    // This is for getting the watched or watchlist from an user
-    const getSpecialListFromUser = (username,type) => {
-        return api.get(`/users/${username}/${type}`);
-    }
+    const getSpecialListFromUser = (username, type, orderBy, order, pageNumber = 1) => {
+        return api.get(`/users/${username}/${type}?orderBy=${orderBy}&order=${order}&pageNumber=${pageNumber}`);
+    };
 
 
     const getMoovieListReviewsFromUser = (userId,page) => {

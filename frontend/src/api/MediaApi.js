@@ -19,6 +19,10 @@ const mediaApi = (()=> {
             });
     }
 
+    const getMediaByIdList = (idListString) => {
+        return api.get(`/medias?ids=${idListString}`);
+    };
+
     const getProvidersForMedia = (url) => {
         return api.get(url);
     }
@@ -54,6 +58,7 @@ const mediaApi = (()=> {
         getMedia,
         getProvidersForMedia,
         getMediaById,
+        getMediaByIdList,
         getReviewsByMediaId,
         getActorsInMedia,
         createReview
