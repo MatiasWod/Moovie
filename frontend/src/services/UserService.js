@@ -23,12 +23,17 @@ const UserService = (() => {
         return parsePaginatedResponse(res);
     }
 
+    const setPfp = async ({username, pfp}) =>{
+        return await userApi.setPfp(username, pfp);
+    }
+
 
     return {
         getMilkyLeaderboard,
         getMovieReviewsFromUser,
         getSearchedUsers,
-        getSpecialListFromUser
+        getSpecialListFromUser,
+        setPfp
     }
 })();
 

@@ -2,7 +2,6 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.Media.Media;
-import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.MoovieList.UserMoovieListId;
@@ -22,6 +21,8 @@ import ar.edu.itba.paw.webapp.dto.out.*;
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
 import ar.edu.itba.paw.webapp.mappers.*;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -220,31 +223,25 @@ public class UserController {
     @Path("/{username}/image")
     @Produces("image/png")
     public Response getProfileImage(@PathParam("username") final String username) {
-        try {
-            LOGGER.info("Method: getProfileImage, Path: /users/{username}/image, Username: {}", username);
-            final byte[] image = userService.getProfilePicture(username);
-            return Response.ok(image).build();
-        } catch (RuntimeException e) {
-            LOGGER.error("Error retrieving profile image: {}", e.getMessage());
-            return Response.serverError().entity(e.getMessage()).build();
-        }
+        LOGGER.info("Method: getProfileImage, Path: /users/{username}/image, Username: {}", username);
+        final byte[] image = userService.getProfilePicture(username);
+        return Response.ok(image).build();
     }
 
     @PUT
     @Path("/{username}/image")
-    @Consumes("image/png")
-    public Response setProfileImage(@PathParam("username") final String username, final MultipartFile image) {
-        try {
-            LOGGER.info("Method: setProfileImage, Path: /users/{username}/image, Username: {}", username);
-            userService.setProfilePicture(image);
-            LOGGER.info("Profile image updated for username: {}", username);
-            return Response.ok().build();
-        } catch (RuntimeException e) {
-            LOGGER.error("Error updating profile image: {}", e.getMessage());
-            return Response.serverError().entity(e.getMessage()).build();
-        }
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response updateProfileImage(@PathParam("username") String username,
+                                       @FormDataParam("image") final FormDataBodyPart image,
+                                       @Size(max = 1024 * 1024 * 2) @FormDataParam("image") byte[] imageBytes) {
+        LOGGER.info("Method: setProfileImage, Path: /users/{username}/image, Username: {}", username);
 
+        userService.setProfilePicture(imageBytes, image.getMediaType().getSubtype());
+
+        LOGGER.info("Profile image updated for username: {}", username);
+        return Response.ok().build();
     }
+
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

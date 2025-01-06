@@ -1,16 +1,31 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './profileHeader.css';
 import ProfileImage from "../profileImage/ProfileImage";
 import { Button } from 'react-bootstrap';
-import userApi from '../../../api/UserApi';
+import ChangePfpForm from "../forms/changePfpForm/changePfpForm";
+import {useSelector} from "react-redux";
+import {useNavigate} from "react-router-dom";
 
 
 const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser }) => {
+    const [showPfpPopup, setShowPfpPopup] = useState(false);
+    const navigate = useNavigate();
+    const { isLoggedIn, user } = useSelector(state => state.auth);
+
+    const handleShowPfpPopup = () =>{
+        if(!isLoggedIn){
+            navigate('/login');
+        } if( user.username === profile.username ){
+            setShowPfpPopup(true)
+        }
+    }
+
+    const handleClosePfpPopup = () => setShowPfpPopup(false);
 
     return (
         <div className="profile-header">
             <div className="profile-header-info">
-                <div className="profile-header-avatar">
+                <div className="profile-header-avatar" style={{ cursor: "pointer" }} onClick={handleShowPfpPopup}>
                     <ProfileImage username={profile.username} image={profile.pictureUrl}/>
                 </div>
                 <div>
@@ -47,6 +62,10 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser }) => {
             <div>
                 {profile.role}
             </div>
+            {showPfpPopup && (
+                <ChangePfpForm onCancel={handleClosePfpPopup} />
+            )}
+
         </div>
     );
 };

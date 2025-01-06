@@ -117,6 +117,10 @@ const userApi = (() => {
         );
     }
 
+    const setPfp = (username, pfp) => {
+        return api.put(`/users/${username}/image`, pfp);
+    }
+
     /*
     LIKES AND FOLLOWED
      */
@@ -214,7 +218,8 @@ const userApi = (() => {
         confirmToken,
         currentUserWW,
         insertMediaIntoWW,
-        removeMediaFromWW
+        removeMediaFromWW,
+        setPfp
     };
 
 })();

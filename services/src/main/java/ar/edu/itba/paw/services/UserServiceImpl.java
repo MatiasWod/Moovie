@@ -47,6 +47,7 @@ public class UserServiceImpl implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
+    final static int MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 
     //REGSITRATION
 
@@ -237,24 +238,23 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void setProfilePicture(MultipartFile picture) {
+    public void setProfilePicture(byte[] image, String extension) {
         int uid = getInfoOfMyUser().getUserId();
 
-        if (!picture.isEmpty()) {
-            if (!(picture.getContentType() != null && picture.getContentType().startsWith("image/"))) {
-                throw new InvalidTypeException("File is not of type image");
+        if (image.length > 0) {
+            if(image.length > MAX_IMAGE_SIZE){
+                throw new InvalidTypeException("File is too big (Max is 5MB).");
             }
-            try {
-                byte[] image = IOUtils.toByteArray(picture.getInputStream());
-                if (userDao.hasProfilePicture(uid)) {
-                    userDao.updateProfilePicture(getInfoOfMyUser().getUserId(), image);
-                    LOGGER.info("Succesfully set the profile picture for user with userid : {} ", uid);
-                    return;
-                }
-                LOGGER.info("Succesfully set the profile picture for user with userid : {} ", uid);
-                userDao.setProfilePicture(getInfoOfMyUser().getUserId(), image);
-            } catch (IOException e) {
-                throw new FailedToSetProfilePictureException("The upload of the profile picture failed");
+
+            if (extension != null || extension.equals("png") || extension.equals("jpg")
+                    || extension.equals("jpeg") || extension.equals("gif")) {
+            if (userDao.hasProfilePicture(uid)) {
+                userDao.updateProfilePicture(getInfoOfMyUser().getUserId(), image);
+                return;
+            }
+            userDao.setProfilePicture(getInfoOfMyUser().getUserId(), image);
+            } else{
+                throw new InvalidTypeException("File is not of type image");
             }
         } else {
             throw new NoFileException("No file was selected");

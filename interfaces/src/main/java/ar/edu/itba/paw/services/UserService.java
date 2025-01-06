@@ -55,7 +55,7 @@ public interface UserService {
     boolean isUsernameMe(String username);
 
     //Profile picture functions
-    void setProfilePicture(MultipartFile image);
+    void setProfilePicture(byte[] imageBytes, String extension);
 
     byte[] getProfilePicture(String username);
 
