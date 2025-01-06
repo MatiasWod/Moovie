@@ -17,7 +17,7 @@ import moovieListReviewApi from "../../../api/MoovieListReview";
 import CommentList from "../commentList/CommentList";
 
 
-function Reviews({ id, source , handleParentReload }) {
+function Reviews({ id, username, source , handleParentReload }) {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const [reviews, setReviews] = useState(undefined);
@@ -44,7 +44,7 @@ function Reviews({ id, source , handleParentReload }) {
                     });
                     break;
                 case 'user':
-                    response = await userApi.getMovieReviewsFromUser(id, currentPage);
+                    response = await userApi.getMovieReviewsFromUser(username, currentPage);
                     source = 'profile';
                     break;
                 default:

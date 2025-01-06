@@ -30,12 +30,7 @@ public class CastController {
     @Path("actor/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getActor(@PathParam("id") final int id) {
-        try{
-            return Response.ok(ActorDto.fromActor(actorService.getActorById(id), uriInfo)).build();
-        } catch (Exception e) {
-            // TODO CHECK THIS IS CATCHING WELL
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+        return Response.ok(ActorDto.fromActor(actorService.getActorById(id), uriInfo)).build();
     }
 
     @GET

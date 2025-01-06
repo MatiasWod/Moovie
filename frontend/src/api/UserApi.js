@@ -86,8 +86,8 @@ const userApi = (() => {
             });
     }
 
-    const getMovieReviewsFromUser = (userId,page= 1) => {
-        return api.get(`/users/${userId}/reviews`);
+    const getMovieReviewsFromUser = (username,page= 1) => {
+        return api.get(`/users/${username}/reviews`);
     }
 
     const getSpecialListFromUser = (username, type, orderBy, order, pageNumber = 1) => {
@@ -95,8 +95,8 @@ const userApi = (() => {
     };
 
 
-    const getMoovieListReviewsFromUser = (userId,page) => {
-        return api.get(`/media/${userId}/moovieListReviews`,
+    const getMoovieListReviewsFromUser = (username,page) => {
+        return api.get(`/media/${username}/moovieListReviews`,
             {
                 params:{
                     'pageNumber': page,

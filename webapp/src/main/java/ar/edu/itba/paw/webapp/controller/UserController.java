@@ -267,15 +267,15 @@ public class UserController {
     }
 
     /* REVIEWS */
-    // TODO CHANGE THIS SO THE ID IS THE USERNAME
     @GET
-    @Path("/{id}/reviews")
+    @Path("/{username}/reviews")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getMovieReviewsFromUser(@PathParam("id") final int userId, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
+    public Response getMovieReviewsFromUser(@PathParam("username") final String username, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
         try {
-            final List<Review> reviews = reviewService.getMovieReviewsFromUser(userId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
+            final List<Review> reviews = reviewService.getMovieReviewsFromUser(userService.getProfileByUsername(username).getUserId(),
+                    PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
             final List<ReviewDto> reviewDtos = ReviewDto.fromReviewList(reviews, uriInfo);
-            final int reviewCount = userService.getProfileByUsername(userService.findUserById(userId).getUsername()).getReviewsCount();
+            final int reviewCount = userService.getProfileByUsername(username).getReviewsCount();
 
             Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ReviewDto>>(reviewDtos) {
             });

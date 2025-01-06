@@ -151,7 +151,6 @@ public class MediaHibernateDao implements MediaDao{
 
     @Override
     public Optional<TVSerie> getTvById(int mediaId) {
-
         final TVSerie aux = em.createQuery("SELECT tv FROM TVSerie tv WHERE tv.mediaId = :mediaId", TVSerie.class)
                 .setParameter("mediaId",mediaId)
                 .getSingleResult();
