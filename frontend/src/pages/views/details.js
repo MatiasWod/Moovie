@@ -209,12 +209,12 @@ function Details() {
                     </div>
 
                     <div className="d-flex flex-row align-items-center" style={{marginBottom:'10px'}}>
-                            {providers.length > 0 ? providers.map((provider) =>  <MediaTag link={"l"} text={ provider.providerName} image={provider.logoPath}/>) :  <MediaTag text="No providers available"/>}
+                            {providers.length > 0 ? providers.map((provider) =>  <MediaTag link={`providers`} text={provider.providerName} image={provider.logoPath} id={provider.providerId}/>) :  <MediaTag text="No providers available"/>}
                     </div>
 
                     <div className="d-flex flex-row align-items-center ">
                         <h5>Genres:</h5>
-                        {genres.length > 0 ? genres.map((genre) =>  <MediaTag darkmode={true} link={"l"} text={genre.genreName}/>) :  <MediaTag darkmode={true} text="No genres available"/>}
+                        {genres.length > 0 ? genres.map((genre) =>  <MediaTag darkmode={true} link={`genres`} text={genre.genreName} id={genre.genreId}/>) :  <MediaTag darkmode={true} text="No genres available"/>}
                     </div>
                     {detailsColumn}
 
