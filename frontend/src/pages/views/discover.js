@@ -102,8 +102,6 @@ const Discover = () => {
             queryParams.genres = JSON.stringify(genreIds);
         }
 
-        console.log(queryParams)
-
         navigate({
             pathname: `/discover`,
             search: createSearchParams(queryParams).toString(),
