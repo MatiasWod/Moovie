@@ -19,7 +19,7 @@ import GenreService from "../../services/GenreService";
 import ProviderService from "../../services/ProviderService";
 
 function Details() {
-    const { id } = useParams();
+    const {id} = useParams();
 
     //GET VALUES FOR Media
     const [media, setMedia] = useState({});
@@ -32,14 +32,15 @@ function Details() {
     const [genreError, setGenreError] = useState(null);
 
     //GET VALUES FOR PROVIDERS
-    const [providers,setProviders] = useState({});
-    const [providersLoading,setProvidersLoading] = useState(true);
-    const [providersError,setProvidersError] = useState(null);
+    const [providers, setProviders] = useState({});
+    const [providersLoading, setProvidersLoading] = useState(true);
+    const [providersError, setProvidersError] = useState(null);
 
     const [reload, setReload] = useState(false)
-    const { isLoggedIn, user } = useSelector(state => state.auth);
+    const {isLoggedIn, user} = useSelector(state => state.auth);
 
     const [reloadReviews, setReloadReviews] = useState(false); // state to trigger re-render of Reviews component
+
 
     const popoverMoovieRating = (<Popover id="popover-basic">
         <Popover.Body as="h6">Moovie rating</Popover.Body>
@@ -67,18 +68,18 @@ function Details() {
             setGenres(response.data);
         } catch (err) {
             setGenreError(err)
-        }finally {
+        } finally {
             setGenresLoading(false)
         }
     }
 
     const fetchProviders = async () => {
-        try{
+        try {
             const response = await ProviderService.getProvidersForMedia(id);
             setProviders(response.data)
-        }catch (err){
+        } catch (err) {
             setProvidersError(err);
-        }finally {
+        } finally {
             setProvidersLoading(false)
         }
     }
@@ -90,12 +91,12 @@ function Details() {
     useEffect(() => {
         fetchGenres();
         fetchProviders();
-    },[id]);
+    }, [id]);
 
     const trailerLink = (media.trailerLink === 'None' ? null : media.trailerLink);
     const releaseYear = new Date(media.releaseDate).getFullYear();
 
-    let detailsColumn = <div />;
+    let detailsColumn = <div/>;
     let info = <div/>;
 
     if (media.type === "Movie") {
@@ -173,7 +174,7 @@ function Details() {
 
     return (
         <div className="container my-1">
-            <div className="row align-items-center justify-content-center" style={{marginBottom:'20px'}}>
+            <div className="row align-items-center justify-content-center" style={{marginBottom: '20px'}}>
 
                 {/* POSTER COLUMN */}
                 <div className="col text-center">
@@ -181,7 +182,7 @@ function Details() {
                 </div>
 
                 {/* MEDIA DETAILS COLUMN */}
-                <div className="col" style={{marginBottom:'10px'}}>
+                <div className="col" style={{marginBottom: '10px'}}>
                     <h1>{media.name}
                         <MediaTag style={{fontSize: '14px'}} link={'status'} text={media.status}/>
                         <MediaTag style={{fontSize: '14px'}} link={'l'} text={media.originalLanguage}/>
@@ -208,18 +209,25 @@ function Details() {
                         </h1>
                     </div>
 
-                    <div className="d-flex flex-row align-items-center" style={{marginBottom:'10px'}}>
-                            {providers.length > 0 ? providers.map((provider) =>  <MediaTag link={`providers`} text={provider.providerName} image={provider.logoPath} id={provider.providerId}/>) :  <MediaTag text="No providers available"/>}
+                    <div className="d-flex flex-row align-items-center" style={{marginBottom: '10px'}}>
+                        {providers.length > 0 ? providers.map((provider) => <MediaTag link={`providers`}
+                                                                                      text={provider.providerName}
+                                                                                      image={provider.logoPath}
+                                                                                      id={provider.providerId}/>) :
+                            <MediaTag text="No providers available"/>}
                     </div>
 
                     <div className="d-flex flex-row align-items-center ">
                         <h5>Genres:</h5>
-                        {genres.length > 0 ? genres.map((genre) =>  <MediaTag darkmode={true} link={`genres`} text={genre.genreName} id={genre.genreId}/>) :  <MediaTag darkmode={true} text="No genres available"/>}
+                        {genres.length > 0 ? genres.map((genre) => <MediaTag darkmode={true} link={`genres`}
+                                                                             text={genre.genreName}
+                                                                             id={genre.genreId}/>) :
+                            <MediaTag darkmode={true} text="No genres available"/>}
                     </div>
                     {detailsColumn}
 
                     {trailerLink && (<div style={{marginBottom: '5px', marginTop: '5px'}}>
-                    <iframe style={{width: '85%', height: '315px'}}
+                        <iframe style={{width: '85%', height: '315px'}}
                                 src={trailerLink.replace("watch?v=", "embed/")}/>
                     </div>)}
                     <span></span>
@@ -245,11 +253,19 @@ function Details() {
                 )}
             </div>
 
-            <ActorCardList mediaId={id}/>
+            <div className="row my-8">
+                <h2>Cast</h2>
+                <hr className="my-8"/>
+                <ActorCardList mediaId={id}/>
+            </div>
 
             {/* Pass reloadReviews as a key to force re-render */}
-            <Reviews key={reloadReviews ? id : undefined} id={id} handleParentReload={handleParentReload}
-                     source="media"/>
+            <div className="row">
+                <h2>Reseñas</h2>
+                <hr className="my-8 mb-4"/>
+                <Reviews key={reloadReviews ? id : undefined} id={id} handleParentReload={handleParentReload}
+                         source="media"/>
+            </div>
         </div>
     );
 }

@@ -133,17 +133,18 @@ function Reviews({ id, username, source , handleParentReload }) {
 
     return (
         <div className="reviews-container">
-            <h2>Reseñas</h2>
             {reviews?.data?.length > 0 ? (
                 reviews.data.map((review) => (
-                    <div key={review.id} className="review container-fluid bg-white">
+                    <div key={review.id} className="review container-fluid bg-white my-3">
                         <div className="review-header d-flex align-items-center justify-between">
                             <div>
                                 <ProfileImage
                                     imgSrc={`http://localhost:8080/users/${review.username}/image`}
                                     size="100px"
-                                    defaultProfilePicture="https://example.com/default-profile.jpg"/>
-                                <strong>{review.username}</strong> - <small>{review.rating}</small>
+                                    defaultProfilePicture="https://example.com/default-profile.jpg"
+                                    onClick={() => navigate(`/profile/${review.username}`)}
+                                />
+                                <strong>{review.username}</strong>
                             </div>
                             <div>{review.rating}/5<i className="bi bi-star-fill"/>
                                 {isLoggedIn && (

@@ -1,19 +1,18 @@
 import React from "react";
 import "./profileImage.css";
 import defaultProfilePicture from "../../../images/defaultProfilePicture.png";
-import {Link} from "react-router-dom";
 
-const ProfileImage = ({ image, username , size }) => {
+const ProfileImage = ({ image, username, size, onClick }) => {
     const imgSrc = image || defaultProfilePicture;
 
     return (
-        
         <img
             id="profile-image"
             className="profileImage"
-            style={{ height: size, width: size }}
+            style={{ height: size, width: size, cursor: 'pointer' }}
             src={imgSrc}
             alt="Profile"
+            onClick={onClick}  // Added onClick handler
         />
     );
 };
