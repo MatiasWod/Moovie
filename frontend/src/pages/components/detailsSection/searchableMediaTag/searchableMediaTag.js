@@ -6,7 +6,7 @@ const SearchableMediaTag = ({ image, text, link, id }) => {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        if (link) {
+        if (link === `providers` || link === `genres`) {
             const providersParam = JSON.stringify([id]);
 
             navigate({
@@ -14,7 +14,11 @@ const SearchableMediaTag = ({ image, text, link, id }) => {
                 search: `?${link}=${encodeURIComponent(providersParam)}`,
             });
         }
+        if (link === `tvcreators`){
+            navigate(`/${link}/${id}`,{ state: { actorName: text } });
+        }
     };
+
 
     return (
         <div onClick={handleClick} style={{display:'inline-flex',alignItems: 'center', cursor: link ? 'pointer' : 'default' }}>

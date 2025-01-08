@@ -6,8 +6,13 @@ const tvCreatorsApi = (() => {
         return api.get(`/tvcreators/${id}`);
     }
 
+    const getMediasForTVCreator = ({id}) => {
+        return api.get(`/tvcreators/${id}/medias`);
+    }
+
     return{
         getTvCreatorById,
+        getMediasForTVCreator
     }
 })();
 

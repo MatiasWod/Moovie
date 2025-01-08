@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import mediaService from "../../../services/MediaService";
 import ActorCard from "./ActorCard";
 
 const ActorCardList = ({ mediaId }) => {
+    const navigate = useNavigate();
+
     const [actors, setActors] = useState([]);
     const [actorsLoading, setActorsLoading] = useState(true);
     const [actorsError, setActorsError] = useState(null);
 
-
+    const handleActorCardClick = (actor) => {
+        navigate(`/cast/actor/${actor.actorId}`, { state: { actorName: actor.actorName } });
+    };
 
     useEffect(() => {
         async function fetchActors()  {
@@ -40,11 +45,16 @@ const ActorCardList = ({ mediaId }) => {
     return (
         <div style={{ display: 'flex', gap: '16px', overflowX: 'auto' }}>
             {actors.map((actor) => (
-                <ActorCard
+                <div
                     key={actor.actorId}
-                    name={actor.actorName}
-                    image={actor.profilePath}
-                />
+                    onClick={() => handleActorCardClick(actor)}
+                    style={{ cursor: "pointer" }}
+                >
+                    <ActorCard
+                        name={actor.actorName}
+                        image={actor.profilePath}
+                    />
+                </div>
             ))}
         </div>
     );

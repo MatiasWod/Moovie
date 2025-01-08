@@ -34,9 +34,10 @@ function Healthcheck() {
     const [actorLoading, setActorLoading] = useState(true);
     const [actorError, setActorError] = useState(null);
 
+
     const [users, setUsers] = useState(undefined);
     const [userLoading, setUserLoading] = useState(true);
-    const [userrError, setUserError] = useState(null);
+    const [userError, setUserError] = useState(null);
     const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
 
     const handlePageChange = useCallback((newPage) => {
@@ -51,9 +52,9 @@ function Healthcheck() {
         navigate(`/profile/${user.username}`);
     }
 
-    const handleActorCardClick = (actor) =>{
-        navigate(`/cast/actor/${actor.actorId}`);
-    }
+    const handleActorCardClick = (actor) => {
+        navigate(`/cast/actor/${actor.actorId}`, { state: { actorName: actor.actorName } });
+    };
 
     useEffect(() => {
         async function getData() {
@@ -145,7 +146,7 @@ function Healthcheck() {
             <>
                 {medias?.data?.length > 0 ? (
                     <>
-                        <h3>Medias for: {search}</h3>
+                        <h3> Medias for: {search}</h3>
                         {medias.data.map((media) => (
                             <div className="discover-media-card" key={media.id}>
                                 <MediaCard media={media} />

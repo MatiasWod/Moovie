@@ -96,6 +96,7 @@ function Details() {
         try {
             const response = await mediaService.getTvCreatorsByMediaId(id);
             setTvCreators(response.data);
+            console.log(response)
         } catch (err) {
             setTvCreatorsError(err);
 
@@ -157,7 +158,7 @@ function Details() {
                 <div className="d-flex flex-row align-items-center ">
                         {tvCreators.length > 1 ? <h5>Creators:</h5> : <h5>Creator:</h5>}
                     {tvCreators.length > 0 ? tvCreators.map((creator) =>
-                        <MediaTag link={'cast/director'} text={creator.creatorName}/>
+                        <MediaTag link={`tvcreators`} text={creator.creatorName} id={creator.id}/>
                     ) : (<MediaTag text="No creators available"/>)}
                 </div>
 
