@@ -38,6 +38,11 @@ const MediaService = (() => {
         return parsePaginatedResponse(res);
     }
 
+    const getTvCreatorsByMediaId = async (mediaId) =>{
+        const res = await mediaApi.getTvCreatorsByMediaId(mediaId);
+        return parsePaginatedResponse(res);
+    }
+
     const createReview = async (mediaId,rating, reviewContent) => {
         const res = await mediaApi.createReview({mediaId,rating,reviewContent});
         return res;
@@ -110,6 +115,7 @@ const MediaService = (() => {
         getMediaByIdList,
         getReviewsByMediaId,
         getActorsByMediaId,
+        getTvCreatorsByMediaId,
         createReview,
         currentUserWWStatus,
         userWWStatus,

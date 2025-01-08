@@ -41,6 +41,12 @@ const mediaApi = (()=> {
         )
     }
 
+    const getTvCreatorsByMediaId = (mediaId) =>{
+        return api.get(
+            `medias/${mediaId}/tvcreators`
+        )
+    }
+
     const createReview = ({mediaId, rating, reviewContent}) => {
         return api.post(`/medias/${Number(mediaId)}/review`,
             { rating: Number(rating), reviewContent: reviewContent },
@@ -61,6 +67,7 @@ const mediaApi = (()=> {
         getMediaByIdList,
         getReviewsByMediaId,
         getActorsInMedia,
+        getTvCreatorsByMediaId,
         createReview
     }
 

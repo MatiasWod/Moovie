@@ -9,9 +9,11 @@ import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
+import ar.edu.itba.paw.models.TV.TVCreators;
 import ar.edu.itba.paw.services.ActorService;
 import ar.edu.itba.paw.services.MediaService;
 import ar.edu.itba.paw.services.ReviewService;
+import ar.edu.itba.paw.services.TVCreatorsService;
 import ar.edu.itba.paw.webapp.dto.in.ReviewCreateDto;
 import ar.edu.itba.paw.webapp.dto.out.*;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
@@ -32,15 +34,17 @@ public class MediaController {
     private final MediaService mediaService;
     private final ReviewService reviewService;
     private final ActorService actorService;
+    private final TVCreatorsService tvCreatorsService;
 
     @Context
     UriInfo uriInfo;
 
     @Autowired
-    public MediaController(MediaService mediaService, ReviewService reviewService, ActorService actorService) {
+    public MediaController(MediaService mediaService, ReviewService reviewService, ActorService actorService,TVCreatorsService tvCreatorsService) {
         this.mediaService = mediaService;
         this.reviewService = reviewService;
         this.actorService = actorService;
+        this.tvCreatorsService= tvCreatorsService;
     }
 
     //TODO capaz considerar en listAll poder pedir paginas de distintos tamaños, tambien filtros y
@@ -185,5 +189,16 @@ public class MediaController {
         return Response.ok()
                 .entity("Review successfully updated for media with ID: " + mediaId)
                 .build();
+    }
+
+
+    /* TVCREATORS */
+    @GET
+    @Path("{id}/tvcreators")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTvCreatorsByMediaID(@PathParam("id") final int id){
+        List<TVCreators> tvCreators=tvCreatorsService.getTvCreatorsByMediaId(id);
+        List<TvCreatorsDto> tvCreatorsDtos=TvCreatorsDto.fromTvCreatorList(tvCreators,uriInfo);
+        return Response.ok(new GenericEntity<List<TvCreatorsDto>>( tvCreatorsDtos ) {}).build();
     }
 }
