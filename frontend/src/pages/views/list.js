@@ -10,8 +10,12 @@ import ListContentPaginated from "../components/listContentPaginated/ListContent
 import Reviews from "../components/ReviewsSection/Reviews";
 import ListCard from "../components/listCard/ListCard";
 import {ProgressBar} from "react-bootstrap"
+import ListApi from "../../api/ListApi";
+import Error403 from "./errorViews/error403";
+import {parsePaginatedResponse} from "../../utils/ResponseUtils";
 
 function List() {
+    const [error403, setError403] = useState(false);
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
@@ -50,19 +54,34 @@ function List() {
         });
     }, [id, currentOrderBy, currentSortOrder, page, navigate]);
 
+    const [updateListHeader, setUpdateListHeader] = useState(false);
+
+    const handleUpdateList = () =>{
+        //To update if edited
+        setUpdateListHeader(true);
+    }
+
     useEffect(() => {
         async function getData() {
             try {
-                const data = await ListService.getListById(id);
+                let data = await ListApi.getListById(id);
+                if(data.status === 403 || data.status === 404){
+                    setError403(true);
+                    console.log("error found");
+                    return;
+                }
+                data = parsePaginatedResponse(data);
                 setList(data);
                 setListLoading(false);
+                setUpdateListHeader(false);
+
             } catch (error) {
                 setListError(error);
                 setListLoading(false);
             }
         }
         getData();
-    }, [id]);
+    }, [id, updateListHeader]);
 
     //GET VALUES FOR LIST CONTENT
     const [listContent, setListContent] = useState(undefined);
@@ -80,6 +99,7 @@ function List() {
                     pageSize: pagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT
                 });
                 setListContent(data);
+                console.log("List content:"+ listContent);
                 setListContentLoading(false);
             } catch (error) {
                 setListContentError(error);
@@ -98,6 +118,8 @@ function List() {
             try {
                 const data = await ListService.getRecommendedLists(id)
                 setListRecommendations(data);
+                console.log("Recomended list:"+ listRecommendations);
+
                 setlistRecommendationsLoading(false);
             } catch (error) {
                 setlistRecommendationsError(error);
@@ -107,9 +129,15 @@ function List() {
         getData();
     }, [id]);
 
+    if(error403){
+        return(
+            <Error403></Error403>
+        )
+    }
+
     return (
         <div className="default-container moovie-default">
-            <ListHeader list={list?.data || []}/>
+            <ListHeader list={list?.data || []} updateHeader={handleUpdateList} />
 
             <ProgressBar
                 now={list?.data?.mediaCount === 0 ? 100 : (list?.data?.currentUserWatchAmount / list?.data?.mediaCount) * 100}

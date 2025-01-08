@@ -82,6 +82,16 @@ const listApi = (() => {
             });
     }
 
+    const editMoovieList = async (mlId, name, description) => {
+        const form = {
+            listName: name,
+            listDescription: description,
+        };
+        const response = await api.put('/list/' + mlId,
+            form);
+        return response;
+    }
+
 
 
     const getRecommendedLists = (id) => {
@@ -103,7 +113,7 @@ const listApi = (() => {
         createMoovieListReview,
         insertMediaIntoMoovieList,
         editReview,
-
+        editMoovieList,
         getRecommendedLists
     }
 })();

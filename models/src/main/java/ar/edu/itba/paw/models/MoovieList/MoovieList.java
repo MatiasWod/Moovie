@@ -126,5 +126,13 @@ public class MoovieList {
     public int hashCode() {
         return Objects.hash(moovieListId);
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
 

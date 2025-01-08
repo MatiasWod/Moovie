@@ -414,6 +414,22 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     }
 
+    @Override
+    public void editMoovieList(int listId, String newName, String newDescription) {
+        try {
+            MoovieList moovieList = em.find(MoovieList.class, listId);
+
+            moovieList.setName(newName);
+            moovieList.setDescription(newDescription);
+            em.merge(moovieList);
+        } catch (DuplicateKeyException e) {
+            throw new UnableToInsertIntoDatabase("You already have a MoovieList with name: " + newName);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to edit MoovieList.");
+        }
+    }
+
+
 
     @Override
     public MoovieList insertMediaIntoMoovieList(int moovieListid, List<Integer> mediaIdList) {

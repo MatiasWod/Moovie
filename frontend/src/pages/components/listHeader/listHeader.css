@@ -81,3 +81,20 @@
 .follow-button.followed:hover {
     background-color: #218838;
 }
+
+.edit-list-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.edit-list-button:hover {
+    background-color: #0056b3;
+}

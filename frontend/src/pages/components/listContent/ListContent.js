@@ -21,6 +21,10 @@ const ListContent = ({ listContent }) => {
         setHoveredId(null);
     };
 
+    if(listContent === null){
+        return <div></div>
+    }
+
     return (
         <div className="list-content">
             <table className="media-table">

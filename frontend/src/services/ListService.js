@@ -20,6 +20,11 @@ const ListService = (() => {
         return res;
     }
 
+    const editMoovieList = async ({id, name, description}) =>{
+        const res= await listApi.editMoovieList(id, name.trim(), description.trim());
+        return res;
+    }
+
     const getIdListFromObjectList = (list) => {
         let toRet = "";
         for (const m of list) {
@@ -133,6 +138,7 @@ const ListService = (() => {
 
 
 
+
    return{
         getLists,
         getListById,
@@ -149,6 +155,7 @@ const ListService = (() => {
         unlikeList,
         unfollowList,
         followList,
+       editMoovieList,
        getRecommendedLists
    }
 })();
