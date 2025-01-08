@@ -5,7 +5,6 @@ import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
-import ar.edu.itba.paw.models.MoovieList.UserMoovieListId;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.Reports.MoovieListReport;
@@ -16,17 +15,13 @@ import ar.edu.itba.paw.services.MoovieListService;
 import ar.edu.itba.paw.services.ReportService;
 import ar.edu.itba.paw.services.ReviewService;
 import ar.edu.itba.paw.services.UserService;
-import ar.edu.itba.paw.webapp.dto.in.MediaListDto;
-import ar.edu.itba.paw.webapp.dto.in.MoovieListCreateDto;
-import ar.edu.itba.paw.webapp.dto.in.MoovieListReviewCreateDto;
-import ar.edu.itba.paw.webapp.dto.in.ReportCreateDTO;
+import ar.edu.itba.paw.webapp.dto.in.*;
 import ar.edu.itba.paw.webapp.dto.out.*;
 import ar.edu.itba.paw.webapp.mappers.ExceptionEM;
 import ar.edu.itba.paw.webapp.mappers.UnableToFindUserEM;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
@@ -90,16 +85,12 @@ public class MoovieListController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public javax.ws.rs.core.Response getMoovieListById(@PathParam("id") final int id) {
-        try {
-            return javax.ws.rs.core.Response.ok(MoovieListDto.fromMoovieList(moovieListService.getMoovieListCardById(id), uriInfo)).build();
-        } catch (Exception e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.NOT_FOUND).build();
-        }
+        return javax.ws.rs.core.Response.ok(MoovieListDto.fromMoovieList(moovieListService.getMoovieListCardById(id), uriInfo)).build();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getMediaById(@QueryParam("ids") final String ids) {
+    public Response getMoovieListByIds(@QueryParam("ids") final String ids) {
         if (ids.length() > 100) {
             throw new IllegalArgumentException("Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
         }
@@ -135,27 +126,20 @@ public class MoovieListController {
                                                         @QueryParam("sortOrder") @DefaultValue("DESC") final String sortOrder,
                                                         @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber,
                                                         @QueryParam("pageSize") @DefaultValue("-1") final int pageSize) {
-        try {
-            int pageSizeQuery = pageSize;
-            if (pageSize < 1 || pageSize > PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize()) {
-                pageSizeQuery = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
-            }
-
-            List<Media> mediaList = moovieListService.getMoovieListContent(id, orderBy, sortOrder, pageSizeQuery, pageNumber);
-            final int mediaCount = moovieListService.getMoovieListCardById(id).getSize();
-            List<MediaDto> mediaDtoList = MediaDto.fromMediaList(mediaList, uriInfo);
-            javax.ws.rs.core.Response.ResponseBuilder res = javax.ws.rs.core.Response.ok(new GenericEntity<List<MediaDto>>(mediaDtoList) {
-            });
-            final PagingUtils<Media> toReturnMediaList = new PagingUtils<>(mediaList, pageNumber, pageSizeQuery, mediaCount);
-            ResponseUtils.setPaginationLinks(res, toReturnMediaList, uriInfo);
-            return res.build();
-        } catch (MoovieListNotFoundException m) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.NOT_FOUND).build();
-        } catch (UserNotLoggedException | InvalidAccessToResourceException e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.UNAUTHORIZED).build();
-        } catch (RuntimeException e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR).build();
+        int pageSizeQuery = pageSize;
+        if (pageSize < 1 || pageSize > PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize()) {
+            pageSizeQuery = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
         }
+
+        List<Media> mediaList = moovieListService.getMoovieListContent(id, orderBy, sortOrder, pageSizeQuery, pageNumber);
+        final int mediaCount = moovieListService.getMoovieListCardById(id).getSize();
+        List<MediaDto> mediaDtoList = MediaDto.fromMediaList(mediaList, uriInfo);
+        javax.ws.rs.core.Response.ResponseBuilder res = javax.ws.rs.core.Response.ok(new GenericEntity<List<MediaDto>>(mediaDtoList) {
+        });
+        final PagingUtils<Media> toReturnMediaList = new PagingUtils<>(mediaList, pageNumber, pageSizeQuery, mediaCount);
+        ResponseUtils.setPaginationLinks(res, toReturnMediaList, uriInfo);
+        return res.build();
+
     }
 
     //Only returns the 5 more relatedLists. They are related in
@@ -163,18 +147,11 @@ public class MoovieListController {
     @Path("{id}/recommendedLists")
     @Produces(MediaType.APPLICATION_JSON)
     public javax.ws.rs.core.Response getRecommendedLists(@PathParam("id") final int id) {
-        try {
-            List<MoovieListDto> mlcList = MoovieListDto.fromMoovieListList(moovieListService.getRecommendedMoovieListCards(id, 4, 0), uriInfo);
-            javax.ws.rs.core.Response.ResponseBuilder res = javax.ws.rs.core.Response.ok(new GenericEntity<List<MoovieListDto>>(mlcList) {
-            });
-            return res.build();
-        } catch (MoovieListNotFoundException m) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.NOT_FOUND).build();
-        } catch (UserNotLoggedException | InvalidAccessToResourceException e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.UNAUTHORIZED).build();
-        } catch (Exception e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
+        List<MoovieListDto> mlcList = MoovieListDto.fromMoovieListList(moovieListService.getRecommendedMoovieListCards(id, 4, 0), uriInfo);
+        javax.ws.rs.core.Response.ResponseBuilder res = javax.ws.rs.core.Response.ok(new GenericEntity<List<MoovieListDto>>(mlcList) {
+        });
+        return res.build();
+
     }
 
     //Only returns the 5 more relatedLists. They are related in
@@ -182,18 +159,11 @@ public class MoovieListController {
     @Path("{id}/recommendedMedia")
     @Produces(MediaType.APPLICATION_JSON)
     public javax.ws.rs.core.Response getRecommendedMediaToAdd(@PathParam("id") final int id) {
-        try {
-            List<MediaDto> mlcList = MediaDto.fromMediaList(moovieListService.getRecommendedMediaToAdd(id, 5), uriInfo);
-            javax.ws.rs.core.Response.ResponseBuilder res = javax.ws.rs.core.Response.ok(new GenericEntity<List<MediaDto>>(mlcList) {
-            });
-            return res.build();
-        } catch (MoovieListNotFoundException m) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.NOT_FOUND).build();
-        } catch (UserNotLoggedException | InvalidAccessToResourceException e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.UNAUTHORIZED).build();
-        } catch (Exception e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
+        List<MediaDto> mlcList = MediaDto.fromMediaList(moovieListService.getRecommendedMediaToAdd(id, 5), uriInfo);
+        javax.ws.rs.core.Response.ResponseBuilder res = javax.ws.rs.core.Response.ok(new GenericEntity<List<MediaDto>>(mlcList) {
+        });
+        return res.build();
+
     }
 
     /* MOOVIELISTREVIEWS */
@@ -201,18 +171,15 @@ public class MoovieListController {
     @Path("/{id}/moovieListReviews")
     @Produces(MediaType.APPLICATION_JSON)
     public javax.ws.rs.core.Response getMoovieListReviewsFromListId(@PathParam("id") final int listId, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
-        try {
-            final List<MoovieListReview> moovieListReviews = reviewService.getMoovieListReviewsByMoovieListId(listId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
-            final int moovieListReviewsCount = reviewService.getMoovieListReviewByMoovieListIdCount(listId);
-            final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto.fromMoovieListReviewList(moovieListReviews, uriInfo);
-            javax.ws.rs.core.Response.ResponseBuilder res = javax.ws.rs.core.Response.ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {
-            });
-            final PagingUtils<MoovieListReview> toReturnMoovieListReviews = new PagingUtils<>(moovieListReviews, page - 1, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), moovieListReviewsCount);
-            ResponseUtils.setPaginationLinks(res, toReturnMoovieListReviews, uriInfo);
-            return res.build();
-        } catch (RuntimeException e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
+        final List<MoovieListReview> moovieListReviews = reviewService.getMoovieListReviewsByMoovieListId(listId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
+        final int moovieListReviewsCount = reviewService.getMoovieListReviewByMoovieListIdCount(listId);
+        final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto.fromMoovieListReviewList(moovieListReviews, uriInfo);
+        javax.ws.rs.core.Response.ResponseBuilder res = javax.ws.rs.core.Response.ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {
+        });
+        final PagingUtils<MoovieListReview> toReturnMoovieListReviews = new PagingUtils<>(moovieListReviews, page - 1, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), moovieListReviewsCount);
+        ResponseUtils.setPaginationLinks(res, toReturnMoovieListReviews, uriInfo);
+        return res.build();
+
     }
 
     /**
@@ -271,7 +238,8 @@ public class MoovieListController {
     @Path("{id}/moovieListReview")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public javax.ws.rs.core.Response createMoovieListReview(@PathParam("id") int listId, @Valid final MoovieListReviewCreateDto moovieListReviewDto) {
+    public javax.ws.rs.core.Response createMoovieListReview(@PathParam("id") int listId,
+                                                            @Valid final MoovieListReviewCreateDto moovieListReviewDto) {
         reviewService.createReview(
                 listId,
                 0,
@@ -289,10 +257,11 @@ public class MoovieListController {
      */
 
     @PUT
-    @Path("{id}/moovieListReview")
+    @Path("/{id}/moovieListReview")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public javax.ws.rs.core.Response editReview(@PathParam("id") int listId, @Valid final MoovieListReviewCreateDto moovieListReviewDto) {
+    public javax.ws.rs.core.Response editReview(@PathParam("id") int listId,
+                                                @Valid final MoovieListReviewCreateDto moovieListReviewDto) {
         reviewService.editReview(
                 listId,
                 0,
@@ -301,9 +270,23 @@ public class MoovieListController {
         );
 
         return javax.ws.rs.core.Response.ok()
-                .entity("MoovieList review successfully updated for media with ID: " + listId)
+                .entity("MoovieList review successfully updated for MoovieList with ID: " + listId)
                 .build();
     }
+
+    @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public javax.ws.rs.core.Response editMoovieList(@PathParam("id") int listId,
+                                                @Valid final EditListDTO editListForm) {
+        moovieListService.editMoovieList(listId, editListForm.getListName(), editListForm.getListDescription());
+
+        return javax.ws.rs.core.Response.ok()
+                .entity("MoovieList successfully edited for MoovieList with ID: " + listId)
+                .build();
+    }
+
 
     /**
      * DELETE METHODS

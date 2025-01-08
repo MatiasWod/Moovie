@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.exceptions.ForbiddenException;
 import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
 import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.exceptions.UserNotLoggedException;
@@ -48,7 +49,7 @@ public class MoovieListServiceImpl implements MoovieListService{
         if( ml.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.getType() || ml.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType() ){
             try{
                 if(ml.getUserId() != userService.tryToGetCurrentUserId()){
-                    throw new InvalidAccessToResourceException("User is not owner of the list and its private");
+                    throw new ForbiddenException("User is not owner of the list and its private");
                 }
             } catch (UserNotLoggedException e){
                 throw new InvalidAccessToResourceException("User is not owner of the list and its private");
@@ -196,6 +197,20 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Override
     public MoovieList createMoovieList(String name, int type, String description){
        return moovieListDao.createMoovieList(userService.getInfoOfMyUser().getUserId(), name, type, description);
+    }
+
+    @Transactional
+    @Override
+    public void editMoovieList(int moovieListId, String name, String description) {
+        MoovieList moovieList = getMoovieListById(moovieListId);
+        int currentUserId = userService.getInfoOfMyUser().getUserId();
+        if(moovieList.getUserId() != currentUserId){
+            throw new ForbiddenException("User must be owner to edit the list");
+        }
+        if(moovieList.getName().equals("Watched") || moovieList.getName().equals("Watchlist")){
+            throw new IllegalArgumentException("This list type cant be edited");
+        }
+        moovieListDao.editMoovieList(moovieListId, name, description);
     }
 
     @Transactional

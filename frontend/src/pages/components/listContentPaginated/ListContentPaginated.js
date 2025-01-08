@@ -25,7 +25,8 @@ const ListContentPaginated = ({
                 values={Object.values(MediaOrderBy)}
             />
 
-            <ListContent listContent={listContent?.data || []} />
+            <ListContent listContent={listContent?.data ?? []} />
+
 
             <div className="flex justify-center pt-4">
                 {listContent?.data?.length > 0 && listContent.links?.last?.page > 1 && (

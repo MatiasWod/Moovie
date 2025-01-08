@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "./listHeader.css";
 import listService from "../../../services/ListService";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import ReviewForm from "../forms/reviewForm/ReviewForm";
+import EditListForm from "../forms/editListForm/editListForm";
 
-const ListHeader = ({ list }) => {
-    const {isLoggedIn, user} = useSelector(state => state.auth);
+const ListHeader = ({ list, updateHeader}) => {
+    const { isLoggedIn, user } = useSelector((state) => state.auth);
+    const navigate = useNavigate();
 
     const [hasLikedAndFollowed, setHasLikedAndFollowed] = useState({
         liked: false,
@@ -19,6 +23,7 @@ const ListHeader = ({ list }) => {
                 const likedAndFollowed = await listService.currentUserLikeFollowStatus(list.id, user.username);
                 setHasLikedAndFollowed(likedAndFollowed);
             } catch (error) {
+                // Handle error
             }
         };
 
@@ -32,8 +37,9 @@ const ListHeader = ({ list }) => {
             } else {
                 await listService.likeList(list.id, user.username);
             }
-            setPing(!ping)
+            setPing(!ping);
         } catch (error) {
+            // Handle error
         }
     };
 
@@ -44,10 +50,27 @@ const ListHeader = ({ list }) => {
             } else {
                 await listService.followList(list.id, user.username);
             }
-            setPing(!ping)
+            setPing(!ping);
         } catch (error) {
+            // Handle error
         }
     };
+
+    const [editList, setEditList] = useState(false);
+    const handleOpenEdit = () => {
+        setEditList(true);
+    };
+
+    const handleCloseEdit = () => {
+        setEditList(false);
+    };
+
+    const handleCloseEditSucccess = () => {
+        setEditList(false);
+        updateHeader();
+    }
+
+
 
     return (
         <div className="list-header">
@@ -58,6 +81,12 @@ const ListHeader = ({ list }) => {
                 ></div>
             ) : null}
             <div className="list-header-content">
+                {isLoggedIn && user.username === list.createdBy && (
+                    <button className="edit-list-button" onClick={handleOpenEdit}>
+                        Edit
+                    </button>
+                )}
+
                 <h1 className="list-header-title">{list.name}</h1>
                 <p className="list-header-description">{list.description}</p>
                 <span className="list-header-username">por {list.createdBy}</span>
@@ -76,6 +105,17 @@ const ListHeader = ({ list }) => {
                     </button>
                 </div>
             </div>
+            {editList && (
+                <div className="overlay">
+                    <EditListForm
+                        listName={list.name}
+                        listId={list.id}
+                        listDescription={list.description}
+                        closeEdit={handleCloseEdit}
+                        closeEditSuccess={handleCloseEditSucccess}
+                    />
+                </div>
+            )}
         </div>
     );
 };
