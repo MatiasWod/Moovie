@@ -17,6 +17,7 @@ import providerApi from "../../api/ProviderApi";
 import MediaService from "../../services/MediaService";
 import GenreService from "../../services/GenreService";
 import ProviderService from "../../services/ProviderService";
+import mediaService from "../../services/MediaService";
 
 function Details() {
     const {id} = useParams();
@@ -35,6 +36,12 @@ function Details() {
     const [providers, setProviders] = useState({});
     const [providersLoading, setProvidersLoading] = useState(true);
     const [providersError, setProvidersError] = useState(null);
+
+    //GET VALUES FOR TVCREATORS
+    const [tvCreators, setTvCreators] = useState([]);
+    const [tvCreatorsLoading, setTvCreatorsLoading] = useState(true);
+    const [tvCreatorsError, setTvCreatorsError] = useState(null);
+
 
     const [reload, setReload] = useState(false)
     const {isLoggedIn, user} = useSelector(state => state.auth);
@@ -84,11 +91,29 @@ function Details() {
         }
     }
 
+
+    const fetchTvCreators = async () => {
+        try {
+            const response = await mediaService.getTvCreatorsByMediaId(id);
+            setTvCreators(response.data);
+        } catch (err) {
+            setTvCreatorsError(err);
+
+        } finally {
+            setTvCreatorsLoading(false);
+
+        }
+    }
+
     useEffect(() => {
         fetchMedia();
     }, [id, reload]);
 
     useEffect(() => {
+
+        if (media.type !== "Movie") {
+            fetchTvCreators();
+        }
         fetchGenres();
         fetchProviders();
     }, [id]);
@@ -100,8 +125,7 @@ function Details() {
     let info = <div/>;
 
     if (media.type === "Movie") {
-        detailsColumn = <span><div className="d-flex flex-row align-items-center ">
-                    </div>
+        detailsColumn = <span>
 
                     <div className="d-flex flex-row align-items-center ">
                         <h5>Director:</h5>
@@ -128,21 +152,40 @@ function Details() {
 
     } else {
         detailsColumn =
-            <div className="col">
+            <span>
 
-                <div>Creadores:</div>
+                <div className="d-flex flex-row align-items-center ">
+                        {tvCreators.length > 1 ? <h5>Creators:</h5> : <h5>Creator:</h5>}
+                    {tvCreators.length > 0 ? tvCreators.map((creator) =>
+                        <MediaTag link={'cast/director'} text={creator.creatorName}/>
+                    ) : (<MediaTag text="No creators available"/>)}
+                </div>
 
                 {media.lastAirDate && (
-                    <div>Fecha de Ultima Emisión: {media.lastAirDate}</div>
+                    <div className="d-flex flex-row align-items-center">
+                        <h5>Last Air Date: </h5>
+                        <MediaTag
+                            text={new Date(media.lastAirDate)
+                                .toISOString()
+                                .split('T')[0]} // Esto toma solo la parte YYYY-MM-DD
+                        />
+                    </div>
                 )}
 
                 {media.nextEpisodeToAir && (
-                    <div>Próximo Episodio a Emitir: {media.nextEpisodeToAir}</div>
-                )}
+                    <div className="d-flex flex-row align-items-center ">
+                        <h5>Next Episode to Air: </h5>
+                        <MediaTag
+                            text={new Date(media.nextEpisodeToAir)
+                                .toISOString()
+                                .split('T')[0]} // Esto toma solo la parte YYYY-MM-DD
+                        />
+                    </div>
+                )
+                }
+        </span>
 
-            </div>
-
-        info = <h1>{releaseYear} • Serie • {media.numberOfSeasons} Temporadas • {media.numberOfEpisodes} Episodios</h1>
+        info = <h5>{releaseYear} • Serie • {media.numberOfSeasons} Temporadas • {media.numberOfEpisodes} Episodios</h5>
 
     }
 
