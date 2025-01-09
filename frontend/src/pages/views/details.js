@@ -155,12 +155,17 @@ function Details() {
         detailsColumn =
             <span>
 
-                <div className="d-flex flex-row align-items-center ">
-                        {tvCreators.length > 1 ? <h5>Creators:</h5> : <h5>Creator:</h5>}
-                    {tvCreators.length > 0 ? tvCreators.map((creator) =>
-                        <MediaTag link={`tvcreators`} text={creator.creatorName} id={creator.id}/>
-                    ) : (<MediaTag text="No creators available"/>)}
-                </div>
+            <div className="d-flex flex-row align-items-center">
+                {tvCreators.length > 0 && (
+                    <>
+                        <h5>{tvCreators.length > 1 ? "Creators:" : "Creator:"}</h5>
+                        {tvCreators.map((creator) => (
+                            <MediaTag link="tvcreators" text={creator.creatorName} id={creator.id} key={creator.id}/>
+                        ))}
+                    </>
+                )}
+            </div>
+
 
                 {media.lastAirDate && (
                     <div className="d-flex flex-row align-items-center">
