@@ -50,7 +50,7 @@ function NavbarComponent() {
                     <Nav className="d-flex nav-item justify-content-center userPic-login">
                         {user && (
                             <ProfileImage
-                                imgSrc={`http://localhost:8080/users/${user.username}/image`}
+                                image={`http://localhost:8080/users/${user.username}/image`}
                                 size="100px" // Adjust size as needed
                                 defaultProfilePicture="https://example.com/default-profile.jpg" // Your default image URL
                             />

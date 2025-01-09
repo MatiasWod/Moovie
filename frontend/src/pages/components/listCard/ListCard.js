@@ -43,7 +43,7 @@ const ListCard = ({ listCard }) => {
                     </div>
                     <div className="list-card-footer">
                         <span>
-                            por {listCard.createdBy} <ProfileImage username={listCard.createdBy} />
+                            por {listCard.createdBy} <ProfileImage username={listCard.createdBy} image={`http://localhost:8080/users/${listCard.createdBy}/image`} />
                         </span>
                         <span className="list-card-likes">
                             👍 {listCard.likes} {hasLikedAndFollowed.liked ? "(You liked this)" : ""}

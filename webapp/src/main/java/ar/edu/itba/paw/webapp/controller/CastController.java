@@ -2,9 +2,12 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.Cast.Actor;
 import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.services.ActorService;
+import ar.edu.itba.paw.services.MediaService;
 import ar.edu.itba.paw.webapp.dto.out.ActorDto;
 import ar.edu.itba.paw.webapp.dto.out.MediaDto;
+import ar.edu.itba.paw.webapp.dto.out.MovieDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,13 +20,15 @@ import java.util.List;
 public class CastController {
 
     private final ActorService actorService;
+    private final MediaService mediaService;
 
     @Context
     UriInfo uriInfo;
 
     @Autowired
-    public CastController(ActorService actorService) {
+    public CastController(ActorService actorService, MediaService mediaService) {
         this.actorService = actorService;
+        this.mediaService = mediaService;
     }
 
     @GET
@@ -56,6 +61,22 @@ public class CastController {
         List<Actor> actorList = actorService.getActorsForQuery(search);
         List<ActorDto> actorDtoList = ActorDto.fromActorList(actorList,uriInfo);
         return Response.ok(new GenericEntity<List<ActorDto>>(actorDtoList){}).build();
+    }
+
+    @GET
+    @Path("/director/{id}/medias")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMediasForDirector(@PathParam("id") final int id) {
+        List<Movie> mediaList = mediaService.getMediaForDirectorId(id);
+
+        if (mediaList == null || mediaList.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("No media found for director with ID: " + id)
+                    .build();
+        }
+
+        List<MovieDto> mediaDtos = MovieDto.fromMovieList(mediaList, uriInfo);
+        return Response.ok(new GenericEntity<List<MovieDto>>(mediaDtos) {}).build();
     }
 }
 

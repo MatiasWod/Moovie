@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.dto.out;
 import ar.edu.itba.paw.models.Media.Movie;
 
 import javax.ws.rs.core.UriInfo;
+import java.util.List;
 
 public class MovieDto extends MediaDto{
     private Integer runtime;
@@ -25,6 +26,10 @@ public class MovieDto extends MediaDto{
         movieDto.director = movie.getDirector();
 
         return movieDto;
+    }
+
+    public static List<MovieDto> fromMovieList(List<Movie> movieList, UriInfo uri){
+        return movieList.stream().map(m -> fromMovie(m, uri)).collect(java.util.stream.Collectors.toList());
     }
 
     public Integer getRuntime() {
