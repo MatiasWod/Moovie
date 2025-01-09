@@ -14,7 +14,8 @@ const SearchableMediaTag = ({ image, text, link, id }) => {
                 search: `?${link}=${encodeURIComponent(providersParam)}`,
             });
         }
-        if (link === `tvcreators`){
+        if (link === `tvcreators` || link === `cast/director`) {
+            console.log(id);
             navigate(`/${link}/${id}`,{ state: { actorName: text } });
         }
     };

@@ -130,7 +130,7 @@ function Details() {
 
                     <div className="d-flex flex-row align-items-center ">
                         <h5>Director:</h5>
-                        <MediaTag link={'cast/director'} text={media.director}/>
+                        <MediaTag link={'cast/director'} text={media.director} id={media.directorId}/>
                     </div>
 
                     <div className="d-flex flex-row align-items-center ">

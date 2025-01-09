@@ -64,6 +64,7 @@ export default function App() {
                         <Route path='/profile/:username' element={<Profile/>}/>
                         <Route path='/search/:search' element={<Search/>}/>
                         <Route path='/cast/actor/:id' element={<Cast/>}/>
+                        <Route path='/cast/director/:id' element={<Cast/>}/>
                         <Route path='/tvcreators/:id' element={<Cast/>}/>
                         <Route path='/healthcheck' element={<Healthcheck/>}/>
                         <Route path='/authtest' element={<AuthTest/>}/> {/* Add AuthTest route */}

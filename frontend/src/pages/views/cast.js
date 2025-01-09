@@ -17,6 +17,7 @@ function Cast(){
 
     const isActor = location.pathname.includes("/cast/actor/");
     const isTvCreator = location.pathname.includes("/tvcreators/");
+    const isDirector = location.pathname.includes("/cast/director/");
 
     useEffect(() => {
         if (isActor) {
@@ -45,6 +46,25 @@ function Cast(){
                     const data = await TVCreatorsService.getMediasForTVCreator({id});
                     setActorMedias(data);
                     console.log(data)
+                } catch (error) {
+                    console.error("Error fetching actor media:", error);
+                    setActorMediasError(error);
+                } finally {
+                    setActorMediasLoading(false);
+                }
+            }
+
+            getData();
+        }
+    }, [id]);
+
+    useEffect(() => {
+        if (isDirector) {
+
+            async function getData() {
+                try {
+                    const data = await CastService.getMediasForDirector({id});
+                    setActorMedias(data);
                 } catch (error) {
                     console.error("Error fetching actor media:", error);
                     setActorMediasError(error);

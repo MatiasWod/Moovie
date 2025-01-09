@@ -1,5 +1,4 @@
 import castApi from "../api/CastApi";
-import api from "../api/api";
 
 const CastService = (() => {
 
@@ -11,9 +10,14 @@ const CastService = (() => {
         return await castApi.getMediasForActor(id);
     }
 
+    const getMediasForDirector = async (id) => {
+        return await castApi.getMediasForDirector(id);
+    }
+
     return{
         getActorsForQuery,
-        getMediasForActor
+        getMediasForActor,
+        getMediasForDirector
     }
 })();
 
