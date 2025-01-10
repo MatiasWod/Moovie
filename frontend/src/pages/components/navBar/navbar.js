@@ -13,6 +13,7 @@ import {logout} from "../../../features/authSlice";
 import ProfileImage from "../profileImage/ProfileImage";
 import React from "react";
 import SearchBar from "../searchBar/SearchBar";
+import RoleBadge from "../RoleBadge/RoleBadge";
 
 function NavbarComponent() {
 
@@ -49,12 +50,14 @@ function NavbarComponent() {
                     <SearchBar/>
                     <Nav className="d-flex nav-item justify-content-center userPic-login">
                         {user && (
-
+                            <div style={{display: 'flex', alignItems: 'center'}}>
+                            <RoleBadge role={user.role} size={"50px"}></RoleBadge>
                             <ProfileImage
                                 image={`http://localhost:8080/users/${user.username}/image`}
                                 size="60px" // Adjust size as needed
                                 defaultProfilePicture="https://example.com/default-profile.jpg" // Your default image URL
                             />
+                            </div>
                         )}
                         {/*(${user.role})*/}
                         {isLoggedIn ? (
