@@ -25,3 +25,7 @@
 .customDropdownButton.expanded {
     color: green !important;
 }
+
+.custom-dropdown .dropdown-menu {
+    transform: translateX(-80px); /* Ajusta para desplazarlo más a la izquierda */
+}

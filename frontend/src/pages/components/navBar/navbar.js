@@ -49,26 +49,36 @@ function NavbarComponent() {
                     <SearchBar/>
                     <Nav className="d-flex nav-item justify-content-center userPic-login">
                         {user && (
+
                             <ProfileImage
                                 image={`http://localhost:8080/users/${user.username}/image`}
-                                size="100px" // Adjust size as needed
+                                size="60px" // Adjust size as needed
                                 defaultProfilePicture="https://example.com/default-profile.jpg" // Your default image URL
                             />
                         )}
-
+                        {/*(${user.role})*/}
                         {isLoggedIn ? (
-                            <NavDropdown title={`${user.username} (${user.role})`} id="basic-nav-dropdown">
-                                <NavDropdown.Item as={NavLink} to={`/profile/${user.username}`}>Profile</NavDropdown.Item>
-                                <NavDropdown.Item as={NavLink} to={`/reports`}>Reports</NavDropdown.Item>
-                                <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
-                            </NavDropdown>
-                        ) : (
-                            <Nav.Link as={NavLink} to="/login" activeClassName="active"
-                                      className={'link-primary'}>Login</Nav.Link>
-                        )}
-                    </Nav>
-                </Navbar.Collapse>
-            </Container>
+                            <div style={{display: 'flex', alignItems: 'center'}}>
+                                <NavDropdown
+                                    title={`${user.username} `}
+                                    id="basic-nav-dropdown"
+                                    drop="down"
+                                    className="custom-dropdown"
+                                >
+                                    <NavDropdown.Item as={NavLink}
+                                                      to={`/profile/${user.username}`}>Profile</NavDropdown.Item>
+                                    <NavDropdown.Item as={NavLink} to={`/reports`}>Reports</NavDropdown.Item>
+                                    <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+                                </NavDropdown>
+                            </div>
+                                ) : (
+                                <Nav.Link as={NavLink} to="/login" activeClassName="active"
+                                          className={'link-primary'}>Login</Nav.Link>
+                                )}
+                            </Nav>
+
+                            </Navbar.Collapse>
+                            </Container>
         </Navbar>
     );
 }
