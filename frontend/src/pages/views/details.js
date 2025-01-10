@@ -133,19 +133,24 @@ function Details() {
                         <MediaTag link={'cast/director'} text={media.director} id={media.directorId}/>
                     </div>
 
+
+                    {media.budget>0 && (
                     <div className="d-flex flex-row align-items-center ">
                         <h5>Budget: </h5>
                         <MediaTag text={new Intl.NumberFormat('en-US', {
                             style: 'currency', currency: 'USD', maximumFractionDigits: 0
                         }).format(media.budget)}/>
                     </div>
+                    )}
 
-                    <div className="d-flex flex-row align-items-center ">
+            {media.revenue>0 && (
+                <div className="d-flex flex-row align-items-center ">
                         <h5>Revenue: </h5>
                         <MediaTag text={new Intl.NumberFormat('en-US', {
                             style: 'currency', currency: 'USD', maximumFractionDigits: 0
                         }).format(media.revenue)}/>
                     </div>
+            )}
         </span>
 
         info = <h5>{releaseYear} • {media.runtime} m • Movie</h5>

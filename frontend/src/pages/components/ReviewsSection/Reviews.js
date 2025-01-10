@@ -139,9 +139,8 @@ function Reviews({ id, username, source , handleParentReload }) {
                         <div className="review-header d-flex align-items-center justify-between">
                             <div>
                                 <ProfileImage
-                                    image={`http://localhost:8080/users/${review.username}/image`}
+                                    image={review.imageUrl}
                                     size="100px"
-                                    defaultProfilePicture="https://example.com/default-profile.jpg"
                                     onClick={() => navigate(`/profile/${review.username}`)}
                                 />
                                 <strong>{review.username}</strong>

@@ -13,6 +13,9 @@ const ProfileImage = ({ image, username, size, onClick }) => {
             src={imgSrc}
             alt="Profile"
             onClick={onClick}  // Added onClick handler
+            onError={(e) => {
+                e.target.src = defaultProfilePicture; // Reemplaza la imagen con la predeterminada
+            }}
         />
     );
 };

@@ -223,9 +223,14 @@ public class UserController {
     @Path("/{username}/image")
     @Produces("image/png")
     public Response getProfileImage(@PathParam("username") final String username) {
-        LOGGER.info("Method: getProfileImage, Path: /users/{username}/image, Username: {}", username);
-        final byte[] image = userService.getProfilePicture(username);
-        return Response.ok(image).build();
+        try {
+            LOGGER.info("Method: getProfileImage, Path: /users/{username}/image, Username: {}", username);
+            final byte[] image = userService.getProfilePicture(username);
+            return Response.ok(image).build();
+        }catch (RuntimeException e) {
+            LOGGER.info("Image with username {} not found. Returning NOT_FOUND.", username);
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
     }
 
     @PUT
