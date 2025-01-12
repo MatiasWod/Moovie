@@ -2,11 +2,8 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import Form from "react-bootstrap/Form";
-import {Image, InputGroup} from "react-bootstrap";
-import Button from "react-bootstrap/Button";
+import {Image} from "react-bootstrap";
 import Logo from '../../../images/logo.png';
-import NavbarStyle from './navbarStyle.css';
 import {NavLink} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {logout} from "../../../features/authSlice";
@@ -35,6 +32,7 @@ function NavbarComponent() {
                     <Nav className="me-auto">
                         <Nav.Link as={NavLink} to="/discover" activeClassName="active">Discover</Nav.Link>
                         <Nav.Link as={NavLink} to="/browseLists" activeClassName="active">Browse Lists</Nav.Link>
+                        <Nav.Link as={NavLink} to="/createList" activeClassName="active">Create List</Nav.Link>
                         <NavDropdown title="Top Rated" id="basic-nav-dropdown">
                             <NavDropdown.Item as={NavLink} to="featuredLists/topRatedMedia" activeClassName="active">Media</NavDropdown.Item>
                             <NavDropdown.Item as={NavLink} to="featuredLists/topRatedMovies" activeClassName="active">Movies</NavDropdown.Item>
@@ -81,7 +79,7 @@ function NavbarComponent() {
                             </Nav>
 
                             </Navbar.Collapse>
-                            </Container>
+            </Container>
         </Navbar>
     );
 }

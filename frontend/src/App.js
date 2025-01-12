@@ -15,6 +15,7 @@ const Login = lazy(() => import(views + '/authViews/login'));
 const Register = lazy(() => import(views + '/authViews/register'));
 const Details = lazy(() => import(views + '/details'));
 const List = lazy(() => import(views + '/list'));
+const CreateList = lazy(() => import(views + '/CreateListView/CreateListView'));
 const BrowseLists = lazy(() => import(views + '/browseLists'));
 const Discover = lazy(() => import(views + '/discover'));
 const FeaturedLists = lazy(() => import(views + '/featuredLists'));
@@ -59,6 +60,7 @@ export default function App() {
                         <Route path='/list/:id' element={<List/>}/>
                         <Route path='/discover' element={<Discover/>}/>
                         <Route path='/browseLists' element={<BrowseLists/>}/>
+                        <Route path='/createList' element={<CreateList/>}/>
                         <Route path='/featuredLists/:type' element={<FeaturedLists/>}/>
                         <Route path='/leaderboard' element={<MilkyLeaderboard/>}/>
                         <Route path='/profile/:username' element={<Profile/>}/>
