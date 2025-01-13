@@ -24,7 +24,7 @@ const SearchBar = () => {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                 />
-                <Button variant="outline-success" type="submit">
+                <Button variant="outline-success" type="submit" style={{marginRight: "10px"}}>
                     <i className={"bi bi-search"} /> Search
                 </Button>
             </InputGroup>

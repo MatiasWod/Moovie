@@ -22,7 +22,7 @@ function NavbarComponent() {
     };
 
     return (
-        <Navbar expand="lg" className="sticky-top navbar navbar-expand-lg navbar-light container-nav mb-4">
+        <Navbar expand="lg"  sticky="top"  className="navbar navbar-expand-lg navbar-light bg-body-tertiary ">
             <Container fluid>
                 <Navbar.Brand href="/" className="d-flex align-items-center">
                     <Image src={Logo} width={50} className="me-2"/> Moovie
@@ -57,7 +57,6 @@ function NavbarComponent() {
                             />
                             </div>
                         )}
-                        {/*(${user.role})*/}
                         {isLoggedIn ? (
                             <div style={{display: 'flex', alignItems: 'center'}}>
                                 <NavDropdown
