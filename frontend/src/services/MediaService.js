@@ -33,6 +33,12 @@ const MediaService = (() => {
         return parsePaginatedResponse(res);
     }
 
+    const getReviewsByMediaIdandUserId = async (mediaId,userId) => {
+        const res = await mediaApi.getReviewsByMediaIdandUserId(mediaId,userId);
+        return res;
+    }
+
+
     const getActorsByMediaId = async (mediaId) =>{
         const res = await mediaApi.getActorsInMedia(mediaId);
         return parsePaginatedResponse(res);
@@ -114,6 +120,7 @@ const MediaService = (() => {
         getMediaById,
         getMediaByIdList,
         getReviewsByMediaId,
+        getReviewsByMediaIdandUserId,
         getActorsByMediaId,
         getTvCreatorsByMediaId,
         createReview,

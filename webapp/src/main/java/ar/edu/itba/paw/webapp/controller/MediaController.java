@@ -145,6 +145,15 @@ public class MediaController {
         return res.build();
     }
 
+    @GET
+    @Path("/{id}/review/user/{userId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getReviewsByMediaIdandUserId(@PathParam("id") final int mediaId,@PathParam("userId") final int userId) {
+        final Review review = reviewService.getReviewByMediaIdAndUsername(mediaId, userId);
+        final ReviewDto reviewDto = ReviewDto.fromReview(review, uriInfo);
+        return Response.ok(reviewDto).build();
+    }
+
 
     @GET
     @Path("/{id}/actors")

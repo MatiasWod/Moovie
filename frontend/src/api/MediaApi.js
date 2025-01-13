@@ -35,6 +35,10 @@ const mediaApi = (()=> {
         return api.get(`/medias/${mediaId}/reviews`);
     }
 
+    const getReviewsByMediaIdandUserId = (mediaId,userId) => {
+        return api.get(`/medias/${mediaId}/user/${userId}`);
+    }
+
     const getActorsInMedia = (mediaId) =>{
         return api.get(
             `medias/${mediaId}/actors`
@@ -66,6 +70,7 @@ const mediaApi = (()=> {
         getMediaById,
         getMediaByIdList,
         getReviewsByMediaId,
+        getReviewsByMediaIdandUserId,
         getActorsInMedia,
         getTvCreatorsByMediaId,
         createReview
