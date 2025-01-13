@@ -22,6 +22,7 @@ const AddMediaToListButton = ({ currentId }) => {
     const [popupVisible, setPopupVisible] = useState(false);
     const [options, setOptions] = useState([]);
 
+
     const fetchCurrentUserLists = async () => {
         try {
             const response0 = await listService.getLists({
@@ -132,6 +133,8 @@ const AddMediaToListButton = ({ currentId }) => {
                         {options.map((option, index) => (
                             <Dropdown.Item key={index} onClick={ () => handleOptionClick(option)}>{option.name}</Dropdown.Item>
                         ))}
+                        <Dropdown.Item onClick={() => navigate('/createList')}> <i
+                            className="bi bi-plus-circle-fill"></i> Create new list</Dropdown.Item>
                     </Dropdown.Menu>
                 )}
             </Dropdown>
