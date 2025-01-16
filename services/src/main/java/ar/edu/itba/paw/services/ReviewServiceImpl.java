@@ -157,7 +157,7 @@ public class ReviewServiceImpl implements ReviewService{
         if (type.getType()==ReviewTypes.REVIEW_MEDIA.getType() && reviewDao.getReviewByMediaIdAndUsername(mediaId ,userId)==null){
             throw new ReviewNotFoundException("Review not found");
         }
-        else if (reviewDao.getMoovieListReviewByListIdAndUsername(mediaId ,userId)==null){
+        else if (type.getType()==ReviewTypes.REVIEW_MOOVIE_LIST.getType() && reviewDao.getMoovieListReviewByListIdAndUsername(mediaId ,userId)==null){
             throw new ReviewNotFoundException("MoovieList review not found");
         }
         reviewDao.editReview(userId, mediaId, rating, reviewContent,type);
