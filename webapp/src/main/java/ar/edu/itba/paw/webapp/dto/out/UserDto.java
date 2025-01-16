@@ -7,6 +7,7 @@ import java.util.List;
 
 public class UserDto {
 
+    private int id;
     private String username;
     private String email;
     private int role;
@@ -16,6 +17,7 @@ public class UserDto {
     public static UserDto fromUser(final User user, final UriInfo uriInfo) {
         final UserDto dto = new UserDto();
 
+        dto.id=user.getUserId();
         dto.username = user.getUsername();
         dto.email = user.getEmail();
         dto.role = user.getRole();
@@ -26,6 +28,14 @@ public class UserDto {
 
     public static List<UserDto> fromUserList(final List<User> userList, final UriInfo uriInfo) {
         return userList.stream().map(u -> fromUser(u, uriInfo)).collect(java.util.stream.Collectors.toList());
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getUsername() {
