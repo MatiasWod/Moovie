@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import "../formsStyle.css";
 import mediaService from "../../../../services/MediaService";
 
-const ReviewForm = ({mediaName, closeReview, mediaId, onReviewSubmit }) => {
+const ReviewForm = ({mediaName, closeReview, mediaId, userReview, onReviewSubmit }) => {
     const [error, setError] = useState(null);
-    const [rating, setRating] = useState(0);
-    const [review, setReview] = useState("");
+    const [rating, setRating] = useState(userReview.rating || 0);
+    const [review, setReview] = useState(userReview.reviewContent||"");
 
     const handleStarClick = (value) => {
         setRating(value);
@@ -13,7 +13,14 @@ const ReviewForm = ({mediaName, closeReview, mediaId, onReviewSubmit }) => {
 
     const handleSubmit = async () => {
         try {
-            const response = await mediaService.createReview(mediaId, rating, review);
+            setError(null); // Limpiar errores previos
+            let response;
+            if (userReview.rating){
+                response= await mediaService.editReview(mediaId, rating, review);
+            }else {
+                response = await mediaService.createReview(mediaId, rating, review);
+
+            }
 
             if (response.status === 200 || response.status === 201) {
                 // Call onReviewSubmit if provided to reload reviews
@@ -23,7 +30,7 @@ const ReviewForm = ({mediaName, closeReview, mediaId, onReviewSubmit }) => {
                 return;
             } else {
                 // Set error if response is not successful
-                setError(response.data.message || "Error submitting review");
+                setError(error.response?.data?.message || "Error submitting review");
             }
         } catch (error) {
             // Set error for any network or other errors
@@ -36,7 +43,8 @@ const ReviewForm = ({mediaName, closeReview, mediaId, onReviewSubmit }) => {
             <div className="box-review">
                 {!error ? (
                     <>
-                        <h2>Tu review de {mediaName}</h2>
+                        {userReview.rating ? (<h2>Edita review de {mediaName}</h2>) : (
+                            <h2>Tu review de {mediaName}</h2>)}
                         <div className="stars">
                             {[1, 2, 3, 4, 5].map((value) => (
                                 <span
@@ -70,7 +78,7 @@ const ReviewForm = ({mediaName, closeReview, mediaId, onReviewSubmit }) => {
                     </>
                 ) : (
                     <>
-                        <h2 style={{ color: "red" }}>{error}</h2>
+                        <h2 style={{color: "red"}}>{error}</h2>
                         <button className="cancel" onClick={() => setError(null)}>
                             Volver
                         </button>

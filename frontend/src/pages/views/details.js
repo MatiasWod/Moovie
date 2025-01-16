@@ -43,6 +43,12 @@ function Details() {
     const [tvCreatorsError, setTvCreatorsError] = useState(null);
 
 
+    //GET CURRENT USER REVIEW
+    const [userReview,setUserReview] = useState({});
+    const [userReviewLoading,setUserReviewLoading] = useState(true);
+    const [userReviewError,setUserReviewError] = useState(null);
+
+
     const [reload, setReload] = useState(false)
     const {isLoggedIn, user} = useSelector(state => state.auth);
 
@@ -106,8 +112,23 @@ function Details() {
         }
     }
 
+
+    const fetchUserReview = async () => {
+        try {
+            if (isLoggedIn) {
+                const response = await mediaService.getReviewsByMediaIdandUserId(id, user.id);
+                setUserReview(response.data);
+            }
+        } catch (err) {
+            setUserReviewError(err);
+        } finally {
+            setUserReviewLoading(false);
+        }
+    }
+
     useEffect(() => {
         fetchMedia();
+        fetchUserReview();
     }, [id, reload]);
 
     useEffect(() => {
@@ -290,7 +311,7 @@ function Details() {
                     <div className="flex-row d-flex">
                         <AddMediaToListButton currentId={id}/>
 
-                        <CreateReviewButton handleOpenReviewForm={handleOpenReviewForm} rated={null}/>
+                        <CreateReviewButton handleOpenReviewForm={handleOpenReviewForm} rated={userReview.rating}/>
                     </div>
                 </div>
 
@@ -300,6 +321,7 @@ function Details() {
                         <ReviewForm
                             mediaName={media.name}
                             mediaId={id}
+                            userReview={userReview}
                             closeReview={handleCloseReviewForm}
                             onReviewSubmit={handleReviewSubmit} // Pass the submit handler
                         />

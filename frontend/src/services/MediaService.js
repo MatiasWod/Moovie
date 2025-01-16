@@ -54,6 +54,11 @@ const MediaService = (() => {
         return res;
     }
 
+    const editReview = async (mediaId,rating, reviewContent) => {
+        const res = await mediaApi.editReview({mediaId,rating,reviewContent});
+        return res;
+    }
+
     const currentUserWWStatus = async (mediaId, username) => {
         try {
             const [watchedStatus, watchlistStatus] = await Promise.all([
@@ -124,6 +129,7 @@ const MediaService = (() => {
         getActorsByMediaId,
         getTvCreatorsByMediaId,
         createReview,
+        editReview,
         currentUserWWStatus,
         userWWStatus,
         insertMediaIntoWW,

@@ -62,6 +62,17 @@ const mediaApi = (()=> {
         );
     }
 
+    const editReview = ({mediaId,rating,reviewContent}) => {
+        return api.put(`/medias/${Number(mediaId)}/review`,
+            { rating: Number(rating), reviewContent: reviewContent },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+    }
+
 
 
     return {
@@ -73,7 +84,8 @@ const mediaApi = (()=> {
         getReviewsByMediaIdandUserId,
         getActorsInMedia,
         getTvCreatorsByMediaId,
-        createReview
+        createReview,
+        editReview
     }
 
 })();
