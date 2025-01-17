@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import "../formsStyle.css";
 import UserService from "../../../../services/UserService";
 import { useSelector } from "react-redux";
+import {useTranslation} from "react-i18next";
 
 const ChangePfpForm = ({ onCancel }) => {
+    const { t } = useTranslation();
     const { user } = useSelector((state) => state.auth); // Fetch logged-in user's details
     const [selectedFile, setSelectedFile] = useState(null);
     const [error, setError] = useState(null);
@@ -48,13 +50,13 @@ const ChangePfpForm = ({ onCancel }) => {
                         <div>
                             <h2 style={{color: "green"}}>{success}</h2>
                             <button type="button" className="cancel" onClick={onCancel}>
-                                Close
+                                {t('pfpForm.close')}
                             </button>
                         </div>
 
                     ) : (
                         <>
-                            <h2>Change Profile Picture</h2>
+                            <h2>{t('pfpForm.changeProfilePicture')}</h2>
                             <form onSubmit={handleSubmit}>
                             <input
                                     type="file"
@@ -63,10 +65,10 @@ const ChangePfpForm = ({ onCancel }) => {
                                 />
                                 <div className="buttons">
                                     <button type="button" className="cancel" onClick={onCancel}>
-                                        Cancel
+                                        {t('pfpForm.cancel')}
                                     </button>
                                     <button type="submit" className="submit">
-                                        Submit
+                                        {t('pfpForm.submit')}
                                     </button>
                                 </div>
                             </form>
@@ -76,7 +78,7 @@ const ChangePfpForm = ({ onCancel }) => {
                     <>
                         <h2 style={{ color: "red" }}>{error}</h2>
                         <button className="cancel" onClick={() => setError(null)}>
-                            Back
+                            {t('pfpForm.back')}
                         </button>
                     </>
                 )}

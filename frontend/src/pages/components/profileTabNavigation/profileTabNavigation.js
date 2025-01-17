@@ -1,8 +1,11 @@
 import React, {useState} from "react";
 import Nav from "react-bootstrap/Nav";
 import "./profileTabNavigation.css"
+import {useTranslation} from "react-i18next";
 
 function ProfileTabNavigation({ selectedTab, onTabSelect }) {
+    const { t } = useTranslation();
+
     return (
         <Nav
             variant="tabs"
@@ -11,25 +14,25 @@ function ProfileTabNavigation({ selectedTab, onTabSelect }) {
             className="custom-nav"
         >
             <Nav.Item>
-                <Nav.Link eventKey="watched">Watched</Nav.Link>
+                <Nav.Link eventKey="watched">{t('profile.watched')}</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-                <Nav.Link eventKey="public-lists">Public</Nav.Link>
+                <Nav.Link eventKey="public-lists">{t('profile.public')}</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-                <Nav.Link eventKey="private-lists">Private</Nav.Link>
+                <Nav.Link eventKey="private-lists">{t('profile.private')}</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-                <Nav.Link eventKey="liked-lists">Liked</Nav.Link>
+                <Nav.Link eventKey="liked-lists">{t('profile.liked')}</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-                <Nav.Link eventKey="followed-lists">Followed</Nav.Link>
+                <Nav.Link eventKey="followed-lists">{t('profile.followed')}</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-                <Nav.Link eventKey="reviews">Reviews</Nav.Link>
+                <Nav.Link eventKey="reviews">{t('profile.reviews')}</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-                <Nav.Link eventKey="watchlist">Watchlist</Nav.Link>
+                <Nav.Link eventKey="watchlist">{t('profile.watchlist')}</Nav.Link>
             </Nav.Item>
         </Nav>
     );

@@ -5,8 +5,10 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ReviewForm from "../forms/reviewForm/ReviewForm";
 import EditListForm from "../forms/editListForm/editListForm";
+import {useTranslation} from "react-i18next";
 
 const ListHeader = ({ list, updateHeader}) => {
+    const { t } = useTranslation();
     const { isLoggedIn, user } = useSelector((state) => state.auth);
     const navigate = useNavigate();
 
@@ -83,25 +85,25 @@ const ListHeader = ({ list, updateHeader}) => {
             <div className="list-header-content">
                 {isLoggedIn && user.username === list.createdBy && (
                     <button className="edit-list-button" onClick={handleOpenEdit}>
-                        Edit
+                        {t('listHeader.edit')}
                     </button>
                 )}
 
                 <h1 className="list-header-title">{list.name}</h1>
                 <p className="list-header-description">{list.description}</p>
-                <span className="list-header-username">por {list.createdBy}</span>
+                <span className="list-header-username">{t('listHeader.by')} {list.createdBy}</span>
                 <div className="list-header-buttons">
                     <button
-                        className={`like-button ${hasLikedAndFollowed.liked ? "liked" : ""}`}
+                        className={`like-button ${hasLikedAndFollowed.liked ? t('listHeader.liked') : ""}`}
                         onClick={handleLike}
                     >
-                        {hasLikedAndFollowed.liked ? "Unlike" : "Like"}
+                        {hasLikedAndFollowed.liked ? t('listHeader.dislike') : t('listHeader.like')}
                     </button>
                     <button
-                        className={`follow-button ${hasLikedAndFollowed.followed ? "followed" : ""}`}
+                        className={`follow-button ${hasLikedAndFollowed.followed ? t('listHeader.followed') : ""}`}
                         onClick={handleFollow}
                     >
-                        {hasLikedAndFollowed.followed ? "Unfollow" : "Follow"}
+                        {hasLikedAndFollowed.followed ? t('listHeader.unfollow') : t('listHeader.follow')}
                     </button>
                 </div>
             </div>

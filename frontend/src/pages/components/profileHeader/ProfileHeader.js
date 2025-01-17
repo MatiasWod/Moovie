@@ -5,9 +5,11 @@ import { Button } from 'react-bootstrap';
 import ChangePfpForm from "../forms/changePfpForm/changePfpForm";
 import {useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
+import {useTranslation} from "react-i18next";
 
 
 const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser }) => {
+    const { t } = useTranslation();
     const [showPfpPopup, setShowPfpPopup] = useState(false);
     const navigate = useNavigate();
     const { isLoggedIn, user } = useSelector(state => state.auth);
@@ -38,7 +40,7 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser }) => {
                                 className="ms-2"
                                 onClick={handleUnbanUser}
                             >
-                                Unban User
+                                {t('profile.unbanUser')}
                             </Button>
                         ) : (
                             <Button 
@@ -47,7 +49,7 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser }) => {
                                 className="ms-2"
                                 onClick={handleBanUser}
                             >
-                                Ban User
+                                {t('profile.banUser')}
                             </Button>
                         )}
                     </h1>

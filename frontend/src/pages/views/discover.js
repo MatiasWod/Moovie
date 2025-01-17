@@ -12,9 +12,11 @@ import ProviderService from "../../services/ProviderService";
 import ProviderFilter from "../components/filters/providerFilter/ProviderFilter";
 import GenreService from "../../services/GenreService";
 import GenreFilter from "../components/filters/genreFilter/GenreFilter";
+import {useTranslation} from "react-i18next";
 
 
 const Discover = () => {
+    const { t } = useTranslation();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
@@ -210,12 +212,12 @@ const Discover = () => {
                         setSortOrder={setSortOrder}
                         currentOrderDefault={sortOrder}
                     />
-                    <div>Providers
+                    <div>{t('discover.providers')}
                     <ProviderFilter providers={providers?.data}
                                     selectedProviders={selectedProviders}
                                     setSelectedProviders={setSelectedProviders}
                                     ></ProviderFilter></div>
-                    <div>Genres
+                    <div>{t('discover.genres')}
                         <GenreFilter genres={genres?.data}
                                         selectedGenres={selectedGenres}
                                         setSelectedGenres={setSelectedGenres}
@@ -242,7 +244,7 @@ const Discover = () => {
                             </div>
                         </>
                     ) : (
-                        <p>No media available.</p>
+                        <p>{t('discover.noMediaAvailable')}</p>
                     )}
                 </div>
             </div>

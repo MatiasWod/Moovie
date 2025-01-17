@@ -6,11 +6,13 @@ import "./milkyLeaderboard.css";
 import ProfileImage from "../components/profileImage/ProfileImage";
 import logo from "../../images/logo.png"
 import {useNavigate} from "react-router-dom";
+import {useTranslation} from "react-i18next";
 
 function MilkyLeaderboard() {
     const [milkyLeaderboard, setMilkyLeaderboard] = useState([]);
     const [milkyLeaderboardLoading, setMilkyLeaderboardLoading] = useState(true);
     const [milkyLeaderboardError, setMilkyLeaderboardError] = useState(null);
+    const { t } = useTranslation();
 
     const fetchMilkyLeaderboard = async () => {
         try {
@@ -37,17 +39,17 @@ function MilkyLeaderboard() {
 
     return (
         <div className="moovie-default default-container">
-            <div className="title bold-title"> Milky Leaderboard</div>
+            <div className="title bold-title"> {t('mpl.title')}</div>
 
             <div className="milky-leaderboard-table-container">
                 <table className="milky-leaderboard-table">
                     <thead>
                     <tr className="milky-leaderboard-header">
                         <th className="col"></th>
-                        <th className="col bold-letters">User</th>
-                        <th className="col bold-letters">Lists</th>
-                        <th className="col bold-letters">Reviews</th>
-                        <th className="col bold-letters">Points</th>
+                        <th className="col bold-letters">{t('mpl.username')}</th>
+                        <th className="col bold-letters">{t('mpl.moovieListCount')}</th>
+                        <th className="col bold-letters">{t('mpl.reviewsCount')}</th>
+                        <th className="col bold-letters">{t('mpl.points')}</th>
                     </tr>
                     </thead>
 

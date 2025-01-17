@@ -15,9 +15,11 @@ import { Divider } from "@mui/material";
 import commentApi from "../../../api/CommentApi";
 import moovieListReviewApi from "../../../api/MoovieListReview";
 import CommentList from "../commentList/CommentList";
+import {useTranslation} from "react-i18next";
 
 
 function Reviews({ id, username, source , handleParentReload }) {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const [reviews, setReviews] = useState(undefined);
@@ -166,7 +168,7 @@ function Reviews({ id, username, source , handleParentReload }) {
                                     <ConfirmationForm
                                         service={reviewService.deleteReviewById}
                                         serviceParams={[review.id]}
-                                        actionName={"eliminar tu Review"}
+                                        actionName={t('reviews.deleteYourReview')}
                                         onConfirm={handleConfirmDelete}
                                         onCancel={handleCloseConfirmationDelete}
                                     />

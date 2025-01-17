@@ -14,11 +14,13 @@ import {createSearchParams, useNavigate, useParams, useSearchParams} from "react
 import Error404 from "./errorViews/error404";
 import MediaService from "../../services/MediaService";
 import pagingSizes from "../../api/values/PagingSizes";
+import {useTranslation} from "react-i18next";
 
 
 function FeaturedLists() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
+    const { t } = useTranslation();
 
     //GET VALUES FOR FEATURED MEDIA
     const {type} = useParams();
@@ -111,7 +113,7 @@ function FeaturedLists() {
 
     return (
         <div className="default-container moovie-default">
-            <h1>Featured List </h1>
+            <h1>{t('featuredLists.featuredList')}</h1>
 
             <ListContent listContent={featuredMedia?.data || []} />
             <div className="flex justify-center pt-4">

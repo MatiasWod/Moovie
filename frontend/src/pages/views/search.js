@@ -16,8 +16,10 @@ import userService from "../../services/UserService";
 import ActorCard from "../components/actorCards/ActorCard";
 import MediaOrderBy from "../../api/values/MediaOrderBy";
 import CardsListOrderBy from "../../api/values/CardsListOrderBy";
+import {useTranslation} from "react-i18next";
 
 function Healthcheck() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const {search} = useParams();
@@ -146,7 +148,7 @@ function Healthcheck() {
             <>
                 {medias?.data?.length > 0 ? (
                     <>
-                        <h3> Medias for: {search}</h3>
+                        <h3>{t('search.mediasFor', {search: search})}</h3>
                         {medias.data.map((media) => (
                             <div className="discover-media-card" key={media.id}>
                                 <MediaCard media={media} />
@@ -154,7 +156,7 @@ function Healthcheck() {
                         ))}
                     </>
                 ) : (
-                    <p>No medias found.</p>
+                    <p>{t('search.noMediasFound')}</p>
                 )}
             </>
 
@@ -162,7 +164,7 @@ function Healthcheck() {
             <>
                 {lists?.data?.length > 0 ? (
                     <>
-                        <h3>Lists for: {search}</h3>
+                        <h3>{t('search.listsFor', {search: search})}</h3>
                         <div className="list-card-container">
                             {lists.data.map((list) => (
                                 <div key={list.id}>
@@ -172,7 +174,7 @@ function Healthcheck() {
                         </div>
                     </>
                 ) : (
-                    <p>No lists found.</p>
+                    <p>{t('search.noListsFound')}</p>
                 )}
             </>
 
@@ -186,7 +188,7 @@ function Healthcheck() {
             >
                 {actors && actors.length > 0 ? (
                     <>
-                        <h3>Actors for: {search}</h3>
+                        <h3>{t('search.actorsFor', {search: search})}</h3>
                         {actors.map((actor) => (
                             <div
                                 key={actor.actorId}
@@ -201,7 +203,7 @@ function Healthcheck() {
                         ))}
                     </>
                 ) : (
-                    <p>No actors found.</p>
+                    <p>{t('search.noActorsFound')}</p>
                 )}
             </div>
             <div
@@ -215,7 +217,7 @@ function Healthcheck() {
                 <div>
                     {users?.data?.length > 0 ? (
                         <>
-                            <h3>Users for: {search}</h3>
+                            <h3>{t('search.usersFor', {search: search})}</h3>
                             {users.data.map((user) => (
                                 <div
                                     key={user.username}
@@ -227,7 +229,7 @@ function Healthcheck() {
                             ))}
                         </>
                     ) : (
-                        <p>No users found.</p>
+                        <p>{t('search.noUsersFound')}</p>
                     )}
                 </div>
 

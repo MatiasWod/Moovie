@@ -5,8 +5,10 @@ import "./listCard.css";
 import ProfileImage from "../profileImage/ProfileImage";
 import listService from "../../../services/ListService";
 import {useSelector} from "react-redux";
+import {useTranslation} from "react-i18next";
 
 const ListCard = ({ listCard }) => {
+    const { t } = useTranslation();
     const [hasLikedAndFollowed, setHasLikedAndFollowed] = useState({liked:false,followed:false});
     const {isLoggedIn, user} = useSelector(state => state.auth);
 
@@ -39,14 +41,14 @@ const ListCard = ({ listCard }) => {
                 <div className="list-card-body">
                     <div className="list-card-title">{listCard.name}</div>
                     <div className="list-card-details">
-                        <span>{listCard.movieCount} Películas</span> • <span>{listCard.mediaCount - listCard.movieCount} Series</span>
+                        <span>{listCard.movieCount} {t('listCard.movies')}</span> • <span>{listCard.mediaCount - listCard.movieCount} {t('listCard.series')}</span>
                     </div>
                     <div className="list-card-footer">
                         <span>
-                            por {listCard.createdBy} <ProfileImage username={listCard.createdBy} image={`http://localhost:8080/users/${listCard.createdBy}/image`} />
+                            {t('listCard.by')} {listCard.createdBy} <ProfileImage username={listCard.createdBy} image={`http://localhost:8080/users/${listCard.createdBy}/image`} />
                         </span>
                         <span className="list-card-likes">
-                            👍 {listCard.likes} {hasLikedAndFollowed.liked ? "(You liked this)" : ""}
+                            👍 {listCard.likes} {hasLikedAndFollowed.liked ? t('listCard.youLikedThis') : ""}
                         </span>
                     </div>
                 </div>

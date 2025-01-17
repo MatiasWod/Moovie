@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import "../formsStyle.css";
 import listService from "../../../../services/ListService";
+import {useTranslation} from "react-i18next";
 
 const EditListForm = ({ listName, listDescription, closeEdit, closeEditSuccess, listId }) => {
+    const { t } = useTranslation();
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
     const [name, setName] = useState(listName);
@@ -37,17 +39,17 @@ const EditListForm = ({ listName, listDescription, closeEdit, closeEditSuccess, 
             <div className="box-review">
                 {success ? (
                     <>
-                        <h2 style={{ color: "green" }}>¡Lista actualizada con éxito!</h2>
+                        <h2 style={{ color: "green" }}>{t('editList.listUpdatedSuccessfully')}</h2>
                         <button className="cancel" onClick={closeEditSuccess}>
-                            Cerrar
+                            {t('editList.close')}
                         </button>
                     </>
                 ) : (
                     !error ? (
                         <>
-                            <h2>Editar Lista</h2>
+                            <h2>{t('editList.editList')}</h2>
                             <div className="form-group">
-                                <label htmlFor="list-name">Nombre de la Lista: </label>
+                                <label htmlFor="list-name">{t('editList.listName')}</label>
                                 <input
                                     id="list-name"
                                     placeholder={listName}
@@ -57,7 +59,7 @@ const EditListForm = ({ listName, listDescription, closeEdit, closeEditSuccess, 
                                 />
                             </div>
                             <div className="form-group">
-                                <label htmlFor="list-description">Descripción</label>
+                                <label htmlFor="list-description">{t('editList.description')}</label>
                                 <textarea
                                     id="list-description"
                                     placeholder="Descripción (Opcional)"
@@ -69,14 +71,14 @@ const EditListForm = ({ listName, listDescription, closeEdit, closeEditSuccess, 
                             </div>
                             <div className="buttons">
                                 <button className="cancel" onClick={closeEdit}>
-                                    Cancelar
+                                    {t('editList.cancel')}
                                 </button>
                                 <button
                                     className="submit"
                                     onClick={handleSubmit}
                                     disabled={!name.trim()}
                                 >
-                                    Guardar
+                                    {t('editList.save')}
                                 </button>
                             </div>
                         </>
@@ -84,7 +86,7 @@ const EditListForm = ({ listName, listDescription, closeEdit, closeEditSuccess, 
                         <>
                             <h2 style={{ color: "red" }}>{error}</h2>
                             <button className="cancel" onClick={() => setError(null)}>
-                                Volver
+                                {t('editList.back')}
                             </button>
                         </>
                     )

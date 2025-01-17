@@ -2,10 +2,12 @@ import React,{useState} from "react";
 import "./listContent.css";
 import SortOrder from "../../../api/values/SortOrder";
 import {useNavigate} from "react-router-dom";
+import {useTranslation} from "react-i18next";
 
 const ListContent = ({ listContent }) => {
 
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const handleClick = (id) => {
         navigate(`/details/${id}`);
@@ -30,11 +32,11 @@ const ListContent = ({ listContent }) => {
             <table className="media-table">
                 <thead>
                 <tr>
-                    <th>Título</th>
-                    <th>Tipo</th>
-                    <th>Puntuación</th>
-                    <th>Puntuación de usuarios</th>
-                    <th>Fecha de Lanzamiento</th>
+                    <th>{t('listContent.title')}</th>
+                    <th>{t('listContent.type')}</th>
+                    <th>{t('listContent.score')}</th>
+                    <th>{t('listContent.usersScore')}</th>
+                    <th>{t('listContent.releaseDate')}</th>
                 </tr>
                 </thead>
                 <tbody>

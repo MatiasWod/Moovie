@@ -11,11 +11,13 @@ import PaginationButton from "../components/paginationButton/PaginationButton";
 import {createSearchParams, useNavigate, useSearchParams} from "react-router-dom";
 import ListService from "../../services/ListService";
 import pagingSizes from "../../api/values/PagingSizes";
+import {useTranslation} from "react-i18next";
 
 function BrowseLists(){
 
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
+    const { t } = useTranslation();
 
     const [search, setSearch] = useState(null);
     const [ownerUsername, setOwnerUsername] = useState(null);
@@ -77,12 +79,12 @@ function BrowseLists(){
         <div className="moovie-default default-container">
 
             <div className="browse-lists-header">
-                <div className="title">Community Lists</div>
+                <div className="title">{t('browseLists.communityLists')}</div>
 
                 <div className="browse-list-header-searchable">
                     <SearchBar />
                     <div style={{display:"flex", float:"right"}}>
-                        <div style={{marginInline:"10px"}}>Order By </div>
+                        <div style={{marginInline:"10px"}}>{t('browseLists.orderBy')}</div>
                         <DropdownMenu setOrderBy={setOrderBy} setSortOrder={setSortOrder} currentOrderDefault={sortOrder} values={Object.values(CardsListOrderBy)}/>
                     </div>
                 </div>

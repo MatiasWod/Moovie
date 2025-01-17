@@ -18,8 +18,10 @@ import MediaService from "../../services/MediaService";
 import GenreService from "../../services/GenreService";
 import ProviderService from "../../services/ProviderService";
 import mediaService from "../../services/MediaService";
+import {useTranslation} from "react-i18next";
 
 function Details() {
+    const { t } = useTranslation();
     const {id} = useParams();
 
     //GET VALUES FOR Media
@@ -150,14 +152,14 @@ function Details() {
         detailsColumn = <span>
 
                     <div className="d-flex flex-row align-items-center ">
-                        <h5>Director:</h5>
+                        <h5>{t('details.director')}</h5>
                         <MediaTag link={'cast/director'} text={media.director} id={media.directorId}/>
                     </div>
 
 
                     {media.budget>0 && (
                     <div className="d-flex flex-row align-items-center ">
-                        <h5>Budget: </h5>
+                        <h5>{t('details.budget')}</h5>
                         <MediaTag text={new Intl.NumberFormat('en-US', {
                             style: 'currency', currency: 'USD', maximumFractionDigits: 0
                         }).format(media.budget)}/>
@@ -166,7 +168,7 @@ function Details() {
 
             {media.revenue>0 && (
                 <div className="d-flex flex-row align-items-center ">
-                        <h5>Revenue: </h5>
+                        <h5>{t('details.revenue')}</h5>
                         <MediaTag text={new Intl.NumberFormat('en-US', {
                             style: 'currency', currency: 'USD', maximumFractionDigits: 0
                         }).format(media.revenue)}/>
@@ -174,7 +176,7 @@ function Details() {
             )}
         </span>
 
-        info = <h5>{releaseYear} • {media.runtime} m • Movie</h5>
+        info = <h5>{releaseYear} • {media.runtime} m • {t('details.movie')}</h5>
 
 
     } else {
@@ -195,7 +197,7 @@ function Details() {
 
                 {media.lastAirDate && (
                     <div className="d-flex flex-row align-items-center">
-                        <h5>Last Air Date: </h5>
+                        <h5>{t('details.lastAirDate')}</h5>
                         <MediaTag
                             text={new Date(media.lastAirDate)
                                 .toISOString()
@@ -206,7 +208,7 @@ function Details() {
 
                 {media.nextEpisodeToAir && (
                     <div className="d-flex flex-row align-items-center ">
-                        <h5>Next Episode to Air: </h5>
+                        <h5>{t('details.nextEpisodeToAir')}</h5>
                         <MediaTag
                             text={new Date(media.nextEpisodeToAir)
                                 .toISOString()
@@ -217,7 +219,7 @@ function Details() {
                 }
         </span>
 
-        info = <h5>{releaseYear} • Serie • {media.numberOfSeasons} Temporadas • {media.numberOfEpisodes} Episodios</h5>
+        info = <h5>{releaseYear} • {t('details.serie')} • {media.numberOfSeasons} {t('details.seasons')} • {media.numberOfEpisodes} {t('details.episodes')}</h5>
 
     }
 
@@ -289,15 +291,15 @@ function Details() {
                                                                                       text={provider.providerName}
                                                                                       image={provider.logoPath}
                                                                                       id={provider.providerId}/>) :
-                            <MediaTag text="No providers available"/>}
+                            <MediaTag text={t('details.noProvidersAvailable')}/>}
                     </div>
 
                     <div className="d-flex flex-row align-items-center ">
-                        <h5>Genres:</h5>
+                        <h5>{t('details.genres')}:</h5>
                         {genres.length > 0 ? genres.map((genre) => <MediaTag darkmode={true} link={`genres`}
                                                                              text={genre.genreName}
                                                                              id={genre.genreId}/>) :
-                            <MediaTag darkmode={true} text="No genres available"/>}
+                            <MediaTag darkmode={true} text={t('details.noGenresAvailable')}/>}
                     </div>
                     {detailsColumn}
 
@@ -330,14 +332,14 @@ function Details() {
             </div>
 
             <div className="row my-8">
-                <h2>Cast</h2>
+                <h2>{t('details.cast')}</h2>
                 <hr className="my-8"/>
                 <ActorCardList mediaId={id}/>
             </div>
 
             {/* Pass reloadReviews as a key to force re-render */}
             <div className="row">
-                <h2>Reseñas</h2>
+                <h2>{t('details.reviews')}</h2>
                 <hr className="my-8 mb-4"/>
                 <Reviews key={reloadReviews ? id : undefined} id={id} handleParentReload={handleParentReload}
                          source="media"/>

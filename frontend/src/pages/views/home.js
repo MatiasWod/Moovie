@@ -8,6 +8,7 @@ import "../components/mainStyle.css"
 import "./home.css"
 import Button from "react-bootstrap/Button";
 import {useNavigate} from "react-router-dom";
+import {useTranslation} from "react-i18next";
 
 
 function Home() {
@@ -17,7 +18,8 @@ function Home() {
     //GET VALUES FOT Top Rated Movies
     const [topRatedMovies, setTopRatedMovies] = useState([]);
     const [topRatedMoviesLoading, setTopRatedMoviesLoading] = useState(true);
-    const [topRatedMoviesError, setTopRatedMoviesError] = useState(null);
+    const [topRatedMoviesError, setTopRatedMoviesError] = useState(null)
+    const { t } = useTranslation();
 
     const fetchTopRatedMovies = async () => {
         try {
@@ -117,14 +119,14 @@ function Home() {
     return (
         <main className="moovie-default default-container">
             <div className="hero-text">
-                <h1>Sumérgete en Películas y Series</h1>
-                <p>Descubre tu Próxima Experiencia Favorita.</p>
+                <h1>{t('home.immerse')}</h1>
+                <p>{t('home.discover')}</p>
             </div>
             <div>
                 <div className="container d-flex justify-content-between p-2">
-                    <h3>Top Rated Movies by TMDB</h3>
+                    <h3>{t('home.topRatedMovies')}</h3>
                     <Button variant="contained" color="success" onClick={handleTopRatedMoviesButtonClick}>
-                        See more
+                        {t('home.seeMore')}
                     </Button>
                 </div>
                 <CardsHorizontalContainer mediaList={topRatedMovies} loading={topRatedMoviesLoading}
@@ -133,9 +135,9 @@ function Home() {
 
             <div>
                 <div className="container d-flex justify-content-between p-2">
-                    <h3>Most Popular Movies by TMDB</h3>
+                    <h3>{t('home.mostPopularMovies')}</h3>
                     <Button variant="contained" color="success" onClick={handleMostPopularMoviesButtonClick}>
-                        See more
+                        {t('home.seeMore')}
                     </Button>
                 </div>
                 <CardsHorizontalContainer mediaList={mostPopularMovies} loading={mostPopularMoviesLoading}
@@ -144,9 +146,9 @@ function Home() {
 
             <div>
                 <div className="container d-flex justify-content-between p-2">
-                    <h3>Most Popular Movies by TMDB</h3>
+                    <h3>{t('home.topRatedSeries')}</h3>
                     <Button variant="contained" color="success" onClick={handleTopRatedSeriesButtonClick}>
-                        See more
+                        {t('home.seeMore')}
                     </Button>
                 </div>
                 <CardsHorizontalContainer mediaList={topRatedSeries} loading={topRatedSeriesLoading}
@@ -155,9 +157,9 @@ function Home() {
 
             <div>
                 <div className="container d-flex justify-content-between p-2">
-                    <h3>Most Popular Movies by TMDB</h3>
+                    <h3>{t('home.mostPopularSeries')}</h3>
                     <Button variant="contained" color="success" onClick={handleMostPopularSeriesButtonClick}>
-                        See more
+                        {t('home.seeMore')}
                     </Button>
                 </div>
                 <CardsHorizontalContainer mediaList={mostPopularSeries} loading={mostPopularSeriesLoading}

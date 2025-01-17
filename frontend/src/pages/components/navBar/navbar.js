@@ -11,11 +11,13 @@ import ProfileImage from "../profileImage/ProfileImage";
 import React from "react";
 import SearchBar from "../searchBar/SearchBar";
 import RoleBadge from "../RoleBadge/RoleBadge";
+import {useTranslation} from "react-i18next";
 
 function NavbarComponent() {
 
     const dispatch = useDispatch();
     const {isLoggedIn, user} = useSelector(state => state.auth);
+    const { t } = useTranslation();
 
     const handleLogout = () => {
         dispatch(logout());
@@ -30,20 +32,20 @@ function NavbarComponent() {
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link as={NavLink} to="/discover" activeClassName="active">Discover</Nav.Link>
-                        <Nav.Link as={NavLink} to="/browseLists" activeClassName="active">Browse Lists</Nav.Link>
-                        <Nav.Link as={NavLink} to="/createList" activeClassName="active">Create List</Nav.Link>
-                        <NavDropdown title="Top Rated" id="basic-nav-dropdown">
-                            <NavDropdown.Item as={NavLink} to="featuredLists/topRatedMedia" activeClassName="active">Media</NavDropdown.Item>
-                            <NavDropdown.Item as={NavLink} to="featuredLists/topRatedMovies" activeClassName="active">Movies</NavDropdown.Item>
-                            <NavDropdown.Item as={NavLink} to="featuredLists/topRatedSeries" activeClassName="active">Series</NavDropdown.Item>
+                        <Nav.Link as={NavLink} to="/discover" activeClassName="active">{t('navBar.discover')}</Nav.Link>
+                        <Nav.Link as={NavLink} to="/browseLists" activeClassName="active">{t('navBar.browseLists')}</Nav.Link>
+                        <Nav.Link as={NavLink} to="/createList" activeClassName="active">{t('navBar.createList')}</Nav.Link>
+                        <NavDropdown title={t('navBar.topRated')} id="basic-nav-dropdown">
+                            <NavDropdown.Item as={NavLink} to="featuredLists/topRatedMedia" activeClassName="active">{t('navBar.media')}</NavDropdown.Item>
+                            <NavDropdown.Item as={NavLink} to="featuredLists/topRatedMovies" activeClassName="active">{t('navBar.movies')}</NavDropdown.Item>
+                            <NavDropdown.Item as={NavLink} to="featuredLists/topRatedSeries" activeClassName="active">{t('navBar.series')}</NavDropdown.Item>
                         </NavDropdown>
-                        <NavDropdown title="Most Popular" id="basic-nav-dropdown">
-                            <NavDropdown.Item as={NavLink} to="featuredLists/mostPopularMedia" activeClassName="active">Media</NavDropdown.Item>
-                            <NavDropdown.Item as={NavLink} to="featuredLists/mostPopularMovies" activeClassName="active">Movies</NavDropdown.Item>
-                            <NavDropdown.Item as={NavLink} to="featuredLists/mostPopularSeries" activeClassName="active">Series</NavDropdown.Item>
+                        <NavDropdown title={t('navBar.mostPopular')} id="basic-nav-dropdown">
+                            <NavDropdown.Item as={NavLink} to="featuredLists/mostPopularMedia" activeClassName="active">{t('navBar.media')}</NavDropdown.Item>
+                            <NavDropdown.Item as={NavLink} to="featuredLists/mostPopularMovies" activeClassName="active">{t('navBar.movies')}</NavDropdown.Item>
+                            <NavDropdown.Item as={NavLink} to="featuredLists/mostPopularSeries" activeClassName="active">{t('navBar.series')}</NavDropdown.Item>
                         </NavDropdown>
-                        <Nav.Link as={NavLink} to="/leaderboard" activeClassName="active">Leaderboard</Nav.Link>
+                        <Nav.Link as={NavLink} to="/leaderboard" activeClassName="active">{t('navBar.leaderboard')}</Nav.Link>
                     </Nav>
                     <SearchBar/>
                     <Nav className="d-flex nav-item justify-content-center userPic-login">
@@ -66,14 +68,14 @@ function NavbarComponent() {
                                     className="custom-dropdown"
                                 >
                                     <NavDropdown.Item as={NavLink}
-                                                      to={`/profile/${user.username}`}>Profile</NavDropdown.Item>
-                                    <NavDropdown.Item as={NavLink} to={`/reports`}>Reports</NavDropdown.Item>
-                                    <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+                                                      to={`/profile/${user.username}`}>{t('navBar.profile')}</NavDropdown.Item>
+                                    <NavDropdown.Item as={NavLink} to={`/reports`}>{t('navBar.reports')}</NavDropdown.Item>
+                                    <NavDropdown.Item onClick={handleLogout}>{t('navBar.logout')}</NavDropdown.Item>
                                 </NavDropdown>
                             </div>
                                 ) : (
                                 <Nav.Link as={NavLink} to="/login" activeClassName="active"
-                                          className={'link-primary'}>Login</Nav.Link>
+                                          className={'link-primary'}>{t('navBar.login')}</Nav.Link>
                                 )}
                             </Nav>
 

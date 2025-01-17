@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../formsStyle.css";
+import {useTranslation} from "react-i18next";
 
 const ConfirmationForm = ({
                               service, // Servicio a utilizar
@@ -8,6 +9,7 @@ const ConfirmationForm = ({
                               onCancel,  // Función para cancelar la acción
                               serviceParams // Parámetros a enviar al servicio
                           }) => {
+    const { t } = useTranslation();
     const [postResponse, setPostResponse] = useState("");
     const [responseColor, setResponseColor] = useState("");
     const [finished, setFinished] = useState(false);
@@ -34,13 +36,13 @@ const ConfirmationForm = ({
         return (
             <div className="overlay">
                 <div className="box-review" style={{ textAlign: "center", width: "70%", padding: "3em", margin: "2em auto" }}>
-                    <h2 style={{ marginBottom: "1.5em" }}>¿Estás seguro de que deseas {actionName}?</h2>
+                    <h2 style={{ marginBottom: "1.5em" }}>{t('confirmationForm.prompt', {actionName: actionName})}</h2>
                     <div className="buttons" style={{ display: "flex", justifyContent: "center", gap: "1.5em" }}>
                         <button className="cancel" style={{ padding: "0.8em 1.5em" }} onClick={onCancel}>
-                            Cancelar
+                            {t('confirmationForm.cancel')}
                         </button>
                         <button className="submit confirm-button" style={{ padding: "0.8em 1.5em" }} onClick={handleConfirm} >
-                            Confirmar
+                            {t('confirmationForm.confirm')}
                         </button>
                     </div>
                 </div>
@@ -53,7 +55,7 @@ const ConfirmationForm = ({
             <div className="box-review">
                 <h2 style={{ color: responseColor }}>{postResponse}</h2>
                 <button className="cancel" onClick={onCancel}>
-                    Cerrar
+                    {t('confirmationForm.close')}
                 </button>
             </div>
         </div>
