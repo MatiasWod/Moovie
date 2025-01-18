@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import "../formsStyle.css";
 import mediaService from "../../../../services/MediaService";
+import {useTranslation} from "react-i18next";
 
 const ReviewForm = ({mediaName, closeReview, mediaId, userReview, onReviewSubmit }) => {
+    const { t } = useTranslation();
     const [error, setError] = useState(null);
     const [rating, setRating] = useState(userReview.rating || 0);
     const [review, setReview] = useState(userReview.reviewContent||"");
@@ -43,8 +45,8 @@ const ReviewForm = ({mediaName, closeReview, mediaId, userReview, onReviewSubmit
             <div className="box-review">
                 {!error ? (
                     <>
-                        {userReview.rating ? (<h2>Edita review de {mediaName}</h2>) : (
-                            <h2>Tu review de {mediaName}</h2>)}
+                        {userReview.rating ? (<h2>{t('reviewForm.editReview',{mediaName: mediaName})}</h2>) : (
+                            <h2>{t('reviewForm.yourReview',{mediaName: mediaName})}</h2>)}
                         <div className="stars">
                             {[1, 2, 3, 4, 5].map((value) => (
                                 <span
@@ -57,7 +59,7 @@ const ReviewForm = ({mediaName, closeReview, mediaId, userReview, onReviewSubmit
                             ))}
                         </div>
                         <textarea
-                            placeholder="Tu reseña (Opcional)"
+                            placeholder={t('reviewForm.yourReviewPlaceholder')}
                             value={review}
                             onChange={(e) => setReview(e.target.value)}
                             maxLength="500"
@@ -65,14 +67,14 @@ const ReviewForm = ({mediaName, closeReview, mediaId, userReview, onReviewSubmit
                         <p>{review.length}/500</p>
                         <div className="buttons">
                             <button className="cancel" onClick={closeReview}>
-                                Cancelar
+                                {t('reviewForm.cancel')}
                             </button>
                             <button
                                 className="submit"
                                 onClick={handleSubmit}
                                 disabled={rating === 0}
                             >
-                                Enviar
+                                {t('reviewForm.submit')}
                             </button>
                         </div>
                     </>
@@ -80,7 +82,7 @@ const ReviewForm = ({mediaName, closeReview, mediaId, userReview, onReviewSubmit
                     <>
                         <h2 style={{color: "red"}}>{error}</h2>
                         <button className="cancel" onClick={() => setError(null)}>
-                            Volver
+                            {t('reviewForm.back')}
                         </button>
                     </>
                 )}

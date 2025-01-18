@@ -5,8 +5,10 @@ import ConfirmationForm from '../forms/confirmationForm/confirmationForm';
 import ReportForm from '../forms/reportForm/reportForm';
 import reportApi from '../../../api/ReportApi';
 import { useNavigate } from 'react-router-dom';
+import {useTranslation} from "react-i18next";
 
 export default function CommentList({ reviewId }) {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { isLoggedIn, user } = useSelector(state => state.auth);
     const [comments, setComments] = useState([]);
@@ -75,7 +77,7 @@ export default function CommentList({ reviewId }) {
                 <div className="flex-grow">
                     <p className="text-sm text-gray-700">{comment.content}</p>
                     <span className="text-xs text-gray-500">
-                        by {comment.userUrl.split('/').pop()}
+                        {t('commentList.by')} {comment.userUrl.split('/').pop()}
                     </span>
                 </div>
                 {isLoggedIn && (
@@ -83,14 +85,14 @@ export default function CommentList({ reviewId }) {
                         <button
                             onClick={() => handleReportComment(comment.id)}
                             className="text-yellow-600 hover:text-yellow-700 transition-colors"
-                            title="Report comment"
+                            title={t('commentList.reportComment')}
                         >
                             <i className="bi bi-flag text-sm"></i>
                         </button>
                         <button
                             onClick={() => handleOpenConfirmationDelete(comment.id)}
                             className="text-red-600 hover:text-red-700 transition-colors"
-                            title="Delete comment"
+                            title={t('commentList.deleteComment')}
                         >
                             <i className="bi bi-trash text-sm"></i>
                         </button>
@@ -102,7 +104,7 @@ export default function CommentList({ reviewId }) {
                 <ConfirmationForm
                     service={commentApi.deleteComment}
                     serviceParams={[comment.id]}
-                    actionName="eliminar tu comentario"
+                    actionName={t('commentList.deleteYourComment')}
                     onConfirm={handleConfirmDelete}
                     onCancel={() => setSelectedCommentId(null)}
                 />
@@ -117,8 +119,8 @@ export default function CommentList({ reviewId }) {
         </div>
     );
 
-    if (isLoading) return <div className="text-gray-500 text-sm">Loading comments...</div>;
-    if (error) return <div className="text-red-500 text-sm">Error: {error}</div>;
+    if (isLoading) return <div className="text-gray-500 text-sm">{t('commentList.loadingComments')}</div>;
+    if (error) return <div className="text-red-500 text-sm">{t('commentList.error',{error: error})}</div>;
     if (comments.length === 0) return null;
 
     return (
@@ -133,14 +135,14 @@ export default function CommentList({ reviewId }) {
                     >
                         {isExpanded ? (
                             <>
-                                <span>Show less</span>
+                                <span>{t('commentList.showLess')}</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                                 </svg>
                             </>
                         ) : (
                             <>
-                                <span>Show {comments.length - 1} more comments</span>
+                                <span>{t('commentList.showMore', { commentsQty: comments.length - 1 })}</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                 </svg>

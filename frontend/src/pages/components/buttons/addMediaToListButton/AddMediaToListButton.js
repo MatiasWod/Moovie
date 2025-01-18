@@ -8,8 +8,10 @@ import ResponsePopup from "../reponsePopup/ReponsePopup";
 import {useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {Dropdown} from "react-bootstrap";
+import {useTranslation} from "react-i18next";
 
 const AddMediaToListButton = ({ currentId }) => {
+    const { t } = useTranslation();
     const {isLoggedIn, user} = useSelector(state => state.auth);
 
 
@@ -125,7 +127,7 @@ const AddMediaToListButton = ({ currentId }) => {
             <Dropdown onClick={handleOnClick}>
                 <Dropdown.Toggle className="btn btn-dark dropdown-toggle" id="dropdown-basic"
                                  style={{marginRight: '10px'}}>
-                    <i className="bi bi-plus-circle-fill"></i> Add to list
+                    <i className="bi bi-plus-circle-fill"></i> {t('addMediaToListButton.addToList')}
                 </Dropdown.Toggle>
 
                 { isLoggedIn && (
@@ -134,7 +136,7 @@ const AddMediaToListButton = ({ currentId }) => {
                             <Dropdown.Item key={index} onClick={ () => handleOptionClick(option)}>{option.name}</Dropdown.Item>
                         ))}
                         <Dropdown.Item onClick={() => navigate('/createList')}> <i
-                            className="bi bi-plus-circle-fill"></i> Create new list</Dropdown.Item>
+                            className="bi bi-plus-circle-fill"></i> {t('addMediaToListButton.createNewList')}</Dropdown.Item>
                     </Dropdown.Menu>
                 )}
             </Dropdown>

@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import mediaService from "../../../services/MediaService";
 import ActorCard from "./ActorCard";
+import {useTranslation} from "react-i18next";
 
 const ActorCardList = ({ mediaId }) => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     const [actors, setActors] = useState([]);
@@ -35,11 +37,11 @@ const ActorCardList = ({ mediaId }) => {
     }, [mediaId]);
 
     if (actorsLoading) {
-        return <div>Cargando actores...</div>;
+        return <div>{t('actorCardList.loading')}</div>;
     }
 
     if (actorsError) {
-        return <div>Error al cargar actores: {actorsError.message}</div>;
+        return <div>{t('actorCardList.loading',{actorsError:actorsError.message})}</div>;
     }
 
     return (

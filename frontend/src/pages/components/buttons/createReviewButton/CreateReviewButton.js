@@ -1,14 +1,18 @@
 import React from "react";
 import "../buttonStyles.css";
+import {useTranslation} from "react-i18next";
 
+const { t } = useTranslation();
 const CreateReviewButton = ({ handleOpenReviewForm, rated }) => (
+
+
     rated ? (
         <button
             type="button"
             className="btn btn-dark border border-black"
             onClick={handleOpenReviewForm}
         >
-            <i className="bi bi-star-fill"></i> Rated
+            <i className="bi bi-star-fill"></i> {t("reviewButton.rated")}
         </button>
     ) : (
         <button
@@ -16,7 +20,7 @@ const CreateReviewButton = ({ handleOpenReviewForm, rated }) => (
             className="btn btn-light border border-black"
             onClick={handleOpenReviewForm}
         >
-            <i className="bi bi-star-fill"></i> Rate
+            <i className="bi bi-star-fill"></i> {t("reviewButton.rate")}
         </button>
     )
 );

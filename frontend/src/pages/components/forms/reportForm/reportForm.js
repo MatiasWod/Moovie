@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import "../formsStyle.css";
 import ReportTypes from "../../../../api/values/ReportTypes";
+import {useTranslation} from "react-i18next";
 
 const ReportForm = ({onCancel, onReportSubmit }) => {
+    const { t } = useTranslation();
     const [error, setError] = useState(null);
     const [reportReason, setReportReason] = useState("");
     const [additionalInfo, setAdditionalInfo] = useState("");
 
     const reportReasons = [
-        "Hate",
-        "Abuse & Harassment",
-        "Privacy",
-        "Spam"
+        t('reportForm.hate'),
+        t('reportForm.abuseAndHarassment'),
+        t('reportForm.privacy'),
+        t('reportForm.spam')
     ];
 
     const handleSubmit = async () => {
@@ -28,7 +30,7 @@ const ReportForm = ({onCancel, onReportSubmit }) => {
             <div className="box-review">
                 {!error ? (
                     <>
-                        <h2>Report</h2>
+                        <h2>{t('reportForm.report')}</h2>
                         <div className="radio-group">
                             {reportReasons.map((reason) => (
                                 <div key={reason} className="radio-option">
@@ -45,7 +47,7 @@ const ReportForm = ({onCancel, onReportSubmit }) => {
                             ))}
                         </div>
                         <textarea
-                            placeholder="Additional information (Optional)"
+                            placeholder={t('reportForm.additionalInformationPlaceholder')}
                             value={additionalInfo}
                             onChange={(e) => setAdditionalInfo(e.target.value)}
                             maxLength="500"
@@ -53,14 +55,14 @@ const ReportForm = ({onCancel, onReportSubmit }) => {
                         <p>{additionalInfo.length}/500</p>
                         <div className="buttons">
                             <button className="cancel" onClick={onCancel}>
-                                Cancel
+                                {t('reportForm.cancel')}
                             </button>
                             <button
                                 className="submit"
                                 onClick={handleSubmit}
                                 disabled={!reportReason}
                             >
-                                Submit Report
+                                {t('reportForm.submitReport')}
                             </button>
                         </div>
                     </>
@@ -68,7 +70,7 @@ const ReportForm = ({onCancel, onReportSubmit }) => {
                     <>
                         <h2 style={{ color: "red" }}>{error}</h2>
                         <button className="cancel" onClick={() => setError(null)}>
-                            Back
+                            {t('reportForm.back')}
                         </button>
                     </>
                 )}

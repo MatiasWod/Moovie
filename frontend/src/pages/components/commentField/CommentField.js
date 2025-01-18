@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import {useTranslation} from "react-i18next";
 
 export default function CommentField({ onSubmit, isLoading }) {
+    const { t } = useTranslation();
     const [comment, setComment] = useState('');
 
     const handleSubmit = (e) => {
@@ -18,7 +20,7 @@ export default function CommentField({ onSubmit, isLoading }) {
                     type="text"
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
-                    placeholder="Añadir un comentario..."
+                    placeholder={t('commentField.placeholder')}
                     className="flex-grow px-3 py-1 text-sm text-gray-700 border rounded-full 
                              focus:outline-none focus:border-blue-500"
                 />
@@ -30,7 +32,7 @@ export default function CommentField({ onSubmit, isLoading }) {
                         ? 'bg-gray-300 cursor-not-allowed' 
                         : 'bg-blue-500 hover:bg-blue-600'}`}
                 >
-                    {isLoading ? '...' : 'Enviar'}
+                    {isLoading ? '...' : t('commentField.submit')}
                 </button>
             </div>
         </form>
