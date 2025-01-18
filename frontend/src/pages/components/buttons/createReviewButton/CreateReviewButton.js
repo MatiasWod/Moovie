@@ -2,11 +2,11 @@ import React from "react";
 import "../buttonStyles.css";
 import {useTranslation} from "react-i18next";
 
-const { t } = useTranslation();
-const CreateReviewButton = ({ handleOpenReviewForm, rated }) => (
 
+const CreateReviewButton = ({ handleOpenReviewForm, rated }) => {
+    const { t } = useTranslation();
 
-    rated ? (
+    return( rated ? (
         <button
             type="button"
             className="btn btn-dark border border-black"
@@ -24,5 +24,6 @@ const CreateReviewButton = ({ handleOpenReviewForm, rated }) => (
         </button>
     )
 );
+};
 
 export default CreateReviewButton;
