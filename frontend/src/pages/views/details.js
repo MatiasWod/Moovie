@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import './details.css';
 import "../components/mainStyle.css"
 import {useNavigate, useParams} from "react-router-dom";
-import mediaApi from "../../api/MediaApi";
 import Reviews from "../components/ReviewsSection/Reviews";
 import AddMediaToListButton from "../components/buttons/addMediaToListButton/AddMediaToListButton";
 import CreateReviewButton from "../components/buttons/createReviewButton/CreateReviewButton";
@@ -12,13 +11,12 @@ import {useSelector} from "react-redux";
 import MediaTag from "../components/detailsSection/mediaTag/mediaTag";
 import Popover from 'react-bootstrap/Popover';
 import {OverlayTrigger} from "react-bootstrap";
-import genreApi from "../../api/GenreApi";
-import providerApi from "../../api/ProviderApi";
 import MediaService from "../../services/MediaService";
 import GenreService from "../../services/GenreService";
 import ProviderService from "../../services/ProviderService";
 import mediaService from "../../services/MediaService";
 import {useTranslation} from "react-i18next";
+import reviewService from "../../services/ReviewService";
 
 function Details() {
     const { t } = useTranslation();
@@ -118,7 +116,7 @@ function Details() {
     const fetchUserReview = async () => {
         try {
             if (isLoggedIn) {
-                const response = await mediaService.getReviewsByMediaIdandUserId(id, user.id);
+                const response = await reviewService.getReviewsByMediaIdandUserId(id, user.id);
                 setUserReview(response.data);
             }
         } catch (err) {

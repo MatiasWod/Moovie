@@ -11,7 +11,7 @@ const reportApi = (() => {
             content: content,
             type: type
         }
-        const response = await api.post('/review/' + reviewId + '/report', reportDTO);
+        const response = await api.post('/reviews/' + reviewId + '/report', reportDTO);
         return response;
     }
 
@@ -59,7 +59,7 @@ const reportApi = (() => {
     // --------------- ACTIONS ---------------
 
     const resolveReviewReport = async ({reviewId}) => {
-        const response = await api.delete('/review/' + reviewId + '/report');
+        const response = await api.delete('/reviews/' + reviewId + '/report');
         return response;
     }
 

@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import userApi from "../../../api/UserApi";
-import mediaService from "../../../services/MediaService";
 import {createSearchParams, useNavigate, useSearchParams} from "react-router-dom";
 import PaginationButton from "../paginationButton/PaginationButton";
 import listService from "../../../services/ListService";
@@ -31,13 +30,14 @@ function Reviews({ id, username, source , handleParentReload }) {
     const [reload, setReload] = useState(false);
     const [reportedReviewId, setReportedReviewId] = useState(null);
     const [commentLoading, setCommentLoading] = useState({});
-    
+
+
     const fetchReviews = async (currentPage) => {
         try {
             let response;
             switch (source) {
                 case 'media':
-                    response = await mediaService.getReviewsByMediaId(id, currentPage);
+                    response = await reviewService.getReviewsByMediaId(id, currentPage);
                     break;
                 case 'list':
                     response = await listService.getMoovieListReviewsFromListId({

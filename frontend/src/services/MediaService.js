@@ -28,16 +28,6 @@ const MediaService = (() => {
         return res;
     }
 
-    const getReviewsByMediaId = async (mediaId,page= 1) => {
-        const res = await mediaApi.getReviewsByMediaId(mediaId);
-        return parsePaginatedResponse(res);
-    }
-
-    const getReviewsByMediaIdandUserId = async (mediaId,userId) => {
-        const res = await mediaApi.getReviewsByMediaIdandUserId(mediaId,userId);
-        return res;
-    }
-
 
     const getActorsByMediaId = async (mediaId) =>{
         const res = await mediaApi.getActorsInMedia(mediaId);
@@ -47,16 +37,6 @@ const MediaService = (() => {
     const getTvCreatorsByMediaId = async (mediaId) =>{
         const res = await mediaApi.getTvCreatorsByMediaId(mediaId);
         return parsePaginatedResponse(res);
-    }
-
-    const createReview = async (mediaId,rating, reviewContent) => {
-        const res = await mediaApi.createReview({mediaId,rating,reviewContent});
-        return res;
-    }
-
-    const editReview = async (mediaId,rating, reviewContent) => {
-        const res = await mediaApi.editReview({mediaId,rating,reviewContent});
-        return res;
     }
 
     const currentUserWWStatus = async (mediaId, username) => {
@@ -124,12 +104,8 @@ const MediaService = (() => {
         getProvidersForMedia,
         getMediaById,
         getMediaByIdList,
-        getReviewsByMediaId,
-        getReviewsByMediaIdandUserId,
         getActorsByMediaId,
         getTvCreatorsByMediaId,
-        createReview,
-        editReview,
         currentUserWWStatus,
         userWWStatus,
         insertMediaIntoWW,

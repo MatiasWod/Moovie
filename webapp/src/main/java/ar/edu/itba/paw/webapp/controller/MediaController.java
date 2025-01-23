@@ -32,7 +32,6 @@ import java.util.List;
 public class MediaController {
 
     private final MediaService mediaService;
-    private final ReviewService reviewService;
     private final ActorService actorService;
     private final TVCreatorsService tvCreatorsService;
 
@@ -40,9 +39,8 @@ public class MediaController {
     UriInfo uriInfo;
 
     @Autowired
-    public MediaController(MediaService mediaService, ReviewService reviewService, ActorService actorService,TVCreatorsService tvCreatorsService) {
+    public MediaController(MediaService mediaService, ActorService actorService,TVCreatorsService tvCreatorsService) {
         this.mediaService = mediaService;
-        this.reviewService = reviewService;
         this.actorService = actorService;
         this.tvCreatorsService= tvCreatorsService;
     }
@@ -131,30 +129,6 @@ public class MediaController {
         return res.build();
     }
 
-    /* REVIEWS */
-    @GET
-    @Path("/{id}/reviews")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getReviewsByMediaId(@PathParam("id") final int mediaId, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
-        final List<Review> reviews = reviewService.getReviewsByMediaId(mediaId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page-1);
-        final int reviewCount = reviewService.getReviewsByMediaIdCount(mediaId);
-        final List<ReviewDto> reviewDtos = ReviewDto.fromReviewList(reviews, uriInfo);
-        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ReviewDto>>(reviewDtos) {});
-        final PagingUtils<Review> reviewPagingUtils = new PagingUtils<>(reviews,page,PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(),reviewCount);
-        ResponseUtils.setPaginationLinks(res,reviewPagingUtils,uriInfo);
-        return res.build();
-    }
-
-    @GET
-    @Path("/{id}/review/user/{userId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getReviewsByMediaIdandUserId(@PathParam("id") final int mediaId,@PathParam("userId") final int userId) {
-        final Review review = reviewService.getReviewByMediaIdAndUsername(mediaId, userId);
-        final ReviewDto reviewDto = ReviewDto.fromReview(review, uriInfo);
-        return Response.ok(reviewDto).build();
-    }
-
-
     @GET
     @Path("/{id}/actors")
     @Produces(MediaType.APPLICATION_JSON)
@@ -162,44 +136,6 @@ public class MediaController {
         final List<ActorDto> actorDtoList = ActorDto.fromActorList(actorService.getAllActorsForMedia(mediaId), uriInfo);
         return Response.ok(new GenericEntity<List<ActorDto>>( actorDtoList ) {}).build();
     }
-
-
-    @POST
-    @Path("{id}/review")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response createReview(@PathParam("id") int mediaId,@Valid final ReviewCreateDto reviewDto) {
-         reviewService.createReview(
-                mediaId,
-                reviewDto.getRating(),
-                reviewDto.getReviewContent(),
-                ReviewTypes.REVIEW_MEDIA
-        );
-
-         return Response.status(Response.Status.CREATED)
-                 .entity("Review successfully created to the media with ID: " + mediaId)
-                 .build();
-    }
-
-
-
-    @PUT
-    @Path("{id}/review")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response editReview(@PathParam("id") int mediaId,@Valid final ReviewCreateDto reviewDto) {
-        reviewService.editReview(
-                mediaId,
-                reviewDto.getRating(),
-                reviewDto.getReviewContent(),
-                ReviewTypes.REVIEW_MEDIA
-        );
-
-        return Response.ok()
-                .entity("Review successfully updated for media with ID: " + mediaId)
-                .build();
-    }
-
 
     /* TVCREATORS */
     @GET

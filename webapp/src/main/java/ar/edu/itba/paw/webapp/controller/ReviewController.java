@@ -11,6 +11,7 @@ import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.dto.in.CommentCreateDto;
 import ar.edu.itba.paw.webapp.dto.in.ReportCreateDTO;
+import ar.edu.itba.paw.webapp.dto.in.ReviewCreateDto;
 import ar.edu.itba.paw.webapp.dto.out.CommentDto;
 import ar.edu.itba.paw.webapp.dto.out.ReportDTO;
 import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
@@ -32,7 +33,7 @@ import java.util.List;
 //import com.sun.org.slf4j.internal.LoggerFactory;
 
 
-@Path("review")
+@Path("reviews")
 @Component
 public class ReviewController {
     private final ReviewService reviewService;
@@ -63,6 +64,68 @@ public class ReviewController {
         return Response.ok(reviewDto).build();
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getReviewsByQueryParams(
+            @QueryParam("mediaId") final Integer mediaId,
+            @QueryParam("userId") final Integer userId,
+            @QueryParam("pageNumber") @DefaultValue("1") final int page
+    ) {
+        if (mediaId != null && userId != null) {
+            // Caso: buscar una reseña específica por mediaId y userId
+            final Review review = reviewService.getReviewByMediaIdAndUsername(mediaId, userId);
+            final ReviewDto reviewDto = ReviewDto.fromReview(review, uriInfo);
+            return Response.ok(reviewDto).build();
+        } else if (mediaId != null) {
+            // Caso: buscar todas las reseñas para un mediaId con paginación
+            final List<Review> reviews = reviewService.getReviewsByMediaId(mediaId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
+            final int reviewCount = reviewService.getReviewsByMediaIdCount(mediaId);
+            final List<ReviewDto> reviewDtos = ReviewDto.fromReviewList(reviews, uriInfo);
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ReviewDto>>(reviewDtos) {});
+            final PagingUtils<Review> reviewPagingUtils = new PagingUtils<>(reviews, page, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), reviewCount);
+            ResponseUtils.setPaginationLinks(res, reviewPagingUtils, uriInfo);
+            return res.build();
+        } else {
+            // Caso: parámetros inválidos o faltantes
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Debe proporcionar al menos el parámetro 'mediaId'.")
+                    .build();
+        }
+    }
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response editReview(@QueryParam("mediaId") int mediaId,@Valid final ReviewCreateDto reviewDto) {
+        reviewService.editReview(
+                mediaId,
+                reviewDto.getRating(),
+                reviewDto.getReviewContent(),
+                ReviewTypes.REVIEW_MEDIA
+        );
+
+        return Response.ok()
+                .entity("Review successfully updated for media with ID: " + mediaId)
+                .build();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createReview(@QueryParam("mediaId") int mediaId,@Valid final ReviewCreateDto reviewDto) {
+        reviewService.createReview(
+                mediaId,
+                reviewDto.getRating(),
+                reviewDto.getReviewContent(),
+                ReviewTypes.REVIEW_MEDIA
+        );
+
+        return Response.status(Response.Status.CREATED)
+                .entity("Review successfully created to the media with ID: " + mediaId)
+                .build();
+    }
+
+
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -74,6 +137,8 @@ public class ReviewController {
                 .build();
 
     }
+
+
 
     @POST
     @Path("/{id}/like")

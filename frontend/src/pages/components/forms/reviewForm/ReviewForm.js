@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../formsStyle.css";
 import mediaService from "../../../../services/MediaService";
 import {useTranslation} from "react-i18next";
+import reviewService from "../../../../services/ReviewService";
 
 const ReviewForm = ({mediaName, closeReview, mediaId, userReview, onReviewSubmit }) => {
     const { t } = useTranslation();
@@ -18,10 +19,9 @@ const ReviewForm = ({mediaName, closeReview, mediaId, userReview, onReviewSubmit
             setError(null); // Limpiar errores previos
             let response;
             if (userReview.rating){
-                response= await mediaService.editReview(mediaId, rating, review);
+                response= await reviewService.editReview(mediaId, rating, review);
             }else {
-                response = await mediaService.createReview(mediaId, rating, review);
-
+                response = await reviewService.createReview(mediaId, rating, review);
             }
 
             if (response.status === 200 || response.status === 201) {

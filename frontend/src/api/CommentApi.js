@@ -6,12 +6,12 @@ const commentApi = (() => {
         const createReviewDTO = {
             commentContent: comment
         }
-        const response = await api.post('/review/' + reviewId + '/comment', createReviewDTO);
+        const response = await api.post('/reviews/' + reviewId + '/comment', createReviewDTO);
         return response;
     }
 
     const getReviewComments = async (reviewId) => {
-        const response = await api.get('/review/' + reviewId + '/comments');
+        const response = await api.get('/reviews/' + reviewId + '/comments');
         return response;
     }
 

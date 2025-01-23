@@ -31,13 +31,7 @@ const mediaApi = (()=> {
         return api.get(`/medias/${id}`);
     }
 
-    const getReviewsByMediaId = (mediaId,page= 1) => {
-        return api.get(`/medias/${mediaId}/reviews`);
-    }
 
-    const getReviewsByMediaIdandUserId = (mediaId,userId) => {
-        return api.get(`/medias/${mediaId}/review/user/${userId}`);
-    }
 
     const getActorsInMedia = (mediaId) =>{
         return api.get(
@@ -51,41 +45,13 @@ const mediaApi = (()=> {
         )
     }
 
-    const createReview = ({mediaId, rating, reviewContent}) => {
-        return api.post(`/medias/${Number(mediaId)}/review`,
-            { rating: Number(rating), reviewContent: reviewContent },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            }
-        );
-    }
-
-    const editReview = ({mediaId,rating,reviewContent}) => {
-        return api.put(`/medias/${Number(mediaId)}/review`,
-            { rating: Number(rating), reviewContent: reviewContent },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            }
-        );
-    }
-
-
-
     return {
         getMedia,
         getProvidersForMedia,
         getMediaById,
         getMediaByIdList,
-        getReviewsByMediaId,
-        getReviewsByMediaIdandUserId,
         getActorsInMedia,
         getTvCreatorsByMediaId,
-        createReview,
-        editReview
     }
 
 })();
