@@ -86,10 +86,6 @@ const userApi = (() => {
             });
     }
 
-    const getMovieReviewsFromUser = (username,page= 1) => {
-        return api.get(`/users/${username}/reviews`);
-    }
-
     const getSpecialListFromUser = (username, type, orderBy, order, pageNumber = 1) => {
         return api.get(`/users/${username}/${type}?orderBy=${orderBy}&order=${order}&pageNumber=${pageNumber}`);
     };
@@ -202,7 +198,6 @@ const userApi = (() => {
         getProfileByUsername,
         getUsersCount,
         getMilkyLeaderboard,
-        getMovieReviewsFromUser,
         getSpecialListFromUser,
         getMoovieListReviewsFromUser,
         getSearchedUsers,

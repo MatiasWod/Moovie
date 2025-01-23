@@ -46,7 +46,7 @@ function Reviews({ id, username, source , handleParentReload }) {
                     });
                     break;
                 case 'user':
-                    response = await userApi.getMovieReviewsFromUser(username, currentPage);
+                    response = await reviewService.getMovieReviewsFromUser(username, currentPage);
                     source = 'profile';
                     break;
                 default:

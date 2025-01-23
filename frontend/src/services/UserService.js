@@ -8,11 +8,6 @@ const UserService = (() => {
         return parsePaginatedResponse(res);
     }
 
-    const getMovieReviewsFromUser = async (userId,page= 1) => {
-        const res = await userApi.get(`/users/${userId}/reviews`);
-        return parsePaginatedResponse(res);
-    }
-
     const getSearchedUsers = async ({username,orderBy,sortOrder,page=1}) => {
         const res = await userApi.getSearchedUsers({username,orderBy,sortOrder,page});
         return parsePaginatedResponse(res);
@@ -30,7 +25,6 @@ const UserService = (() => {
 
     return {
         getMilkyLeaderboard,
-        getMovieReviewsFromUser,
         getSearchedUsers,
         getSpecialListFromUser,
         setPfp

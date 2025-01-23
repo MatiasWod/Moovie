@@ -268,27 +268,6 @@ public class UserController {
         }
     }
 
-    /* REVIEWS */
-    @GET
-    @Path("/{username}/reviews")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getMovieReviewsFromUser(@PathParam("username") final String username, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
-        try {
-            final List<Review> reviews = reviewService.getMovieReviewsFromUser(userService.getProfileByUsername(username).getUserId(),
-                    PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
-            final List<ReviewDto> reviewDtos = ReviewDto.fromReviewList(reviews, uriInfo);
-            final int reviewCount = userService.getProfileByUsername(username).getReviewsCount();
-
-            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ReviewDto>>(reviewDtos) {
-            });
-            final PagingUtils<Review> reviewPagingUtils = new PagingUtils<>(reviews, page, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), reviewCount);
-            ResponseUtils.setPaginationLinks(res, reviewPagingUtils, uriInfo);
-            return res.build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-    }
-
     /* MOOVIELISTREVIEWS */
     @GET
     @Path("/{id}/moovieListReviews")

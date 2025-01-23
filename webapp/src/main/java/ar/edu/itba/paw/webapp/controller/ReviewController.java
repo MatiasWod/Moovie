@@ -64,11 +64,13 @@ public class ReviewController {
         return Response.ok(reviewDto).build();
     }
 
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getReviewsByQueryParams(
             @QueryParam("mediaId") final Integer mediaId,
             @QueryParam("userId") final Integer userId,
+            @QueryParam("username") final String username,
             @QueryParam("pageNumber") @DefaultValue("1") final int page
     ) {
         if (mediaId != null && userId != null) {
@@ -85,10 +87,26 @@ public class ReviewController {
             final PagingUtils<Review> reviewPagingUtils = new PagingUtils<>(reviews, page, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), reviewCount);
             ResponseUtils.setPaginationLinks(res, reviewPagingUtils, uriInfo);
             return res.build();
-        } else {
+        } else if (username != null) {
+            try {
+                final List<Review> reviews = reviewService.getMovieReviewsFromUser(userService.getProfileByUsername(username).getUserId(),
+                        PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
+                final List<ReviewDto> reviewDtos = ReviewDto.fromReviewList(reviews, uriInfo);
+                final int reviewCount = userService.getProfileByUsername(username).getReviewsCount();
+
+                Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ReviewDto>>(reviewDtos) {
+                });
+                final PagingUtils<Review> reviewPagingUtils = new PagingUtils<>(reviews, page, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), reviewCount);
+                ResponseUtils.setPaginationLinks(res, reviewPagingUtils, uriInfo);
+                return res.build();
+            } catch (RuntimeException e) {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+            }
+        }
+        else {
             // Caso: parámetros inválidos o faltantes
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Debe proporcionar al menos el parámetro 'mediaId'.")
+                    .entity("At least one valid parameter is required.")
                     .build();
         }
     }

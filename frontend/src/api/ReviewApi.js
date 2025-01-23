@@ -28,6 +28,16 @@ const reviewApi = (()=> {
         });
     }
 
+    const getMovieReviewsFromUser = (username,page= 1) => {
+        return api.get(`/reviews`,
+            {
+                params: {
+                    'username': username,
+                    'pageNumber': page
+                }
+            });
+    }
+
     const editReview = ({mediaId,rating,reviewContent}) => {
         return api.put(`/reviews`,
             { rating: Number(rating), reviewContent: reviewContent },
@@ -80,6 +90,7 @@ const reviewApi = (()=> {
         getReviewById,
         getReviewsByMediaId,
         getReviewsByMediaIdandUserId,
+        getMovieReviewsFromUser,
         editReview,
         createReview,
         deleteReviewById,
