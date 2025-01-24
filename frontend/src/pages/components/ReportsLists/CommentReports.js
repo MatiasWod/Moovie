@@ -4,10 +4,12 @@ import ConfirmationModal from '../../components/forms/confirmationForm/confirmat
 import api from '../../../api/api';
 import userApi from '../../../api/UserApi';
 import commentApi from '../../../api/CommentApi';
+import {useTranslation} from "react-i18next";
 
 export default function CommentReports() {
   const [comments, setComments] = useState([]);
-  const [selectedAction, setSelectedAction] = useState(null); 
+  const [selectedAction, setSelectedAction] = useState(null);
+  const { t } = useTranslation();
   // selectedAction = {type: 'delete'|'ban'|'resolve', item: comment}
 
   useEffect(() => {
@@ -48,9 +50,9 @@ export default function CommentReports() {
 
   return (
     <div>
-      <h3 className="text-xl font-semibold mb-4">Comment Reports</h3>
+      <h3 className="text-xl font-semibold mb-4">{t('commentReports.commentReports')}</h3>
       {comments.length === 0 ? (
-        <div className="text-center text-gray-500">No comment reports</div>
+        <div className="text-center text-gray-500">{t('commentReports.noCommentReports')}</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {comments.map((comment, index) => (
@@ -72,19 +74,19 @@ export default function CommentReports() {
                   onClick={() => setSelectedAction({type:'delete', item:comment})}
                   className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
                 >
-                  Delete
+                  {t('commentReports.delete')}
                 </button>
                 <button
                   onClick={() => setSelectedAction({type:'ban', item:comment})}
                   className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                 >
-                  Ban User
+                  {t('commentReports.banUser')}
                 </button>
                 <button
                   onClick={() => setSelectedAction({type:'resolve', item:comment})}
                   className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
                 >
-                  Resolve
+                  {t('commentReports.resolve')}
                 </button>
               </div>
             </div>

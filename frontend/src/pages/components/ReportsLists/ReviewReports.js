@@ -4,10 +4,12 @@ import reviewApi from '../../../api/ReviewApi';
 import userApi from '../../../api/UserApi';
 import ConfirmationForm from '../../components/forms/confirmationForm/confirmationForm';
 import api from '../../../api/api';
+import {useTranslation} from "react-i18next";
 
 export default function ReviewReports() {
   const [reviews, setReviews] = useState([]);
   const [selectedAction, setSelectedAction] = useState(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchReports();
@@ -47,9 +49,11 @@ export default function ReviewReports() {
 
   return (
     <div>
-      <h3 className="text-xl font-semibold mb-4">Review Reports</h3>
+      <h3 className="text-xl font-semibold mb-4">
+        {t('reviewReports.reviewReports')}
+      </h3>
       {reviews.length === 0 ? (
-        <div className="text-center text-gray-500">No review reports</div>
+        <div className="text-center text-gray-500">{t('reviewReports.noReviewReports')}</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {reviews.map((review, index) => (
@@ -75,19 +79,19 @@ export default function ReviewReports() {
                   onClick={() => setSelectedAction({type:'delete', item:review})}
                   className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
                 >
-                  Delete
+                  {t('reviewReports.delete')}
                 </button>
                 <button
                   onClick={() => setSelectedAction({type:'ban', item:review})}
                   className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                 >
-                  Ban User
+                  {t('reviewReports.banUser')}
                 </button>
                 <button
                   onClick={() => setSelectedAction({type:'resolve', item:review})}
                   className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
                 >
-                  Resolve
+                  {t('reviewReports.resolve')}
                 </button>
               </div>
             </div>
