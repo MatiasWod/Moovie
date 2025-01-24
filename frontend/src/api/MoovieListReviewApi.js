@@ -18,6 +18,16 @@ const moovieListReviewApi = (()=> {
             });
     }
 
+    const getMoovieListReviewsFromUserId = (userId,page=1) => {
+        return api.get(`/moovieListReviews`,
+            {
+                params:{
+                    'userId': userId,
+                    'pageNumber': page,
+                }
+            });
+    }
+
     const editReview = (id,reviewContent) => {
         return api.put(`/moovieListReviews}`,
             {
@@ -65,6 +75,7 @@ const moovieListReviewApi = (()=> {
     return {
         getMoovieListReviewById,
         getMoovieListReviewsByListId,
+        getMoovieListReviewsFromUserId,
         editReview,
         createMoovieListReview,
         deleteMoovieListReviewById,

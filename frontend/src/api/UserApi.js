@@ -91,15 +91,6 @@ const userApi = (() => {
     };
 
 
-    const getMoovieListReviewsFromUser = (username,page) => {
-        return api.get(`/media/${username}/moovieListReviews`,
-            {
-                params:{
-                    'pageNumber': page,
-                }
-            });
-    }
-
     const getSearchedUsers = ({username,orderBy,sortOrder,page}) => {
         return api.get(`/users/search`,
             {
@@ -199,7 +190,6 @@ const userApi = (() => {
         getUsersCount,
         getMilkyLeaderboard,
         getSpecialListFromUser,
-        getMoovieListReviewsFromUser,
         getSearchedUsers,
         banUser,
         unbanUser,

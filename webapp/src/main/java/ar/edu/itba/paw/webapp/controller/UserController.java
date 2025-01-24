@@ -45,7 +45,6 @@ public class UserController {
     private static int DEFAULT_PAGE_INT = 1;
 
     private final UserService userService;
-    private final ReviewService reviewService;
     private final MoovieListService moovieListService;
     private final VerificationTokenService verificationTokenService;
     private final JwtTokenProvider jwtTokenProvider;
@@ -58,11 +57,10 @@ public class UserController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public UserController(final UserService userService, ReviewService reviewService, MoovieListService moovieListService,
+    public UserController(final UserService userService, MoovieListService moovieListService,
                           VerificationTokenService verificationTokenService, JwtTokenProvider jwtTokenProvider, ModeratorService moderatorService,
                           MediaService mediaService) {
         this.userService = userService;
-        this.reviewService = reviewService;
         this.moovieListService = moovieListService;
         this.verificationTokenService = verificationTokenService;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -267,27 +265,6 @@ public class UserController {
             return Response.serverError().entity(e.getMessage()).build();
         }
     }
-
-    /* MOOVIELISTREVIEWS */
-    @GET
-    @Path("/{id}/moovieListReviews")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getMoovieListReviewsFromUser(@PathParam("id") final int userId, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
-
-        try {
-            final List<MoovieListReview> moovieListReviews = reviewService.getMoovieListReviewsFromUser(userId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
-            final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto.fromMoovieListReviewList(moovieListReviews, uriInfo);
-            return Response.ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {
-            }).build();
-        } catch (UnableToFindUserException e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-    }
-
-
-
 
 
     @GET

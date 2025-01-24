@@ -11,13 +11,19 @@ const MoovieListReviewService = ( () => {
         return res;
     }
 
-    const createMoovieListReview = async (id,reviewContent) => {
-        const res = await moovieListReviewApi.createMoovieListReview(id,reviewContent);
+    const getMoovieListReviewsFromUserId = async (userId,pageNumber) => {
+        const res = await moovieListReviewApi.getMoovieListReviewsFromUserId(userId,pageNumber);
         return res;
     }
 
+
     const editReview = async (id,reviewContent) => {
         const res = await moovieListReviewApi.editReview(id,reviewContent);
+        return res;
+    }
+
+    const createMoovieListReview = async (id,reviewContent) => {
+        const res = await moovieListReviewApi.createMoovieListReview(id,reviewContent);
         return res;
     }
 
@@ -34,6 +40,7 @@ const MoovieListReviewService = ( () => {
     return {
         getMoovieListReview,
         getMoovieListReviewsByListId,
+        getMoovieListReviewsFromUserId,
         editReview,
         createMoovieListReview,
         deleteMoovieListReview,

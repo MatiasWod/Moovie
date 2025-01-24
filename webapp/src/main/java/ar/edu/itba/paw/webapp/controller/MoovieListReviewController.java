@@ -62,18 +62,41 @@ public class MoovieListReviewController {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getMoovieListReviewsFromQueryParams(@QueryParam("listId") final int listId, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
-        final List<MoovieListReview> moovieListReviews = reviewService.getMoovieListReviewsByMoovieListId(listId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
-        final int moovieListReviewsCount = reviewService.getMoovieListReviewByMoovieListIdCount(listId);
-        final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto.fromMoovieListReviewList(moovieListReviews, uriInfo);
-        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {
-        });
-        final PagingUtils<MoovieListReview> toReturnMoovieListReviews = new PagingUtils<>(moovieListReviews, page - 1, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), moovieListReviewsCount);
-        ResponseUtils.setPaginationLinks(res, toReturnMoovieListReviews, uriInfo);
-        return res.build();
+    public Response getMoovieListReviewsFromQueryParams(
+            @QueryParam("listId") final Integer listId,
+            @QueryParam("userId") final Integer userId,
+            @QueryParam("pageNumber") @DefaultValue("1") final int page) {
 
+        try {
+            if (listId != null) {
+                final List<MoovieListReview> moovieListReviews = reviewService.getMoovieListReviewsByMoovieListId(
+                        listId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
+                final int moovieListReviewsCount = reviewService.getMoovieListReviewByMoovieListIdCount(listId);
+                final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto.fromMoovieListReviewList(moovieListReviews, uriInfo);
+                Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {
+                });
+                final PagingUtils<MoovieListReview> toReturnMoovieListReviews = new PagingUtils<>(moovieListReviews, page - 1, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), moovieListReviewsCount);
+                ResponseUtils.setPaginationLinks(res, toReturnMoovieListReviews, uriInfo);
+                return res.build();
+
+            } else if (userId != null) {
+                final List<MoovieListReview> moovieListReviews = reviewService.getMoovieListReviewsFromUser(
+                        userId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
+                final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto.fromMoovieListReviewList(moovieListReviews, uriInfo);
+                return Response.ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {
+                }).build();
+
+            } else {
+                return Response.status(Response.Status.BAD_REQUEST).entity("Either listId or userId must be provided.").build();
+            }
+        } catch (UnableToFindUserException e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
     }
 
     @PUT
