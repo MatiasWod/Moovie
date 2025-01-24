@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:8080/moovieListReview
+@baseUrl = http://localhost:8080/moovieListReviews
 
 #----------------------------
 # GET
@@ -18,6 +18,17 @@ GET {{baseUrl}}/{{id0}}
 #----------------------------
 # POST
 #----------------------------
+
+
+@bearer_token0 = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNb292aWUiLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczNzU5MDA5NSwiZXhwIjoxNzM4MTk0ODk1fQ.b_b0XYnZzi0G1CNj0-YE0UREG_Pk5K430zbtoPmXSpQhvjfUrF3twtPF86fdtnufpAQrGHBXuI0JS2k99rS_tA
+POST {{baseUrl}}?listId=1
+Authorization: Bearer {{bearer_token0}}
+Content-Type: application/json
+
+{
+  "reviewContent": "This is a great movie"
+}
+
 ### LIKE REVIEW
 @id1=3
 @bearer_token1 =  eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNb292aWUiLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjgzNjEyMiwiZXhwIjoxNzMzNDQwOTIyfQ.DH67__vKqJhHSWunS362U0O1qRptW4Gfjw35LCUqy0z8CtLlmIE-MaxkqXscQZQtE4ILqyEmRaiRaofmCXd4oA

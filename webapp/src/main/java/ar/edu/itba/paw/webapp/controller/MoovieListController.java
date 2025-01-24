@@ -35,7 +35,6 @@ import java.util.List;
 public class MoovieListController {
 
     private final MoovieListService moovieListService;
-    private final ReviewService reviewService;
     private final UserService userService;
     private final ReportService reportService;
 
@@ -43,9 +42,8 @@ public class MoovieListController {
     UriInfo uriInfo;
 
     @Autowired
-    public MoovieListController(MoovieListService moovieListService, ReviewService reviewService, UserService userService, ReportService reportService) {
+    public MoovieListController(MoovieListService moovieListService, UserService userService, ReportService reportService) {
         this.moovieListService = moovieListService;
-        this.reviewService = reviewService;
         this.userService = userService;
         this.reportService = reportService;
     }
@@ -166,22 +164,6 @@ public class MoovieListController {
 
     }
 
-    /* MOOVIELISTREVIEWS */
-    @GET
-    @Path("/{id}/moovieListReviews")
-    @Produces(MediaType.APPLICATION_JSON)
-    public javax.ws.rs.core.Response getMoovieListReviewsFromListId(@PathParam("id") final int listId, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
-        final List<MoovieListReview> moovieListReviews = reviewService.getMoovieListReviewsByMoovieListId(listId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
-        final int moovieListReviewsCount = reviewService.getMoovieListReviewByMoovieListIdCount(listId);
-        final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto.fromMoovieListReviewList(moovieListReviews, uriInfo);
-        javax.ws.rs.core.Response.ResponseBuilder res = javax.ws.rs.core.Response.ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {
-        });
-        final PagingUtils<MoovieListReview> toReturnMoovieListReviews = new PagingUtils<>(moovieListReviews, page - 1, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), moovieListReviewsCount);
-        ResponseUtils.setPaginationLinks(res, toReturnMoovieListReviews, uriInfo);
-        return res.build();
-
-    }
-
     /**
      * POST METHODS
      */
@@ -233,46 +215,9 @@ public class MoovieListController {
 
     }
 
-
-    @POST
-    @Path("{id}/moovieListReview")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public javax.ws.rs.core.Response createMoovieListReview(@PathParam("id") int listId,
-                                                            @Valid final MoovieListReviewCreateDto moovieListReviewDto) {
-        reviewService.createReview(
-                listId,
-                0,
-                moovieListReviewDto.getReviewContent(),
-                ReviewTypes.REVIEW_MOOVIE_LIST
-        );
-
-        return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.CREATED)
-                .entity("MoovieList review successfully created to the list with ID: " + listId)
-                .build();
-    }
-
     /**
      * PUT METHODS
      */
-
-    @PUT
-    @Path("/{id}/moovieListReview")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public javax.ws.rs.core.Response editReview(@PathParam("id") int listId,
-                                                @Valid final MoovieListReviewCreateDto moovieListReviewDto) {
-        reviewService.editReview(
-                listId,
-                0,
-                moovieListReviewDto.getReviewContent(),
-                ReviewTypes.REVIEW_MOOVIE_LIST
-        );
-
-        return javax.ws.rs.core.Response.ok()
-                .entity("MoovieList review successfully updated for MoovieList with ID: " + listId)
-                .build();
-    }
 
     @PUT
     @Path("/{id}")

@@ -4,6 +4,8 @@ import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.exceptions.ReviewNotFoundException;
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.exceptions.UserNotLoggedException;
+import ar.edu.itba.paw.models.PagingSizes;
+import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.Reports.MoovieListReviewReport;
 import ar.edu.itba.paw.models.Reports.ReviewReport;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
@@ -12,22 +14,22 @@ import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.ReportService;
 import ar.edu.itba.paw.services.ReviewService;
 import ar.edu.itba.paw.services.UserService;
+import ar.edu.itba.paw.webapp.dto.in.MoovieListReviewCreateDto;
 import ar.edu.itba.paw.webapp.dto.in.ReportCreateDTO;
 import ar.edu.itba.paw.webapp.dto.out.MoovieListReviewDto;
 import ar.edu.itba.paw.webapp.dto.out.ReportDTO;
 import ar.edu.itba.paw.webapp.mappers.ExceptionEM;
 import ar.edu.itba.paw.webapp.mappers.UnableToFindUserEM;
+import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
+import java.util.List;
 
-@Path("moovieListReview")
+@Path("moovieListReviews")
 @Component
 public class MoovieListReviewController {
     private final ReviewService reviewService;
@@ -60,6 +62,53 @@ public class MoovieListReviewController {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMoovieListReviewsFromQueryParams(@QueryParam("listId") final int listId, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
+        final List<MoovieListReview> moovieListReviews = reviewService.getMoovieListReviewsByMoovieListId(listId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
+        final int moovieListReviewsCount = reviewService.getMoovieListReviewByMoovieListIdCount(listId);
+        final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto.fromMoovieListReviewList(moovieListReviews, uriInfo);
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {
+        });
+        final PagingUtils<MoovieListReview> toReturnMoovieListReviews = new PagingUtils<>(moovieListReviews, page - 1, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), moovieListReviewsCount);
+        ResponseUtils.setPaginationLinks(res, toReturnMoovieListReviews, uriInfo);
+        return res.build();
+
+    }
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response editReview(@QueryParam("listId") int listId,
+                               @Valid final MoovieListReviewCreateDto moovieListReviewDto) {
+        reviewService.editReview(
+                listId,
+                0,
+                moovieListReviewDto.getReviewContent(),
+                ReviewTypes.REVIEW_MOOVIE_LIST
+        );
+
+        return Response.ok()
+                .entity("MoovieList review successfully updated for MoovieList with ID: " + listId)
+                .build();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createMoovieListReview(@QueryParam("listId") int listId,
+                                                            @Valid final MoovieListReviewCreateDto moovieListReviewDto) {
+        reviewService.createReview(
+                listId,
+                0,
+                moovieListReviewDto.getReviewContent(),
+                ReviewTypes.REVIEW_MOOVIE_LIST
+        );
+
+        return Response.status(Response.Status.CREATED)
+                .entity("MoovieList review successfully created to the list with ID: " + listId)
+                .build();
+    }
 
     @DELETE
     @Path("/{id}")
@@ -90,6 +139,7 @@ public class MoovieListReviewController {
                     .build();
         }
     }
+
 
 
     @POST

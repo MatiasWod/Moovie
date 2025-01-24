@@ -38,26 +38,8 @@ const listApi = (() => {
             });
     }
 
-    const getMoovieListReviewsFromListId = ({id,pageNumber}) => {
-        return api.get(`/list/${id}/moovieListReviews`,
-            {
-                params: {
-                    'pageNumber': pageNumber
-                }
-            });
-    }
 
 
-    //POST
-
-    const createMoovieListReview = ({id,page=1}) => {
-        return api.post(`/list/${id}/moovieListReview`,
-            {
-                params:{
-                    'pageNumber': page,
-                }
-            });
-    }
 
     const insertMediaIntoMoovieList = ({ id, mediaIds }) => {
         return api.post(
@@ -72,15 +54,6 @@ const listApi = (() => {
     };
 
     //PUT
-
-    const editReview = (id,page=1) => {
-        return api.put(`/list/${id}/moovieListReview`,
-            {
-                params:{
-                    'pageNumber': page,
-                }
-            });
-    }
 
     const editMoovieList = async (mlId, name, description) => {
         const form = {
@@ -109,10 +82,7 @@ const listApi = (() => {
         getListById,
         getListByIdList,
         getListContentById,
-        getMoovieListReviewsFromListId,
-        createMoovieListReview,
         insertMediaIntoMoovieList,
-        editReview,
         editMoovieList,
         getRecommendedLists
     }

@@ -44,7 +44,7 @@ const reportApi = (() => {
             content: content,
             type: type
         }
-        const response = await api.post('/moovieListReview/' + moovieListReviewId + '/report', reportDTO);
+        const response = await api.post('/moovieListReviews/' + moovieListReviewId + '/report', reportDTO);
         return response;
     }
 
@@ -74,7 +74,7 @@ const reportApi = (() => {
     }
 
     const resolveMoovieListReviewReport = async ({moovieListReviewId}) => {
-        const response = await api.delete('/moovieListReview/' + moovieListReviewId + '/report');
+        const response = await api.delete('/moovieListReviews/' + moovieListReviewId + '/report');
         return response;
     }
 

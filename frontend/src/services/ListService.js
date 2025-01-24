@@ -39,11 +39,6 @@ const ListService = (() => {
         return parsePaginatedResponse(res);
     }
 
-    const getMoovieListReviewsFromListId = async ({id,pageNumber}) => {
-        const res = await listApi.getMoovieListReviewsFromListId({id,pageNumber});
-        return parsePaginatedResponse(res);
-    }
-
     const insertMediaIntoMoovieList = async ({id, mediaIds}) => {
         const res = await listApi.insertMediaIntoMoovieList({id,mediaIds});
         return res;
@@ -145,7 +140,6 @@ const ListService = (() => {
         getListContentById,
         getListByIdList,
         getIdListFromObjectList,
-        getMoovieListReviewsFromListId,
         insertMediaIntoMoovieList,
         getLikedOrFollowedListFromUser,
         currentUserHasLiked,

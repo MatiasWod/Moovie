@@ -12,9 +12,10 @@ import reportApi from "../../../api/ReportApi";
 import CommentField from "../commentField/CommentField";
 import { Divider } from "@mui/material";
 import commentApi from "../../../api/CommentApi";
-import moovieListReviewApi from "../../../api/MoovieListReview";
+import moovieListReviewApi from "../../../api/MoovieListReviewApi";
 import CommentList from "../commentList/CommentList";
 import {useTranslation} from "react-i18next";
+import moovieListReviewService from "../../../services/MoovieListReviewService";
 
 
 function Reviews({ id, username, source , handleParentReload }) {
@@ -40,10 +41,7 @@ function Reviews({ id, username, source , handleParentReload }) {
                     response = await reviewService.getReviewsByMediaId(id, currentPage);
                     break;
                 case 'list':
-                    response = await listService.getMoovieListReviewsFromListId({
-                        id: id,
-                        pageNumber: currentPage
-                    });
+                    response = await moovieListReviewService.getMoovieListReviewsByListId(id, currentPage);
                     break;
                 case 'user':
                     response = await reviewService.getMovieReviewsFromUser(username, currentPage);

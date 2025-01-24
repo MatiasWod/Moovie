@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import reportApi from '../../../api/ReportApi';
 import ConfirmationModal from '../../components/forms/confirmationForm/confirmationForm';
 import api from '../../../api/api';
-import moovieListReviewApi from '../../../api/MoovieListReview';
+import moovieListReviewApi from '../../../api/MoovieListReviewApi';
 import userApi from '../../../api/UserApi';
+import moovieListReviewService from "../../../services/MoovieListReviewService";
 
 export default function MoovieListReviewReports() {
   const [reviews, setReviews] = useState([]);
@@ -29,7 +30,7 @@ export default function MoovieListReviewReports() {
   };
 
   const handleDelete = async (mlrReview) => {
-    await moovieListReviewApi.deleteMoovieListReview(mlrReview.id);
+    await moovieListReviewService.deleteMoovieListReview(mlrReview.id);
     fetchReviews();
   };
 
