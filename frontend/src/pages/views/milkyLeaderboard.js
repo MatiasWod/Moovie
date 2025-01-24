@@ -77,7 +77,7 @@ function MilkyLeaderboardProfile({profile}) {
     return (
         <tr className="milky-leaderboard-profile">
             <td className="col">
-                <ProfileImage image={profile.pictureUrl} username={profile.username} size={75}/>
+                <ProfileImage style={{ cursor: 'pointer' }} onClick={() => handleUsernameClick(profile.username)} image={profile.pictureUrl} username={profile.username} size={75}/>
             </td>
             <td className="col" style={{ cursor: 'pointer' }} onClick={() => handleUsernameClick(profile.username)}>{profile.username}</td>
             <td className="col">{profile.moovieListCount}</td>
