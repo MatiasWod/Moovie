@@ -5,6 +5,8 @@ import "../mainStyle.css";
 import mediaService from "../../../services/MediaService";
 import { useSelector } from "react-redux";
 import WatchlistWatched from "../../../api/values/WatchlistWatched";
+import { Tooltip as ReactTooltip } from 'react-tooltip'
+import {useTranslation} from "react-i18next";
 
 const MediaCard = ({ media }) => {
     const releaseDate = new Date(media.releaseDate).getFullYear();
@@ -12,6 +14,7 @@ const MediaCard = ({ media }) => {
     const [ww, setWW] = useState({ watched: false, watchlist: false });
     const { isLoggedIn, user } = useSelector(state => state.auth);
     const [ping, setPing] = useState(false);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchWW = async () => {
@@ -73,8 +76,8 @@ const MediaCard = ({ media }) => {
         >
             <div className="media-card-border">
                 <img className="media-card-image" src={media.posterPath} alt={media.name} onClick={handleClick} />
-
-                {hovered && (
+                <ReactTooltip id={`watched-tooltip-${media.id}`} place="bottom" type="dark" effect="solid" />
+                <ReactTooltip id={`watchlist-tooltip-${media.id}`} place="bottom" type="dark" effect="solid" />                {hovered && (
                     <div className="media-card-overlay">
                         <h4 className="media-card-title">{media.name}</h4>
                         <h5>{releaseDate}</h5>
@@ -82,10 +85,14 @@ const MediaCard = ({ media }) => {
 
                         <div className="media-card-buttons">
                             <button className="media-card-button"
+                                    data-tooltip-id={`watched-tooltip-${media.id}`}
+                                    data-tooltip-content={ww.watched ? t('mediaCard.removeFromWatched') : t('mediaCard.addToWatched')}
                                     onClick={(e) => { e.stopPropagation(); handleWatched(); }}>
                                 {ww.watched ? "👁️" : "X👁️"}
                             </button>
                             <button className="media-card-button"
+                                    data-tooltip-id={`watchlist-tooltip-${media.id}`}
+                                    data-tooltip-content={t('mediaCard.addToWatchlist')}
                                     onClick={(e) => { e.stopPropagation(); handleWatchlist(); }}>
                                 {ww.watchlist ? "☝️" : "X️☝️"}
                             </button>
