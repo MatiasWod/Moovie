@@ -107,6 +107,7 @@
   "login.continue": "Continue",
   "login.without": "without logging in",
   "login.login": "Login!",
+  "login.submitting": "Logging in...",
   "mpl.title": "Milky Points Leaderboard",
   "mpl.picture": "Picture",
   "mpl.username": "Username",

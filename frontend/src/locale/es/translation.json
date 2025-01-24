@@ -107,6 +107,7 @@
   "login.continue": "Continuar",
   "login.without": "sin iniciar sesión",
   "login.login": "¡Iniciar sesión!",
+  "login.submitting": "Iniciando sesión...",
   "mpl.title": "Tabla de Puntos Milky",
   "mpl.picture": "Imagen",
   "mpl.username": "Usuario",
