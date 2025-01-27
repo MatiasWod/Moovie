@@ -20,11 +20,21 @@ const CastService = (() => {
         return parsePaginatedResponse(res);
     }
 
+    const getTvCreatorById = async (id) => {
+        return await castApi.getTvCreatorById(id);
+    }
+
+    const getTvCreatorsSearch = async (search) => {
+        return await castApi.getTvCreatorsSearch(search);
+    }
+
     return{
         getActorsForQuery,
         getMediasForActor,
         getMediasForDirector,
-        getActorsByMediaId
+        getActorsByMediaId,
+        getTvCreatorById,
+        getTvCreatorsSearch
     }
 })();
 

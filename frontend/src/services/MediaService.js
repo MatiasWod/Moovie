@@ -90,7 +90,9 @@ const MediaService = (() => {
         return toRet.slice(0, -1); // Removes the last comma
     };
 
-
+    const getMediasForTVCreator = async (id) => {
+        return await mediaApi.getMediasForTVCreator(id);
+    }
 
 
     return {
@@ -103,7 +105,8 @@ const MediaService = (() => {
         userWWStatus,
         insertMediaIntoWW,
         removeMediaFromWW,
-        getIdMediaFromObjectList
+        getIdMediaFromObjectList,
+        getMediasForTVCreator
     }
 })();
 

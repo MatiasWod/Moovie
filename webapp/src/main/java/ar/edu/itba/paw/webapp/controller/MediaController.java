@@ -48,12 +48,17 @@ public class MediaController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getMediaById(@QueryParam("ids") final String ids) {
-        if (ids.length() > 100) {
-            throw new IllegalArgumentException("Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
-        }
-        List<Integer> idList = new ArrayList<>();
+    public Response getMedias(
+            @QueryParam("ids") final String ids,
+            @QueryParam("tvCreatorId") final Integer tvCreatorId
+    ) {
         if (ids != null && !ids.isEmpty()) {
+            // Lógica para manejar la lista de IDs
+            if (ids.length() > 100) {
+                throw new IllegalArgumentException("Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
+            }
+
+            List<Integer> idList = new ArrayList<>();
             String[] splitIds = ids.split(",");
             for (String id : splitIds) {
                 try {
@@ -62,21 +67,42 @@ public class MediaController {
                     throw new IllegalArgumentException("Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
                 }
             }
-        }
-        if(idList.size() >= 25 || idList.size() < 0 ) {
-            throw new IllegalArgumentException("Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
-        }
-        List<MediaDto> mediaList = new ArrayList<>();
-        for (int id : idList) {
-            Media media = mediaService.getMediaById(id);
-            if(media.isType()){
-                mediaList.add(TVSerieDto.fromTVSerie(mediaService.getTvById(id), uriInfo));
-            } else{
-                mediaList.add(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo));
+
+            if (idList.size() > 100 || idList.size() <= 0) {
+                throw new IllegalArgumentException("Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
             }
+
+            List<MediaDto> mediaList = new ArrayList<>();
+            for (int id : idList) {
+                Media media = mediaService.getMediaById(id);
+                if (media.isType()) {
+                    mediaList.add(TVSerieDto.fromTVSerie(mediaService.getTvById(id), uriInfo));
+                } else {
+                    mediaList.add(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo));
+                }
+            }
+            return Response.ok(new GenericEntity<List<MediaDto>>(mediaList) {}).build();
+
+        } else if (tvCreatorId != null) {
+            // Lógica para manejar el tvCreatorId
+            List<Media> mediaList = tvCreatorsService.getMediasForTVCreator(tvCreatorId);
+
+            if (mediaList == null || mediaList.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("No media found for TV creator with ID: " + tvCreatorId)
+                        .build();
+            }
+
+            List<MediaDto> mediaDtos = MediaDto.fromMediaList(mediaList, uriInfo);
+            return Response.ok(new GenericEntity<List<MediaDto>>(mediaDtos) {}).build();
         }
-        return Response.ok(new GenericEntity<List<MediaDto>>(mediaList) {}).build();
+
+        // Si no se pasa ningún parámetro válido
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity("You must provide either 'ids' or 'tvCreatorId' as query parameters.")
+                .build();
     }
+
 
     @GET
     @Path("/{id}")
@@ -136,4 +162,5 @@ public class MediaController {
         List<TvCreatorsDto> tvCreatorsDtos=TvCreatorsDto.fromTvCreatorList(tvCreators,uriInfo);
         return Response.ok(new GenericEntity<List<TvCreatorsDto>>( tvCreatorsDtos ) {}).build();
     }
+
 }

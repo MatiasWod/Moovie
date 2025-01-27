@@ -37,12 +37,24 @@ const mediaApi = (()=> {
         )
     }
 
+    const getMediasForTVCreator = ({id}) => {
+        return api.get(`/medias`,
+            {
+                params: {
+                    'tvCreatorId': id
+                }
+            }
+        );
+    }
+
+
     return {
         getMedia,
         getProvidersForMedia,
         getMediaById,
         getMediaByIdList,
         getTvCreatorsByMediaId,
+        getMediasForTVCreator
     }
 
 })();
