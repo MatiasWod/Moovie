@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import reportApi from '../../../api/ReportApi';
 import ConfirmationModal from '../../components/forms/confirmationForm/confirmationForm';
+import {useTranslation} from "react-i18next";
 
 export default function BannedUsers() {
   const [users, setUsers] = useState([]);
   const [selectedAction, setSelectedAction] = useState(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchBannedUsers();
@@ -23,9 +25,9 @@ export default function BannedUsers() {
 
   return (
     <div>
-      <h3 className="text-xl font-semibold mb-4">Banned Users</h3>
+      <h3 className="text-xl font-semibold mb-4">{t('bannedUsers.bannedUsers')}</h3>
       {users.length === 0 ? (
-        <div className="text-center text-gray-500">No banned users</div>
+        <div className="text-center text-gray-500">{t('bannedUsers.noBannedUsers')}</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {users.map((user, index) => (
@@ -47,8 +49,8 @@ export default function BannedUsers() {
       )}
       {selectedAction && (
         <ConfirmationModal
-          title="Confirm Unban"
-          message="Are you sure you want to unban this user?"
+          title={t('bannedUsers.confirmationModalTitle')}
+          message={t('bannedUsers.confirmationModalMessage')}
           onConfirm={async () => {
             await handleUnban(selectedAction.item);
             setSelectedAction(null);
