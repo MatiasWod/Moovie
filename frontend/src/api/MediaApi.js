@@ -31,11 +31,6 @@ const mediaApi = (()=> {
         return api.get(`/medias/${id}`);
     }
 
-    const getTvCreatorsByMediaId = (mediaId) =>{
-        return api.get(
-            `medias/${mediaId}/tvcreators`
-        )
-    }
 
     const getMediasForTVCreator = ({id}) => {
         return api.get(`/medias`,
@@ -53,7 +48,6 @@ const mediaApi = (()=> {
         getProvidersForMedia,
         getMediaById,
         getMediaByIdList,
-        getTvCreatorsByMediaId,
         getMediasForTVCreator
     }
 

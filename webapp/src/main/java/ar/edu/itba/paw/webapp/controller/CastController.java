@@ -115,10 +115,27 @@ public class CastController {
     @GET
     @Path("/tvCreators")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTVCreatorsForQuery(@QueryParam("search") final String search){
-        List<TVCreators> tvCreatorsList = tvCreatorsService.getTVCreatorsForQuery(search, 10);
-        List<TvCreatorsDto> tvCreatorsDtoList = TvCreatorsDto.fromTvCreatorList(tvCreatorsList,uriInfo);
-        return Response.ok(new GenericEntity<List<TvCreatorsDto>>(tvCreatorsDtoList){}).build();
+    public Response getTVCreators(
+            @QueryParam("search") final String search,
+            @QueryParam("mediaId") final Integer mediaId
+    ) {
+        if (search != null && !search.isEmpty()) {
+            // Lógica para obtener creadores de TV por consulta de búsqueda
+            List<TVCreators> tvCreatorsList = tvCreatorsService.getTVCreatorsForQuery(search, 10);
+            List<TvCreatorsDto> tvCreatorsDtoList = TvCreatorsDto.fromTvCreatorList(tvCreatorsList, uriInfo);
+            return Response.ok(new GenericEntity<List<TvCreatorsDto>>(tvCreatorsDtoList) {}).build();
+        } else if (mediaId != null) {
+            // Lógica para obtener creadores de TV por ID de medio
+            List<TVCreators> tvCreators = tvCreatorsService.getTvCreatorsByMediaId(mediaId);
+            List<TvCreatorsDto> tvCreatorsDtos = TvCreatorsDto.fromTvCreatorList(tvCreators, uriInfo);
+            return Response.ok(new GenericEntity<List<TvCreatorsDto>>(tvCreatorsDtos) {}).build();
+        }
+
+        // Si no se proporcionan parámetros válidos
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity("You must provide either 'search' or 'mediaId' as query parameters.")
+                .build();
     }
+
 }
 

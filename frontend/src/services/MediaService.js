@@ -28,11 +28,6 @@ const MediaService = (() => {
         return res;
     }
 
-    const getTvCreatorsByMediaId = async (mediaId) =>{
-        const res = await mediaApi.getTvCreatorsByMediaId(mediaId);
-        return parsePaginatedResponse(res);
-    }
-
     const currentUserWWStatus = async (mediaId, username) => {
         try {
             const [watchedStatus, watchlistStatus] = await Promise.all([
@@ -100,7 +95,6 @@ const MediaService = (() => {
         getProvidersForMedia,
         getMediaById,
         getMediaByIdList,
-        getTvCreatorsByMediaId,
         currentUserWWStatus,
         userWWStatus,
         insertMediaIntoWW,

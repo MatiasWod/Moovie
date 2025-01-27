@@ -47,13 +47,25 @@ const castApi = (() => {
         )
     }
 
+    const getTvCreatorsByMediaId = (mediaId) =>{
+        return api.get(
+            `cast/tvCreators`,
+            {
+                params: {
+                    mediaId: mediaId
+                }
+            }
+        )
+    }
+
     return{
         getActorsForQuery,
         getMediasForActor,
         getMediasForDirector,
         getActorsByMediaId,
         getTvCreatorById,
-        getTvCreatorsSearch
+        getTvCreatorsSearch,
+        getTvCreatorsByMediaId
     }
 })();
 

@@ -153,14 +153,4 @@ public class MediaController {
         return res.build();
     }
 
-    /* TVCREATORS */
-    @GET
-    @Path("{id}/tvcreators")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getTvCreatorsByMediaID(@PathParam("id") final int id){
-        List<TVCreators> tvCreators=tvCreatorsService.getTvCreatorsByMediaId(id);
-        List<TvCreatorsDto> tvCreatorsDtos=TvCreatorsDto.fromTvCreatorList(tvCreators,uriInfo);
-        return Response.ok(new GenericEntity<List<TvCreatorsDto>>( tvCreatorsDtos ) {}).build();
-    }
-
 }

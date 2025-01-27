@@ -17,6 +17,7 @@ import ProviderService from "../../services/ProviderService";
 import mediaService from "../../services/MediaService";
 import {useTranslation} from "react-i18next";
 import reviewService from "../../services/ReviewService";
+import castService from "../../services/CastService";
 
 function Details() {
     const { t } = useTranslation();
@@ -100,7 +101,7 @@ function Details() {
 
     const fetchTvCreators = async () => {
         try {
-            const response = await mediaService.getTvCreatorsByMediaId(id);
+            const response = await castService.getTvCreatorsByMediaId(id);
             setTvCreators(response.data);
             console.log(response)
         } catch (err) {
