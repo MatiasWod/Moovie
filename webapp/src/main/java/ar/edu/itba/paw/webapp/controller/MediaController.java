@@ -32,16 +32,14 @@ import java.util.List;
 public class MediaController {
 
     private final MediaService mediaService;
-    private final ActorService actorService;
     private final TVCreatorsService tvCreatorsService;
 
     @Context
     UriInfo uriInfo;
 
     @Autowired
-    public MediaController(MediaService mediaService, ActorService actorService,TVCreatorsService tvCreatorsService) {
+    public MediaController(MediaService mediaService,TVCreatorsService tvCreatorsService) {
         this.mediaService = mediaService;
-        this.actorService = actorService;
         this.tvCreatorsService= tvCreatorsService;
     }
 
@@ -127,14 +125,6 @@ public class MediaController {
         final PagingUtils<Media> toReturnMediaList = new PagingUtils<>(mediaList,page - 1, pageSizeQuery, mediaCount);
         ResponseUtils.setPaginationLinks(res,toReturnMediaList,uriInfo);
         return res.build();
-    }
-
-    @GET
-    @Path("/{id}/actors")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getActorsByMediaId(@PathParam("id") final int mediaId) {
-        final List<ActorDto> actorDtoList = ActorDto.fromActorList(actorService.getAllActorsForMedia(mediaId), uriInfo);
-        return Response.ok(new GenericEntity<List<ActorDto>>( actorDtoList ) {}).build();
     }
 
     /* TVCREATORS */

@@ -1,4 +1,5 @@
 import castApi from "../api/CastApi";
+import {parsePaginatedResponse} from "../utils/ResponseUtils";
 
 const CastService = (() => {
 
@@ -14,10 +15,16 @@ const CastService = (() => {
         return await castApi.getMediasForDirector(id);
     }
 
+    const getActorsByMediaId = async (mediaId) =>{
+        const res = await castApi.getActorsByMediaId(mediaId);
+        return parsePaginatedResponse(res);
+    }
+
     return{
         getActorsForQuery,
         getMediasForActor,
-        getMediasForDirector
+        getMediasForDirector,
+        getActorsByMediaId
     }
 })();
 

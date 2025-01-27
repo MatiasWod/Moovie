@@ -28,12 +28,6 @@ const MediaService = (() => {
         return res;
     }
 
-
-    const getActorsByMediaId = async (mediaId) =>{
-        const res = await mediaApi.getActorsInMedia(mediaId);
-        return parsePaginatedResponse(res);
-    }
-
     const getTvCreatorsByMediaId = async (mediaId) =>{
         const res = await mediaApi.getTvCreatorsByMediaId(mediaId);
         return parsePaginatedResponse(res);
@@ -104,7 +98,6 @@ const MediaService = (() => {
         getProvidersForMedia,
         getMediaById,
         getMediaByIdList,
-        getActorsByMediaId,
         getTvCreatorsByMediaId,
         currentUserWWStatus,
         userWWStatus,
