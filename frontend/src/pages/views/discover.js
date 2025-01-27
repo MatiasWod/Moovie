@@ -13,6 +13,7 @@ import ProviderFilter from "../components/filters/providerFilter/ProviderFilter"
 import GenreService from "../../services/GenreService";
 import GenreFilter from "../components/filters/genreFilter/GenreFilter";
 import {useTranslation} from "react-i18next";
+import {Tooltip as ReactTooltip} from "react-tooltip";
 
 
 const Discover = () => {

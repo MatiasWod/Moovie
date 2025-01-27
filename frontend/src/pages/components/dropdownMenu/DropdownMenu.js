@@ -3,9 +3,12 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import OrderBy from "../../../api/values/MediaOrderBy";
 import SortOrder from "../../../api/values/SortOrder";
 import Button from "react-bootstrap/Button";
+import {Tooltip as ReactTooltip} from "react-tooltip";
+import {useTranslation} from "react-i18next";
 
 const DropdownMenu = ({ setOrderBy, setSortOrder, currentSortOrder, values }) => {
     const [btnState, setBtnState] = useState(currentSortOrder);
+    const {t} = useTranslation();
 
     useEffect(() => {
         setBtnState(currentSortOrder);
@@ -30,7 +33,9 @@ const DropdownMenu = ({ setOrderBy, setSortOrder, currentSortOrder, values }) =>
                     </NavDropdown.Item>
                 ))}
             </NavDropdown>
-            <Button onClick={handleClick}>
+            <ReactTooltip id="tooltip-id" place="bottom" type="dark" effect="solid" />
+            <Button onClick={handleClick} data-tooltip-id={"tooltip-id"}
+                    data-tooltip-content={t('dropdownMenu.invertOrder')}>
                 {btnState === SortOrder.DESC ? "↑" : "↓"}
             </Button>
         </div>
