@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {createSearchParams, useNavigate, useParams, useSearchParams, useLocation} from "react-router-dom";
 import CastService from "../../services/CastService";
 import MediaCard from "../components/mediaCard/MediaCard";
-import TVCreatorsService from "../../services/TVCreatorsService";
+import mediaService from "../../services/MediaService";
 
 function Cast(){
     const navigate = useNavigate();
@@ -43,7 +43,7 @@ function Cast(){
 
             async function getData() {
                 try {
-                    const data = await TVCreatorsService.getMediasForTVCreator({id});
+                    const data = await mediaService.getMediasForTVCreator({id});
                     setActorMedias(data);
                     console.log(data)
                 } catch (error) {

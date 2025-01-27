@@ -28,17 +28,6 @@ const MediaService = (() => {
         return res;
     }
 
-
-    const getActorsByMediaId = async (mediaId) =>{
-        const res = await mediaApi.getActorsInMedia(mediaId);
-        return parsePaginatedResponse(res);
-    }
-
-    const getTvCreatorsByMediaId = async (mediaId) =>{
-        const res = await mediaApi.getTvCreatorsByMediaId(mediaId);
-        return parsePaginatedResponse(res);
-    }
-
     const currentUserWWStatus = async (mediaId, username) => {
         try {
             const [watchedStatus, watchlistStatus] = await Promise.all([
@@ -96,7 +85,9 @@ const MediaService = (() => {
         return toRet.slice(0, -1); // Removes the last comma
     };
 
-
+    const getMediasForTVCreator = async (id) => {
+        return await mediaApi.getMediasForTVCreator(id);
+    }
 
 
     return {
@@ -104,13 +95,12 @@ const MediaService = (() => {
         getProvidersForMedia,
         getMediaById,
         getMediaByIdList,
-        getActorsByMediaId,
-        getTvCreatorsByMediaId,
         currentUserWWStatus,
         userWWStatus,
         insertMediaIntoWW,
         removeMediaFromWW,
-        getIdMediaFromObjectList
+        getIdMediaFromObjectList,
+        getMediasForTVCreator
     }
 })();
 

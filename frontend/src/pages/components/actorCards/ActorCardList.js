@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import mediaService from "../../../services/MediaService";
 import ActorCard from "./ActorCard";
 import {useTranslation} from "react-i18next";
+import castService from "../../../services/CastService";
 
 const ActorCardList = ({ mediaId }) => {
     const { t } = useTranslation();
@@ -19,7 +20,7 @@ const ActorCardList = ({ mediaId }) => {
     useEffect(() => {
         async function fetchActors()  {
             try {
-                const response = await mediaService.getActorsByMediaId(mediaId);
+                const response = await castService.getActorsByMediaId(mediaId);
                 setActors(response.data);
 
                 console.log(response.data.length)
