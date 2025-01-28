@@ -45,11 +45,6 @@ const ReviewService = (() => {
 
     };
 
-    const getComments = async (id, page = 1) => {
-        const response = await reviewApi.getComments(id, page);
-        return parsePaginatedResponse(response);
-    }
-
     return {
         getReviewById,
         getReviewsByMediaId,
@@ -59,7 +54,6 @@ const ReviewService = (() => {
         createReview,
         deleteReviewById,
         likeReview,
-        getComments
     };
 })();
 

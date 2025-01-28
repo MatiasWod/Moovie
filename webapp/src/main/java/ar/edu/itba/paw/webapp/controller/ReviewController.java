@@ -37,7 +37,6 @@ import java.util.List;
 @Component
 public class ReviewController {
     private final ReviewService reviewService;
-    private final CommentService commentService;
     private final ReportService reportService;
     private final UserService userService;
 
@@ -47,9 +46,8 @@ public class ReviewController {
     //private static final Logger LOGGER = LoggerFactory.getLogger(ReviewController.class);
 
     @Autowired
-    public ReviewController(ReviewService reviewService, CommentService commentService, ReportService reportService, UserService userService) {
+    public ReviewController(ReviewService reviewService, ReportService reportService, UserService userService) {
         this.reviewService = reviewService;
-        this.commentService = commentService;
         this.reportService = reportService;
         this.userService = userService;
     }
@@ -173,35 +171,6 @@ public class ReviewController {
                 .build();
     }
 
-    /* COMMENTS */
-    @GET
-    @Path("/{id}/comments")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getComments(@PathParam("id") final int id, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
-        final int commentCount = reviewService.getReviewById(id).getCommentCount().intValue();
-        final List<Comment> commentList = commentService.getComments(id, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
-        final List<CommentDto> commentDtoList = CommentDto.fromCommentList(commentList, uriInfo);
-
-        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<CommentDto>>(commentDtoList) {
-        });
-        final PagingUtils<Comment> reviewPagingUtils = new PagingUtils<>(commentList, page, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), commentCount);
-        ResponseUtils.setPaginationLinks(res, reviewPagingUtils, uriInfo);
-        return res.build();
-    }
-
-    @POST
-    @Path("/{id}/comment")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response createComment(@PathParam("id") final int id, @Valid final CommentCreateDto commentDto) {
-        commentService.createComment(
-                id,
-                commentDto.getCommentContent()
-        );
-        return Response.status(Response.Status.CREATED)
-                .entity("Comment successfully created to review with id:" + id)
-                .build();
-    }
 
 
 //    --------Moderation-------

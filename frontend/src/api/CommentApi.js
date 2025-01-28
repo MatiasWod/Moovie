@@ -3,20 +3,33 @@ import api from './api.js';
 const commentApi = (() => {
 
     const createReviewComment = async (reviewId, comment) => {
-        const createReviewDTO = {
-            commentContent: comment
-        }
-        const response = await api.post('/reviews/' + reviewId + '/comment', createReviewDTO);
+        const response = await api.post('/comments',
+            {
+                commentContent: comment
+            },
+            {
+                params: {
+                    'reviewId': reviewId
+                }
+            }
+            );
         return response;
     }
 
-    const getReviewComments = async (reviewId) => {
-        const response = await api.get('/reviews/' + reviewId + '/comments');
+    const getReviewComments = async (reviewId,pageNumber=1,) => {
+        const response = await api.get('/comments',
+            {
+                params: {
+                    'reviewId': reviewId,
+                    'pageNumber': pageNumber
+                }
+            }
+            );
         return response;
     }
 
     const deleteComment = async (commentId) => {
-        const response = await api.delete('/comment/' + commentId);
+        const response = await api.delete('/comments/' + commentId);
         return response;    
     }
 

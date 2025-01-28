@@ -80,9 +80,6 @@ const reviewApi = (()=> {
         return api.post(`/reviews/${id}/like`);
     }
 
-    const getComments = (id,page=1,) =>{
-        return api.get(`/reviews/${id}/comments`);
-    }
 
 
 
@@ -95,7 +92,6 @@ const reviewApi = (()=> {
         createReview,
         deleteReviewById,
         likeReview,
-        getComments,
     }
 
 })();
