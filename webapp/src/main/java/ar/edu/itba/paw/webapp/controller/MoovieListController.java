@@ -35,17 +35,13 @@ import java.util.List;
 public class MoovieListController {
 
     private final MoovieListService moovieListService;
-    private final UserService userService;
-    private final ReportService reportService;
 
     @Context
     UriInfo uriInfo;
 
     @Autowired
-    public MoovieListController(MoovieListService moovieListService, UserService userService, ReportService reportService) {
+    public MoovieListController(MoovieListService moovieListService){
         this.moovieListService = moovieListService;
-        this.userService = userService;
-        this.reportService = reportService;
     }
 
 
@@ -260,36 +256,6 @@ public class MoovieListController {
     }
 
 
-//    ------- Moderation --------
-
-    @POST
-    @Path("/{id}/report")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response reportReview(@PathParam("id") final int id,
-                                 @Valid final ReportCreateDTO reportDTO) {
-        try {
-            User currentUser = userService.getInfoOfMyUser();
-            MoovieListReport response = reportService.reportMoovieList(id, currentUser.getUserId(), reportDTO.getType(), reportDTO.getContent());
-            return Response.ok(ReportDTO.fromMoovieListReport(response, uriInfo)).build();
-        } catch (UnableToFindUserException e) {
-            return new UnableToFindUserEM().toResponse(e);
-        } catch (Exception e) {
-            return new ExceptionEM().toResponse(e);
-        }
-
-    }
-
-    @DELETE
-    @Path("/{id}/report")
-    public Response resolveReport(@PathParam("id") final int mlId) {
-        try {
-            reportService.resolveMoovieListReport(mlId);
-        } catch (Exception e) {
-            return new ExceptionEM().toResponse(e);
-        }
-        return Response.ok().build();
-    }
 
 /*
     @POST

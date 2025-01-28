@@ -65,27 +65,51 @@ public class ReportController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response reportReview(@QueryParam("commentId") final int commentId,
-                                 @Valid final ReportCreateDTO reportDTO) {
+    public Response report(
+            @QueryParam("commentId") final Integer commentId,
+            @QueryParam("reviewId") final Integer reviewId,
+            @Valid final ReportCreateDTO reportDTO) {
         try {
             User currentUser = userService.getInfoOfMyUser();
-            CommentReport response = reportService.reportComment(commentId, currentUser.getUserId(), reportDTO.getType(), reportDTO.getContent());
-            return Response.ok(ReportDTO.fromCommentReport(response, uriInfo)).build();
+
+            if (commentId != null) {
+                // Lógica para reportar un comentario
+                CommentReport response = reportService.reportComment(commentId, currentUser.getUserId(), reportDTO.getType(), reportDTO.getContent());
+                return Response.ok(ReportDTO.fromCommentReport(response, uriInfo)).build();
+            } else if (reviewId != null) {
+                // Lógica para reportar una lista de películas
+                MoovieListReport response = reportService.reportMoovieList(reviewId, currentUser.getUserId(), reportDTO.getType(), reportDTO.getContent());
+                return Response.ok(ReportDTO.fromMoovieListReport(response, uriInfo)).build();
+            } else {
+                throw new IllegalArgumentException("Either 'commentId' or 'id' must be provided.");
+            }
         } catch (UnableToFindUserException e) {
             return new UnableToFindUserEM().toResponse(e);
         } catch (Exception e) {
             return new ExceptionEM().toResponse(e);
         }
-
     }
 
+
     @DELETE
-    public Response resolveReport(@QueryParam("commentId") final int commentId) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response resolveReport(
+            @QueryParam("moovieListId") final Integer moovieListId,
+            @QueryParam("commentId") final Integer commentId) {
         try {
-            reportService.resolveCommentReport(commentId);
+            if (moovieListId != null) {
+                // Resolver reporte de una lista de películas
+                reportService.resolveMoovieListReport(moovieListId);
+            } else if (commentId != null) {
+                // Resolver reporte de un comentario
+                reportService.resolveCommentReport(commentId);
+            } else {
+                throw new IllegalArgumentException("Either 'id' or 'commentId' must be provided.");
+            }
         } catch (Exception e) {
             return new ExceptionEM().toResponse(e);
         }
         return Response.ok().build();
     }
+
 }

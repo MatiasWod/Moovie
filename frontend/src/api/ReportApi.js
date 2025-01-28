@@ -33,13 +33,19 @@ const reportApi = (() => {
     }
 
     const reportMoovieList = async ({moovieListId, reportedBy, content, type}) => {
-        const reportDTO = {
-            moovieListId: moovieListId,
-            reportedBy: reportedBy,
-            content: content,
-            type: type
-        }
-        const response = await api.post('/list/' + moovieListId + '/report', reportDTO);
+        const response = await api.post('/reports',
+            {
+                moovieListId: moovieListId,
+                reportedBy: reportedBy,
+                content: content,
+                type: type
+            },
+            {params:
+                {
+                    moovieListId: moovieListId
+                }
+            }
+        );
         return response;
     }
 
@@ -81,7 +87,12 @@ const reportApi = (() => {
     }
 
     const resolveMoovieListReport = async ({moovieListId}) => {
-        const response = await api.delete('/list/' + moovieListId + '/report');
+        const response = await api.delete('/reports',
+            {params:
+                {
+                    moovieListId: moovieListId
+                }
+            });
         return response;
     }
 
