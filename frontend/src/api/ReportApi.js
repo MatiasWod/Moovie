@@ -6,12 +6,17 @@ const reportApi = (() => {
     // --------------- REPORTING ---------------
 
     const reportReview = async ({reviewId, reportedBy, content, type}) => {
-        const reportDTO = {
-            reportedBy: reportedBy,
-            content: content,
-            type: type
-        }
-        const response = await api.post('/reviews/' + reviewId + '/report', reportDTO);
+        const response = await api.post('/reports',
+            {
+                reportedBy: reportedBy,
+                content: content,
+                type: type
+            },
+            {params:
+                {
+                    reviewId: reviewId
+                }
+            });
         return response;
     }
 
@@ -77,7 +82,12 @@ const reportApi = (() => {
     // --------------- ACTIONS ---------------
 
     const resolveReviewReport = async ({reviewId}) => {
-        const response = await api.delete('/reviews/' + reviewId + '/report');
+        const response = await api.delete('/reports',
+            {params:
+                {
+                    reviewId: reviewId
+                }
+            });
         return response;
     }
 

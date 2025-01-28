@@ -67,8 +67,9 @@ public class ReportController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response report(
             @QueryParam("commentId") final Integer commentId,
-            @QueryParam("reviewId") final Integer reviewId,
+            @QueryParam("moovieListId") final Integer moovieListId,
             @QueryParam("moovieListReviewId") final Integer moovieListReviewId,
+            @QueryParam("reviewId") final Integer reviewId,
             @Valid final ReportCreateDTO reportDTO) {
         try {
             User currentUser = userService.getInfoOfMyUser();
@@ -82,10 +83,10 @@ public class ReportController {
                         reportDTO.getContent()
                 );
                 return Response.ok(ReportDTO.fromCommentReport(response, uriInfo)).build();
-            } else if (reviewId != null) {
+            } else if (moovieListId != null) {
                 // Lógica para reportar una lista de películas
                 MoovieListReport response = reportService.reportMoovieList(
-                        reviewId,
+                        moovieListId,
                         currentUser.getUserId(),
                         reportDTO.getType(),
                         reportDTO.getContent()
@@ -100,8 +101,17 @@ public class ReportController {
                         reportDTO.getContent()
                 );
                 return Response.ok(ReportDTO.fromMoovieListReviewReport(response, uriInfo)).build();
+            } else if (reviewId != null) {
+                // Lógica para reportar una reseña general
+                ReviewReport response = reportService.reportReview(
+                        reviewId,
+                        currentUser.getUserId(),
+                        reportDTO.getType(),
+                        reportDTO.getContent()
+                );
+                return Response.ok(ReportDTO.fromReviewReport(response, uriInfo)).build();
             } else {
-                throw new IllegalArgumentException("At least one of 'commentId', 'reviewId', or 'reportId' must be provided.");
+                throw new IllegalArgumentException("At least one of 'commentId', 'reviewId', 'moovieListReviewId', or 'generalReviewId' must be provided.");
             }
         } catch (UnableToFindUserException e) {
             return new UnableToFindUserEM().toResponse(e);
@@ -110,14 +120,13 @@ public class ReportController {
         }
     }
 
-
-
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     public Response resolveReport(
             @QueryParam("moovieListId") final Integer moovieListId,
             @QueryParam("commentId") final Integer commentId,
-            @QueryParam("moovieListReviewId") final Integer moovieListReviewId) {
+            @QueryParam("moovieListReviewId") final Integer moovieListReviewId,
+            @QueryParam("reviewId") final Integer reviewId) {
         try {
             if (moovieListId != null) {
                 // Resolver reporte de una lista de películas
@@ -128,8 +137,11 @@ public class ReportController {
             } else if (moovieListReviewId != null) {
                 // Resolver reporte de una reseña de lista de películas
                 reportService.resolveMoovieListReviewReport(moovieListReviewId);
+            } else if (reviewId != null) {
+                // Resolver reporte de una reseña general
+                reportService.resolveReviewReport(reviewId);
             } else {
-                throw new IllegalArgumentException("At least one of 'moovieListId', 'commentId', or 'moovieListReviewId' must be provided.");
+                throw new IllegalArgumentException("At least one of 'moovieListId', 'commentId', 'moovieListReviewId', or 'reviewId' must be provided.");
             }
         } catch (Exception e) {
             return new ExceptionEM().toResponse(e);

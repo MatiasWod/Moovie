@@ -37,7 +37,6 @@ import java.util.List;
 @Component
 public class ReviewController {
     private final ReviewService reviewService;
-    private final ReportService reportService;
     private final UserService userService;
 
     @Context
@@ -46,9 +45,8 @@ public class ReviewController {
     //private static final Logger LOGGER = LoggerFactory.getLogger(ReviewController.class);
 
     @Autowired
-    public ReviewController(ReviewService reviewService, ReportService reportService, UserService userService) {
+    public ReviewController(ReviewService reviewService, UserService userService) {
         this.reviewService = reviewService;
-        this.reportService = reportService;
         this.userService = userService;
     }
 
@@ -171,38 +169,6 @@ public class ReviewController {
                 .build();
     }
 
-
-
-//    --------Moderation-------
-
-    @POST
-    @Path("/{id}/report")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response reportReview(@PathParam("id") final int id,
-                                 @Valid final ReportCreateDTO reportDTO) {
-        try {
-            User currentUser = userService.getInfoOfMyUser();
-            ReviewReport response = reportService.reportReview(id, currentUser.getUserId(), reportDTO.getType(), reportDTO.getContent());
-            return Response.ok(ReportDTO.fromReviewReport(response, uriInfo)).build();
-        } catch (UnableToFindUserException e) {
-            return new UnableToFindUserEM().toResponse(e);
-        } catch (Exception e) {
-            return new ExceptionEM().toResponse(e);
-        }
-
-    }
-
-    @DELETE
-    @Path("/{id}/report")
-    public Response resolveReport(@PathParam("id") final int reviewId) {
-        try {
-            reportService.resolveReviewReport(reviewId);
-        } catch (Exception e) {
-            return new ExceptionEM().toResponse(e);
-        }
-        return Response.ok().build();
-    }
 
 }
 
