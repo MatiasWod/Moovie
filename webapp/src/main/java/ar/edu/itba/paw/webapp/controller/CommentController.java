@@ -33,17 +33,15 @@ import java.util.List;
 public class CommentController {
     private final CommentService commentService;
     private final UserService userService;
-    private final ReportService reportService;
     private final ReviewService reviewService;
 
     @Context
     UriInfo uriInfo;
 
     @Autowired
-    public CommentController(CommentService commentService, UserService userService, ReportService reportService, ReviewService reviewService) {
+    public CommentController(CommentService commentService, UserService userService, ReviewService reviewService) {
         this.commentService = commentService;
         this.userService = userService;
-        this.reportService = reportService;
         this.reviewService = reviewService;
     }
 
@@ -165,37 +163,6 @@ public class CommentController {
                     .entity("An unexpected error occurred: " + e.getMessage())
                     .build();
         }
-    }
-
-
-    //    -------------- Moderation ----------------
-    @POST
-    @Path("/{id}/report")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response reportReview(@PathParam("id") final int id,
-                                 @Valid final ReportCreateDTO reportDTO) {
-        try {
-            User currentUser = userService.getInfoOfMyUser();
-            CommentReport response = reportService.reportComment(id, currentUser.getUserId(), reportDTO.getType(), reportDTO.getContent());
-            return Response.ok(ReportDTO.fromCommentReport(response, uriInfo)).build();
-        } catch (UnableToFindUserException e) {
-            return new UnableToFindUserEM().toResponse(e);
-        } catch (Exception e) {
-            return new ExceptionEM().toResponse(e);
-        }
-
-    }
-
-    @DELETE
-    @Path("/{id}/report")
-    public Response resolveReport(@PathParam("id") final int commentId) {
-        try {
-            reportService.resolveCommentReport(commentId);
-        } catch (Exception e) {
-            return new ExceptionEM().toResponse(e);
-        }
-        return Response.ok().build();
     }
 
 

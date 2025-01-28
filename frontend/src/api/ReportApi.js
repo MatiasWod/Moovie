@@ -16,13 +16,19 @@ const reportApi = (() => {
     }
 
     const reportComment = async ({commentId, reportedBy, content, type}) => {
-        const reportDTO = {
-            commentId: commentId,
-            reportedBy: reportedBy,
-            content: content,
-            type: type
-        }
-        const response = await api.post('/comment/' + commentId + '/report', reportDTO);
+        const response = await api.post('/reports',
+            {
+                commentId: commentId,
+                reportedBy: reportedBy,
+                content: content,
+                type: type
+            },
+            {params:
+                {
+                    commentId: commentId
+                }
+            }
+        );
         return response;
     }
 
@@ -64,7 +70,13 @@ const reportApi = (() => {
     }
 
     const resolveCommentReport = async ({commentId}) => {
-        const response = await api.delete('/comment/' + commentId + '/report');
+        const response = await api.delete('/reports',
+            {params:
+                {
+                    commentId: commentId
+                }
+            }
+        );
         return response;
     }
 
