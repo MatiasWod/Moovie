@@ -32,16 +32,14 @@ import java.util.List;
 @Component
 public class CommentController {
     private final CommentService commentService;
-    private final UserService userService;
     private final ReviewService reviewService;
 
     @Context
     UriInfo uriInfo;
 
     @Autowired
-    public CommentController(CommentService commentService, UserService userService, ReviewService reviewService) {
+    public CommentController(CommentService commentService, ReviewService reviewService) {
         this.commentService = commentService;
-        this.userService = userService;
         this.reviewService = reviewService;
     }
 
