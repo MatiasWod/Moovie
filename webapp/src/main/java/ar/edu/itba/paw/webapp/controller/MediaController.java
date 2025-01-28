@@ -46,63 +46,97 @@ public class MediaController {
     //TODO capaz considerar en listAll poder pedir paginas de distintos tamaños, tambien filtros y
     // ordenado, hasta se podria devolder el count en esta misma query....
 
+
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getMedias(
+    public Response getMedia(
+            @QueryParam("type") @DefaultValue("-1") final int type,
+            @QueryParam("pageNumber") @DefaultValue("1") final int page,
+            @QueryParam("pageSize") @DefaultValue("-1") final int pageSize,
+            @QueryParam("orderBy") final String orderBy,
+            @QueryParam("sortOrder") final String sortOrder,
+            @QueryParam("search") final String search,
+            @QueryParam("providers") final List<Integer> providers,
+            @QueryParam("genres") final List<Integer> genres,
             @QueryParam("ids") final String ids,
             @QueryParam("tvCreatorId") final Integer tvCreatorId
     ) {
-        if (ids != null && !ids.isEmpty()) {
-            // Lógica para manejar la lista de IDs
-            if (ids.length() > 100) {
-                throw new IllegalArgumentException("Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
-            }
-
-            List<Integer> idList = new ArrayList<>();
-            String[] splitIds = ids.split(",");
-            for (String id : splitIds) {
-                try {
-                    idList.add(Integer.parseInt(id.trim()));
-                } catch (NumberFormatException e) {
+        try {
+            if (ids != null && !ids.isEmpty()) {
+                // Lógica para manejar la lista de IDs
+                if (ids.length() > 100) {
                     throw new IllegalArgumentException("Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
                 }
-            }
 
-            if (idList.size() > 100 || idList.size() <= 0) {
-                throw new IllegalArgumentException("Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
-            }
-
-            List<MediaDto> mediaList = new ArrayList<>();
-            for (int id : idList) {
-                Media media = mediaService.getMediaById(id);
-                if (media.isType()) {
-                    mediaList.add(TVSerieDto.fromTVSerie(mediaService.getTvById(id), uriInfo));
-                } else {
-                    mediaList.add(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo));
+                List<Integer> idList = new ArrayList<>();
+                String[] splitIds = ids.split(",");
+                for (String id : splitIds) {
+                    try {
+                        idList.add(Integer.parseInt(id.trim()));
+                    } catch (NumberFormatException e) {
+                        throw new IllegalArgumentException("Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
+                    }
                 }
+
+                if (idList.size() > 100 || idList.size() <= 0) {
+                    throw new IllegalArgumentException("Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
+                }
+
+                List<MediaDto> mediaList = new ArrayList<>();
+                for (int id : idList) {
+                    Media media = mediaService.getMediaById(id);
+                    if (media.isType()) {
+                        mediaList.add(TVSerieDto.fromTVSerie(mediaService.getTvById(id), uriInfo));
+                    } else {
+                        mediaList.add(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo));
+                    }
+                }
+                return Response.ok(new GenericEntity<List<MediaDto>>(mediaList) {}).build();
+
+            } else if (tvCreatorId != null) {
+                // Lógica para manejar el tvCreatorId
+                List<Media> mediaList = tvCreatorsService.getMediasForTVCreator(tvCreatorId);
+
+                if (mediaList == null || mediaList.isEmpty()) {
+                    return Response.status(Response.Status.NOT_FOUND)
+                            .entity("No media found for TV creator with ID: " + tvCreatorId)
+                            .build();
+                }
+
+                List<MediaDto> mediaDtos = MediaDto.fromMediaList(mediaList, uriInfo);
+                return Response.ok(new GenericEntity<List<MediaDto>>(mediaDtos) {}).build();
+            } else {
+                // Lógica para los parámetros tipo, búsqueda, paginación, etc.
+                int typeQuery = MediaTypes.TYPE_ALL.getType();
+                if (type == MediaTypes.TYPE_MOVIE.getType() || type == MediaTypes.TYPE_TVSERIE.getType()) {
+                    typeQuery = type;
+                }
+
+                int pageSizeQuery = pageSize;
+                if (pageSize < 1 || pageSize > PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize()) {
+                    pageSizeQuery = PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize();
+                }
+
+                List<Media> mediaList = mediaService.getMedia(typeQuery, search, null,
+                        genres, providers, null, null, orderBy, sortOrder, pageSizeQuery, page - 1);
+
+                final int mediaCount = mediaService.getMediaCount(typeQuery, search, null,
+                        genres, providers, null, null);
+
+                List<MediaDto> mediaDtoList = MediaDto.fromMediaList(mediaList, uriInfo);
+                Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaDto>>(mediaDtoList) {
+                });
+                final PagingUtils<Media> toReturnMediaList = new PagingUtils<>(mediaList, page - 1, pageSizeQuery, mediaCount);
+                ResponseUtils.setPaginationLinks(res, toReturnMediaList, uriInfo);
+                return res.build();
             }
-            return Response.ok(new GenericEntity<List<MediaDto>>(mediaList) {}).build();
-
-        } else if (tvCreatorId != null) {
-            // Lógica para manejar el tvCreatorId
-            List<Media> mediaList = tvCreatorsService.getMediasForTVCreator(tvCreatorId);
-
-            if (mediaList == null || mediaList.isEmpty()) {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("No media found for TV creator with ID: " + tvCreatorId)
-                        .build();
-            }
-
-            List<MediaDto> mediaDtos = MediaDto.fromMediaList(mediaList, uriInfo);
-            return Response.ok(new GenericEntity<List<MediaDto>>(mediaDtos) {}).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An error occurred: " + e.getMessage())
+                    .build();
         }
-
-        // Si no se pasa ningún parámetro válido
-        return Response.status(Response.Status.BAD_REQUEST)
-                .entity("You must provide either 'ids' or 'tvCreatorId' as query parameters.")
-                .build();
     }
-
 
     @GET
     @Path("/{id}")
@@ -116,41 +150,5 @@ public class MediaController {
 
     }
 
-    @GET
-    @Path("/search")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getMedia(@QueryParam("type") @DefaultValue("-1") final int type,
-                             @QueryParam("pageNumber") @DefaultValue("1") final int page,
-                             @QueryParam("pageSize") @DefaultValue("-1") final int pageSize,
-                             @QueryParam("orderBy") final String orderBy,
-                             @QueryParam("sortOrder") final String sortOrder,
-                             @QueryParam("search") final String search,
-                             @QueryParam("providers") final List<Integer> providers,
-                             @QueryParam("genres") final List<Integer> genres) {
-        /* int type, String search, String participant, List<String> genres, List<String> providers,
-                List<String> status, List<String> lang, String orderBy, String sortOrder, int size, int pageNumber*/
-        int typeQuery = MediaTypes.TYPE_ALL.getType();
-        if(type==MediaTypes.TYPE_MOVIE.getType() || type==MediaTypes.TYPE_TVSERIE.getType()){
-            typeQuery = type;
-        }
-
-        int pageSizeQuery = pageSize;
-        if(pageSize<1 || pageSize>PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize()){
-            pageSizeQuery = PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize();
-        }
-
-        List<Media> mediaList = mediaService.getMedia(typeQuery, search, null,
-                genres, providers, null, null, orderBy, sortOrder, pageSizeQuery, page - 1);
-
-        final int mediaCount = mediaService.getMediaCount(typeQuery, search, null,
-                genres, providers, null, null);
-
-        List<MediaDto> mediaDtoList = MediaDto.fromMediaList(mediaList, uriInfo);
-        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaDto>>(mediaDtoList) {
-        });
-        final PagingUtils<Media> toReturnMediaList = new PagingUtils<>(mediaList,page - 1, pageSizeQuery, mediaCount);
-        ResponseUtils.setPaginationLinks(res,toReturnMediaList,uriInfo);
-        return res.build();
-    }
 
 }
