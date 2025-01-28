@@ -6,6 +6,7 @@ import userApi from "../api/UserApi";
 import WatchlistWatched from "../api/values/WatchlistWatched";
 import listApi from "../api/ListApi";
 import MediaApi from "../api/MediaApi";
+import castApi from "../api/CastApi";
 
 const MediaService = (() => {
     const getMedia = async ({type, page, pageSize, orderBy, sortOrder, search, providers, genres}) => {
@@ -89,6 +90,14 @@ const MediaService = (() => {
         return await mediaApi.getMediasForTVCreator(id);
     }
 
+    const getMediasForDirector = async (id) => {
+        return await mediaApi.getMediasForDirector(id);
+    }
+
+    const getMediasForActor = async (id) => {
+        return await mediaApi.getMediasForActor(id);
+    }
+
 
     return {
         getMedia,
@@ -100,7 +109,9 @@ const MediaService = (() => {
         insertMediaIntoWW,
         removeMediaFromWW,
         getIdMediaFromObjectList,
-        getMediasForTVCreator
+        getMediasForTVCreator,
+        getMediasForDirector,
+        getMediasForActor
     }
 })();
 

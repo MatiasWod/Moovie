@@ -12,14 +12,6 @@ const castApi = (() => {
         );
     }
 
-    const getMediasForActor = ({id}) => {
-        return api.get(`/cast/actors/${id}/medias`)
-    }
-
-    const getMediasForDirector = ({id}) => {
-        return api.get(`/cast/director/${id}/medias`)
-    }
-
 
     const getActorsByMediaId = (mediaId) =>{
         return api.get(
@@ -60,8 +52,6 @@ const castApi = (() => {
 
     return{
         getActorsForQuery,
-        getMediasForActor,
-        getMediasForDirector,
         getActorsByMediaId,
         getTvCreatorById,
         getTvCreatorsSearch,

@@ -24,7 +24,7 @@ function Cast(){
 
             async function getData() {
                 try {
-                    const data = await CastService.getMediasForActor({id});
+                    const data = await mediaService.getMediasForActor({id});
                     setActorMedias(data);
                 } catch (error) {
                     console.error("Error fetching actor media:", error);
@@ -63,7 +63,7 @@ function Cast(){
 
             async function getData() {
                 try {
-                    const data = await CastService.getMediasForDirector({id});
+                    const data = await mediaService.getMediasForDirector({id});
                     setActorMedias(data);
                 } catch (error) {
                     console.error("Error fetching actor media:", error);

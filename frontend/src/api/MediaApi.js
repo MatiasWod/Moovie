@@ -27,6 +27,7 @@ const mediaApi = (()=> {
         return api.get(url);
     }
 
+
     const getMediaById = (id) => {
         return api.get(`/medias/${id}`);
     }
@@ -42,13 +43,34 @@ const mediaApi = (()=> {
         );
     }
 
+    const getMediasForDirector = ({id}) => {
+        return api.get(`/medias`,
+            {
+                params: {
+                    'directorId': id
+                }
+            }
+        );
+    }
+
+    const getMediasForActor = ({id}) => {
+        return api.get(`/medias`,
+            {
+                params: {
+                    'actorId': id
+                }
+            }
+        );
+    }
 
     return {
         getMedia,
         getProvidersForMedia,
         getMediaById,
         getMediaByIdList,
-        getMediasForTVCreator
+        getMediasForTVCreator,
+        getMediasForDirector,
+        getMediasForActor
     }
 
 })();
