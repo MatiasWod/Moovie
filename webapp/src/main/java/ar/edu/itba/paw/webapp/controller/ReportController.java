@@ -68,20 +68,40 @@ public class ReportController {
     public Response report(
             @QueryParam("commentId") final Integer commentId,
             @QueryParam("reviewId") final Integer reviewId,
+            @QueryParam("moovieListReviewId") final Integer moovieListReviewId,
             @Valid final ReportCreateDTO reportDTO) {
         try {
             User currentUser = userService.getInfoOfMyUser();
 
             if (commentId != null) {
                 // Lógica para reportar un comentario
-                CommentReport response = reportService.reportComment(commentId, currentUser.getUserId(), reportDTO.getType(), reportDTO.getContent());
+                CommentReport response = reportService.reportComment(
+                        commentId,
+                        currentUser.getUserId(),
+                        reportDTO.getType(),
+                        reportDTO.getContent()
+                );
                 return Response.ok(ReportDTO.fromCommentReport(response, uriInfo)).build();
             } else if (reviewId != null) {
                 // Lógica para reportar una lista de películas
-                MoovieListReport response = reportService.reportMoovieList(reviewId, currentUser.getUserId(), reportDTO.getType(), reportDTO.getContent());
+                MoovieListReport response = reportService.reportMoovieList(
+                        reviewId,
+                        currentUser.getUserId(),
+                        reportDTO.getType(),
+                        reportDTO.getContent()
+                );
                 return Response.ok(ReportDTO.fromMoovieListReport(response, uriInfo)).build();
+            } else if (moovieListReviewId != null) {
+                // Lógica para reportar una reseña de lista de películas
+                MoovieListReviewReport response = reportService.reportMoovieListReview(
+                        moovieListReviewId,
+                        currentUser.getUserId(),
+                        reportDTO.getType(),
+                        reportDTO.getContent()
+                );
+                return Response.ok(ReportDTO.fromMoovieListReviewReport(response, uriInfo)).build();
             } else {
-                throw new IllegalArgumentException("Either 'commentId' or 'id' must be provided.");
+                throw new IllegalArgumentException("At least one of 'commentId', 'reviewId', or 'reportId' must be provided.");
             }
         } catch (UnableToFindUserException e) {
             return new UnableToFindUserEM().toResponse(e);
@@ -91,11 +111,13 @@ public class ReportController {
     }
 
 
+
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     public Response resolveReport(
             @QueryParam("moovieListId") final Integer moovieListId,
-            @QueryParam("commentId") final Integer commentId) {
+            @QueryParam("commentId") final Integer commentId,
+            @QueryParam("moovieListReviewId") final Integer moovieListReviewId) {
         try {
             if (moovieListId != null) {
                 // Resolver reporte de una lista de películas
@@ -103,13 +125,17 @@ public class ReportController {
             } else if (commentId != null) {
                 // Resolver reporte de un comentario
                 reportService.resolveCommentReport(commentId);
+            } else if (moovieListReviewId != null) {
+                // Resolver reporte de una reseña de lista de películas
+                reportService.resolveMoovieListReviewReport(moovieListReviewId);
             } else {
-                throw new IllegalArgumentException("Either 'id' or 'commentId' must be provided.");
+                throw new IllegalArgumentException("At least one of 'moovieListId', 'commentId', or 'moovieListReviewId' must be provided.");
             }
         } catch (Exception e) {
             return new ExceptionEM().toResponse(e);
         }
         return Response.ok().build();
     }
+
 
 }

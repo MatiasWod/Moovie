@@ -33,17 +33,13 @@ import java.util.List;
 @Component
 public class MoovieListReviewController {
     private final ReviewService reviewService;
-    private final ReportService reportService;
-    private final UserService userService;
 
     @Context
     UriInfo uriInfo;
 
     @Autowired
-    public MoovieListReviewController(ReviewService reviewService, ReportService reportService, UserService userService) {
+    public MoovieListReviewController(ReviewService reviewService) {
         this.reviewService = reviewService;
-        this.reportService = reportService;
-        this.userService = userService;
     }
 
     @GET
@@ -197,37 +193,6 @@ public class MoovieListReviewController {
                     .entity("An unexpected error occurred: " + e.getMessage())
                     .build();
         }
-    }
-
-
-    //    --------------- Moderation ------------
-    @POST
-    @Path("/{id}/report")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response reportReview(@PathParam("id") final int id,
-                                 @Valid final ReportCreateDTO reportDTO) {
-        try {
-            User currentUser = userService.getInfoOfMyUser();
-            MoovieListReviewReport response = reportService.reportMoovieListReview(id, currentUser.getUserId(), reportDTO.getType(), reportDTO.getContent());
-            return Response.ok(ReportDTO.fromMoovieListReviewReport(response, uriInfo)).build();
-        } catch (UnableToFindUserException e) {
-            return new UnableToFindUserEM().toResponse(e);
-        } catch (Exception e) {
-            return new ExceptionEM().toResponse(e);
-        }
-
-    }
-
-    @DELETE
-    @Path("/{id}/report")
-    public Response resolveReport(@PathParam("id") final int mlrId) {
-        try {
-            reportService.resolveMoovieListReviewReport(mlrId);
-        } catch (Exception e) {
-            return new ExceptionEM().toResponse(e);
-        }
-        return Response.ok().build();
     }
 
 }

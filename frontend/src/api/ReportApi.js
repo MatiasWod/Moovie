@@ -50,13 +50,19 @@ const reportApi = (() => {
     }
 
     const reportMoovieListReview = async ({moovieListReviewId, reportedBy, content, type}) => {
-        const reportDTO = {
-            moovieListReviewId: moovieListReviewId,
-            reportedBy: reportedBy,
-            content: content,
-            type: type
-        }
-        const response = await api.post('/moovieListReviews/' + moovieListReviewId + '/report', reportDTO);
+        const response = await api.post('/reports',
+            {
+                moovieListReviewId: moovieListReviewId,
+                reportedBy: reportedBy,
+                content: content,
+                type: type
+            },
+            {params:
+                {
+                    moovieListReviewId: moovieListReviewId
+                }
+            }
+        );
         return response;
     }
 
@@ -97,7 +103,12 @@ const reportApi = (() => {
     }
 
     const resolveMoovieListReviewReport = async ({moovieListReviewId}) => {
-        const response = await api.delete('/moovieListReviews/' + moovieListReviewId + '/report');
+        const response = await api.delete('/reports',
+            {params:
+                {
+                    moovieListReviewId: moovieListReviewId
+                }
+            });
         return response;
     }
 
