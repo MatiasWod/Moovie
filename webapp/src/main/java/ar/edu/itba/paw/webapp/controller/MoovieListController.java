@@ -50,6 +50,7 @@ public class MoovieListController {
      */
 
     @GET
+    @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMoovieList(@QueryParam("search") String search,
                                                    @QueryParam("ownerUsername") String ownerUsername,
@@ -73,14 +74,6 @@ public class MoovieListController {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
-
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getMoovieListById(@PathParam("id") final int id) {
-        return Response.ok(MoovieListDto.fromMoovieList(moovieListService.getMoovieListCardById(id), uriInfo)).build();
-    }
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMoovieListByIds(@QueryParam("ids") final String ids) {
@@ -108,6 +101,15 @@ public class MoovieListController {
         }
         return Response.ok(new GenericEntity<List<MoovieListDto>>(mlList) {}).build();
     }
+
+
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMoovieListById(@PathParam("id") final int id) {
+        return Response.ok(MoovieListDto.fromMoovieList(moovieListService.getMoovieListCardById(id), uriInfo)).build();
+    }
+
 
     //We have a separate endpoint for content to be able to use filters and no need to do it every time we want to find a list
     // PROBLEM WHEN SORT ORDER AND OR ORDER BY ARE NULL
