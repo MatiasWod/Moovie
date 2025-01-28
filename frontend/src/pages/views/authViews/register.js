@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../components/mainStyle.css'
 import userApi from "../../../api/UserApi";
+import {useTranslation} from "react-i18next";
 
 
 const RegisterForm = () => {
@@ -13,6 +14,7 @@ const RegisterForm = () => {
     });
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const {t} = useTranslation();
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -57,13 +59,13 @@ const RegisterForm = () => {
                 style={{ border: 'solid black', width: 'fit-content' }}
                 className="container-gray container d-flex flex-column p-3 mt-5"
             >
-                <h1>Sign Up</h1>
+                <h1>{t('register.signUp')}</h1>
                 {error && <div className="alert alert-danger">{error}</div>}
                 {success && <div className="alert alert-success">{success}</div>}
 
                 <form onSubmit={handleSubmit} className="">
                     <div className="me-5 d-flex flex-column">
-                        <label htmlFor="username">Username</label>
+                        <label htmlFor="username">{t('register.username')}</label>
                         <div>
                             <input
                                 type="text"
@@ -75,7 +77,7 @@ const RegisterForm = () => {
                             />
                         </div>
 
-                        <label htmlFor="email">Email</label>
+                        <label htmlFor="email">{t('register.email')}</label>
                         <div>
                             <input
                                 type="email"
@@ -87,7 +89,7 @@ const RegisterForm = () => {
                             />
                         </div>
 
-                        <label htmlFor="password">Password</label>
+                        <label htmlFor="password">{t('register.password')}</label>
                         <div>
                             <input
                                 type="password"
@@ -99,7 +101,7 @@ const RegisterForm = () => {
                             />
                         </div>
 
-                        <label htmlFor="repeatPassword">Repeat Password</label>
+                        <label htmlFor="repeatPassword">{t('register.repeatPassword')}</label>
                         <div>
                             <input
                                 type="password"
@@ -112,16 +114,16 @@ const RegisterForm = () => {
                         </div>
 
                         <button type="submit" className="mt-2 btn btn-outline-success">
-                            Register
+                            {t('register.register')}
                         </button>
 
                         <div className="mt-3">
-                            Already have an account? <a href="/login">Login</a>
+                            {t('register.alreadyHaveAnAccount')} <a href="/login">{t('register.login')}</a>
                         </div>
                         <div className="mt-1">
-                            Continue without registering?{' '}
+                            {t('register.continueWithoutRegistering')}{' '}
                             <a href="#" onClick={() => window.history.back()}>
-                                Go Back
+                                {t('register.goBack')}
                             </a>
                         </div>
                     </div>
