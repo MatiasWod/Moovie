@@ -128,13 +128,23 @@ public class MoovieListController {
 
         List<Media> mediaList = moovieListService.getMoovieListContent(id, orderBy, sortOrder, pageSizeQuery, pageNumber);
         final int mediaCount = moovieListService.getMoovieListCardById(id).getSize();
-        List<MediaDto> mediaDtoList = MediaDto.fromMediaList(mediaList, uriInfo);
-        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaDto>>(mediaDtoList) {
+        List<MediaIdListIdDto> dtoList = MediaIdListIdDto.fromMediaList(mediaList, id);
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdListIdDto>>(dtoList) {
         });
-        final PagingUtils<Media> toReturnMediaList = new PagingUtils<>(mediaList, pageNumber, pageSizeQuery, mediaCount);
-        ResponseUtils.setPaginationLinks(res, toReturnMediaList, uriInfo);
+        final PagingUtils<MediaIdListIdDto> toReturnMediaIdListId = new PagingUtils<>(dtoList, pageNumber, pageSizeQuery, mediaCount);
+        ResponseUtils.setPaginationLinks(res, toReturnMediaIdListId, uriInfo);
         return res.build();
+    }
 
+    @GET
+    @Path("/{id}/content/{mediaId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMoovieListMediaByMediaId(@PathParam("id") final int id,
+                                                @PathParam("mediaId") final int mediaId ){
+        if(moovieListService.isMediaInMoovieList(mediaId,id)){
+            return Response.ok(new MediaIdListIdDto(mediaId, id)).build();
+        }
+        return Response.noContent().build();
     }
 
     //Only returns the 5 more relatedLists. They are related in
@@ -146,7 +156,6 @@ public class MoovieListController {
         Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(mlcList) {
         });
         return res.build();
-
     }
 
     //Only returns the 5 more relatedLists. They are related in
@@ -209,7 +218,6 @@ public class MoovieListController {
                     .build();
         }
         return Response.ok(updatedList).entity(new ResponseMessage("Media added successfully to the list.")).build();
-
     }
 
     /**
@@ -245,14 +253,11 @@ public class MoovieListController {
 
 
     @DELETE
-    @Path("/{id}/content")
+    @Path("/{id}/content/{mediaId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteMediaMoovieList(@PathParam("id") final int id, @Valid MediaListDto mediaIdListDto) {
-        List<Integer> mediaIdList = mediaIdListDto.getMediaIdList();
-        for (int media : mediaIdList) {
-            moovieListService.deleteMediaFromMoovieList(id, media);
-        }
+    public Response deleteMediaMoovieList(@PathParam("id") final int id, @PathParam("mediaId") final int mId) {
+        moovieListService.deleteMediaFromMoovieList(id, mId);
         return Response.noContent().build();
     }
 

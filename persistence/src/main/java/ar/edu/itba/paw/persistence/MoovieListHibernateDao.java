@@ -20,6 +20,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.sql.PreparedStatement;
 import java.util.*;
 
 @Primary
@@ -426,6 +427,21 @@ public class MoovieListHibernateDao implements MoovieListDao{
             throw new UnableToInsertIntoDatabase("You already have a MoovieList with name: " + newName);
         } catch (Exception e) {
             throw new RuntimeException("Failed to edit MoovieList.");
+        }
+    }
+
+    @Override
+    public boolean isMediaInMoovieList(int mediaId, int moovieListId) {
+        String query = "SELECT 1 FROM moovielistscontent WHERE mediaid = ? AND moovielistid = ? LIMIT 1";
+
+        try {
+            Query q1 = em.createNativeQuery(query)
+                    .setParameter(1, mediaId)
+                    .setParameter(2, moovieListId);
+
+            return !q1.getResultList().isEmpty();
+        } catch (Exception e) {
+            return false;
         }
     }
 

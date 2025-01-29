@@ -45,6 +45,7 @@ public interface MoovieListDao {
     void deleteMediaFromMoovieList(int moovieListId, int mediaId);
     void deleteMoovieList(int moovieListId);
     void editMoovieList(int moovieListId, String name, String description);
+    boolean isMediaInMoovieList(int mediaId, int moovieListId);
 
 
     void removeLikeMoovieList(int userId, int moovieListId);

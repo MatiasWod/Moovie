@@ -8,7 +8,7 @@
 
 # EXAMPLE: GET {{base_url}}/list/5
 @bearer_token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJXYW5jaG8iLCJhdXRob3JpemF0aW9uIjoiVVNFUiIsImlhdCI6MTczMjc0MDc0NywiZXhwIjoxNzMzMzQ1NTQ3fQ.OKFjYIuVZktDJ6rw3XbgW2aqO0brzGhjpOkU2sJJfgFVvauDxz7hCFwnVnUnJCW_ZW8EWw6BBfcg-AFyiCh_7Q
-@id0 = 3
+@id0 = 27
 
 GET {{baseUrl}}/{{id0}}
 Authorization: Bearer {{bearer_token}}
@@ -17,13 +17,19 @@ Authorization: Bearer {{bearer_token}}
 
 # EXAMPLE: {{baseUrl}}/list/1/content?orderBy=name&sortOrder=ASC&page=1
 
-@id1 = 3
+@id1 = 37
 @orderBy1 = ASC
 @sortOrder1 = name
 @page1 = 1
 
 GET {{baseUrl}}/{{id1}}/content?orderBy={{orderBy1}}&sortOrder={{sortOrder1}}&page={{page1}}
-Authorization: Bearer {{bearer_token}}
+
+### LIST CONTENT BY MEDIA ID
+
+@id8 = 37
+@mediaId8 = 90
+
+GET {{baseUrl}}/{{id8}}/content/{{mediaId8}}
 
 ### LIST LIST (Still needs a lot of work to be done aa)
 

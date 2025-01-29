@@ -20,6 +20,7 @@ const mediaApi = (()=> {
     }
 
     const getMediaByIdList = (idListString) => {
+        console.log(idListString);
         return api.get(`/medias?ids=${idListString}`);
     };
 

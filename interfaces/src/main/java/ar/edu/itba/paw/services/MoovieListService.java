@@ -59,6 +59,7 @@ public interface MoovieListService {
     void deleteMediaFromMoovieList(int moovieListId, int mediaId);
     void deleteMoovieList(int moovieListId);
     void editMoovieList(int moovieListId, String name, String description);
+    boolean isMediaInMoovieList(int mediaId, int moovieListId);
 
 
     //Receives three arrays of mediaid, one taht will got o next page, previous page and current page in order

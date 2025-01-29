@@ -83,6 +83,7 @@ const MediaService = (() => {
         for (const m of list) {
             toRet += m.mediaId + ",";
         }
+        console.log(toRet);
         return toRet.slice(0, -1); // Removes the last comma
     };
 

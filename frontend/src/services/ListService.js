@@ -2,6 +2,7 @@ import listApi from "../api/ListApi";
 import {parsePaginatedResponse} from "../utils/ResponseUtils";
 import userApi from "../api/UserApi";
 import store from "../store/store";
+import mediaService from "./MediaService";
 
 const ListService = (() => {
 
@@ -36,7 +37,10 @@ const ListService = (() => {
 
     const getListContentById= async ({id, orderBy, sortOrder, pageNumber, pageSize}) => {
         const res = await listApi.getListContentById({id, orderBy, sortOrder, pageNumber, pageSize});
-        return parsePaginatedResponse(res);
+        const contentList = parsePaginatedResponse(res);
+        const toRetMedia = await mediaService.getMediaByIdList(mediaService.getIdMediaFromObjectList(contentList.data));
+        console.log(toRetMedia);
+        return toRetMedia;
     }
 
     const insertMediaIntoMoovieList = async ({id, mediaIds}) => {

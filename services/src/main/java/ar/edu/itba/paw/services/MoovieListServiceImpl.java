@@ -240,6 +240,13 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Transactional
     @Override
+    public boolean isMediaInMoovieList(int mediaId, int moovieListId) {
+        getMoovieListById(moovieListId); // for the function to abort if it should be innacessible
+        return moovieListDao.isMediaInMoovieList(mediaId,moovieListId);
+    }
+
+    @Transactional
+    @Override
     public void deleteMediaFromMoovieList(int moovieListId, int mediaId) {
         MoovieList ml = getMoovieListById(moovieListId);
         if(ml.getUserId() == userService.tryToGetCurrentUserId()){
