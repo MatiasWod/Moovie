@@ -1,15 +1,10 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.Cast.Actor;
-import ar.edu.itba.paw.models.Media.Media;
-import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.TV.TVCreators;
 import ar.edu.itba.paw.services.ActorService;
-import ar.edu.itba.paw.services.MediaService;
 import ar.edu.itba.paw.services.TVCreatorsService;
 import ar.edu.itba.paw.webapp.dto.out.ActorDto;
-import ar.edu.itba.paw.webapp.dto.out.MediaDto;
-import ar.edu.itba.paw.webapp.dto.out.MovieDto;
 import ar.edu.itba.paw.webapp.dto.out.TvCreatorsDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,16 +20,14 @@ public class CastController {
     private final ActorService actorService;
     private final TVCreatorsService tvCreatorsService;
 
-    private final MediaService mediaService;
 
     @Context
     UriInfo uriInfo;
 
     @Autowired
-    public CastController(ActorService actorService, TVCreatorsService tvCreatorsService, MediaService mediaService) {
+    public CastController(ActorService actorService, TVCreatorsService tvCreatorsService) {
         this.actorService = actorService;
         this.tvCreatorsService = tvCreatorsService;
-        this.mediaService = mediaService;
     }
 
     @GET
@@ -42,22 +35,6 @@ public class CastController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getActor(@PathParam("id") final int id) {
         return Response.ok(ActorDto.fromActor(actorService.getActorById(id), uriInfo)).build();
-    }
-
-    @GET
-    @Path("/actors/{id}/medias")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getMediaForActor(@PathParam("id") final int id) {
-        List<Media> mediaList = actorService.getMediaForActor(id);
-
-        if (mediaList == null || mediaList.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("No media found for actor with ID: " + id)
-                    .build();
-        }
-
-        List<MediaDto> mediaDtos = MediaDto.fromMediaList(mediaList, uriInfo);
-        return Response.ok(new GenericEntity<List<MediaDto>>(mediaDtos) {}).build();
     }
 
     @GET
@@ -82,22 +59,6 @@ public class CastController {
                     .entity("You must provide either 'mediaId' or 'search' as query parameters.")
                     .build();
         }
-    }
-
-    @GET
-    @Path("/director/{id}/medias")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getMediasForDirector(@PathParam("id") final int id) {
-        List<Movie> mediaList = mediaService.getMediaForDirectorId(id);
-
-        if (mediaList == null || mediaList.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("No media found for director with ID: " + id)
-                    .build();
-        }
-
-        List<MovieDto> mediaDtos = MovieDto.fromMovieList(mediaList, uriInfo);
-        return Response.ok(new GenericEntity<List<MovieDto>>(mediaDtos) {}).build();
     }
 
 
