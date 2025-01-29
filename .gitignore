@@ -51,6 +51,7 @@ Thumbs.db
 *.mov
 *.wmv
 
+docker-compose.yaml
 # Package files
 package-lock.json
 frontend/node/*

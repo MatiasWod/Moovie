@@ -2,7 +2,6 @@ import React from 'react'
 import {Card} from "react-bootstrap";
 
 const MediaCard = ({ media, pageName, onClick, isSelected }) => {
-    const placeholderGenre = Array.from({length: 10})
     return <div onClick={onClick} className={'poster card text-bg-dark m-1'}>
         <div id={media.id} className={'card-img-container'}>
             <img className={'crop-center'} loading='lazy' src={media.posterPath} alt={''}/>
@@ -18,17 +17,17 @@ const MediaCard = ({ media, pageName, onClick, isSelected }) => {
                     </Card.Text>
                 </div>
                 <div id={'genres'} className={'d-flex justify-evenly flex-wrap'}>
-                    {placeholderGenre.slice(0, 5).map((_, __) => (
+                    {media.genres.data.slice(0, 5).map((genre, _) => (
                         <span className={'mt-1 badge text-bg-dark'}>
-                        horror
+                        {genre.genreName}
                     </span>
                     ))}
                 </div>
                 <div id={'providers'} className={'d-flex mt-3 justify-evenly flex-wrap'}>
-                    {placeholderGenre.slice(0, 2).map((_, __) => (
+                    {media.providers.data.slice(0, 2).map((provider, __) => (
                         <span className={'mt-1 badge text-bg-light border border-black'}>
                         <img
-                            src={'https://png.pngtree.com/png-vector/20230420/ourmid/pngtree-movie-vector-design-illustration-background-sign-equipment-vector-png-image_51588342.jpg'}
+                            src={provider.logoPath}
                             alt="provider logo"
                             style={{height: '1.5em', marginRight: '5px'}}/>
                     </span>

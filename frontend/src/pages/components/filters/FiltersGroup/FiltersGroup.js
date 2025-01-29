@@ -24,6 +24,8 @@ const FiltersGroup = ({
     const [selectedProviders, setSelectedProviders] = useState(initialSelectedProviders);
     const [searchGenre, setSearchGenre] = useState('');
     const [searchProvider, setSearchProvider] = useState('');
+    const [queryInput, setQueryInput] = useState('');
+
 
     useEffect(() => {
 
@@ -40,7 +42,7 @@ const FiltersGroup = ({
             orderBy,
             genres: selectedGenres.join(','),
             providers: selectedProviders.join(','),
-            query,
+            queryInput,
         });
     };
 
@@ -80,18 +82,31 @@ const FiltersGroup = ({
 
                         <div className="d-flex flex-row m-1">
                             <select name="type" className="form-select m-1">
-                                <option selected={type === mediaTypes.TYPE_ALL} value="All">All</option>
-                                <option selected={type === mediaTypes.TYPE_TVSERIE} value="Series">Series</option>
-                                <option selected={type === mediaTypes.TYPE_MOVIE} value="Movies">Movies</option>
+                                <option selected={type === mediaTypes.TYPE_ALL} value={mediaTypes.TYPE_ALL.valueOf()}>All</option>
+                                <option selected={type === mediaTypes.TYPE_TVSERIE} value={mediaTypes.TYPE_TVSERIE.valueOf()}>Series</option>
+                                <option selected={type === mediaTypes.TYPE_MOVIE} value={mediaTypes.TYPE_MOVIE.valueOf()}>Movies</option>
                             </select>
 
                             <select name="orderBy" className="form-select m-1">
-                                <option selected={orderBy === mediaOrderBy.NAME} value="Title">Title</option>
-                                <option selected={orderBy === mediaOrderBy.TOTAL_RATING} value="Total Rating">Total Rating</option>
-                                <option selected={orderBy === mediaOrderBy.TMDB_RATING} value="TMDB Rating">TMDB Rating</option>
-                                <option selected={orderBy === mediaOrderBy.RELEASE_DATE} value="Release Date">Release Date</option>
+                                <option selected={orderBy === mediaOrderBy.NAME} value={mediaOrderBy.NAME}>Title</option>
+                                <option selected={orderBy === mediaOrderBy.TOTAL_RATING} value={mediaOrderBy.TOTAL_RATING.valueOf()}>Total Rating</option>
+                                <option selected={orderBy === mediaOrderBy.TMDB_RATING} value={mediaOrderBy.TMDB_RATING.valueOf()}>TMDB Rating</option>
+                                <option selected={orderBy === mediaOrderBy.RELEASE_DATE} value={mediaOrderBy.RELEASE_DATE.valueOf()}>Release Date</option>
                             </select>
                         </div>
+
+                        {searchBar && (
+                            <div className={"m-1"}>
+                                <input
+                                    type="search"
+                                    className="form-control m-1"
+                                    placeholder="Search..."
+                                    value={queryInput}
+                                    onChange={(e) => setQueryInput(e.target.value)}
+                                />
+                            </div>
+                        )}
+
 
                         <FormButtons onApply={handleFilterSubmit} onReset={handleReset} />
 
