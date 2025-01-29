@@ -1,6 +1,7 @@
 import React from 'react';
 import altImage from "../../../images/defaultPoster.png";
 import {useNavigate} from "react-router-dom";
+import './ActorCard.css';
 
 const ActorCard = ({ name, image }) => {
 
@@ -16,15 +17,7 @@ const ActorCard = ({ name, image }) => {
 
 
     return (
-        <div style={{
-            border: '1px solid #ccc',
-            borderRadius: '8px',
-            padding: '16px',
-            textAlign: 'center',
-            width: '200px',
-            backgroundColor: '#fff',
-            boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
-        }} >
+        <div className='actor-card'>
             <img
                 src={imageSrc}
                 alt={name || 'Actor'} // Default alt text if name is not provided

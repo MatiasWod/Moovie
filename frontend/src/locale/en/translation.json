@@ -21,6 +21,8 @@
   "browseLists.filter": "Filter!",
   "cardsHorizontalContainer.errorLoadingMedia": "Error loading media.",
   "cardsHorizontalContainer.noMediaFound": "No media found",
+  "cast.mediasFor": "Medias for: '{{selectedActor}}'",
+  "cast.noMediasFound": "No medias found.",
   "commentField.placeholder": "Write a comment...",
   "commentField.submit": "Submit",
   "commentList.by": "By",

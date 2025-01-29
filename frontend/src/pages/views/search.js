@@ -17,6 +17,8 @@ import ActorCard from "../components/actorCards/ActorCard";
 import MediaOrderBy from "../../api/values/MediaOrderBy";
 import CardsListOrderBy from "../../api/values/CardsListOrderBy";
 import {useTranslation} from "react-i18next";
+import {Divider} from "@mui/material";
+import './discover.css';
 
 function Healthcheck() {
     const { t } = useTranslation();
@@ -149,11 +151,17 @@ function Healthcheck() {
                 {medias?.data?.length > 0 ? (
                     <>
                         <h3>{t('search.mediasFor', {search: search})}</h3>
-                        {medias.data.map((media) => (
-                            <div className="discover-media-card" key={media.id}>
-                                <MediaCard media={media} />
-                            </div>
-                        ))}
+                        <Divider sx={{
+                            backgroundColor: "rgba(0, 0, 0, 0.8)",
+                            height: "2px",
+                        }} />
+                        <div className="cards-container">
+                            {medias.data.map((media) => (
+                                <div className="discover-media-card" key={media.id}>
+                                    <MediaCard media={media} />
+                                </div>
+                            ))}
+                        </div>
                     </>
                 ) : (
                     <p>{t('search.noMediasFound')}</p>
@@ -165,9 +173,13 @@ function Healthcheck() {
                 {lists?.data?.length > 0 ? (
                     <>
                         <h3>{t('search.listsFor', {search: search})}</h3>
-                        <div className="list-card-container">
-                            {lists.data.map((list) => (
-                                <div key={list.id}>
+                        <Divider sx={{
+                            backgroundColor: "rgba(0, 0, 0, 0.8)",
+                            height: "2px",
+                        }} />
+                        <div className="cards-container">
+                            {lists.data.slice(0, 5).map((list) => (
+                                <div className="discover-media-card" key={list.id}>
                                     <ListCard listCard={list} />
                                 </div>
                             ))}
@@ -178,62 +190,59 @@ function Healthcheck() {
                 )}
             </>
 
-            <div
-                style={{
-                    display: 'flex',
-                    gap: '16px',
-                    overflowX: 'auto',
-                    padding: '16px'
-                }}
-            >
                 {actors && actors.length > 0 ? (
                     <>
                         <h3>{t('search.actorsFor', {search: search})}</h3>
-                        {actors.map((actor) => (
-                            <div
-                                key={actor.actorId}
-                                onClick={() => handleActorCardClick(actor)}
-                                style={{ cursor: "pointer" }}
-                            >
-                                <ActorCard
-                                    name={actor.actorName}
-                                    image={actor.profilePath}
-                                />
-                            </div>
-                        ))}
+                        <Divider sx={{
+                            backgroundColor: "rgba(0, 0, 0, 0.8)",
+                            height: "2px",
+                        }} />
+                        <div className="cards-container">
+                            {actors.slice(0,5).map((actor) => (
+                                <div
+                                    key={actor.actorId}
+                                    onClick={() => handleActorCardClick(actor)}
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    <div className="discover-media-card">
+                                        <ActorCard
+                                            name={actor.actorName}
+                                            image={actor.profilePath}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </>
                 ) : (
                     <p>{t('search.noActorsFound')}</p>
                 )}
-            </div>
-            <div
-                style={{
-                    display: 'flex',
-                    gap: '16px',
-                    overflowX: 'auto',
-                    padding: '16px'
-                }}
-            >
                 <div>
                     {users?.data?.length > 0 ? (
                         <>
                             <h3>{t('search.usersFor', {search: search})}</h3>
-                            {users.data.map((user) => (
-                                <div
-                                    key={user.username}
-                                    onClick={() => handleUserCardClick(user)}
-                                    style={{ cursor: "pointer" }}
-                                >
-                                    <ActorCard name={user.username} />
-                                </div>
-                            ))}
+                            <Divider sx={{
+                                backgroundColor: "rgba(0, 0, 0, 0.8)",
+                                height: "2px",
+                            }} />
+                            <div className="cards-container">
+                                {users.data.slice(0,5).map((user) => (
+                                    <div
+                                        key={user.username}
+                                        onClick={() => handleUserCardClick(user)}
+                                        style={{ cursor: "pointer" }}
+                                    >
+                                        <div className="discover-media-card">
+                                            <ActorCard name={user.username} />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </>
                     ) : (
                         <p>{t('search.noUsersFound')}</p>
                     )}
                 </div>
-
-            </div>
         </div>
     )
     ;

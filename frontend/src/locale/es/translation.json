@@ -21,6 +21,8 @@
   "browseLists.filter": "¡Filtrar!",
   "cardsHorizontalContainer.errorLoadingMedia": "Error cargando medios.",
   "cardsHorizontalContainer.noMediaFound": "No se han encontrado medios",
+  "cast.mediasFor": "Medios para: '{{selectedActor}}'",
+  "cast.noMediasFound": "No se encontraron medios",
   "commentField.placeholder": "Escribe un comentario...",
   "commentField.submit": "Enviar",
   "commentList.by": "Por",

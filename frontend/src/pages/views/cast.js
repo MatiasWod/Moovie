@@ -3,12 +3,15 @@ import {createSearchParams, useNavigate, useParams, useSearchParams, useLocation
 import CastService from "../../services/CastService";
 import MediaCard from "../components/mediaCard/MediaCard";
 import mediaService from "../../services/MediaService";
+import {useTranslation} from "react-i18next";
+import {Divider} from "@mui/material";
 
 function Cast(){
     const navigate = useNavigate();
     const location = useLocation();
     const [searchParams] = useSearchParams();
     const {id} = useParams();
+    const {t} = useTranslation();
 
     const [actorMedias, setActorMedias] = useState(undefined);
     const [actorMediasLoading, setActorMediasLoading] = useState(true);
@@ -82,15 +85,21 @@ function Cast(){
             <>
                 {actorMedias?.data?.length > 0 ? (
                     <>
-                        <h3>Medias for: {selectedActor}</h3>
-                        {actorMedias.data.map((media) => (
-                            <div className="discover-media-card" key={media.id}>
-                                <MediaCard media={media} />
-                            </div>
-                        ))}
+                        <h3>{t('cast.mediasFor',{selectedActor:selectedActor})}</h3>
+                        <Divider sx={{
+                            backgroundColor: "rgba(0, 0, 0, 0.8)",
+                            height: "2px",
+                        }} />
+                        <div className="cards-container">
+                            {actorMedias.data.map((media) => (
+                                <div className="discover-media-card" key={media.id}>
+                                    <MediaCard media={media} />
+                                </div>
+                            ))}
+                        </div>
                     </>
                 ) : (
-                    <p>No medias found.</p>
+                    <p>{t('cast.noMediasFound')}</p>
                 )}
             </>
         </div>
