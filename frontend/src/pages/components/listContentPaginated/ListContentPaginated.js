@@ -8,6 +8,7 @@ import MediaOrderBy from "../../../api/values/MediaOrderBy";
 import Button from "react-bootstrap/Button";
 import {useSelector} from "react-redux";
 import SortOrder from "../../../api/values/SortOrder";
+import {useTranslation} from "react-i18next";
 
 const ListContentPaginated = ({
                                   listContent,
@@ -24,6 +25,7 @@ const ListContentPaginated = ({
                               }) => {
 
     const [editMode, setEditMode] = useState(false);
+    const {t} = useTranslation();
 
     const handleEditMode = () =>{
         setEditMode(!editMode);
@@ -47,8 +49,8 @@ const ListContentPaginated = ({
 
 
             {isOwner && (
-                !editMode ? (<Button onClick={handleEditMode}>Edit</Button>) :
-                    (<Button onClick={handleEditMode}>Save</Button>)
+                !editMode ? (<Button onClick={handleEditMode}>{t('listContentPaginated.edit')}</Button>) :
+                    (<Button onClick={handleEditMode}>{t('listContentPaginated.save')}</Button>)
             ) }
 
             <ListContent listContent={listContent?.data ?? []} editMode={editMode} setListContent={setListContent} listId={listId}/>

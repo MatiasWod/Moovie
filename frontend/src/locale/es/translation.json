@@ -100,6 +100,8 @@
   "listContent.score": "Puntuación",
   "listContent.usersScore": "Puntuación de usuarios",
   "listContent.releaseDate": "Fecha de lanzamiento",
+  "listContentPaginated.edit": "Editar",
+  "listContentPaginated.save": "Guardar",
   "listHeader.by": "Por",
   "listHeader.dislike": "No me gusta",
   "listHeader.edit": "Editar",
