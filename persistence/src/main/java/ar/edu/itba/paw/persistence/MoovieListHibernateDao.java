@@ -431,17 +431,18 @@ public class MoovieListHibernateDao implements MoovieListDao{
     }
 
     @Override
-    public boolean isMediaInMoovieList(int mediaId, int moovieListId) {
-        String query = "SELECT 1 FROM moovielistscontent WHERE mediaid = ? AND moovielistid = ? LIMIT 1";
+    public int isMediaInMoovieList(int mediaId, int moovieListId) {
+        String query = "SELECT customOrder FROM moovielistscontent WHERE mediaid = ? AND moovielistid = ? LIMIT 1";
 
         try {
             Query q1 = em.createNativeQuery(query)
                     .setParameter(1, mediaId)
                     .setParameter(2, moovieListId);
 
-            return !q1.getResultList().isEmpty();
+            Object result = q1.getSingleResult();
+            return result != null ? (int)((Integer) result) : -1;
         } catch (Exception e) {
-            return false;
+            return -1;
         }
     }
 

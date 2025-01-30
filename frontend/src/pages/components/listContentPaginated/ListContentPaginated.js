@@ -1,10 +1,13 @@
 // src/components/listContentPaginated/ListContentPaginated.js
 
-import React from "react";
+import React, {useState} from "react";
 import ListContent from "../listContent/ListContent";
 import PaginationButton from "../paginationButton/PaginationButton";
 import DropdownMenu from "../dropdownMenu/DropdownMenu";
 import MediaOrderBy from "../../../api/values/MediaOrderBy";
+import Button from "react-bootstrap/Button";
+import {useSelector} from "react-redux";
+import SortOrder from "../../../api/values/SortOrder";
 
 const ListContentPaginated = ({
                                   listContent,
@@ -14,19 +17,41 @@ const ListContentPaginated = ({
                                   currentOrderBy,
                                   setOrderBy,
                                   currentSortOrder,
-                                  setSortOrder
+                                  setSortOrder,
+                                  setListContent,
+                                  isOwner,
+                                  listId
                               }) => {
+
+    const [editMode, setEditMode] = useState(false);
+
+    const handleEditMode = () =>{
+        setEditMode(!editMode);
+        setOrderBy(MediaOrderBy.CUSTOM_ORDER);
+        setSortOrder(SortOrder.ASC);
+    }
+
     return (
         <div>
-            <DropdownMenu
-                setOrderBy={setOrderBy}
-                setSortOrder={setSortOrder}
-                currentOrderDefault={currentSortOrder}
-                values={Object.values(MediaOrderBy)}
-            />
+            {
+                !editMode && (
+                    <DropdownMenu
+                        setOrderBy={setOrderBy}
+                        setSortOrder={setSortOrder}
+                        currentOrderDefault={currentSortOrder}
+                        values={Object.values(MediaOrderBy)}
+                    />
+                )
+            }
 
-            <ListContent listContent={listContent?.data ?? []} />
 
+
+            {isOwner && (
+                !editMode ? (<Button onClick={handleEditMode}>Edit</Button>) :
+                    (<Button onClick={handleEditMode}>Save</Button>)
+            ) }
+
+            <ListContent listContent={listContent?.data ?? []} editMode={editMode} setListContent={setListContent} listId={listId}/>
 
             <div className="flex justify-center pt-4">
                 {listContent?.data?.length > 0 && listContent.links?.last?.page > 1 && (

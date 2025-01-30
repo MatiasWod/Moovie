@@ -67,13 +67,26 @@ const listApi = (() => {
 
 
 
-    const getRecommendedLists = (id) => {
+    const getRecommendedLists =  (id) => {
         return api.get(`/list/${id}/recommendedLists`,
             {
                 params:{
                     'id': id
                 }
             })
+    }
+
+    const editListContent =  (listId, mediaId, customOrder) => {
+        const input = {
+            mediaId: mediaId,
+            moovieListId: listId,
+            customOrder: customOrder
+        };
+
+        const response =  api.put(`list/${listId}/content/${mediaId}`,
+            input
+        );
+        return response;
     }
 
 
@@ -84,7 +97,8 @@ const listApi = (() => {
         getListContentById,
         insertMediaIntoMoovieList,
         editMoovieList,
-        getRecommendedLists
+        getRecommendedLists,
+        editListContent
     }
 })();
 

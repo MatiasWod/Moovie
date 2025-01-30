@@ -5,11 +5,13 @@ import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
 import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.exceptions.UserNotLoggedException;
 import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.Media.OrderedMedia;
 import ar.edu.itba.paw.models.MoovieList.*;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.User.UserRoles;
 import ar.edu.itba.paw.persistence.MoovieListDao;
+import org.hibernate.criterion.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,11 +79,26 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Transactional(readOnly = true)
     @Override
+    public List<OrderedMedia> getMoovieListContentOrdered(int moovieListId, String orderBy, String sortOrder, int size, int pageNumber) {
+        MoovieList ml = getMoovieListById(moovieListId);
+        //If the previous didnt throw exception, we have the permissions needed to perform the next action
+        int userid = userService.tryToGetCurrentUserId();
+        List<Media> medias = moovieListDao.getMoovieListContent(moovieListId, userid , setOrderMediaBy(orderBy) , setSortOrder(sortOrder) ,size, pageNumber-1);
+        List<OrderedMedia> toRet = new ArrayList<>();
+        for(Media media : medias){
+            //TODO optimize this
+            toRet.add(new OrderedMedia(media, isMediaInMoovieList(media.getMediaId(), moovieListId)));
+        }
+        return toRet;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public List<Media> getMoovieListContent(int moovieListId, String orderBy, String sortOrder, int size, int pageNumber) {
         MoovieList ml = getMoovieListById(moovieListId);
         //If the previous didnt throw exception, we have the permissions needed to perform the next action
         int userid = userService.tryToGetCurrentUserId();
-        return moovieListDao.getMoovieListContent(moovieListId, userid , setOrderMediaBy(orderBy) , setSortOrder(sortOrder) ,size, pageNumber-1);
+        return moovieListDao.getMoovieListContent(moovieListId, userid, setOrderMediaBy(orderBy), setSortOrder(sortOrder), size, pageNumber - 1);
     }
 
     @Transactional(readOnly = true)
@@ -240,7 +257,7 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Transactional
     @Override
-    public boolean isMediaInMoovieList(int mediaId, int moovieListId) {
+    public int isMediaInMoovieList(int mediaId, int moovieListId) {
         getMoovieListById(moovieListId); // for the function to abort if it should be innacessible
         return moovieListDao.isMediaInMoovieList(mediaId,moovieListId);
     }

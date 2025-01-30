@@ -1,10 +1,12 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.Media.OrderedMedia;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListDetails;
 import ar.edu.itba.paw.models.MoovieList.UserMoovieListId;
+import org.hibernate.criterion.Order;
 
 import java.util.List;
 
@@ -47,6 +49,7 @@ public interface MoovieListService {
     //Get the content of media of some moovieList by its id
     //The isWatched is returned as false (in every element) if the user who makes the query is not the owner
     List<Media> getMoovieListContent(int moovieListId, String orderBy, String sortOrder, int size, int pageNumber);
+    List<OrderedMedia> getMoovieListContentOrdered(int moovieListId, String orderBy, String sortOrder, int size, int pageNumber);
 
     //Featured List Functions
     List<Media> getFeaturedMoovieListContent( int mediaType, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber);
@@ -59,7 +62,7 @@ public interface MoovieListService {
     void deleteMediaFromMoovieList(int moovieListId, int mediaId);
     void deleteMoovieList(int moovieListId);
     void editMoovieList(int moovieListId, String name, String description);
-    boolean isMediaInMoovieList(int mediaId, int moovieListId);
+    int isMediaInMoovieList(int mediaId, int moovieListId);
 
 
     //Receives three arrays of mediaid, one taht will got o next page, previous page and current page in order

@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.dto.out;
 
 import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.Media.OrderedMedia;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,19 +9,21 @@ import java.util.List;
 public class MediaIdListIdDto {
     private int mediaId;
     private int moovieListId;
+    private int customOrder;
 
     public MediaIdListIdDto() {
     }
 
-    public MediaIdListIdDto(int mediaId, int moovieListId) {
+    public MediaIdListIdDto(int mediaId, int moovieListId, int customOrder) {
         this.mediaId = mediaId;
         this.moovieListId = moovieListId;
+        this.customOrder = customOrder;
     }
 
-    public static List<MediaIdListIdDto> fromMediaList(List<Media> medias, int moovieListId){
+    public static List<MediaIdListIdDto> fromOrderedMediaList(List<OrderedMedia> medias, int moovieListId){
         List<MediaIdListIdDto> toRet = new ArrayList<>();
-        for (Media media : medias) {
-            toRet.add(new MediaIdListIdDto(media.getMediaId(), moovieListId));
+        for (OrderedMedia media : medias) {
+            toRet.add(new MediaIdListIdDto(media.getMedia().getMediaId(), moovieListId, media.getCustomOrder()));
         }
         return toRet;
     }
@@ -39,5 +42,13 @@ public class MediaIdListIdDto {
 
     public void setMoovieListId(int moovieListId) {
         this.moovieListId = moovieListId;
+    }
+
+    public int getCustomOrder() {
+        return customOrder;
+    }
+
+    public void setCustomOrder(int customOrder) {
+        this.customOrder = customOrder;
     }
 }

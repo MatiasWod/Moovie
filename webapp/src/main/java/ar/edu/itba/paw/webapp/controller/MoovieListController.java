@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.Media.OrderedMedia;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
@@ -20,6 +21,7 @@ import ar.edu.itba.paw.webapp.dto.out.*;
 import ar.edu.itba.paw.webapp.mappers.ExceptionEM;
 import ar.edu.itba.paw.webapp.mappers.UnableToFindUserEM;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
@@ -126,9 +128,9 @@ public class MoovieListController {
             pageSizeQuery = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
         }
 
-        List<Media> mediaList = moovieListService.getMoovieListContent(id, orderBy, sortOrder, pageSizeQuery, pageNumber);
+        List<OrderedMedia> mediaList = moovieListService.getMoovieListContentOrdered(id, orderBy, sortOrder, pageSizeQuery, pageNumber);
         final int mediaCount = moovieListService.getMoovieListCardById(id).getSize();
-        List<MediaIdListIdDto> dtoList = MediaIdListIdDto.fromMediaList(mediaList, id);
+        List<MediaIdListIdDto> dtoList = MediaIdListIdDto.fromOrderedMediaList(mediaList, id);
         Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdListIdDto>>(dtoList) {
         });
         final PagingUtils<MediaIdListIdDto> toReturnMediaIdListId = new PagingUtils<>(dtoList, pageNumber, pageSizeQuery, mediaCount);
@@ -141,8 +143,9 @@ public class MoovieListController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMoovieListMediaByMediaId(@PathParam("id") final int id,
                                                 @PathParam("mediaId") final int mediaId ){
-        if(moovieListService.isMediaInMoovieList(mediaId,id)){
-            return Response.ok(new MediaIdListIdDto(mediaId, id)).build();
+        int customOrder = moovieListService.isMediaInMoovieList(mediaId,id);
+        if( customOrder != -1){
+            return Response.ok(new MediaIdListIdDto(mediaId, id, customOrder)).build();
         }
         return Response.noContent().build();
     }
@@ -235,6 +238,16 @@ public class MoovieListController {
         return Response.ok()
                 .entity("MoovieList successfully edited for MoovieList with ID: " + listId)
                 .build();
+    }
+
+    @PUT
+    @Path("/{id}/content/{mediaId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response editMoovieListMediaByMediaId(@PathParam("id") final int id,
+                                                @PathParam("mediaId") final int mediaId,
+                                                 final MediaIdListIdDto input){
+        return Response.ok().build();
     }
 
 

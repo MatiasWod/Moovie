@@ -37,10 +37,16 @@ const ListService = (() => {
 
     const getListContentById= async ({id, orderBy, sortOrder, pageNumber, pageSize}) => {
         const res = await listApi.getListContentById({id, orderBy, sortOrder, pageNumber, pageSize});
-        const contentList = parsePaginatedResponse(res);
-        const toRetMedia = await mediaService.getMediaByIdList(mediaService.getIdMediaFromObjectList(contentList.data));
-        console.log(toRetMedia);
+        const contentList = parsePaginatedResponse(res).data;
+        const toRetMedia = await mediaService.getMediaByIdList(mediaService.getIdMediaFromObjectList(contentList));
+        for( let i= 0 ; i < contentList.length ; i++ ){
+            toRetMedia.data[i].customOrder =  contentList[i].customOrder;
+        }
         return toRetMedia;
+    }
+
+    const editListContent = async ({listId, mediaId, customOrder}) => {
+        return listApi.editListContent(listId, mediaId, customOrder);
     }
 
     const insertMediaIntoMoovieList = async ({id, mediaIds}) => {
@@ -154,7 +160,8 @@ const ListService = (() => {
         unfollowList,
         followList,
        editMoovieList,
-       getRecommendedLists
+       getRecommendedLists,
+       editListContent
    }
 })();
 

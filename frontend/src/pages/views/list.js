@@ -13,6 +13,7 @@ import {ProgressBar} from "react-bootstrap"
 import ListApi from "../../api/ListApi";
 import Error403 from "./errorViews/error403";
 import {parsePaginatedResponse} from "../../utils/ResponseUtils";
+import {useSelector} from "react-redux";
 
 function List() {
     const [error403, setError403] = useState(false);
@@ -23,6 +24,8 @@ function List() {
     const [currentOrderBy, setOrderBy] = useState(OrderBy.CUSTOM_ORDER);
     const [currentSortOrder, setSortOrder] = useState(SortOrder.DESC);
     const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
+
+    const {isLoggedIn, user} = useSelector(state => state.auth);
 
 
     //GET VALUES FOR LIST
@@ -99,7 +102,6 @@ function List() {
                     pageSize: pagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT
                 });
                 setListContent(data);
-                console.log("List content:"+ listContent);
                 setListContentLoading(false);
             } catch (error) {
                 setListContentError(error);
@@ -154,6 +156,9 @@ function List() {
                 setOrderBy={setOrderBy}
                 currentSortOrder={currentSortOrder}
                 setSortOrder={setSortOrder}
+                setListContent={setListContent}
+                isOwner={isLoggedIn === true && (list?.data.createdBy === user.username)}
+                listId={id}
             />
 
             <h3>Si te gustó esta, también te podría gustar...</h3>
