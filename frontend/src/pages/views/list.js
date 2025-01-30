@@ -150,7 +150,7 @@ function List() {
 
 
             {listContentLoading ? (
-                <p>Loading list content...</p>
+                <p>{t('list.loading')}</p>
             ) : (
                 <ListContentPaginated
                     listContent={listContent}

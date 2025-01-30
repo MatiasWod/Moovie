@@ -89,6 +89,7 @@
   "home.seeMore": "See More",
   "home.topRatedSeries": "Top Rated Series",
   "home.mostPopularSeries": "Most Popular Series",
+  "list.loading": "Loading list content...",
   "list.prompt": "If you liked this one, you may also like...",
   "listCard.by": "By",
   "listCard.movies": "Movies",
