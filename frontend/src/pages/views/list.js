@@ -14,11 +14,13 @@ import ListApi from "../../api/ListApi";
 import Error403 from "./errorViews/error403";
 import {parsePaginatedResponse} from "../../utils/ResponseUtils";
 import {useSelector} from "react-redux";
+import {useTranslation} from "react-i18next";
 
 function List() {
     const [error403, setError403] = useState(false);
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
+    const {t} = useTranslation();
 
     const {id} = useParams();
     const [currentOrderBy, setOrderBy] = useState(OrderBy.CUSTOM_ORDER);
@@ -147,21 +149,25 @@ function List() {
             />
 
 
-            <ListContentPaginated
-                listContent={listContent}
-                page={page}
-                lastPage={listContent?.links?.last?.page}
-                handlePageChange={handlePageChange}
-                currentOrderBy={currentOrderBy}
-                setOrderBy={setOrderBy}
-                currentSortOrder={currentSortOrder}
-                setSortOrder={setSortOrder}
-                setListContent={setListContent}
-                isOwner={isLoggedIn === true && (list?.data.createdBy === user.username)}
-                listId={id}
-            />
+            {listContentLoading ? (
+                <p>Loading list content...</p>
+            ) : (
+                <ListContentPaginated
+                    listContent={listContent}
+                    page={page}
+                    lastPage={listContent?.links?.last?.page}
+                    handlePageChange={handlePageChange}
+                    currentOrderBy={currentOrderBy}
+                    setOrderBy={setOrderBy}
+                    currentSortOrder={currentSortOrder}
+                    setSortOrder={setSortOrder}
+                    setListContent={setListContent}
+                    isOwner={isLoggedIn === true && (list?.data.createdBy === user.username)}
+                    listId={id}
+                />
+            )}
 
-            <h3>Si te gustó esta, también te podría gustar...</h3>
+            <h3>{t('list.prompt')}</h3>
             <div className="moovie-default default-container">
                 <div className="list-card-container">
                     {listRecommendations?.data?.map(list => (
