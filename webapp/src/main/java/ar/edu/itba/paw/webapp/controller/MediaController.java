@@ -11,10 +11,7 @@ import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
 import ar.edu.itba.paw.models.TV.TVCreators;
-import ar.edu.itba.paw.services.ActorService;
-import ar.edu.itba.paw.services.MediaService;
-import ar.edu.itba.paw.services.ReviewService;
-import ar.edu.itba.paw.services.TVCreatorsService;
+import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.dto.in.ReviewCreateDto;
 import ar.edu.itba.paw.webapp.dto.out.*;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
@@ -35,15 +32,17 @@ public class MediaController {
     private final MediaService mediaService;
     private final TVCreatorsService tvCreatorsService;
     private final ActorService actorService;
+    private final MoovieListService moovieListService;
 
     @Context
     UriInfo uriInfo;
 
     @Autowired
-    public MediaController(MediaService mediaService,TVCreatorsService tvCreatorsService, ActorService actorService) {
+    public MediaController(MediaService mediaService,TVCreatorsService tvCreatorsService, ActorService actorService, MoovieListService moovieListService) {
         this.mediaService = mediaService;
         this.tvCreatorsService= tvCreatorsService;
         this.actorService = actorService;
+        this.moovieListService = moovieListService;
     }
 
     //TODO capaz considerar en listAll poder pedir paginas de distintos tamaños, tambien filtros y
@@ -65,9 +64,17 @@ public class MediaController {
             @QueryParam("ids") final String ids,
             @QueryParam("tvCreatorId") final Integer tvCreatorId,
             @QueryParam("directorId") final Integer directorId,
-            @QueryParam("actorId") final Integer actorId
+            @QueryParam("actorId") final Integer actorId,
+            @QueryParam("moovieListId") final Integer moovieListId
     ) {
         try {
+            if (moovieListId != null) {
+                // Obtener recomendaciones de medios para agregar a una lista de películas
+                List<MediaDto> mlcList = MediaDto.fromMediaList(
+                        moovieListService.getRecommendedMediaToAdd(moovieListId, 5), uriInfo);
+                return Response.ok(new GenericEntity<List<MediaDto>>(mlcList) {}).build();
+            }
+
             if (ids != null && !ids.isEmpty()) {
                 // Lógica para manejar la lista de IDs
                 if (ids.length() > 100) {

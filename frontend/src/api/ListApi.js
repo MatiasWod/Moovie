@@ -3,7 +3,7 @@ import api from './api'
 const listApi = (() => {
 
     const getLists = ({search, ownerUsername, type, orderBy, order, pageNumber, pageSize}) =>{
-        return api.get('list/search',
+        return api.get('list',
             {
                 params:{
                     'search' : search,
