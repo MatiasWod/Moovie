@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./listContent.css";
 import ListService from "../../../services/ListService";
+import SortOrder from "../../../api/values/SortOrder";
 
 const MediaRow = ({
                       position, media, handleClick, handleMouseEnter, handleMouseLeave,
@@ -46,7 +47,7 @@ const MediaRow = ({
     );
 };
 
-const ListContent = ({ listContent, editMode, setListContent, listId }) => {
+const ListContent = ({ listContent, editMode, setCurrentSortOrder, listId }) => {
     const navigate = useNavigate();
     const { t } = useTranslation();
     const [hoveredId, setHoveredId] = useState(null);
@@ -67,12 +68,9 @@ const ListContent = ({ listContent, editMode, setListContent, listId }) => {
             customOrder: listContent[toIndex].customOrder
         }
     )
-        // const updatedList = [...listContent];
-        // const [movedItem] = updatedList.splice(fromIndex, 1);
-        // console.log(listContent);
-        // updatedList.splice(toIndex, 0, movedItem);
-        // console.log(listContent);
-        // setListContent(updatedList)
+        setCurrentSortOrder(SortOrder.DESC);
+        setCurrentSortOrder(SortOrder.ASC);
+
     };
 
     if (!listContent || listContent.length === 0) {

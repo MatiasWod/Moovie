@@ -243,7 +243,9 @@ public class MoovieListController {
     public Response editMoovieListMediaByMediaId(@PathParam("id") final int id,
                                                 @PathParam("mediaId") final int mediaId,
                                                  final MediaIdListIdDto input){
-        return Response.ok().build();
+        moovieListService.updateMoovieListOrder(input.getMoovieListId(), input.getMediaId(), input.getCustomOrder());
+        return Response.ok()
+            .entity("MoovieList order succesfully modified.").build();
     }
 
 

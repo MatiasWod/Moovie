@@ -53,7 +53,8 @@ const ListContentPaginated = ({
                     (<Button onClick={handleEditMode}>{t('listContentPaginated.save')}</Button>)
             ) }
 
-            <ListContent listContent={listContent?.data ?? []} editMode={editMode} setListContent={setListContent} listId={listId}/>
+            <ListContent listContent={listContent?.data ?? []} editMode={editMode}
+                         setCurrentSortOrder={setSortOrder} listId={listId} setCurre/>
 
             <div className="flex justify-center pt-4">
                 {listContent?.data?.length > 0 && listContent.links?.last?.page > 1 && (
