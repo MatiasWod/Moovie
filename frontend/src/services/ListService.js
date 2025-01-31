@@ -47,6 +47,10 @@ const ListService = (() => {
         return toRetMedia;
     }
 
+    const createMoovieList = async  ({name, description}) => {
+        return await listApi.createMoovieList(name,description)
+    }
+
     const editListContent = async ({listId, mediaId, customOrder}) => {
         return listApi.editListContent(listId, mediaId, customOrder);
     }

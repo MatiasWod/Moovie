@@ -8,16 +8,19 @@ import useMediaList from "../../../hooks/useMediasList";
 import mediaOrderBy from "../../../api/values/MediaOrderBy";
 import SortOrder from "../../../api/values/SortOrder";
 import {Pagination} from "@mui/material";
+import {useSelector} from "react-redux";
+import CreateListForm from "../../components/forms/createListForm/CreateListForm";
 
 const CreateListView = () => {
-    const [selectedItems, setSelectedItems] = useState([])
+
+    const [selectedMedia, setSelectedMedia] = useState([])
 
     const [selectedProviders, setSelectedProviders] = useState([]);
     const [selectedGenres, setSelectedGenres] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [type, setType] = useState(mediaTypes.TYPE_ALL)
     const [orderBy, setOrderBy] = useState(mediaOrderBy.TOTAL_RATING)
-    const [sortOrder, setSortOrder] = useState(SortOrder.ASC)
+    const [sortOrder, setSortOrder] = useState(SortOrder.DESC)
     const [page, setPage] = useState(1)
 
     const memoizedProviders = useMemo(() => Array.from(selectedProviders || []), [selectedProviders]);
@@ -35,9 +38,9 @@ const CreateListView = () => {
     };
 
 
-    const onClickCallback = (mediaId) => {
-        setSelectedItems((state) => state.includes(mediaId)
-            ? state.filter((i) => i !== mediaId) : [...state, mediaId]
+    const onClickCallback = (media) => {
+        setSelectedMedia((state) => state.includes(media)
+            ? state.filter((i) => i !== media) : [...state, media]
         )
     }
 
@@ -56,16 +59,14 @@ const CreateListView = () => {
         selectedGenres: memoizedGenres,
     });
 
-
-
-    return <div className={'container d-flex flex-column'}>
+    return <div className={'d-flex flex-column'}>
         <div className={'m-1'} style={{width: "100vw",height: "1vh"}}></div>
-        <div className={'container d-flex flex-row'}>
+        <div className={'d-flex flex-row m-2'}>
             <FiltersGroup submitCallback={handleFilterChange} searchBar={true} type={type} orderBy={orderBy} sortOrder={sortOrder} query={searchQuery}/>
             <div className={'container d-flex flex-column'}>
-                <div style={{overflowY: "auto", maxHeight: "83vh"}} className={'flex-wrap d-flex'}>
+                <div style={{overflowY: "auto", maxHeight: "80vh", width: "60vw"}} className={'flex-wrap d-flex justify-content-evenly'}>
                     {mediasLoading ? <Spinner /> : medias.data.map(media => (
-                        <MediaCard key={media.id} isSelected={selectedItems.includes(media.id)} media={media} onClick={() => onClickCallback(media.id)} pageName={'createList'}>
+                        <MediaCard key={media.id} isSelected={selectedMedia.includes(media)} media={media} onClick={() => onClickCallback(media)} pageName={'createList'}>
                         </MediaCard>
                     ))}
                     {mediasError && <div>There’s been an error: {mediasError.message}</div>}
@@ -76,8 +77,8 @@ const CreateListView = () => {
                     }
                 </div>
             </div>
-            <div id={'preview'}>
-
+            <div style={{maxWidth: "20vw"}} className={'container d-flex flex-column'}>
+                <CreateListForm selectedMedia={selectedMedia} onDeleteCallback={onClickCallback}/>
             </div>
         </div>
     </div>

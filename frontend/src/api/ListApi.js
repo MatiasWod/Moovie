@@ -89,6 +89,16 @@ const listApi = (() => {
         return response;
     }
 
+    // POST
+
+    const createMoovieList = (name, description) => {
+        const body = {
+            name: name,
+            description: description
+        }
+        return api.post('list', body)
+    }
+
 
     return{
         getLists,
@@ -98,7 +108,8 @@ const listApi = (() => {
         insertMediaIntoMoovieList,
         editMoovieList,
         getRecommendedLists,
-        editListContent
+        editListContent,
+        createMoovieList
     }
 })();
 
