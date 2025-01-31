@@ -60,6 +60,11 @@ const ListService = (() => {
         return res;
     }
 
+    const deleteMediaFromMoovieList = async ({id, mediaId}) =>{
+        const res = await listApi.deleteMediaFromMoovieList({id, mediaId});
+        return res;
+    }
+
     const getLikedOrFollowedListFromUser = async (username, type, orderBy, sortOrder, pageNumber) =>{
         const res = await userApi.getLikedOrFollowedListFromUser(username, type, orderBy, sortOrder, pageNumber);
         return parsePaginatedResponse(res);
@@ -157,6 +162,7 @@ const ListService = (() => {
         getListByIdList,
         getIdListFromObjectList,
         insertMediaIntoMoovieList,
+       deleteMediaFromMoovieList,
         getLikedOrFollowedListFromUser,
         currentUserHasLiked,
         currentUserHasFollowed,

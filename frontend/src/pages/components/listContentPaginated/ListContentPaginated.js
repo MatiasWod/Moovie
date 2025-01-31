@@ -21,7 +21,8 @@ const ListContentPaginated = ({
                                   setSortOrder,
                                   setListContent,
                                   isOwner,
-                                  listId
+                                  listId,
+                                    Refresh
                               }) => {
 
     const [editMode, setEditMode] = useState(false);
@@ -49,12 +50,20 @@ const ListContentPaginated = ({
 
 
             {isOwner && (
-                !editMode ? (<Button onClick={handleEditMode}>{t('listContentPaginated.edit')}</Button>) :
-                    (<Button onClick={handleEditMode}>{t('listContentPaginated.save')}</Button>)
-            ) }
+                !editMode ? (
+                    <Button onClick={handleEditMode}>{t('listContentPaginated.edit')}</Button>
+                ) : (
+                    <>
+                        <Button onClick={handleEditMode}>{t('listContentPaginated.save')}</Button>
+                        <div>Drag media to change its order.</div>
+                    </>
+                )
+            )}
+
 
             <ListContent listContent={listContent?.data ?? []} editMode={editMode}
-                         setCurrentSortOrder={setSortOrder} listId={listId} setCurre/>
+                         setCurrentSortOrder={setSortOrder} listId={listId} currentPage={page}
+                            Refresh={Refresh}/>
 
             <div className="flex justify-center pt-4">
                 {listContent?.data?.length > 0 && listContent.links?.last?.page > 1 && (

@@ -484,8 +484,13 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public void deleteMediaFromMoovieList(int moovieListId, int mediaId) {
+        int currentOrder = isMediaInMoovieList(mediaId,moovieListId);
         MoovieListContent toRemove = em.createQuery("SELECT mlc FROM MoovieListContent mlc WHERE mlc.moovieList.moovieListId = :moovieListId AND mlc.mediaId = :mediaId", MoovieListContent.class).setParameter("moovieListId", moovieListId).setParameter("mediaId",mediaId).getSingleResult();
         em.remove(toRemove);
+        em.createNativeQuery("UPDATE moovielistscontent SET customorder = customorder - 1 " +
+                "WHERE customorder > ?").setParameter(1, currentOrder)
+                .executeUpdate();
+
     }
 
     @Override

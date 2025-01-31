@@ -53,6 +53,12 @@ const listApi = (() => {
         );
     };
 
+    const deleteMediaFromMoovieList = ({ id, mediaId }) => {
+        return api.delete(
+            `/list/${id}/content/${mediaId}`
+        );
+    };
+
     //PUT
 
     const editMoovieList = async (mlId, name, description) => {
@@ -106,6 +112,7 @@ const listApi = (() => {
         getListByIdList,
         getListContentById,
         insertMediaIntoMoovieList,
+        deleteMediaFromMoovieList,
         editMoovieList,
         getRecommendedLists,
         editListContent,
