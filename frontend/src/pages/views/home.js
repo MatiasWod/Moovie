@@ -9,6 +9,7 @@ import "./home.css"
 import Button from "react-bootstrap/Button";
 import {useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
+import {Divider} from "@mui/material";
 
 
 function Home() {
@@ -123,47 +124,115 @@ function Home() {
                 <p>{t('home.discover')}</p>
             </div>
             <div>
-                <div className="container d-flex justify-content-between p-2">
-                    <h3>{t('home.topRatedMovies')}</h3>
-                    <Button variant="contained" color="success" onClick={handleTopRatedMoviesButtonClick}>
+                <div className="container d-flex justify-content-between p-2 position-relative">
+
+                    <div className="hero-text mb-0">
+                        <h2>{t('home.topRatedMovies')}</h2>
+                    </div>
+                    <a
+                        onClick={handleTopRatedMoviesButtonClick}
+                        className="link-button"
+                    >
                         {t('home.seeMore')}
-                    </Button>
+                    </a>
+                    <Divider sx={{
+                        backgroundColor: "rgba(0, 0, 0, 0.8)",
+                        height: "2px",
+                        width: "100%",
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        zIndex: 1,
+                    }} />
                 </div>
-                <CardsHorizontalContainer mediaList={topRatedMovies} loading={topRatedMoviesLoading}
-                                          error={topRatedMoviesError}/>
+                <div className="cards-container mt-3">
+                    <CardsHorizontalContainer
+                        mediaList={topRatedMovies}
+                        loading={topRatedMoviesLoading}
+                        error={topRatedMoviesError}
+                    />
+                </div>
             </div>
 
             <div>
-                <div className="container d-flex justify-content-between p-2">
-                    <h3>{t('home.mostPopularMovies')}</h3>
-                    <Button variant="contained" color="success" onClick={handleMostPopularMoviesButtonClick}>
+                <div className="container d-flex justify-content-between p-2 position-relative">
+                    <div className="hero-text mb-0">
+                        <h2>{t('home.mostPopularMovies')}</h2>
+                    </div>
+                    <a
+                        onClick={handleMostPopularMoviesButtonClick}
+                        className="link-button"
+                    >
                         {t('home.seeMore')}
-                    </Button>
+                    </a>
+                    <Divider sx={{
+                        backgroundColor: "rgba(0, 0, 0, 0.8)",
+                        height: "2px",
+                        width: "100%",
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        zIndex: 1,
+                    }} />
                 </div>
-                <CardsHorizontalContainer mediaList={mostPopularMovies} loading={mostPopularMoviesLoading}
-                                          error={mostPopularMoviesError}/>
+                <div className="cards-container mt-3">
+                    <CardsHorizontalContainer mediaList={mostPopularMovies} loading={mostPopularMoviesLoading}
+                                                error={mostPopularMoviesError}/>
+                </div>
             </div>
 
             <div>
-                <div className="container d-flex justify-content-between p-2">
-                    <h3>{t('home.topRatedSeries')}</h3>
-                    <Button variant="contained" color="success" onClick={handleTopRatedSeriesButtonClick}>
+                <div className="container d-flex justify-content-between p-2 position-relative">
+                    <div className="hero-text mb-0">
+                        <h2>{t('home.topRatedSeries')}</h2>
+                    </div>
+                    <a
+                        onClick={handleTopRatedSeriesButtonClick}
+                        className="link-button"
+                    >
                         {t('home.seeMore')}
-                    </Button>
+                    </a>
+                    <Divider sx={{
+                        backgroundColor: "rgba(0, 0, 0, 0.8)",
+                        height: "2px",
+                        width: "100%",
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        zIndex: 1,
+                    }} />
                 </div>
-                <CardsHorizontalContainer mediaList={topRatedSeries} loading={topRatedSeriesLoading}
-                                          error={topRatedSeriesError}/>
+                <div className="cards-container mt-3">
+                    <CardsHorizontalContainer mediaList={topRatedSeries} loading={topRatedSeriesLoading}
+                                                error={topRatedSeriesError}/>
+                </div>
             </div>
 
             <div>
-                <div className="container d-flex justify-content-between p-2">
-                    <h3>{t('home.mostPopularSeries')}</h3>
-                    <Button variant="contained" color="success" onClick={handleMostPopularSeriesButtonClick}>
+                <div className="container d-flex justify-content-between p-2 position-relative">
+                    <div className="hero-text mb-0">
+                        <h2>{t('home.mostPopularSeries')}</h2>
+                    </div>
+                    <a
+                        onClick={handleMostPopularSeriesButtonClick}
+                        className="link-button"
+                    >
                         {t('home.seeMore')}
-                    </Button>
+                    </a>
+                    <Divider sx={{
+                        backgroundColor: "rgba(0, 0, 0, 0.8)",
+                        height: "2px",
+                        width: "100%",
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        zIndex: 1,
+                    }} />
                 </div>
-                <CardsHorizontalContainer mediaList={mostPopularSeries} loading={mostPopularSeriesLoading}
-                                          error={mostPopularSeriesError}/>
+                <div className="cards-container mt-3">
+                    <CardsHorizontalContainer mediaList={mostPopularSeries} loading={mostPopularSeriesLoading}
+                                              error={mostPopularSeriesError}/>
+                </div>
             </div>
 
 
