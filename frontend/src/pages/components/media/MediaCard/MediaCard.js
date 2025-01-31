@@ -1,5 +1,6 @@
 import React from 'react'
 import {Card} from "react-bootstrap";
+import {formatDate} from "../../../../utils/FormatUtils";
 
 const MediaCard = ({ media, pageName, onClick, isSelected }) => {
     return <div onClick={onClick} className={'poster card text-bg-dark m-1'}>
@@ -7,13 +8,13 @@ const MediaCard = ({ media, pageName, onClick, isSelected }) => {
             <img className={'crop-center'} loading='lazy' src={media.posterPath} alt={''}/>
             <div className={'card-img-overlay'}>
                 <h6 className={'card-title text-center'}>{media.name}</h6>
-                <div className={'d-flex justify-evenly'}>
+                <div className={'d-flex flex-column justify-evenly align-items-center'}>
                     <Card.Text>
                         <i className={'bi bi-star-fill'}/>
-                        7.5
+                        {media.tmdbRating}
                     </Card.Text>
                     <Card.Text>
-                        10/12/2025
+                        {formatDate(media.releaseDate)}
                     </Card.Text>
                 </div>
                 <div id={'genres'} className={'d-flex justify-evenly flex-wrap'}>
