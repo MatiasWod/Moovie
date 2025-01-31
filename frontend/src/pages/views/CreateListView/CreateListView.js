@@ -8,15 +8,25 @@ import useMediaList from "../../../hooks/useMediasList";
 import mediaOrderBy from "../../../api/values/MediaOrderBy";
 import SortOrder from "../../../api/values/SortOrder";
 import {Pagination} from "@mui/material";
-import {useSelector} from "react-redux";
 import CreateListForm from "../../components/forms/createListForm/CreateListForm";
-import {ListAlt} from "@mui/icons-material";
 import ListService from "../../../services/ListService";
+import {useDispatch, useSelector} from "react-redux";
+import {
+    resetList,
+    setDescription,
+    setName,
+    setSelectedMedia,
+    toggleMediaSelection
+} from "../../../features/createListSlice";
 
 const CreateListView = () => {
 
-    const [selectedMedia, setSelectedMedia] = useState([])
+    // Form States
+    const dispatch = useDispatch();
+    const { selectedMedia, name, description } = useSelector((state) => state.list);
 
+
+    // Filter States
     const [selectedProviders, setSelectedProviders] = useState([]);
     const [selectedGenres, setSelectedGenres] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
@@ -25,11 +35,9 @@ const CreateListView = () => {
     const [sortOrder, setSortOrder] = useState(SortOrder.DESC)
     const [page, setPage] = useState(1)
 
+    // Filter Memos
     const memoizedProviders = useMemo(() => Array.from(selectedProviders || []), [selectedProviders]);
     const memoizedGenres = useMemo(() => Array.from(selectedGenres || []), [selectedGenres]);
-
-    const [name, setName] = useState("")
-    const [description, setDescription] = useState("")
 
 
     const handleFilterChange = ({ type, sortOrder, orderBy, search, selectedProviders, selectedGenres }) => {
@@ -47,15 +55,11 @@ const CreateListView = () => {
     };
 
     const onClickCallback = (media) => {
-        setSelectedMedia((state) => state.includes(media)
-            ? state.filter((i) => i !== media) : [...state, media]
-        )
+        dispatch(toggleMediaSelection(media))
     }
 
     const onResetCallback = () => {
-        setName('')
-        setDescription('')
-        setSelectedMedia([])
+        dispatch(resetList())
     }
 
     const createListCallback = async () => {
@@ -127,8 +131,8 @@ const CreateListView = () => {
                 </div>
             </div>
             <div style={{maxWidth: "20vw"}} className={'container d-flex flex-column'}>
-                <CreateListForm name={name} setName={(value) => setName(value)}
-                                description={description} setDescription={(value) => setDescription(value)}
+                <CreateListForm name={name} setName={(value) => dispatch(setName(value))}
+                                description={description} setDescription={(value) => dispatch(setDescription(value))}
                                 selectedMedia={selectedMedia}
                                 onDeleteCallback={onClickCallback}
                                 onResetCallback={onResetCallback}
