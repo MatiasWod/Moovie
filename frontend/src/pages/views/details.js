@@ -310,7 +310,7 @@ function Details() {
                     <p> {media.overview} </p>
 
                     <div className="flex-row d-flex">
-                        <AddMediaToListButton currentId={id}/>
+                        <AddMediaToListButton media={media} currentId={id}/>
 
                         <CreateReviewButton handleOpenReviewForm={handleOpenReviewForm} rated={userReview.rating}/>
                     </div>
