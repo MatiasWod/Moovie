@@ -12,6 +12,7 @@ import React from "react";
 import SearchBar from "../searchBar/SearchBar";
 import RoleBadge from "../RoleBadge/RoleBadge";
 import {useTranslation} from "react-i18next";
+import './navbarStyle.css';
 
 function NavbarComponent() {
 
@@ -24,7 +25,7 @@ function NavbarComponent() {
     };
 
     return (
-        <Navbar expand="lg"  sticky="top"  className="navbar navbar-expand-lg navbar-light bg-body-tertiary ">
+        <Navbar expand="lg"  sticky="top"  className="navbar navbar-expand-lg navbar-light bg-body-tertiary container-nav">
             <Container fluid>
                 <Navbar.Brand href="/" className="d-flex align-items-center">
                     <Image src={Logo} width={50} className="me-2"/> Moovie
