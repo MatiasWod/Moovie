@@ -167,7 +167,8 @@ const ListService = (() => {
         followList,
        editMoovieList,
        getRecommendedLists,
-       editListContent
+       editListContent,
+       createMoovieList
    }
 })();
 

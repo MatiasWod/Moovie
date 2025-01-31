@@ -92,7 +92,7 @@ const FiltersGroup = ({
         setSelectedGenres([]);
         setSelectedProviders([]);
         setQueryInput("");
-        setSortOrderInput(SortOrder.ASC);
+        setSortOrderInput(SortOrder.DESC);
         setMediaTypeInput(mediaTypes.TYPE_ALL);
         setMediaOrderByInput(mediaOrderBy.TOTAL_RATING)
         submitCallback({type: mediaTypeInput, sortOrder: sortOrderInput, orderBy: mediaOrderByInput, search: queryInput})

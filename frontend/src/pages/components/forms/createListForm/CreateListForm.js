@@ -1,20 +1,61 @@
 import React, { useState } from 'react';
-import {Form, Button, Card, Container} from 'react-bootstrap';
-import {truncateText} from "../../../../utils/FormatUtils";
+import { truncateText } from "../../../../utils/FormatUtils";
+import {Alert, Card, Form, OverlayTrigger, Tooltip} from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import {Link} from "react-router-dom";
 
-const CreateListForm = ({ selectedMedia, onDeleteCallback, onSubmitCallback }) => {
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("List Created:", { name, description });
+const CreateListForm = ({
+                            selectedMedia,
+                            name,
+                            setName,
+                            description,
+                            setDescription,
+                            onDeleteCallback,
+                            onSubmitCallback,
+                            onResetCallback
+}) => {
+
+    const [showError, setShowError] = useState(false)
+    const [showSuccess, setShowSuccess] = useState(false)
+
+    const [listId, setListId] = useState(0)
+
+    const handleSubmit = async  (e) => {
+        e.preventDefault()
+        const {success, listId} = await onSubmitCallback()
+        setShowSuccess(success)
+        setShowError(!success)
+        setListId(listId)
     };
+
+    const handleReset = (e) => {
+        e.preventDefault();
+        onResetCallback()
+    }
 
     return (
         <Card className="shadow p-3 border border-dark" style={{ height: "83vh" }}>
             <Card.Body>
-                <Card.Title className="text-center">Create a List</Card.Title>
+                {showError && <div className={'alert alert-danger alert-dismissible'} onClick={() => setShowError(false)}>
+                    error <i className={'btn-close disabled'}/>
+                </div>}
+                {showSuccess && <div className={'alert alert-success alert-dismissible'} onClick={() => setShowError(false)}>
+                    You created a list! find it here: <Link to={'/list/' + listId}>link</Link> <i className={'btn-close disabled'}/>
+                </div>}
+                <div className={'d-flex flex-row justify-content-between align-items-center'}>
+                    <Card.Title className="text-center">
+                        Create a List
+                        <OverlayTrigger placement="top-end" overlay={<Tooltip id="tooltip-info">You can leave this page, we'll save your progress!</Tooltip>}>
+                            <span style={{ cursor: 'pointer', marginLeft: '8px' }}>
+                                <i className={'bi bi-info-circle-fill'}></i>
+                            </span>
+                        </OverlayTrigger>
+                    </Card.Title>
+                    <Button type={"reset"} variant={"outline-dark"} onClick={handleReset}>
+                        <i className={'bi bi-arrow-counterclockwise'} />
+                    </Button>
+                </div>
                 <Form onSubmit={handleSubmit}>
                     {/* Name Input */}
                     <Form.Group className="mb-3">
@@ -32,7 +73,7 @@ const CreateListForm = ({ selectedMedia, onDeleteCallback, onSubmitCallback }) =
                     <Form.Group className="mb-3">
                         <Form.Label column={true}>Description</Form.Label>
                         <Form.Control
-                            style={{maxHeight: "max-content"}}
+                            style={{ maxHeight: "max-content" }}
                             as="textarea"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
@@ -46,11 +87,11 @@ const CreateListForm = ({ selectedMedia, onDeleteCallback, onSubmitCallback }) =
                         Create List
                     </Button>
 
-                    <div style={{maxHeight: "35vh", overflowY: "auto"}}>
-                        {selectedMedia.map((media)=>(
-                            <button type={"button"} onClick={()=>onDeleteCallback(media)}  className={'btn btn-light w-100 mb-2 d-flex flex-row align-items-center justify-content-between'}>
+                    <div style={{ maxHeight: "35vh", overflowY: "auto" }}>
+                        {selectedMedia.map((media) => (
+                            <button type={"button"} onClick={() => onDeleteCallback(media)} className={'btn btn-light w-100 mb-2 d-flex flex-row align-items-center justify-content-between'}>
                                 {truncateText(media.name, 10)}
-                                <i className={'bi bi-trash'}/>
+                                <i className={'bi bi-trash'} />
                             </button>
                         ))}
                     </div>

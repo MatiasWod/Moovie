@@ -10,6 +10,8 @@ import SortOrder from "../../../api/values/SortOrder";
 import {Pagination} from "@mui/material";
 import {useSelector} from "react-redux";
 import CreateListForm from "../../components/forms/createListForm/CreateListForm";
+import {ListAlt} from "@mui/icons-material";
+import ListService from "../../../services/ListService";
 
 const CreateListView = () => {
 
@@ -26,6 +28,9 @@ const CreateListView = () => {
     const memoizedProviders = useMemo(() => Array.from(selectedProviders || []), [selectedProviders]);
     const memoizedGenres = useMemo(() => Array.from(selectedGenres || []), [selectedGenres]);
 
+    const [name, setName] = useState("")
+    const [description, setDescription] = useState("")
+
 
     const handleFilterChange = ({ type, sortOrder, orderBy, search, selectedProviders, selectedGenres }) => {
         setSelectedProviders(selectedProviders)
@@ -37,6 +42,9 @@ const CreateListView = () => {
         setPage(1)
     };
 
+    const handlePaginationChange = (event, value) => {
+        setPage(value);
+    };
 
     const onClickCallback = (media) => {
         setSelectedMedia((state) => state.includes(media)
@@ -44,9 +52,48 @@ const CreateListView = () => {
         )
     }
 
-    const handlePaginationChange = (event, value) => {
-        setPage(value);
+    const onResetCallback = () => {
+        setName('')
+        setDescription('')
+        setSelectedMedia([])
+    }
+
+    const createListCallback = async () => {
+        try {
+            const response = await ListService.createMoovieList({
+                name: name,
+                description: description
+            });
+            if (!response || !response.data || !response.data.url) {
+                throw new Error("Invalid response from createMoovieList");
+            }
+
+            const urlParts = response.data.url.split('/');
+            const listId = urlParts[urlParts.length - 1];
+            console.log(listId)
+
+            if (!listId) {
+                throw new Error("Failed to extract list ID from response URL");
+            }
+
+            if (selectedMedia.length > 0) {
+                const mediaIds = selectedMedia.map(media => media.id);
+                await ListService.insertMediaIntoMoovieList({
+                    id: listId,
+                    mediaIds: mediaIds
+                });
+            }
+            onResetCallback()
+            const success = true
+            return {success, listId};
+        } catch (e) {
+            console.error("Error creating movie list:", e);
+            const success = false
+            const id = 0
+            return {success, id};
+        }
     };
+
 
 
     const { medias, mediasLoading, mediasError } = useMediaList({
@@ -59,6 +106,8 @@ const CreateListView = () => {
         selectedGenres: memoizedGenres,
     });
 
+    if (mediasLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
+
     return <div className={'d-flex flex-column'}>
         <div className={'m-1'} style={{width: "100vw",height: "1vh"}}></div>
         <div className={'d-flex flex-row m-2'}>
@@ -66,7 +115,7 @@ const CreateListView = () => {
             <div className={'container d-flex flex-column'}>
                 <div style={{overflowY: "auto", maxHeight: "80vh", width: "60vw"}} className={'flex-wrap d-flex justify-content-evenly'}>
                     {mediasLoading ? <Spinner /> : medias.data.map(media => (
-                        <MediaCard key={media.id} isSelected={selectedMedia.includes(media)} media={media} onClick={() => onClickCallback(media)} pageName={'createList'}>
+                        <MediaCard key={media.id} isSelected={selectedMedia.some((selected) => selected.id === media.id)} media={media} onClick={() => onClickCallback(media)} pageName={'createList'}>
                         </MediaCard>
                     ))}
                     {mediasError && <div>There’s been an error: {mediasError.message}</div>}
@@ -78,7 +127,12 @@ const CreateListView = () => {
                 </div>
             </div>
             <div style={{maxWidth: "20vw"}} className={'container d-flex flex-column'}>
-                <CreateListForm selectedMedia={selectedMedia} onDeleteCallback={onClickCallback}/>
+                <CreateListForm name={name} setName={(value) => setName(value)}
+                                description={description} setDescription={(value) => setDescription(value)}
+                                selectedMedia={selectedMedia}
+                                onDeleteCallback={onClickCallback}
+                                onResetCallback={onResetCallback}
+                                onSubmitCallback={createListCallback}/>
             </div>
         </div>
     </div>
