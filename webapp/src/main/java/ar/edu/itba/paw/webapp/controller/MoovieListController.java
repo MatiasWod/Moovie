@@ -44,9 +44,6 @@ public class MoovieListController {
     }
 
 
-    /**
-     * GET METHODS
-     */
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -110,69 +107,6 @@ public class MoovieListController {
         }
     }
 
-
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getMoovieListById(@PathParam("id") final int id) {
-        return Response.ok(MoovieListDto.fromMoovieList(moovieListService.getMoovieListCardById(id), uriInfo)).build();
-    }
-
-
-    //We have a separate endpoint for content to be able to use filters and no need to do it every time we want to find a list
-    // PROBLEM WHEN SORT ORDER AND OR ORDER BY ARE NULL
-    @GET
-    @Path("/{id}/content")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getMoovieListMedia(@PathParam("id") final int id,
-                                                        @QueryParam("orderBy") @DefaultValue("customOrder") final String orderBy,
-                                                        @QueryParam("sortOrder") @DefaultValue("DESC") final String sortOrder,
-                                                        @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber,
-                                                        @QueryParam("pageSize") @DefaultValue("-1") final int pageSize) {
-        int pageSizeQuery = pageSize;
-        if (pageSize < 1 || pageSize > PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize()) {
-            pageSizeQuery = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
-        }
-
-        List<OrderedMedia> mediaList = moovieListService.getMoovieListContentOrdered(id, orderBy, sortOrder, pageSizeQuery, pageNumber);
-        final int mediaCount = moovieListService.getMoovieListCardById(id).getSize();
-        List<MediaIdListIdDto> dtoList = MediaIdListIdDto.fromOrderedMediaList(mediaList, id);
-        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdListIdDto>>(dtoList) {
-        });
-        final PagingUtils<MediaIdListIdDto> toReturnMediaIdListId = new PagingUtils<>(dtoList, pageNumber, pageSizeQuery, mediaCount);
-        ResponseUtils.setPaginationLinks(res, toReturnMediaIdListId, uriInfo);
-        return res.build();
-    }
-
-    @GET
-    @Path("/{id}/content/{mediaId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getMoovieListMediaByMediaId(@PathParam("id") final int id,
-                                                @PathParam("mediaId") final int mediaId ){
-        int customOrder = moovieListService.isMediaInMoovieList(mediaId,id);
-        if( customOrder != -1){
-            return Response.ok(new MediaIdListIdDto(mediaId, id, customOrder)).build();
-        }
-
-        //TODO noContent() ?
-        return Response.noContent().build();
-    }
-
-    //Only returns the 5 more relatedLists. They are related in
-    @GET
-    @Path("{id}/recommendedLists")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getRecommendedLists(@PathParam("id") final int id) {
-        List<MoovieListDto> mlcList = MoovieListDto.fromMoovieListList(moovieListService.getRecommendedMoovieListCards(id, 4, 0), uriInfo);
-        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(mlcList) {
-        });
-        return res.build();
-    }
-
-    /**
-     * POST METHODS
-     */
-
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -203,53 +137,25 @@ public class MoovieListController {
     }
 
 
-    @POST
-    @Path("/{moovieListId}/content")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @GET
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertMediaIntoMoovieList(@PathParam("moovieListId") int moovieListId,
-                                                               @Valid MediaListDto mediaIdListDto) {
-        List<Integer> mediaIdList = mediaIdListDto.getMediaIdList();
-        MoovieList updatedList = moovieListService.insertMediaIntoMoovieList(moovieListId, mediaIdList);
-        if (mediaIdList == null || mediaIdList.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new ResponseMessage("No media IDs provided."))
-                    .build();
-        }
-        return Response.ok(updatedList).entity(new ResponseMessage("Media added successfully to the list.")).build();
+    public Response getMoovieListById(@PathParam("id") final int id) {
+        return Response.ok(MoovieListDto.fromMoovieList(moovieListService.getMoovieListCardById(id), uriInfo)).build();
     }
-
-    /**
-     * PUT METHODS
-     */
 
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response editMoovieList(@PathParam("id") int listId,
-                                                @Valid final EditListDTO editListForm) {
+                                   @Valid final EditListDTO editListForm) {
         moovieListService.editMoovieList(listId, editListForm.getListName(), editListForm.getListDescription());
 
         return Response.ok()
                 .entity("MoovieList successfully edited for MoovieList with ID: " + listId)
                 .build();
     }
-
-    @PUT
-    @Path("/{id}/content/{mediaId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response editMoovieListMediaByMediaId(@PathParam("id") final int id,
-                                                @PathParam("mediaId") final int mediaId,
-                                                 final MediaIdListIdDto input){
-        return Response.ok().build();
-    }
-
-
-    /**
-     * DELETE METHODS
-     */
 
     @DELETE
     @Path("/{id}")
@@ -261,6 +167,73 @@ public class MoovieListController {
     }
 
 
+
+    //We have a separate endpoint for content to be able to use filters and no need to do it every time we want to find a list
+    // PROBLEM WHEN SORT ORDER AND OR ORDER BY ARE NULL
+    @GET
+    @Path("/{id}/content")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMoovieListMedia(@PathParam("id") final int id,
+                                                        @QueryParam("orderBy") @DefaultValue("customOrder") final String orderBy,
+                                                        @QueryParam("sortOrder") @DefaultValue("DESC") final String sortOrder,
+                                                        @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber,
+                                                        @QueryParam("pageSize") @DefaultValue("-1") final int pageSize) {
+        int pageSizeQuery = pageSize;
+        if (pageSize < 1 || pageSize > PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize()) {
+            pageSizeQuery = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
+        }
+
+        List<OrderedMedia> mediaList = moovieListService.getMoovieListContentOrdered(id, orderBy, sortOrder, pageSizeQuery, pageNumber);
+        final int mediaCount = moovieListService.getMoovieListCardById(id).getSize();
+        List<MediaIdListIdDto> dtoList = MediaIdListIdDto.fromOrderedMediaList(mediaList, id);
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdListIdDto>>(dtoList) {
+        });
+        final PagingUtils<MediaIdListIdDto> toReturnMediaIdListId = new PagingUtils<>(dtoList, pageNumber, pageSizeQuery, mediaCount);
+        ResponseUtils.setPaginationLinks(res, toReturnMediaIdListId, uriInfo);
+        return res.build();
+    }
+
+    @POST
+    @Path("/{id}/content")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response insertMediaIntoMoovieList(@PathParam("id") int moovieListId,
+                                              @Valid MediaListDto mediaIdListDto) {
+        List<Integer> mediaIdList = mediaIdListDto.getMediaIdList();
+        MoovieList updatedList = moovieListService.insertMediaIntoMoovieList(moovieListId, mediaIdList);
+        if (mediaIdList == null || mediaIdList.isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("No media IDs provided."))
+                    .build();
+        }
+        return Response.ok(updatedList).entity(new ResponseMessage("Media added successfully to the list.")).build();
+    }
+
+
+    @GET
+    @Path("/{id}/content/{mediaId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMoovieListMediaByMediaId(@PathParam("id") final int id,
+                                                @PathParam("mediaId") final int mediaId ){
+        int customOrder = moovieListService.isMediaInMoovieList(mediaId,id);
+        if( customOrder != -1){
+            return Response.ok(new MediaIdListIdDto(mediaId, id, customOrder)).build();
+        }
+
+        //TODO noContent() ?
+        return Response.noContent().build();
+    }
+
+    @PUT
+    @Path("/{id}/content/{mediaId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response editMoovieListMediaByMediaId(@PathParam("id") final int id,
+                                                 @PathParam("mediaId") final int mediaId,
+                                                 final MediaIdListIdDto input){
+        return Response.ok().build();
+    }
+
     @DELETE
     @Path("/{id}/content/{mediaId}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -270,6 +243,17 @@ public class MoovieListController {
         return Response.noContent().build();
     }
 
+
+    //Only returns the 5 more relatedLists. They are related in
+    @GET
+    @Path("{id}/recommendedLists")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRecommendedLists(@PathParam("id") final int id) {
+        List<MoovieListDto> mlcList = MoovieListDto.fromMoovieListList(moovieListService.getRecommendedMoovieListCards(id, 4, 0), uriInfo);
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(mlcList) {
+        });
+        return res.build();
+    }
 
 
 /*
