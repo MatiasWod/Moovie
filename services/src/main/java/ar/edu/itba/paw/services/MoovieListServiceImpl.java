@@ -289,66 +289,24 @@ public class MoovieListServiceImpl implements MoovieListService{
         }
     }
 
-
     @Transactional
     @Override
-    public void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrev, int[] currentPage, int[] toNext) {
-        int pageSize = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize();
-        int firstPosition = currentPageNumber * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize() + 1;
-        int currentPos = (toPrev.length > 0 && currentPageNumber > 0) ? firstPosition - toPrev.length : firstPosition;
-
-        List<MoovieListContent> currentPageMedia = moovieListDao.getMoovieListContentModel(moovieListId, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(), currentPageNumber);
-        int i = 0;
-
-
-        if(currentPageNumber > 0 && toPrev.length > 0){
-            List<MoovieListContent> prevPageMedia = moovieListDao.getMoovieListContentModel(moovieListId, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(), currentPageNumber - 1);
-
-            for(  ; currentPos  < firstPosition  ; i++ ){
-
-                int mediaId = prevPageMedia.get(currentPos - i - 1 ).getMediaId();
-                prevPageMedia.get(currentPos - i - 1 ).setMediaId(toPrev[i]);
-                currentPageMedia.get(i).setMediaId(mediaId);
-
-                currentPos ++;
-            }
-            moovieListDao.updateMoovieListOrder(prevPageMedia);
-
+    public void updateMoovieListOrder(int moovieListId, int mediaId, int newCustomOrder) {
+        MoovieListCard ml = getMoovieListCardById(moovieListId);
+        if (ml.getUserId() != userService.tryToGetCurrentUserId()){
+            throw new ForbiddenException("User must be owner to edit the list");
         }
-
-        //Iterates in currentPageMedia
-        int j = 0;
-
-        if (currentPage.length > 0) {
-            for (; j < currentPage.length - i ; j++) {
-                currentPageMedia.get(j+i).setMediaId(currentPage[j]);
-                System.out.println("Update mediaid " + currentPage[j] + " with customorder " + currentPos);
-                currentPos++;
-            }
+        if(ml.getSize() < newCustomOrder || newCustomOrder < 1){
+            throw new InvalidAccessToResourceException("New custom order must be lower than the size of the list and bigger than 1.");
         }
-
-        if(toNext.length > 0){
-            List<MoovieListContent> nextPageMedia = moovieListDao.getMoovieListContentModel(moovieListId, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(), currentPageNumber + 1);
-
-            int numberToNext = Math.min(nextPageMedia.size(), toNext.length);
-
-            int k = 0;
-            for(  ; k < numberToNext ; k++ ){
-                currentPageMedia.get(currentPos-1).setMediaId(nextPageMedia.get(k).getMediaId());
-                nextPageMedia.get(k).setMediaId(toNext[k]);
-                currentPos++;
-            }
-            if(numberToNext != toNext.length){
-                for( ; k < toNext.length ;  ){
-                    currentPageMedia.get(currentPos-1).setMediaId(toNext[k]);
-                    currentPos++;
-                }
-
-            }
-            moovieListDao.updateMoovieListOrder(nextPageMedia);
+        int currentOrder = isMediaInMoovieList(mediaId, moovieListId);
+        if(currentOrder == newCustomOrder){
+            return;
         }
-        moovieListDao.updateMoovieListOrder(currentPageMedia);
+        moovieListDao.updateMoovieListOrder(moovieListId, mediaId, currentOrder, newCustomOrder);
     }
+
+
 
 
     @Transactional

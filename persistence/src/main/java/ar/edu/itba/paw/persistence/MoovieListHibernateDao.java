@@ -484,8 +484,13 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @Override
     public void deleteMediaFromMoovieList(int moovieListId, int mediaId) {
+        int currentOrder = isMediaInMoovieList(mediaId,moovieListId);
         MoovieListContent toRemove = em.createQuery("SELECT mlc FROM MoovieListContent mlc WHERE mlc.moovieList.moovieListId = :moovieListId AND mlc.mediaId = :mediaId", MoovieListContent.class).setParameter("moovieListId", moovieListId).setParameter("mediaId",mediaId).getSingleResult();
         em.remove(toRemove);
+        em.createNativeQuery("UPDATE moovielistscontent SET customorder = customorder - 1 " +
+                "WHERE customorder > ?").setParameter(1, currentOrder)
+                .executeUpdate();
+
     }
 
     @Override
@@ -516,19 +521,27 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
 
     @Override
-    public void updateMoovieListOrder(List<MoovieListContent> moovieListContents) {
-        final int batchSize = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(); // Set your desired batch size
-        for (int i = 0; i < moovieListContents.size(); i += batchSize) {
-            int endIndex = Math.min(i + batchSize, moovieListContents.size());
-            List<MoovieListContent> batch = moovieListContents.subList(i, endIndex);
+    public void updateMoovieListOrder(int moovieListId, int mediaId, int prevOrder, int newOrder) {
+        Query query;
 
-            // Update the batch of entities
-            for (MoovieListContent entity : batch) {
-                // Ensure the entity is in the persistent state
-                Query query = em.createNativeQuery("UPDATE moovielistscontent SET customorder = :customOrder WHERE id = :entityId").setParameter("customOrder", entity.getCustomOrder()).setParameter("entityId",entity.getId());
-                query.executeUpdate();
-            }
+        if (newOrder > prevOrder) {
+            query = em.createNativeQuery("UPDATE moovielistscontent SET customorder = customorder - 1 " +
+                    "WHERE customorder > ? AND customorder <= ?");
+        } else {
+            query = em.createNativeQuery("UPDATE moovielistscontent SET customorder = customorder + 1 " +
+                    "WHERE customorder < ? AND customorder >= ?");
         }
+
+        query.setParameter(1, prevOrder)
+                .setParameter(2, newOrder)
+                .executeUpdate();
+
+        em.createNativeQuery("UPDATE moovielistscontent SET customorder = ? " +
+                        "WHERE moovielistid = ? AND mediaid = ?")
+                .setParameter(1, newOrder)
+                .setParameter(2, moovieListId)
+                .setParameter(3, mediaId)
+                .executeUpdate();
     }
 
 

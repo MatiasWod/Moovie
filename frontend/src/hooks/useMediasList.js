@@ -3,32 +3,31 @@ import MediaService from "../services/MediaService";
 import pagingSizes from "../api/values/PagingSizes";
 import ProviderService from "../services/ProviderService";
 import GenreService from "../services/GenreService";
-import {Spinner} from "react-bootstrap";
 
-const useMediaList = ({ type, page, sortOrder, orderBy, selectedProviders, selectedGenres }) => {
+const useMediaList = ({ type, page, sortOrder, orderBy, search, selectedProviders, selectedGenres }) => {
     const [medias, setMedias] = useState({ data: [], links: {} });
     const [mediasLoading, setMediasLoading] = useState(true);
     const [mediasError, setMediasError] = useState(null);
 
     useEffect(() => {
-        const getData = async () => {
+        const getMedias = async () => {
             try {
-                if (!mediasLoading) return
                 setMediasError(null);
+                setMediasLoading(true);
 
                 const mediasResponse = await MediaService.getMedia({
-                    type,
-                    page,
+                    type: type,
+                    page: page,
                     pageSize: pagingSizes.MEDIA_DEFAULT_PAGE_SIZE,
-                    sortOrder,
-                    orderBy,
-                    providers: Array.from(selectedProviders),
-                    genres: Array.from(selectedGenres),
+                    orderBy: orderBy,
+                    sortOrder: sortOrder,
+                    search: search,
+                    providers: Array.from(selectedProviders.map((e)=>e.id)),
+                    genres: Array.from(selectedGenres.map((e)=>e.id)),
                 });
 
                 const { data: medias, links } = mediasResponse;
 
-                // Fetch providers for each media
                 const mediasWithProviders = await Promise.all(
                     medias.map(async (media) => {
                         try {
@@ -40,7 +39,6 @@ const useMediaList = ({ type, page, sortOrder, orderBy, selectedProviders, selec
                     })
                 );
 
-                // Fetch genres for each media
                 const mediasWithGenres = await Promise.all(
                     mediasWithProviders.map(async (media) => {
                         try {
@@ -57,16 +55,13 @@ const useMediaList = ({ type, page, sortOrder, orderBy, selectedProviders, selec
                 console.error("Error fetching media data:", error);
                 setMediasError(error);
             } finally {
-                console.log("api call finished")
                 setMediasLoading(false);
             }
         };
 
-        getData();
-    }, [type, page, sortOrder, orderBy, selectedProviders, selectedGenres]);
+        getMedias();
+    }, [type, page, sortOrder, orderBy, search, selectedProviders, selectedGenres]);
 
-    if (mediasLoading) return <Spinner/>
-    if (mediasError) return <div>Theres been an error: {mediasError}</div>
     return { medias, mediasLoading, mediasError };
 };
 

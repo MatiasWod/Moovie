@@ -35,7 +35,9 @@ function NavbarComponent() {
                     <Nav className="me-auto">
                         <Nav.Link as={NavLink} to="/discover" activeClassName="active">{t('navBar.discover')}</Nav.Link>
                         <Nav.Link as={NavLink} to="/browseLists" activeClassName="active">{t('navBar.browseLists')}</Nav.Link>
-                        <Nav.Link as={NavLink} to="/createList" activeClassName="active">{t('navBar.createList')}</Nav.Link>
+                        {isLoggedIn
+                            && <Nav.Link as={NavLink} to="/createList" activeClassName="active">{t('navBar.createList')}</Nav.Link>
+                        }
                         <NavDropdown title={t('navBar.topRated')} id="basic-nav-dropdown">
                             <NavDropdown.Item as={NavLink} to="featuredLists/topRatedMedia" activeClassName="active">{t('navBar.media')}</NavDropdown.Item>
                             <NavDropdown.Item as={NavLink} to="featuredLists/topRatedMovies" activeClassName="active">{t('navBar.movies')}</NavDropdown.Item>

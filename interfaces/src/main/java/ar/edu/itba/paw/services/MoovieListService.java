@@ -64,9 +64,8 @@ public interface MoovieListService {
     void editMoovieList(int moovieListId, String name, String description);
     int isMediaInMoovieList(int mediaId, int moovieListId);
 
-
-    //Receives three arrays of mediaid, one taht will got o next page, previous page and current page in order
-    void updateMoovieListOrder(int moovieListId, int currentPageNumber, int[] toPrevPage, int[] currentPage, int[] toNextPage);
+    // Receives one media id and the new customOrder
+    void updateMoovieListOrder(int moovieListId, int mediaId, int newCustomOrder);
 
     //Likes functions
     boolean likeMoovieList(int moovieListId);

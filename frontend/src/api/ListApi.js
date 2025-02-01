@@ -53,6 +53,12 @@ const listApi = (() => {
         );
     };
 
+    const deleteMediaFromMoovieList = ({ id, mediaId }) => {
+        return api.delete(
+            `/list/${id}/content/${mediaId}`
+        );
+    };
+
     //PUT
 
     const editMoovieList = async (mlId, name, description) => {
@@ -89,6 +95,16 @@ const listApi = (() => {
         return response;
     }
 
+    // POST
+
+    const createMoovieList = (name, description) => {
+        const body = {
+            name: name,
+            description: description
+        }
+        return api.post('list', body)
+    }
+
 
     return{
         getLists,
@@ -96,9 +112,11 @@ const listApi = (() => {
         getListByIdList,
         getListContentById,
         insertMediaIntoMoovieList,
+        deleteMediaFromMoovieList,
         editMoovieList,
         getRecommendedLists,
-        editListContent
+        editListContent,
+        createMoovieList
     }
 })();
 

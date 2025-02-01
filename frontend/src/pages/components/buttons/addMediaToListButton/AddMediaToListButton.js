@@ -5,14 +5,18 @@ import MoovieListTypes from "../../../../api/values/MoovieListTypes";
 import CardsListOrderBy from "../../../../api/values/CardsListOrderBy";
 import SortOrder from "../../../../api/values/SortOrder";
 import ResponsePopup from "../reponsePopup/ReponsePopup";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {Dropdown} from "react-bootstrap";
 import {useTranslation} from "react-i18next";
+import {addIfNotExists, toggleMediaSelection} from "../../../../features/createListSlice";
 
-const AddMediaToListButton = ({ currentId }) => {
+const AddMediaToListButton = ({ currentId, media }) => {
     const { t } = useTranslation();
     const {isLoggedIn, user} = useSelector(state => state.auth);
+
+    const dispatch = useDispatch();
+    const { selectedMedia, name, description } = useSelector((state) => state.list);
 
 
     const [lists, setLists] = useState([]);
@@ -23,6 +27,11 @@ const AddMediaToListButton = ({ currentId }) => {
     const [popupType, setPopupType] = useState("");
     const [popupVisible, setPopupVisible] = useState(false);
     const [options, setOptions] = useState([]);
+
+    const handleCreateListButton = () => {
+        dispatch(addIfNotExists(media))
+        navigate('/createList')
+    }
 
 
     const fetchCurrentUserLists = async () => {
@@ -135,7 +144,7 @@ const AddMediaToListButton = ({ currentId }) => {
                         {options.map((option, index) => (
                             <Dropdown.Item key={index} onClick={ () => handleOptionClick(option)}>{option.name}</Dropdown.Item>
                         ))}
-                        <Dropdown.Item onClick={() => navigate('/createList')}> <i
+                        <Dropdown.Item onClick={handleCreateListButton}> <i
                             className="bi bi-plus-circle-fill"></i> {t('addMediaToListButton.createNewList')}</Dropdown.Item>
                     </Dropdown.Menu>
                 )}

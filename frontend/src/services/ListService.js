@@ -47,12 +47,21 @@ const ListService = (() => {
         return toRetMedia;
     }
 
+    const createMoovieList = async  ({name, description}) => {
+        return await listApi.createMoovieList(name,description)
+    }
+
     const editListContent = async ({listId, mediaId, customOrder}) => {
         return listApi.editListContent(listId, mediaId, customOrder);
     }
 
     const insertMediaIntoMoovieList = async ({id, mediaIds}) => {
         const res = await listApi.insertMediaIntoMoovieList({id,mediaIds});
+        return res;
+    }
+
+    const deleteMediaFromMoovieList = async ({id, mediaId}) =>{
+        const res = await listApi.deleteMediaFromMoovieList({id, mediaId});
         return res;
     }
 
@@ -153,6 +162,7 @@ const ListService = (() => {
         getListByIdList,
         getIdListFromObjectList,
         insertMediaIntoMoovieList,
+       deleteMediaFromMoovieList,
         getLikedOrFollowedListFromUser,
         currentUserHasLiked,
         currentUserHasFollowed,
@@ -163,7 +173,8 @@ const ListService = (() => {
         followList,
        editMoovieList,
        getRecommendedLists,
-       editListContent
+       editListContent,
+       createMoovieList
    }
 })();
 

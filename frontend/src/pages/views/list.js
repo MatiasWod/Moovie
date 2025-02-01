@@ -24,7 +24,7 @@ function List() {
 
     const {id} = useParams();
     const [currentOrderBy, setOrderBy] = useState(OrderBy.CUSTOM_ORDER);
-    const [currentSortOrder, setSortOrder] = useState(SortOrder.DESC);
+    const [currentSortOrder, setSortOrder] = useState(SortOrder.ASC);
     const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
 
     const {isLoggedIn, user} = useSelector(state => state.auth);
@@ -92,6 +92,10 @@ function List() {
     const [listContent, setListContent] = useState(undefined);
     const [listContentLoading, setListContentLoading] = useState(true);
     const [listContentError, setListContentError] = useState(null);
+    const [flag, setFlag] = useState(false);
+    const Refresh = () => {
+        setFlag(!flag);
+    }
 
     useEffect(() => {
         async function getData() {
@@ -111,7 +115,7 @@ function List() {
             }
         }
         getData();
-    }, [currentOrderBy,currentSortOrder,page]);
+    }, [currentOrderBy,currentSortOrder,page, flag]);
 
     const [listRecommendations, setListRecommendations] = useState(undefined);
     const [listRecommendationsLoading, setlistRecommendationsLoading] = useState(true);
@@ -164,6 +168,7 @@ function List() {
                     setListContent={setListContent}
                     isOwner={isLoggedIn === true && (list?.data.createdBy === user.username)}
                     listId={id}
+                    Refresh={Refresh}
                 />
             )}
 

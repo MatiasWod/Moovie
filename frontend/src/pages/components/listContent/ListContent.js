@@ -3,10 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./listContent.css";
 import ListService from "../../../services/ListService";
+import SortOrder from "../../../api/values/SortOrder";
+import PagingSizes from "../../../api/values/PagingSizes";
+import listService from "../../../services/ListService";
+import Button from "react-bootstrap/Button";
 
 const MediaRow = ({
                       position, media, handleClick, handleMouseEnter, handleMouseLeave,
-                      index, moveItem, editMode
+                      index, moveItem, editMode, pageChange, removeFromList
                   }) => {
     const handleDragStart = (e) => {
         e.dataTransfer.setData("index", index);
@@ -21,6 +25,8 @@ const MediaRow = ({
         moveItem(Number(fromIndex), index);
     };
 
+    const [menuOpen, setMenuOpen] = useState(false);
+
     return (
         <div
             className="media-row"
@@ -31,7 +37,7 @@ const MediaRow = ({
             onDragStart={handleDragStart}
             onDragOver={handleDragOver}
             onDrop={handleDrop}
-            style={{ cursor: editMode ? "grab" : "pointer" }}
+            style={{ cursor: editMode ? "grab" : "pointer", position: "relative" }}
         >
             <span className="media-position">{position}</span>
             <img className="media-image" src={media.posterPath} alt={media.name} />
@@ -42,11 +48,24 @@ const MediaRow = ({
             <span className="media-score">{media.tmdbRating} ★</span>
             <span className="media-score">{media.totalRating} ☆</span>
             <span className="media-release">{new Date(media.releaseDate).getFullYear()}</span>
+
+            {editMode && (
+                <div className="menu-container">
+                    <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)}>⋮</button>
+                    {menuOpen && (
+                        <div className="menu-dropdown">
+                            <Button onClick={() => pageChange(1, media.id)}>Send to next page</Button>
+                            <Button onClick={() => pageChange(-1, media.id)}>Send to prev page</Button>
+                            <Button onClick={() => removeFromList(media.id)}>Delete from list</Button>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 };
 
-const ListContent = ({ listContent, editMode, setListContent, listId }) => {
+const ListContent = ({ listContent, editMode, Refresh, listId, currentPage}) => {
     const navigate = useNavigate();
     const { t } = useTranslation();
     const [hoveredId, setHoveredId] = useState(null);
@@ -60,19 +79,44 @@ const ListContent = ({ listContent, editMode, setListContent, listId }) => {
     const handleMouseEnter = (id) => setHoveredId(id);
     const handleMouseLeave = () => setHoveredId(null);
 
+    //to === -1 if to prev to === 1 if next page
+    const pageChange = async (to, mId) => {
+        console.log(currentPage);
+        console.log((currentPage - 1 + to) * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT);
+        if(to===1){
+            await ListService.editListContent({
+                mediaId: mId,
+                listId: listId,
+                customOrder: (currentPage) * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT + 1
+            });
+        } else if (to===-1){
+            await ListService.editListContent({
+                mediaId: mId,
+                listId: listId,
+                customOrder: (currentPage-1) * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT
+            });
+        }
+
+        Refresh();
+    }
+
+    const removeFromList = async (mediaId) => {
+        await listService.deleteMediaFromMoovieList({
+            id: listId,
+            mediaId: mediaId
+        });
+        Refresh();
+
+    }
+
     const moveItem = async (fromIndex, toIndex) => {
         await ListService.editListContent({
             mediaId: listContent[fromIndex].id,
             listId: listId,
             customOrder: listContent[toIndex].customOrder
         }
-    )
-        // const updatedList = [...listContent];
-        // const [movedItem] = updatedList.splice(fromIndex, 1);
-        // console.log(listContent);
-        // updatedList.splice(toIndex, 0, movedItem);
-        // console.log(listContent);
-        // setListContent(updatedList)
+        );
+        Refresh();
     };
 
     if (!listContent || listContent.length === 0) {
@@ -101,6 +145,8 @@ const ListContent = ({ listContent, editMode, setListContent, listId }) => {
                         index={index}
                         moveItem={moveItem}
                         editMode={editMode}
+                        pageChange={pageChange}
+                        removeFromList={removeFromList}
                     />
                 ))}
             </div>

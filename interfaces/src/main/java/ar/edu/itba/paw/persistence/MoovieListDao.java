@@ -33,7 +33,7 @@ public interface MoovieListDao {
 
 
     List<MoovieListContent> getMoovieListContentModel(int moovieListId, int size, int pageNumber);
-    void updateMoovieListOrder(List<MoovieListContent> moovieListContents);
+    void updateMoovieListOrder(int moovieListId, int mediaId, int prevOrder, int newOrder);
 
 
     List<Media> getFeaturedMoovieListContent( int mediaType, int userid, String featuredListOrder, String orderBy, String sortOrder, int size, int pageNumber);
