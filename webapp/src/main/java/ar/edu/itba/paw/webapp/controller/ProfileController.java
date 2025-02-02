@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
+import ar.edu.itba.paw.models.MoovieList.UserMoovieListId;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.User.Profile;
@@ -12,6 +13,7 @@ import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.dto.in.JustIdDto;
 import ar.edu.itba.paw.webapp.dto.out.MediaIdDto;
 import ar.edu.itba.paw.webapp.dto.out.ProfileDto;
+import ar.edu.itba.paw.webapp.dto.out.UserListIdDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -261,4 +263,139 @@ public class ProfileController {
         return Response.ok().build();
     }
 
+    /***
+     * FOLLOWS
+     */
+    @GET
+    @Path("/{username}/listFollows")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getFollowedLists(@PathParam("username") final String username,
+                                     @QueryParam("orderBy") String orderBy,
+                                     @QueryParam("order") String order,
+                                     @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
+        int userid = userService.getProfileByUsername(username).getUserId();
+        List<MoovieListCard> mlcList = moovieListService.getFollowedMoovieListCards(userid, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
+                PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1);
+
+        int listCount = moovieListService.getFollowedMoovieListCardsCount(userid, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
+
+        List<UserListIdDto> listToRet = new ArrayList<UserListIdDto>();
+        for ( MoovieListCard mlc : mlcList){
+            listToRet.add(new UserListIdDto(mlc.getMoovieListId(), username));
+        }
+
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserListIdDto>>(listToRet) {
+        });
+        final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), listCount);
+        ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);
+        return res.build();
+    }
+
+    @POST
+    @Path("/{username}/listFollows")
+    @Produces(MediaType.APPLICATION_JSON)
+    public javax.ws.rs.core.Response followMoovieList(@PathParam("username") String username,
+                                                      @Valid JustIdDto idDto) {
+        userService.isUsernameMe(username);
+        boolean like = moovieListService.followMoovieList(idDto.getId());
+        if (like) {
+            return Response.ok()
+                    .entity("{\"message\":\"Succesfully followed list.\"}").build();
+        }
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity("{\"message\":\"List is already followed.\"}").build();
+    }
+
+    @GET
+    @Path("/{username}/listFollows/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserFollowedListById(@PathParam("username") String username,
+                                            @PathParam("id") final int id) {
+        UserMoovieListId userMoovieListId = moovieListService.currentUserHasFollowed(id);
+        if (userMoovieListId != null && userMoovieListId.getUsername().equals(username)) {
+            return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId, username)).build();
+        }
+        return Response.noContent().build();
+    }
+
+    @DELETE
+    @Path("/{username}/listFollows/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public javax.ws.rs.core.Response unfollowMoovieList(@PathParam("username") String username,
+                                                        @PathParam("id") int id) {
+        userService.isUsernameMe(username);
+        moovieListService.removeFollowMoovieList(id);
+        return Response.ok()
+                .entity("{\"message\":\"Succesfully unfollowed list.\"}").build();
+    }
+
+    /***
+     * LIKES
+     */
+
+    // Returns a list of likes
+    @GET
+    @Path("/{username}/listLikes")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getLikedLists(@PathParam("username") final String username,
+                                  @QueryParam("orderBy") String orderBy,
+                                  @QueryParam("order") String order,
+                                  @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
+        List<MoovieListCard> mlcList = moovieListService.getLikedMoovieListCards(username, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
+                PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1);
+
+
+
+        int listCount = userService.getLikedMoovieListCountForUser(username);
+
+        List<UserListIdDto> listToRet = new ArrayList<UserListIdDto>();
+        for ( MoovieListCard mlc : mlcList){
+            listToRet.add(new UserListIdDto(mlc.getMoovieListId(), username));
+        }
+
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserListIdDto>>(listToRet) {
+        });
+        final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), listCount);
+        ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);
+        return res.build();
+    }
+
+    @POST
+    @Path("/{username}/listLikes")
+    @Produces(MediaType.APPLICATION_JSON)
+    public javax.ws.rs.core.Response likeMoovieList(@PathParam("username") String username,
+                                                    @Valid JustIdDto idDto) {
+        userService.isUsernameMe(username);
+        boolean like = moovieListService.likeMoovieList(idDto.getId());
+        if (like) {
+            return Response.ok()
+                    .entity("{\"message\":\"Succesfully liked list.\"}").build();
+        }
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity("{\"message\":\"Lista is already liked.\"}").build();
+    }
+
+    // Returns like status for a specific media
+    @GET
+    @Path("/{username}/listLikes/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserLikedListById(@PathParam("id") final int id,
+                                         @PathParam("username") final String username) {
+        UserMoovieListId userMoovieListId = moovieListService.currentUserHasLiked(id);
+        if (userMoovieListId != null && userMoovieListId.getUsername().equals(username)) {
+            return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId, username)).build();
+        }
+        return Response.noContent().build();
+    }
+
+    @DELETE
+    @Path("/{username}/listLikes/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public javax.ws.rs.core.Response unlikeMoovieList(@PathParam("username") String username,
+                                                      @PathParam("id") int id) {
+        userService.isUsernameMe(username);
+        moovieListService.removeLikeMoovieList(id);
+        return Response.ok()
+                .entity("{\"message\":\"Succesfully unliked list.\"}").build();
+    }
 }

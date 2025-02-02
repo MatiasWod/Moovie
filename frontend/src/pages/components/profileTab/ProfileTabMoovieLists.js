@@ -9,6 +9,7 @@ import CardsListOrderBy from "../../../api/values/CardsListOrderBy";
 import MoovieListTypes from "../../../api/values/MoovieListTypes";
 import ListCardsPaginated from "../ListCardsPaginated/ListCardsPaginated";
 import UserService from "../../../services/UserService";
+import ProfileService from "../../../services/ProfileService";
 
 function ProfileTabMediaLists({ type, username }) {
 
@@ -65,7 +66,7 @@ function ProfileTabMediaLists({ type, username }) {
                         order: sortOrder
                     });
                 } else {
-                    data = await ListService.getLikedOrFollowedListFromUser(
+                    data = await ProfileService.getLikedOrFollowedListFromUser(
                         username,
                         typeString,
                         orderBy,

@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import WatchlistWatched from "../../../api/values/WatchlistWatched";
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 import {useTranslation} from "react-i18next";
+import profileService from "../../../services/ProfileService";
 
 const MediaCard = ({ media }) => {
     const releaseDate = new Date(media.releaseDate).getFullYear();
@@ -19,7 +20,7 @@ const MediaCard = ({ media }) => {
     useEffect(() => {
         const fetchWW = async () => {
             try {
-                const WW = await mediaService.currentUserWWStatus(media.id, user.username);
+                const WW = await profileService.currentUserWWStatus(media.id, user.username);
                 setWW(WW);
              } catch (error) {
             }
@@ -46,9 +47,9 @@ const MediaCard = ({ media }) => {
     const handleWatched = async () => {
         try {
             if (ww.watched) {
-                await mediaService.removeMediaFromWW(WatchlistWatched.Watched, media.id, user.username);
+                await profileService.removeMediaFromWW(WatchlistWatched.Watched, media.id, user.username);
             } else {
-                await mediaService.insertMediaIntoWW(WatchlistWatched.Watched, media.id, user.username);
+                await profileService.insertMediaIntoWW(WatchlistWatched.Watched, media.id, user.username);
             }
             setPing(!ping)
         }catch(error){
@@ -58,9 +59,9 @@ const MediaCard = ({ media }) => {
     const handleWatchlist = async () => {
         try {
             if (ww.watchlist) {
-                await mediaService.removeMediaFromWW(WatchlistWatched.Watchlist, media.id, user.username);
+                await profileService.removeMediaFromWW(WatchlistWatched.Watchlist, media.id, user.username);
             } else {
-                await mediaService.insertMediaIntoWW(WatchlistWatched.Watchlist, media.id, user.username);
+                await profileService.insertMediaIntoWW(WatchlistWatched.Watchlist, media.id, user.username);
             }
             setPing(!ping)
         }catch(error){

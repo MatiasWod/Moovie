@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import ReviewForm from "../forms/reviewForm/ReviewForm";
 import EditListForm from "../forms/editListForm/editListForm";
 import {useTranslation} from "react-i18next";
+import profileService from "../../../services/ProfileService";
 
 const ListHeader = ({ list, updateHeader}) => {
     const { t } = useTranslation();
@@ -22,7 +23,7 @@ const ListHeader = ({ list, updateHeader}) => {
     useEffect(() => {
         const fetchHasLikedAndFollowed = async () => {
             try {
-                const likedAndFollowed = await listService.currentUserLikeFollowStatus(list.id, user.username);
+                const likedAndFollowed = await profileService.currentUserLikeFollowStatus(list.id, user.username);
                 setHasLikedAndFollowed(likedAndFollowed);
             } catch (error) {
                 // Handle error
@@ -35,9 +36,9 @@ const ListHeader = ({ list, updateHeader}) => {
     const handleLike = async () => {
         try {
             if (hasLikedAndFollowed.liked) {
-                await listService.unlikeList(list.id, user.username);
+                await profileService.unlikeList(list.id, user.username);
             } else {
-                await listService.likeList(list.id, user.username);
+                await profileService.likeList(list.id, user.username);
             }
             setPing(!ping);
         } catch (error) {
@@ -48,9 +49,9 @@ const ListHeader = ({ list, updateHeader}) => {
     const handleFollow = async () => {
         try {
             if (hasLikedAndFollowed.followed) {
-                await listService.unfollowList(list.id, user.username);
+                await profileService.unfollowList(list.id, user.username);
             } else {
-                await listService.followList(list.id, user.username);
+                await profileService.followList(list.id, user.username);
             }
             setPing(!ping);
         } catch (error) {

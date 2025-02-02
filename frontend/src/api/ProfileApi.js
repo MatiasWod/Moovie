@@ -39,16 +39,88 @@ const profileApi = (() => {
 
 
 
-        const setPfp = (username, pfp) => {
+    const setPfp = (username, pfp) => {
         return api.put(`/profiles/${username}/image`, pfp);
     }
 
-    return {
+    /*
+    LIKES AND FOLLOWED
+    */
+    const getLikedOrFollowedListFromUser = (username, type, orderBy, sortOrder, pageNumber = 1) => {
+            if (type !== "followed" && type !== "liked") {
+                throw new Error(`Invalid type: ${type}. Expected "followed" or "liked".`);
+            }
+            const endpoint = type === "followed" ? "listLikes" : "listFollows";
+            return api.get(`/profiles/${username}/${endpoint}`, {
+                params: {
+                    username,
+                    orderBy,
+                    sortOrder,
+                    pageNumber
+                }
+            });
+        };
+
+    const currentUserHasLikedList = (moovieListId, username) => {
+            return api.get(`/profiles/${username}/listLikes/${moovieListId}`);
+        }
+    const likeList = (moovieListId, username) =>{
+            return api.post(`/profiles/${username}/listLikes`,
+                {"id":moovieListId});
+        }
+
+    const unlikeList = (moovieListId, username) =>{
+            return api.delete(`/profiles/${username}/listLikes/${moovieListId}`);
+        }
+
+
+
+    const currentUserHasFollowedList = (moovieListId, username) => {
+            return api.get(`/profiles/${username}/listFollows/${moovieListId}`);
+        }
+
+    const followList = (moovieListId, username) =>{
+            return api.post(`/profiles/${username}/listFollows`,
+                {"id":moovieListId});
+        }
+
+    const unfollowList = (moovieListId, username) =>{
+            return api.delete(`/profiles/${username}/listFollows/${moovieListId}`);
+        }
+
+
+        //WATCHED AND WATCHLIST (WW)
+    const currentUserWW = (ww, username, mediaId) => {
+            return api.get(`/profiles/${username}/${ww}/${mediaId}`);
+        }
+
+    const insertMediaIntoWW = (ww, username, mediaId) => {
+            return api.post(`/profiles/${username}/${ww}`,
+                {"id":mediaId});
+        }
+
+    const removeMediaFromWW = (ww, username, mediaId) => {
+            return api.delete(`/profiles/${username}/${ww}/${mediaId}`);
+        }
+
+
+        return {
         getProfileByUsername,
         getMilkyLeaderboard,
         getSpecialListFromUser,
         getSearchedUsers,
-        setPfp
+        setPfp,
+        currentUserHasLikedList,
+        likeList,
+        unlikeList,
+        getLikedOrFollowedListFromUser,
+        currentUserHasFollowedList,
+        followList,
+        unfollowList,
+        currentUserWW,
+        insertMediaIntoWW,
+        removeMediaFromWW,
+
     }
 
 }
