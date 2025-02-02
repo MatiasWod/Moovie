@@ -1,22 +1,19 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.exceptions.*;
-import ar.edu.itba.paw.models.Cast.Actor;
+
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.Media.Movie;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
-import ar.edu.itba.paw.models.Review.MoovieListReview;
-import ar.edu.itba.paw.models.Review.Review;
-import ar.edu.itba.paw.models.Review.ReviewTypes;
-import ar.edu.itba.paw.models.TV.TVCreators;
 import ar.edu.itba.paw.services.*;
-import ar.edu.itba.paw.webapp.dto.in.ReviewCreateDto;
-import ar.edu.itba.paw.webapp.dto.out.*;
+
+import ar.edu.itba.paw.webapp.dto.out.MediaDto;
+import ar.edu.itba.paw.webapp.dto.out.MovieDto;
+import ar.edu.itba.paw.webapp.dto.out.TVSerieDto;
+
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;

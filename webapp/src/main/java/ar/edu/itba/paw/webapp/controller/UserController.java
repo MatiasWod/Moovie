@@ -6,18 +6,21 @@ import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.MoovieList.UserMoovieListId;
 import ar.edu.itba.paw.models.PagingSizes;
-import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.PagingUtils;
-import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.JwtTokenProvider;
+
 import ar.edu.itba.paw.webapp.dto.in.BanUserDTO;
 import ar.edu.itba.paw.webapp.dto.in.JustIdDto;
 import ar.edu.itba.paw.webapp.dto.in.UserCreateDto;
-import ar.edu.itba.paw.webapp.dto.out.*;
+import ar.edu.itba.paw.webapp.dto.out.MediaIdDto;
+import ar.edu.itba.paw.webapp.dto.out.ProfileDto;
+import ar.edu.itba.paw.webapp.dto.out.UserDto;
+import ar.edu.itba.paw.webapp.dto.out.UserListIdDto;
+
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
 import ar.edu.itba.paw.webapp.mappers.*;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
@@ -27,13 +30,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
