@@ -4,10 +4,6 @@ const userApi = (() => {
 
     //AUTHENTICATION STUFF
 
-    const attemptReconnect = async () => {
-
-    }
-
     const login = async ({username, password}) => {
         const credentials = btoa(`${username}:${password}`);
         try {
@@ -51,6 +47,9 @@ const userApi = (() => {
         return response;
     }
 
+    const getSpecialListFromUser = (username, type, orderBy, order, pageNumber = 1) => {
+        return api.get(`/users/${username}/${type}?orderBy=${orderBy}&order=${order}&pageNumber=${pageNumber}`);
+    };
 
     const listUsers = ({}) => {
         // Implementar la lista de usuarios
@@ -66,46 +65,8 @@ const userApi = (() => {
         }
     };
 
-    //PROFILE STUFF
-
-    const getProfileByUsername = (username) =>{
-        return api.get(`users/profile/${username}`);
-    }
-
     const getUsersCount = () => {
         return api.get('users/count');
-    }
-
-    const getMilkyLeaderboard = ({page, pageSize}) => {
-        return api.get('/users/milkyLeaderboard',
-            {
-                params: {
-                    'page': page,
-                    'pageSize': pageSize
-                }
-            });
-    }
-
-    const getSpecialListFromUser = (username, type, orderBy, order, pageNumber = 1) => {
-        return api.get(`/users/${username}/${type}?orderBy=${orderBy}&order=${order}&pageNumber=${pageNumber}`);
-    };
-
-
-    const getSearchedUsers = ({username,orderBy,sortOrder,page}) => {
-        return api.get(`/users/search`,
-            {
-                params: {
-                    'username': username,
-                    'orderBy': orderBy,
-                    'sortOrder': sortOrder,
-                    'pageNumber': page
-                }
-            }
-        );
-    }
-
-    const setPfp = (username, pfp) => {
-        return api.put(`/users/${username}/image`, pfp);
     }
 
     /*
@@ -186,11 +147,8 @@ const userApi = (() => {
         register,
         listUsers,
         authTest,
-        getProfileByUsername,
         getUsersCount,
-        getMilkyLeaderboard,
         getSpecialListFromUser,
-        getSearchedUsers,
         banUser,
         unbanUser,
         currentUserHasLikedList,
@@ -204,7 +162,6 @@ const userApi = (() => {
         currentUserWW,
         insertMediaIntoWW,
         removeMediaFromWW,
-        setPfp
     };
 
 })();

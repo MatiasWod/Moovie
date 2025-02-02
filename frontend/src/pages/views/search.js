@@ -19,6 +19,7 @@ import CardsListOrderBy from "../../api/values/CardsListOrderBy";
 import {useTranslation} from "react-i18next";
 import {Divider} from "@mui/material";
 import './discover.css';
+import profileService from "../../services/ProfileService";
 
 function Healthcheck() {
     const { t } = useTranslation();
@@ -128,7 +129,7 @@ function Healthcheck() {
         async function getData() {
             try {
                 console.log(search)
-                const data = await userService.getSearchedUsers({
+                const data = await profileService.getSearchedUsers({
                     username: search,
                     orderBy: "username",
                     sortOrder: SortOrder.DESC,

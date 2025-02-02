@@ -7,6 +7,7 @@ import ProfileImage from "../components/profileImage/ProfileImage";
 import logo from "../../images/logo.png"
 import {useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
+import profileApi from "../../api/ProfileApi";
 
 function MilkyLeaderboard() {
     const [milkyLeaderboard, setMilkyLeaderboard] = useState([]);
@@ -16,7 +17,7 @@ function MilkyLeaderboard() {
 
     const fetchMilkyLeaderboard = async () => {
         try {
-            const response = await userApi.getMilkyLeaderboard({
+            const response = await profileApi.getMilkyLeaderboard({
                 page: 1,
                 pageSize: PagingSizes.MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE,
             });

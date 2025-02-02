@@ -3,6 +3,7 @@ import "../formsStyle.css";
 import UserService from "../../../../services/UserService";
 import { useSelector } from "react-redux";
 import {useTranslation} from "react-i18next";
+import ProfileService from "../../../../services/ProfileService";
 
 const ChangePfpForm = ({ onCancel }) => {
     const { t } = useTranslation();
@@ -26,7 +27,7 @@ const ChangePfpForm = ({ onCancel }) => {
         try {
             let form = new FormData();
             form.append("image", selectedFile);
-            const response = await UserService.setPfp({
+            const response = await ProfileService.setPfp({
                 username: user.username,
                 pfp: form
             });
