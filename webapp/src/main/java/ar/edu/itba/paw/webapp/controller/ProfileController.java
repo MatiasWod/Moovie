@@ -1,9 +1,16 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.models.Media.Media;
+import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
+import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.User.Profile;
+import ar.edu.itba.paw.services.MediaService;
+import ar.edu.itba.paw.services.MoovieListService;
 import ar.edu.itba.paw.services.UserService;
+import ar.edu.itba.paw.webapp.dto.in.JustIdDto;
+import ar.edu.itba.paw.webapp.dto.out.MediaIdDto;
 import ar.edu.itba.paw.webapp.dto.out.ProfileDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -13,9 +20,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Path("/profiles")
@@ -24,15 +33,20 @@ public class ProfileController {
 
     private static int DEFAULT_PAGE_INT = 1;
     private final UserService userService;
+    private final MoovieListService moovieListService;
+    private final MediaService mediaService;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileController.class);
+
 
     @Context
     private UriInfo uriInfo;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
-
     @Autowired
-    public ProfileController(UserService userService) {
+    public ProfileController(UserService userService, MoovieListService moovieListService, MediaService mediaService) {
         this.userService = userService;
+        this.moovieListService = moovieListService;
+        this.mediaService = mediaService;
     }
 
     @GET
@@ -117,6 +131,133 @@ public class ProfileController {
         userService.setProfilePicture(imageBytes, image.getMediaType().getSubtype());
 
         LOGGER.info("Profile image updated for username: {}", username);
+        return Response.ok().build();
+    }
+
+
+    /***
+     * Watched
+     */
+
+    @GET
+    @Path("/{username}/watched")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getWatched(@PathParam("username") final String username,
+                               @QueryParam("orderBy") String orderBy,
+                               @QueryParam("order") String order,
+                               @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
+
+        MoovieListCard ml = moovieListService.getMoovieListCards("Watched", username,
+                MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),
+                null, null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 1).get(0);
+
+        List<Media> mediaList = moovieListService.getMoovieListContent(ml.getMoovieListId(),orderBy,order,PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber);
+
+        int mediaCount = ml.getSize();
+        List<MediaIdDto> listToRet = new ArrayList<>();
+
+        for ( Media media : mediaList){
+            listToRet.add(new MediaIdDto(media.getMediaId(), username));
+        }
+
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdDto>>(listToRet) {
+        });
+
+        final PagingUtils<Media> toReturnMoovieListCardList = new PagingUtils<>(mediaList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), mediaCount);
+        ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);
+        return res.build();
+    }
+
+    @POST
+    @Path("/{username}/watched")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response insertIntoWatched(@PathParam("username") final String username,
+                                      @Valid final JustIdDto justIdDto){
+        moovieListService.addMediaToWatched(justIdDto.getId(), username);
+        return Response.ok().build();
+    }
+
+
+    @GET
+    @Path("/{username}/watched/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getWatchedMediaByMediaId(@PathParam("username") final String username,
+                                             @PathParam("id") final int mediaId) {
+        userService.isUsernameMe(username);
+        boolean watched = mediaService.getMediaById(mediaId).isWatched();
+        if(watched){
+            return Response.ok(new MediaIdDto(mediaId, username)).build();
+        }
+        return Response.noContent().build();
+    }
+
+    @DELETE
+    @Path("/{username}/watched/{id}")
+    public Response deleteFromWatched(@PathParam("username") final String username,
+                                      @PathParam("id") final int id){
+        moovieListService.removeMediaFromWatched(id, username);
+        return Response.ok().build();
+    }
+
+    /***
+     * Watchlist
+     */
+    @GET
+    @Path("/{username}/watchlist")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getWatchlist(@PathParam("username") final String username,
+                                 @QueryParam("orderBy") String orderBy,
+                                 @QueryParam("order") String order,
+                                 @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
+
+        MoovieListCard ml = moovieListService.getMoovieListCards("Watchlist", username,
+                MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),
+                null, null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 1).get(0);
+
+        List<Media> mediaList = moovieListService.getMoovieListContent(ml.getMoovieListId(),orderBy,order,PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber);
+
+        int mediaCount = ml.getSize();
+        List<MediaIdDto> listToRet = new ArrayList<>();
+
+        for ( Media media : mediaList){
+            listToRet.add(new MediaIdDto(media.getMediaId(), username));
+        }
+
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdDto>>(listToRet) {
+        });
+
+        final PagingUtils<Media> toReturnMoovieListCardList = new PagingUtils<>(mediaList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), mediaCount);
+        ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);
+        return res.build();
+    }
+
+    @POST
+    @Path("/{username}/watchlist")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response insertIntoWatchlist(@PathParam("username") final String username,
+                                        @Valid  final JustIdDto justIdDto){
+        moovieListService.addMediaToWatchlist(justIdDto.getId(), username);
+        return Response.ok().build();
+    }
+
+    @GET
+    @Path("/{username}/watchlist/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getWatchlistMediaByMediaId(@PathParam("username") final String username,
+                                               @PathParam("id") final int mediaId) {
+        userService.isUsernameMe(username);
+        boolean watchlist = mediaService.getMediaById(mediaId).isWatchlist();
+        if(watchlist){
+            return Response.ok(new MediaIdDto(mediaId, username)).build();
+        }
+        return Response.noContent().build();
+    }
+
+    @DELETE
+    @Path("/{username}/watchlist/{id}")
+    public Response deleteFromWatchlist(@PathParam("username") final String username,
+                                        @PathParam("id") final int id){
+        moovieListService.removeMediaFromWatchlist(id, username);
         return Response.ok().build();
     }
 

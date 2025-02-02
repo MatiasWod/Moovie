@@ -32,13 +32,21 @@ const profileApi = (() => {
         );
     }
 
-    const setPfp = (username, pfp) => {
+
+    const getSpecialListFromUser = (username, type, orderBy, order, pageNumber = 1) => {
+            return api.get(`/profiles/${username}/${type}?orderBy=${orderBy}&order=${order}&pageNumber=${pageNumber}`);
+    };
+
+
+
+        const setPfp = (username, pfp) => {
         return api.put(`/profiles/${username}/image`, pfp);
     }
 
     return {
         getProfileByUsername,
         getMilkyLeaderboard,
+        getSpecialListFromUser,
         getSearchedUsers,
         setPfp
     }

@@ -16,10 +16,17 @@ const ProfileService = (() => {
         return await profileApi.setPfp(username, pfp);
     }
 
+    const getSpecialListFromUser = async ({username, type, orderBy, order, pageNumber}) => {
+        const res = await profileApi.getSpecialListFromUser(username,type,orderBy,order,pageNumber);
+        return parsePaginatedResponse(res);
+    }
+
+
     return {
         getMilkyLeaderboard,
         getSearchedUsers,
-        setPfp
+        setPfp,
+        getSpecialListFromUser
     }
 });
 

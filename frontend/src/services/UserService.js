@@ -4,13 +4,9 @@ import MediaService from "./MediaService";
 
 const UserService = (() => {
 
-    const getSpecialListFromUser = async ({username, type, orderBy, order, pageNumber}) => {
-        const res = await userApi.getSpecialListFromUser(username,type,orderBy,order,pageNumber);
-        return parsePaginatedResponse(res);
-    }
 
     return {
-        getSpecialListFromUser,
+
     }
 })();
 

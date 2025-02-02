@@ -47,10 +47,6 @@ const userApi = (() => {
         return response;
     }
 
-    const getSpecialListFromUser = (username, type, orderBy, order, pageNumber = 1) => {
-        return api.get(`/users/${username}/${type}?orderBy=${orderBy}&order=${order}&pageNumber=${pageNumber}`);
-    };
-
     const listUsers = ({}) => {
         // Implementar la lista de usuarios
     };
@@ -148,7 +144,6 @@ const userApi = (() => {
         listUsers,
         authTest,
         getUsersCount,
-        getSpecialListFromUser,
         banUser,
         unbanUser,
         currentUserHasLikedList,

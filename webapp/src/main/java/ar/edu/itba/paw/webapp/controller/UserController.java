@@ -1,13 +1,11 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.*;
-import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.MoovieList.UserMoovieListId;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
-import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
@@ -16,7 +14,6 @@ import ar.edu.itba.paw.webapp.auth.JwtTokenProvider;
 import ar.edu.itba.paw.webapp.dto.in.BanUserDTO;
 import ar.edu.itba.paw.webapp.dto.in.JustIdDto;
 import ar.edu.itba.paw.webapp.dto.in.UserCreateDto;
-import ar.edu.itba.paw.webapp.dto.out.MediaIdDto;
 import ar.edu.itba.paw.webapp.dto.out.UserDto;
 import ar.edu.itba.paw.webapp.dto.out.UserListIdDto;
 
@@ -377,137 +374,5 @@ public class UserController {
         return Response.ok()
                 .entity("{\"message\":\"Succesfully unfollowed list.\"}").build();
     }
-
-
-    /***
-     * Watched
-     */
-
-    @GET
-    @Path("/{username}/watched")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getWatched(@PathParam("username") final String username,
-                                     @QueryParam("orderBy") String orderBy,
-                                     @QueryParam("order") String order,
-                                     @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
-
-        MoovieListCard ml = moovieListService.getMoovieListCards("Watched", username,
-                MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),
-                null, null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 1).get(0);
-
-        List<Media> mediaList = moovieListService.getMoovieListContent(ml.getMoovieListId(),orderBy,order,PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber);
-
-        int mediaCount = ml.getSize();
-        List<MediaIdDto> listToRet = new ArrayList<>();
-
-        for ( Media media : mediaList){
-            listToRet.add(new MediaIdDto(media.getMediaId(), username));
-        }
-
-        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdDto>>(listToRet) {
-        });
-
-        final PagingUtils<Media> toReturnMoovieListCardList = new PagingUtils<>(mediaList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), mediaCount);
-        ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);
-        return res.build();
-    }
-
-
-    @GET
-    @Path("/{username}/watched/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getWatchedMediaByMediaId(@PathParam("username") final String username,
-                                              @PathParam("id") final int mediaId) {
-        userService.isUsernameMe(username);
-        boolean watched = mediaService.getMediaById(mediaId).isWatched();
-        if(watched){
-            return Response.ok(new MediaIdDto(mediaId, username)).build();
-        }
-        return Response.noContent().build();
-    }
-
-
-    @POST
-    @Path("/{username}/watched")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response insertIntoWatched(@PathParam("username") final String username,
-                                      @Valid  final JustIdDto justIdDto){
-        moovieListService.addMediaToWatched(justIdDto.getId(), username);
-        return Response.ok().build();
-    }
-
-    @DELETE
-    @Path("/{username}/watched/{id}")
-    public Response deleteFromWatched(@PathParam("username") final String username,
-                                      @PathParam("id") final int id){
-        moovieListService.removeMediaFromWatched(id, username);
-        return Response.ok().build();
-    }
-
-
-
-    /***
-     * Watchlist
-     */
-
-    @GET
-    @Path("/{username}/watchlist")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getWatchlist(@PathParam("username") final String username,
-                               @QueryParam("orderBy") String orderBy,
-                               @QueryParam("order") String order,
-                               @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
-
-        MoovieListCard ml = moovieListService.getMoovieListCards("Watchlist", username,
-                MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),
-                null, null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 1).get(0);
-
-        List<Media> mediaList = moovieListService.getMoovieListContent(ml.getMoovieListId(),orderBy,order,PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber);
-
-        int mediaCount = ml.getSize();
-        List<MediaIdDto> listToRet = new ArrayList<>();
-
-        for ( Media media : mediaList){
-            listToRet.add(new MediaIdDto(media.getMediaId(), username));
-        }
-
-        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdDto>>(listToRet) {
-        });
-
-        final PagingUtils<Media> toReturnMoovieListCardList = new PagingUtils<>(mediaList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), mediaCount);
-        ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);
-        return res.build();
-    }
-
-    @GET
-    @Path("/{username}/watchlist/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getWatchlistMediaByMediaId(@PathParam("username") final String username,
-                                              @PathParam("id") final int mediaId) {
-        userService.isUsernameMe(username);
-        boolean watchlist = mediaService.getMediaById(mediaId).isWatchlist();
-        if(watchlist){
-            return Response.ok(new MediaIdDto(mediaId, username)).build();
-        }
-        return Response.noContent().build();
-    }
-
-    @POST
-    @Path("/{username}/watchlist")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response insertIntoWatchlist(@PathParam("username") final String username,
-                                      @Valid  final JustIdDto justIdDto){
-        moovieListService.addMediaToWatchlist(justIdDto.getId(), username);
-        return Response.ok().build();
-    }
-
-    @DELETE
-    @Path("/{username}/watchlist/{id}")
-    public Response deleteFromWatchlist(@PathParam("username") final String username,
-                                      @PathParam("id") final int id){
-        moovieListService.removeMediaFromWatchlist(id, username);
-        return Response.ok().build();
-    }
-
 
 }
