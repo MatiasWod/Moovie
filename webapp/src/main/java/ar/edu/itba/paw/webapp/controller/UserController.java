@@ -68,35 +68,72 @@ public class UserController {
         this.moderatorService = moderatorService;
         this.mediaService = mediaService;
     }
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listAll(@QueryParam("page") @DefaultValue("1") final int page) {
-        LOGGER.info("Method: listAll, Path: /users, Page: {}", page);
+    public Response listAll(
+            @QueryParam("page") @DefaultValue("1") final int page,
+            @QueryParam("email") final String email,
+            @QueryParam("username") final String username) {
+
+        // Buscar por email si se proporciona
+        if (email != null && !email.isEmpty()) {
+            try {
+                final User user = userService.findUserByEmail(email);
+                if (user == null) {
+                    return Response.status(Response.Status.NOT_FOUND).build();
+                }
+                return Response.ok(UserDto.fromUser(user, uriInfo)).build();
+            } catch (RuntimeException e) {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+            }
+        }
+
+        // Buscar por username si se proporciona
+        if (username != null && !username.isEmpty()) {
+            try {
+                final User user = userService.findUserByUsername(username);
+                if (user == null) {
+                    return Response.status(Response.Status.NOT_FOUND).build();
+                }
+                return Response.ok(UserDto.fromUser(user, uriInfo)).build();
+            } catch (RuntimeException e) {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+            }
+        }
+
+        // Validar número de página
         if (page < DEFAULT_PAGE_INT) {
-            LOGGER.warn("Invalid page number: {}. Returning BAD_REQUEST.", page);
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
+
+        // Listar usuarios paginados
         try {
             final List<User> all = userService.listAll(page);
             if (all.isEmpty()) {
-                LOGGER.info("No users found. Returning NOT_FOUND.");
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
 
             List<UserDto> dtoList = UserDto.fromUserList(all, uriInfo);
-            return Response.ok(new GenericEntity<List<UserDto>>(dtoList) {
-            }).build();
+            return Response.ok(new GenericEntity<List<UserDto>>(dtoList) {}).build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
 
     @GET
-    @Path("/authtest")
-    public Response authTest() {
-        return Response.ok("Hello authenticated user").build();
+    @Path("/count")
+    public Response getUserCount() {
+        LOGGER.info("Method: getUserCount, Path: /users/count");
+        try {
+            int count = userService.getUserCount();
+            LOGGER.info("User count retrieved: {}", count);
+            return Response.ok().entity(new GenericEntity<Integer>(count) {}).build();
+        } catch (Exception e) {
+            LOGGER.error("Error retrieving user count: {}", e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
     }
+
 
     @GET
     @Path("/{id}")
@@ -114,53 +151,9 @@ public class UserController {
         }
     }
 
-    @GET
-    @Path("/email/{email}")
-    public Response findUserByEmail(@PathParam("email") final String email) {
-        try {
-            LOGGER.info("Method: findUserByEmail, Path: /users/email/{email}, Email: {}", email);
-            final User user = userService.findUserByEmail(email);
-            if (user == null) {
-                LOGGER.info("User with email {} not found. Returning NOT_FOUND.", email);
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-            return Response.ok(UserDto.fromUser(user, uriInfo)).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
 
-    }
 
-    @GET
-    @Path("/username/{username}")
-    public Response findUserByUsername(@PathParam("username") final String username) {
-        try {
-            LOGGER.info("Method: findUserByUsername, Path: /users/username/{username}, Username: {}", username);
-            final User user = userService.findUserByUsername(username);
-            if (user == null) {
-                LOGGER.info("User with username {} not found. Returning NOT_FOUND.", username);
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-            return Response.ok(UserDto.fromUser(user, uriInfo)).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
 
-    }
-
-    @GET
-    @Path("/usersCount")
-    public Response getUserCount() {
-        LOGGER.info("Method: getUserCount, Path: /users/usersCount");
-        try {
-            int count = userService.getUserCount();
-            LOGGER.info("User count retrieved: {}", count);
-            return Response.ok(count).build();
-        } catch (Exception e) {
-            LOGGER.error("Error retrieving user count: {}", e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-    }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)

@@ -18,14 +18,12 @@ import javax.ws.rs.core.Response;
 
 
 public class TokenController {
-    private final UserService userService;
 
     private final VerificationTokenService verificationTokenService;
 
     //private static final Logger LOGGER = LoggerFactory.getLogger(TokenController.class);
 
-    public TokenController(UserService userService, VerificationTokenService verificationTokenService) {
-        this.userService = userService;
+    public TokenController( VerificationTokenService verificationTokenService) {
         this.verificationTokenService = verificationTokenService;
     }
 

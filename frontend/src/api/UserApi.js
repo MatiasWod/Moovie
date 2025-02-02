@@ -11,9 +11,12 @@ const userApi = (() => {
     const login = async ({username, password}) => {
         const credentials = btoa(`${username}:${password}`);
         try {
-            const response = await api.get('/users/username/' + username, {
+            const response = await api.get('/users', {
                 headers: {
                     'Authorization': `Basic ${credentials}`,
+                },
+                params: {
+                    'username': username
                 }
             });
             const token = response.headers.get('Authorization');
@@ -73,7 +76,7 @@ const userApi = (() => {
     }
 
     const getUsersCount = () => {
-        return api.get('users/usersCount');
+        return api.get('users/count');
     }
 
     const getMilkyLeaderboard = ({page, pageSize}) => {
