@@ -166,7 +166,15 @@ public class MoovieListController {
         return Response.noContent().build();
     }
 
-
+    @GET
+    @Path("{id}/recommendedLists")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRecommendedLists(@PathParam("id") final int id) {
+        List<MoovieListDto> mlcList = MoovieListDto.fromMoovieListList(moovieListService.getRecommendedMoovieListCards(id, 4, 0), uriInfo);
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(mlcList) {
+        });
+        return res.build();
+    }
 
     //We have a separate endpoint for content to be able to use filters and no need to do it every time we want to find a list
     // PROBLEM WHEN SORT ORDER AND OR ORDER BY ARE NULL
@@ -246,40 +254,5 @@ public class MoovieListController {
     }
 
 
-    //Only returns the 5 more relatedLists. They are related in
-    @GET
-    @Path("{id}/recommendedLists")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getRecommendedLists(@PathParam("id") final int id) {
-        List<MoovieListDto> mlcList = MoovieListDto.fromMoovieListList(moovieListService.getRecommendedMoovieListCards(id, 4, 0), uriInfo);
-        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(mlcList) {
-        });
-        return res.build();
-    }
 
-
-/*
-    @POST
-    @Path("/{id}/content")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public ResponseMessage addMediaToMoovieList(@PathParam("moovieListId") final int listId, @PathParam("mediaId") final int mediaId) {
-        try {
-
-            moovieListService.insertMediaIntoMoovieList(listId, mediaId);
-
-            return ResponseMessage.status(ResponseMessage.Status.CREATED)
-                    .entity("Media successfully added to the list with ID: " + listId)
-                    .build();
-        } catch (IllegalArgumentException e) {
-            return ResponseMessage.status(ResponseMessage.Status.BAD_REQUEST)
-                    .entity("Invalid media or list ID: " + e.getMessage())
-                    .build();
-        } catch (RuntimeException e) {
-            return ResponseMessage.status(ResponseMessage.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An error occurred while adding media to the list: " + e.getMessage())
-                    .build();
-        }
-    }
-*/
 }
