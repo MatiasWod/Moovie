@@ -11,12 +11,9 @@ const userApi = (() => {
     const login = async ({username, password}) => {
         const credentials = btoa(`${username}:${password}`);
         try {
-            const response = await api.get('/users', {
+            const response = await api.get(`/users/${username}`, {
                 headers: {
                     'Authorization': `Basic ${credentials}`,
-                },
-                params: {
-                    'username': username
                 }
             });
             const token = response.headers.get('Authorization');
