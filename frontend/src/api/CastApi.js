@@ -3,7 +3,7 @@ import api from "./api";
 const castApi = (() => {
 
     const getActorsForQuery = ({search}) => {
-        return api.get('/cast/actors',
+        return api.get('/actors',
             {
                 params: {
                     'search': search
@@ -15,7 +15,7 @@ const castApi = (() => {
 
     const getActorsByMediaId = (mediaId) =>{
         return api.get(
-            `cast/actors`,
+            `/actors`,
             {
                 params: {
                     mediaId: mediaId
@@ -26,11 +26,11 @@ const castApi = (() => {
 
 
     const getTvCreatorById = (id) => {
-        return api.get(`cast/tvCreators/${id}`);
+        return api.get(`/tvCreators/${id}`);
     }
 
     const getTvCreatorsSearch = (search) => {
-        return api.get(`cast/tvCreators`,
+        return api.get(`/tvCreators`,
             {
                 params: {
                     search: search
@@ -41,7 +41,7 @@ const castApi = (() => {
 
     const getTvCreatorsByMediaId = (mediaId) =>{
         return api.get(
-            `cast/tvCreators`,
+            `/tvCreators`,
             {
                 params: {
                     mediaId: mediaId
