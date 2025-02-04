@@ -7,7 +7,13 @@ const genreApi = (() => {
     }
 
     const getGenresForMedia = (id) =>{
-        return api.get(`/genres/${id}`);
+        return api.get(`/genres`,
+            {
+                params: {
+                    mediaId: id
+                }
+            }
+        );
     }
 
     return{

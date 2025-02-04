@@ -7,10 +7,7 @@ import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
 
@@ -25,18 +22,29 @@ public class GenreController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllGenres(){
-            final List<Genre> genreList = genreService.getAllGenres();
-            final List<GenreDto> genreDtoList = GenreDto.fromGenreList(genreList,uriInfo);
-            return Response.ok(new GenericEntity<List<GenreDto>>(genreDtoList){}).build();
-    }
+    public Response getGenres(@QueryParam("mediaId") final Integer mediaId) {
+        try {
+            List<Genre> genreList;
 
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getGenresForMedia(@PathParam("id") final int mediaId){
-            final List<Genre> genreList = genreService.getGenresForMedia(mediaId);
-            final List<GenreDto> genreDtoList = GenreDto.fromGenreList(genreList,uriInfo);
-            return Response.ok(new GenericEntity<List<GenreDto>>(genreDtoList){}).build();
+            // Si se proporciona un mediaId, obtener géneros para ese medio
+            if (mediaId != null) {
+                genreList = genreService.getGenresForMedia(mediaId);
+            }
+            // Si no se proporciona un mediaId, obtener todos los géneros
+            else {
+                genreList = genreService.getAllGenres();
+            }
+
+            // Convertir la lista de géneros a DTOs
+            final List<GenreDto> genreDtoList = GenreDto.fromGenreList(genreList, uriInfo);
+
+            // Devolver la respuesta con la lista de DTOs
+            return Response.ok(new GenericEntity<List<GenreDto>>(genreDtoList) {}).build();
+        } catch (RuntimeException e) {
+            // Manejar errores
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(e.getMessage())
+                    .build();
+        }
     }
 }
