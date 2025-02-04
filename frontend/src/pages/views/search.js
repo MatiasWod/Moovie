@@ -39,6 +39,10 @@ function Healthcheck() {
     const [actorLoading, setActorLoading] = useState(true);
     const [actorError, setActorError] = useState(null);
 
+    const [directors, setDirectors] = useState(undefined);
+    const [directorLoading, setDirectorLoading] = useState(true);
+    const [directorError, setDirectorError] = useState(null);
+
 
     const [users, setUsers] = useState(undefined);
     const [userLoading, setUserLoading] = useState(true);
@@ -59,6 +63,10 @@ function Healthcheck() {
 
     const handleActorCardClick = (actor) => {
         navigate(`/cast/actor/${actor.actorId}`, { state: { actorName: actor.actorName } });
+    };
+
+    const handleDirectorCardClick = (director) => {
+        navigate(`/cast/director/${director.directorId}`, { state: { actorName: director.name } });
     };
 
     useEffect(() => {
@@ -112,12 +120,28 @@ function Healthcheck() {
                 const data = await CastService.getActorsForQuery({
                     search: search
                 });
-                console.log(data)
                 setActors(data.data);
                 setActorLoading(false);
             } catch (error) {
                 setActorError(error);
                 setActorLoading(false);
+            }
+        }
+        getData();
+    }, [search]);
+
+    useEffect(() => {
+        async function getData() {
+            try {
+                const data = await CastService.getDirectorsForQuery({
+                    search: search
+                });
+                console.log(data);
+                setDirectors(data.data);
+                setDirectorLoading(false);
+            } catch (error) {
+                setDirectorError(error);
+                setDirectorLoading(false);
             }
         }
         getData();
@@ -218,6 +242,34 @@ function Healthcheck() {
                 ) : (
                     <p>{t('search.noActorsFound')}</p>
                 )}
+
+            {directors && directors.length > 0 ? (
+                <>
+                    <h3>{t('search.directorsFor', {search: search})}</h3>
+                    <Divider sx={{
+                        backgroundColor: "rgba(0, 0, 0, 0.8)",
+                        height: "2px",
+                    }} />
+                    <div className="cards-container">
+                        {directors.slice(0,5).map((director) => (
+                            <div
+                                key={director.directorId}
+                                onClick={() => handleDirectorCardClick(director)}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <div className="discover-media-card">
+                                    <ActorCard
+                                        name={director.name}
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </>
+            ) : (
+                <p>{t('search.noDirectorsFound')}</p>
+            )}
+
                 <div>
                     {users?.data?.length > 0 ? (
                         <>
@@ -240,8 +292,13 @@ function Healthcheck() {
                                 ))}
                             </div>
                         </>
-                    ) : (
-                        <p>{t('search.noUsersFound')}</p>
+                    ) : (<>
+                        <Divider sx={{
+                            backgroundColor: "rgba(0, 0, 0, 0.8)",
+                            height: "2px",
+                        }} />
+                        <h3>{t('search.noUsersFound')}</h3>
+                    </>
                     )}
                 </div>
         </div>

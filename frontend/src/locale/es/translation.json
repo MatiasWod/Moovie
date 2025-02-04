@@ -219,6 +219,8 @@
   "search.search": "Buscar",
   "search.actorsFor": "Actores para: '{{search}}'",
   "search.noActorsFound": "No se encontraron actores",
+  "search.directorsFor": "Directores para: '{{search}}'",
+  "search.noDirectorsFound": "No se encontraron directores",
   "search.mediasFor": "Medios para: '{{search}}'",
   "search.noMediasFound": "No se encontraron medios",
   "search.listsFor": "Listas para: '{{search}}'",
