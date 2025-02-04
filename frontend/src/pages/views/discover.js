@@ -14,6 +14,7 @@ import GenreService from "../../services/GenreService";
 import GenreFilter from "../components/filters/genreFilter/GenreFilter";
 import {useTranslation} from "react-i18next";
 import {Tooltip as ReactTooltip} from "react-tooltip";
+import {Spinner} from "react-bootstrap";
 
 
 const Discover = () => {
@@ -201,7 +202,7 @@ const Discover = () => {
 
 
 
-
+    if (mediasLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
 
     return (
         <div className="moovie-default default-container">
