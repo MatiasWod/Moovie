@@ -7,7 +7,13 @@ const providerApi = (() => {
     }
 
     const getProvidersForMedia = (id) => {
-        return api.get(`/providers/${id}`);
+        return api.get(`/providers`,
+            {
+                params: {
+                    mediaId: id
+                }
+            }
+        );
     }
 
     return{

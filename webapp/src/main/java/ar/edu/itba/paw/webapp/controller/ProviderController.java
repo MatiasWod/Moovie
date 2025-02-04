@@ -7,10 +7,7 @@ import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
 
@@ -26,18 +23,29 @@ public class ProviderController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllProviders(){
-        final List<Provider> providerList = providerService.getAllProviders();
-        final List<ProviderDto> providerDtoList = ProviderDto.fromProviderList(providerList,uriInfo);
-        return Response.ok(new GenericEntity<List<ProviderDto>>(providerDtoList){}).build();
-    }
+    public Response getProviders(@QueryParam("mediaId") final Integer mediaId) {
+        try {
+            List<Provider> providerList;
 
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllProviders(@PathParam("id") final int mediaId){
-            final List<Provider> providerList = providerService.getProvidersForMedia(mediaId);
-            final List<ProviderDto> providerDtoList = ProviderDto.fromProviderList(providerList,uriInfo);
-            return Response.ok(new GenericEntity<List<ProviderDto>>(providerDtoList){}).build();
+            // Si se proporciona un mediaId, obtener proveedores para ese medio
+            if (mediaId != null) {
+                providerList = providerService.getProvidersForMedia(mediaId);
+            }
+            // Si no se proporciona un mediaId, obtener todos los proveedores
+            else {
+                providerList = providerService.getAllProviders();
+            }
+
+            // Convertir la lista de proveedores a DTOs
+            final List<ProviderDto> providerDtoList = ProviderDto.fromProviderList(providerList, uriInfo);
+
+            // Devolver la respuesta con la lista de DTOs
+            return Response.ok(new GenericEntity<List<ProviderDto>>(providerDtoList) {}).build();
+        } catch (RuntimeException e) {
+            // Manejar errores
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(new ResponseMessage(e.getMessage()))
+                    .build();
+        }
     }
 }
