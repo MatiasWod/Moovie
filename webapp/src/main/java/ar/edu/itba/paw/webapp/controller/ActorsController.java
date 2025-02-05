@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.Cast.Actor;
 import ar.edu.itba.paw.services.ActorService;
 import ar.edu.itba.paw.webapp.dto.out.ActorDto;
+import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,7 @@ public class ActorsController {
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_ACTOR_LIST)
     public Response getActors(
             @QueryParam("mediaId") final Integer mediaId,
             @QueryParam("search") final String search
@@ -49,7 +50,7 @@ public class ActorsController {
 
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_ACTOR)
     public Response getActor(@PathParam("id") final int id) {
         return Response.ok(ActorDto.fromActor(actorService.getActorById(id), uriInfo)).build();
     }
