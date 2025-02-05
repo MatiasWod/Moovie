@@ -24,6 +24,16 @@ const castApi = (() => {
         )
     }
 
+    const getDirectorsForQuery = ({search}) => {
+        return api.get('/directors',
+            {
+                params: {
+                    'search': search
+                }
+            }
+        );
+    }
+
 
     const getTvCreatorById = (id) => {
         return api.get(`/tvCreators/${id}`);
@@ -53,6 +63,7 @@ const castApi = (() => {
     return{
         getActorsForQuery,
         getActorsByMediaId,
+        getDirectorsForQuery,
         getTvCreatorById,
         getTvCreatorsSearch,
         getTvCreatorsByMediaId

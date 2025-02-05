@@ -5,15 +5,15 @@ public class Director {
 
     private String name;
 
-    private int totalMedia;
+    private long totalMedia;
 
-    public Director(int directorId, String name, int totalMedia) {
+    public Director(int directorId, String name, long totalMedia) {
         this.totalMedia = totalMedia;
         this.directorId = directorId;
         this.name = name;
     }
 
-    public int getTotalMedia() {
+    public long getTotalMedia() {
         return totalMedia;
     }
 

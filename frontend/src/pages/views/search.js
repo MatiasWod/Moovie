@@ -20,6 +20,7 @@ import {useTranslation} from "react-i18next";
 import {Divider} from "@mui/material";
 import './discover.css';
 import profileService from "../../services/ProfileService";
+import './search.css';
 
 function Healthcheck() {
     const { t } = useTranslation();
@@ -38,6 +39,10 @@ function Healthcheck() {
     const [actors, setActors] = useState(undefined);
     const [actorLoading, setActorLoading] = useState(true);
     const [actorError, setActorError] = useState(null);
+
+    const [directors, setDirectors] = useState(undefined);
+    const [directorLoading, setDirectorLoading] = useState(true);
+    const [directorError, setDirectorError] = useState(null);
 
 
     const [users, setUsers] = useState(undefined);
@@ -59,6 +64,14 @@ function Healthcheck() {
 
     const handleActorCardClick = (actor) => {
         navigate(`/cast/actor/${actor.actorId}`, { state: { actorName: actor.actorName } });
+    };
+
+    const handleDirectorCardClick = (director) => {
+        navigate(`/cast/director/${director.directorId}`, { state: { actorName: director.name } });
+    };
+
+    const handleSeeMoreListsButtonClick = () => {
+      navigate(`/browselists?search=${search}&page=1`);
     };
 
     useEffect(() => {
@@ -112,12 +125,28 @@ function Healthcheck() {
                 const data = await CastService.getActorsForQuery({
                     search: search
                 });
-                console.log(data)
                 setActors(data.data);
                 setActorLoading(false);
             } catch (error) {
                 setActorError(error);
                 setActorLoading(false);
+            }
+        }
+        getData();
+    }, [search]);
+
+    useEffect(() => {
+        async function getData() {
+            try {
+                const data = await CastService.getDirectorsForQuery({
+                    search: search
+                });
+                console.log(data);
+                setDirectors(data.data);
+                setDirectorLoading(false);
+            } catch (error) {
+                setDirectorError(error);
+                setDirectorLoading(false);
             }
         }
         getData();
@@ -165,7 +194,13 @@ function Healthcheck() {
                         </div>
                     </>
                 ) : (
-                    <p>{t('search.noMediasFound')}</p>
+                    <>
+                        <h3>{t('search.noMediasFound')}</h3>
+                        <Divider sx={{
+                            backgroundColor: "rgba(0, 0, 0, 0.8)",
+                            height: "2px",
+                        }} />
+                    </>
                 )}
             </>
 
@@ -174,6 +209,12 @@ function Healthcheck() {
                 {lists?.data?.length > 0 ? (
                     <>
                         <h3>{t('search.listsFor', {search: search})}</h3>
+                        <a
+                            onClick={handleSeeMoreListsButtonClick}
+                            className="link-button"
+                        >
+                            {t('search.seeMore')}
+                        </a>
                         <Divider sx={{
                             backgroundColor: "rgba(0, 0, 0, 0.8)",
                             height: "2px",
@@ -187,7 +228,13 @@ function Healthcheck() {
                         </div>
                     </>
                 ) : (
-                    <p>{t('search.noListsFound')}</p>
+                    <>
+                        <h3>{t('search.noListsFound')}</h3>
+                        <Divider sx={{
+                            backgroundColor: "rgba(0, 0, 0, 0.8)",
+                            height: "2px",
+                        }} />
+                    </>
                 )}
             </>
 
@@ -216,8 +263,48 @@ function Healthcheck() {
                         </div>
                     </>
                 ) : (
-                    <p>{t('search.noActorsFound')}</p>
+                    <>
+                        <h3>{t('search.noActorsFound')}</h3>
+                        <Divider sx={{
+                            backgroundColor: "rgba(0, 0, 0, 0.8)",
+                            height: "2px",
+                        }} />
+                    </>
                 )}
+
+            {directors && directors.length > 0 ? (
+                <>
+                    <h3>{t('search.directorsFor', {search: search})}</h3>
+                    <Divider sx={{
+                        backgroundColor: "rgba(0, 0, 0, 0.8)",
+                        height: "2px",
+                    }} />
+                    <div className="cards-container">
+                        {directors.slice(0,5).map((director) => (
+                            <div
+                                key={director.directorId}
+                                onClick={() => handleDirectorCardClick(director)}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <div className="discover-media-card">
+                                    <ActorCard
+                                        name={director.name}
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </>
+            ) : (
+                <>
+                    <h3>{t('search.noDirectorsFound')}</h3>
+                    <Divider sx={{
+                        backgroundColor: "rgba(0, 0, 0, 0.8)",
+                        height: "2px",
+                    }} />
+                </>
+            )}
+
                 <div>
                     {users?.data?.length > 0 ? (
                         <>
@@ -240,8 +327,13 @@ function Healthcheck() {
                                 ))}
                             </div>
                         </>
-                    ) : (
-                        <p>{t('search.noUsersFound')}</p>
+                    ) : (<>
+                        <h3>{t('search.noUsersFound')}</h3>
+                            <Divider sx={{
+                                backgroundColor: "rgba(0, 0, 0, 0.8)",
+                                height: "2px",
+                            }} />
+                    </>
                     )}
                 </div>
         </div>

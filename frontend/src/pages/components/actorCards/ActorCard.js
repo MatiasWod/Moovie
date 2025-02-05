@@ -1,6 +1,5 @@
 import React from 'react';
 import altImage from "../../../images/defaultPoster.png";
-import {useNavigate} from "react-router-dom";
 import './ActorCard.css';
 
 const ActorCard = ({ name, image }) => {
