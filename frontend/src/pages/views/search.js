@@ -189,7 +189,13 @@ function Healthcheck() {
                         </div>
                     </>
                 ) : (
-                    <p>{t('search.noMediasFound')}</p>
+                    <>
+                        <h3>{t('search.noMediasFound')}</h3>
+                        <Divider sx={{
+                            backgroundColor: "rgba(0, 0, 0, 0.8)",
+                            height: "2px",
+                        }} />
+                    </>
                 )}
             </>
 
@@ -211,7 +217,13 @@ function Healthcheck() {
                         </div>
                     </>
                 ) : (
-                    <p>{t('search.noListsFound')}</p>
+                    <>
+                        <h3>{t('search.noListsFound')}</h3>
+                        <Divider sx={{
+                            backgroundColor: "rgba(0, 0, 0, 0.8)",
+                            height: "2px",
+                        }} />
+                    </>
                 )}
             </>
 
@@ -240,7 +252,13 @@ function Healthcheck() {
                         </div>
                     </>
                 ) : (
-                    <p>{t('search.noActorsFound')}</p>
+                    <>
+                        <h3>{t('search.noActorsFound')}</h3>
+                        <Divider sx={{
+                            backgroundColor: "rgba(0, 0, 0, 0.8)",
+                            height: "2px",
+                        }} />
+                    </>
                 )}
 
             {directors && directors.length > 0 ? (
@@ -267,7 +285,13 @@ function Healthcheck() {
                     </div>
                 </>
             ) : (
-                <p>{t('search.noDirectorsFound')}</p>
+                <>
+                    <h3>{t('search.noDirectorsFound')}</h3>
+                    <Divider sx={{
+                        backgroundColor: "rgba(0, 0, 0, 0.8)",
+                        height: "2px",
+                    }} />
+                </>
             )}
 
                 <div>
@@ -293,11 +317,11 @@ function Healthcheck() {
                             </div>
                         </>
                     ) : (<>
-                        <Divider sx={{
-                            backgroundColor: "rgba(0, 0, 0, 0.8)",
-                            height: "2px",
-                        }} />
                         <h3>{t('search.noUsersFound')}</h3>
+                            <Divider sx={{
+                                backgroundColor: "rgba(0, 0, 0, 0.8)",
+                                height: "2px",
+                            }} />
                     </>
                     )}
                 </div>

@@ -5,7 +5,7 @@ import CardsListOrderBy from "../../api/values/CardsListOrderBy";
 import SortOrder from "../../api/values/SortOrder";
 import ListCard from "../components/listCard/ListCard";
 import "./browseLists.css"
-import SearchBar from "../components/searchBar/SearchBar";
+import BrowseListsSearchBar from "../components/browseListsSearchBar/browseListsSearchBar";
 import "./../components/mainStyle.css"
 import PaginationButton from "../components/paginationButton/PaginationButton";
 import {createSearchParams, useNavigate, useSearchParams} from "react-router-dom";
@@ -19,7 +19,7 @@ function BrowseLists(){
     const [searchParams] = useSearchParams();
     const { t } = useTranslation();
 
-    const [search, setSearch] = useState(null);
+    const [search, setSearch] = useState(searchParams.get("search") || "");
     const [ownerUsername, setOwnerUsername] = useState(null);
     const [type, setType] = useState(null);
     const [orderBy, setOrderBy] = useState(CardsListOrderBy.LIKE_COUNT);
@@ -30,11 +30,20 @@ function BrowseLists(){
     const [mlcListLoading, setMlcListLoading] = useState(true);
     const [mlcListError, setMlcListError] = useState(null);
 
+    useEffect(() => {
+        const searchParam = searchParams.get("search") || "";
+        const pageParam = searchParam !== search ? 1 : Number(searchParams.get("page")) || 1;
+
+        setSearch(searchParam);
+        setPage(pageParam);
+    }, [searchParams]);
+
     const handlePageChange = (newPage) => {
         setPage(newPage);
         navigate({
             pathname: `/browselists`,
             search: createSearchParams({
+                search:search,
                 orderBy:orderBy,
                 sortOrder: sortOrder,
                 page: newPage.toString(),
@@ -46,12 +55,13 @@ function BrowseLists(){
         navigate({
             pathname: `/browselists`,
             search: createSearchParams({
+                search:search,
                 orderBy: orderBy,
                 sortOrder: sortOrder,
                 page: page.toString(),
             }).toString(),
         });
-    }, [orderBy, sortOrder, page, navigate]);
+    }, [search,orderBy, sortOrder, page]);
 
     useEffect(() => {
         async function getData() {
@@ -82,7 +92,7 @@ function BrowseLists(){
                 <div className="title">{t('browseLists.communityLists')}</div>
 
                 <div className="browse-list-header-searchable">
-                    <SearchBar />
+                    <BrowseListsSearchBar/>
                     <div style={{display:"flex", float:"right"}}>
                         <div style={{marginInline:"10px"}}>{t('browseLists.orderBy')}</div>
                         <DropdownMenu setOrderBy={setOrderBy} setSortOrder={setSortOrder} currentOrderDefault={sortOrder} values={Object.values(CardsListOrderBy)}/>
