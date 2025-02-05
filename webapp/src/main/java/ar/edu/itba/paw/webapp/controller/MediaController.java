@@ -13,6 +13,7 @@ import ar.edu.itba.paw.webapp.dto.out.MovieDto;
 import ar.edu.itba.paw.webapp.dto.out.TVSerieDto;
 
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
+import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -48,7 +49,7 @@ public class MediaController {
 
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_MEDIA_LIST)
     public Response getMedia(
             @QueryParam("type") @DefaultValue("-1") final int type,
             @QueryParam("pageNumber") @DefaultValue("1") final int page,
@@ -175,7 +176,7 @@ public class MediaController {
 
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_MEDIA)
     public Response getMediaById(@PathParam("id") final int id) {
         Media media = mediaService.getMediaById(id);
         if(media.isType()){

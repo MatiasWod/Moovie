@@ -27,5 +27,11 @@ public class VndType {
     // Tipo de medio para una lista de generos
     public static final String APPLICATION_GENRE_LIST = "application/vnd.genre-list.v1+json";
 
+    // Tipo de medio para una lista de medias
+    public static final String APPLICATION_MEDIA_LIST = "application/vnd.media-list.v1+json";
+
+    // Tipo de medio para una media individual
+    public static final String APPLICATION_MEDIA = "application/vnd.media.v1+json";
+
     }
 
