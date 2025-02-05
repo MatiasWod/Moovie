@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.Cast.Director;
 import ar.edu.itba.paw.services.DirectorService;
 import ar.edu.itba.paw.webapp.dto.out.DirectorDto;
+import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,7 @@ public class DirectorController {
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_DIRECTOR_LIST)
     public Response getDirectors(
             @QueryParam("search") final String search
     ) {
@@ -44,7 +45,7 @@ public class DirectorController {
 
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_DIRECTOR)
     public Response getDirectorById(@PathParam("id") final int directorId) {
         Director director = directorService.getDirectorById(directorId);
         return Response.ok(DirectorDto.fromDirector(director, uriInfo)).build();
