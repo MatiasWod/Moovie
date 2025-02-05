@@ -33,5 +33,24 @@ public class VndType {
     // Tipo de medio para una media individual
     public static final String APPLICATION_MEDIA = "application/vnd.media.v1+json";
 
+    // Tipo de medio para una lista de MoovieList
+    public static final String APPLICATION_MOOVIELIST_LIST = "application/vnd.moovielist-list.v1+json";
+
+    // Tipo de medio para una lista de MoovieList
+    public static final String APPLICATION_MOOVIELIST = "application/vnd.moovielist.v1+json";
+
+    // Tipo de medio para operaciones de creación/edición de una MoovieList
+    public static final String APPLICATION_MOOVIELIST_FORM = "application/vnd.moovielist-form.v1+json";
+
+    // Tipo de medio para un medio (Media) dentro de una MoovieList
+    public static final String APPLICATION_MOOVIELIST_MEDIA = "application/vnd.moovielist-media.v1+json";
+
+    // Tipo de medio para una lista de medios (Media) dentro de una MoovieList
+    public static final String APPLICATION_MOOVIELIST_MEDIA_LIST = "application/vnd.moovielist-media-list.v1+json";
+
+    // Tipo de medio para operaciones relacionadas con medios (Media) en una MoovieList
+    public static final String APPLICATION_MOOVIELIST_MEDIA_FORM = "application/vnd.moovielist-media-form.v1+json";
+
+
     }
 

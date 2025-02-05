@@ -47,7 +47,7 @@ const listApi = (() => {
             { mediaIdList: mediaIds },  // Rename `mediaIds` to `mediaIdList`
             {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/vnd..moovielist-media-form.v1+json',
                 },
             }
         );
@@ -65,6 +65,9 @@ const listApi = (() => {
         const form = {
             listName: name,
             listDescription: description,
+            headers: {
+                'Content-Type': 'application/vnd.moovielist-form.v1+json'
+            }
         };
         const response = await api.put('/list/' + mlId,
             form);
@@ -86,7 +89,11 @@ const listApi = (() => {
         const input = {
             mediaId: mediaId,
             moovieListId: listId,
-            customOrder: customOrder
+            customOrder: customOrder,
+            headers: {
+                'Content-Type': 'application/vnd..moovielist-media-form.v1+json',
+            }
+
         };
 
         const response =  api.put(`list/${listId}/content/${mediaId}`,
@@ -100,7 +107,10 @@ const listApi = (() => {
     const createMoovieList = (name, description) => {
         const body = {
             name: name,
-            description: description
+            description: description,
+            headers: {
+                'Content-Type': 'application/vnd.moovielist-form.v1+json'
+            }
         }
         return api.post('list', body)
     }

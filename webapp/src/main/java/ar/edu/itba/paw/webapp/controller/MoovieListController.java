@@ -19,6 +19,7 @@ import ar.edu.itba.paw.webapp.dto.out.MoovieListDto;
 import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 
+import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
@@ -46,7 +47,7 @@ public class MoovieListController {
 
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_MOOVIELIST_LIST)
     public Response getMoovieList(
             @QueryParam("ids") final String ids,
             @QueryParam("search") String search,
@@ -108,8 +109,8 @@ public class MoovieListController {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(VndType.APPLICATION_MOOVIELIST_FORM)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response createMoovieList(@Valid final MoovieListCreateDto listDto) {
         try {
             int listId = moovieListService.createMoovieList(
@@ -139,15 +140,15 @@ public class MoovieListController {
 
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_MOOVIELIST)
     public Response getMoovieListById(@PathParam("id") final int id) {
         return Response.ok(MoovieListDto.fromMoovieList(moovieListService.getMoovieListCardById(id), uriInfo)).build();
     }
 
     @PUT
     @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(VndType.APPLICATION_MOOVIELIST_FORM)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response editMoovieList(@PathParam("id") int listId,
                                    @Valid final EditListDTO editListForm) {
         moovieListService.editMoovieList(listId, editListForm.getListName(), editListForm.getListDescription());
@@ -159,16 +160,17 @@ public class MoovieListController {
 
     @DELETE
     @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response deleteMoovieList(@PathParam("id") final int id) {
         moovieListService.deleteMoovieList(id);
         return Response.noContent().build();
     }
 
+
+    //TODO TAL VEZ MOVER ESTO BAJO EL GET DE /list/
     @GET
     @Path("{id}/recommendedLists")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_MOOVIELIST_LIST)
     public Response getRecommendedLists(@PathParam("id") final int id) {
         List<MoovieListDto> mlcList = MoovieListDto.fromMoovieListList(moovieListService.getRecommendedMoovieListCards(id, 4, 0), uriInfo);
         Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(mlcList) {
@@ -180,7 +182,7 @@ public class MoovieListController {
     // PROBLEM WHEN SORT ORDER AND OR ORDER BY ARE NULL
     @GET
     @Path("/{id}/content")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_MOOVIELIST_MEDIA_LIST)
     public Response getMoovieListMedia(@PathParam("id") final int id,
                                                         @QueryParam("orderBy") @DefaultValue("customOrder") final String orderBy,
                                                         @QueryParam("sortOrder") @DefaultValue("DESC") final String sortOrder,
@@ -203,8 +205,8 @@ public class MoovieListController {
 
     @POST
     @Path("/{id}/content")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(VndType.APPLICATION_MOOVIELIST_MEDIA_FORM)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response insertMediaIntoMoovieList(@PathParam("id") int moovieListId,
                                               @Valid MediaListDto mediaIdListDto) {
         List<Integer> mediaIdList = mediaIdListDto.getMediaIdList();
@@ -220,7 +222,7 @@ public class MoovieListController {
 
     @GET
     @Path("/{id}/content/{mediaId}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_MOOVIELIST_MEDIA)
     public Response getMoovieListMediaByMediaId(@PathParam("id") final int id,
                                                 @PathParam("mediaId") final int mediaId ){
         int customOrder = moovieListService.isMediaInMoovieList(mediaId,id);
@@ -234,8 +236,8 @@ public class MoovieListController {
 
     @PUT
     @Path("/{id}/content/{mediaId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(VndType.APPLICATION_MOOVIELIST_MEDIA_FORM)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response editMoovieListMediaByMediaId(@PathParam("id") final int id,
                                                 @PathParam("mediaId") final int mediaId,
                                                  final MediaIdListIdDto input){
@@ -246,8 +248,7 @@ public class MoovieListController {
 
     @DELETE
     @Path("/{id}/content/{mediaId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response deleteMediaMoovieList(@PathParam("id") final int id, @PathParam("mediaId") final int mId) {
         moovieListService.deleteMediaFromMoovieList(id, mId);
         return Response.noContent().build();
