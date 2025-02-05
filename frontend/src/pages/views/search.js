@@ -20,6 +20,7 @@ import {useTranslation} from "react-i18next";
 import {Divider} from "@mui/material";
 import './discover.css';
 import profileService from "../../services/ProfileService";
+import './search.css';
 
 function Healthcheck() {
     const { t } = useTranslation();
@@ -67,6 +68,10 @@ function Healthcheck() {
 
     const handleDirectorCardClick = (director) => {
         navigate(`/cast/director/${director.directorId}`, { state: { actorName: director.name } });
+    };
+
+    const handleSeeMoreListsButtonClick = () => {
+      navigate(`/browselists?search=${search}&page=1`);
     };
 
     useEffect(() => {
@@ -204,6 +209,12 @@ function Healthcheck() {
                 {lists?.data?.length > 0 ? (
                     <>
                         <h3>{t('search.listsFor', {search: search})}</h3>
+                        <a
+                            onClick={handleSeeMoreListsButtonClick}
+                            className="link-button"
+                        >
+                            {t('search.seeMore')}
+                        </a>
                         <Divider sx={{
                             backgroundColor: "rgba(0, 0, 0, 0.8)",
                             height: "2px",

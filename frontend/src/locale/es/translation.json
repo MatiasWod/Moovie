@@ -226,5 +226,6 @@
   "search.listsFor": "Listas para: '{{search}}'",
   "search.noListsFound": "No se encontraron listas",
   "search.usersFor": "Usuarios para: '{{search}}'",
-  "search.noUsersFound": "No se encontraron usuarios"
+  "search.noUsersFound": "No se encontraron usuarios",
+  "search.seeMore": "Ver más"
 }

@@ -226,5 +226,6 @@
   "search.listsFor": "Lists for: '{{search}}'",
   "search.noListsFound": "No lists found",
   "search.usersFor": "Users for: '{{search}}'",
-  "search.noUsersFound": "No users found"
+  "search.noUsersFound": "No users found",
+  "search.seeMore": "See More"
 }
