@@ -20,6 +20,7 @@ import ar.edu.itba.paw.webapp.dto.out.ReportDTO;
 import ar.edu.itba.paw.webapp.mappers.ExceptionEM;
 import ar.edu.itba.paw.webapp.mappers.UnableToFindUserEM;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
+import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -45,7 +46,7 @@ public class CommentController {
 
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_COMMENT)
     public Response getCommentById(@PathParam("id") int id) {
         try {
             final Comment comment = commentService.getCommentById(id);
@@ -58,7 +59,7 @@ public class CommentController {
 
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_COMMENT_LIST)
     public Response getCommentsByReviewId(@QueryParam("reviewId") final int reviewId, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
         final int commentCount = reviewService.getReviewById(reviewId).getCommentCount().intValue();
         final List<Comment> commentList = commentService.getComments(reviewId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
@@ -72,8 +73,8 @@ public class CommentController {
     }
 
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    @Consumes(VndType.APPLICATION_COMMENT_FORM)
     public Response createComment(@QueryParam("reviewId") final int reviewId, @Valid final CommentCreateDto commentDto) {
         commentService.createComment(
                 reviewId,
@@ -87,7 +88,7 @@ public class CommentController {
 
     @POST
     @Path("/{id}/like")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response likeComment(@PathParam("id") int id) {
         try {
             boolean liked = commentService.likeComment(id);
@@ -111,7 +112,7 @@ public class CommentController {
 
     @DELETE
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response deleteComment(@PathParam("id") int id) {
         try {
             commentService.deleteComment(id);
@@ -129,7 +130,7 @@ public class CommentController {
 
     @DELETE
     @Path("/{id}/removeLikeComment")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response removeLikeComment(@PathParam("id") int id) {
         try {
             commentService.removeLikeComment(id);
@@ -147,7 +148,7 @@ public class CommentController {
 
     @DELETE
     @Path("/{id}/removeUnlikeComment")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response removeUnlikeComment(@PathParam("id") int id) {
         try {
             commentService.removeDislikeComment(id);

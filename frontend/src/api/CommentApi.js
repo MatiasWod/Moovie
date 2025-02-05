@@ -10,6 +10,9 @@ const commentApi = (() => {
             {
                 params: {
                     'reviewId': reviewId
+                },
+                headers: {
+                    'Content-Type': 'application/vnd.comment-form.v1+json'
                 }
             }
             );
