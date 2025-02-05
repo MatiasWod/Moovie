@@ -18,11 +18,14 @@ public class VndType {
     // Tipo de medio para una lista de comentarios
     public static final String APPLICATION_COMMENT_LIST = "application/vnd.comment-list.v1+json";
 
-    // Tipo de medio para una lista de actores
+    // Tipo de medio para una lista de directores
     public static final String APPLICATION_DIRECTOR_LIST = "application/vnd.director-list.v1+json";
 
-    // Tipo de medio para un actor individual
+    // Tipo de medio para un director individual
     public static final String APPLICATION_DIRECTOR = "application/vnd.director.v1+json";
+
+    // Tipo de medio para una lista de generos
+    public static final String APPLICATION_GENRE_LIST = "application/vnd.genre-list.v1+json";
 
     }
 

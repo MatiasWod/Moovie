@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Genre.Genre;
 import ar.edu.itba.paw.services.GenreService;
 import ar.edu.itba.paw.webapp.dto.out.GenreDto;
 import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
+import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +22,7 @@ public class GenreController {
     private UriInfo uriInfo;
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_GENRE_LIST)
     public Response getGenres(@QueryParam("mediaId") final Integer mediaId) {
         try {
             List<Genre> genreList;
