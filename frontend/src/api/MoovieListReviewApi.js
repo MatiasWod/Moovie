@@ -40,7 +40,7 @@ const moovieListReviewApi = (()=> {
         },
             {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/vnd.moovielist-review-form.v1+json',
                 },
             }
             );
@@ -58,7 +58,7 @@ const moovieListReviewApi = (()=> {
             },
             {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/vnd.moovielist-review-form.v1+json',
                 },
             });
     }

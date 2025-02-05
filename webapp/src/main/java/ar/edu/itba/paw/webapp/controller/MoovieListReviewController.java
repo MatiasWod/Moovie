@@ -6,21 +6,13 @@ import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.exceptions.UserNotLoggedException;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
-import ar.edu.itba.paw.models.Reports.MoovieListReviewReport;
-import ar.edu.itba.paw.models.Reports.ReviewReport;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
-import ar.edu.itba.paw.models.User.User;
-import ar.edu.itba.paw.services.ReportService;
 import ar.edu.itba.paw.services.ReviewService;
-import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.dto.in.MoovieListReviewCreateDto;
-import ar.edu.itba.paw.webapp.dto.in.ReportCreateDTO;
 import ar.edu.itba.paw.webapp.dto.out.MoovieListReviewDto;
-import ar.edu.itba.paw.webapp.dto.out.ReportDTO;
-import ar.edu.itba.paw.webapp.mappers.ExceptionEM;
-import ar.edu.itba.paw.webapp.mappers.UnableToFindUserEM;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
+import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,7 +36,7 @@ public class MoovieListReviewController {
 
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_MOOVIELIST_REVIEW)
     public Response getMoovieListReviewById(@PathParam("id") int id) {
         try {
             final MoovieListReview moovieListReview = reviewService.getMoovieListReviewById(id);
@@ -60,7 +52,7 @@ public class MoovieListReviewController {
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_MOOVIELIST_REVIEW_LIST)
     public Response getMoovieListReviewsFromQueryParams(
             @QueryParam("listId") final Integer listId,
             @QueryParam("userId") final Integer userId,
@@ -96,8 +88,8 @@ public class MoovieListReviewController {
     }
 
     @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(VndType.APPLICATION_MOOVIELIST_REVIEW_FORM)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response editReview(@QueryParam("listId") int listId,
                                @Valid final MoovieListReviewCreateDto moovieListReviewDto) {
         reviewService.editReview(
@@ -113,8 +105,8 @@ public class MoovieListReviewController {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(VndType.APPLICATION_MOOVIELIST_REVIEW_FORM)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response createMoovieListReview(@QueryParam("listId") int listId,
                                                             @Valid final MoovieListReviewCreateDto moovieListReviewDto) {
         reviewService.createReview(
@@ -131,7 +123,7 @@ public class MoovieListReviewController {
 
     @DELETE
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response deleteMoovieListReviewById(@PathParam("id") final int moovieListReview) {
         try {
             reviewService.deleteReview(moovieListReview, ReviewTypes.REVIEW_MOOVIE_LIST);
@@ -163,7 +155,7 @@ public class MoovieListReviewController {
 
     @POST
     @Path("/{id}/like")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response likeMoovieListReview(@PathParam("id") final int id) {
         try {
             boolean liked = reviewService.likeReview(id, ReviewTypes.REVIEW_MOOVIE_LIST);

@@ -51,6 +51,14 @@ public class VndType {
     // Tipo de medio para operaciones relacionadas con medios (Media) en una MoovieList
     public static final String APPLICATION_MOOVIELIST_MEDIA_FORM = "application/vnd.moovielist-media-form.v1+json";
 
+    // Tipo de medio para una reseña individual de MoovieList
+    public static final String APPLICATION_MOOVIELIST_REVIEW = "application/vnd.moovielist-review.v1+json";
+
+    // Tipo de medio para una lista de reseñas de MoovieList
+    public static final String APPLICATION_MOOVIELIST_REVIEW_LIST = "application/vnd.moovielist-review-list.v1+json";
+
+    // Tipo de medio para operaciones de creación/edición de una reseña de MoovieList
+    public static final String APPLICATION_MOOVIELIST_REVIEW_FORM = "application/vnd.moovielist-review-form.v1+json";
 
     }
 
