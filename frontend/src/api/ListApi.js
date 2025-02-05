@@ -47,7 +47,7 @@ const listApi = (() => {
             { mediaIdList: mediaIds },  // Rename `mediaIds` to `mediaIdList`
             {
                 headers: {
-                    'Content-Type': 'application/vnd..moovielist-media-form.v1+json',
+                    'Content-Type': 'application/vnd.moovielist-media-form.v1+json',
                 },
             }
         );
@@ -91,7 +91,7 @@ const listApi = (() => {
             moovieListId: listId,
             customOrder: customOrder,
             headers: {
-                'Content-Type': 'application/vnd..moovielist-media-form.v1+json',
+                'Content-Type': 'application/vnd.moovielist-media-form.v1+json',
             }
 
         };
