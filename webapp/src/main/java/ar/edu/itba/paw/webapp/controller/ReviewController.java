@@ -1,24 +1,14 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.exceptions.*;
-import ar.edu.itba.paw.models.Comments.Comment;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
-import ar.edu.itba.paw.models.Reports.ReviewReport;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
-import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
-import ar.edu.itba.paw.webapp.dto.in.CommentCreateDto;
-import ar.edu.itba.paw.webapp.dto.in.ReportCreateDTO;
 import ar.edu.itba.paw.webapp.dto.in.ReviewCreateDto;
-import ar.edu.itba.paw.webapp.dto.out.CommentDto;
-import ar.edu.itba.paw.webapp.dto.out.ReportDTO;
 import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
-import ar.edu.itba.paw.webapp.mappers.ExceptionEM;
-import ar.edu.itba.paw.webapp.mappers.InvalidAccessToResourceEM;
-import ar.edu.itba.paw.webapp.mappers.UnableToFindUserEM;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
+import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -53,7 +43,7 @@ public class ReviewController {
 
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_REVIEW)
     public Response getReviewById(@PathParam("id") final int id) {
         final Review review = reviewService.getReviewById(id);
         final ReviewDto reviewDto = ReviewDto.fromReview(review, uriInfo);
@@ -62,7 +52,7 @@ public class ReviewController {
 
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_REVIEW_LIST)
     public Response getReviewsByQueryParams(
             @QueryParam("mediaId") final Integer mediaId,
             @QueryParam("userId") final Integer userId,
@@ -108,8 +98,8 @@ public class ReviewController {
     }
 
     @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(VndType.APPLICATION_REVIEW_FORM)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response editReview(@QueryParam("mediaId") int mediaId,@Valid final ReviewCreateDto reviewDto) {
         reviewService.editReview(
                 mediaId,
@@ -124,8 +114,8 @@ public class ReviewController {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(VndType.APPLICATION_REVIEW_FORM)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response createReview(@QueryParam("mediaId") int mediaId,@Valid final ReviewCreateDto reviewDto) {
         reviewService.createReview(
                 mediaId,
@@ -142,7 +132,7 @@ public class ReviewController {
 
     @DELETE
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response deleteReviewById(@PathParam("id") final int reviewId) {
         reviewService.deleteReview(reviewId, ReviewTypes.REVIEW_MEDIA);
 

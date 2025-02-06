@@ -48,7 +48,7 @@ const reviewApi = (()=> {
             },
             {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/vnd.review-form.v1+json',
                 },
             }
         );
@@ -64,7 +64,7 @@ const reviewApi = (()=> {
             },
             {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/vnd.review-form.v1+json',
                 },
             }
         );

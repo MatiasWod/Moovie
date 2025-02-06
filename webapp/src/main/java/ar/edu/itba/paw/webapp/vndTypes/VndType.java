@@ -105,5 +105,14 @@ public class VndType {
     // Tipo de medio para operaciones de creación de reportes
     public static final String APPLICATION_REPORT_FORM = "application/vnd.report-form.v1+json";
 
+    // Tipo de medio para una reseña individual
+    public static final String APPLICATION_REVIEW = "application/vnd.review.v1+json";
+
+    // Tipo de medio para una lista de reseñas
+    public static final String APPLICATION_REVIEW_LIST = "application/vnd.review-list.v1+json";
+
+    // Tipo de medio para operaciones de creación/edición de una reseña
+    public static final String APPLICATION_REVIEW_FORM = "application/vnd.review-form.v1+json";
+
     }
 
