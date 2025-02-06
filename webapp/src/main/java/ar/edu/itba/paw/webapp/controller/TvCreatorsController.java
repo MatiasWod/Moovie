@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.TV.TVCreators;
 import ar.edu.itba.paw.services.TVCreatorsService;
 import ar.edu.itba.paw.webapp.dto.out.TvCreatorsDto;
+import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +28,7 @@ public class TvCreatorsController {
 
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_TVCREATOR_LIST)
     public Response getTVCreators(
             @QueryParam("search") final String search,
             @QueryParam("mediaId") final Integer mediaId
@@ -52,7 +53,7 @@ public class TvCreatorsController {
 
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_TVCREATOR)
     public Response getTvCreatorById(@PathParam("id") final int tvCreatorId) {
         TVCreators tvCreators=tvCreatorsService.getTvCreatorById(tvCreatorId);
         return Response.ok(TvCreatorsDto.fromTvCreator(tvCreators,uriInfo)).build();

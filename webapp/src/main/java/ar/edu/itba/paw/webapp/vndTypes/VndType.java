@@ -114,5 +114,11 @@ public class VndType {
     // Tipo de medio para operaciones de creación/edición de una reseña
     public static final String APPLICATION_REVIEW_FORM = "application/vnd.review-form.v1+json";
 
+    // Tipo de medio para un tvcreator individual
+    public static final String APPLICATION_TVCREATOR = "application/vnd.tvcreator.v1+json";
+
+    // Tipo de medio para una lista de tvcreators
+    public static final String APPLICATION_TVCREATOR_LIST = "application/vnd.tvcreator-list.v1+json";
+
     }
 

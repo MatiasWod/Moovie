@@ -27,6 +27,7 @@ public class TokenController {
         this.verificationTokenService = verificationTokenService;
     }
 
+    //TODO: Si queda esto hay que armar el vndType
     @POST
     @Path("/sendVerificationEmail")
     @Produces(MediaType.APPLICATION_JSON)
