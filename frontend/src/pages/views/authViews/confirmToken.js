@@ -14,7 +14,7 @@ export default function ConfirmToken() {
         if (token) {
             const confirmToken = async () => {
                 try {
-                    const username = sessionStorage.getItem('username');
+                    const username = localStorage.getItem('username');
                     if (!username) {
                         throw new Error('No username found');
                     }

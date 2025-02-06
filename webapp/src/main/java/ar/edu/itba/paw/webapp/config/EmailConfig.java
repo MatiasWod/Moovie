@@ -16,11 +16,11 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 import java.net.URL;
 import java.util.Properties;
 
-@EnableWebMvc
 @EnableAsync
 @ComponentScan({"ar.edu.itba.paw.services"})
 @Configuration
 public class EmailConfig {
+
     @Autowired
     private MessageSource messageSource;
 
