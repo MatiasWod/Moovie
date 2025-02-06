@@ -93,5 +93,8 @@ public class VndType {
     // Tipo de medio para operaciones de seguimiento (Follow/Unfollow)
     public static final String APPLICATION_FOLLOW_FORM = "application/vnd.follow-form.v1+json";
 
+    // Tipo de medio para una lista de proveedores "
+    public static final String APPLICATION_PROVIDER_LIST = "application/vnd.provider-list.v1+json";
+
     }
 

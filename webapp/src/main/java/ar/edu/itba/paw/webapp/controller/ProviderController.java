@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Provider.Provider;
 import ar.edu.itba.paw.services.ProviderService;
 import ar.edu.itba.paw.webapp.dto.out.ProviderDto;
 import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
+import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +23,7 @@ public class ProviderController {
     private UriInfo uriInfo;
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_PROVIDER_LIST)
     public Response getProviders(@QueryParam("mediaId") final Integer mediaId) {
         try {
             List<Provider> providerList;
