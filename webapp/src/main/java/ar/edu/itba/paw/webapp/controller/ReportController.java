@@ -9,6 +9,7 @@ import ar.edu.itba.paw.webapp.dto.in.ReportCreateDTO;
 import ar.edu.itba.paw.webapp.dto.out.ReportDTO;
 import ar.edu.itba.paw.webapp.mappers.ExceptionEM;
 import ar.edu.itba.paw.webapp.mappers.UnableToFindUserEM;
+import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +35,7 @@ public class ReportController {
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_REPORT_LIST)
     public Response getReports(@QueryParam("contentType") String contentType) {
         try {
             // Fetch reports based on filters using the ReportService
@@ -63,8 +64,8 @@ public class ReportController {
 
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(VndType.APPLICATION_REPORT_FORM)
+    @Produces(VndType.APPLICATION_REPORT)
     public Response report(
             @QueryParam("commentId") final Integer commentId,
             @QueryParam("moovieListId") final Integer moovieListId,
@@ -121,7 +122,7 @@ public class ReportController {
     }
 
     @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response resolveReport(
             @QueryParam("moovieListId") final Integer moovieListId,
             @QueryParam("commentId") final Integer commentId,

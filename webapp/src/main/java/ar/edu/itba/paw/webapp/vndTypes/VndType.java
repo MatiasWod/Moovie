@@ -96,5 +96,14 @@ public class VndType {
     // Tipo de medio para una lista de proveedores "
     public static final String APPLICATION_PROVIDER_LIST = "application/vnd.provider-list.v1+json";
 
+    // Tipo de medio para una lista de reportes
+    public static final String APPLICATION_REPORT_LIST = "application/vnd.report-list.v1+json";
+
+    // Tipo de medio para un reporte individual
+    public static final String APPLICATION_REPORT = "application/vnd.report.v1+json";
+
+    // Tipo de medio para operaciones de creación de reportes
+    public static final String APPLICATION_REPORT_FORM = "application/vnd.report-form.v1+json";
+
     }
 

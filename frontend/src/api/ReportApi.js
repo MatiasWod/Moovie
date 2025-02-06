@@ -2,6 +2,7 @@ import api from './api.js';
 
 const reportApi = (() => {
 
+    let reprortContentType = 'application/vnd.vnd.report-form.v1+json'
 
     // --------------- REPORTING ---------------
 
@@ -15,6 +16,11 @@ const reportApi = (() => {
             {params:
                 {
                     reviewId: reviewId
+                }
+            },
+            {
+                headers: {
+                    'Content-Type': reprortContentType,
                 }
             });
         return response;
@@ -31,6 +37,11 @@ const reportApi = (() => {
             {params:
                 {
                     commentId: commentId
+                }
+            },
+            {
+                headers: {
+                    'Content-Type': reprortContentType,
                 }
             }
         );
@@ -49,6 +60,11 @@ const reportApi = (() => {
                 {
                     moovieListId: moovieListId
                 }
+            },
+            {
+                headers: {
+                    'Content-Type': reprortContentType,
+                }
             }
         );
         return response;
@@ -65,6 +81,11 @@ const reportApi = (() => {
             {params:
                 {
                     moovieListReviewId: moovieListReviewId
+                }
+            },
+            {
+                headers: {
+                    'Content-Type': reprortContentType,
                 }
             }
         );
