@@ -31,6 +31,11 @@ const userApi = (() => {
                 email,
                 username,
                 password,
+            },
+                {
+                headers: {
+                    'Content-Type': 'application/vnd.user-form.v1+json'
+                }
             });
         } catch (error) {
             throw error

@@ -120,5 +120,17 @@ public class VndType {
     // Tipo de medio para una lista de tvcreators
     public static final String APPLICATION_TVCREATOR_LIST = "application/vnd.tvcreator-list.v1+json";
 
+    // Tipo de medio para un user individual
+    public static final String APPLICATION_USER = "application/vnd.user.v1+json";
+
+    // Tipo de medio para una lista de users
+    public static final String APPLICATION_USER_LIST = "application/vnd.user-list.v1+json";
+
+    // Tipo de medio para operaciones de creación/edición de un user
+    public static final String APPLICATION_USER_FORM = "application/vnd.user-form.v1+json";
+
+    // Tipo de medio para token de un user individual
+    public static final String APPLICATION_USER_TOKEN = "application/vnd.user_token.v1+json";
+
     }
 

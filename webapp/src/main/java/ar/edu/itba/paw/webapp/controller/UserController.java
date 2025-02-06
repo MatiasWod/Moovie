@@ -1,25 +1,18 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.*;
-import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
-import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
-import ar.edu.itba.paw.models.MoovieList.UserMoovieListId;
-import ar.edu.itba.paw.models.PagingSizes;
-import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.JwtTokenProvider;
 
 import ar.edu.itba.paw.webapp.dto.in.BanUserDTO;
-import ar.edu.itba.paw.webapp.dto.in.JustIdDto;
 import ar.edu.itba.paw.webapp.dto.in.UserCreateDto;
 import ar.edu.itba.paw.webapp.dto.out.UserDto;
-import ar.edu.itba.paw.webapp.dto.out.UserListIdDto;
 
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
 import ar.edu.itba.paw.webapp.mappers.*;
-import ar.edu.itba.paw.webapp.utils.ResponseUtils;
+import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +21,6 @@ import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,11 +31,9 @@ public class UserController {
     private static int DEFAULT_PAGE_INT = 1;
 
     private final UserService userService;
-    private final MoovieListService moovieListService;
     private final VerificationTokenService verificationTokenService;
     private final JwtTokenProvider jwtTokenProvider;
     private final ModeratorService moderatorService;
-    private final MediaService mediaService;
 
     @Context
     private UriInfo uriInfo;
@@ -51,19 +41,16 @@ public class UserController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public UserController(final UserService userService, MoovieListService moovieListService,
-                          VerificationTokenService verificationTokenService, JwtTokenProvider jwtTokenProvider, ModeratorService moderatorService,
-                          MediaService mediaService) {
+    public UserController(final UserService userService,
+                          VerificationTokenService verificationTokenService, JwtTokenProvider jwtTokenProvider, ModeratorService moderatorService) {
         this.userService = userService;
-        this.moovieListService = moovieListService;
         this.verificationTokenService = verificationTokenService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.moderatorService = moderatorService;
-        this.mediaService = mediaService;
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_USER_LIST)
     public Response getUsers(
             @QueryParam("page") @DefaultValue("1") final int page,
             @QueryParam("email") final String email,
@@ -117,8 +104,8 @@ public class UserController {
 
 
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_USER)
+    @Consumes(VndType.APPLICATION_USER_FORM)
     public Response createUser(@Valid final UserCreateDto userCreateDto) {
         LOGGER.info("Method: createUser, Path: /users, UserCreateDto: {}", userCreateDto);
         try {
@@ -134,6 +121,7 @@ public class UserController {
 
     @GET
     @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getUserCount() {
         LOGGER.info("Method: getUserCount, Path: /users/count");
         try {
@@ -147,7 +135,7 @@ public class UserController {
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_USER)
     @Path("/{username}")
     public Response getUserByUsername(@PathParam("username") final String username) {
         LOGGER.info("Method: getUserByUsername, Path: /users/{username}, Username: {}", username);
@@ -166,6 +154,7 @@ public class UserController {
 
     @PUT
     @Path("/verify/{token}")
+    @Produces(VndType.APPLICATION_USER_TOKEN)
     public Response verifyUser(@PathParam("token") String tokenString) {
         LOGGER.info("Method: verifyUser, Path: /users/verify/{token}, Token: {}", tokenString);
         try {
