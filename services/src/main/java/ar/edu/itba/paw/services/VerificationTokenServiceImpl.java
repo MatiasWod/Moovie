@@ -15,13 +15,10 @@ import java.util.UUID;
 
 @Service
 public class VerificationTokenServiceImpl implements VerificationTokenService{
-    private final VerificationTokenDao verificationTokenDao;
-    private static final int EXPIRATION = 1; //days
-
     @Autowired
-    public VerificationTokenServiceImpl(VerificationTokenDao verificationTokenDao) {
-        this.verificationTokenDao = verificationTokenDao;
-    }
+    private VerificationTokenDao verificationTokenDao;
+
+    private static final int EXPIRATION = 1; //days
 
     @Transactional
     @Override
