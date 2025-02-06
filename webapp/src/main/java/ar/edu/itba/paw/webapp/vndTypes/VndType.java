@@ -60,5 +60,38 @@ public class VndType {
     // Tipo de medio para operaciones de creación/edición de una reseña de MoovieList
     public static final String APPLICATION_MOOVIELIST_REVIEW_FORM = "application/vnd.moovielist-review-form.v1+json";
 
+    // Tipo de medio para un perfil individual
+    public static final String APPLICATION_PROFILE = "application/vnd.profile.v1+json";
+
+    // Tipo de medio para una lista de perfiles
+    public static final String APPLICATION_PROFILE_LIST = "application/vnd.profile-list.v1+json";
+
+    // Tipo de medio para la lista de "Watched"
+    public static final String APPLICATION_WATCHED_LIST = "application/vnd.watched-list.v1+json";
+
+    // Tipo de medio para un medio en la lista de "Watched"
+    public static final String APPLICATION_WATCHED_MEDIA = "application/vnd.watched-media.v1+json";
+
+    // Tipo de medio para operaciones de creación/edición de una media de Watched
+    public static final String APPLICATION_WATCHED_MEDIA_FORM = "application/vnd.watched-media-form.v1+json";
+
+    // Tipo de medio para la lista de "Watchlist"
+    public static final String APPLICATION_WATCHLIST_LIST = "application/vnd.watchlist-list.v1+json";
+
+    // Tipo de medio para un medio en la lista de "Watchlist"
+    public static final String APPLICATION_WATCHLIST_MEDIA = "application/vnd.watchlist-media.v1+json";
+
+    // Tipo de medio para operaciones de creación/edición de una media de Watchlist
+    public static final String APPLICATION_WATCHLIST_MEDIA_FORM = "application/vnd.watchlist-media-form.v1+json";
+
+    // Tipo de medio para la lista de listas seguidas (Follows)
+    public static final String APPLICATION_FOLLOWED_LISTS = "application/vnd.followed-lists.v1+json";
+
+    // Tipo de medio para la lista de listas seguidas (Follows)
+    public static final String APPLICATION_FOLLOWED_LISTS_USER_LIST = "application/vnd.followed-lists-user-list.v1+json";
+
+    // Tipo de medio para operaciones de seguimiento (Follow/Unfollow)
+    public static final String APPLICATION_FOLLOW_FORM = "application/vnd.follow-form.v1+json";
+
     }
 

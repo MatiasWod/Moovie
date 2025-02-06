@@ -81,7 +81,11 @@ const profileApi = (() => {
 
     const followList = (moovieListId, username) =>{
             return api.post(`/profiles/${username}/listFollows`,
-                {"id":moovieListId});
+                {"id":moovieListId},
+                {headers: {
+                        'Content-Type': 'application/vnd.follow-form.v1+json'
+                    }
+                });
         }
 
     const unfollowList = (moovieListId, username) =>{
@@ -95,8 +99,22 @@ const profileApi = (() => {
         }
 
     const insertMediaIntoWW = (ww, username, mediaId) => {
-            return api.post(`/profiles/${username}/${ww}`,
-                {"id":mediaId});
+        let contentType = "application/json";
+
+        if (ww === "watched") {
+            contentType = "application/vnd.watched-media-form.v1+json";
+        }else {
+            contentType = "application/vnd.watchlist-media-form.v1+json";
+        }
+
+
+        return api.post(`/profiles/${username}/${ww}`,
+
+                {"id":mediaId},
+            {headers: {
+                    'Content-Type': contentType
+                }
+            });
         }
 
     const removeMediaFromWW = (ww, username, mediaId) => {

@@ -15,6 +15,7 @@ import ar.edu.itba.paw.webapp.dto.out.MediaIdDto;
 import ar.edu.itba.paw.webapp.dto.out.ProfileDto;
 import ar.edu.itba.paw.webapp.dto.out.UserListIdDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
+import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ public class ProfileController {
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_PROFILE_LIST)
     public Response searchProfiles(@QueryParam("username") final String username,
                                    @QueryParam("orderBy") final String orderBy,
                                    @QueryParam("sortOrder") final String sortOrder,
@@ -71,8 +72,9 @@ public class ProfileController {
         }
     }
 
+    //TODO TAL VEZ HAY QUE UNIR CON searchProfiles (AMBOS DEVULEVEN EL MISMO DTO)
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_PROFILE_LIST)
     @Path("/milkyLeaderboard")
     public Response getMilkyLeaderboard(@QueryParam("page") @DefaultValue("1") final int page,
                                         @QueryParam("pageSize") @DefaultValue("-1") final int pageSize) {
@@ -93,6 +95,7 @@ public class ProfileController {
 
     @GET
     @Path("/{username}")
+    @Produces(VndType.APPLICATION_PROFILE)
     public Response getProfileByUsername(@PathParam("username") final String username) {
         LOGGER.info("Method: getProfileByUsername, Path: /users/profile/{username}, Username: {}", username);
         try {
@@ -125,6 +128,7 @@ public class ProfileController {
     @PUT
     @Path("/{username}/image")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response updateProfileImage(@PathParam("username") String username,
                                        @FormDataParam("image") final FormDataBodyPart image,
                                        @Size(max = 1024 * 1024 * 2) @FormDataParam("image") byte[] imageBytes) {
@@ -141,9 +145,10 @@ public class ProfileController {
      * Watched
      */
 
+    //TODO TAL VEZ HAY QUE UNIR CON WATCHLIST (AMBOS DEVULEVEN EL MISMO DTO)
     @GET
     @Path("/{username}/watched")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_WATCHED_LIST)
     public Response getWatched(@PathParam("username") final String username,
                                @QueryParam("orderBy") String orderBy,
                                @QueryParam("order") String order,
@@ -172,7 +177,8 @@ public class ProfileController {
 
     @POST
     @Path("/{username}/watched")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(VndType.APPLICATION_WATCHED_MEDIA_FORM)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response insertIntoWatched(@PathParam("username") final String username,
                                       @Valid final JustIdDto justIdDto){
         moovieListService.addMediaToWatched(justIdDto.getId(), username);
@@ -182,7 +188,7 @@ public class ProfileController {
 
     @GET
     @Path("/{username}/watched/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_WATCHED_MEDIA)
     public Response getWatchedMediaByMediaId(@PathParam("username") final String username,
                                              @PathParam("id") final int mediaId) {
         userService.isUsernameMe(username);
@@ -195,6 +201,7 @@ public class ProfileController {
 
     @DELETE
     @Path("/{username}/watched/{id}")
+    @Produces(MediaType.TEXT_PLAIN)
     public Response deleteFromWatched(@PathParam("username") final String username,
                                       @PathParam("id") final int id){
         moovieListService.removeMediaFromWatched(id, username);
@@ -206,7 +213,7 @@ public class ProfileController {
      */
     @GET
     @Path("/{username}/watchlist")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_WATCHLIST_LIST)
     public Response getWatchlist(@PathParam("username") final String username,
                                  @QueryParam("orderBy") String orderBy,
                                  @QueryParam("order") String order,
@@ -235,7 +242,8 @@ public class ProfileController {
 
     @POST
     @Path("/{username}/watchlist")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(VndType.APPLICATION_WATCHLIST_MEDIA_FORM)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response insertIntoWatchlist(@PathParam("username") final String username,
                                         @Valid  final JustIdDto justIdDto){
         moovieListService.addMediaToWatchlist(justIdDto.getId(), username);
@@ -244,7 +252,7 @@ public class ProfileController {
 
     @GET
     @Path("/{username}/watchlist/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_WATCHLIST_MEDIA)
     public Response getWatchlistMediaByMediaId(@PathParam("username") final String username,
                                                @PathParam("id") final int mediaId) {
         userService.isUsernameMe(username);
@@ -257,6 +265,7 @@ public class ProfileController {
 
     @DELETE
     @Path("/{username}/watchlist/{id}")
+    @Produces(MediaType.TEXT_PLAIN)
     public Response deleteFromWatchlist(@PathParam("username") final String username,
                                         @PathParam("id") final int id){
         moovieListService.removeMediaFromWatchlist(id, username);
@@ -266,9 +275,10 @@ public class ProfileController {
     /***
      * FOLLOWS
      */
+
     @GET
     @Path("/{username}/listFollows")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_FOLLOWED_LISTS)
     public Response getFollowedLists(@PathParam("username") final String username,
                                      @QueryParam("orderBy") String orderBy,
                                      @QueryParam("order") String order,
@@ -293,8 +303,9 @@ public class ProfileController {
 
     @POST
     @Path("/{username}/listFollows")
-    @Produces(MediaType.APPLICATION_JSON)
-    public javax.ws.rs.core.Response followMoovieList(@PathParam("username") String username,
+    @Consumes(VndType.APPLICATION_FOLLOW_FORM)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response followMoovieList(@PathParam("username") String username,
                                                       @Valid JustIdDto idDto) {
         userService.isUsernameMe(username);
         boolean like = moovieListService.followMoovieList(idDto.getId());
@@ -308,7 +319,7 @@ public class ProfileController {
 
     @GET
     @Path("/{username}/listFollows/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_FOLLOWED_LISTS_USER_LIST)
     public Response getUserFollowedListById(@PathParam("username") String username,
                                             @PathParam("id") final int id) {
         UserMoovieListId userMoovieListId = moovieListService.currentUserHasFollowed(id);
@@ -320,8 +331,8 @@ public class ProfileController {
 
     @DELETE
     @Path("/{username}/listFollows/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public javax.ws.rs.core.Response unfollowMoovieList(@PathParam("username") String username,
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response unfollowMoovieList(@PathParam("username") String username,
                                                         @PathParam("id") int id) {
         userService.isUsernameMe(username);
         moovieListService.removeFollowMoovieList(id);
@@ -362,8 +373,8 @@ public class ProfileController {
 
     @POST
     @Path("/{username}/listLikes")
-    @Produces(MediaType.APPLICATION_JSON)
-    public javax.ws.rs.core.Response likeMoovieList(@PathParam("username") String username,
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response likeMoovieList(@PathParam("username") String username,
                                                     @Valid JustIdDto idDto) {
         userService.isUsernameMe(username);
         boolean like = moovieListService.likeMoovieList(idDto.getId());
@@ -390,8 +401,8 @@ public class ProfileController {
 
     @DELETE
     @Path("/{username}/listLikes/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public javax.ws.rs.core.Response unlikeMoovieList(@PathParam("username") String username,
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response unlikeMoovieList(@PathParam("username") String username,
                                                       @PathParam("id") int id) {
         userService.isUsernameMe(username);
         moovieListService.removeLikeMoovieList(id);
