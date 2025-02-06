@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.UnableToCreateUserException;
+import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.UserDao;
 import org.junit.Assert;
@@ -13,10 +14,12 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.jws.soap.SOAPBinding;
 import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -27,8 +30,7 @@ public class UserServiceImplTest {
     private static final String USERNAME = "tester";
     private static final String PASSWORD = "pass123";
     private static final int ROLE = 1;
-
-    private User user;
+    private static final String TOKEN = "token";
 
     @InjectMocks
     private final UserServiceImpl userService = new UserServiceImpl();
@@ -39,31 +41,68 @@ public class UserServiceImplTest {
     @Mock
     private PasswordEncoder mockPasswordEncoder;
 
+    @Mock
+    private EmailService mockEmailService;
+
+    @Mock
+    private VerificationTokenService mockVerificationTokenService;
+
+
+
+
     @Before
     public void setup(){
-        user = new User(UID, USERNAME, EMAIL, PASSWORD, ROLE, 0);
+        when(mockPasswordEncoder.encode(PASSWORD)).thenReturn(PASSWORD);
     }
 
     @Test
     public void testCreateUserFromUnregistered() {
-        when(mockUserDao.createUserFromUnregistered(eq(EMAIL), eq(USERNAME), eq(PASSWORD)))
-                .thenReturn(user);
-        when(mockPasswordEncoder.encode(Mockito.anyString())).thenReturn(PASSWORD);
+        final User user = mock(User.class);
+        when(user.getEmail()).thenReturn(EMAIL);
+        when(user.getUsername()).thenReturn(USERNAME);
+        when(user.getPassword()).thenReturn(PASSWORD);
 
-        User user = userService.createUserFromUnregistered(EMAIL, USERNAME, PASSWORD);
-        Assert.assertNotNull(user);
-        Assert.assertEquals(UID, user.getUserId());
-        Assert.assertEquals(USERNAME, user.getUsername());
-        Assert.assertEquals(EMAIL, user.getEmail());
-        Assert.assertEquals(PASSWORD, user.getPassword());
-        Assert.assertEquals(ROLE, user.getRole());
+        final Token token = mock(Token.class);
+        when(token.getToken()).thenReturn(TOKEN);
+
+        when(mockUserDao.findUserByEmail(EMAIL)).thenReturn(Optional.empty());
+        when(mockUserDao.createUserFromUnregistered(eq(EMAIL), eq(USERNAME), eq(PASSWORD))).thenReturn(user);
+        when(user.getUserId()).thenReturn(UID);
+        when(mockVerificationTokenService.createVerificationToken(UID)).thenReturn(TOKEN);
+
+        final User result = userService.createUserFromUnregistered(EMAIL, USERNAME, PASSWORD);
+
+        assertEquals(EMAIL, result.getEmail());
+        assertEquals(USERNAME, result.getUsername());
+        assertEquals(PASSWORD, result.getPassword());
     }
 
     @Test(expected = UnableToCreateUserException.class)
-    public void testAlreadyExistingUser() throws UnableToCreateUserException{
-        when(mockUserDao.findUserByUsername(USERNAME)).thenReturn(Optional.of(user)); // Mock with an existing user
-        userService.createUser(USERNAME, EMAIL, PASSWORD);
-        Assert.fail();
+    public void testCreateUser(){
+        final User realUser = new User.Builder(null, EMAIL, null, ROLE, 0).build();
+        final User user = spy(realUser);
+        when(mockUserDao.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
+
+        final Token token = mock(Token.class);
+        when(token.getToken()).thenReturn(TOKEN);
+        when(mockVerificationTokenService.createVerificationToken(UID)).thenReturn(TOKEN);
+
+        final String result = userService.createUser(USERNAME, EMAIL, PASSWORD);
+
+        assertEquals(TOKEN, result);
     }
 
+    @Test(expected = UnableToCreateUserException.class)
+    public void testCreateExistingUser(){
+        final User existingUser = new User.Builder(USERNAME, EMAIL, PASSWORD, ROLE, 0).build();
+        when(mockUserDao.findUserByEmail(EMAIL)).thenReturn(Optional.of(existingUser));
+
+        final String token = userService.createUser(USERNAME, EMAIL, PASSWORD);
+    }
+
+    @Test(expected = UnableToCreateUserException.class)
+    public void testCreateUserWithNullPassword(){
+        final String password = null;
+        final String result = userService.createUser(USERNAME, EMAIL, password);
+    }
 }
