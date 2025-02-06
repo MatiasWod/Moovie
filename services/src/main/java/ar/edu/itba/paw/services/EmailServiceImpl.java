@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -22,6 +23,11 @@ import java.util.Map;
 
 @Service
 public class EmailServiceImpl implements EmailService {
+
+    @Autowired
+    @Qualifier("basePath")
+    private String basePath;
+
     @Autowired
     private JavaMailSender javaMailSender;
 
@@ -53,6 +59,10 @@ public class EmailServiceImpl implements EmailService {
 
     private String getHtmlBody(String template, Map<String, Object> variables, Locale locale) {
         Context context = new Context(locale);
+        if (variables == null) {
+            variables = new HashMap<>();
+        }
+        variables.put("basePath", basePath);
         context.setVariables(variables);
         return springTemplateEngine.process(template, context);
     }

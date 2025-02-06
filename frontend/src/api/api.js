@@ -2,7 +2,7 @@ import axios from "axios";
 import Qs from "qs";
 
 const api = axios.create({
-    baseURL: 'http://localhost:8080/',
+    baseURL: 'http://localhost:8080/webapp',
     timeout: 50000,
     paramsSerializer: params => Qs.stringify(params, {arrayFormat: 'repeat'})
 });
