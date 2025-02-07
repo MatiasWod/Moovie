@@ -27,7 +27,10 @@ public class MediaHibernateDaoTest {
     private static final int ID_FOR_MEDIA = 1;
     private static final String MEDIA_NAME = "Meg 2: The Trench";
     private static final int INVALID_USER_ID = -1;
-
+    private static final int INVALID_DIRECTOR_ID = -1;
+    private static final int ACTION_GENRE_ID = 1;
+    private static final int MEDIAS_WITH_ACTION_GENRE = 76;
+    public static final int TOTAL_MEDIAS = 332;
 
     private static final int DIRECTOR_ID = 2127;
     private static final int DIRECTOR_MOVIE_ID1 = 88;
@@ -69,16 +72,39 @@ public class MediaHibernateDaoTest {
                             || (mediaList.get(1).getMediaId() == DIRECTOR_MOVIE_ID1 && mediaList.get(0).getMediaId() == DIRECTOR_MOVIE_ID2) );
     }
 
-//    @Rollback
-//    @Test
-//    public void testGetMediaCount(){
-//        List<String> genre = new ArrayList<>();
-//        genre.add("Adventure");
-//        int mediacount = mediaHibernateDao.getMediaCount(MediaTypes.TYPE_ALL.getType(), null, null, genre , null, null, null);
-//
-//        Assert.assertEquals(mediacount,49);
-//    }
-//
+    @Rollback
+    @Test
+    public void testGetMediaForDirectorIdFailure(){
+        List<Movie> mediaList = mediaHibernateDao.getMediaForDirectorId(INVALID_DIRECTOR_ID, INVALID_USER_ID);
 
+        Assert.assertEquals(0, mediaList.size());
+    }
+
+    @Rollback
+    @Test
+    public void testGetMovieById(){
+        Optional<Movie> movie = mediaHibernateDao.getMovieById(ID_FOR_MEDIA);
+
+        Assert.assertTrue(movie.isPresent());
+        Assert.assertEquals(ID_FOR_MEDIA,movie.get().getMediaId());
+    }
+
+    @Rollback
+    @Test
+    public void testGetMediaCountWithGenre(){
+        List<Integer> genre = new ArrayList<>();
+        genre.add(ACTION_GENRE_ID);
+        int mediacount = mediaHibernateDao.getMediaCount(MediaTypes.TYPE_ALL.getType(), null, null, genre , null, null, null);
+
+        Assert.assertEquals(mediacount,MEDIAS_WITH_ACTION_GENRE);
+    }
+
+    @Rollback
+    @Test
+    public void testGetMediaCount(){
+        int mediacount = mediaHibernateDao.getMediaCount(MediaTypes.TYPE_ALL.getType(), null, null, null , null, null, null);
+
+        Assert.assertEquals(mediacount, TOTAL_MEDIAS);
+    }
 
 }
