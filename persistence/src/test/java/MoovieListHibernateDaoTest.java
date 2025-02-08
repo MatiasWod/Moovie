@@ -3,6 +3,7 @@ import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.persistence.MoovieListHibernateDao;
 import config.TestConfig;
+import constants.Constants;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static constants.Constants.*;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 @Transactional
@@ -39,31 +42,25 @@ public class MoovieListHibernateDaoTest {
 
     private JdbcTemplate jdbcTemplate;
 
-    private static final int INSERTED_MOOVIELIST_ID = 2;
-    private static final int TO_INSERT_USER_ID = 95;
-
-    private static final int TO_INSERT_MEDIALIST = 3;
-
-    private static final String MOOVIELIST_TABLE = "moovielists";
-    private static final String MOOVIELISTCONTENT_TABLE = "moovielistscontent";
-
-    private static final String MOOVIELIST_NAME = "CavaniList";
-    private static final String MOOVIELIST_DESCRIPTION = "CavaniListDescription";
-    private static final int MOOVIE_LIST_ID = 1;
-
-    private static final int ID_TO_DELETE = 2;
-
-    private static final int MEDIA_IN_MOOVIE_LIST = 9;
-    private static final int MEDIA_NOT_IN_MOOVIE_LIST = 23;
-    private static final int MOOVIELIST_FOLLOWERS = 1;
-    private static final String NEW_MOOVIELIST_NAME = "New List Name";
-    private static final String NEW_MOOVIELIST_DESCRIPTION = "New List Description";
+    private User user;
 
     @Before
     public void setup(){
         jdbcTemplate = new JdbcTemplate(dataSource);
+        user = Constants.getInsertedUser();
     }
 
+
+    @Rollback
+    @Test
+    public void testCreateMoovieList(){
+        MoovieList newMoovieList = moovieListHibernateDao.createMoovieList(user.getUserId(), TO_INSERT_MOOVIE_LIST_NAME, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), TO_INSERT_MOOVIE_LIST_DESCRIPTION);
+        Assert.assertEquals(TO_INSERT_MOOVIE_LIST_NAME, newMoovieList.getName());
+        Assert.assertEquals(TO_INSERT_MOOVIE_LIST_DESCRIPTION, newMoovieList.getDescription());
+        Assert.assertEquals(MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(), newMoovieList.getType());
+        Optional<MoovieList> savedMoovieList = moovieListHibernateDao.getMoovieListById(newMoovieList.getMoovieListId());
+        Assert.assertEquals(newMoovieList, savedMoovieList.get());
+    }
 
     @Rollback
     @Test

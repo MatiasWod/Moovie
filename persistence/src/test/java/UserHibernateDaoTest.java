@@ -18,6 +18,8 @@ import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 import java.util.Optional;
 
+import static constants.Constants.*;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 @Transactional
@@ -32,17 +34,6 @@ public class UserHibernateDaoTest {
     private EntityManager entityManager;
 
     private JdbcTemplate jdbcTemplate;
-
-    private static final int INSERTED_USER_ID = 2;
-    private static final String INSERTED_USER_EMAIL = "cavani@test.com";
-    private static final String INSERTED_USER_USERNAME = "Cavani";
-
-    private static final int TO_INSERT_USER_ID = 4;
-    private static final String TO_INSERT_USER_EMAIL = "moovie@test.com";
-    private static final String TO_INSERT_USER_USERNAME = "testUser";
-    private static final String TO_INSERT_USER_PASSWORD = "pass123";
-    private static final String USERS_TABLE = "users";
-    private static final int NON_EXISTENT_USER_ID = 5;
 
     @Before
     public void setup(){
@@ -104,7 +95,7 @@ public class UserHibernateDaoTest {
 
     @Rollback
     @Test
-    public void testNonExistenUser(){
+    public void testNonExistentUser(){
         final Optional<User> user = userHibernateDao.findUserById(NON_EXISTENT_USER_ID);
         Assert.assertFalse(user.isPresent());
     }
