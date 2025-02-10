@@ -1,6 +1,7 @@
 import React from 'react'
 import { Card } from "react-bootstrap";
 import {formatDate, truncateText} from "../../../../utils/FormatUtils";
+import "./mediaCard.css"
 
 
 const MediaCard = ({ media, pageName, onClick, isSelected }) => {

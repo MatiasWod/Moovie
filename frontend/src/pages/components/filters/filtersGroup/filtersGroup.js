@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import ChipsDisplay from './ChipsDisplay';
-import FilterSection from './FilterSection';
-import FilterList from './FilterList';
-import FormButtons from './FormButtons';
-import { Collapse } from 'react-bootstrap';
+import ChipsDisplay from './chipsDisplay';
+import FilterSection from './filterSection';
+import FilterList from './filterList';
+import FormButtons from './formButtons';
 import mediaTypes from '../../../../api/values/MediaTypes';
 import mediaOrderBy from '../../../../api/values/MediaOrderBy';
 import ProviderService from "../../../../services/ProviderService";

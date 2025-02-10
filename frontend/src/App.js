@@ -17,7 +17,7 @@ const Login = lazy(() => import(views + '/authViews/login'));
 const Register = lazy(() => import(views + '/authViews/register'));
 const Details = lazy(() => import(views + '/details'));
 const List = lazy(() => import(views + '/list'));
-const CreateList = lazy(() => import(views + '/CreateListView/CreateListView'));
+const CreateList = lazy(() => import(views + '/createListView/createListView'));
 const BrowseLists = lazy(() => import(views + '/browseLists'));
 const Discover = lazy(() => import(views + '/discover'));
 const FeaturedLists = lazy(() => import(views + '/featuredLists'));

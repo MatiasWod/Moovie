@@ -1,23 +1,22 @@
-import React, {useMemo, useState} from 'react'
-import MediaCard from "../../components/media/MediaCard/MediaCard";
-import {Spinner} from "react-bootstrap";
-import '../../components/media/MediaCard/MediaCard.css'
-import FiltersGroup from "../../components/filters/FiltersGroup/FiltersGroup";
+import {useDispatch, useSelector} from "react-redux";
+import {useMemo, useState} from "react";
 import mediaTypes from "../../../api/values/MediaTypes";
-import useMediaList from "../../../hooks/useMediasList";
 import mediaOrderBy from "../../../api/values/MediaOrderBy";
 import SortOrder from "../../../api/values/SortOrder";
+import {Spinner} from "react-bootstrap";
+import FiltersGroup from "../../components/filters/filtersGroup/filtersGroup";
+import MediaCard from "../../components/media/mediaCard/mediaCard";
 import {Pagination} from "@mui/material";
 import CreateListForm from "../../components/forms/createListForm/CreateListForm";
-import ListService from "../../../services/ListService";
-import {useDispatch, useSelector} from "react-redux";
+
 import {
     resetList,
     setDescription,
     setName,
-    setSelectedMedia,
     toggleMediaSelection
 } from "../../../features/createListSlice";
+import ListService from "../../../services/ListService";
+import useMediaList from "../../../hooks/useMediasList";
 
 const CreateListView = () => {
 
