@@ -6,6 +6,8 @@ import Nav from "./pages/components/navBar/navbar";
 import {useDispatch} from "react-redux";
 import {attemptReconnect} from "./features/authSlice";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import LoggedGate from "./pages/components/permissions/LoggedGate";
+import RoleGate from "./pages/components/permissions/RoleGate";
 
 const views = './pages/views';
 
@@ -60,7 +62,7 @@ export default function App() {
                         <Route path='/list/:id' element={<List/>}/>
                         <Route path='/discover' element={<Discover/>}/>
                         <Route path='/browseLists' element={<BrowseLists/>}/>
-                        <Route path='/createList' element={<CreateList/>}/>
+                        <Route path='/createList' element={<LoggedGate><CreateList/></LoggedGate>}/>
                         <Route path='/featuredLists/:type' element={<FeaturedLists/>}/>
                         <Route path='/leaderboard' element={<MilkyLeaderboard/>}/>
                         <Route path='/profile/:username' element={<Profile/>}/>
@@ -70,7 +72,7 @@ export default function App() {
                         <Route path='/tvcreators/:id' element={<Cast/>}/>
                         <Route path='/healthcheck' element={<Healthcheck/>}/>
                         <Route path='/authtest' element={<AuthTest/>}/> {/* Add AuthTest route */}
-                        <Route path='/reports' element={<ReportsDashboard/>}/>
+                        <Route path='/reports' element={<RoleGate><ReportsDashboard/></RoleGate>}/>
                         <Route path='*' element={<Error404/>}/>
                     </Routes>
                 </Suspense>
