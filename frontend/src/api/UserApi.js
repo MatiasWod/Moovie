@@ -17,7 +17,7 @@ const userApi = (() => {
                 sessionStorage.setItem('jwtToken', token);
                 sessionStorage.setItem('username', username);
             } else {
-                throw new Error('No token found in response');
+                throw new Error(response.data.message);
             }
             return response;
         } catch (error) {

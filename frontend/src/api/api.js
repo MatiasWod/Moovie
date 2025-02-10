@@ -10,7 +10,7 @@ const api = axios.create({
 // Interceptor to add the token to all requests
 api.interceptors.request.use(
     config => {
-        const token = sessionStorage.getItem('jwtToken');
+        const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
         //console.log('Retrieved token:', token);
         if (token === undefined || token === null || token === 'undefined') {
             console.log('No token');

@@ -1,155 +1,115 @@
-import React, { useState, useEffect } from 'react'
-import {
-    Container,
-    Form,
-    Button,
-    Alert,
-    Row,
-    Col
-} from 'react-bootstrap'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
-import { useLocation, useNavigate } from 'react-router-dom'
-import BackgroundPosters from '../../components/backgroundPosters/backgroundPosters'
-import MediaService from "../../../services/MediaService"
-import pagingSizes from "../../../api/values/PagingSizes"
-import { loginUser } from "../../../features/authSlice"
+import React, { useEffect, useState } from "react";
+import { Container, Form, Button, Alert, Row, Col } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import { loginUser, attemptReconnect } from "../../../features/authSlice";
 
 const Login = () => {
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-    const [rememberMe, setRememberMe] = useState(false)
-    const [mediaList, setMediaList] = useState(undefined)
-    const { t } = useTranslation()
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [rememberMe, setRememberMe] = useState(false);
 
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
-    const location = useLocation()
-    const { status, error } = useSelector((state) => state.auth)
+    const { t } = useTranslation();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    const from = location.state?.from?.pathname || '/'
+    const { isLoggedIn, status, error } = useSelector((state) => state.auth);
+
+    const from = location.state?.from?.pathname || "/";
+
+    // Attempt reconnect on page load
+    useEffect(() => {
+        dispatch(attemptReconnect());
+    }, [dispatch]);
 
     useEffect(() => {
-        fetchMediaList()
-    }, [])
-
-    const fetchMediaList = async () => {
-        try {
-            const data = await MediaService.getMedia({
-                pageSize: pagingSizes.MEDIA_DEFAULT_PAGE_SIZE,
-            })
-            setMediaList(data)
-        } catch (error) {
-            console.error('Failed to fetch media list', error)
+        if (isLoggedIn) {
+            navigate(from, { replace: true });
         }
-    }
+    }, [isLoggedIn, navigate, from]);
 
     const handleSubmit = async (event) => {
-        event.preventDefault()
-        dispatch(loginUser({username, password}))
+        event.preventDefault();
+        dispatch(loginUser({ username, password }))
             .unwrap()
-            .then(() => {
-                navigate(from, {replace: true})
+            .then((user) => {
+                if (rememberMe) {
+                    localStorage.setItem("jwtToken", user.token);
+                    localStorage.setItem("username", user.username);
+                } else {
+                    sessionStorage.setItem("jwtToken", user.token);
+                    sessionStorage.setItem("username", user.username);
+                }
+                navigate(from, { replace: true });
             })
-            .catch(() => {
-                // Error handling is already done in the slice
-            })
-    }
-
-    if (!mediaList) return null
+            .catch(() => {});
+    };
 
     return (
         <div
-            style={{
-                background: 'whitesmoke',
-                height: '100vh',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative',
-                overflow: 'hidden'
-            }}
+            className={"p-5 vh-100"}
+            style={{ background: "whitesmoke" }}
         >
-            {/*<BackgroundPosters mediaList={mediaList.data} />*/}
+            <Container className={"d-flex align-items-center justify-content-center"}>
+                <Col xs={12} md={6} className="p-4 bg-light shadow rounded">
+                    <h2 className="text-center mb-3">{t("login.title")}</h2>
 
-            <Container
-                className="container-gray"
-                style={{
-                    border: 'solid black',
-                    width: 'fit-content',
-                    minHeight: '60%',
-                    padding: '5%',
-                    position: 'relative',
-                    zIndex: 1,
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)'
-                }}
-            >
-                <Form onSubmit={handleSubmit}>
-                    <h1 className="text-center mb-4">{t('login.title')}</h1>
+                    {status === "failed" && <Alert variant="danger">{error}</Alert>}
 
-                    {status === 'failed' && (
-                        <Alert variant="danger">
-                            {error}
-                        </Alert>
-                    )}
+                    <Form onSubmit={handleSubmit}>
+                        <Form.Group className="mb-3">
+                            <Form.Label>{t("login.username")}</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder={t("login.username")}
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required
+                            />
+                        </Form.Group>
 
-                    <Form.Group className="mb-3">
-                        <Form.Label>{t('login.username')}</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder={t('login.username')}
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            required
-                        />
-                    </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>{t("login.password")}</Form.Label>
+                            <Form.Control
+                                type="password"
+                                placeholder={t("login.password")}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </Form.Group>
 
-                    <Form.Group className="mb-3">
-                        <Form.Label>{t('login.password')}</Form.Label>
-                        <Form.Control
-                            type="password"
-                            placeholder={t('login.password')}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                    </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Check
+                                type="checkbox"
+                                label={t("login.rememberMe")}
+                                checked={rememberMe}
+                                onChange={(e) => setRememberMe(e.target.checked)}
+                            />
+                        </Form.Group>
 
-                    <Form.Group className="mb-3">
-                        <Form.Check
-                            type="checkbox"
-                            label={t('login.rememberMe')}
-                            checked={rememberMe}
-                            onChange={(e) => setRememberMe(e.target.checked)}
-                        />
-                    </Form.Group>
+                        <Button
+                            variant="success"
+                            type="submit"
+                            className="w-100"
+                            disabled={status === "loading"}
+                        >
+                            {status === "loading" ? t("login.submitting") : t("login.login")}
+                        </Button>
+                    </Form>
 
-                    <Button
-                        variant="outline-success"
-                        type="submit"
-                        className="w-100 mb-3"
-                        disabled={status === 'loading'}
-                    >
-                        {status === 'loading' ? t('login.submitting') : t('login.login')}
-                    </Button>
-
-                    <div className="mt-3 text-center">
-                        <p>
-                            {t('login.noAccount')}
-                            <a href="/register" className="ms-2">{t('login.signUp')}</a>
-                        </p>
-                        <p>
-                            {t('login.continue')}
-                            <a href="#" onClick={() => window.history.back()} className="ms-2">
-                                {t('login.without')}
-                            </a>
+                    <div className="text-center mt-3">
+                        <p className={"d-flex justify-content-center align-items-center"}>
+                            {t("login.noAccount")}{" "}
+                            <button type={"button"} className={"btn btn-link"} onClick={()=>navigate('/register')}>{t("login.signUp")}</button>
                         </p>
                     </div>
-                </Form>
+                </Col>
             </Container>
         </div>
-    )
-}
+    );
+};
 
-export default Login
+export default Login;
