@@ -7,11 +7,21 @@
     overflow: hidden;
     cursor: pointer;
     border-radius: 10px;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
+    z-index: 1; /* Default z-index */
+}
+
+/* Small card variant */
+.media-card-small {
+    width: 180px;  /* 10% smaller */
+    height: 270px; /* 10% smaller */
+    margin: 0;
 }
 
 .media-card:hover {
-    transform: scale(1.05);
+    transform: scale(1.1);
+    z-index: 100;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
 /* Card border */

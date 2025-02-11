@@ -9,7 +9,7 @@ import { Tooltip as ReactTooltip } from 'react-tooltip'
 import {useTranslation} from "react-i18next";
 import profileService from "../../../services/ProfileService";
 
-const MediaCard = ({ media }) => {
+const MediaCard = ({ media, size = 'normal' }) => {
     const releaseDate = new Date(media.releaseDate).getFullYear();
 
     const [ww, setWW] = useState({ watched: false, watchlist: false });
@@ -68,9 +68,14 @@ const MediaCard = ({ media }) => {
         }
     };
 
+    const sizeClasses = {
+        normal: 'media-card',
+        small: 'media-card media-card-small'
+    };
+
     return (
         <div
-            className={`media-card shadow ${hovered ? 'hovered' : ''}`}
+            className={`${sizeClasses[size]} shadow ${hovered ? 'hovered' : ''}`}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onClick={handleClick}

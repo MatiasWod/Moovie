@@ -1,257 +1,223 @@
 import React, {useEffect, useState} from "react";
 import "./discover.css"
-import OrderBy from "../../api/values/MediaOrderBy";
-import SortOrder from "../../api/values/SortOrder";
-import DropdownMenu from "../components/dropdownMenu/DropdownMenu";
 import MediaCard from "../components/mediaCard/MediaCard";
-import PaginationButton from "../components/paginationButton/PaginationButton";
 import MediaService from "../../services/MediaService";
 import {createSearchParams, useNavigate, useSearchParams} from "react-router-dom";
 import pagingSizes from "../../api/values/PagingSizes";
 import ProviderService from "../../services/ProviderService";
-import ProviderFilter from "../components/filters/providerFilter/ProviderFilter";
 import GenreService from "../../services/GenreService";
-import GenreFilter from "../components/filters/genreFilter/GenreFilter";
 import {useTranslation} from "react-i18next";
-import {Tooltip as ReactTooltip} from "react-tooltip";
 import {Spinner} from "react-bootstrap";
-
+import FiltersGroup from "../components/filters/filtersGroup/filtersGroup";
+import {Pagination} from "@mui/material";
+import mediaTypes from "../../api/values/MediaTypes";
+import mediaOrderBy from "../../api/values/MediaOrderBy";
+import SortOrder from "../../api/values/SortOrder";
 
 const Discover = () => {
     const { t } = useTranslation();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
-    const [type, setType] = useState(searchParams.get("type"));
-    const [orderBy, setOrderBy] = useState(searchParams.get("orderBy") || [OrderBy.TMDB_RATING])
-    const [sortOrder, setSortOrder] = useState(searchParams.get("sortOrder") || [SortOrder.DESC])
-    const [selectedProviders, setSelectedProviders] = useState(new Set(searchParams.get("providers") ? JSON.parse(searchParams.get("providers")) : []));
-    const [selectedGenres, setSelectedGenres] = useState(new Set(searchParams.get("genres") ? JSON.parse(searchParams.get("genres")) : []));
-    const [page, setPage] = useState(searchParams.get("page") || 1);
+    // Filter States
+    const [type, setType] = useState(searchParams.get("type") || mediaTypes.TYPE_ALL);
+    const [orderBy, setOrderBy] = useState(searchParams.get("orderBy") || mediaOrderBy.TOTAL_RATING);
+    const [sortOrder, setSortOrder] = useState(searchParams.get("sortOrder") || SortOrder.DESC);
+    const [selectedProviders, setSelectedProviders] = useState(
+        searchParams.get("providers") ? JSON.parse(searchParams.get("providers")) : []
+    );
+    const [selectedGenres, setSelectedGenres] = useState(
+        searchParams.get("genres") ? JSON.parse(searchParams.get("genres")) : []
+    );
+    const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
+    const [page, setPage] = useState(parseInt(searchParams.get("page")) || 1);
 
     const [medias, setMedias] = useState(undefined);
     const [mediasLoading, setMediasLoading] = useState(true);
     const [mediasError, setMediasError] = useState(null);
 
-    const [genresForMedias, setGenresForMedias] = useState(undefined);
-    const [genresForMediasLoading, setGenresForMediasLoading] = useState(true);
-    const [genresForMediasError, setGenresForMediasError] = useState(null);
+    const handlePaginationChange = (event, value) => {
+        setPage(value);
+        updateUrlParams(value);
+    };
 
-    const [providersForMedias, setProvidersForMedias] = useState(undefined);
-    const [providersForMediasLoading, setProvidersForMediasLoading] = useState(true);
-    const [providersForMediasError, setProvidersForMediasError] = useState(null);
+    const updateUrlParams = (currentPage = page) => {
+        const queryParams = {
+            type,
+            orderBy,
+            sortOrder,
+            page: currentPage.toString(),
+        };
 
-    const [providers, setProviders] = useState(undefined);
-    const [providersLoading, setProvidersLoading] = useState(true);
-    const [providersError, setProvidersError] = useState(null);
+        if (searchQuery) {
+            queryParams.search = searchQuery;
+        }
+        if (selectedProviders.length > 0) {
+            queryParams.providers = JSON.stringify(selectedProviders);
+        }
+        if (selectedGenres.length > 0) {
+            queryParams.genres = JSON.stringify(selectedGenres);
+        }
 
-    const [genres, setGenres] = useState(undefined);
-    const [genresLoading, setGenresLoading] = useState(true);
-    const [genresError, setGenresError] = useState(null);
-
-    const handlePageChange = (newPage) => {
-        setPage(newPage);
         navigate({
             pathname: "/discover",
-            search: createSearchParams({
-                type,
-                orderBy,
-                sortOrder,
-                providers: JSON.stringify(Array.from(selectedProviders)),
-                genres: JSON.stringify(Array.from(selectedGenres)),
-                page: newPage.toString(),
-            }).toString(),
+            search: createSearchParams(queryParams).toString(),
         });
     };
 
+    const handleFilterChange = ({
+        type: newType,
+        sortOrder: newSortOrder,
+        orderBy: newOrderBy,
+        search: newSearch,
+        selectedProviders: newProviders,
+        selectedGenres: newGenres
+    }) => {
+        setType(newType);
+        setSortOrder(newSortOrder);
+        setOrderBy(newOrderBy);
+        setSearchQuery(newSearch);
+        setSelectedProviders(newProviders);
+        setSelectedGenres(newGenres);
+        setPage(1);
+    };
+
     useEffect(() => {
-        const providersFromUrl = searchParams.get("providers");
-        if (providersFromUrl) {
+        async function fetchMediaData() {
             try {
-                const providerIds = JSON.parse(providersFromUrl);
-                setSelectedProviders(new Set(providerIds));
-            } catch (error) {
-                console.error("Error parsing providers from URL:", error);
-            }
-        }
-    }, [searchParams]);
-
-    useEffect(() => {
-        const genresFromUrl = searchParams.get("genres");
-        if (genresFromUrl) {
-            try {
-                const genreIds = JSON.parse(genresFromUrl);
-                setSelectedGenres(new Set(genreIds));
-            } catch (error) {
-                console.error("Error parsing genres from URL:", error);
-            }
-        }
-    }, [searchParams]);
-
-    useEffect(() => {
-        const providerIds = Array.from(selectedProviders);
-        const genreIds = Array.from(selectedGenres);
-
-        const queryParams = {
-            orderBy,
-            sortOrder,
-            page: page.toString(),
-        };
-
-        if (providerIds.length > 0) {
-            queryParams.providers = JSON.stringify(providerIds);
-        }
-
-        if (genreIds.length > 0) {
-            queryParams.genres = JSON.stringify(genreIds);
-        }
-
-        navigate({
-            pathname: `/discover`,
-            search: createSearchParams(queryParams).toString(),
-        });
-    }, [orderBy, sortOrder, selectedProviders, selectedGenres, page, navigate]);
-
-
-    useEffect(() => {
-        async function getData() {
-            try {
-                const data = await ProviderService.getAllProviders();
-                setProviders(data);
-                setProvidersLoading(false);
-            } catch (error) {
-                setProvidersError(error);
-                setProvidersLoading(false);
-            }
-        }
-
-        getData();
-    }, []);
-
-
-
-    useEffect(() => {
-        async function getData() {
-            try {
-                const data = await GenreService.getAllGenres();
-                setGenres(data);
-                setGenresLoading(false);
-            } catch (error) {
-                setGenresError(error);
-                setGenresLoading(false);
-            }
-        }
-
-        getData();
-    }, []);
-
-
-
-    useEffect(() => {
-        async function getData() {
-            try {
+                setMediasLoading(true);
                 const mediasResponse = await MediaService.getMedia({
-                    type: type,
-                    page: page,
+                    type,
+                    page,
                     pageSize: pagingSizes.MEDIA_DEFAULT_PAGE_SIZE,
-                    sortOrder: sortOrder,
-                    orderBy: orderBy,
-                    providers: Array.from(selectedProviders),
-                    genres: Array.from(selectedGenres),
+                    sortOrder,
+                    orderBy,
+                    search: searchQuery,
+                    providers: selectedProviders.map(p => p.id),
+                    genres: selectedGenres.map(g => g.id),
                 });
-
 
                 const { data: medias, links } = mediasResponse;
 
-                const mediasWithProviders = await Promise.all(
+                const mediasWithDetails = await Promise.all(
                     medias.map(async (media) => {
-                        try {
-                            const providers = await ProviderService.getProvidersForMedia(media.id);
-                            return { ...media, providers };
-                        } catch (error) {
-                            return { ...media, providers: [] };
-                        }
+                        const [providers, genres] = await Promise.all([
+                            ProviderService.getProvidersForMedia(media.id).catch(() => []),
+                            GenreService.getGenresForMedia(media.id).catch(() => [])
+                        ]);
+                        return { ...media, providers, genres };
                     })
                 );
 
-                const mediasWithGenres = await Promise.all(
-                    mediasWithProviders.map(async (media) => {
-                        try {
-                            const genres = await GenreService.getGenresForMedia(media.id);
-                            return { ...media, genres };
-                        } catch (error) {
-                            return { ...media, genres: [] };
-                        }
-                    })
-                );
                 setMedias({
                     links,
-                    data: mediasWithGenres,
+                    data: mediasWithDetails,
                 });
-                setMediasLoading(false);
             } catch (error) {
-                console.error("Error in fetching media data:", error);
+                console.error("Error fetching media data:", error);
                 setMediasError(error);
+            } finally {
                 setMediasLoading(false);
             }
         }
 
-        getData();
-    }, [type, page, sortOrder, orderBy, selectedProviders, selectedGenres]);
+        fetchMediaData();
+    }, [type, page, sortOrder, orderBy, searchQuery, selectedProviders, selectedGenres]);
 
-
-
-
-    if (mediasLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
+    if (mediasLoading) {
+        return (
+            <div className="d-flex justify-content-center align-items-center" style={{ height: "calc(100vh - 76px)" }}>
+                <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </Spinner>
+            </div>
+        );
+    }
 
     return (
-        <div className="moovie-default default-container">
-            <div className="discover-container">
-                <div className="discover-menus">
-                    <DropdownMenu
-                        values={Object.values(OrderBy)}
-                        setOrderBy={setOrderBy}
-                        setSortOrder={setSortOrder}
-                        currentOrderDefault={sortOrder}
-                    />
-                    <div>{t('discover.providers')}
-                    <ProviderFilter providers={providers?.data}
-                                    selectedProviders={selectedProviders}
-                                    setSelectedProviders={setSelectedProviders}
-                                    ></ProviderFilter></div>
-                    <div>{t('discover.genres')}
-                        <GenreFilter genres={genres?.data}
-                                        selectedGenres={selectedGenres}
-                                        setSelectedGenres={setSelectedGenres}
-                        ></GenreFilter></div>
+        <div className="d-flex flex-column" style={{ height: "calc(100vh - 76px)" }}>
+            <div className="d-flex flex-row h-100">
+                {/* Filters Section */}
+                <FiltersGroup
+                    type={type}
+                    sortOrder={sortOrder}
+                    orderBy={orderBy}
+                    query={searchQuery}
+                    searchBar={true}
+                    initialSelectedGenres={selectedGenres}
+                    initialSelectedProviders={selectedProviders}
+                    submitCallback={handleFilterChange}
+                />
 
-                </div>
-
-                <div className="discover-media-card-container">
-                    {(medias && medias.data) ? (
-                        <>
-                            {medias.data.map((media) => (
-                                <div className="discover-media-card" key={media.id}>
-                                    <MediaCard media={media} />
-                                </div>
-                            ))}
-                            <div className="flex justify-center pt-4">
-                                {(medias.data.length > 0 && medias.links.last.page > 1) && (
-                                    <PaginationButton
-                                        page={page}
-                                        lastPage={medias.links.last.page}
-                                        setPage={handlePageChange}
-                                    />
-                                )}
+                {/* Media Cards Section */}
+                <div className="d-flex flex-column h-100 px-3">
+                    <div style={{
+                        overflowY: "auto",
+                        height: "calc(100% - 50px)", // Account for pagination height
+                        width: "calc(160px * 5)", // Exactly 5 cards width
+                        display: "grid",
+                        gridTemplateColumns: "repeat(5, 1fr)",
+                        gap: "0", // Remove all gap
+                        padding: "0.25rem",
+                        alignContent: "start",
+                        margin: "0 auto" // Center the grid
+                    }}>
+                        {mediasError ? (
+                            <div className="alert alert-danger" role="alert">
+                                {t('common.errorOccurred')}
                             </div>
-                        </>
-                    ) : (
-                        <p>{t('discover.noMediaAvailable')}</p>
-                    )}
+                        ) : (
+                            medias?.data?.map((media, index) => (
+                                <div 
+                                    key={media.id} 
+                                    style={{
+                                        width: "100%",
+                                        aspectRatio: "2/3",
+                                        transform: `translateX(${(index % 5) * -25}px)`,
+                                        transition: "all 0.3s ease",
+                                        position: "relative",
+                                        zIndex: 1,
+                                        marginLeft: index % 5 === 0 ? "0" : "-25px",
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.transform = `translateX(${(index % 5) * -25}px) scale(1.1)`;
+                                        e.currentTarget.style.zIndex = "9999";
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.transform = `translateX(${(index % 5) * -25}px)`;
+                                        e.currentTarget.style.zIndex = "1";
+                                    }}
+                                >
+                                    <MediaCard
+                                        media={media}
+                                        size="small"
+                                    />
+                                </div>
+                            ))
+                        )}
+                        
+                        {medias?.data?.length === 0 && (
+                            <div className="text-center py-8" style={{ gridColumn: "span 5" }}>
+                                <p className="text-lg text-gray-600">
+                                    {t('discover.noMediaAvailable')}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="d-flex justify-content-center py-2">
+                        {!mediasLoading && medias?.links?.last?.page > 1 && (
+                            <Pagination
+                                page={page}
+                                count={medias.links.last.page}
+                                onChange={handlePaginationChange}
+                            />
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
     );
-}
+};
 
 export default Discover;
