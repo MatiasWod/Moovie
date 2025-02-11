@@ -72,7 +72,6 @@ public class ProfileController {
         }
     }
 
-    //TODO TAL VEZ HAY QUE UNIR CON searchProfiles (AMBOS DEVULEVEN EL MISMO DTO)
     @GET
     @Produces(VndType.APPLICATION_PROFILE_LIST)
     @Path("/milkyLeaderboard")
@@ -145,7 +144,6 @@ public class ProfileController {
      * Watched
      */
 
-    //TODO TAL VEZ HAY QUE UNIR CON WATCHLIST (AMBOS DEVULEVEN EL MISMO DTO)
     @GET
     @Path("/{username}/watched")
     @Produces(VndType.APPLICATION_WATCHED_LIST)
@@ -187,10 +185,10 @@ public class ProfileController {
 
 
     @GET
-    @Path("/{username}/watched/{id}")
+    @Path("/{username}/watched/{mediaId}")
     @Produces(VndType.APPLICATION_WATCHED_MEDIA)
     public Response getWatchedMediaByMediaId(@PathParam("username") final String username,
-                                             @PathParam("id") final int mediaId) {
+                                             @PathParam("mediaId") final int mediaId) {
         userService.isUsernameMe(username);
         boolean watched = mediaService.getMediaById(mediaId).isWatched();
         if(watched){
@@ -200,11 +198,11 @@ public class ProfileController {
     }
 
     @DELETE
-    @Path("/{username}/watched/{id}")
+    @Path("/{username}/watched/{mediaId}")
     @Produces(MediaType.TEXT_PLAIN)
     public Response deleteFromWatched(@PathParam("username") final String username,
-                                      @PathParam("id") final int id){
-        moovieListService.removeMediaFromWatched(id, username);
+                                      @PathParam("mediaId") final int mediaId){
+        moovieListService.removeMediaFromWatched(mediaId, username);
         return Response.ok().build();
     }
 
@@ -251,10 +249,10 @@ public class ProfileController {
     }
 
     @GET
-    @Path("/{username}/watchlist/{id}")
+    @Path("/{username}/watchlist/{mediaId}")
     @Produces(VndType.APPLICATION_WATCHLIST_MEDIA)
     public Response getWatchlistMediaByMediaId(@PathParam("username") final String username,
-                                               @PathParam("id") final int mediaId) {
+                                               @PathParam("mediaId") final int mediaId) {
         userService.isUsernameMe(username);
         boolean watchlist = mediaService.getMediaById(mediaId).isWatchlist();
         if(watchlist){
@@ -264,11 +262,11 @@ public class ProfileController {
     }
 
     @DELETE
-    @Path("/{username}/watchlist/{id}")
+    @Path("/{username}/watchlist/{mediaId}")
     @Produces(MediaType.TEXT_PLAIN)
     public Response deleteFromWatchlist(@PathParam("username") final String username,
-                                        @PathParam("id") final int id){
-        moovieListService.removeMediaFromWatchlist(id, username);
+                                        @PathParam("mediaId") final int mediaId){
+        moovieListService.removeMediaFromWatchlist(mediaId, username);
         return Response.ok().build();
     }
 
@@ -318,11 +316,11 @@ public class ProfileController {
     }
 
     @GET
-    @Path("/{username}/listFollows/{id}")
+    @Path("/{username}/listFollows/{listId}")
     @Produces(VndType.APPLICATION_FOLLOWED_LISTS_USER_LIST)
     public Response getUserFollowedListById(@PathParam("username") String username,
-                                            @PathParam("id") final int id) {
-        UserMoovieListId userMoovieListId = moovieListService.currentUserHasFollowed(id);
+                                            @PathParam("listId") final int listId) {
+        UserMoovieListId userMoovieListId = moovieListService.currentUserHasFollowed(listId);
         if (userMoovieListId != null && userMoovieListId.getUsername().equals(username)) {
             return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId, username)).build();
         }
@@ -330,12 +328,12 @@ public class ProfileController {
     }
 
     @DELETE
-    @Path("/{username}/listFollows/{id}")
+    @Path("/{username}/listFollows/{listId}")
     @Produces(MediaType.TEXT_PLAIN)
     public Response unfollowMoovieList(@PathParam("username") String username,
-                                                        @PathParam("id") int id) {
+                                                        @PathParam("listId") int listId) {
         userService.isUsernameMe(username);
-        moovieListService.removeFollowMoovieList(id);
+        moovieListService.removeFollowMoovieList(listId);
         return Response.ok()
                 .entity("{\"message\":\"Succesfully unfollowed list.\"}").build();
     }
@@ -388,11 +386,11 @@ public class ProfileController {
 
     // Returns like status for a specific media
     @GET
-    @Path("/{username}/listLikes/{id}")
+    @Path("/{username}/listLikes/{listId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserLikedListById(@PathParam("id") final int id,
+    public Response getUserLikedListById(@PathParam("listId") final int listId,
                                          @PathParam("username") final String username) {
-        UserMoovieListId userMoovieListId = moovieListService.currentUserHasLiked(id);
+        UserMoovieListId userMoovieListId = moovieListService.currentUserHasLiked(listId);
         if (userMoovieListId != null && userMoovieListId.getUsername().equals(username)) {
             return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId, username)).build();
         }
@@ -403,9 +401,9 @@ public class ProfileController {
     @Path("/{username}/listLikes/{id}")
     @Produces(MediaType.TEXT_PLAIN)
     public Response unlikeMoovieList(@PathParam("username") String username,
-                                                      @PathParam("id") int id) {
+                                                      @PathParam("listId") int listId) {
         userService.isUsernameMe(username);
-        moovieListService.removeLikeMoovieList(id);
+        moovieListService.removeLikeMoovieList(listId);
         return Response.ok()
                 .entity("{\"message\":\"Succesfully unliked list.\"}").build();
     }
