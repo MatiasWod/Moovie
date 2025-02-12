@@ -43,7 +43,7 @@ const userApi = (() => {
     };
 
     const confirmToken = async (token) => {
-        const response = await api.put(`users/`,
+        const response = await api.post(`users/`,
             {
                 token: token
             },
