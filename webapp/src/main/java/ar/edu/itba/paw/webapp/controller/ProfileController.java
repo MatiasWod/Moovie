@@ -398,7 +398,7 @@ public class ProfileController {
     }
 
     @DELETE
-    @Path("/{username}/listLikes/{id}")
+    @Path("/{username}/listLikes/{listId}")
     @Produces(MediaType.TEXT_PLAIN)
     public Response unlikeMoovieList(@PathParam("username") String username,
                                                       @PathParam("listId") int listId) {
