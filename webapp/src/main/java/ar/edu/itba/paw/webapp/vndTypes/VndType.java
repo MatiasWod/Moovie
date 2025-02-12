@@ -132,5 +132,8 @@ public class VndType {
     // Tipo de medio para token de un user individual
     public static final String APPLICATION_USER_TOKEN = "application/vnd.user_token.v1+json";
 
+    // Tipo de medio para form de token de un user individual
+    public static final String APPLICATION_USER_TOKEN_FORM = "application/vnd.user_token_form.v1+json";
+
     }
 

@@ -43,7 +43,16 @@ const userApi = (() => {
     };
 
     const confirmToken = async (token) => {
-        const response = await api.put(`users/verify/${token}`);
+        const response = await api.put(`users/`,
+            {
+                token: token
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/vnd.user_token_form.v1+json'
+                }
+            }
+        );
         const jwtToken = response.headers['authorization'];
         if (jwtToken) {
             sessionStorage.setItem('jwtToken', jwtToken);

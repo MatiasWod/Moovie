@@ -7,6 +7,7 @@ import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.JwtTokenProvider;
 
 import ar.edu.itba.paw.webapp.dto.in.BanUserDTO;
+import ar.edu.itba.paw.webapp.dto.in.TokenDto;
 import ar.edu.itba.paw.webapp.dto.in.UserCreateDto;
 import ar.edu.itba.paw.webapp.dto.out.UserDto;
 
@@ -119,6 +120,31 @@ public class UserController {
         }
     }
 
+    @POST
+    @Consumes(VndType.APPLICATION_USER_TOKEN_FORM)
+    @Produces(VndType.APPLICATION_USER_TOKEN)
+    public Response verifyUser(@Valid final TokenDto tokenDto) {
+        String tokenString=tokenDto.getToken();
+        LOGGER.info("Method: verifyUser, Path: users, Token: {}", tokenString);
+        try {
+            final Optional<Token> tok = verificationTokenService.getToken(tokenString);
+            if (tok.isPresent()) {
+                Token token = tok.get();
+                if (userService.confirmRegister(token)) {
+                    User user = userService.findUserById(token.getUserId());
+                    return Response.notModified().header(HttpHeaders.AUTHORIZATION, jwtTokenProvider.createToken(user)).build();
+                }
+                LOGGER.info("Token validation failed. Returning INTERNAL_SERVER_ERROR.");
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            }
+            LOGGER.info("Token not found. Returning BAD_REQUEST.");
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        } catch (VerificationTokenNotFoundException e) {
+            LOGGER.error("Verification token not found: {}", e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
     @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
@@ -152,29 +178,7 @@ public class UserController {
         }
     }
 
-    @PUT
-    @Path("/verify/{token}")
-    @Produces(VndType.APPLICATION_USER_TOKEN)
-    public Response verifyUser(@PathParam("token") String tokenString) {
-        LOGGER.info("Method: verifyUser, Path: /users/verify/{token}, Token: {}", tokenString);
-        try {
-            final Optional<Token> tok = verificationTokenService.getToken(tokenString);
-            if (tok.isPresent()) {
-                Token token = tok.get();
-                if (userService.confirmRegister(token)) {
-                    User user = userService.findUserById(token.getUserId());
-                    return Response.notModified().header(HttpHeaders.AUTHORIZATION, jwtTokenProvider.createToken(user)).build();
-                }
-                LOGGER.info("Token validation failed. Returning INTERNAL_SERVER_ERROR.");
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-            }
-            LOGGER.info("Token not found. Returning BAD_REQUEST.");
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        } catch (VerificationTokenNotFoundException e) {
-            LOGGER.error("Verification token not found: {}", e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-    }
+
 
 //    MODERATION
 
