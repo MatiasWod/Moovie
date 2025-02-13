@@ -102,7 +102,7 @@ const reportApi = (() => {
 
     // --------------- ACTIONS ---------------
 
-    const resolveReviewReport = async ({reviewId}) => {
+    const resolveReviewReport = async (reviewId) => {
         const response = await api.delete('/reports',
             {params:
                 {
@@ -112,7 +112,7 @@ const reportApi = (() => {
         return response;
     }
 
-    const resolveCommentReport = async ({commentId}) => {
+    const resolveCommentReport = async (commentId) => {
         const response = await api.delete('/reports',
             {params:
                 {
@@ -123,7 +123,7 @@ const reportApi = (() => {
         return response;
     }
 
-    const resolveMoovieListReport = async ({moovieListId}) => {
+    const resolveMoovieListReport = async (moovieListId) => {
         const response = await api.delete('/reports',
             {params:
                 {
@@ -133,7 +133,7 @@ const reportApi = (() => {
         return response;
     }
 
-    const resolveMoovieListReviewReport = async ({moovieListReviewId}) => {
+    const resolveMoovieListReviewReport = async (moovieListReviewId) => {
         const response = await api.delete('/reports',
             {params:
                 {

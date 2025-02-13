@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import reportApi from '../../../api/ReportApi';
-import ConfirmationModal from '../../components/forms/confirmationForm/confirmationForm';
+import ConfirmationModal from '../../components/forms/confirmationForm/confirmationModal';
 import api from '../../../api/api';
 import userApi from '../../../api/UserApi';
 import commentApi from '../../../api/CommentApi';
@@ -44,6 +44,7 @@ export default function CommentReports() {
   };
 
   const handleResolve = async (comment) => {
+    console.log('resolving report', comment);
     await reportApi.resolveCommentReport(comment.id);
     fetchComments();
   };
