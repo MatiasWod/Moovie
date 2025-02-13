@@ -7,7 +7,7 @@ import javax.validation.constraints.Pattern;
 
 public class CommentFeedbackDto {
 
-    @Pattern(regexp ="^(LIKE|UNLIKE|DISLIKE|UNDISLIKE)$")
+    @Pattern(regexp ="^(LIKE|DISLIKE)$")
     @NotNull
     private String feedbackType;
 

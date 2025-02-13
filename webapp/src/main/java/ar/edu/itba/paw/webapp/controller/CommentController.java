@@ -85,18 +85,30 @@ public class CommentController {
     public Response updateFeedbackOnComment(@PathParam("id") int id, @Valid @NotNull final CommentFeedbackDto commentFeedbackDto) {
         try {
             CommentFeedbackType commentFeedbackType=commentFeedbackDto.transformToEnum();
-            if (commentFeedbackType == CommentFeedbackType.UNLIKE) {
-                commentService.removeLikeComment(id);
-                return Response.ok().entity("Like removed from comment").build();
-            } else if (commentFeedbackType == CommentFeedbackType.UNDISLIKE) {
-                commentService.removeDislikeComment(id);
-                return Response.ok().entity("Dislike removed from comment").build();
-            }else if (commentFeedbackType == CommentFeedbackType.LIKE) {
-                commentService.likeComment(id);
-                return Response.ok().entity("Comment liked").build();
+            if (commentFeedbackType == CommentFeedbackType.LIKE) {
+                boolean liked = commentService.likeComment(id);
+                if (!liked) {
+                    return Response.ok()
+                            .entity("Comment feedback status successfully changed to unliked")
+                            .build();
+                }
+                else {
+                    return Response.ok()
+                            .entity("Comment feedback status successfully changed to liked")
+                            .build();
+                }
             } else if (commentFeedbackType == CommentFeedbackType.DISLIKE) {
-                commentService.dislikeComment(id);
-                return Response.ok().entity("Comment disliked").build();
+                boolean disliked=commentService.dislikeComment(id);
+                if (!disliked) {
+                    return Response.ok()
+                            .entity("Comment feedback status successfully changed to undisliked")
+                            .build();
+                }
+                else {
+                    return Response.ok()
+                            .entity("Comment feedback status successfully changed to disliked")
+                            .build();
+                }
             } else {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity("Invalid feedback type")

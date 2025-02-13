@@ -72,19 +72,22 @@ public class CommentServiceImpl implements CommentService{
 
     @Transactional
     @Override
-    public void dislikeComment(int commentId) {
+    public boolean dislikeComment(int commentId) {
         User currentUser = userService.getInfoOfMyUser();
         boolean hasLiked = commentDao.userHasLiked(commentId, currentUser.getUserId());
         boolean hasDisliked = commentDao.userHasDisliked(commentId, currentUser.getUserId());
         if (!hasLiked){
             if (!hasDisliked){
                 commentDao.dislikeComment(commentId, currentUser.getUserId());
+                return true;
             }else{
                 commentDao.removeDislikeComment(commentId,currentUser.getUserId());
+                return false;
             }
         }else{
             removeLikeComment(commentId);
             dislikeComment(commentId);
+            return true;
         }
     }
 

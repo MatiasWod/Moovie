@@ -17,7 +17,7 @@ public interface CommentService {
 
     public void removeLikeComment(int commentId);
 
-    public void dislikeComment(int commentId);
+    public boolean dislikeComment(int commentId);
 
     public void removeDislikeComment(int commentId);
 

@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.models.Comments;
 
 public enum CommentFeedbackType {
-    LIKE("feedback.like"),UNLIKE("feedback.unlike"),DISLIKE("feedback.dislike"),UNDISLIKE("feedback.undislike");
+    LIKE("feedback.like"),DISLIKE("feedback.dislike");
 
     private final String code;
 
