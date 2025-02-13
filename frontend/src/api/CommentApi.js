@@ -46,19 +46,6 @@ const commentApi = (() => {
         return response
     }
 
-    const removeCommentFeedback = async (commentId, feedback) => {
-        const response = await api.delete('/comments/' + commentId,
-            {
-                feedback: feedback,
-                headers: {
-                    'Content-Type': VndType.APPLICATION_COMMENT_FEEDBACK_FORM
-                }
-            }
-        );
-        return response
-    }
-
-
 
 
     const deleteComment = async (commentId) => {
@@ -70,7 +57,6 @@ const commentApi = (() => {
         deleteComment,
         createReviewComment,
         commentFeedback,
-        removeCommentFeedback,
         getReviewComments
     }
 

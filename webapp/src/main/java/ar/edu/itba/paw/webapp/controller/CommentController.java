@@ -85,7 +85,13 @@ public class CommentController {
     public Response updateFeedbackOnComment(@PathParam("id") int id, @Valid @NotNull final CommentFeedbackDto commentFeedbackDto) {
         try {
             CommentFeedbackType commentFeedbackType=commentFeedbackDto.transformToEnum();
-            if (commentFeedbackType == CommentFeedbackType.LIKE) {
+            if (commentFeedbackType == CommentFeedbackType.UNLIKE) {
+                commentService.removeLikeComment(id);
+                return Response.ok().entity("Like removed from comment").build();
+            } else if (commentFeedbackType == CommentFeedbackType.UNDISLIKE) {
+                commentService.removeDislikeComment(id);
+                return Response.ok().entity("Dislike removed from comment").build();
+            }else if (commentFeedbackType == CommentFeedbackType.LIKE) {
                 commentService.likeComment(id);
                 return Response.ok().entity("Comment liked").build();
             } else if (commentFeedbackType == CommentFeedbackType.DISLIKE) {
@@ -108,34 +114,6 @@ public class CommentController {
 
     }
 
-    @DELETE
-    @Path("/{id}")
-    @Consumes(VndType.APPLICATION_COMMENT_FEEDBACK_FORM)
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response deleteCommentFeedback(@PathParam("id") int id, @Valid @NotNull final CommentFeedbackDto commentFeedbackDto) {
-            try {
-                CommentFeedbackType commentFeedbackType=commentFeedbackDto.transformToEnum();
-                if (commentFeedbackType == CommentFeedbackType.LIKE) {
-                    commentService.removeLikeComment(id);
-                    return Response.ok().entity("Like removed from comment").build();
-                } else if (commentFeedbackType == CommentFeedbackType.DISLIKE) {
-                    commentService.removeDislikeComment(id);
-                    return Response.ok().entity("Dislike removed from comment").build();
-                } else {
-                    return Response.status(Response.Status.BAD_REQUEST)
-                            .entity("Invalid feedback type")
-                            .build();
-                }
-            } catch (UserNotLoggedException e) {
-                return Response.status(Response.Status.UNAUTHORIZED)
-                        .entity("{\"error\":\"User must be logged in to delete a comment.\"}")
-                        .build();
-            } catch (Exception e) {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                        .entity("An unexpected error occurred: " + e.getMessage())
-                        .build();
-            }
-    }
 
     @DELETE
     @Path("/{id}")
