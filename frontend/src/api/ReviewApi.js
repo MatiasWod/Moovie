@@ -61,8 +61,7 @@ const reviewApi = (()=> {
                 params: {
                 'mediaId': mediaId
                 }
-            },
-            {
+            ,
                 headers: {
                     'Content-Type': 'application/vnd.review-form.v1+json',
                 },
