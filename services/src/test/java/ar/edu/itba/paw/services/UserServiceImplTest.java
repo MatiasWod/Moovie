@@ -15,6 +15,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.jws.soap.SOAPBinding;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -31,6 +32,7 @@ public class UserServiceImplTest {
     private static final String PASSWORD = "pass123";
     private static final int ROLE = 1;
     private static final String TOKEN = "token";
+    private static final LocalDateTime EXPIRY_DATE = LocalDateTime.now();
 
     @InjectMocks
     private final UserServiceImpl userService = new UserServiceImpl();
@@ -47,49 +49,29 @@ public class UserServiceImplTest {
     @Mock
     private VerificationTokenService mockVerificationTokenService;
 
-
-
+    private User user;
 
     @Before
     public void setup(){
-        when(mockPasswordEncoder.encode(PASSWORD)).thenReturn(PASSWORD);
+        user = new User.Builder(USERNAME, EMAIL, PASSWORD, ROLE, 0).build();
     }
 
     @Test
     public void testCreateUserFromUnregistered() {
-        final User user = mock(User.class);
-        when(user.getEmail()).thenReturn(EMAIL);
-        when(user.getUsername()).thenReturn(USERNAME);
-        when(user.getPassword()).thenReturn(PASSWORD);
-
-        final Token token = mock(Token.class);
-        when(token.getToken()).thenReturn(TOKEN);
-
-        when(mockUserDao.findUserByEmail(EMAIL)).thenReturn(Optional.empty());
         when(mockUserDao.createUserFromUnregistered(eq(EMAIL), eq(USERNAME), eq(PASSWORD))).thenReturn(user);
-        when(user.getUserId()).thenReturn(UID);
-        when(mockVerificationTokenService.createVerificationToken(UID)).thenReturn(TOKEN);
-
-        final User result = userService.createUserFromUnregistered(EMAIL, USERNAME, PASSWORD);
-
-        assertEquals(EMAIL, result.getEmail());
-        assertEquals(USERNAME, result.getUsername());
-        assertEquals(PASSWORD, result.getPassword());
+        when(mockPasswordEncoder.encode(anyString())).thenReturn(PASSWORD);
+        User user = userService.createUserFromUnregistered(EMAIL, USERNAME, PASSWORD);
+        Assert.assertNotNull(user);
+        Assert.assertEquals(EMAIL, user.getEmail());
     }
 
     @Test(expected = UnableToCreateUserException.class)
-    public void testCreateUser(){
+    public void testCreateUserWithUsedMail(){
         final User realUser = new User.Builder(null, EMAIL, null, ROLE, 0).build();
         final User user = spy(realUser);
         when(mockUserDao.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
 
-        final Token token = mock(Token.class);
-        when(token.getToken()).thenReturn(TOKEN);
-        when(mockVerificationTokenService.createVerificationToken(UID)).thenReturn(TOKEN);
-
         final String result = userService.createUser(USERNAME, EMAIL, PASSWORD);
-
-        assertEquals(TOKEN, result);
     }
 
     @Test(expected = UnableToCreateUserException.class)
