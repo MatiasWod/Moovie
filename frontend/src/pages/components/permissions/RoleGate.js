@@ -4,10 +4,9 @@ import UserRoles from "../../../api/values/UserRoles"
 
 const RoleGate = ({children, role}) => {
     const {isLoggedIn, user} = useSelector(state => state.auth);
-
     switch (role) {
         case UserRoles.MODERATOR:
-            if (!isLoggedIn || user.role.localeCompare(UserRoles.MODERATOR) !== 0) {
+            if (!isLoggedIn || user.role !== UserRoles.MODERATOR) {
                 return <Error403/>
             }
             break;
