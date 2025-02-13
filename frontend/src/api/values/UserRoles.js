@@ -11,3 +11,5 @@ const UserRoles = {
         return Object.keys(this).find(key => this[key] === role) || null;
     }
 };
+
+export default UserRoles;

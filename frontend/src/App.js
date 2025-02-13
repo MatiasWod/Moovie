@@ -8,6 +8,7 @@ import {attemptReconnect} from "./features/authSlice";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LoggedGate from "./pages/components/permissions/LoggedGate";
 import RoleGate from "./pages/components/permissions/RoleGate";
+import UserRoles from "./api/values/UserRoles";
 
 const views = './pages/views';
 
@@ -72,7 +73,7 @@ export default function App() {
                         <Route path='/tvcreators/:id' element={<Cast/>}/>
                         <Route path='/healthcheck' element={<Healthcheck/>}/>
                         <Route path='/authtest' element={<AuthTest/>}/> {/* Add AuthTest route */}
-                        <Route path='/reports' element={<RoleGate><ReportsDashboard/></RoleGate>}/>
+                        <Route path='/reports' element={<RoleGate role={UserRoles.MODERATOR}><ReportsDashboard/></RoleGate>}/>
                         <Route path='*' element={<Error404/>}/>
                     </Routes>
                 </Suspense>
