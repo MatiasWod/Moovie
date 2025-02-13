@@ -15,6 +15,9 @@ public class VndType {
     // Tipo de medio para crear un comentario individual
     public static final String APPLICATION_COMMENT_FORM = "application/vnd.comment-form.v1+json";
 
+    // Tipo de medio para crear un feedback de un comentario individual
+    public static final String APPLICATION_COMMENT_FEEDBACK_FORM = "application/vnd.comment-feedback-form.v1+json";
+
     // Tipo de medio para una lista de comentarios
     public static final String APPLICATION_COMMENT_LIST = "application/vnd.comment-list.v1+json";
 

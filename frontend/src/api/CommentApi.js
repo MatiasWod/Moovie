@@ -3,7 +3,7 @@ import api from './api.js';
 const commentApi = (() => {
 
     const createReviewComment = async (reviewId, comment) => {
-        const response = await api.post('/comments',
+        const response = await api.post('/comments/',
             {
                 commentContent: comment
             },
@@ -20,7 +20,7 @@ const commentApi = (() => {
     }
 
     const getReviewComments = async (reviewId,pageNumber=1,) => {
-        const response = await api.get('/comments',
+        const response =  api.get('/comments/',
             {
                 params: {
                     'reviewId': reviewId,
@@ -31,6 +31,37 @@ const commentApi = (() => {
         return response;
     }
 
+    const commentFeedback = async (commentId, feedback) => {
+        const response = await api.put('/comments/' + commentId,
+            {
+                feedback: feedback
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/vnd.comment-feedback-form.v1+json'
+                }
+            }
+            );
+        return response
+    }
+
+    const removeCommentFeedback = async (commentId, feedback) => {
+        const response = await api.delete('/comments/' + commentId,
+            {
+                feedback: feedback
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/vnd.comment-feedback-form.v1+json'
+                }
+            }
+        );
+        return response
+    }
+
+
+
+
     const deleteComment = async (commentId) => {
         const response = await api.delete('/comments/' + commentId);
         return response;    
@@ -39,9 +70,11 @@ const commentApi = (() => {
     return {
         deleteComment,
         createReviewComment,
+        commentFeedback,
+        removeCommentFeedback,
         getReviewComments
     }
 
-})()
+})();
 
 export default commentApi;

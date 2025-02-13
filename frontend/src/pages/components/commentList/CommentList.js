@@ -27,7 +27,7 @@ export default function CommentList({ reviewId }) {
 
     const fetchComments = async () => {
         try {
-            const response = await commentApi.getReviewComments(reviewId);
+            const response = await commentApi.getReviewComments(reviewId,1);
             setComments(response.data || []);
             setIsLoading(false);
         } catch (err) {
