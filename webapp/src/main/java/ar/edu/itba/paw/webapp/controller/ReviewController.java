@@ -1,5 +1,9 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
+import ar.edu.itba.paw.exceptions.ReviewNotFoundException;
+import ar.edu.itba.paw.exceptions.UnableToFindUserException;
+import ar.edu.itba.paw.exceptions.UserNotLoggedException;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.Review.Review;
@@ -129,6 +133,39 @@ public class ReviewController {
                 .build();
     }
 
+    @PUT
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response feedbackReview(@PathParam("id") final int id) {
+        boolean liked = reviewService.likeReview(id, ReviewTypes.REVIEW_MEDIA);
+        try {
+            if (liked) {
+                return Response.ok()
+                        .entity("Review successfully liked.")
+                        .build();
+            }
+            else {
+                return Response.ok()
+                        .entity("Review successfully unliked.")
+                        .build();
+            }        } catch (UserNotLoggedException | UnableToFindUserException e) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"error\":\"User must be logged in to like a review.\"}")
+                    .build();
+        } catch (ReviewNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\":\"Review not found.\"}")
+                    .build();
+        } catch (MoovieListNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\":\"Review not found or you do not have permission to delete.\"}")
+                    .build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .build();
+        }
+    }
 
     @DELETE
     @Path("/{id}")
@@ -140,23 +177,6 @@ public class ReviewController {
                 .entity("Review successfully deleted.")
                 .build();
 
-    }
-
-
-
-    @POST
-    @Path("/{id}/like")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response likeReview(@PathParam("id") final int id) {
-        boolean liked = reviewService.likeReview(id, ReviewTypes.REVIEW_MEDIA);
-        if (liked) {
-            return Response.ok()
-                    .entity("Review successfully liked.")
-                    .build();
-        }
-        return Response.ok()
-                .entity("Review successfully unliked.")
-                .build();
     }
 
 

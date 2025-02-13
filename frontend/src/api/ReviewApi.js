@@ -68,15 +68,17 @@ const reviewApi = (()=> {
         );
     }
 
+    const likeReview = (id) => {
+        return api.put(`/reviews/${id}`);
+    }
+
 
     const deleteReviewById = (id) => {
         return api.delete(`/reviews/${id}`);
     }
 
 
-    const likeReview = (id) => {
-        return api.post(`/reviews/${id}/like`);
-    }
+
 
 
 
