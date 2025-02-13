@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
@@ -183,50 +184,41 @@ public class UserController {
 //    MODERATION
 
     @PUT
-    @Path("/{username}/ban")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{username}")
+    @Consumes(VndType.APPLICATION_USER_BAN_FORM)
+    @Produces(VndType.APPLICATION_USER)
     public Response banUser(@PathParam("username") final String username,
-                            @Valid final BanUserDTO banUserDTO) {
+                            @Valid @NotNull final BanUserDTO banUserDTO) {
         try {
-            User toBan = userService.findUserByUsername(username);
-            try {
-                this.moderatorService.banUser(toBan.getUserId(), banUserDTO.getBanMessage());
-            } catch (UnableToBanUserException e) {
-                return new UnableToBanUserEM().toResponse(e);
-            } catch (InvalidAuthenticationLevelRequiredToPerformActionException e) {
-                return new InvalidAuthenticationLevelRequiredToPerformActionEM().toResponse(e);
+            if(banUserDTO.getModAction().equals("UNBAN")) {
+                    User toUnban = userService.findUserByUsername(username);
+                    try {
+                        moderatorService.unbanUser(toUnban.getUserId());
+                    } catch (InvalidAuthenticationLevelRequiredToPerformActionException e) {
+                        return new InvalidAuthenticationLevelRequiredToPerformActionEM().toResponse(e);
+                    } catch (UnableToChangeRoleException e) {
+                        return new UnableToChangeRoleEM().toResponse(e);
+                    }
+                    User finalUser = userService.findUserByUsername(username);
+                    return Response.ok(UserDto.fromUser(finalUser, uriInfo)).build();
+            }else if (banUserDTO.getModAction().equals("BAN")) {
+                User toBan = userService.findUserByUsername(username);
+                try {
+                    this.moderatorService.banUser(toBan.getUserId(), banUserDTO.getBanMessage());
+                } catch (UnableToBanUserException e) {
+                    return new UnableToBanUserEM().toResponse(e);
+                } catch (InvalidAuthenticationLevelRequiredToPerformActionException e) {
+                    return new InvalidAuthenticationLevelRequiredToPerformActionEM().toResponse(e);
+                }
+                User finalUser = userService.findUserByUsername(username);
+                return Response.ok(UserDto.fromUser(finalUser, uriInfo)).build();
             }
-            User finalUser = userService.findUserByUsername(username);
-            return Response.ok(UserDto.fromUser(finalUser, uriInfo)).build();
         } catch (UnableToFindUserException e) {
             return new UnableToFindUserEM().toResponse(e);
         } catch (Exception e) {
             return new ExceptionEM().toResponse(e);
         }
-    }
-
-    @PUT
-    @Path("/{username}/unban")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response unbanUser(@PathParam("username") final String username) {
-
-        try {
-            User toUnban = userService.findUserByUsername(username);
-            try {
-                moderatorService.unbanUser(toUnban.getUserId());
-            } catch (InvalidAuthenticationLevelRequiredToPerformActionException e) {
-                return new InvalidAuthenticationLevelRequiredToPerformActionEM().toResponse(e);
-            } catch (UnableToChangeRoleException e) {
-                return new UnableToChangeRoleEM().toResponse(e);
-            }
-            User finalUser = userService.findUserByUsername(username);
-            return Response.ok(UserDto.fromUser(finalUser, uriInfo)).build();
-        } catch (UnableToFindUserException e) {
-            return new UnableToFindUserEM().toResponse(e);
-        } catch (Exception e) {
-            return new ExceptionEM().toResponse(e);
-        }
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
 

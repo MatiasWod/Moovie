@@ -86,13 +86,25 @@ const userApi = (() => {
 
     const banUser = (username) => {
         const banUserDTO = {
+            modAction:"BAN",
             banMessage: "User banned by moderator"
         };
-        return api.put(`/users/${username}/ban`, banUserDTO);
+        return api.put(`/users/${username}`, banUserDTO,{
+            headers: {
+                'Content-Type': VndType.APPLICATION_USER_BAN_FORM
+            }
+        });
     }
 
     const unbanUser = (username) => {
-        return api.put(`/users/${username}/unban`);
+        const banUserDTO = {
+            modAction:"UNBAN",
+        };
+        return api.put(`/users/${username}`, banUserDTO,{
+            headers: {
+                'Content-Type': VndType.APPLICATION_USER_BAN_FORM
+            }
+        });
     }
 
 
