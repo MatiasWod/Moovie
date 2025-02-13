@@ -1,4 +1,5 @@
 import api from './api'
+import VndType from "../enums/VndType";
 
 const listApi = (() => {
 
@@ -47,7 +48,7 @@ const listApi = (() => {
             { mediaIdList: mediaIds },  // Rename `mediaIds` to `mediaIdList`
             {
                 headers: {
-                    'Content-Type': 'application/vnd.moovielist-media-form.v1+json',
+                    'Content-Type': VndType.APPLICATION_MOOVIELIST_MEDIA_FORM,
                 },
             }
         );
@@ -65,12 +66,13 @@ const listApi = (() => {
         const form = {
             listName: name,
             listDescription: description,
-            headers: {
-                'Content-Type': 'application/vnd.moovielist-form.v1+json'
-            }
         };
         const response = await api.put('/list/' + mlId,
-            form);
+            form,{
+                headers: {
+                    'Content-Type': VndType.APPLICATION_MOOVIELIST_FORM
+                }
+            });
         return response;
     }
 
@@ -90,14 +92,15 @@ const listApi = (() => {
             mediaId: mediaId,
             moovieListId: listId,
             customOrder: customOrder,
-            headers: {
-                'Content-Type': 'application/vnd.moovielist-media-form.v1+json',
-            }
 
         };
 
         const response =  api.put(`list/${listId}/content/${mediaId}`,
-            input
+            input,{
+                headers: {
+                    'Content-Type': VndType.APPLICATION_MOOVIELIST_MEDIA_FORM,
+                }
+            }
         );
         return response;
     }
@@ -107,12 +110,13 @@ const listApi = (() => {
     const createMoovieList = (name, description) => {
         const body = {
             name: name,
-            description: description,
-            headers: {
-                'Content-Type': 'application/vnd.moovielist-form.v1+json'
-            }
+            description: description
         }
-        return api.post('list', body)
+        return api.post('list', body,{
+            headers: {
+                'Content-Type': VndType.APPLICATION_MOOVIELIST_FORM
+            }
+        })
     }
 
 

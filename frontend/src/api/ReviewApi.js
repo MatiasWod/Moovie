@@ -1,4 +1,5 @@
 import api from './api.js'
+import VndType from "../enums/VndType";
 
 const reviewApi = (()=> {
 
@@ -44,11 +45,9 @@ const reviewApi = (()=> {
             {
                 params: {
                     'mediaId': mediaId
-                }
-            },
-            {
+                },
                 headers: {
-                    'Content-Type': 'application/vnd.review-form.v1+json',
+                    'Content-Type': VndType.APPLICATION_REVIEW_FORM
                 },
             }
         );
@@ -63,7 +62,7 @@ const reviewApi = (()=> {
                 }
             ,
                 headers: {
-                    'Content-Type': 'application/vnd.review-form.v1+json',
+                    'Content-Type': VndType.APPLICATION_REVIEW_FORM,
                 },
             }
         );

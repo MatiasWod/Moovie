@@ -1,4 +1,5 @@
 import api from './api.js';
+import VndType from "../enums/VndType";
 
 const userApi = (() => {
 
@@ -34,7 +35,7 @@ const userApi = (() => {
             },
                 {
                 headers: {
-                    'Content-Type': 'application/vnd.user-form.v1+json'
+                    'Content-Type': VndType.APPLICATION_USER_FORM
                 }
             });
         } catch (error) {
@@ -49,7 +50,7 @@ const userApi = (() => {
             },
             {
                 headers: {
-                    'Content-Type': 'application/vnd.user_token_form.v1+json'
+                    'Content-Type': VndType.APPLICATION_USER_TOKEN_FORM
                 }
             }
         );

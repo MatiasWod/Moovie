@@ -1,4 +1,5 @@
 import api from "./api";
+import VndType from "../enums/VndType";
 
 const profileApi = (() => {
 
@@ -83,7 +84,7 @@ const profileApi = (() => {
             return api.post(`/profiles/${username}/listFollows`,
                 {"id":moovieListId},
                 {headers: {
-                        'Content-Type': 'application/vnd.follow-form.v1+json'
+                        'Content-Type': VndType.APPLICATION_FOLLOW_FORM
                     }
                 });
         }
@@ -102,9 +103,9 @@ const profileApi = (() => {
         let contentType = "application/json";
 
         if (ww === "watched") {
-            contentType = "application/vnd.watched-media-form.v1+json";
+            contentType = VndType.APPLICATION_WATCHED_MEDIA_FORM;
         }else {
-            contentType = "application/vnd.watchlist-media-form.v1+json";
+            contentType = VndType.APPLICATION_WATCHLIST_MEDIA_FORM;
         }
 
 

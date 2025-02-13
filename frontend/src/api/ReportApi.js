@@ -1,8 +1,7 @@
 import api from './api.js';
+import VndType from "../enums/VndType";
 
 const reportApi = (() => {
-
-    let reprortContentType = 'application/vnd.vnd.report-form.v1+json'
 
     // --------------- REPORTING ---------------
 
@@ -16,11 +15,9 @@ const reportApi = (() => {
             {params:
                 {
                     reviewId: reviewId
-                }
-            },
-            {
+                },
                 headers: {
-                    'Content-Type': reprortContentType,
+                    'Content-Type': VndType.APPLICATION_REPORT_FORM,
                 }
             });
         return response;
@@ -37,11 +34,9 @@ const reportApi = (() => {
             {params:
                 {
                     commentId: commentId
-                }
-            },
-            {
+                },
                 headers: {
-                    'Content-Type': reprortContentType,
+                    'Content-Type': VndType.APPLICATION_REPORT_FORM,
                 }
             }
         );
@@ -59,11 +54,9 @@ const reportApi = (() => {
             {params:
                 {
                     moovieListId: moovieListId
-                }
-            },
-            {
+                },
                 headers: {
-                    'Content-Type': reprortContentType,
+                    'Content-Type': VndType.APPLICATION_REPORT_FORM,
                 }
             }
         );
@@ -81,11 +74,9 @@ const reportApi = (() => {
             {params:
                 {
                     moovieListReviewId: moovieListReviewId
-                }
-            },
-            {
+                },
                 headers: {
-                    'Content-Type': reprortContentType,
+                    'Content-Type': VndType.APPLICATION_REPORT_FORM,
                 }
             }
         );

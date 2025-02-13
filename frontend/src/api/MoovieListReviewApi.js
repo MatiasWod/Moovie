@@ -1,4 +1,5 @@
 import api from './api.js'
+import VndType from "../enums/VndType";
 
 const moovieListReviewApi = (()=> {
 
@@ -36,11 +37,9 @@ const moovieListReviewApi = (()=> {
         {
                 params:{
                     'listId': id
-                }
-        },
-            {
+                },
                 headers: {
-                    'Content-Type': 'application/vnd.moovielist-review-form.v1+json',
+                    'Content-Type': VndType.APPLICATION_MOOVIELIST_REVIEW_FORM,
                 },
             }
             );
@@ -54,11 +53,9 @@ const moovieListReviewApi = (()=> {
             {params:
                     {
                         listId:id,
-                    }
-            },
-            {
+                    },
                 headers: {
-                    'Content-Type': 'application/vnd.moovielist-review-form.v1+json',
+                    'Content-Type': VndType.APPLICATION_MOOVIELIST_REVIEW_FORM,
                 },
             });
     }

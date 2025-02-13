@@ -1,4 +1,5 @@
 import api from './api.js';
+import VndType from "../enums/VndType";
 
 const commentApi = (() => {
 
@@ -12,7 +13,7 @@ const commentApi = (() => {
                     'reviewId': reviewId
                 },
                 headers: {
-                    'Content-Type': 'application/vnd.comment-form.v1+json'
+                    'Content-Type': VndType.APPLICATION_COMMENT_FORM
                 }
             }
             );
@@ -38,7 +39,7 @@ const commentApi = (() => {
             },
             {
                 headers: {
-                    'Content-Type': 'application/vnd.comment-feedback-form.v1+json'
+                    'Content-Type': VndType.APPLICATION_COMMENT_FEEDBACK_FORM
                 }
             }
             );
@@ -48,11 +49,9 @@ const commentApi = (() => {
     const removeCommentFeedback = async (commentId, feedback) => {
         const response = await api.delete('/comments/' + commentId,
             {
-                feedback: feedback
-            },
-            {
+                feedback: feedback,
                 headers: {
-                    'Content-Type': 'application/vnd.comment-feedback-form.v1+json'
+                    'Content-Type': VndType.APPLICATION_COMMENT_FEEDBACK_FORM
                 }
             }
         );
