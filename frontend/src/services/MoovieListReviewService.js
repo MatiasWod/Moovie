@@ -32,8 +32,8 @@ const MoovieListReviewService = ( () => {
         return res;
     }
 
-    const likeMoovieListReview = async (id,feedbackForm) => {
-        const res = await moovieListReviewApi.likeMoovieListReview(id,feedbackForm);
+    const likeMoovieListReview = async (id) => {
+        const res = await moovieListReviewApi.likeMoovieListReview(id);
         return res;
     }
 

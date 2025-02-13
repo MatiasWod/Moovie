@@ -110,9 +110,6 @@ export const VndType = {
     // Tipo de medio para una lista de reseñas
     APPLICATION_REVIEW_LIST: "application/vnd.review-list.v1+json",
 
-    // Tipo de medio para crear un feedback de una reseña individual
-    APPLICATION_REVIEW_FEEDBACK_FORM: "application/vnd.review-feedback-form.v1+json",
-
     // Tipo de medio para operaciones de creación/edición de una reseña
     APPLICATION_REVIEW_FORM: "application/vnd.review-form.v1+json",
 

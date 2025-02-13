@@ -10,7 +10,6 @@ import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
 import ar.edu.itba.paw.services.ReviewService;
 import ar.edu.itba.paw.webapp.dto.in.MoovieListReviewCreateDto;
-import ar.edu.itba.paw.webapp.dto.in.ReviewFeedbackDto;
 import ar.edu.itba.paw.webapp.dto.out.MoovieListReviewDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
@@ -18,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
@@ -126,21 +124,21 @@ public class MoovieListReviewController {
 
     @PUT
     @Path("/{id}")
-    @Consumes(VndType.APPLICATION_REVIEW_FEEDBACK_FORM)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response likeMoovieListReview(@PathParam("id") final int id, @Valid @NotNull final ReviewFeedbackDto reviewFeedbackDto) {
+    public Response feedbackMoovieListReview(@PathParam("id") final int id) {
         try {
-            if (reviewFeedbackDto.getFeedbackType().equals("LIKE")) {
-                reviewService.likeReview(id, ReviewTypes.REVIEW_MOOVIE_LIST);
+            boolean liked_status=reviewService.likeReview(id, ReviewTypes.REVIEW_MOOVIE_LIST);
+
+            if(liked_status){
                 return Response.ok()
-                        .entity("MoovieList review successfully liked.")
-                        .build();
-            } else {
-                reviewService.removeLikeReview(id, ReviewTypes.REVIEW_MOOVIE_LIST);
+                    .entity("MoovieList review feedback status successfully changed to liked.")
+                    .build();
+            }else{
                 return Response.ok()
-                        .entity("MoovieList review successfully unliked.")
+                    .entity("MoovieList review feedback status successfully changed to unliked.")
                         .build();
             }
+
         } catch (UserNotLoggedException | UnableToFindUserException e) {
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"error\":\"User must be logged in to like a review.\"}")
