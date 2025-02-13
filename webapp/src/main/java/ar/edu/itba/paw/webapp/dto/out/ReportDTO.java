@@ -35,19 +35,19 @@ public class ReportDTO {
     }
 
     public static ReportDTO fromReviewReport(ReviewReport reviewReport, UriInfo uriInfo) {
-        String url = uriInfo.getBaseUriBuilder().path("/review/" + reviewReport.getReview().getReviewId()).toString();
+        String url = uriInfo.getBaseUriBuilder().path("/reviews/" + reviewReport.getReview().getReviewId()).toString();
         String reportedByUrl = uriInfo.getBaseUriBuilder().path("/users/" + reviewReport.getReportedBy().getUsername()).toString();
         return new ReportDTO(url, reviewReport.getResolved(), reviewReport.getReport_date(), reportedByUrl, reviewReport.getContent(), reviewReport.getType());
     }
 
     public static ReportDTO fromCommentReport(CommentReport commentReport, UriInfo uriInfo) {
-        String url = uriInfo.getBaseUriBuilder().path("/comment/" + commentReport.getComment().getCommentId()).toString();
+        String url = uriInfo.getBaseUriBuilder().path("/comments/" + commentReport.getComment().getCommentId()).toString();
         String reportedByUrl = uriInfo.getBaseUriBuilder().path("/users/" + commentReport.getReportedBy().getUsername()).toString();
         return new ReportDTO(url, commentReport.getResolved(), commentReport.getReport_date(), reportedByUrl, commentReport.getContent(), commentReport.getType());
     }
 
     public static ReportDTO fromMoovieListReviewReport(MoovieListReviewReport mlrReport, UriInfo uriInfo) {
-        String url = uriInfo.getBaseUriBuilder().path("/moovieListReview/" + mlrReport.getMoovieListReview().getMoovieListReviewId()).toString();
+        String url = uriInfo.getBaseUriBuilder().path("/moovieListReviews/" + mlrReport.getMoovieListReview().getMoovieListReviewId()).toString();
         String reportedByUrl = uriInfo.getBaseUriBuilder().path("/users/" + mlrReport.getReportedBy().getUsername()).toString();
         return new ReportDTO(url, mlrReport.getResolved(), mlrReport.getReport_date(), reportedByUrl, mlrReport.getContent(), mlrReport.getType());
     }
