@@ -10,6 +10,7 @@ import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
 import ar.edu.itba.paw.services.ReviewService;
 import ar.edu.itba.paw.webapp.dto.in.MoovieListReviewCreateDto;
+import ar.edu.itba.paw.webapp.dto.in.ReviewFeedbackDto;
 import ar.edu.itba.paw.webapp.dto.out.MoovieListReviewDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
@@ -121,6 +123,43 @@ public class MoovieListReviewController {
                 .build();
     }
 
+
+    @PUT
+    @Path("/{id}")
+    @Consumes(VndType.APPLICATION_REVIEW_FEEDBACK_FORM)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response likeMoovieListReview(@PathParam("id") final int id, @Valid @NotNull final ReviewFeedbackDto reviewFeedbackDto) {
+        try {
+            if (reviewFeedbackDto.getFeedbackType().equals("LIKE")) {
+                reviewService.likeReview(id, ReviewTypes.REVIEW_MOOVIE_LIST);
+                return Response.ok()
+                        .entity("MoovieList review successfully liked.")
+                        .build();
+            } else {
+                reviewService.removeLikeReview(id, ReviewTypes.REVIEW_MOOVIE_LIST);
+                return Response.ok()
+                        .entity("MoovieList review successfully unliked.")
+                        .build();
+            }
+        } catch (UserNotLoggedException | UnableToFindUserException e) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"error\":\"User must be logged in to like a review.\"}")
+                    .build();
+        } catch (ReviewNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\":\"MoovieList review not found.\"}")
+                    .build();
+        } catch (MoovieListNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\":\"MoovieList not found or you do not have permission to delete.\"}")
+                    .build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .build();
+        }
+    }
+
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.TEXT_PLAIN)
@@ -153,39 +192,6 @@ public class MoovieListReviewController {
 
 
 
-    @POST
-    @Path("/{id}/like")
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response likeMoovieListReview(@PathParam("id") final int id) {
-        try {
-            boolean liked = reviewService.likeReview(id, ReviewTypes.REVIEW_MOOVIE_LIST);
-            if (liked) {
-                return Response.ok()
-                        .entity("MoovieList review successfully liked.")
-                        .build();
-            }
-            return Response.ok()
-                    .entity("MoovieList review successfully unliked.")
-                    .build();
-
-        } catch (UserNotLoggedException | UnableToFindUserException e) {
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\":\"User must be logged in to like a review.\"}")
-                    .build();
-        } catch (ReviewNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"MoovieList review not found.\"}")
-                    .build();
-        } catch (MoovieListNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"MoovieList not found or you do not have permission to delete.\"}")
-                    .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
-        }
-    }
 
 }
 

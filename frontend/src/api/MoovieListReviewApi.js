@@ -64,8 +64,13 @@ const moovieListReviewApi = (()=> {
         return api.delete(`/moovieListReviews/${id}`);
     }
 
-    const likeMoovieListReview = (id) => {
-        return api.post(`/moovieListReviews/${id}/like`);
+    const likeMoovieListReview = (id,feedbackForm) => {
+        return api.put(`/moovieListReviews/${id}`,{
+            feedbackForm: feedbackForm
+        },{
+            headers: {
+                'Content-Type': VndType.APPLICATION_REVIEW_FEEDBACK_FORM,
+        }});
     }
 
 
