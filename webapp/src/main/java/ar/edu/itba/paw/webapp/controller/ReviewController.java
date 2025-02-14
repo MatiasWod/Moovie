@@ -137,8 +137,8 @@ public class ReviewController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response feedbackReview(@PathParam("id") final int id) {
-        boolean liked = reviewService.likeReview(id, ReviewTypes.REVIEW_MEDIA);
         try {
+            boolean liked = reviewService.likeReview(id, ReviewTypes.REVIEW_MEDIA);
             if (liked) {
                 return Response.ok()
                         .entity("Review successfully liked.")

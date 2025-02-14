@@ -72,7 +72,7 @@ public interface MoovieListService {
     boolean removeLikeMoovieList(int moovieListId);
 
     boolean followMoovieList(int moovieListId);
-    void removeFollowMoovieList(int moovieListId);
+    boolean removeFollowMoovieList(int moovieListId);
 
     void addMediaToWatchlist(int movieId, String username);
     void removeMediaFromWatchlist(int movieId, String username);

@@ -139,6 +139,27 @@ const listApi = (() => {
             });
     }
 
+    const followList = (moovieListId, username) =>{
+        return api.put(`/list/${moovieListId}`,
+            {"username":username,
+                "actionType": "FOLLOW"},
+
+            {headers: {
+                    'Content-Type': VndType.APPLICATION_MOOVIELIST_FOLLOW_FORM
+                }
+            });
+    }
+
+    const unfollowList = (moovieListId, username) =>{
+        return api.delete(`/list/${moovieListId}`,
+            {"username":username,
+                "actionType": "UNFOLLOW"},
+
+            {headers: {
+                    'Content-Type': VndType.APPLICATION_MOOVIELIST_FOLLOW_FORM
+                }
+            });
+    }
 
     return{
         getLists,
@@ -152,7 +173,9 @@ const listApi = (() => {
         editListContent,
         createMoovieList,
         likeList,
-        unlikeList
+        unlikeList,
+        followList,
+        unfollowList
     }
 })();
 

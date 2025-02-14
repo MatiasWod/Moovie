@@ -56,21 +56,6 @@ const ProfileService = (() => {
         }
     };
 
-    const followList = async (moovieListId, username) => {
-        try {
-            return await profileApi.followList(moovieListId, username)
-        } catch (error){
-            return null;
-        }
-    }
-
-    const unfollowList = async (moovieListId, username) => {
-        try {
-            return await profileApi.unfollowList(moovieListId, username)
-        } catch (error){
-            return null;
-        }
-    }
 
     const userWWStatus = async (ww, mediaId, username) => {
         try{
@@ -150,8 +135,6 @@ const ProfileService = (() => {
         getLikedOrFollowedListFromUser,
         currentUserHasLiked,
         currentUserHasFollowed,
-        followList,
-        unfollowList,
         userWWStatus,
         insertMediaIntoWW,
         removeMediaFromWW,

@@ -72,19 +72,6 @@ const profileApi = (() => {
             return api.get(`/profiles/${username}/listFollows/${moovieListId}`);
         }
 
-    const followList = (moovieListId, username) =>{
-            return api.post(`/profiles/${username}/listFollows`,
-                {"id":moovieListId},
-                {headers: {
-                        'Content-Type': VndType.APPLICATION_FOLLOW_FORM
-                    }
-                });
-        }
-
-    const unfollowList = (moovieListId, username) =>{
-            return api.delete(`/profiles/${username}/listFollows/${moovieListId}`);
-        }
-
 
         //WATCHED AND WATCHLIST (WW)
     const currentUserWW = (ww, username, mediaId) => {
@@ -124,8 +111,6 @@ const profileApi = (() => {
         currentUserHasLikedList,
         getLikedOrFollowedListFromUser,
         currentUserHasFollowedList,
-        followList,
-        unfollowList,
         currentUserWW,
         insertMediaIntoWW,
         removeMediaFromWW,

@@ -299,21 +299,6 @@ public class ProfileController {
         return res.build();
     }
 
-    @POST
-    @Path("/{username}/listFollows")
-    @Consumes(VndType.APPLICATION_FOLLOW_FORM)
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response followMoovieList(@PathParam("username") String username,
-                                                      @Valid JustIdDto idDto) {
-        userService.isUsernameMe(username);
-        boolean like = moovieListService.followMoovieList(idDto.getId());
-        if (like) {
-            return Response.ok()
-                    .entity("{\"message\":\"Succesfully followed list.\"}").build();
-        }
-        return Response.status(Response.Status.BAD_REQUEST)
-                .entity("{\"message\":\"List is already followed.\"}").build();
-    }
 
     @GET
     @Path("/{username}/listFollows/{listId}")
@@ -325,17 +310,6 @@ public class ProfileController {
             return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId, username)).build();
         }
         return Response.noContent().build();
-    }
-
-    @DELETE
-    @Path("/{username}/listFollows/{listId}")
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response unfollowMoovieList(@PathParam("username") String username,
-                                                        @PathParam("listId") int listId) {
-        userService.isUsernameMe(username);
-        moovieListService.removeFollowMoovieList(listId);
-        return Response.ok()
-                .entity("{\"message\":\"Succesfully unfollowed list.\"}").build();
     }
 
     /***

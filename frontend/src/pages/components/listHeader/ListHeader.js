@@ -36,9 +36,9 @@ const ListHeader = ({ list, updateHeader}) => {
     const handleLike = async () => {
         try {
             if (hasLikedAndFollowed.liked) {
-                await profileService.unlikeList(list.id, user.username);
+                await listService.unlikeList(list.id, user.username);
             } else {
-                await profileService.likeList(list.id, user.username);
+                await listService.likeList(list.id, user.username);
             }
             setPing(!ping);
         } catch (error) {
@@ -49,9 +49,9 @@ const ListHeader = ({ list, updateHeader}) => {
     const handleFollow = async () => {
         try {
             if (hasLikedAndFollowed.followed) {
-                await profileService.unfollowList(list.id, user.username);
+                await listService.unfollowList(list.id, user.username);
             } else {
-                await profileService.followList(list.id, user.username);
+                await listService.followList(list.id, user.username);
             }
             setPing(!ping);
         } catch (error) {

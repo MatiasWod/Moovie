@@ -407,9 +407,16 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Transactional
     @Override
-    public void removeFollowMoovieList(int moovieListId) {
-        moovieListDao.removeFollowMoovieList(userService.tryToGetCurrentUserId(), moovieListId);
-        LOGGER.info("Succesfully unfollowed list: {}, user: {}.",moovieListId,userService.tryToGetCurrentUserId());
+    public boolean removeFollowMoovieList(int moovieListId) {
+        int userId = userService.tryToGetCurrentUserId();
+        MoovieListCard mlc = getMoovieListCardById(moovieListId);
+
+        if(mlc.isCurrentUserHasFollowed()){
+            moovieListDao.removeFollowMoovieList(userId, moovieListId);
+            LOGGER.info("Succesfully unfollowed list: {}, user: {}.",moovieListId,userId);
+            return true;
+        }
+        return false;
     }
 
     private String setSortOrder(String sortOrder){

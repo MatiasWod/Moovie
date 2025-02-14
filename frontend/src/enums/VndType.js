@@ -44,6 +44,9 @@ export const VndType = {
     // Tipo de medio para operaciones de feedback de una MoovieList
     APPLICATION_MOOVIELIST_FEEDBACK_FORM : "application/vnd.moovielist-feedback-form.v1+json",
 
+    // Tipo de medio para operaciones de seguimiento (Follow/Unfollow)
+    APPLICATION_MOOVIELIST_FOLLOW_FORM: "application/vnd.moovielist-follow-form.v1+json",
+
     // Tipo de medio para un medio (Media) dentro de una MoovieList
     APPLICATION_MOOVIELIST_MEDIA: "application/vnd.moovielist-media.v1+json",
 
@@ -91,9 +94,6 @@ export const VndType = {
 
     // Tipo de medio para la lista de listas seguidas (Follows)
     APPLICATION_FOLLOWED_LISTS_USER_LIST: "application/vnd.followed-lists-user-list.v1+json",
-
-    // Tipo de medio para operaciones de seguimiento (Follow/Unfollow)
-    APPLICATION_FOLLOW_FORM: "application/vnd.follow-form.v1+json",
 
     // Tipo de medio para una lista de proveedores "
     APPLICATION_PROVIDER_LIST: "application/vnd.provider-list.v1+json",

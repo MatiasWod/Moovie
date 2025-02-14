@@ -4,7 +4,6 @@ import ar.edu.itba.paw.models.Media.OrderedMedia;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
-import ar.edu.itba.paw.models.MoovieList.UserMoovieListId;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
 
@@ -17,7 +16,6 @@ import ar.edu.itba.paw.webapp.dto.in.*;
 import ar.edu.itba.paw.webapp.dto.out.MediaIdListIdDto;
 import ar.edu.itba.paw.webapp.dto.out.MoovieListDto;
 import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
-import ar.edu.itba.paw.webapp.dto.out.UserListIdDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
@@ -26,6 +24,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.ArrayList;
@@ -191,6 +190,43 @@ public class MoovieListController {
                     .build();
         }
         catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"message\":\"An unexpected error occurred.\"}")
+                    .build();
+        }
+    }
+
+    @PUT
+    @Path("/{id}")
+    @Consumes(VndType.APPLICATION_MOOVIELIST_FOLLOW_FORM)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response followMoovieList(@PathParam("id") int id,
+                                     @Valid @NotNull FollowMoovieListDto followMoovieListDto) {
+        try {
+
+            userService.isUsernameMe(followMoovieListDto.getUsername());
+            if (followMoovieListDto.getActionType().equals("FOLLOW")) {
+                boolean followed = moovieListService.followMoovieList(id);
+                if (followed) {
+                    return Response.ok()
+                            .entity("{\"message\":\"Succesfully followed list.\"}").build();
+                }
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("{\"message\":\"List is already followed.\"}").build();
+            } else if (followMoovieListDto.getActionType().equals("UNFOLLOW")) {
+                boolean unfollowed = moovieListService.removeFollowMoovieList(id);
+                if (unfollowed) {
+                    moovieListService.removeFollowMoovieList(id);
+                    return Response.ok()
+                            .entity("{\"message\":\"Succesfully unfollowed list.\"}").build();
+                }
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("{\"message\":\"List is not followed.\"}").build();
+            }
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"message\":\"Invalid action type.\"}")
+                    .build();
+        } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("{\"message\":\"An unexpected error occurred.\"}")
                     .build();

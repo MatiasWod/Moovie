@@ -48,6 +48,9 @@ public class VndType {
     // Tipo de medio para operaciones de creación/edición de una MoovieList
     public static final String APPLICATION_MOOVIELIST_FORM = "application/vnd.moovielist-form.v1+json";
 
+    // Tipo de medio para operaciones de seguimiento (Follow/Unfollow)
+    public static final String APPLICATION_MOOVIELIST_FOLLOW_FORM = "application/vnd.moovielist-follow-form.v1+json";
+
     // Tipo de medio para un medio (Media) dentro de una MoovieList
     public static final String APPLICATION_MOOVIELIST_MEDIA = "application/vnd.moovielist-media.v1+json";
 
@@ -95,9 +98,6 @@ public class VndType {
 
     // Tipo de medio para la lista de listas seguidas (Follows)
     public static final String APPLICATION_FOLLOWED_LISTS_USER_LIST = "application/vnd.followed-lists-user-list.v1+json";
-
-    // Tipo de medio para operaciones de seguimiento (Follow/Unfollow)
-    public static final String APPLICATION_FOLLOW_FORM = "application/vnd.follow-form.v1+json";
 
     // Tipo de medio para una lista de proveedores "
     public static final String APPLICATION_PROVIDER_LIST = "application/vnd.provider-list.v1+json";
