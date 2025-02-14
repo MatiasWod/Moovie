@@ -41,21 +41,7 @@ const ProfileService = (() => {
         }
     };
 
-    const likeList = async (moovieListId, username) => {
-        try {
-            return await profileApi.likeList(moovieListId, username)
-        } catch (error){
-            return null;
-        }
-    }
 
-    const unlikeList = async (moovieListId, username) => {
-        try {
-            return await profileApi.unlikeList(moovieListId, username)
-        } catch (error){
-            return null;
-        }
-    }
 
     const currentUserHasFollowed = async (moovieListId, username) => {
         try {
@@ -163,8 +149,6 @@ const ProfileService = (() => {
         getSpecialListFromUser,
         getLikedOrFollowedListFromUser,
         currentUserHasLiked,
-        likeList,
-        unlikeList,
         currentUserHasFollowed,
         followList,
         unfollowList,

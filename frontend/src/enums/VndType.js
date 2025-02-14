@@ -41,6 +41,9 @@ export const VndType = {
     // Tipo de medio para operaciones de creación/edición de una MoovieList
     APPLICATION_MOOVIELIST_FORM: "application/vnd.moovielist-form.v1+json",
 
+    // Tipo de medio para operaciones de feedback de una MoovieList
+    APPLICATION_MOOVIELIST_FEEDBACK_FORM : "application/vnd.moovielist-feedback-form.v1+json",
+
     // Tipo de medio para un medio (Media) dentro de una MoovieList
     APPLICATION_MOOVIELIST_MEDIA: "application/vnd.moovielist-media.v1+json",
 

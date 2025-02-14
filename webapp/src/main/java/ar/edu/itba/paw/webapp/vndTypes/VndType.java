@@ -42,6 +42,9 @@ public class VndType {
     // Tipo de medio para una lista de MoovieList
     public static final String APPLICATION_MOOVIELIST = "application/vnd.moovielist.v1+json";
 
+    // Tipo de medio para feedback de una lista de MoovieList
+    public static final String APPLICATION_MOOVIELIST_FEEDBACK_FORM = "application/vnd.moovielist-feedback-form.v1+json";
+
     // Tipo de medio para operaciones de creación/edición de una MoovieList
     public static final String APPLICATION_MOOVIELIST_FORM = "application/vnd.moovielist-form.v1+json";
 

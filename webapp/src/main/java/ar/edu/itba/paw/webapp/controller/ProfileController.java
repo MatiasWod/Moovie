@@ -369,20 +369,6 @@ public class ProfileController {
         return res.build();
     }
 
-    @POST
-    @Path("/{username}/listLikes")
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response likeMoovieList(@PathParam("username") String username,
-                                                    @Valid JustIdDto idDto) {
-        userService.isUsernameMe(username);
-        boolean like = moovieListService.likeMoovieList(idDto.getId());
-        if (like) {
-            return Response.ok()
-                    .entity("{\"message\":\"Succesfully liked list.\"}").build();
-        }
-        return Response.status(Response.Status.BAD_REQUEST)
-                .entity("{\"message\":\"Lista is already liked.\"}").build();
-    }
 
     // Returns like status for a specific media
     @GET
@@ -397,14 +383,4 @@ public class ProfileController {
         return Response.noContent().build();
     }
 
-    @DELETE
-    @Path("/{username}/listLikes/{listId}")
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response unlikeMoovieList(@PathParam("username") String username,
-                                                      @PathParam("listId") int listId) {
-        userService.isUsernameMe(username);
-        moovieListService.removeLikeMoovieList(listId);
-        return Response.ok()
-                .entity("{\"message\":\"Succesfully unliked list.\"}").build();
-    }
 }

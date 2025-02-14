@@ -65,14 +65,6 @@ const profileApi = (() => {
     const currentUserHasLikedList = (moovieListId, username) => {
             return api.get(`/profiles/${username}/listLikes/${moovieListId}`);
         }
-    const likeList = (moovieListId, username) =>{
-            return api.post(`/profiles/${username}/listLikes`,
-                {"id":moovieListId});
-        }
-
-    const unlikeList = (moovieListId, username) =>{
-            return api.delete(`/profiles/${username}/listLikes/${moovieListId}`);
-        }
 
 
 
@@ -130,8 +122,6 @@ const profileApi = (() => {
         getSearchedUsers,
         setPfp,
         currentUserHasLikedList,
-        likeList,
-        unlikeList,
         getLikedOrFollowedListFromUser,
         currentUserHasFollowedList,
         followList,

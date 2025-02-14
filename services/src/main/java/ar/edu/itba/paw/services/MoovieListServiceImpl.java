@@ -338,9 +338,18 @@ public class MoovieListServiceImpl implements MoovieListService{
 
     @Transactional
     @Override
-    public void removeLikeMoovieList(int moovieListId) {
-        moovieListDao.removeLikeMoovieList(userService.tryToGetCurrentUserId(), moovieListId);
-        LOGGER.info("Succesfully unliked list: {}, user: {}.",moovieListId,userService.tryToGetCurrentUserId());
+    public boolean removeLikeMoovieList(int moovieListId) {
+        int userId = userService.tryToGetCurrentUserId();
+        if(userId==-1){
+            throw new UserNotLoggedException();
+        }
+        MoovieListCard mlc = getMoovieListCardById(moovieListId);
+        if(mlc.isCurrentUserHasLiked()){
+            moovieListDao.removeLikeMoovieList(userId, moovieListId);
+            LOGGER.info("Succesfully unliked list: {}, user: {}.",moovieListId,userId);
+            return true;
+        }
+        return false;
     }
 
 

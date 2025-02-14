@@ -119,6 +119,26 @@ const listApi = (() => {
         })
     }
 
+    const likeList = (moovieListId, username) =>{
+        return api.put(`/list/${moovieListId}`,
+            {"username": username,
+                "feedbackType" : "LIKE"},
+            {headers: {
+                    'Content-Type': VndType.APPLICATION_MOOVIELIST_FEEDBACK_FORM
+                }
+            });
+    }
+
+    const unlikeList = (moovieListId, username) =>{
+        return api.put(`/list/${moovieListId}`,
+            {"username": username,
+                "feedbackType" : "UNLIKE"},
+            {headers: {
+                    'Content-Type': VndType.APPLICATION_MOOVIELIST_FEEDBACK_FORM
+                }
+            });
+    }
+
 
     return{
         getLists,
@@ -130,7 +150,9 @@ const listApi = (() => {
         editMoovieList,
         getRecommendedLists,
         editListContent,
-        createMoovieList
+        createMoovieList,
+        likeList,
+        unlikeList
     }
 })();
 

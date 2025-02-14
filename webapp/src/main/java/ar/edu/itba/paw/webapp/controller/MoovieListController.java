@@ -4,19 +4,20 @@ import ar.edu.itba.paw.models.Media.OrderedMedia;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
+import ar.edu.itba.paw.models.MoovieList.UserMoovieListId;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
 
 import ar.edu.itba.paw.services.MoovieListService;
 
 
-import ar.edu.itba.paw.webapp.dto.in.EditListDTO;
-import ar.edu.itba.paw.webapp.dto.in.MediaListDto;
-import ar.edu.itba.paw.webapp.dto.in.MoovieListCreateDto;
+import ar.edu.itba.paw.services.UserService;
+import ar.edu.itba.paw.webapp.dto.in.*;
 
 import ar.edu.itba.paw.webapp.dto.out.MediaIdListIdDto;
 import ar.edu.itba.paw.webapp.dto.out.MoovieListDto;
 import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
+import ar.edu.itba.paw.webapp.dto.out.UserListIdDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
@@ -35,13 +36,15 @@ import java.util.List;
 public class MoovieListController {
 
     private final MoovieListService moovieListService;
+    private final UserService userService;
 
     @Context
     UriInfo uriInfo;
 
     @Autowired
-    public MoovieListController(MoovieListService moovieListService){
+    public MoovieListController(MoovieListService moovieListService, UserService userService) {
         this.moovieListService = moovieListService;
+        this.userService = userService;
     }
 
 
@@ -156,6 +159,42 @@ public class MoovieListController {
         return Response.ok()
                 .entity("MoovieList successfully edited for MoovieList with ID: " + listId)
                 .build();
+    }
+
+    @PUT
+    @Path("/{id}/")
+    @Consumes(VndType.APPLICATION_MOOVIELIST_FEEDBACK_FORM)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response moovieListFeedback(@PathParam("id") int id,
+                                       @Valid MoovieListFeedbackDto moovieListFeedbackDto) {
+        try {
+            userService.isUsernameMe(moovieListFeedbackDto.getUsername());
+            if(moovieListFeedbackDto.getFeedbackType().equals("LIKE")) {
+                boolean like = moovieListService.likeMoovieList(id);
+                if (like) {
+                    return Response.ok()
+                            .entity("{\"message\":\"Succesfully liked list.\"}").build();
+                }
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("{\"message\":\"List is already liked.\"}").build();
+            } else if(moovieListFeedbackDto.getFeedbackType().equals("UNLIKE")) {
+                boolean unlike = moovieListService.removeLikeMoovieList(id);
+                if (unlike) {
+                    return Response.ok()
+                            .entity("{\"message\":\"Succesfully unliked list.\"}").build();
+                }
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("{\"message\":\"List is not liked.\"}").build();
+            }
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"message\":\"Invalid feedback type.\"}")
+                    .build();
+        }
+        catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"message\":\"An unexpected error occurred.\"}")
+                    .build();
+        }
     }
 
     @DELETE

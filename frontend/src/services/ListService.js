@@ -1,7 +1,5 @@
 import listApi from "../api/ListApi";
 import {parsePaginatedResponse} from "../utils/ResponseUtils";
-import userApi from "../api/UserApi";
-import store from "../store/store";
 import mediaService from "./MediaService";
 
 const ListService = (() => {
@@ -72,7 +70,21 @@ const ListService = (() => {
     }
 
 
+    const likeList = async (moovieListId, username) => {
+        try {
+            return await listApi.likeList(moovieListId, username)
+        } catch (error){
+            return null;
+        }
+    }
 
+    const unlikeList = async (moovieListId, username) => {
+        try {
+            return await listApi.unlikeList(moovieListId, username)
+        } catch (error){
+            return null;
+        }
+    }
 
    return{
         getLists,
@@ -85,7 +97,9 @@ const ListService = (() => {
        editMoovieList,
        getRecommendedLists,
        editListContent,
-       createMoovieList
+       createMoovieList,
+         likeList,
+            unlikeList
    }
 })();
 

@@ -69,7 +69,7 @@ public interface MoovieListService {
 
     //Likes functions
     boolean likeMoovieList(int moovieListId);
-    void removeLikeMoovieList(int moovieListId);
+    boolean removeLikeMoovieList(int moovieListId);
 
     boolean followMoovieList(int moovieListId);
     void removeFollowMoovieList(int moovieListId);
