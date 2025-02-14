@@ -44,7 +44,32 @@
 
     <filter-mapping>
         <filter-name>UnconditionalCacheFilter</filter-name>
-        <url-pattern>*</url-pattern>
+        <url-pattern>/medias/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>UnconditionalCacheFilter</filter-name>
+        <url-pattern>/providers/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>UnconditionalCacheFilter</filter-name>
+        <url-pattern>/genres/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>UnconditionalCacheFilter</filter-name>
+        <url-pattern>/directors/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>UnconditionalCacheFilter</filter-name>
+        <url-pattern>/actors/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>UnconditionalCacheFilter</filter-name>
+        <url-pattern>/tvCreators/*</url-pattern>
     </filter-mapping>
 
     <servlet>
