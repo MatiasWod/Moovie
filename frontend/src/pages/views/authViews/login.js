@@ -34,13 +34,12 @@ const Login = () => {
         event.preventDefault();
         dispatch(loginUser({ username, password }))
             .unwrap()
-            .then((user) => {
+            .then(() => {
                 if (rememberMe) {
-                    localStorage.setItem("jwtToken", user.token);
-                    localStorage.setItem("username", user.username);
-                } else {
-                    sessionStorage.setItem("jwtToken", user.token);
-                    sessionStorage.setItem("username", user.username);
+                    const token = sessionStorage.getItem("jwtToken");
+                    const user = sessionStorage.getItem("username");
+                    localStorage.setItem("jwtToken", token);
+                    localStorage.setItem("username", user);
                 }
                 navigate(from, { replace: true });
             })

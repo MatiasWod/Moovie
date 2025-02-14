@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const loadState = () => {
     try {
-        const savedState = localStorage.getItem("listState");
+        const savedState = sessionStorage.getItem("listState");
         return savedState ? JSON.parse(savedState) : { selectedMedia: [], name: "", description: "" };
     } catch (error) {
         console.error("Error loading state:", error);
@@ -12,7 +12,7 @@ const loadState = () => {
 
 const saveState = (state) => {
     try {
-        localStorage.setItem("listState", JSON.stringify(state));
+        sessionStorage.setItem("listState", JSON.stringify(state));
     } catch (error) {
         console.error("Error saving state:", error);
     }
