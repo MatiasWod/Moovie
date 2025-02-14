@@ -78,7 +78,7 @@ const profileApi = (() => {
             return api.get(`/profiles/${username}/${ww}/${mediaId}`);
         }
 
-    const insertMediaIntoWW = (ww, username, mediaId) => {
+    const insertMediaIntoWW = (ww, mediaId,username) => {
         let contentType = "application/json";
 
         if (ww === "watched") {
@@ -118,6 +118,6 @@ const profileApi = (() => {
     }
 
 }
-);
+)();
 
 export default profileApi;

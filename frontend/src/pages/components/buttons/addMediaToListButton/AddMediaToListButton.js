@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import "../buttonStyles.css";
 import listService from "../../../../services/ListService";
+import profileService from "../../../../services/ProfileService";
 import MoovieListTypes from "../../../../api/values/MoovieListTypes";
 import CardsListOrderBy from "../../../../api/values/CardsListOrderBy";
 import SortOrder from "../../../../api/values/SortOrder";
@@ -10,6 +11,7 @@ import {useNavigate} from "react-router-dom";
 import {Dropdown} from "react-bootstrap";
 import {useTranslation} from "react-i18next";
 import {addIfNotExists, toggleMediaSelection} from "../../../../features/createListSlice";
+import WatchlistWatched from "../../../../api/values/WatchlistWatched";
 
 const AddMediaToListButton = ({ currentId, media }) => {
     const { t } = useTranslation();
@@ -100,10 +102,18 @@ const AddMediaToListButton = ({ currentId, media }) => {
         setPopupType("loading");
 
         try {
-            const response = await listService.insertMediaIntoMoovieList({
-                id: option.id,
-                mediaIds: [Number(currentId)],
-            });
+            let response;
+            if (option.name === "Watchlist" ) {
+                response = await profileService.insertMediaIntoWW(WatchlistWatched.Watchlist, Number(currentId),user.username);
+            }else if (option.name === "Watched") {
+                response = await profileService.insertMediaIntoWW(WatchlistWatched.Watched, Number(currentId),user.username);
+            }
+            else {
+                response = await listService.insertMediaIntoMoovieList({
+                    id: option.id,
+                    mediaIds: [Number(currentId)],
+                });
+            }
 
             if (response.status === 200) {
                 setPopupType("success");

@@ -72,7 +72,7 @@ const ProfileService = (() => {
 
     const insertMediaIntoWW = async (ww, mediaId, username) =>{
         try {
-            return await profileApi.insertMediaIntoWW(ww, username, mediaId)
+            return await profileApi.insertMediaIntoWW(ww, mediaId,username)
         } catch (error){
             return null;
         }
@@ -142,7 +142,7 @@ const ProfileService = (() => {
         currentUserWWStatus
 
     }
-});
+})();
 
 export default ProfileService;
 
