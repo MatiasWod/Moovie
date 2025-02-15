@@ -17,7 +17,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 const MediaCard = ({ media, buttonCallbacks, onClick, isSelected }) => {
     return (
-        <StyledBadge color={"secondary"} variant={"dot"} invisible={!isSelected && !buttonCallbacks}  className={'poster card text-bg-dark m-1'}>
+        <StyledBadge color={"success"} variant={"dot"} invisible={!isSelected && !buttonCallbacks}  className={'poster card text-bg-dark m-1'}>
             <div  id={media.id} className={'card-img-container'}>
                 <img className={'crop-center'} loading='lazy' src={media.posterPath} alt={''} />
                 <div onClick={onClick} className={'card-img-overlay'}>
