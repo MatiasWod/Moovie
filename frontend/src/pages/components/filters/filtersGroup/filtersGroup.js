@@ -8,6 +8,7 @@ import mediaOrderBy from '../../../../api/values/MediaOrderBy';
 import ProviderService from "../../../../services/ProviderService";
 import GenreService from "../../../../services/GenreService";
 import SortOrder from "../../../../api/values/SortOrder";
+import {CircularProgress} from "@mui/material";
 
 const FiltersGroup = ({
                           type,
@@ -94,11 +95,16 @@ const FiltersGroup = ({
         setSortOrderInput(SortOrder.DESC);
         setMediaTypeInput(mediaTypes.TYPE_ALL);
         setMediaOrderByInput(mediaOrderBy.TOTAL_RATING)
-        submitCallback({type: mediaTypeInput, sortOrder: sortOrderInput, orderBy: mediaOrderByInput, search: queryInput})
+        submitCallback({type: mediaTypeInput, sortOrder: sortOrderInput,
+            orderBy: mediaOrderByInput, search: queryInput,
+            selectedProviders: selectedProviders, selectedGenres: selectedGenres})
     };
 
+    if (loading) return <CircularProgress/>
+    if (error) return <div>{error}</div>
+
     return (
-        <div style={{width: "30vw"}}>
+        <div style={{maxHeight: "85vh", width: "30vw", overflowY: "auto"}}>
             <ChipsDisplay
                 title="Genres"
                 items={selectedGenres}
