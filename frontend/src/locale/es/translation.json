@@ -227,5 +227,10 @@
   "search.noListsFound": "No se encontraron listas",
   "search.usersFor": "Usuarios para: '{{search}}'",
   "search.noUsersFound": "No se encontraron usuarios",
-  "search.seeMore": "Ver más"
+  "search.seeMore": "Ver más",
+  "list.reviews": "Reseñas",
+  "list.writeReview": "Escribir Reseña",
+  "list.reviewPlaceholder": "Escribe tu reseña aquí...",
+  "list.deleteList": "Eliminar Lista",
+  "list.deleteListConfirmation": "¿Estás seguro de que quieres eliminar esta lista?"
 }

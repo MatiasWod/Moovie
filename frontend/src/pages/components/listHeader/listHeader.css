@@ -82,10 +82,17 @@
     background-color: #218838;
 }
 
-.edit-list-button {
+.list-header-actions {
     position: absolute;
     top: 10px;
     right: 10px;
+    display: flex;
+    gap: 8px;
+}
+
+.report-button,
+.delete-button,
+.edit-list-button {
     background-color: #007bff;
     color: white;
     border: none;
@@ -93,6 +100,25 @@
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.report-button {
+    background-color: #ffc107;
+}
+
+.delete-button {
+    background-color: #dc3545;
+}
+
+.report-button:hover {
+    background-color: #e0a800;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
 }
 
 .edit-list-button:hover {

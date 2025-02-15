@@ -8,7 +8,16 @@ import EditListForm from "../forms/editListForm/editListForm";
 import {useTranslation} from "react-i18next";
 import profileService from "../../../services/ProfileService";
 
-const ListHeader = ({ list, updateHeader}) => {
+const ListHeader = ({ 
+    list, 
+    updateHeader, 
+    onDelete, 
+    onReport,
+    showDeleteConfirmation,
+    setShowDeleteConfirmation,
+    showReportForm,
+    setShowReportForm
+}) => {
     const { t } = useTranslation();
     const { isLoggedIn, user } = useSelector((state) => state.auth);
     const navigate = useNavigate();
@@ -84,12 +93,31 @@ const ListHeader = ({ list, updateHeader}) => {
                 ></div>
             ) : null}
             <div className="list-header-content">
-                {isLoggedIn && user.username === list.createdBy && (
-                    <button className="edit-list-button" onClick={handleOpenEdit}>
-                        {t('listHeader.edit')}
-                    </button>
-                )}
-
+                <div className="list-header-actions">
+                    {isLoggedIn && (
+                        <>
+                            <button 
+                                className="report-button"
+                                onClick={() => setShowReportForm(true)}
+                            >
+                                <i className="bi bi-flag"></i>
+                            </button>
+                            {user.username === list.createdBy && (
+                                <>
+                                    <button 
+                                        className="delete-button"
+                                        onClick={() => setShowDeleteConfirmation(true)}
+                                    >
+                                        <i className="bi bi-trash"></i>
+                                    </button>
+                                    <button className="edit-list-button" onClick={handleOpenEdit}>
+                                        {t('listHeader.edit')}
+                                    </button>
+                                </>
+                            )}
+                        </>
+                    )}
+                </div>
                 <h1 className="list-header-title">{list.name}</h1>
                 <p className="list-header-description">{list.description}</p>
                 <span className="list-header-username">{t('listHeader.by')} {list.createdBy}</span>

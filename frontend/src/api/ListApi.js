@@ -39,6 +39,10 @@ const listApi = (() => {
             });
     }
 
+    const deleteList = (id) => {
+        return api.delete(`/list/${id}`);
+    }
+
 
 
 
@@ -165,6 +169,7 @@ const listApi = (() => {
         getLists,
         getListById,
         getListByIdList,
+        deleteList,
         getListContentById,
         insertMediaIntoMoovieList,
         deleteMediaFromMoovieList,

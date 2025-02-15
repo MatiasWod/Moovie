@@ -89,12 +89,21 @@ function Reviews({ id, username, source , handleParentReload }) {
     };
 
     const handleReportReviewSubmit = async (reportReason, additionalInfo) => {
-        await reportApi.reportReview({
-            reviewId: reportedReviewId,
-            reportedBy: user.username,
-            content: additionalInfo,
-            type: reportReason
-        });
+        if (source === 'list') {
+            await reportApi.reportMoovieListReview({
+                moovieListReviewId: reportedReviewId,
+                reportedBy: user.username,
+                content: additionalInfo,
+                type: reportReason
+            });
+        } else {
+            await reportApi.reportReview({
+                reviewId: reportedReviewId,
+                reportedBy: user.username,
+                content: additionalInfo,
+                type: reportReason
+            });
+        }
         setReportedReviewId(null);
     };
 
@@ -145,7 +154,10 @@ function Reviews({ id, username, source , handleParentReload }) {
                                 />
                                 <strong>{review.username}</strong>
                             </div>
-                            <div>{review.rating}/5<i className="bi bi-star-fill"/>
+                            <div>
+                                {source !== 'list' && (
+                                    <>{review.rating}/5<i className="bi bi-star-fill"/></>
+                                )}
                                 {isLoggedIn && (
                                     <button
                                         className="btn btn-warning btn-sm mx-1"

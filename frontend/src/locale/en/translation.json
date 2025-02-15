@@ -227,5 +227,10 @@
   "search.noListsFound": "No lists found",
   "search.usersFor": "Users for: '{{search}}'",
   "search.noUsersFound": "No users found",
-  "search.seeMore": "See More"
+  "search.seeMore": "See More",
+  "list.reviews": "Reviews",
+  "list.writeReview": "Write Review",
+  "list.reviewPlaceholder": "Write your review here...",
+  "list.deleteList": "Delete List",
+  "list.deleteListConfirmation": "Are you sure you want to delete this list?"
 }
