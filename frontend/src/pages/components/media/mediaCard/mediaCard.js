@@ -2,14 +2,25 @@ import React from 'react'
 import { Card } from "react-bootstrap";
 import {formatDate, truncateText} from "../../../../utils/FormatUtils";
 import "./mediaCard.css"
+import {Badge} from "@mui/material";
+import styled from "styled-components";
+
+const StyledBadge = styled(Badge)(({ theme }) => ({
+    '& .MuiBadge-badge': {
+        width: '20px',
+        height: '20px',
+        borderRadius: '10px',
+        top: 15
+    },
+}));
 
 
-const MediaCard = ({ media, pageName, onClick, isSelected }) => {
+const MediaCard = ({ media, buttonCallbacks, onClick, isSelected }) => {
     return (
-        <div onClick={onClick} className={'poster card text-bg-dark m-1'}>
-            <div id={media.id} className={'card-img-container'}>
+        <StyledBadge color={"secondary"} variant={"dot"} invisible={!isSelected && !buttonCallbacks}  className={'poster card text-bg-dark m-1'}>
+            <div  id={media.id} className={'card-img-container'}>
                 <img className={'crop-center'} loading='lazy' src={media.posterPath} alt={''} />
-                <div className={'card-img-overlay'}>
+                <div onClick={onClick} className={'card-img-overlay'}>
                     <h6 className={'card-title text-center'}>
                         {truncateText(media.name, 20)}
                     </h6>
@@ -41,20 +52,23 @@ const MediaCard = ({ media, pageName, onClick, isSelected }) => {
                         ))}
                     </div>
                 </div>
-                <div className={'interaction-img-overlay'}>
-                    {pageName === 'createList' &&
-                        (isSelected ? (
-                            <div className={'d-flex justify-center'}>
-                                <Card.Title>
-                                    <i className={'bi bi-check-circle-fill'} style={{ color: "green" }} />
-                                </Card.Title>
-                            </div>
-                        ) : (
-                            <div></div>
-                        ))}
+                <div className={'interaction-img-overlay d-flex flex-wrap'}>
+                    {buttonCallbacks &&
+                        buttonCallbacks.map((button, index) => (
+                            <button
+                                key={index}
+                                onClick={button.onClick}
+                                className={button.className + " me-2 m-1"}
+                                type={"button"}>
+                                <span className={"d-inline-block"}>
+                                    <i className={button.name} style={{color: "whitesmoke", cursor: "pointer"}}></i>
+                                </span>
+                            </button>
+                        ))
+                    }
                 </div>
             </div>
-        </div>
+        </StyledBadge>
     );
 };
 

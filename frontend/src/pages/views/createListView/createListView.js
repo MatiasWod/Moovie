@@ -17,12 +17,15 @@ import {
 } from "../../../features/createListSlice";
 import ListService from "../../../services/ListService";
 import useMediaList from "../../../hooks/useMediasList";
+import profileService from "../../../services/ProfileService";
+import WatchlistWatched from "../../../api/values/WatchlistWatched";
 
 const CreateListView = () => {
 
     // Form States
     const dispatch = useDispatch();
     const { selectedMedia, name, description } = useSelector((state) => state.list);
+    const { user } = useSelector((state) => state.auth);
 
 
     // Filter States
@@ -98,7 +101,6 @@ const CreateListView = () => {
     };
 
 
-
     const { medias, mediasLoading, mediasError } = useMediaList({
         type: type,
         page: page,
@@ -114,12 +116,14 @@ const CreateListView = () => {
     return <div className={'d-flex flex-column'}>
         <div className={'m-1'} style={{width: "100vw",height: "1vh"}}></div>
         <div className={'d-flex flex-row m-2'}>
-            <FiltersGroup submitCallback={handleFilterChange} searchBar={true} type={type} orderBy={orderBy} sortOrder={sortOrder} query={searchQuery}/>
+            <FiltersGroup submitCallback={handleFilterChange} searchBar={true} type={type} orderBy={orderBy} sortOrder={sortOrder} query={searchQuery} initialSelectedGenres={selectedGenres} initialSelectedProviders={selectedProviders}/>
             <div className={'container d-flex flex-column'}>
                 <div style={{overflowY: "auto", maxHeight: "80vh", width: "60vw"}} className={'flex-wrap d-flex justify-content-evenly'}>
                     {mediasLoading ? <Spinner /> : medias.data.map(media => (
-                        <MediaCard key={media.id} isSelected={selectedMedia.some((selected) => selected.id === media.id)} media={media} onClick={() => onClickCallback(media)} pageName={'createList'}>
-                        </MediaCard>
+                            <MediaCard key={media.id}
+                                   isSelected={selectedMedia.some((selected) => selected.id === media.id)}
+                                   media={media} onClick={() => onClickCallback(media)}
+                            />
                     ))}
                     {mediasError && <div>There’s been an error: {mediasError.message}</div>}
                 </div>
@@ -129,7 +133,7 @@ const CreateListView = () => {
                     }
                 </div>
             </div>
-            <div style={{maxWidth: "20vw"}} className={'container d-flex flex-column'}>
+            <div style={{maxWidth: "22vw"}} className={'container d-flex flex-column'}>
                 <CreateListForm name={name} setName={(value) => dispatch(setName(value))}
                                 description={description} setDescription={(value) => dispatch(setDescription(value))}
                                 selectedMedia={selectedMedia}
