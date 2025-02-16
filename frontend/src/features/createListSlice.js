@@ -3,10 +3,12 @@ import { createSlice } from "@reduxjs/toolkit";
 const loadState = () => {
     try {
         const savedState = sessionStorage.getItem("listState");
-        return savedState ? JSON.parse(savedState) : { selectedMedia: [], name: "", description: "" };
+        return savedState
+            ? JSON.parse(savedState)
+            : { selectedMedia: [], name: "", description: "", isPrivate: false };
     } catch (error) {
         console.error("Error loading state:", error);
-        return { selectedMedia: [], name: "", description: "" };
+        return { selectedMedia: [], name: "", description: "", isPrivate: false };
     }
 };
 
@@ -50,10 +52,15 @@ const listSlice = createSlice({
             state.description = action.payload;
             saveState(state);
         },
+        setIsPrivate: (state, action) => {
+            state.isPrivate = action.payload;
+            saveState(state);
+        },
         resetList: (state) => {
             state.selectedMedia = [];
             state.name = "";
             state.description = "";
+            state.isPrivate = false;
             saveState(state);
         },
     },
@@ -65,6 +72,8 @@ export const {
     addIfNotExists,
     setName,
     setDescription,
+    setIsPrivate,
     resetList
 } = listSlice.actions;
+
 export default listSlice.reducer;

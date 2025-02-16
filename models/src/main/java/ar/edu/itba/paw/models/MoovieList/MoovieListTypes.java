@@ -14,5 +14,14 @@ public enum MoovieListTypes {
     public int getType() {
         return type;
     }
+
+    public static MoovieListTypes fromType(int value) {
+        for (MoovieListTypes type : MoovieListTypes.values()) {
+            if (type.getType() == value) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unexpected value: " + value);
+    }
 }
 
