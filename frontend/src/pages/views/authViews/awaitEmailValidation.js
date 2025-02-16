@@ -63,13 +63,18 @@ const AwaitEmailValidation = () => {
                                 </Card.Text>
                             )}
                             {message && <Card.Text>{message}</Card.Text>}
-                            <Button
+                            {error === "token_expired" ?
+                                <Button
                                 variant="success"
                                 onClick={handleResendVerificationEmail}
                                 disabled={loading}
-                            >
-                                {loading ? 'Sending...' : 'Resend Verification Email'}
-                            </Button>
+                                >
+                                    {loading ? 'Sending...' : 'Resend Verification Email'}
+                                </Button> :
+                                <Button variant={"success"} onClick={navigate('/')}>
+                                    Go Home
+                                </Button>
+                            }
                         </Card.Body>
                     </Card>
                 </Col>
