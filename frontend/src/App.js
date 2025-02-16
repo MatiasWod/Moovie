@@ -1,4 +1,4 @@
-import {HelmetProvider} from "react-helmet-async";
+import {Helmet, HelmetProvider} from "react-helmet-async";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import React, {lazy, Suspense, useEffect, useState} from "react";
 import Loader from "./pages/Loader";
@@ -51,6 +51,9 @@ export default function App() {
 
     return (
         <HelmetProvider context={helmetContext}>
+            <Helmet>
+                <title>Moovie</title>
+            </Helmet>
             <BrowserRouter>
                 <Suspense fallback={<Loader/>}>
                     <Nav/>
