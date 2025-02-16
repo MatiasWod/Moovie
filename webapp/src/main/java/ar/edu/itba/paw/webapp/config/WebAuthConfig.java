@@ -224,6 +224,9 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE, "/profiles/*").authenticated()
                 .antMatchers(HttpMethod.POST, "/reports/*").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/reports/*").authenticated()
+                .antMatchers(HttpMethod.POST, "/reviews/*").authenticated()
+                .antMatchers(HttpMethod.PUT, "/reviews/*").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/reviews/*").authenticated()
 
                 .and()
                 .cors()

@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.auth;
 
 import ar.edu.itba.paw.models.Comments.Comment;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
+import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.User.UserRoles;
@@ -63,6 +64,16 @@ public class AccessValidator {
             User currentUser = userService.getInfoOfMyUser();
             MoovieList list = listService.getMoovieListById(listId);
             return currentUser != null && list!=null && currentUser.getUserId() == list.getUserId();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean isUserMoovieListReviewAuthor(int reviewId) {
+        try {
+            User currentUser = userService.getInfoOfMyUser();
+            MoovieListReview review = reviewService.getMoovieListReviewById(reviewId);
+            return currentUser != null && review != null && currentUser.getUserId() == review.getUserId();
         } catch (Exception e) {
             return false;
         }

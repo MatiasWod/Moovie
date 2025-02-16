@@ -14,6 +14,7 @@ import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
@@ -102,22 +103,34 @@ public class ReviewController {
     }
 
     @PUT
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_REVIEW_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response editReview(@QueryParam("mediaId") int mediaId,@Valid final ReviewCreateDto reviewDto) {
-        reviewService.editReview(
-                mediaId,
-                reviewDto.getRating(),
-                reviewDto.getReviewContent(),
-                ReviewTypes.REVIEW_MEDIA
-        );
+        try {
+            reviewService.editReview(
+                    mediaId,
+                    reviewDto.getRating(),
+                    reviewDto.getReviewContent(),
+                    ReviewTypes.REVIEW_MEDIA
+            );
 
-        return Response.ok()
-                .entity("Review successfully updated for media with ID: " + mediaId)
+            return Response.ok()
+                    .entity("Review successfully updated for media with ID: " + mediaId)
+                    .build();
+        } catch (ReviewNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                .entity("{\"error\":\"Review not found.\"}")
                 .build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .build();
+        }
     }
 
     @POST
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_REVIEW_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createReview(@QueryParam("mediaId") int mediaId,@Valid final ReviewCreateDto reviewDto) {
@@ -134,6 +147,7 @@ public class ReviewController {
     }
 
     @PUT
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response feedbackReview(@PathParam("id") final int id) {
@@ -168,6 +182,7 @@ public class ReviewController {
     }
 
     @DELETE
+    @PreAuthorize("@accessValidator.isUserReviewAuthor(#reviewId)")
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteReviewById(@PathParam("id") final int reviewId) {
