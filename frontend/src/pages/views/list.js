@@ -15,6 +15,10 @@ import Error403 from "./errorViews/error403";
 import {parsePaginatedResponse} from "../../utils/ResponseUtils";
 import {useSelector} from "react-redux";
 import {useTranslation} from "react-i18next";
+import ConfirmationModal from "../components/forms/confirmationForm/confirmationModal";
+import moovieListReviewApi from "../../api/MoovieListReviewApi";
+import reportApi from "../../api/ReportApi";
+import ReportForm from "../components/forms/reportForm/reportForm";
 
 function List() {
     const [error403, setError403] = useState(false);
@@ -137,6 +141,55 @@ function List() {
         getData();
     }, [id]);
 
+    const [showReviewForm, setShowReviewForm] = useState(false);
+    const [reviewContent, setReviewContent] = useState("");
+    const [reviewSubmitting, setReviewSubmitting] = useState(false);
+
+    const handleReviewSubmit = async () => {
+        if (!isLoggedIn) {
+            navigate('/login');
+            return;
+        }
+        
+        setReviewSubmitting(true);
+        try {
+            await moovieListReviewApi.createMoovieListReview(id, reviewContent);
+            setShowReviewForm(false);
+            setReviewContent("");
+            // Refresh reviews
+            setFlag(!flag);
+        } catch (error) {
+            console.error("Error submitting review:", error);
+        }
+        setReviewSubmitting(false);
+    };
+
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+    const [showReportForm, setShowReportForm] = useState(false);
+
+    const handleDeleteList = async () => {
+        try {
+            await ListApi.deleteList(id);
+            navigate('/');
+        } catch (error) {
+            console.error("Error deleting list:", error);
+        }
+    };
+
+    const handleReportList = async (reportReason, additionalInfo) => {
+        try {
+            await reportApi.reportMoovieList({
+                moovieListId: id,
+                reportedBy: user.username,
+                content: additionalInfo,
+                type: reportReason
+            });
+            setShowReportForm(false);
+        } catch (error) {
+            console.error("Error reporting list:", error);
+        }
+    };
+
     if(error403){
         return(
             <Error403></Error403>
@@ -145,7 +198,32 @@ function List() {
 
     return (
         <div className="default-container moovie-default">
-            <ListHeader list={list?.data || []} updateHeader={handleUpdateList} />
+            <ListHeader 
+                list={list?.data || []} 
+                updateHeader={handleUpdateList}
+                onDelete={handleDeleteList}
+                onReport={handleReportList}
+                showDeleteConfirmation={showDeleteConfirmation}
+                setShowDeleteConfirmation={setShowDeleteConfirmation}
+                showReportForm={showReportForm}
+                setShowReportForm={setShowReportForm}
+            />
+            
+            {showDeleteConfirmation && (
+                <ConfirmationModal
+                    title={t('list.deleteList')}
+                    message={t('list.deleteListConfirmation')}
+                    onConfirm={handleDeleteList}
+                    onCancel={() => setShowDeleteConfirmation(false)}
+                />
+            )}
+
+            {showReportForm && (
+                <ReportForm
+                    onReportSubmit={handleReportList}
+                    onCancel={() => setShowReportForm(false)}
+                />
+            )}
 
             <ProgressBar
                 now={list?.data?.mediaCount === 0 ? 100 : (list?.data?.currentUserWatchAmount / list?.data?.mediaCount) * 100}
@@ -181,7 +259,39 @@ function List() {
                 </div>
             </div>
 
-            <Reviews id={id} source={'list'}></Reviews>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+                <h3>{t('list.reviews')}</h3>
+                {isLoggedIn && (
+                    <button 
+                        className="btn btn-primary" 
+                        onClick={() => setShowReviewForm(true)}
+                    >
+                        {t('list.writeReview')}
+                    </button>
+                )}
+            </div>
+
+            {showReviewForm && (
+                <ConfirmationModal
+                    title={t('list.writeReview')}
+                    message={
+                        <textarea
+                            className="form-control"
+                            value={reviewContent}
+                            onChange={(e) => setReviewContent(e.target.value)}
+                            rows={4}
+                            placeholder={t('list.reviewPlaceholder')}
+                        />
+                    }
+                    onConfirm={handleReviewSubmit}
+                    onCancel={() => {
+                        setShowReviewForm(false);
+                        setReviewContent("");
+                    }}
+                />
+            )}
+
+            <Reviews id={id} source={'list'} handleParentReload={() => setFlag(!flag)} />
 
         </div>
     );

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import reportApi from '../../../api/ReportApi';
-import ConfirmationForm from '../../components/forms/confirmationForm/confirmationForm';
+import ConfirmationModal from '../../components/forms/confirmationForm/confirmationModal';
 import api from '../../../api/api';
-import moovieListApi from '../../../api/MoovieListApi.js';
+import ListApi from '../../../api/ListApi';
 import userApi from '../../../api/UserApi';
 import {useTranslation} from "react-i18next";
 
@@ -31,7 +31,7 @@ export default function MoovieListReports() {
   };
 
   const handleDelete = async (ml) => {
-    await moovieListApi.deleteMoovieList(ml.id);
+    await ListApi.deleteList(ml.id);
     fetchLists();
   };
 
@@ -56,6 +56,18 @@ export default function MoovieListReports() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {lists.map((ml, index) => (
             <div key={index} className="bg-white p-4 rounded shadow">
+              <div className="flex justify-between items-center mb-2">
+                <a href={ml.creatorUrl} className="text-blue-600 font-bold hover:underline">
+                  {ml.creatorUrl?.split('/').pop()}
+                </a>
+                <div className="text-sm text-gray-600 flex space-x-2">
+                  <span className="flex items-center"><i className="bi bi-flag mr-1"></i>{ml.totalReports}</span>
+                  <span className="flex items-center"><i className="bi bi-envelope-exclamation mr-1"></i>{ml.spamReports}</span>
+                  <span className="flex items-center"><i className="bi bi-emoji-angry mr-1"></i>{ml.hateReports}</span>
+                  <span className="flex items-center"><i className="bi bi-slash-circle mr-1"></i>{ml.abuseReports}</span>
+                  <span className="flex items-center"><i className="bi bi-incognito mr-1"></i>{ml.privacyReports}</span>
+                </div>
+              </div>
               <h4 className="text-lg font-bold text-blue-600 hover:underline mb-2">
                 <a href={ml.url}>{ml.name}</a>
               </h4>
@@ -85,19 +97,16 @@ export default function MoovieListReports() {
         </div>
       )}
       {selectedAction && (
-        <ConfirmationForm
-          service={selectedAction.type === 'delete' ? moovieListApi.deleteMoovieList :
-            selectedAction.type === 'ban' ? userApi.banUser :
-            reportApi.resolveMoovieListReport}
-          actionName={
-            selectedAction.type === 'delete' ? 'Delete MoovieList' :
-            selectedAction.type === 'ban' ? 'Ban User' : 
+        <ConfirmationModal
+          title={
+            selectedAction.type === 'delete' ? 'Confirm List Deletion' :
+            selectedAction.type === 'ban' ? 'Confirm User Ban' : 
             'Resolve Report'
           }
-          serviceParams={
-            selectedAction.type === 'delete' ? [selectedAction.item.id] :
-            selectedAction.type === 'ban' ? [selectedAction.item.creatorUrl] :
-            [selectedAction.item.id]
+          message={
+            selectedAction.type === 'delete' ? 'Are you sure you want to delete this list?' :
+            selectedAction.type === 'ban' ? 'Are you sure you want to ban this user?' :
+            'Are you sure you want to mark this report as resolved?'
           }
           onConfirm={async () => {
             if (selectedAction.type === 'delete') await handleDelete(selectedAction.item);

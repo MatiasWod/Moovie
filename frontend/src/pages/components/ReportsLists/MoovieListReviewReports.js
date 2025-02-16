@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import reportApi from '../../../api/ReportApi';
-import ConfirmationModal from '../../components/forms/confirmationForm/confirmationForm';
+import ConfirmationModal from '../../components/forms/confirmationForm/confirmationModal';
 import api from '../../../api/api';
 import moovieListReviewApi from '../../../api/MoovieListReviewApi';
 import userApi from '../../../api/UserApi';
-import moovieListReviewService from "../../../services/MoovieListReviewService";
 import {useTranslation} from "react-i18next";
 
 export default function MoovieListReviewReports() {
@@ -31,20 +30,20 @@ export default function MoovieListReviewReports() {
     setReviews(reviewsToSet);
   };
 
-  const handleDelete = async (mlrReview) => {
-    await moovieListReviewService.deleteMoovieListReview(mlrReview.id);
+  const handleDelete = async (review) => {
+    await moovieListReviewApi.deleteMoovieListReviewById(review.id);
     fetchReviews();
   };
 
-  const handleBan = async (mlrReview) => {
-    const response = await api.get(mlrReview.creatorUrl);
+  const handleBan = async (review) => {
+    const response = await api.get(review.creatorUrl);
     const user = response.data;
     await userApi.banUser(user.username);
     fetchReviews();
   };
 
-  const handleResolve = async (mlrReview) => {
-    await reportApi.resolveMoovieListReviewReport(mlrReview.id);
+  const handleResolve = async (review) => {
+    await reportApi.resolveMoovieListReviewReport(review.id);
     fetchReviews();
   };
 
