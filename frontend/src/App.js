@@ -57,9 +57,9 @@ export default function App() {
                     <Routes>
                         <Route path='/' element={<Home/>}/>
                         <Route path='/login' element={<Login/>}/>
-                        <Route path='/register' element={<Register/>}/>
-                        <Route path='/register/verify' element={<AwaitEmailValidation/>}/>
-                        <Route path='/register/confirm' element={<ConfirmToken/>}/>
+                        <Route path='/register' element={<LoggedGate protectForLoggedIn={true}><Register/></LoggedGate>}/>
+                        <Route path='/register/verify' element={<LoggedGate protectForLoggedIn={true}><AwaitEmailValidation/></LoggedGate>}/>
+                        <Route path='/register/confirm' element={<LoggedGate protectForLoggedIn={true}><ConfirmToken/></LoggedGate>}/>
                         <Route path='/details/:id' element={<Details/>}/>
                         <Route path='/list/:id' element={<List/>}/>
                         <Route path='/discover' element={<Discover/>}/>
