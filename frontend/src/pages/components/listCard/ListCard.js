@@ -46,7 +46,7 @@ const ListCard = ({ listCard }) => {
                     </div>
                     <div className="list-card-footer">
                         <span>
-                            {t('listCard.by')} {listCard.createdBy} <ProfileImage username={listCard.createdBy} image={`http://localhost:8080/users/${listCard.createdBy}/image`} />
+                            {t('listCard.by')} {listCard.createdBy} <ProfileImage username={listCard.createdBy} image={`http://localhost:8080/profiles/${listCard.createdBy}/image`} />
                         </span>
                         <span className="list-card-likes">
                             👍 {listCard.likes} {hasLikedAndFollowed.liked ? t('listCard.youLikedThis') : ""}
