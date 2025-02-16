@@ -146,24 +146,8 @@ public class UserController {
         }
     }
 
-    @GET
-    @Path("/count")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserCount() {
-        LOGGER.info("Method: getUserCount, Path: /users/count");
-        try {
-            int count = userService.getUserCount();
-            LOGGER.info("User count retrieved: {}", count);
-            return Response.ok().entity(new GenericEntity<Integer>(count) {}).build();
-        } catch (Exception e) {
-            LOGGER.error("Error retrieving user count: {}", e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
     @POST
-    @Path("/resend-verification")
-    @Consumes(VndType.APPLICATION_USER_TOKEN_FORM)
+    @Consumes(VndType.APPLICATION_RESEND_TOKEN_FORM)
     @Produces(VndType.APPLICATION_USER_TOKEN)
     public Response resendVerificationEmail(@Valid final TokenDto tokenDto) {
         LOGGER.info("Method: resendVerificationEmail, Path: /users/resend-verification, Token: {}", tokenDto.getToken());
@@ -188,6 +172,21 @@ public class UserController {
         } catch (Exception e) {
             LOGGER.error("Error resending verification email: {}", e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to resend verification email").build();
+        }
+    }
+
+    @GET
+    @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserCount() {
+        LOGGER.info("Method: getUserCount, Path: /users/count");
+        try {
+            int count = userService.getUserCount();
+            LOGGER.info("User count retrieved: {}", count);
+            return Response.ok().entity(new GenericEntity<Integer>(count) {}).build();
+        } catch (Exception e) {
+            LOGGER.error("Error retrieving user count: {}", e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 

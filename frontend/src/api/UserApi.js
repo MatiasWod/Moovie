@@ -64,11 +64,11 @@ const userApi = (() => {
 
     const resendVerificationEmail = async (token) => {
         try {
-            return await api.post('/users/resend-verification',
+            return await api.post('users/',
                 { token },
                 {
                     headers: {
-                        'Content-Type': VndType.APPLICATION_USER_TOKEN_FORM
+                        'Content-Type': VndType.APPLICATION_RESEND_TOKEN_FORM
                     }
                 }
             );
