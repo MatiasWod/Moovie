@@ -56,7 +56,7 @@ function ProfileTabMediaLists({ type, username }) {
                 }
                 let data;
                 if (typeQuery !== 0) {
-                    data = await ListService.getLists({
+                    const params = {
                         orderBy,
                         ownerUsername: username,
                         pageNumber: page,
@@ -64,7 +64,9 @@ function ProfileTabMediaLists({ type, username }) {
                         search,
                         type: typeQuery,
                         order: sortOrder
-                    });
+                    }
+                    console.log("Fetching lists with params:", params);
+                    data = await ListService.getLists(params);
                 } else {
                     data = await ProfileService.getLikedOrFollowedListFromUser(
                         username,

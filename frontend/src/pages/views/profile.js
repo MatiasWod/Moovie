@@ -1,82 +1,118 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import userApi from "../../api/UserApi";
-import ProfileImage from "../components/profileImage/ProfileImage";
-import "../components/mainStyle.css";
+import ProfileHeader from "../components/profileHeader/ProfileHeader";
 import ProfileTabNavigation from "../components/profileTabNavigation/profileTabNavigation";
 import Reviews from "../components/ReviewsSection/Reviews";
-import ProfileHeader from "../components/profileHeader/ProfileHeader";
 import ProfileTabMediaLists from "../components/profileTab/ProfileTabMediaLists";
 import ProfileTabMoovieLists from "../components/profileTab/ProfileTabMoovieLists";
-
-function ProfileTab({selectedTab, profile}){
-    switch (selectedTab.toLowerCase()) {
-        case "watched":
-            return <ProfileTabMediaLists username={profile.username} type={"watched"}/>
-        case "watchlist":
-            return <ProfileTabMediaLists username={profile.username} type={"watchlist"}/>
-        case "public-lists":
-            return <ProfileTabMoovieLists username={profile.username} type={"public-lists"}/>
-        case "private-lists":
-            return <ProfileTabMoovieLists username={profile.username} type={"private-lists"}/>
-        case "liked-lists":
-            return <ProfileTabMoovieLists username={profile.username} type={"followed-lists"}/>
-        case "followed-lists":
-            return <ProfileTabMoovieLists username={profile.username} type={"liked-lists"}/>
-        case "reviews":
-            return <Reviews username={profile.username} source="user" />;
-        default:
-            return <div>{selectedTab}</div>
-    }
-
+import profileApi from "../../api/ProfileApi";
+function ProfileTab({ selectedTab, profile }) {
+  switch (selectedTab.toLowerCase()) {
+    case "watched":
+      return <ProfileTabMediaLists username={profile.username} type="watched" />;
+    case "watchlist":
+      return <ProfileTabMediaLists username={profile.username} type="watchlist" />;
+    case "public-lists":
+      return <ProfileTabMoovieLists username={profile.username} type="public-lists" />;
+    case "private-lists":
+      return <ProfileTabMoovieLists username={profile.username} type="private-lists" />;
+    case "liked-lists":
+      return <ProfileTabMoovieLists username={profile.username} type="liked-lists" />;
+    case "followed-lists":
+      return <ProfileTabMoovieLists username={profile.username} type="followed-lists" />;
+    case "reviews":
+      return <Reviews username={profile.username} source="user" />;
+    default:
+      return <div className="text-center p-4">{selectedTab}</div>;
+  }
 }
 
 function Profile() {
-    const { username } = useParams();
+  const { username } = useParams();
+  const [profile, setProfile] = useState({});
+  const [profileLoading, setProfileLoading] = useState(true);
+  const [profileError, setProfileError] = useState(null);
 
-    // GET Profile Data
-    const [profile, setProfile] = useState([]);
-    const [profileLoading, setProfileLoading] = useState(true);
-    const [profileError, setProfileError] = useState(null);
+  const fetchProfile = async () => {
+    try {
+        console.log("Fetching profile for username:", username);
+        
+      const response = await profileApi.getProfileByUsername(username);
+      setProfile(response.data);
+      setProfileError(null);
+    } catch (err) {
+      console.error("Error fetching profile:", err);
+      setProfileError(err);
+    } finally {
+      setProfileLoading(false);
+    }
+  };
 
-    const fetchProfile = async () => {
-        try {
-            const response = await userApi.getProfileByUsername(username);
-            setProfile(response.data);
-        } catch (err) {
-            setProfileError(err);
-        } finally {
-            setProfileLoading(false);
-        }
-    };
+  const handleBanUser = async () => {
+    try {
+      await userApi.banUser(username);
+      fetchProfile();
+    } catch (err) {
+      console.error("Error banning user:", err);
+    }
+  };
 
-    const handleBanUser = async () => {
-        await userApi.banUser(username);
-        fetchProfile();
-    };
+  const handleUnbanUser = async () => {
+    try {
+      await userApi.unbanUser(username);
+      fetchProfile();
+    } catch (err) {
+      console.error("Error unbanning user:", err);
+    }
+  };
 
-    const handleUnbanUser = async () => {
-        await userApi.unbanUser(username);
-        fetchProfile();
-    };
+  useEffect(() => {
+    fetchProfile();
+  }, [username]);
 
-    useEffect(() => {
-        fetchProfile();
-    }, []);
+  const [selectedTab, setSelectedTab] = useState("public-lists");
+  const handleTabSelect = (tab) => {
+    setSelectedTab(tab);
+  };
 
-    // For tracking the selected tab
-    const [selectedTab, setSelectedTab] = useState("public-lists");
-    const handleTabSelect = (tab) => {
-        setSelectedTab(tab);
-    };
-
+  if (profileLoading) {
     return (
-        <div className="default-container moovie-default">
-            <ProfileHeader profile={profile} handleBanUser={handleBanUser} handleUnbanUser={handleUnbanUser}/>
-            <ProfileTabNavigation selectedTab={selectedTab} onTabSelect={handleTabSelect} />
-            <ProfileTab selectedTab={selectedTab} profile={profile}></ProfileTab>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="spinner-border text-primary" role="status">
+          <span className="sr-only">Loading...</span>
         </div>
+      </div>
     );
+  }
+
+  if (profileError) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="alert alert-danger" role="alert">
+          Error loading profile. Please try again later.
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto p-4">
+      <div className="bg-white shadow rounded-lg">
+        <ProfileHeader
+          profile={profile}
+          handleBanUser={handleBanUser}
+          handleUnbanUser={handleUnbanUser}
+        />
+        <div className="border-t">
+          <ProfileTabNavigation selectedTab={selectedTab} onTabSelect={handleTabSelect} />
+        </div>
+        <div className="p-4">
+          <ProfileTab selectedTab={selectedTab} profile={profile} />
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default Profile;

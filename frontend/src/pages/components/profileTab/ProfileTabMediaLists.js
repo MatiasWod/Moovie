@@ -1,12 +1,9 @@
 import {useEffect, useState} from "react";
 import SortOrder from "../../../api/values/SortOrder";
 import OrderBy from "../../../api/values/MediaOrderBy";
-import UserApi from "../../../api/UserApi";
-import ListService from "../../../services/ListService";
-import pagingSizes from "../../../api/values/PagingSizes";
 import ListContentPaginated from "../listContentPaginated/ListContentPaginated";
-import UserService from "../../../services/UserService";
 import MediaService from "../../../services/MediaService";
+import profileApi from "../../../api/ProfileApi";
 
 function ProfileTabMediaLists({ type, username }) {
     const [currentOrderBy, setOrderBy] = useState(OrderBy.CUSTOM_ORDER);
@@ -22,14 +19,14 @@ function ProfileTabMediaLists({ type, username }) {
     useEffect(() => {
         async function getData() {
             try {
-                const data = await UserService.getSpecialListFromUser(
-                    {
-                        username: username,
-                        type: type,
-                        orderBy: currentOrderBy,
-                        sortOrder: currentSortOrder,
-                        pageNumber: page
-                    });
+                console.log("Fetching media lists for username:", username, " - and type:", type, ' - currentOrderBy:', currentOrderBy, ' - currentSortOrder:', currentSortOrder, ' - page:', page);
+                const data = await profileApi.getSpecialListFromUser(
+                    username,
+                    type,
+                    currentOrderBy,
+                    currentSortOrder,
+                    page
+                );
                 setListPagination(data.data);
                 const idList = MediaService.getIdMediaFromObjectList(data.data);
                 console.log(idList);

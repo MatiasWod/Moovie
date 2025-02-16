@@ -35,6 +35,7 @@ const profileApi = (() => {
 
 
     const getSpecialListFromUser = (username, type, orderBy, order, pageNumber = 1) => {
+        console.log("API: Fetching special list from user:", username, " - and type:", type, ' - orderBy:', orderBy, ' - order:', order, ' - pageNumber:', pageNumber);
             return api.get(`/profiles/${username}/${type}?orderBy=${orderBy}&order=${order}&pageNumber=${pageNumber}`);
     };
 

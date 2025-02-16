@@ -56,7 +56,7 @@ function NavbarComponent() {
                             <div style={{display: 'flex', alignItems: 'center'}}>
                             <RoleBadge role={user.role} size={"50px"}></RoleBadge>
                             <ProfileImage
-                                image={`http://localhost:8080/users/${user.username}/image`}
+                                image={`http://localhost:8080/profiles/${user.username}/image`}
                                 size="60px" // Adjust size as needed
                                 defaultProfilePicture="https://example.com/default-profile.jpg" // Your default image URL
                             />
