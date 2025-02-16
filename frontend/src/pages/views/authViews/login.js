@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Form, Button, Alert, Row, Col } from "react-bootstrap";
+import { Container, Form, Button, Alert, Col } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -17,7 +17,7 @@ const Login = () => {
 
     const { isLoggedIn, status, error } = useSelector((state) => state.auth);
 
-    const from = location.state?.from?.pathname || "/";
+    const from = location.state?.from || "/";
 
     // Attempt reconnect on page load
     useEffect(() => {
@@ -62,7 +62,6 @@ const Login = () => {
                             <Form.Label>{t("login.username")}</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder={t("login.username")}
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 required
@@ -73,7 +72,6 @@ const Login = () => {
                             <Form.Label>{t("login.password")}</Form.Label>
                             <Form.Control
                                 type="password"
-                                placeholder={t("login.password")}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
@@ -101,8 +99,12 @@ const Login = () => {
 
                     <div className="text-center mt-3">
                         <p className={"d-flex justify-content-center align-items-center"}>
-                            {t("login.noAccount")}{" "}
-                            <button type={"button"} className={"btn btn-link"} onClick={()=>navigate('/register')}>{t("login.signUp")}</button>
+                            {t("login.noAccount")}
+                            <button type={"button"} className={"btn btn-link ps-1"} onClick={()=>navigate("/register", { state: {from: location.state?.from || location.pathname}})}>{t("login.signUp")}</button>
+                        </p>
+                        <p className={"d-flex justify-content-center align-items-center"}>
+                            {t("login.continue")}
+                            <button type={"button"} className={"btn btn-link ps-1"} onClick={()=>navigate(from)}>{t("login.without")}</button>
                         </p>
                     </div>
                 </Col>

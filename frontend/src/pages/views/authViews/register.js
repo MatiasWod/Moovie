@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../components/mainStyle.css'
+import {Container, Form, Button, Card, Alert, Col} from 'react-bootstrap';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from "react-i18next";
 import userApi from "../../../api/UserApi";
-import {useTranslation} from "react-i18next";
-
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../components/mainStyle.css';
+import {CircularProgress} from "@mui/material";
 
 const RegisterForm = () => {
     const [form, setForm] = useState({
@@ -13,8 +15,12 @@ const RegisterForm = () => {
         repeatPassword: '',
     });
     const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-    const {t} = useTranslation();
+    const [loading, setLoading] = useState(false)
+
+    const { t } = useTranslation();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from || '/';
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -24,111 +30,104 @@ const RegisterForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (form.password !== form.repeatPassword) {
-            setError('Passwords do not match');
+            setError("register.passwordMismatch");
             return;
         }
 
         try {
+            setLoading(true)
             await userApi.register({
                 username: form.username,
                 email: form.email,
                 password: form.password,
             });
-            localStorage.setItem('username', form.username);
-            sessionStorage.setItem('username', form.username);
-            setSuccess('Registration successful! You can now log in.');
+            localStorage.setItem("username",form.username)
+            navigate('/register/verify')
             setError('');
-            setForm({
-                username: '',
-                email: '',
-                password: '',
-                repeatPassword: '',
-            });
-        } catch (err) {
-            setError(err.message || 'An error occurred during registration.');
-            setSuccess('');
+        } catch (error) {
+            setLoading(false);
+            setError(error.message);
         }
     };
 
     return (
         <div
-            style={{ background: 'whitesmoke', overflow: 'hidden', minHeight: '100vh' }}
-            className="d-flex flex-column align-items-center"
+            className={"p-5 vh-100"}
+            style={{ background: "whitesmoke" }}
         >
-            <div
-                style={{ border: 'solid black', width: 'fit-content' }}
-                className="container-gray container d-flex flex-column p-3 mt-5"
-            >
-                <h1>{t('register.signUp')}</h1>
-                {error && <div className="alert alert-danger">{error}</div>}
-                {success && <div className="alert alert-success">{success}</div>}
+            <Container className={"d-flex align-items-center justify-content-center"}>
+                <Col xs={12} md={6} className="p-4 bg-light shadow rounded">
+                    <h2 className="text-center mb-3">{t("register.register")}</h2>
 
-                <form onSubmit={handleSubmit} className="">
-                    <div className="me-5 d-flex flex-column">
-                        <label htmlFor="username">{t('register.username')}</label>
-                        <div>
-                            <input
+                    {error !== '' && <Alert variant="danger">{error}</Alert>}
+
+                    <Form onSubmit={handleSubmit}>
+                        <Form.Group className="mb-3">
+                            <Form.Label>{t("register.username")}</Form.Label>
+                            <Form.Control
                                 type="text"
-                                id="username"
-                                name="username"
-                                value={form.username}
-                                onChange={handleInputChange}
-                                className="form-control"
+                                value={from.username}
+                                name={"username"}
+                                onChange={(e) => handleInputChange(e)}
+                                required
                             />
-                        </div>
+                        </Form.Group>
 
-                        <label htmlFor="email">{t('register.email')}</label>
-                        <div>
-                            <input
-                                type="email"
-                                id="email"
-                                name="email"
-                                value={form.email}
-                                onChange={handleInputChange}
-                                className="form-control"
+                        <Form.Group className="mb-3">
+                            <Form.Label>{t("register.email")}</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={from.email}
+                                name={"email"}
+                                onChange={(e) => handleInputChange(e)}
+                                required
                             />
-                        </div>
+                        </Form.Group>
 
-                        <label htmlFor="password">{t('register.password')}</label>
-                        <div>
-                            <input
+                        <Form.Group className="mb-3">
+                            <Form.Label>{t("login.password")}</Form.Label>
+                            <Form.Control
                                 type="password"
-                                id="password"
-                                name="password"
                                 value={form.password}
-                                onChange={handleInputChange}
-                                className="form-control"
+                                name={"password"}
+                                onChange={(e) =>handleInputChange(e)}
+                                required
                             />
-                        </div>
+                        </Form.Group>
 
-                        <label htmlFor="repeatPassword">{t('register.repeatPassword')}</label>
-                        <div>
-                            <input
+                        <Form.Group className="mb-3">
+                            <Form.Label>{t("register.repeatPassword")}</Form.Label>
+                            <Form.Control
                                 type="password"
-                                id="repeatPassword"
-                                name="repeatPassword"
                                 value={form.repeatPassword}
-                                onChange={handleInputChange}
-                                className="form-control"
+                                name={"repeatPassword"}
+                                onChange={(e) =>handleInputChange(e)}
+                                required
                             />
-                        </div>
+                        </Form.Group>
 
-                        <button type="submit" className="mt-2 btn btn-outline-success">
-                            {t('register.register')}
-                        </button>
 
-                        <div className="mt-3">
-                            {t('register.alreadyHaveAnAccount')} <a href="/login">{t('register.login')}</a>
-                        </div>
-                        <div className="mt-1">
-                            {t('register.continueWithoutRegistering')}{' '}
-                            <a href="#" onClick={() => window.history.back()}>
-                                {t('register.goBack')}
-                            </a>
-                        </div>
+                        <Button
+                            variant="success"
+                            type="submit"
+                            className="w-100"
+                            disabled={loading}
+                        >
+                            {t("register.signUp")}
+                        </Button>
+                    </Form>
+
+                    <div className="text-center mt-3">
+                        <p className={"d-flex justify-content-center align-items-center"}>
+                            {t("register.alreadyHaveAnAccount")}
+                            <button type={"button"} className={"btn btn-link ps-1"} onClick={()=>navigate("/login", { state: {from: location.state?.from || location.pathname}})}>{t("login.signUp")}</button>
+                        </p>
+                        <p className={"d-flex justify-content-center align-items-center"}>
+                            <button type={"button"} className={"btn btn-link ps-1"} onClick={()=>navigate(from)}>{t("register.continueWithoutRegistering")}</button>
+                        </p>
                     </div>
-                </form>
-            </div>
+                </Col>
+            </Container>
         </div>
     );
 };

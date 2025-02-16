@@ -18,7 +18,6 @@ export default function ConfirmToken() {
                     if (!username) {
                         throw new Error('No username found');
                     }
-
                     // Confirm token
                     const response = await userApi.confirmToken(token);
                     const jwtToken = response.headers['authorization'];
@@ -27,7 +26,7 @@ export default function ConfirmToken() {
                         sessionStorage.setItem('jwtToken', jwtToken);
                         sessionStorage.setItem('username', username);
 
-                        await dispatch(attemptReconnect()).unwrap();
+                        await dispatch(attemptReconnect());
                         navigate('/');
                     } else {
                         throw new Error('No token received');

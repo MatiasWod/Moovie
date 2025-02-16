@@ -4,7 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import {Image} from "react-bootstrap";
 import Logo from '../../../images/logo.png';
-import {NavLink} from "react-router-dom";
+import {NavLink, useLocation, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {logout} from "../../../features/authSlice";
 import ProfileImage from "../profileImage/ProfileImage";
@@ -19,6 +19,13 @@ function NavbarComponent() {
     const dispatch = useDispatch();
     const {isLoggedIn, user} = useSelector(state => state.auth);
     const { t } = useTranslation();
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const handleLoginRedirect = () => {
+        navigate("/login", { state: { from: location.pathname } });
+    };
+
 
     const handleLogout = () => {
         dispatch(logout());
@@ -77,8 +84,9 @@ function NavbarComponent() {
                                 </NavDropdown>
                             </div>
                                 ) : (
-                                <Nav.Link as={NavLink} to="/login" activeClassName="active"
-                                          className={'link-primary'}>{t('navBar.login')}</Nav.Link>
+                                    <Nav.Link onClick={handleLoginRedirect} className={'link-primary'}>
+                                        {t('navBar.login')}
+                                    </Nav.Link>
                                 )}
                             </Nav>
 

@@ -40,7 +40,7 @@ const CreateListForm = ({
                 {showError && <div className={'alert alert-danger alert-dismissible'} onClick={() => setShowError(false)}>
                     error <i className={'btn-close disabled'}/>
                 </div>}
-                {showSuccess && <div className={'alert alert-success alert-dismissible'} onClick={() => setShowError(false)}>
+                {showSuccess && <div className={'alert alert-success alert-dismissible'} onClick={() => setShowSuccess(false)}>
                     You created a list! find it here: <Link to={'/list/' + listId}>link</Link> <i className={'btn-close disabled'}/>
                 </div>}
                 <div className={'d-flex flex-row justify-content-between align-items-center'}>

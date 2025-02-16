@@ -58,6 +58,7 @@ export default function App() {
                         <Route path='/' element={<Home/>}/>
                         <Route path='/login' element={<Login/>}/>
                         <Route path='/register' element={<Register/>}/>
+                        <Route path='/register/verify' element={<AwaitEmailValidation/>}/>
                         <Route path='/register/confirm' element={<ConfirmToken/>}/>
                         <Route path='/details/:id' element={<Details/>}/>
                         <Route path='/list/:id' element={<List/>}/>
