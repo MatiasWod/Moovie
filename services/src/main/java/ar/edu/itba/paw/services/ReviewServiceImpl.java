@@ -152,7 +152,7 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Transactional
     @Override
-    public void editReview( int mediaId, int rating, String reviewContent, ReviewTypes type){
+    public boolean editReview( int mediaId, int rating, String reviewContent, ReviewTypes type){
         int userId = userService.getInfoOfMyUser().getUserId();
         if (type.getType()==ReviewTypes.REVIEW_MEDIA.getType() && reviewDao.getReviewByMediaIdAndUsername(mediaId ,userId)==null){
             throw new ReviewNotFoundException("Review not found");
@@ -160,8 +160,12 @@ public class ReviewServiceImpl implements ReviewService{
         else if (type.getType()==ReviewTypes.REVIEW_MOOVIE_LIST.getType() && reviewDao.getMoovieListReviewByListIdAndUsername(mediaId ,userId)==null){
             throw new ReviewNotFoundException("MoovieList review not found");
         }
-        reviewDao.editReview(userId, mediaId, rating, reviewContent,type);
+        boolean edited=reviewDao.editReview(userId, mediaId, rating, reviewContent,type);
+        if (!edited){
+            throw new NoSuchElementException("Review not found");
+        }
         LOGGER.info("Succesfully edited review in media: {}, user: {}.", mediaId , userService.getInfoOfMyUser().getUserId());
+        return true;
     }
 
     @Transactional

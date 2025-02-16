@@ -22,7 +22,7 @@ public interface ReviewDao {
 
     void createReview(User user, int mediaId, int rating, String reviewContent, ReviewTypes type);
 
-    void editReview(int userId, int mediaId, int rating, String reviewContent, ReviewTypes type);
+    boolean editReview(int userId, int mediaId, int rating, String reviewContent, ReviewTypes type);
     void deleteReview(int reviewId, ReviewTypes type);
 
     void likeReview(int userId, int reviewId, ReviewTypes type);
