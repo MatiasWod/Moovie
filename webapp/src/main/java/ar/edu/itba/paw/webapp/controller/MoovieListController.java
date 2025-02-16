@@ -21,6 +21,7 @@ import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
@@ -111,6 +112,7 @@ public class MoovieListController {
     }
 
     @POST
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_MOOVIELIST_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createMoovieList(@Valid final MoovieListCreateDto listDto) {
@@ -149,6 +151,7 @@ public class MoovieListController {
 
     @PUT
     @Path("/{id}")
+    @PreAuthorize("@accessValidator.isUserListAuthor(#id)")
     @Consumes(VndType.APPLICATION_MOOVIELIST_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response editMoovieList(@PathParam("id") int listId,
@@ -161,7 +164,8 @@ public class MoovieListController {
     }
 
     @PUT
-    @Path("/{id}/")
+    @Path("/{id}")
+    @PreAuthorize("@accessValidator.userLoggedIn")
     @Consumes(VndType.APPLICATION_MOOVIELIST_FEEDBACK_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response moovieListFeedback(@PathParam("id") int id,
@@ -198,6 +202,7 @@ public class MoovieListController {
 
     @PUT
     @Path("/{id}")
+    @PreAuthorize("@accessValidator.userLoggedIn")
     @Consumes(VndType.APPLICATION_MOOVIELIST_FOLLOW_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response followMoovieList(@PathParam("id") int id,
@@ -235,6 +240,7 @@ public class MoovieListController {
 
     @DELETE
     @Path("/{id}")
+    @PreAuthorize("@accessValidator.isUserListAuthor(#id)")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteMoovieList(@PathParam("id") final int id) {
         moovieListService.deleteMoovieList(id);
@@ -280,6 +286,7 @@ public class MoovieListController {
 
     @POST
     @Path("/{id}/content")
+    @PreAuthorize("@accessValidator.isUserListAuthor(#id)")
     @Consumes(VndType.APPLICATION_MOOVIELIST_MEDIA_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response insertMediaIntoMoovieList(@PathParam("id") int moovieListId,
@@ -311,6 +318,7 @@ public class MoovieListController {
 
     @PUT
     @Path("/{id}/content/{mediaId}")
+    @PreAuthorize("@accessValidator.isUserListAuthor(#id)")
     @Consumes(VndType.APPLICATION_MOOVIELIST_MEDIA_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response editMoovieListMediaByMediaId(@PathParam("id") final int id,
@@ -323,6 +331,7 @@ public class MoovieListController {
 
     @DELETE
     @Path("/{id}/content/{mediaId}")
+    @PreAuthorize("@accessValidator.isUserListAuthor(#id)")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteMediaMoovieList(@PathParam("id") final int id, @PathParam("mediaId") final int mId) {
         moovieListService.deleteMediaFromMoovieList(id, mId);
