@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Comments.Comment;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.models.User.UserRoles;
 import ar.edu.itba.paw.services.CommentService;
 import ar.edu.itba.paw.services.MoovieListService;
 import ar.edu.itba.paw.services.ReviewService;
@@ -36,6 +37,10 @@ public class AccessValidator {
 
     public boolean isUserLoggedIn() {
         return userService.getInfoOfMyUser() != null;
+    }
+
+    public boolean isUserAdmin() {
+        return userService.getInfoOfMyUser() != null && userService.getInfoOfMyUser().getRole()== UserRoles.MODERATOR.getRole();
     }
 
     public boolean isUserCommentAuthor(int commentId) {

@@ -11,6 +11,7 @@ import ar.edu.itba.paw.webapp.mappers.ExceptionEM;
 import ar.edu.itba.paw.webapp.mappers.UnableToFindUserEM;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
@@ -64,6 +65,7 @@ public class ReportController {
 
 
     @POST
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_REPORT_FORM)
     @Produces(VndType.APPLICATION_REPORT)
     public Response report(
@@ -122,6 +124,7 @@ public class ReportController {
     }
 
     @DELETE
+    @PreAuthorize("@accessValidator.isUserAdmin()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response resolveReport(
             @QueryParam("moovieListId") final Integer moovieListId,
