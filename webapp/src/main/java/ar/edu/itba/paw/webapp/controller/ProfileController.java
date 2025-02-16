@@ -127,7 +127,7 @@ public class ProfileController {
     @PUT
     @Path("/{username}/image")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response updateProfileImage(@PathParam("username") String username,
                                        @FormDataParam("image") final FormDataBodyPart image,
                                        @Size(max = 1024 * 1024 * 2) @FormDataParam("image") byte[] imageBytes) {
@@ -176,7 +176,7 @@ public class ProfileController {
     @POST
     @Path("/{username}/watched")
     @Consumes(VndType.APPLICATION_WATCHED_MEDIA_FORM)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response insertIntoWatched(@PathParam("username") final String username,
                                       @Valid final JustIdDto justIdDto){
         moovieListService.addMediaToWatched(justIdDto.getId(), username);
@@ -199,7 +199,7 @@ public class ProfileController {
 
     @DELETE
     @Path("/{username}/watched/{mediaId}")
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response deleteFromWatched(@PathParam("username") final String username,
                                       @PathParam("mediaId") final int mediaId){
         moovieListService.removeMediaFromWatched(mediaId, username);
@@ -241,7 +241,7 @@ public class ProfileController {
     @POST
     @Path("/{username}/watchlist")
     @Consumes(VndType.APPLICATION_WATCHLIST_MEDIA_FORM)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response insertIntoWatchlist(@PathParam("username") final String username,
                                         @Valid  final JustIdDto justIdDto){
         moovieListService.addMediaToWatchlist(justIdDto.getId(), username);
@@ -263,7 +263,7 @@ public class ProfileController {
 
     @DELETE
     @Path("/{username}/watchlist/{mediaId}")
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response deleteFromWatchlist(@PathParam("username") final String username,
                                         @PathParam("mediaId") final int mediaId){
         moovieListService.removeMediaFromWatchlist(mediaId, username);

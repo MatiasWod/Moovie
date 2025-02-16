@@ -103,7 +103,7 @@ public class ReviewController {
 
     @PUT
     @Consumes(VndType.APPLICATION_REVIEW_FORM)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response editReview(@QueryParam("mediaId") int mediaId,@Valid final ReviewCreateDto reviewDto) {
         reviewService.editReview(
                 mediaId,
@@ -119,7 +119,7 @@ public class ReviewController {
 
     @POST
     @Consumes(VndType.APPLICATION_REVIEW_FORM)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response createReview(@QueryParam("mediaId") int mediaId,@Valid final ReviewCreateDto reviewDto) {
         reviewService.createReview(
                 mediaId,
@@ -169,7 +169,7 @@ public class ReviewController {
 
     @DELETE
     @Path("/{id}")
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response deleteReviewById(@PathParam("id") final int reviewId) {
         reviewService.deleteReview(reviewId, ReviewTypes.REVIEW_MEDIA);
 

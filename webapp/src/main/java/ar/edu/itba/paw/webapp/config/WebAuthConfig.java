@@ -22,6 +22,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -51,12 +52,16 @@ import java.util.List;
 import static org.springframework.web.cors.CorsConfiguration.ALL;
 
 @ComponentScan("ar.edu.itba.paw.webapp.auth")
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
 @Configuration
 public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AccessValidator accessValidator;
 
     @Autowired
     private MoovieUserDetailsService userDetailsService;
@@ -182,10 +187,10 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 //                    .accessDeniedPage("/403")
 //                .and().csrf().disable();
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(new UnauthorizedRequestHandler())
-                .accessDeniedHandler(new ForbiddenRequestHandler())
+                .and().exceptionHandling()
+                    .authenticationEntryPoint(new UnauthorizedRequestHandler())
+                    .accessDeniedHandler(new ForbiddenRequestHandler())
+
                 .and()
                 .headers().cacheControl().disable()
                 .and()
@@ -205,6 +210,9 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/users/*").permitAll()
                 .antMatchers(HttpMethod.GET, "/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/users").permitAll()
+                .antMatchers(HttpMethod.POST, "/comments/*").authenticated()
+                .antMatchers(HttpMethod.PUT, "/comments/*").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/comments/*").authenticated()
                 .and()
                 .cors()
                 .and()

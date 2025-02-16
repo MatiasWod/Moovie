@@ -112,7 +112,7 @@ public class MoovieListController {
 
     @POST
     @Consumes(VndType.APPLICATION_MOOVIELIST_FORM)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response createMoovieList(@Valid final MoovieListCreateDto listDto) {
         try {
             int listId = moovieListService.createMoovieList(
@@ -150,7 +150,7 @@ public class MoovieListController {
     @PUT
     @Path("/{id}")
     @Consumes(VndType.APPLICATION_MOOVIELIST_FORM)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response editMoovieList(@PathParam("id") int listId,
                                    @Valid final EditListDTO editListForm) {
         moovieListService.editMoovieList(listId, editListForm.getListName(), editListForm.getListDescription());
@@ -163,7 +163,7 @@ public class MoovieListController {
     @PUT
     @Path("/{id}/")
     @Consumes(VndType.APPLICATION_MOOVIELIST_FEEDBACK_FORM)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response moovieListFeedback(@PathParam("id") int id,
                                        @Valid MoovieListFeedbackDto moovieListFeedbackDto) {
         try {
@@ -199,7 +199,7 @@ public class MoovieListController {
     @PUT
     @Path("/{id}")
     @Consumes(VndType.APPLICATION_MOOVIELIST_FOLLOW_FORM)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response followMoovieList(@PathParam("id") int id,
                                      @Valid @NotNull FollowMoovieListDto followMoovieListDto) {
         try {
@@ -235,7 +235,7 @@ public class MoovieListController {
 
     @DELETE
     @Path("/{id}")
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response deleteMoovieList(@PathParam("id") final int id) {
         moovieListService.deleteMoovieList(id);
         return Response.noContent().build();
@@ -281,7 +281,7 @@ public class MoovieListController {
     @POST
     @Path("/{id}/content")
     @Consumes(VndType.APPLICATION_MOOVIELIST_MEDIA_FORM)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response insertMediaIntoMoovieList(@PathParam("id") int moovieListId,
                                               @Valid MediaListDto mediaIdListDto) {
         List<Integer> mediaIdList = mediaIdListDto.getMediaIdList();
@@ -312,7 +312,7 @@ public class MoovieListController {
     @PUT
     @Path("/{id}/content/{mediaId}")
     @Consumes(VndType.APPLICATION_MOOVIELIST_MEDIA_FORM)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response editMoovieListMediaByMediaId(@PathParam("id") final int id,
                                                 @PathParam("mediaId") final int mediaId,
                                                  final MediaIdListIdDto input){
@@ -323,7 +323,7 @@ public class MoovieListController {
 
     @DELETE
     @Path("/{id}/content/{mediaId}")
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response deleteMediaMoovieList(@PathParam("id") final int id, @PathParam("mediaId") final int mId) {
         moovieListService.deleteMediaFromMoovieList(id, mId);
         return Response.noContent().build();

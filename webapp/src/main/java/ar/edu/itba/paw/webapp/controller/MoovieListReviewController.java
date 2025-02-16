@@ -89,7 +89,7 @@ public class MoovieListReviewController {
 
     @PUT
     @Consumes(VndType.APPLICATION_MOOVIELIST_REVIEW_FORM)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response editReview(@QueryParam("listId") int listId,
                                @Valid final MoovieListReviewCreateDto moovieListReviewDto) {
         reviewService.editReview(
@@ -106,7 +106,7 @@ public class MoovieListReviewController {
 
     @POST
     @Consumes(VndType.APPLICATION_MOOVIELIST_REVIEW_FORM)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response createMoovieListReview(@QueryParam("listId") int listId,
                                                             @Valid final MoovieListReviewCreateDto moovieListReviewDto) {
         reviewService.createReview(
@@ -124,7 +124,7 @@ public class MoovieListReviewController {
 
     @PUT
     @Path("/{id}")
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response feedbackMoovieListReview(@PathParam("id") final int id) {
         try {
             boolean liked_status=reviewService.likeReview(id, ReviewTypes.REVIEW_MOOVIE_LIST);
@@ -160,7 +160,7 @@ public class MoovieListReviewController {
 
     @DELETE
     @Path("/{id}")
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response deleteMoovieListReviewById(@PathParam("id") final int moovieListReview) {
         try {
             reviewService.deleteReview(moovieListReview, ReviewTypes.REVIEW_MOOVIE_LIST);

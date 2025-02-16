@@ -216,7 +216,7 @@ public class UserController {
         } catch (UnableToFindUserException e) {
             return new UnableToFindUserEM().toResponse(e);
         } catch (Exception e) {
-            return new ExceptionEM().toResponse(e);
+            throw new InternalServerErrorException(e.getMessage(), e);
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
     }

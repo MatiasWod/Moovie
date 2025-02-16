@@ -13,6 +13,8 @@ import ar.edu.itba.paw.webapp.dto.out.CommentDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
@@ -66,7 +68,8 @@ public class CommentController {
 
 
     @POST
-    @Produces(MediaType.TEXT_PLAIN)
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
+    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(VndType.APPLICATION_COMMENT_FORM)
     public Response createComment(@QueryParam("reviewId") final int reviewId, @Valid final CommentCreateDto commentDto) {
         commentService.createComment(
@@ -80,8 +83,9 @@ public class CommentController {
 
     @PUT
     @Path("/{id}")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_COMMENT_FEEDBACK_FORM)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response updateFeedbackOnComment(@PathParam("id") int id, @Valid @NotNull final CommentFeedbackDto commentFeedbackDto) {
         try {
             CommentFeedbackType commentFeedbackType=commentFeedbackDto.transformToEnum();
@@ -129,12 +133,23 @@ public class CommentController {
 
     @DELETE
     @Path("/{id}")
-    @Produces(MediaType.TEXT_PLAIN)
+    @PreAuthorize("@accessValidator.isUserCommentAuthor(#id)")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response deleteComment(@PathParam("id") int id) {
             try {
+                if (commentService.getCommentById(id) == null) {
+                    return Response.status(Response.Status.NOT_FOUND)
+                            .entity("Comment not found")
+                            .build();
+                }
                 commentService.deleteComment(id);
                 return Response.ok().entity("Comment deleted").build();
-            } catch (UserNotLoggedException e) {
+            }catch (AccessDeniedException e) {
+                return Response.status(Response.Status.FORBIDDEN)
+                        .entity("{\"error\":\"User is not the author of the comment.\"}")
+                        .build();
+            }
+            catch (UserNotLoggedException e) {
                 return Response.status(Response.Status.UNAUTHORIZED)
                         .entity("{\"error\":\"User must be logged in to delete a comment.\"}")
                         .build();

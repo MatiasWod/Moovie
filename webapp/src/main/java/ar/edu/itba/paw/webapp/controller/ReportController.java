@@ -29,7 +29,7 @@ public class ReportController {
     private UriInfo uriInfo;
 
     @Autowired
-    public ReportController(ReportService reportService,UserService userService) {
+    public ReportController(ReportService reportService, UserService userService) {
         this.reportService = reportService;
         this.userService = userService;
     }
@@ -58,7 +58,7 @@ public class ReportController {
             return Response.ok(new GenericEntity<List<ReportDTO>>(reportDTOs) {
             }).build();
         } catch (Exception e) {
-            return new ExceptionEM().toResponse(e);
+            throw new InternalServerErrorException(e.getMessage(), e); // Deja que JAX-RS maneje la excepción        }
         }
     }
 
@@ -117,12 +117,12 @@ public class ReportController {
         } catch (UnableToFindUserException e) {
             return new UnableToFindUserEM().toResponse(e);
         } catch (Exception e) {
-            return new ExceptionEM().toResponse(e);
+            throw new InternalServerErrorException(e.getMessage(), e);
         }
     }
 
     @DELETE
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response resolveReport(
             @QueryParam("moovieListId") final Integer moovieListId,
             @QueryParam("commentId") final Integer commentId,
@@ -145,7 +145,7 @@ public class ReportController {
                 throw new IllegalArgumentException("At least one of 'moovieListId', 'commentId', 'moovieListReviewId', or 'reviewId' must be provided.");
             }
         } catch (Exception e) {
-            return new ExceptionEM().toResponse(e);
+            throw new InternalServerErrorException(e.getMessage(), e);
         }
         return Response.ok().build();
     }
