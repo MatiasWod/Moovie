@@ -289,10 +289,10 @@ public class MoovieListController {
     @PreAuthorize("@accessValidator.isUserListAuthor(#id)")
     @Consumes(VndType.APPLICATION_MOOVIELIST_MEDIA_FORM)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertMediaIntoMoovieList(@PathParam("id") int moovieListId,
+    public Response insertMediaIntoMoovieList(@PathParam("id") int id,
                                               @Valid MediaListDto mediaIdListDto) {
         List<Integer> mediaIdList = mediaIdListDto.getMediaIdList();
-        MoovieList updatedList = moovieListService.insertMediaIntoMoovieList(moovieListId, mediaIdList);
+        MoovieList updatedList = moovieListService.insertMediaIntoMoovieList(id, mediaIdList);
         if (mediaIdList == null || mediaIdList.isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(new ResponseMessage("No media IDs provided."))
