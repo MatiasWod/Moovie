@@ -55,7 +55,7 @@ const ListContentPaginated = ({
                 ) : (
                     <>
                         <Button onClick={handleEditMode}>{t('listContentPaginated.save')}</Button>
-                        <div>Drag media to change its order.</div>
+                        <div>{t('list.dragToModifyOrder')}</div>
                     </>
                 )
             )}
