@@ -14,6 +14,7 @@ import ar.edu.itba.paw.webapp.dto.out.MoovieListReviewDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
@@ -88,6 +89,7 @@ public class MoovieListReviewController {
     }
 
     @PUT
+    @PreAuthorize("accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_MOOVIELIST_REVIEW_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response editReview(@QueryParam("listId") int listId,
@@ -105,6 +107,7 @@ public class MoovieListReviewController {
     }
 
     @POST
+    @PreAuthorize("accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_MOOVIELIST_REVIEW_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createMoovieListReview(@QueryParam("listId") int listId,
@@ -124,6 +127,7 @@ public class MoovieListReviewController {
 
     @PUT
     @Path("/{id}")
+    @PreAuthorize("accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response feedbackMoovieListReview(@PathParam("id") final int id) {
         try {
@@ -160,10 +164,11 @@ public class MoovieListReviewController {
 
     @DELETE
     @Path("/{id}")
+    @PreAuthorize("accessValidator.isUserReviewAuthor(#id)")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteMoovieListReviewById(@PathParam("id") final int moovieListReview) {
+    public Response deleteMoovieListReviewById(@PathParam("id") final int id) {
         try {
-            reviewService.deleteReview(moovieListReview, ReviewTypes.REVIEW_MOOVIE_LIST);
+            reviewService.deleteReview(id, ReviewTypes.REVIEW_MOOVIE_LIST);
 
             return Response.ok()
                     .entity("Review successfully deleted.")

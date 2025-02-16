@@ -151,7 +151,7 @@ public class MoovieListController {
 
     @PUT
     @Path("/{id}")
-    @PreAuthorize("@accessValidator.isUserListAuthor(#id)")
+    @PreAuthorize("@accessValidator.isUserListAuthor(#listId)")
     @Consumes(VndType.APPLICATION_MOOVIELIST_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response editMoovieList(@PathParam("id") int listId,

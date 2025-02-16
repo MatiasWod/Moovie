@@ -2,9 +2,11 @@ package ar.edu.itba.paw.webapp.auth;
 
 import ar.edu.itba.paw.models.Comments.Comment;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
+import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.CommentService;
 import ar.edu.itba.paw.services.MoovieListService;
+import ar.edu.itba.paw.services.ReviewService;
 import ar.edu.itba.paw.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,10 @@ public class AccessValidator {
 
     @Autowired
     private MoovieListService listService;
+
+
+    @Autowired
+    private ReviewService reviewService;
 
     public boolean checkIsUser (String username) {
         return userService.findUserByUsername(username) != null;
@@ -49,7 +55,17 @@ public class AccessValidator {
         try {
             User currentUser = userService.getInfoOfMyUser();
             MoovieList list = listService.getMoovieListById(listId);
-            return currentUser != null && currentUser.getUserId() == list.getUserId();
+            return currentUser != null && list!=null && currentUser.getUserId() == list.getUserId();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean isUserReviewAuthor(int reviewId) {
+        try {
+            User currentUser = userService.getInfoOfMyUser();
+            Review review = reviewService.getReviewById(reviewId);
+            return currentUser != null && review != null && currentUser.getUserId() == review.getUserId();
         } catch (Exception e) {
             return false;
         }
