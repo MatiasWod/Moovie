@@ -70,6 +70,10 @@ function Healthcheck() {
         navigate(`/cast/director/${director.directorId}`, { state: { actorName: director.name } });
     };
 
+    const handleSeeMoreMediasButtonClick = () => {
+        navigate(`/discover?search=${search}&page=1`);
+    };
+
     const handleSeeMoreListsButtonClick = () => {
       navigate(`/browselists?search=${search}&page=1`);
     };
@@ -181,6 +185,12 @@ function Healthcheck() {
                 {medias?.data?.length > 0 ? (
                     <>
                         <h3>{t('search.mediasFor', {search: search})}</h3>
+                        <a
+                            onClick={handleSeeMoreMediasButtonClick}
+                            className="link-button"
+                        >
+                            {t('search.seeMore')}
+                        </a>
                         <Divider sx={{
                             backgroundColor: "rgba(0, 0, 0, 0.8)",
                             height: "2px",
