@@ -117,9 +117,12 @@ public class MoovieListController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createMoovieList(@Valid final MoovieListCreateDto listDto) {
         try {
+
+            MoovieListTypes moovieListType = MoovieListTypes.fromType(listDto.getType());
+
             int listId = moovieListService.createMoovieList(
                     listDto.getName(),
-                    MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
+                    moovieListType.getType(),
                     listDto.getDescription()
             ).getMoovieListId();
             UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder().path(String.valueOf(listId));

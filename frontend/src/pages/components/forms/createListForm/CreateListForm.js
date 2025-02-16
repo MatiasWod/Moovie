@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { truncateText } from "../../../../utils/FormatUtils";
-import {Alert, Card, Form, OverlayTrigger, Tooltip} from "react-bootstrap";
+import {Alert, Card, Form, OverlayTrigger, ToggleButton, Tooltip} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import {Link} from "react-router-dom";
+import {Checkbox, FormControlLabel, FormGroup} from "@mui/material";
 
 
 const CreateListForm = ({
@@ -11,6 +12,8 @@ const CreateListForm = ({
                             setName,
                             description,
                             setDescription,
+                            isPrivate,
+                            setIsPrivate,
                             onDeleteCallback,
                             onSubmitCallback,
                             onResetCallback
@@ -82,6 +85,10 @@ const CreateListForm = ({
                             required
                         />
                     </Form.Group>
+
+                    <FormGroup>
+                        <FormControlLabel control={<Checkbox color={"success"} checked={isPrivate} onChange={(e) => setIsPrivate(e.target.checked)} />} label="Make list private" />
+                    </FormGroup>
 
                     <Button variant="success" type="submit" className="w-100 mb-3">
                         Create List
