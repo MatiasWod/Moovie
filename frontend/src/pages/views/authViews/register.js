@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import {Container, Form, Button, Card, Alert, Col} from 'react-bootstrap';
+import { Container, Form, Button, Alert, Col } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import userApi from "../../../api/UserApi";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../components/mainStyle.css';
-import {CircularProgress} from "@mui/material";
 
 const RegisterForm = () => {
     const [form, setForm] = useState({
@@ -15,7 +14,7 @@ const RegisterForm = () => {
         repeatPassword: '',
     });
     const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
 
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -35,14 +34,14 @@ const RegisterForm = () => {
         }
 
         try {
-            setLoading(true)
+            setLoading(true);
             await userApi.register({
                 username: form.username,
                 email: form.email,
                 password: form.password,
             });
-            localStorage.setItem("username",form.username)
-            navigate('/register/verify')
+            localStorage.setItem("username", form.username);
+            navigate('/register/verify');
             setError('');
         } catch (error) {
             setLoading(false);
@@ -51,35 +50,35 @@ const RegisterForm = () => {
     };
 
     return (
-        <div
-            className={"p-5 vh-100"}
-            style={{ background: "whitesmoke" }}
-        >
-            <Container className={"d-flex align-items-center justify-content-center"}>
+        <div className="p-5 vh-100" style={{ background: "whitesmoke" }}>
+            <Container className="d-flex align-items-center justify-content-center">
                 <Col xs={12} md={6} className="p-4 bg-light shadow rounded">
                     <h2 className="text-center mb-3">{t("register.register")}</h2>
 
-                    {error !== '' && <Alert variant="danger">{error}</Alert>}
+                    {error && <Alert variant="danger">{error}</Alert>}
 
                     <Form onSubmit={handleSubmit}>
                         <Form.Group className="mb-3">
                             <Form.Label>{t("register.username")}</Form.Label>
                             <Form.Control
                                 type="text"
-                                value={from.username}
-                                name={"username"}
-                                onChange={(e) => handleInputChange(e)}
+                                value={form.username}
+                                name="username"
+                                onChange={handleInputChange}
                                 required
+                                minLength={4}
+                                maxLength={100}
+                                pattern="^[a-zA-Z0-9]+$"
                             />
                         </Form.Group>
 
                         <Form.Group className="mb-3">
                             <Form.Label>{t("register.email")}</Form.Label>
                             <Form.Control
-                                type="text"
-                                value={from.email}
-                                name={"email"}
-                                onChange={(e) => handleInputChange(e)}
+                                type="email"
+                                value={form.email}
+                                name="email"
+                                onChange={handleInputChange}
                                 required
                             />
                         </Form.Group>
@@ -89,9 +88,11 @@ const RegisterForm = () => {
                             <Form.Control
                                 type="password"
                                 value={form.password}
-                                name={"password"}
-                                onChange={(e) =>handleInputChange(e)}
+                                name="password"
+                                onChange={handleInputChange}
                                 required
+                                minLength={8}
+                                maxLength={100}
                             />
                         </Form.Group>
 
@@ -100,30 +101,28 @@ const RegisterForm = () => {
                             <Form.Control
                                 type="password"
                                 value={form.repeatPassword}
-                                name={"repeatPassword"}
-                                onChange={(e) =>handleInputChange(e)}
+                                name="repeatPassword"
+                                onChange={handleInputChange}
                                 required
                             />
                         </Form.Group>
 
-
-                        <Button
-                            variant="success"
-                            type="submit"
-                            className="w-100"
-                            disabled={loading}
-                        >
+                        <Button variant="success" type="submit" className="w-100" disabled={loading}>
                             {t("register.signUp")}
                         </Button>
                     </Form>
 
                     <div className="text-center mt-3">
-                        <p className={"d-flex justify-content-center align-items-center"}>
+                        <p>
                             {t("register.alreadyHaveAnAccount")}
-                            <button type={"button"} className={"btn btn-link ps-1"} onClick={()=>navigate("/login", { state: {from: location.state?.from || location.pathname}})}>{t("login.signUp")}</button>
+                            <button type="button" className="btn btn-link ps-1" onClick={() => navigate("/login")}>
+                                {t("login.signUp")}
+                            </button>
                         </p>
-                        <p className={"d-flex justify-content-center align-items-center"}>
-                            <button type={"button"} className={"btn btn-link ps-1"} onClick={()=>navigate(from)}>{t("register.continueWithoutRegistering")}</button>
+                        <p>
+                            <button type="button" className="btn btn-link ps-1" onClick={() => navigate(from)}>
+                                {t("register.continueWithoutRegistering")}
+                            </button>
                         </p>
                     </div>
                 </Col>

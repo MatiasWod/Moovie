@@ -3,9 +3,9 @@ import VndType from "../enums/VndType";
 
 const userApi = (() => {
 
-    //AUTHENTICATION STUFF
+    // AUTHENTICATION STUFF
 
-    const login = async ({username, password}) => {
+    const login = async ({ username, password }) => {
         const credentials = btoa(`${username}:${password}`);
         try {
             const response = await api.get(`/users/${username}`, {
@@ -29,17 +29,17 @@ const userApi = (() => {
     const register = async ({ email, username, password }) => {
         try {
             return await api.post('/users', {
-                email,
-                username,
-                password,
-            },
+                    email,
+                    username,
+                    password,
+                },
                 {
-                headers: {
-                    'Content-Type': VndType.APPLICATION_USER_FORM
-                }
-            });
+                    headers: {
+                        'Content-Type': VndType.APPLICATION_USER_FORM
+                    }
+                });
         } catch (error) {
-            throw error
+            throw error;
         }
     };
 
@@ -60,7 +60,22 @@ const userApi = (() => {
             localStorage.setItem('jwtToken', jwtToken);
         }
         return response;
-    }
+    };
+
+    const resendVerificationEmail = async (token) => {
+        try {
+            return await api.post('/users/resend-verification',
+                { token },
+                {
+                    headers: {
+                        'Content-Type': VndType.APPLICATION_USER_TOKEN_FORM
+                    }
+                }
+            );
+        } catch (error) {
+            throw error;
+        }
+    };
 
     const listUsers = ({}) => {
         // Implementar la lista de usuarios
@@ -78,37 +93,32 @@ const userApi = (() => {
 
     const getUsersCount = () => {
         return api.get('users/count');
-    }
-
-
+    };
 
     // MODERATION STUFF
 
     const banUser = (username) => {
         const banUserDTO = {
-            modAction:"BAN",
+            modAction: "BAN",
             banMessage: "User banned by moderator"
         };
-        return api.put(`/users/${username}`, banUserDTO,{
+        return api.put(`/users/${username}`, banUserDTO, {
             headers: {
                 'Content-Type': VndType.APPLICATION_USER_BAN_FORM
             }
         });
-    }
+    };
 
     const unbanUser = (username) => {
         const banUserDTO = {
-            modAction:"UNBAN",
+            modAction: "UNBAN",
         };
-        return api.put(`/users/${username}`, banUserDTO,{
+        return api.put(`/users/${username}`, banUserDTO, {
             headers: {
                 'Content-Type': VndType.APPLICATION_USER_BAN_FORM
             }
         });
-    }
-
-
-
+    };
 
     return {
         login,
@@ -119,6 +129,7 @@ const userApi = (() => {
         banUser,
         unbanUser,
         confirmToken,
+        resendVerificationEmail,
     };
 
 })();

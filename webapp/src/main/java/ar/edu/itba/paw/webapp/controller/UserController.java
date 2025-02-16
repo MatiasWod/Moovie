@@ -161,6 +161,37 @@ public class UserController {
         }
     }
 
+    @POST
+    @Path("/resend-verification")
+    @Consumes(VndType.APPLICATION_USER_TOKEN_FORM)
+    @Produces(VndType.APPLICATION_USER_TOKEN)
+    public Response resendVerificationEmail(@Valid final TokenDto tokenDto) {
+        LOGGER.info("Method: resendVerificationEmail, Path: /users/resend-verification, Token: {}", tokenDto.getToken());
+
+        try {
+            final Optional<Token> tokenOptional = verificationTokenService.getToken(tokenDto.getToken());
+
+            if (!tokenOptional.isPresent()) {
+                LOGGER.info("Token not found. Returning NOT_FOUND.");
+                return Response.status(Response.Status.NOT_FOUND).entity("Token not found").build();
+            }
+
+            Token token = tokenOptional.get();
+            userService.resendVerificationEmail(token);
+
+            LOGGER.info("Verification email resent successfully for user ID: {}", token.getUserId());
+            return Response.ok().entity("Verification email resent successfully").build();
+
+        } catch (VerificationTokenNotFoundException e) {
+            LOGGER.error("Verification token not found: {}", e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity("Verification token not found").build();
+        } catch (Exception e) {
+            LOGGER.error("Error resending verification email: {}", e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to resend verification email").build();
+        }
+    }
+
+
     @GET
     @Produces(VndType.APPLICATION_USER)
     @Path("/{username}")
