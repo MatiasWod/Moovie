@@ -174,7 +174,7 @@ public class MoovieListReviewController {
 
     @DELETE
     @Path("/{id}")
-    @PreAuthorize("@accessValidator.isUserReviewAuthor(#id)")
+    @PreAuthorize("@accessValidator.isUserMoovieListReviewAuthor(#id)")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteMoovieListReviewById(@PathParam("id") final int id) {
         try {
