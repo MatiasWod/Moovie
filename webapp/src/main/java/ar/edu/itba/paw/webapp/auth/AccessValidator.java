@@ -28,8 +28,10 @@ public class AccessValidator {
     @Autowired
     private ReviewService reviewService;
 
-    public boolean checkIsUser (String username) {
-        return userService.findUserByUsername(username) != null;
+    public boolean checkIsUserMe (String username) {
+        User userByUsername=userService.findUserByUsername(username);
+        User loggedUser=userService.getInfoOfMyUser();
+        return userByUsername!=null && loggedUser!=null && userByUsername.getUserId()==loggedUser.getUserId();
     }
 
     public boolean isUserLoggedIn() {

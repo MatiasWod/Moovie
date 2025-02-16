@@ -165,7 +165,7 @@ public class MoovieListController {
 
     @PUT
     @Path("/{id}")
-    @PreAuthorize("@accessValidator.userLoggedIn()")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_MOOVIELIST_FEEDBACK_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response moovieListFeedback(@PathParam("id") int id,
@@ -202,7 +202,7 @@ public class MoovieListController {
 
     @PUT
     @Path("/{id}")
-    @PreAuthorize("@accessValidator.userLoggedIn()")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_MOOVIELIST_FOLLOW_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response followMoovieList(@PathParam("id") int id,
