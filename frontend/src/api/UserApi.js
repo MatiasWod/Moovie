@@ -77,8 +77,12 @@ const userApi = (() => {
         }
     };
 
-    const listUsers = ({}) => {
-        // Implementar la lista de usuarios
+    const listUsers = ({role}) => {
+        return api.get('/users', {params: {role}});
+    };
+
+    const getBanMessage = (username) => {
+        return api.get(`/users/${username}/banMessage`);
     };
 
     const authTest = async () => {
@@ -130,6 +134,7 @@ const userApi = (() => {
         unbanUser,
         confirmToken,
         resendVerificationEmail,
+        getBanMessage,
     };
 
 })();

@@ -1,14 +1,17 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.*;
+import ar.edu.itba.paw.models.BannedMessage.BannedMessage;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.models.User.UserRoles;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.JwtTokenProvider;
 
 import ar.edu.itba.paw.webapp.dto.in.BanUserDTO;
 import ar.edu.itba.paw.webapp.dto.in.TokenDto;
 import ar.edu.itba.paw.webapp.dto.in.UserCreateDto;
+import ar.edu.itba.paw.webapp.dto.out.BanMessageDTO;
 import ar.edu.itba.paw.webapp.dto.out.UserDto;
 
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
@@ -37,6 +40,7 @@ public class UserController {
     private final VerificationTokenService verificationTokenService;
     private final JwtTokenProvider jwtTokenProvider;
     private final ModeratorService moderatorService;
+    private final BannedService bannedService;
 
     @Context
     private UriInfo uriInfo;
@@ -45,11 +49,12 @@ public class UserController {
 
     @Autowired
     public UserController(final UserService userService,
-                          VerificationTokenService verificationTokenService, JwtTokenProvider jwtTokenProvider, ModeratorService moderatorService) {
+                          VerificationTokenService verificationTokenService, JwtTokenProvider jwtTokenProvider, ModeratorService moderatorService, BannedService bannedService) {
         this.userService = userService;
         this.verificationTokenService = verificationTokenService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.moderatorService = moderatorService;
+        this.bannedService = bannedService;
     }
 
     @GET
@@ -57,7 +62,17 @@ public class UserController {
     public Response getUsers(
             @QueryParam("page") @DefaultValue("1") final int page,
             @QueryParam("email") final String email,
-            @QueryParam("id") final Integer id) {
+            @QueryParam("id") final Integer id,
+            @QueryParam("role") final Integer role) {
+
+//        CHECK for invalid role
+        if (role != null) {
+            UserRoles enumRole = UserRoles.getRoleFromInt(role);
+            if (enumRole == null) {
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+        }
+
 
         // Si se proporciona un ID, buscar por ID
         if (id != null) {
@@ -93,13 +108,19 @@ public class UserController {
 
         // Listar usuarios paginados
         try {
-            final List<User> all = userService.listAll(page);
+            final List<User> all;
+            if (role == null) {
+                all = userService.listAll(page);
+            } else {
+                all = userService.listAll(role, page);
+            }
             if (all.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
 
             List<UserDto> dtoList = UserDto.fromUserList(all, uriInfo);
-            return Response.ok(new GenericEntity<List<UserDto>>(dtoList) {}).build();
+            return Response.ok(new GenericEntity<List<UserDto>>(dtoList) {
+            }).build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
@@ -126,7 +147,7 @@ public class UserController {
     @Consumes(VndType.APPLICATION_USER_TOKEN_FORM)
     @Produces(VndType.APPLICATION_USER_TOKEN)
     public Response verifyUser(@Valid final TokenDto tokenDto) {
-        String tokenString=tokenDto.getToken();
+        String tokenString = tokenDto.getToken();
         LOGGER.info("Method: verifyUser, Path: users, Token: {}", tokenString);
         try {
             final Optional<Token> tok = verificationTokenService.getToken(tokenString);
@@ -184,7 +205,8 @@ public class UserController {
         try {
             int count = userService.getUserCount();
             LOGGER.info("User count retrieved: {}", count);
-            return Response.ok().entity(new GenericEntity<Integer>(count) {}).build();
+            return Response.ok().entity(new GenericEntity<Integer>(count) {
+            }).build();
         } catch (Exception e) {
             LOGGER.error("Error retrieving user count: {}", e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -211,8 +233,26 @@ public class UserController {
     }
 
 
-
 //    MODERATION
+
+    @GET
+    @Path("/{username}/banMessage")
+    @PreAuthorize("@accessValidator.isUserAdmin()")
+    @Produces(VndType.APPLICATION_USER_BAN_MESSAGE)
+    public Response banMessage(@PathParam("username") final String username) {
+        try {
+            User user = userService.findUserByUsername(username);
+            BannedMessage message = bannedService.getBannedMessage(user.getUserId());
+            if (message == null) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            LOGGER.info("RETURNING BAN MESSAGE: " + message.getMessage());
+            return Response.ok(BanMessageDTO.fromBannedMessage(message, user.getUsername(), uriInfo)).build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+
+    }
 
     @PUT
     @Path("/{username}")
@@ -222,18 +262,18 @@ public class UserController {
     public Response banUser(@PathParam("username") final String username,
                             @Valid @NotNull final BanUserDTO banUserDTO) {
         try {
-            if(banUserDTO.getModAction().equals("UNBAN")) {
-                    User toUnban = userService.findUserByUsername(username);
-                    try {
-                        moderatorService.unbanUser(toUnban.getUserId());
-                    } catch (InvalidAuthenticationLevelRequiredToPerformActionException e) {
-                        return new InvalidAuthenticationLevelRequiredToPerformActionEM().toResponse(e);
-                    } catch (UnableToChangeRoleException e) {
-                        return new UnableToChangeRoleEM().toResponse(e);
-                    }
-                    User finalUser = userService.findUserByUsername(username);
-                    return Response.ok(UserDto.fromUser(finalUser, uriInfo)).build();
-            }else if (banUserDTO.getModAction().equals("BAN")) {
+            if (banUserDTO.getModAction().equals("UNBAN")) {
+                User toUnban = userService.findUserByUsername(username);
+                try {
+                    moderatorService.unbanUser(toUnban.getUserId());
+                } catch (InvalidAuthenticationLevelRequiredToPerformActionException e) {
+                    return new InvalidAuthenticationLevelRequiredToPerformActionEM().toResponse(e);
+                } catch (UnableToChangeRoleException e) {
+                    return new UnableToChangeRoleEM().toResponse(e);
+                }
+                User finalUser = userService.findUserByUsername(username);
+                return Response.ok(UserDto.fromUser(finalUser, uriInfo)).build();
+            } else if (banUserDTO.getModAction().equals("BAN")) {
                 User toBan = userService.findUserByUsername(username);
                 try {
                     this.moderatorService.banUser(toBan.getUserId(), banUserDTO.getBanMessage());

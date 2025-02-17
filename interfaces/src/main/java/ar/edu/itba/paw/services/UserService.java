@@ -14,6 +14,8 @@ public interface UserService {
     //API
     List<User> listAll(int page);
 
+    List<User> listAll(int role, int page);
+
     //Registration actions
     String createUser(String username, String email, String password);
 

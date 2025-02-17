@@ -29,8 +29,8 @@ public class BannedHibernateDao implements BannedDao{
 
     @Override
     public Optional<BannedMessage> getBannedMessage(int userId) {
-        final TypedQuery<BannedMessage> query = entityManager.createQuery("SELECT * FROM bannedmessage LEFT JOIN users ON users.userid = bannedMessage.moduserid WHERE bannedUserid = :userId", BannedMessage.class)
-                .setParameter("userId",userId);
+        final TypedQuery<BannedMessage> query = entityManager.createQuery("SELECT b FROM BannedMessage b LEFT JOIN User u ON u.id = b.modUserId WHERE b.bannedUserId = :userId", BannedMessage.class)
+                .setParameter("userId", userId);
         return query.getResultList().stream().findFirst();
     }
 

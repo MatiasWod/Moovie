@@ -51,10 +51,14 @@ public class UserServiceImpl implements UserService {
 
     //REGSITRATION
 
-
     @Override
     public List<User> listAll(int page) {
         return userDao.listAll(page);
+    }
+
+    @Override
+    public List<User> listAll(int role, int page) {
+        return userDao.listAll(role, page);
     }
 
     @Transactional
@@ -242,18 +246,18 @@ public class UserServiceImpl implements UserService {
         int uid = getInfoOfMyUser().getUserId();
 
         if (image.length > 0) {
-            if(image.length > MAX_IMAGE_SIZE){
+            if (image.length > MAX_IMAGE_SIZE) {
                 throw new InvalidTypeException("File is too big (Max is 5MB).");
             }
 
             if (extension != null || extension.equals("png") || extension.equals("jpg")
                     || extension.equals("jpeg") || extension.equals("gif")) {
-            if (userDao.hasProfilePicture(uid)) {
-                userDao.updateProfilePicture(getInfoOfMyUser().getUserId(), image);
-                return;
-            }
-            userDao.setProfilePicture(getInfoOfMyUser().getUserId(), image);
-            } else{
+                if (userDao.hasProfilePicture(uid)) {
+                    userDao.updateProfilePicture(getInfoOfMyUser().getUserId(), image);
+                    return;
+                }
+                userDao.setProfilePicture(getInfoOfMyUser().getUserId(), image);
+            } else {
                 throw new InvalidTypeException("File is not of type image");
             }
         } else {
