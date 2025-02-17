@@ -215,6 +215,17 @@ public class ProfileController {
         return Response.ok().build();
     }
 
+
+    @GET
+    @Path("/{username}/watched/count")
+    @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
+    @Produces(VndType.APPLICATION_WATCHED_MEDIA)
+    public Response getWatchedAmountMediaByListId(@PathParam("username") final String username,
+                                             @QueryParam("listId") final int listId) {
+        int count=moovieListService.getMoovieListCardById(listId).getCurrentUserWatchAmount();
+        return Response.ok(String.valueOf(count)).build();
+    }
+
     /***
      * Watchlist
      */
