@@ -129,7 +129,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public String forgotPassword(User user) {
         String token = verificationTokenService.createVerificationToken(user.getUserId());
-        emailService.sendResetPasswordEmail(user, token, LocaleContextHolder.getLocale());
+        if (verificationTokenService.getToken(token).isPresent()) {
+            emailService.sendResetPasswordEmail(user, token, LocaleContextHolder.getLocale());
+        }
         return token;
     }
 

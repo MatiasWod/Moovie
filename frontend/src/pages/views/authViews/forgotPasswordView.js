@@ -21,9 +21,14 @@ const ForgotPassword = () => {
         e.preventDefault();
         try {
             setLoading(true);
-            await userApi.forgotPassword(email)
-            setError('');
-            setSuccess(true)
+            const response = await userApi.forgotPassword(email)
+
+            if (response.status === 500) {
+                setError("Failed to send password recovery email.");
+            } else {
+                setSuccess(true)
+            }
+
         } catch (error) {
             setLoading(false);
             setError(error.message);
@@ -56,6 +61,9 @@ const ForgotPassword = () => {
                         <Button variant="success" type="submit" className="w-100" disabled={loading}>
                             Send recovery email
                         </Button>
+                        <Button className={"w-100"} variant={"link"} type={"button"} onClick={()=>navigate('/login')}>Go to login</Button>
+                        <Button className={"w-100"} variant={"link"} type={"button"} onClick={()=>navigate('/')}>Return to home screen</Button>
+
                     </Form>
                 </Col>
             </Container>
