@@ -11,7 +11,6 @@ import javax.persistence.Table;
 @Table(name = "bannedmessage")
 public class BannedMessage {
 
-    @Id
     @Column(name = "modUserId")
     private int modUserId;
 
@@ -21,6 +20,7 @@ public class BannedMessage {
     @Column(length = 250)
     private String message;
 
+    @Id
     @Column(name = "banneduserid")
     private int bannedUserId;
 
