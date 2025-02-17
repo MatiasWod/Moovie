@@ -6,7 +6,7 @@ import ChangePfpForm from "../forms/changePfpForm/changePfpForm";
 import {useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
-
+import UserRoles from '../../../api/values/UserRoles';
 
 const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser }) => {
     const { t } = useTranslation();
@@ -14,15 +14,19 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser }) => {
     const navigate = useNavigate();
     const { isLoggedIn, user } = useSelector(state => state.auth);
 
-    const handleShowPfpPopup = () =>{
+    const handleShowPfpPopup = () => {
         if(!isLoggedIn){
             navigate('/login');
-        } if( user.username === profile.username ){
+        } if(user.username === profile.username){
             setShowPfpPopup(true)
         }
     }
 
     const handleClosePfpPopup = () => setShowPfpPopup(false);
+
+    const isModerator = user?.role === UserRoles.MODERATOR;
+    const isNotOwnProfile = user?.username !== profile.username;
+    const showModActions = isModerator && isNotOwnProfile;
 
     return (
         <div className="profile-header">
@@ -33,24 +37,26 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser }) => {
                 <div>
                     <h1 className="profile-header-username">
                         {profile.username} {profile.hasBadge ? '🏆' : ''}
-                        {profile.role === -101 || profile.role === -2 ? (
-                            <Button
-                                variant="success"
-                                size="sm"
-                                className="ms-2"
-                                onClick={handleUnbanUser}
-                            >
-                                {t('profile.unbanUser')}
-                            </Button>
-                        ) : (
-                            <Button 
-                                variant="danger" 
-                                size="sm" 
-                                className="ms-2"
-                                onClick={handleBanUser}
-                            >
-                                {t('profile.banUser')}
-                            </Button>
+                        {showModActions && (
+                            profile.role === -101 || profile.role === -2 ? (
+                                <Button
+                                    variant="success"
+                                    size="sm"
+                                    className="ms-2"
+                                    onClick={handleUnbanUser}
+                                >
+                                    {t('profile.unbanUser')}
+                                </Button>
+                            ) : (
+                                <Button 
+                                    variant="danger" 
+                                    size="sm" 
+                                    className="ms-2"
+                                    onClick={handleBanUser}
+                                >
+                                    {t('profile.banUser')}
+                                </Button>
+                            )
                         )}
                     </h1>
                     <p className="profile-header-email">{profile.email}</p>
@@ -61,13 +67,9 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser }) => {
                 <span>⭐ {profile.reviewsCount}</span>
                 <span>🐵 {profile.milkyPoints}</span>
             </div>
-            <div>
-                {profile.role}
-            </div>
             {showPfpPopup && (
                 <ChangePfpForm onCancel={handleClosePfpPopup} />
             )}
-
         </div>
     );
 };

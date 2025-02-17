@@ -14,13 +14,18 @@ import RoleBadge from "../RoleBadge/RoleBadge";
 import {useTranslation} from "react-i18next";
 import './navbarStyle.css';
 
-function NavbarComponent() {
+function NavbarComponent({ onLocationChange }) {
 
     const dispatch = useDispatch();
     const {isLoggedIn, user} = useSelector(state => state.auth);
     const { t } = useTranslation();
     const location = useLocation();
     const navigate = useNavigate();
+
+    // Add effect to call onLocationChange when location changes
+    React.useEffect(() => {
+        onLocationChange(location);
+    }, [location, onLocationChange]);
 
     const handleLoginRedirect = () => {
         navigate("/login", { state: { from: location.pathname } });

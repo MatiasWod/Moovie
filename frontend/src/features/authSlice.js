@@ -31,6 +31,15 @@ export const attemptReconnect = createAsyncThunk("auth/attemptReconnect", async 
     throw new Error("Reconnect failed");
 });
 
+export const refreshUserData = createAsyncThunk("auth/refreshUserData", async (_, { getState }) => {
+    const state = getState();
+    if (state.auth.isLoggedIn && state.auth.user) {
+        const response = await api.get(`/users/${state.auth.user.username}`);
+        return response.data;
+    }
+    throw new Error("Not logged in");
+});
+
 const authSlice = createSlice({
     name: "auth",
     initialState,
@@ -65,6 +74,17 @@ const authSlice = createSlice({
             })
             .addCase(attemptReconnect.rejected, (state) => {
                 state.status = "idle";
+            })
+            .addCase(refreshUserData.fulfilled, (state, action) => {
+                state.user = action.payload;
+            })
+            .addCase(refreshUserData.rejected, (state) => {
+                state.isLoggedIn = false;
+                state.user = null;
+                sessionStorage.removeItem("jwtToken");
+                sessionStorage.removeItem("username");
+                localStorage.removeItem("jwtToken");
+                localStorage.removeItem("username");
             });
     },
 });

@@ -1,10 +1,10 @@
 import {HelmetProvider} from "react-helmet-async";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import React, {lazy, Suspense, useEffect, useState} from "react";
+import React, {lazy, Suspense, useEffect, useState, useCallback} from "react";
 import Loader from "./pages/Loader";
 import Nav from "./pages/components/navBar/navbar";
 import {useDispatch} from "react-redux";
-import {attemptReconnect} from "./features/authSlice";
+import {attemptReconnect, refreshUserData} from "./features/authSlice";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LoggedGate from "./pages/components/permissions/LoggedGate";
 import RoleGate from "./pages/components/permissions/RoleGate";
@@ -32,6 +32,7 @@ const AuthTest = lazy(() => import(views + '/AuthTest')); // Import AuthTest
 const ReportsDashboard = lazy(() => import(views + '/reportsDashboard/ReportsDashboard'));
 const ConfirmToken = lazy(() => import(views + '/authViews/confirmToken'));
 const AwaitEmailValidation = lazy(() => import(views + '/authViews/awaitEmailValidation'));
+const ErrorBanned = lazy(() => import(views + '/errorViews/errorBanned'));
 
 export default function App() {
     const helmetContext = {};
@@ -45,6 +46,12 @@ export default function App() {
             });
     }, [dispatch]);
 
+    const handleLocationChange = useCallback((location) => {
+        if (isInitialized) {
+            dispatch(refreshUserData()).catch(console.error);
+        }
+    }, [dispatch, isInitialized]);
+
     if (!isInitialized) {
         return <Loader />;
     }
@@ -53,27 +60,27 @@ export default function App() {
         <HelmetProvider context={helmetContext}>
             <BrowserRouter>
                 <Suspense fallback={<Loader/>}>
-                    <Nav/>
+                    <Nav onLocationChange={handleLocationChange}/>
                     <Routes>
-                        <Route path='/' element={<Home/>}/>
+                        <Route path='/' element={<RoleGate><Home/></RoleGate>}/>
                         <Route path='/login' element={<Login/>}/>
                         <Route path='/register' element={<Register/>}/>
                         <Route path='/register/verify' element={<AwaitEmailValidation/>}/>
                         <Route path='/register/confirm' element={<ConfirmToken/>}/>
-                        <Route path='/details/:id' element={<Details/>}/>
-                        <Route path='/list/:id' element={<List/>}/>
-                        <Route path='/discover' element={<Discover/>}/>
-                        <Route path='/browseLists' element={<BrowseLists/>}/>
-                        <Route path='/createList' element={<LoggedGate><CreateList/></LoggedGate>}/>
-                        <Route path='/featuredLists/:type' element={<FeaturedLists/>}/>
-                        <Route path='/leaderboard' element={<MilkyLeaderboard/>}/>
-                        <Route path='/profile/:username' element={<Profile/>}/>
-                        <Route path='/search/:search' element={<Search/>}/>
-                        <Route path='/cast/actor/:id' element={<Cast/>}/>
-                        <Route path='/cast/director/:id' element={<Cast/>}/>
-                        <Route path='/tvcreators/:id' element={<Cast/>}/>
+                        <Route path='/details/:id' element={<RoleGate><Details/></RoleGate>}/>
+                        <Route path='/list/:id' element={<RoleGate><List/></RoleGate>}/>
+                        <Route path='/discover' element={<RoleGate><Discover/></RoleGate>}/>
+                        <Route path='/browseLists' element={<RoleGate><BrowseLists/></RoleGate>}/>
+                        <Route path='/createList' element={<LoggedGate><RoleGate><CreateList/></RoleGate></LoggedGate>}/>
+                        <Route path='/featuredLists/:type' element={<RoleGate><FeaturedLists/></RoleGate>}/>
+                        <Route path='/leaderboard' element={<RoleGate><MilkyLeaderboard/></RoleGate>}/>
+                        <Route path='/profile/:username' element={<RoleGate><Profile/></RoleGate>}/>
+                        <Route path='/search/:search' element={<RoleGate><Search/></RoleGate>}/>
+                        <Route path='/cast/actor/:id' element={<RoleGate><Cast/></RoleGate>}/>
+                        <Route path='/cast/director/:id' element={<RoleGate><Cast/></RoleGate>}/>
+                        <Route path='/tvcreators/:id' element={<RoleGate><Cast/></RoleGate>}/>
                         <Route path='/healthcheck' element={<Healthcheck/>}/>
-                        <Route path='/authtest' element={<AuthTest/>}/> {/* Add AuthTest route */}
+                        <Route path='/authtest' element={<AuthTest/>}/>
                         <Route path='/reports' element={<RoleGate role={UserRoles.MODERATOR}><ReportsDashboard/></RoleGate>}/>
                         <Route path='*' element={<Error404/>}/>
                     </Routes>
