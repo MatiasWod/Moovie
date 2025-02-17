@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import userApi from '../../../api/UserApi';
 import profileApi from '../../../api/ProfileApi';
 import UserRoles from '../../../api/values/UserRoles';
-import ConfirmationModal from '../../components/forms/confirmationForm/confirmationForm';
+import ConfirmationModal from '../../components/forms/confirmationForm/confirmationModal';
 import {useTranslation} from "react-i18next";
 import defaultProfilePicture from "../../../images/defaultProfilePicture.png"
 
 export default function BannedUsers() {
   const [users, setUsers] = useState([]);
   const [selectedAction, setSelectedAction] = useState(null);
+  const [showUnbanModal, setShowUnbanModal] = useState(false);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -45,9 +46,11 @@ export default function BannedUsers() {
   const handleUnban = async (user) => {
     try {
       await userApi.unbanUser(user.username);
-      fetchBannedUsers();
+      await fetchBannedUsers();
     } catch (error) {
       console.error('Error unbanning user:', error);
+    } finally {
+      setShowUnbanModal(false);
     }
   };
 
@@ -77,7 +80,7 @@ export default function BannedUsers() {
                   </div>
                 </div>
                 <button
-                  onClick={() => setSelectedAction({type:'unban', item: user})}
+                  onClick={() => setShowUnbanModal(user)}
                   className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                 >
                   {t('profile.unbanUser')}
@@ -87,15 +90,12 @@ export default function BannedUsers() {
           ))}
         </div>
       )}
-      {selectedAction && (
+      {showUnbanModal && (
         <ConfirmationModal
-          title={t('bannedUsers.confirmationModalTitle')}
-          message={t('bannedUsers.confirmationModalMessage')}
-          onConfirm={async () => {
-            await handleUnban(selectedAction.item);
-            setSelectedAction(null);
-          }}
-          onCancel={() => setSelectedAction(null)}
+          title={t('profile.unbanUser')}
+          message={t('confirmationForm.prompt', { actionName: t('profile.unbanUser').toLowerCase() })}
+          onConfirm={() => handleUnban(showUnbanModal)}
+          onCancel={() => setShowUnbanModal(false)}
         />
       )}
     </div>
