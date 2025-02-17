@@ -45,6 +45,10 @@ const profileApi = (() => {
         return api.put(`/profiles/${username}/image`, pfp);
     }
 
+    const getPfp =  (username) => {
+        return process.env.REACT_APP_API_URL +  `profiles/${username}/image`;
+    }
+
     /*
     LIKES AND FOLLOWED
     */
@@ -104,6 +108,7 @@ const profileApi = (() => {
 
 
         return {
+        getPfp,
         getProfileByUsername,
         getMilkyLeaderboard,
         getSpecialListFromUser,

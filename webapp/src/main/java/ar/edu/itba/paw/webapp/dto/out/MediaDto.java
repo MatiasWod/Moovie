@@ -43,9 +43,6 @@ public class MediaDto {
 
     private String genresUrl;
 
-    private boolean watched;
-
-    private boolean watchlist;
 
     private String url;
 
@@ -64,8 +61,6 @@ public class MediaDto {
         mediaDTO.tmdbRating = media.getTmdbRating();
         mediaDTO.status = media.getStatus();
         mediaDTO.totalRating = media.getTotalRating();
-        mediaDTO.watched = media.isWatched();
-        mediaDTO.watchlist = media.isWatchlist();
         mediaDTO.originalLanguage = media.getOriginalLanguage();
         mediaDTO.url = uriInfo.getBaseUriBuilder().path("media/{mediaId}").build(media.getMediaId()).toString();
         mediaDTO.providersUrl = uriInfo.getBaseUriBuilder().path("providers/{mediaId}").build(media.getMediaId()).toString();
@@ -87,8 +82,6 @@ public class MediaDto {
         mediaDTO.setTmdbRating(media.getTmdbRating());
         mediaDTO.setStatus(media.getStatus());
         mediaDTO.setTotalRating(media.getTotalRating());
-        mediaDTO.setWatched(media.isWatched());
-        mediaDTO.setWatchlist(media.isWatchlist());
         mediaDTO.setOriginalLanguage(media.getOriginalLanguage());
         mediaDTO.setUrl(uriInfo.getBaseUriBuilder().path("media/{mediaId}").build(media.getMediaId()).toString());
     }
@@ -101,8 +94,8 @@ public class MediaDto {
         return id;
     }
 
-    public void setId(int mediaId) {
-        this.id = mediaId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getType() {
@@ -223,22 +216,6 @@ public class MediaDto {
 
     public void setGenresUrl(String genresUrl) {
         this.genresUrl = genresUrl;
-    }
-
-    public boolean isWatched() {
-        return watched;
-    }
-
-    public void setWatched(boolean watched) {
-        this.watched = watched;
-    }
-
-    public boolean isWatchlist() {
-        return watchlist;
-    }
-
-    public void setWatchlist(boolean watchlist) {
-        this.watchlist = watchlist;
     }
 
     public String getUrl() {
