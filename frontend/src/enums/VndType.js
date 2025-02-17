@@ -139,6 +139,7 @@ export const VndType = {
 
     APPLICATION_RESEND_TOKEN_FORM: "application/vnd.resend_token_form.v1+json",
 
+    APPLICATION_PASSWORD_TOKEN_FORM: "application/vnd.password_token_form.v1+json",
 
     APPLICATION_USER_BAN_FORM: "application/vnd.user-ban-form.v1+json"
 };

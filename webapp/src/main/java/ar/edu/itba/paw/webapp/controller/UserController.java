@@ -6,9 +6,7 @@ import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.auth.JwtTokenProvider;
 
-import ar.edu.itba.paw.webapp.dto.in.BanUserDTO;
-import ar.edu.itba.paw.webapp.dto.in.TokenDto;
-import ar.edu.itba.paw.webapp.dto.in.UserCreateDto;
+import ar.edu.itba.paw.webapp.dto.in.*;
 import ar.edu.itba.paw.webapp.dto.out.UserDto;
 
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
@@ -122,7 +120,8 @@ public class UserController {
         }
     }
 
-    @POST
+    @PUT
+    @Path("/verification-token")
     @Consumes(VndType.APPLICATION_USER_TOKEN_FORM)
     @Produces(VndType.APPLICATION_USER_TOKEN)
     public Response verifyUser(@Valid final TokenDto tokenDto) {
@@ -148,10 +147,11 @@ public class UserController {
     }
 
     @POST
+    @Path("/verification-token")
     @Consumes(VndType.APPLICATION_RESEND_TOKEN_FORM)
     @Produces(VndType.APPLICATION_USER_TOKEN)
     public Response resendVerificationEmail(@Valid final TokenDto tokenDto) {
-        LOGGER.info("Method: resendVerificationEmail, Path: /users/resend-verification, Token: {}", tokenDto.getToken());
+        LOGGER.info("Method: resendVerificationEmail, Path: /users/verification-token, Token: {}", tokenDto.getToken());
 
         try {
             final Optional<Token> tokenOptional = verificationTokenService.getToken(tokenDto.getToken());
@@ -174,6 +174,44 @@ public class UserController {
             LOGGER.error("Error resending verification email: {}", e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to resend verification email").build();
         }
+    }
+
+    @POST
+    @Path("/password-token")
+    @Produces(VndType.APPLICATION_PASSWORD_TOKEN_FORM)
+    @Consumes(VndType.APPLICATION_USER)
+    public Response createPasswordResetToken(@Valid UserEmailDto userEmailDto) {
+        LOGGER.info("Method: createPasswordResetToken, Path: /users/password-token, Email: {}", userEmailDto.getEmail());
+        try {
+            final User user = userService.findUserByEmail(userEmailDto.getEmail());
+            final String token = userService.forgotPassword(user);
+            return Response.created(uriInfo.getAbsolutePathBuilder().path(token).build()).build();
+        } catch (RuntimeException e) {
+            LOGGER.error("Error creating password reset token: {}", e.getMessage());
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+
+    }
+
+    @PUT
+    @Path("/password-token/{token}")
+    @Consumes(VndType.APPLICATION_USER_PASSWORD)
+    public Response resetPassword(@Valid UserResetPasswordDto userResetPasswordDto, @PathParam("token") String token) {
+        LOGGER.info("Method: resetPassword, Path: /users/password-token, Token: {}", token);
+        try {
+            final Optional<Token> tokenOptional = verificationTokenService.getToken(token);
+            if (!tokenOptional.isPresent()) {
+                LOGGER.info("Token not found. Returning NOT_FOUND.");
+                return Response.status(Response.Status.NOT_FOUND).entity("Token not found").build();
+            }
+            Token tok = tokenOptional.get();
+            userService.resetPassword(tok, userResetPasswordDto.getPassword());
+            return Response.noContent().build();
+        } catch (RuntimeException e) {
+            LOGGER.error("Error creating password reset token: {}", e.getMessage());
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+
     }
 
     @GET
