@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.dto.out;
 
 import ar.edu.itba.paw.models.Comments.Comment;
+import ar.edu.itba.paw.models.Reports.ReportTypesEnum;
 import ar.edu.itba.paw.models.Review.Review;
 
 import javax.ws.rs.core.UriInfo;
@@ -34,15 +35,15 @@ public class ReviewDto {
 
     private boolean hasBadge;
 
-    private int totalReports;
+    private String totalReportsUrl;
 
-    private int spamReports;
+    private String spamReportsUrl;
 
-    private int hateReports;
+    private String hateReportsUrl;
 
-    private int privacyReports;
+    private String privacyReportsUrl;
 
-    private int abuseReports;
+    private String abuseReportsUrl;
 
     private String imageUrl;
 
@@ -69,17 +70,48 @@ public class ReviewDto {
         reviewDto.username = review.getUser().getUsername();
         reviewDto.hasBadge = review.getUser().isHasBadge();
 
-        reviewDto.totalReports = review.getTotalReports();
-        reviewDto.spamReports = review.getSpamReports();
-        reviewDto.hateReports = review.getHateReports();
-        reviewDto.privacyReports = review.getPrivacyReports();
-        reviewDto.abuseReports=review.getAbuseReports();
+
 
 
         reviewDto.url = uriInfo.getBaseUriBuilder().path("/review/{id}").build(review.getReviewId()).toString();
         reviewDto.userUrl = uriInfo.getBaseUriBuilder().path("/users/username/{username}").build(review.getUser().getUsername()).toString();
         reviewDto.imageUrl =  uriInfo.getBaseUriBuilder().path("users/{username}/image").build(review.getUser().getUsername()).toString();
         reviewDto.mediaUrl = uriInfo.getBaseUriBuilder().path("/media/{id}").build(review.getMediaId()).toString();
+
+        reviewDto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+                .queryParam("contentType", "review")
+                .queryParam("resourceId", review.getReviewId())
+                .build()
+                .toString();
+
+        reviewDto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+                .queryParam("contentType", "review")
+                .queryParam("resourceId", review.getReviewId())
+                .queryParam("type", ReportTypesEnum.spam.getType())
+                .build()
+                .toString();
+
+        reviewDto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+                .queryParam("contentType", "review")
+                .queryParam("resourceId", review.getReviewId())
+                .queryParam("type", ReportTypesEnum.hatefulContent.getType())
+                .build()
+                .toString();
+
+        reviewDto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+                .queryParam("contentType", "review")
+                .queryParam("resourceId", review.getReviewId())
+                .queryParam("type", ReportTypesEnum.privacy.getType())
+                .build()
+                .toString();
+        reviewDto.abuseReportsUrl = uriInfo.getBaseUriBuilder()
+                .path("/reports/count")
+                .queryParam("contentType", "review")
+                .queryParam("resourceId", review.getReviewId())
+                .queryParam("type", ReportTypesEnum.abuse.getType())
+                .build()
+                .toString();
+
 
         return reviewDto;
     }
@@ -193,25 +225,46 @@ public class ReviewDto {
         this.hasBadge = hasBadge;
     }
 
-    public int getTotalReports() {return totalReports;}
+    public String getTotalReportsUrl() {
+        return totalReportsUrl;
+    }
 
-    public void setTotalReports(int totalReports) {this.totalReports = totalReports;}
+    public void setTotalReportsUrl(String totalReportsUrl) {
+        this.totalReportsUrl = totalReportsUrl;
+    }
 
-    public int getSpamReports() {return spamReports;}
+    public String getSpamReportsUrl() {
+        return spamReportsUrl;
+    }
 
-    public void setSpamReports(int spamReports) {this.spamReports = spamReports;}
+    public void setSpamReportsUrl(String spamReportsUrl) {
+        this.spamReportsUrl = spamReportsUrl;
+    }
 
-    public int getHateReports() {return hateReports;}
+    public String getHateReportsUrl() {
+        return hateReportsUrl;
+    }
 
-    public void setHateReports(int hateReports) {this.hateReports = hateReports;}
+    public void setHateReportsUrl(String hateReportsUrl) {
+        this.hateReportsUrl = hateReportsUrl;
+    }
 
-    public int getPrivacyReports() {return privacyReports;}
+    public String getAbuseReportsUrl() {
+        return abuseReportsUrl;
+    }
 
-    public void setPrivacyReports(int privacyReports) {this.privacyReports = privacyReports;}
+    public String getPrivacyReportsUrl() {
+        return privacyReportsUrl;
+    }
 
-    public int getAbuseReports() {return abuseReports;}
+    public void setPrivacyReportsUrl(String privacyReportsUrl) {
+        this.privacyReportsUrl = privacyReportsUrl;
+    }
 
-    public void setAbuseReports(int abuseReports){this.abuseReports=abuseReports;}
+    public void setAbuseReportsUrl(String abuseReportsUrl) {
+        this.abuseReportsUrl = abuseReportsUrl;
+    }
+
 
     public String getImageUrl() {
         return imageUrl;
