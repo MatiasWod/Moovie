@@ -216,17 +216,17 @@ public class ReportController {
                     totalReports = reportService.getReportedMoovieListReviewsCount();
                 }
                 else if ( reportType == null) {
-                    totalReports = moovieListService.getMoovieListById(resourceId).getTotalReports();
+                    totalReports = reviewService.getMoovieListReviewById(resourceId).getTotalReports();
                 }
                 else {
                     if (reportType == ReportTypesEnum.hatefulContent.getType())
-                        totalReports =moovieListService.getMoovieListById(resourceId).getHateReports();
+                        totalReports =reviewService.getMoovieListReviewById(resourceId).getHateReports();
                     else if (reportType == ReportTypesEnum.abuse.getType())
-                        totalReports = moovieListService.getMoovieListById(resourceId).getAbuseReports();
+                        totalReports = reviewService.getMoovieListReviewById(resourceId).getAbuseReports();
                     else if (reportType == ReportTypesEnum.spam.getType())
-                        totalReports = moovieListService.getMoovieListById(resourceId).getSpamReports();
+                        totalReports = reviewService.getMoovieListReviewById(resourceId).getSpamReports();
                     else if (reportType == ReportTypesEnum.privacy.getType())
-                        totalReports = moovieListService.getMoovieListById(resourceId).getPrivacyReports();
+                        totalReports =reviewService.getMoovieListReviewById(resourceId).getPrivacyReports();
                     else {
                         throw new IllegalArgumentException("The 'reportType' query parameter must be one of 'hatefulContent', 'abuse', 'spam', or 'privacy'.");
                     }
