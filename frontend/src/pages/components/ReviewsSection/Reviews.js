@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import PaginationButton from "../paginationButton/PaginationButton";
 import ProfileImage from "../profileImage/ProfileImage";
-import { Divider } from "@mui/material";
+import { Divider, Pagination } from "@mui/material";
 import reviewService from "../../../services/ReviewService";
 import moovieListReviewService from "../../../services/MoovieListReviewService";
 import commentApi from "../../../api/CommentApi";
@@ -184,6 +184,7 @@ function Reviews({ id, username, source, handleParentReload }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [reload, setReload] = useState(false);
+    const [totalPages, setTotalPages] = useState(1);
 
     const toggleReload = () => {
         setReload(!reload);
@@ -204,6 +205,7 @@ function Reviews({ id, username, source, handleParentReload }) {
                     response = await reviewService.getMovieReviewsFromUser(username, page);
                 }
                 setReviews(response.data);
+                setTotalPages(response.links?.last?.page || 1);
             } catch (error) {
                 console.error("Error fetching reviews:", error);
                 setError(error);
@@ -214,7 +216,7 @@ function Reviews({ id, username, source, handleParentReload }) {
         fetchReviews();
     }, [id, page, reload]);
 
-    const handlePageChange = (newPage) => {
+    const handlePageChange = (event, newPage) => {
         setPage(newPage);
         navigate({
             pathname: `/${source}/${id}`,
@@ -241,9 +243,15 @@ function Reviews({ id, username, source, handleParentReload }) {
             ) : (
                 !loading && !error && <p>{t('reviews.noneFound')}</p>
             )}
-            <div className="flex justify-center pt-4">
-                <PaginationButton page={page} lastPage={5} setPage={handlePageChange} />
-            </div>
+            {!loading && !error && totalPages > 1 && (
+                <div className="d-flex justify-center pt-4">
+                    <Pagination 
+                        page={page} 
+                        count={totalPages}
+                        onChange={handlePageChange}
+                    />
+                </div>
+            )}
         </div>
     );
 }
