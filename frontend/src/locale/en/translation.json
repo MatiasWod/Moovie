@@ -219,6 +219,8 @@
   "reviews.noneFound" : "No reviews were found",
   "reviews.onMedia" : "on",
   "reviews.loading" : "Loading reviews...",
+  "reviews.aboutToDelete" : "You are about to delete the review.",
+  "review.confirmDelete" : "Proceed?",
   "search.search": "Search",
   "search.actorsFor": "Actors for: '{{search}}'",
   "search.noActorsFound": "No actors found",
