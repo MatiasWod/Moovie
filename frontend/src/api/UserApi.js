@@ -156,6 +156,11 @@ const userApi = (() => {
         });
     };
 
+    const makeUserModerator = (username) => {
+        return api.put(`/users/${username}`, {
+        });
+    };
+
     return {
         login,
         register,
@@ -164,6 +169,7 @@ const userApi = (() => {
         getUsersCount,
         banUser,
         unbanUser,
+        makeUserModerator,
         confirmToken,
         resendVerificationEmail,
         getBanMessage,

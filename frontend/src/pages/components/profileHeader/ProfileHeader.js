@@ -8,7 +8,7 @@ import {useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import UserRoles from '../../../api/values/UserRoles';
 
-const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser }) => {
+const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser, handleMakeModerator }) => {
     const { t } = useTranslation();
     const [showPfpPopup, setShowPfpPopup] = useState(false);
     const navigate = useNavigate();
@@ -28,6 +28,7 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser }) => {
     const isModerator = user?.role === UserRoles.MODERATOR;
     const isNotOwnProfile = user?.username !== profile.username;
     const showModActions = isModerator && isNotOwnProfile;
+    const canBeMadeModerator = showModActions && profile.role !== UserRoles.MODERATOR && profile.role !== UserRoles.BANNED;
 
     return (
         <div className="profile-header">
@@ -40,25 +41,37 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser }) => {
                         {profile.username}
                         {profile.hasBadge && <span title={t('tooltips.badgeTooltip')}> 🏆</span>}
                         {showModActions && (
-                            profile.role === -101 || profile.role === -2 ? (
-                                <Button
-                                    variant="success"
-                                    size="sm"
-                                    className="ms-2"
-                                    onClick={handleUnbanUser}
-                                >
-                                    {t('profile.unbanUser')}
-                                </Button>
-                            ) : (
-                                <Button
-                                    variant="danger"
-                                    size="sm"
-                                    className="ms-2"
-                                    onClick={handleBanUser}
-                                >
-                                    {t('profile.banUser')}
-                                </Button>
-                            )
+                            <>
+                                {(profile.role === -101 || profile.role === -2) ? (
+                                    <Button
+                                        variant="success"
+                                        size="sm"
+                                        className="ms-2"
+                                        onClick={handleUnbanUser}
+                                    >
+                                        {t('profile.unbanUser')}
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        variant="danger"
+                                        size="sm"
+                                        className="ms-2"
+                                        onClick={handleBanUser}
+                                    >
+                                        {t('profile.banUser')}
+                                    </Button>
+                                )}
+                                {canBeMadeModerator && (
+                                    <Button
+                                        variant="primary"
+                                        size="sm"
+                                        className="ms-2"
+                                        onClick={handleMakeModerator}
+                                    >
+                                        {t('profile.makeUserModerator')}
+                                    </Button>
+                                )}
+                            </>
                         )}
                     </h1>
                     <p className="profile-header-email">{profile.email}</p>

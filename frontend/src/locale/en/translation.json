@@ -176,6 +176,7 @@
   "profile.followed": "Followed",
   "profile.reviews": "Reviews",
   "profile.watchlist": "Watchlist",
+  "profile.makeUserModerator": "Make Moderator",
   "register.alreadyHaveAnAccount": "Already have an account?",
   "register.continueWithoutRegistering": "Continue without registering?",
   "register.email": "Email:",
