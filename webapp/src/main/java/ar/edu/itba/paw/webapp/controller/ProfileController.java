@@ -1,19 +1,18 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.models.Comments.Comment;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.MoovieList.UserMoovieListId;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
+import ar.edu.itba.paw.models.Review.MoovieListReview;
+import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.User.Profile;
-import ar.edu.itba.paw.services.MediaService;
-import ar.edu.itba.paw.services.MoovieListService;
-import ar.edu.itba.paw.services.UserService;
+import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.dto.in.JustIdDto;
-import ar.edu.itba.paw.webapp.dto.out.MediaIdDto;
-import ar.edu.itba.paw.webapp.dto.out.ProfileDto;
-import ar.edu.itba.paw.webapp.dto.out.UserListIdDto;
+import ar.edu.itba.paw.webapp.dto.out.*;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -39,6 +38,8 @@ public class ProfileController {
     private final UserService userService;
     private final MoovieListService moovieListService;
     private final MediaService mediaService;
+    private final ReviewService reviewService;
+    private final CommentService commentService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileController.class);
 
@@ -47,10 +48,12 @@ public class ProfileController {
     private UriInfo uriInfo;
 
     @Autowired
-    public ProfileController(UserService userService, MoovieListService moovieListService, MediaService mediaService) {
+    public ProfileController(UserService userService, MoovieListService moovieListService, MediaService mediaService, ReviewService reviewService, CommentService commentService) {
         this.userService = userService;
         this.moovieListService = moovieListService;
         this.mediaService = mediaService;
+        this.reviewService = reviewService;
+        this.commentService = commentService;
     }
 
     @GET
@@ -356,7 +359,6 @@ public class ProfileController {
         return res.build();
     }
 
-
     // Returns like status for a specific media
     @GET
     @Path("/{username}/listLikes/{listId}")
@@ -371,4 +373,65 @@ public class ProfileController {
         return Response.noContent().build();
     }
 
+
+    @GET
+    @Path("/{username}/reviewLikes/{reviewId}")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getLikedReviewById(@PathParam("username") final String username,
+                                       @PathParam("reviewId") final int reviewId,
+                                       @QueryParam("orderBy") String orderBy,
+                                       @QueryParam("order") String order,
+                                       @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
+        Review review = reviewService.getReviewById(reviewId);
+        boolean liked=review.isCurrentUserHasLiked();
+
+        if(liked){
+            return Response.ok(new UserReviewIdDto(reviewId,username)).build();
+        }
+
+        return Response.noContent().build();
+    }
+
+
+    @GET
+    @Path("/{username}/moovieListsReviewsLikes/{moovieListReviewId}")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getLikedMoovieListsReviewById(@PathParam("username") final String username,
+                                       @PathParam("moovieListReviewId") final int moovieListReviewId,
+                                       @QueryParam("orderBy") String orderBy,
+                                       @QueryParam("order") String order,
+                                       @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
+        MoovieListReview review = reviewService.getMoovieListReviewById(moovieListReviewId);
+        boolean liked=review.isCurrentUserHasLiked();
+
+        if(liked){
+            return Response.ok(new UserReviewIdDto(moovieListReviewId,username)).build();
+        }
+
+        return Response.noContent().build();
+    }
+
+
+    @GET
+    @Path("/{username}/commentsFeedback/{commentId}")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getFeedbackedCommentById(@PathParam("username") final String username,
+                                                  @PathParam("commentId") final int commentId,
+                                                  @QueryParam("orderBy") String orderBy,
+                                                  @QueryParam("order") String order,
+                                                  @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
+
+        Comment comment = commentService.getCommentById(commentId);
+        boolean liked=comment.isCurrentUserHasLiked();
+        boolean disliked=comment.isCurrentUserHasDisliked();
+
+        if(liked || disliked){
+            return Response.ok(new UserCommentIdDto(commentId,username,liked,disliked)).build();
+        }
+        return Response.noContent().build();
+
+    }
 }

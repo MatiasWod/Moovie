@@ -17,10 +17,6 @@ public class CommentDto {
 
     private String content;
 
-    private boolean currentUserHasLiked;
-
-    private boolean currentUserHasDisliked;
-
     private int commentLikes;
 
     private int commentDislikes;
@@ -50,8 +46,6 @@ public class CommentDto {
         commentDto.reviewId = comment.getReviewId();
         commentDto.mediaId = comment.getMediaId();
         commentDto.content = comment.getContent();
-        commentDto.currentUserHasLiked = comment.isCurrentUserHasLiked();
-        commentDto.currentUserHasDisliked = comment.isCurrentUserHasDisliked();
         commentDto.commentLikes = comment.getCommentLikes();
         commentDto.commentDislikes = comment.getCommentDislikes();
 
@@ -132,22 +126,6 @@ public class CommentDto {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public boolean isCurrentUserHasLiked() {
-        return currentUserHasLiked;
-    }
-
-    public void setCurrentUserHasLiked(boolean currentUserHasLiked) {
-        this.currentUserHasLiked = currentUserHasLiked;
-    }
-
-    public boolean isCurrentUserHasDisliked() {
-        return currentUserHasDisliked;
-    }
-
-    public void setCurrentUserHasDisliked(boolean currentUserHasDisliked) {
-        this.currentUserHasDisliked = currentUserHasDisliked;
     }
 
     public int getCommentLikes() {
