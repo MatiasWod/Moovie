@@ -11,6 +11,7 @@ import commentApi from "../../../api/CommentApi";
 import moovieListReviewApi from "../../../api/MoovieListReviewApi";
 import CommentList from "../commentList/CommentList";
 import CommentField from "../commentField/CommentField";
+import mediaService from "../../../services/MediaService";
 
 
 const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, handleDelete, reloadComments }) => {
@@ -36,9 +37,22 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, han
         }
     };
 
-    console.log(review);
+    const [media, setMedia] = useState(null);
 
+    useEffect(() => {
+        if(source === 'user'){
+            const fetchMedia = async () => {
+                try {
+                    let response = await  mediaService.getMediaById(review.mediaId)
+                    setMedia(response.data);
+                } catch (error) {
+                    console.error("Error fetching reviews:", error);
+                }
+            };
 
+            fetchMedia();
+        }
+    }, [source]);
 
 
     return (
@@ -46,11 +60,23 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, han
             <div className="review-header d-flex align-items-center justify-between">
                 <div>
                     <ProfileImage
-                        username={ review.username }
+                        username={review.username}
                         size="100px"
                         onClick={() => navigate(`/profile/${review.username}`)}
                     />
-                    <strong>{review.username}</strong>
+                    <div>
+                        <strong>{review.username} </strong>
+                        {media && (
+                            <>
+                                {t('reviews.onMedia') + " "}
+                                <strong>
+                                    <a href={`/details/${media.id}`} className="media-link">
+                                        {media.name}
+                                    </a>
+                                </strong>
+                            </>
+                        )}
+                    </div>
                 </div>
                 <div>
                     {source !== 'list' && (
@@ -95,9 +121,13 @@ function Reviews({ id, username, source, handleParentReload }) {
     const [reviews, setReviews] = useState([]);
     const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
     const { user, isLoggedIn } = useSelector(state => state.auth);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchReviews = async () => {
+            setLoading(true);
+            setError(null);
             try {
                 let response;
                 if (source === 'media') {
@@ -110,6 +140,9 @@ function Reviews({ id, username, source, handleParentReload }) {
                 setReviews(response.data);
             } catch (error) {
                 console.error("Error fetching reviews:", error);
+                setError(error);
+            } finally {
+                setLoading(false);
             }
         };
         fetchReviews();
@@ -125,7 +158,9 @@ function Reviews({ id, username, source, handleParentReload }) {
 
     return (
         <div className="reviews-container">
-            { reviews && reviews.length > 0 ? (
+            {loading && <p>{t('reviews.loading')}</p>}
+            {error && <p className="error">{t('reviews.error')} {error.message}</p>}
+            {!loading && !error && reviews.length > 0 ? (
                 reviews.map(review => (
                     <ReviewItem
                         key={review.id}
@@ -138,7 +173,7 @@ function Reviews({ id, username, source, handleParentReload }) {
                     />
                 ))
             ) : (
-                <p>{t('reviews.noneFound')}</p>
+                !loading && !error && <p>{t('reviews.noneFound')}</p>
             )}
             <div className="flex justify-center pt-4">
                 <PaginationButton page={page} lastPage={5} setPage={handlePageChange} />
@@ -146,5 +181,6 @@ function Reviews({ id, username, source, handleParentReload }) {
         </div>
     );
 }
+
 
 export default Reviews;
