@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.webapp.dto.out;
 
-import ar.edu.itba.paw.models.Comments.Comment;
 import ar.edu.itba.paw.models.Reports.ReportTypesEnum;
 import ar.edu.itba.paw.models.Review.Review;
 
@@ -15,19 +14,7 @@ public class ReviewDto {
 
     private int rating;
 
-    private int reviewLikes;
-
-    private boolean currentUserHasLiked;
-
-    private String mediaPosterPath;
-
-    private String mediaTitle;
-
     private String reviewContent;
-
-    private Long commentCount;
-
-    private List<Comment> comments;
 
     private int likes;
 
@@ -59,13 +46,7 @@ public class ReviewDto {
         reviewDto.id = review.getReviewId();
         reviewDto.mediaId = review.getMediaId();
         reviewDto.rating = review.getRating();
-        reviewDto.reviewLikes = review.getReviewLikes();
-        reviewDto.currentUserHasLiked = review.isCurrentUserHasLiked();
-        reviewDto.mediaPosterPath = review.getMediaPosterPath();
-        reviewDto.mediaTitle = review.getMediaTitle();
         reviewDto.reviewContent = review.getReviewContent();
-        reviewDto.commentCount = review.getCommentCount();
-        reviewDto.comments = review.getComments();
         reviewDto.likes = review.getReviewLikes();
         reviewDto.username = review.getUser().getUsername();
         reviewDto.hasBadge = review.getUser().isHasBadge();
@@ -75,7 +56,6 @@ public class ReviewDto {
 
         reviewDto.url = uriInfo.getBaseUriBuilder().path("/review/{id}").build(review.getReviewId()).toString();
         reviewDto.userUrl = uriInfo.getBaseUriBuilder().path("/users/username/{username}").build(review.getUser().getUsername()).toString();
-        reviewDto.imageUrl =  uriInfo.getBaseUriBuilder().path("users/{username}/image").build(review.getUser().getUsername()).toString();
         reviewDto.mediaUrl = uriInfo.getBaseUriBuilder().path("/media/{id}").build(review.getMediaId()).toString();
 
         reviewDto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
@@ -144,38 +124,6 @@ public class ReviewDto {
         this.rating = rating;
     }
 
-    public int getReviewLikes() {
-        return reviewLikes;
-    }
-
-    public void setReviewLikes(int reviewLikes) {
-        this.reviewLikes = reviewLikes;
-    }
-
-    public boolean isCurrentUserHasLiked() {
-        return currentUserHasLiked;
-    }
-
-    public void setCurrentUserHasLiked(boolean currentUserHasLiked) {
-        this.currentUserHasLiked = currentUserHasLiked;
-    }
-
-    public String getMediaPosterPath() {
-        return mediaPosterPath;
-    }
-
-    public void setMediaPosterPath(String mediaPosterPath) {
-        this.mediaPosterPath = mediaPosterPath;
-    }
-
-    public String getMediaTitle() {
-        return mediaTitle;
-    }
-
-    public void setMediaTitle(String mediaTitle) {
-        this.mediaTitle = mediaTitle;
-    }
-
     public String getReviewContent() {
         return reviewContent;
     }
@@ -183,23 +131,6 @@ public class ReviewDto {
     public void setReviewContent(String reviewContent) {
         this.reviewContent = reviewContent;
     }
-
-    public Long getCommentCount() {
-        return commentCount;
-    }
-
-    public void setCommentCount(Long commentCount) {
-        this.commentCount = commentCount;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
-
 
     public int getLikes() {
         return likes;
@@ -297,6 +228,4 @@ public class ReviewDto {
     public void setMediaUrl(String mediaUrl) {
         this.mediaUrl = mediaUrl;
     }
-
-
 }

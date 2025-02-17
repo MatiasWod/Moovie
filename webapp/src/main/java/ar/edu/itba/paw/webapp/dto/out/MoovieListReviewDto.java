@@ -13,10 +13,6 @@ public class MoovieListReviewDto {
 
     private int reviewLikes;
 
-    private boolean currentUserHasLiked;
-
-    private String moovieListTitle;
-
     private String reviewContent;
 
     private String totalReportsUrl;
@@ -28,10 +24,11 @@ public class MoovieListReviewDto {
     private String abuseReportsUrl;
 
     private String privacyReportsUrl;
+    private String username;
 
     private String url;
 
-    private String creatorUrl;
+    private String userUrl;
 
     private String moovieListUrl;
 
@@ -43,9 +40,8 @@ public class MoovieListReviewDto {
         moovieListReviewDto.id=moovieListReview.getMoovieListReviewId();
         moovieListReviewDto.moovieListid=moovieListReview.getMoovieListId();
         moovieListReviewDto.reviewLikes=moovieListReview.getReviewLikes();
-        moovieListReviewDto.currentUserHasLiked=moovieListReview.isCurrentUserHasLiked();
-        moovieListReviewDto.moovieListTitle=moovieListReview.getMoovieListTitle();
         moovieListReviewDto.reviewContent= moovieListReview.getReviewContent();
+        moovieListReviewDto.username = moovieListReview.getUser().getUsername();
 
         moovieListReviewDto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
                 .queryParam("contentType", "moovieListReview")
@@ -85,8 +81,9 @@ public class MoovieListReviewDto {
 
 
         moovieListReviewDto.url= uriInfo.getBaseUriBuilder().path("/moovieListReview/{id}").build(moovieListReview.getMoovieListReviewId()).toString();
-        moovieListReviewDto.creatorUrl=uriInfo.getBaseUriBuilder().path("/users/username/{username}").build(moovieListReview.getUser().getUsername()).toString();
+        moovieListReviewDto.userUrl=uriInfo.getBaseUriBuilder().path("/users/username/{username}").build(moovieListReview.getUser().getUsername()).toString();
         moovieListReviewDto.moovieListUrl=uriInfo.getBaseUriBuilder().path("/list/{id}").build(moovieListReview.getMoovieListId()).toString();
+
 
         return moovieListReviewDto;
     }
@@ -95,54 +92,46 @@ public class MoovieListReviewDto {
         return moovieListReviews.stream().map(r->fromMoovieListReview(r,uriInfo)).collect(java.util.stream.Collectors.toList());
     }
 
-    public int getId(){
+
+    public int getId() {
         return id;
     }
 
-    public void setId(int id){
+    public void setId(int id) {
         this.id = id;
     }
 
-    public int getMoovieListid(){
+    public int getMoovieListid() {
         return moovieListid;
     }
 
-    public void setMoovieListid(int moovieListid){
+    public void setMoovieListid(int moovieListid) {
         this.moovieListid = moovieListid;
     }
 
-    public int getReviewLikes(){
+    public int getReviewLikes() {
         return reviewLikes;
     }
 
-    public void setReviewLikes(int reviewLikes){
+    public void setReviewLikes(int reviewLikes) {
         this.reviewLikes = reviewLikes;
     }
 
-    public boolean isCurrentUserHasLiked(){
-        return currentUserHasLiked;
-    }
-
-    public void setCurrentUserHasLiked(boolean currentUserHasLiked){
-        this.currentUserHasLiked = currentUserHasLiked;
-    }
-
-    public String getMoovieListTitle(){
-        return moovieListTitle;
-    }
-
-    public void setMoovieListTitle(String moovieListTitle){
-        this.moovieListTitle = moovieListTitle;
-    }
-
-    public String getReviewContent(){
+    public String getReviewContent() {
         return reviewContent;
     }
 
-    public void setReviewContent(String reviewContent){
+    public void setReviewContent(String reviewContent) {
         this.reviewContent = reviewContent;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public String getTotalReportsUrl() {
         return totalReportsUrl;
@@ -185,28 +174,27 @@ public class MoovieListReviewDto {
     }
 
 
-    public String getUrl(){
+    public String getUrl() {
         return url;
     }
 
-    public void setUrl(String url){
+    public void setUrl(String url) {
         this.url = url;
     }
 
-    public String getCreatorUrl(){
-        return creatorUrl;
+    public String getUserUrl() {
+        return userUrl;
     }
 
-    public void setCreatorUrl(String creatorUrl){
-        this.creatorUrl = creatorUrl;
+    public void setUserUrl(String userUrl) {
+        this.userUrl = userUrl;
     }
 
-    public String getMoovieListUrl(){
+    public String getMoovieListUrl() {
         return moovieListUrl;
     }
 
-    public void setMoovieListUrl(String moovieListUrl){
+    public void setMoovieListUrl(String moovieListUrl) {
         this.moovieListUrl = moovieListUrl;
     }
-
 }

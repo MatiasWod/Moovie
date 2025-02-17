@@ -216,6 +216,7 @@
   "reviewReports.resolve": "Resolve",
   "reviewReports.reviewReports": "Review Reports",
   "reviews.deleteYourReview": "delete your review",
+  "reviews.noneFound" : "No reviews were found",
   "search.search": "Search",
   "search.actorsFor": "Actors for: '{{search}}'",
   "search.noActorsFound": "No actors found",
