@@ -7,6 +7,7 @@ import ar.edu.itba.paw.models.User.User;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -35,6 +36,9 @@ public class Review {
     private int mediaId;
     @Column(nullable = false, columnDefinition = "SMALLINT")
     private int rating;
+
+    @Column
+    private LocalDate lastModified;
 
     @Formula("(SELECT COUNT(*) FROM reviewslikes WHERE reviewslikes.reviewid = reviewid)")
     private int reviewLikes;
@@ -88,9 +92,10 @@ public class Review {
         this.mediaId = mediaId;
         this.rating = rating;
         this.reviewContent = reviewContent;
+        this.lastModified = LocalDate.now();
     }
 
-    public Review(User user, int reviewId, int mediaId, int rating, int reviewLikes, String mediaPosterPath, String mediaTitle, String reviewContent, Long commentCount, List<Comment> comments) {
+    public Review(User user, int reviewId, int mediaId, int rating, int reviewLikes, LocalDate lastModified, String mediaPosterPath, String mediaTitle, String reviewContent, Long commentCount, List<Comment> comments) {
         this.user = user;
         this.reviewId = reviewId;
         this.mediaId = mediaId;
@@ -101,6 +106,7 @@ public class Review {
         this.reviewContent = reviewContent;
         this.commentCount = commentCount;
         this.comments = comments;
+        this.lastModified = lastModified;
     }
 
 
@@ -115,6 +121,7 @@ public class Review {
         this.reviewContent = r.reviewContent;
         this.commentCount = r.commentCount;
         this.comments = r.comments;
+        this.lastModified = r.lastModified;
         this.currentUserHasLiked = currentUserHasLiked==1;
     }
 
@@ -168,6 +175,14 @@ public class Review {
 
     public int getReviewLikes() {
         return reviewLikes;
+    }
+
+    public LocalDate getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(LocalDate lastModified) {
+        this.lastModified = lastModified;
     }
 
     public boolean isCurrentUserHasLiked() {

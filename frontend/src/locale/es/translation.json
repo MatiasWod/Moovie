@@ -223,6 +223,7 @@
   "reviews.noneFound" : "No se encontro ninguna reseña.",
   "reviews.aboutToDelete" : "Estas por eliminar la reseña.",
   "review.confirmDelete" : "¿Proceder con la accion?",
+  "reviews.lastModified": "Ultima modificación: ",
   "reviews.onMedia" : "sobre",
   "reviews.loading" : "Cargando reseñas...",
   "search.search": "Buscar",

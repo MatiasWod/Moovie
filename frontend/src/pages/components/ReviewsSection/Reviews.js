@@ -105,7 +105,7 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
                     />
                     <div>
                         <strong>{review.username} </strong>
-                        {media && (
+                        { (source === 'user' && media ) && (
                             <>
                                 {t('reviews.onMedia') + " "}
                                 <strong>
@@ -115,6 +115,7 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
                                 </strong>
                             </>
                         )}
+                        {review.lastModified && (<a> - {t('reviews.lastModified')} {review.lastModified}</a>)}
                     </div>
                 </div>
                 <div>

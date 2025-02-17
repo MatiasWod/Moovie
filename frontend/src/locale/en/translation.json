@@ -221,6 +221,7 @@
   "reviews.onMedia" : "on",
   "reviews.loading" : "Loading reviews...",
   "reviews.aboutToDelete" : "You are about to delete the review.",
+  "reviews.lastModified": "Last modification: ",
   "review.confirmDelete" : "Proceed?",
   "search.search": "Search",
   "search.actorsFor": "Actors for: '{{search}}'",
