@@ -11,7 +11,6 @@ export default function ConfirmToken() {
 
     useEffect(() => {
         const token = new URLSearchParams(window.location.search).get('token');
-
         if (!token) {
             navigate('/login');
             return;
@@ -19,10 +18,6 @@ export default function ConfirmToken() {
 
         const confirmToken = async () => {
             try {
-                const username = localStorage.getItem('username');
-                if (!username) {
-                    throw new Error('No username found');
-                }
 
                 const response = await userApi.confirmToken(token);
 
@@ -41,8 +36,15 @@ export default function ConfirmToken() {
                     throw new Error('No token received');
                 }
 
+                const username = localStorage.getItem('username');
+                if (!username) {
+                    throw new Error('No username found');
+                }
+
                 sessionStorage.setItem('jwtToken', jwtToken);
                 sessionStorage.setItem('username', username);
+
+
 
                 await dispatch(attemptReconnect());
                 navigate('/');
