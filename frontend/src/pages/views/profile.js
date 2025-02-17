@@ -9,6 +9,7 @@ import ProfileTabMoovieLists from "../components/profileTab/ProfileTabMoovieList
 import profileApi from "../../api/ProfileApi";
 import ConfirmationModal from "../components/forms/confirmationForm/confirmationModal";
 import { useTranslation } from "react-i18next";
+import {useSelector} from "react-redux";
 
 function ProfileTab({ selectedTab, profile }) {
   switch (selectedTab.toLowerCase()) {
@@ -33,6 +34,9 @@ function ProfileTab({ selectedTab, profile }) {
 
 function Profile() {
   const { username } = useParams();
+  const {isLoggedIn, user} = useSelector(state => state.auth);
+  const isMe = isLoggedIn && user.username === username;
+
   const [profile, setProfile] = useState({});
   const [profileLoading, setProfileLoading] = useState(true);
   const [profileError, setProfileError] = useState(null);
@@ -123,7 +127,7 @@ function Profile() {
           handleUnbanUser={handleUnbanUser}
         />
         <div className="border-t">
-          <ProfileTabNavigation selectedTab={selectedTab} onTabSelect={handleTabSelect} />
+          <ProfileTabNavigation selectedTab={selectedTab} onTabSelect={handleTabSelect} isLoggedIn={isLoggedIn} isMe={isMe}/>
         </div>
         <div className="p-4">
           <ProfileTab selectedTab={selectedTab} profile={profile} />

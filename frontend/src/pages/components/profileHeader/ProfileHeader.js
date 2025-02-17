@@ -15,12 +15,13 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser }) => {
     const { isLoggedIn, user } = useSelector(state => state.auth);
 
     const handleShowPfpPopup = () => {
-        if(!isLoggedIn){
+        if (!isLoggedIn) {
             navigate('/login');
-        } if(user.username === profile.username){
-            setShowPfpPopup(true)
         }
-    }
+        if (user.username === profile.username) {
+            setShowPfpPopup(true);
+        }
+    };
 
     const handleClosePfpPopup = () => setShowPfpPopup(false);
 
@@ -36,7 +37,8 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser }) => {
                 </div>
                 <div>
                     <h1 className="profile-header-username">
-                        {profile.username} {profile.hasBadge ? '🏆' : ''}
+                        {profile.username}
+                        {profile.hasBadge && <span title={t('tooltips.badgeTooltip')}> 🏆</span>}
                         {showModActions && (
                             profile.role === -101 || profile.role === -2 ? (
                                 <Button
@@ -48,9 +50,9 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser }) => {
                                     {t('profile.unbanUser')}
                                 </Button>
                             ) : (
-                                <Button 
-                                    variant="danger" 
-                                    size="sm" 
+                                <Button
+                                    variant="danger"
+                                    size="sm"
                                     className="ms-2"
                                     onClick={handleBanUser}
                                 >
@@ -63,9 +65,9 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser }) => {
                 </div>
             </div>
             <div className="profile-header-stats">
-                <span>📋 {profile.moovieListCount}</span>
-                <span>⭐ {profile.reviewsCount}</span>
-                <span>🐵 {profile.milkyPoints}</span>
+                <span title={t('tooltips.moovieListTooltip')}>📋 {profile.moovieListCount}</span>
+                <span title={t('tooltips.reviewsTooltip')}>⭐ {profile.reviewsCount}</span>
+                <span title={t('tooltips.milkyPointsTooltip')}>🐵 {profile.milkyPoints}</span>
             </div>
             {showPfpPopup && (
                 <ChangePfpForm onCancel={handleClosePfpPopup} />

@@ -27,9 +27,11 @@ const ListCardsPaginated = ({
             />
 
             <div className="list-card-container">
-                {mlcList?.data?.map(list => (
-                    <ListCard listCard={list}/>
-                ))}
+                {Array.isArray(mlcList?.data) && mlcList.data.length > 0 ? (
+                    mlcList.data.map(list => (
+                        <ListCard key={list.id} listCard={list}/>
+                    ))
+                ) : null}
             </div>
 
             <div className="flex justify-center pt-4">

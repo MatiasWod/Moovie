@@ -21,8 +21,8 @@
   "browseLists.filter": "¡Filtrar!",
   "cardsHorizontalContainer.errorLoadingMedia": "Error cargando medios.",
   "cardsHorizontalContainer.noMediaFound": "No se han encontrado medios",
-  "cast.mediasFor": "Medios para: '{{selectedActor}}'",
-  "cast.noMediasFound": "No se encontraron medios",
+  "cast.mediasFor": "Medias para: '{{selectedActor}}'",
+  "cast.noMediasFound": "No se encontraron medias",
   "commentField.placeholder": "Escribe un comentario...",
   "commentField.submit": "Enviar",
   "commentList.by": "Por",
@@ -236,5 +236,9 @@
   "list.reviewPlaceholder": "Escribe tu reseña aquí...",
   "list.deleteList": "Eliminar Lista",
   "list.deleteListConfirmation": "¿Estás seguro de que quieres eliminar esta lista?",
-  "list.dragToModifyOrder": "Arrastra para modificar el orden personalizado de las medias en la lista."
+  "list.dragToModifyOrder": "Arrastra para modificar el orden personalizado de las medias en la lista.",
+  "tooltips.milkyPointsTooltip": "Puntos Milky.",
+  "tooltips.reviewsTooltip": "Cantidad de reviews.",
+  "tooltips.moovieListTooltip": "Cantidad de MoovieList.",
+  "tooltips.badgeTooltip": "Insigna para los usuarios mas activos."
 }
