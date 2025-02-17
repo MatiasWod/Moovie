@@ -12,6 +12,10 @@ const CastService = (() => {
         return parsePaginatedResponse(res);
     }
 
+    const getActorById = async (id) => {
+        return await castApi.getActorById(id);
+    }
+
     const getDirectorsForQuery = async (search) => {
         return await castApi.getDirectorsForQuery(search);
     }
@@ -31,6 +35,7 @@ const CastService = (() => {
 
     return{
         getActorsForQuery,
+        getActorById,
         getActorsByMediaId,
         getDirectorsForQuery,
         getTvCreatorById,

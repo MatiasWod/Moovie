@@ -1,18 +1,19 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {createSearchParams, useNavigate, useParams, useSearchParams, useLocation} from "react-router-dom";
-import CastService from "../../services/CastService";
-import MediaCard from "../components/mediaCard/MediaCard";
+import React, { useEffect, useState } from 'react';
+import { useParams, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { Divider } from "@mui/material";
 import mediaService from "../../services/MediaService";
-import {useTranslation} from "react-i18next";
-import {Divider} from "@mui/material";
+import castService from "../../services/CastService";
+import MediaCard from "../components/mediaCard/MediaCard";
+import defaultPoster from "../../images/defaultPoster.png";
+import "./cast.css";
 
-function Cast(){
-    const navigate = useNavigate();
+function Cast() {
+    const { id } = useParams();
     const location = useLocation();
-    const [searchParams] = useSearchParams();
-    const {id} = useParams();
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
+    const [actorObject, setActorObject] = useState(null);
     const [actorMedias, setActorMedias] = useState(undefined);
     const [actorMediasLoading, setActorMediasLoading] = useState(true);
     const [actorMediasError, setActorMediasError] = useState(null);
@@ -23,88 +24,55 @@ function Cast(){
     const isDirector = location.pathname.includes("/cast/director/");
 
     useEffect(() => {
-        if (isActor) {
-
-            async function getData() {
-                try {
-                    const data = await mediaService.getMediasForActor({id});
-                    setActorMedias(data);
-                } catch (error) {
-                    console.error("Error fetching actor media:", error);
-                    setActorMediasError(error);
-                } finally {
-                    setActorMediasLoading(false);
+        async function getData() {
+            try {
+                let data;
+                if (isActor) {
+                    data = await mediaService.getMediasForActor({ id });
+                    const actorData = await castService.getActorById(id);
+                    setActorObject(actorData.data);
+                } else if (isTvCreator) {
+                    data = await mediaService.getMediasForTVCreator({ id });
+                } else if (isDirector) {
+                    data = await mediaService.getMediasForDirector({ id });
                 }
+                setActorMedias(data);
+            } catch (error) {
+                console.error("Error fetching actor media:", error);
+                setActorMediasError(error);
+            } finally {
+                setActorMediasLoading(false);
             }
-
-            getData();
         }
-    }, [id]);
-
-    useEffect(() => {
-        if (isTvCreator) {
-
-            async function getData() {
-                try {
-                    const data = await mediaService.getMediasForTVCreator({id});
-                    setActorMedias(data);
-                    console.log(data)
-                } catch (error) {
-                    console.error("Error fetching actor media:", error);
-                    setActorMediasError(error);
-                } finally {
-                    setActorMediasLoading(false);
-                }
-            }
-
-            getData();
-        }
-    }, [id]);
-
-    useEffect(() => {
-        if (isDirector) {
-
-            async function getData() {
-                try {
-                    const data = await mediaService.getMediasForDirector({id});
-                    setActorMedias(data);
-                } catch (error) {
-                    console.error("Error fetching actor media:", error);
-                    setActorMediasError(error);
-                } finally {
-                    setActorMediasLoading(false);
-                }
-            }
-
-            getData();
-        }
+        getData();
     }, [id]);
 
     return (
-        <div className="discover-media-card-container">
-            <>
-                {actorMedias?.data?.length > 0 ? (
-                    <>
-                        <h3>{t('cast.mediasFor',{selectedActor:selectedActor})}</h3>
-                        <Divider sx={{
-                            backgroundColor: "rgba(0, 0, 0, 0.8)",
-                            height: "2px",
-                        }} />
-                        <div className="cards-container">
-                            {actorMedias.data.map((media) => (
-                                <div className="discover-media-card" key={media.id}>
-                                    <MediaCard media={media} />
-                                </div>
-                            ))}
-                        </div>
-                    </>
-                ) : (
-                    <p>{t('cast.noMediasFound')}</p>
-                )}
-            </>
+        <div className="cast-container">
+            {actorMedias?.data?.length > 0 ? (
+                <>
+                    <div className="actor-image-container">
+                        <img
+                            src={actorObject ? actorObject.profilePath : defaultPoster}
+                            alt={`${selectedActor}'s Image`}
+                            className="actor-image"
+                        />
+                    </div>
+                    <h3 className="cast-title">{t('cast.mediasFor', {selectedActor})}</h3>
+                    <Divider className="cast-divider"/>
+                    <div className="cards-container">
+                        {actorMedias.data.map((media) => (
+                            <div className="media-card" key={media.id}>
+                                <MediaCard media={media}/>
+                            </div>
+                        ))}
+                    </div>
+                </>
+            ) : (
+                <p className="no-media-text">{t('cast.noMediasFound')}</p>
+            )}
         </div>
-    )
-        ;
+    );
 }
 
 export default Cast;
