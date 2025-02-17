@@ -7,6 +7,9 @@ import Reviews from "../components/ReviewsSection/Reviews";
 import ProfileTabMediaLists from "../components/profileTab/ProfileTabMediaLists";
 import ProfileTabMoovieLists from "../components/profileTab/ProfileTabMoovieLists";
 import profileApi from "../../api/ProfileApi";
+import ConfirmationModal from "../components/forms/confirmationForm/confirmationModal";
+import { useTranslation } from "react-i18next";
+
 function ProfileTab({ selectedTab, profile }) {
   switch (selectedTab.toLowerCase()) {
     case "watched":
@@ -33,6 +36,9 @@ function Profile() {
   const [profile, setProfile] = useState({});
   const [profileLoading, setProfileLoading] = useState(true);
   const [profileError, setProfileError] = useState(null);
+  const { t } = useTranslation();
+  const [showBanModal, setShowBanModal] = useState(false);
+  const [showUnbanModal, setShowUnbanModal] = useState(false);
 
   const fetchProfile = async () => {
     try {
@@ -50,20 +56,32 @@ function Profile() {
   };
 
   const handleBanUser = async () => {
+    setShowBanModal(true);
+  };
+
+  const handleUnbanUser = async () => {
+    setShowUnbanModal(true);
+  };
+
+  const confirmBanUser = async () => {
     try {
       await userApi.banUser(username);
       fetchProfile();
     } catch (err) {
       console.error("Error banning user:", err);
+    } finally {
+      setShowBanModal(false);
     }
   };
 
-  const handleUnbanUser = async () => {
+  const confirmUnbanUser = async () => {
     try {
       await userApi.unbanUser(username);
       fetchProfile();
     } catch (err) {
       console.error("Error unbanning user:", err);
+    } finally {
+      setShowUnbanModal(false);
     }
   };
 
@@ -111,6 +129,24 @@ function Profile() {
           <ProfileTab selectedTab={selectedTab} profile={profile} />
         </div>
       </div>
+
+      {showBanModal && (
+        <ConfirmationModal
+          title={t('profile.banUser')}
+          message={t('confirmationForm.prompt', { actionName: t('profile.banUser').toLowerCase() })}
+          onConfirm={confirmBanUser}
+          onCancel={() => setShowBanModal(false)}
+        />
+      )}
+
+      {showUnbanModal && (
+        <ConfirmationModal
+          title={t('profile.unbanUser')}
+          message={t('confirmationForm.prompt', { actionName: t('profile.unbanUser').toLowerCase() })}
+          onConfirm={confirmUnbanUser}
+          onCancel={() => setShowUnbanModal(false)}
+        />
+      )}
     </div>
   );
 }
