@@ -18,7 +18,7 @@ public class ActorDto {
         dto.actorId = actor.getActorId();
         dto.actorName = actor.getActorName();
         dto.profilePath = actor.getProfilePath();
-        dto.url = uriInfo.getBaseUriBuilder().path("actor/{actorId}").build(actor.getActorId()).toString();
+        dto.url = uriInfo.getBaseUriBuilder().path("actors/{actorId}").build(actor.getActorId()).toString();
         return dto;
     }
 
