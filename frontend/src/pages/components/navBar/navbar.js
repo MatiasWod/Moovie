@@ -13,6 +13,7 @@ import SearchBar from "../searchBar/SearchBar";
 import RoleBadge from "../RoleBadge/RoleBadge";
 import {useTranslation} from "react-i18next";
 import './navbarStyle.css';
+import UserRoles from "../../../api/values/UserRoles";
 
 function NavbarComponent({ onLocationChange }) {
 
@@ -84,7 +85,9 @@ function NavbarComponent({ onLocationChange }) {
                                 >
                                     <NavDropdown.Item as={NavLink}
                                                       to={`/profile/${user.username}`}>{t('navBar.profile')}</NavDropdown.Item>
-                                    <NavDropdown.Item as={NavLink} to={`/reports`}>{t('navBar.reports')}</NavDropdown.Item>
+                                    {user.role === UserRoles.MODERATOR && (
+                                        <NavDropdown.Item as={NavLink} to={`/reports`}>{t('navBar.reports')}</NavDropdown.Item>
+                                    )}
                                     <NavDropdown.Item onClick={handleLogout}>{t('navBar.logout')}</NavDropdown.Item>
                                 </NavDropdown>
                             </div>
