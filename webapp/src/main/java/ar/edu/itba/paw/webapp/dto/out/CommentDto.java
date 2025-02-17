@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.dto.out;
 
 
 import ar.edu.itba.paw.models.Comments.Comment;
+import ar.edu.itba.paw.models.Reports.ReportTypesEnum;
 
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
@@ -24,13 +25,15 @@ public class CommentDto {
 
     private int commentDislikes;
 
-    private int totalReports;
+    private String totalReportsUrl;
 
-    private int spamReports;
+    private String spamReportsUrl;
 
-    private int hateReports;
+    private String hateReportsUrl;
 
-    private int abuseReports;
+    private String abuseReportsUrl;
+
+    private String privacyReportsUrl;
 
     private String url;
 
@@ -51,16 +54,45 @@ public class CommentDto {
         commentDto.currentUserHasDisliked = comment.isCurrentUserHasDisliked();
         commentDto.commentLikes = comment.getCommentLikes();
         commentDto.commentDislikes = comment.getCommentDislikes();
-        commentDto.totalReports = comment.getTotalReports();
-        commentDto.spamReports = comment.getSpamReports();
-        commentDto.hateReports = comment.getHateReports();
-        commentDto.abuseReports = comment.getAbuseReports();
 
-        commentDto.url = uriInfo.getBaseUriBuilder().path("/comment/{id}").build(comment.getCommentId()).toString();
-        commentDto.reviewUrl = uriInfo.getBaseUriBuilder().path("/review/{id}").build(comment.getReviewId()).toString();
-        //TODO IMPLEMENTAR reportsURL
-        commentDto.reportsUrl = "";
-        commentDto.userUrl = uriInfo.getBaseUriBuilder().path("/user/{id}").build(comment.getUsername()).toString();
+        commentDto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+                .queryParam("contentType", "comment")
+                .queryParam("resourceId", commentDto.getId())
+                .build()
+                .toString();
+
+        commentDto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+                .queryParam("contentType", "comment")
+                .queryParam("resourceId", commentDto.getId())
+                .queryParam("type", ReportTypesEnum.spam.getType())
+                .build()
+                .toString();
+
+        commentDto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+                .queryParam("contentType", "comment")
+                .queryParam("resourceId", commentDto.getId())
+                .queryParam("type", ReportTypesEnum.hatefulContent.getType())
+                .build()
+                .toString();
+
+        commentDto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+                .queryParam("contentType", "comment")
+                .queryParam("resourceId", commentDto.getId())
+                .queryParam("type", ReportTypesEnum.privacy.getType())
+                .build()
+                .toString();
+
+        commentDto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+                .queryParam("contentType", "comment")
+                .queryParam("resourceId", commentDto.getId())
+                .queryParam("type", ReportTypesEnum.abuse.getType())
+                .build()
+                .toString();
+
+
+        commentDto.url = uriInfo.getBaseUriBuilder().path("/comments/{id}").build(comment.getCommentId()).toString();
+        commentDto.reviewUrl = uriInfo.getBaseUriBuilder().path("/reviews/{id}").build(comment.getReviewId()).toString();
+        commentDto.userUrl = uriInfo.getBaseUriBuilder().path("/users/{username}").build(comment.getUsername()).toString();
 
         return commentDto;
 
@@ -134,36 +166,44 @@ public class CommentDto {
         this.commentDislikes = commentDislikes;
     }
 
-    public int getTotalReports() {
-        return totalReports;
+    public String getTotalReportsUrl() {
+        return totalReportsUrl;
     }
 
-    public void setTotalReports(int totalReports) {
-        this.totalReports = totalReports;
+    public void setTotalReportsUrl(String totalReportsUrl) {
+        this.totalReportsUrl = totalReportsUrl;
     }
 
-    public int getSpamReports() {
-        return spamReports;
+    public String getSpamReportsUrl() {
+        return spamReportsUrl;
     }
 
-    public void setSpamReports(int spamReports) {
-        this.spamReports = spamReports;
+    public void setSpamReportsUrl(String spamReportsUrl) {
+        this.spamReportsUrl = spamReportsUrl;
     }
 
-    public int getHateReports() {
-        return hateReports;
+    public String getHateReportsUrl() {
+        return hateReportsUrl;
     }
 
-    public void setHateReports(int hateReports) {
-        this.hateReports = hateReports;
+    public void setHateReportsUrl(String hateReportsUrl) {
+        this.hateReportsUrl = hateReportsUrl;
     }
 
-    public int getAbuseReports() {
-        return abuseReports;
+    public String getAbuseReportsUrl() {
+        return abuseReportsUrl;
     }
 
-    public void setAbuseReports(int abuseReports) {
-        this.abuseReports = abuseReports;
+    public String getPrivacyReportsUrl() {
+        return privacyReportsUrl;
+    }
+
+    public void setPrivacyReportsUrl(String privacyReportsUrl) {
+        this.privacyReportsUrl = privacyReportsUrl;
+    }
+
+    public void setAbuseReportsUrl(String abuseReportsUrl) {
+        this.abuseReportsUrl = abuseReportsUrl;
     }
 
     public String getUrl() {

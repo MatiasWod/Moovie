@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.dto.out;
 
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
+import ar.edu.itba.paw.models.Reports.ReportTypesEnum;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 
 import javax.persistence.Transient;
@@ -38,6 +39,17 @@ public class MoovieListDto {
 
     private String creatorUrl;
 
+    private String totalReportsUrl;
+
+    private String spamReportsUrl;
+
+    private String hateReportsUrl;
+
+    private String abuseReportsUrl;
+
+    private String privacyReportsUrl;
+
+
     private int currentUserWatchAmount;
 
     private boolean currentUserHasLiked;
@@ -61,6 +73,42 @@ public class MoovieListDto {
         dto.url = uriInfo.getBaseUriBuilder().path("list/{moovieListId}").build(moovieList.getMoovieListId()).toString();
         dto.contentUrl = uriInfo.getBaseUriBuilder().path("list/{moovieListId}/content").build(moovieList.getMoovieListId()).toString();
         dto.creatorUrl = uriInfo.getBaseUriBuilder().path("users/username/{username}").build(moovieList.getUsername()).toString();
+
+
+        dto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+                .queryParam("contentType", "moovieList")
+                .queryParam("resourceId", moovieList.getMoovieListId())
+                .build()
+                .toString();
+
+        dto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+                .queryParam("contentType", "moovieList")
+                .queryParam("resourceId", moovieList.getMoovieListId())
+                .queryParam("type", ReportTypesEnum.spam.getType())
+                .build()
+                .toString();
+
+        dto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+                .queryParam("contentType", "moovieList")
+                .queryParam("resourceId", moovieList.getMoovieListId())
+                .queryParam("type", ReportTypesEnum.hatefulContent.getType())
+                .build()
+                .toString();
+
+        dto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+                .queryParam("contentType", "moovieList")
+                .queryParam("resourceId", moovieList.getMoovieListId())
+                .queryParam("type", ReportTypesEnum.privacy.getType())
+                .build()
+                .toString();
+
+        dto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+                .queryParam("contentType", "moovieList")
+                .queryParam("resourceId", moovieList.getMoovieListId())
+                .queryParam("type", ReportTypesEnum.abuse.getType())
+                .build()
+                .toString();
+
         dto.currentUserHasFollowed = moovieList.isCurrentUserHasLiked();
         dto.currentUserHasLiked = moovieList.isCurrentUserHasLiked();
         dto.currentUserWatchAmount = moovieList.getCurrentUserWatchAmount();
@@ -206,4 +254,45 @@ public class MoovieListDto {
     public void setCurrentUserHasFollowed(boolean currentUserHasFollowed) {
         this.currentUserHasFollowed = currentUserHasFollowed;
     }
+
+    public String getTotalReportsUrl() {
+        return totalReportsUrl;
+    }
+
+    public void setTotalReportsUrl(String totalReportsUrl) {
+        this.totalReportsUrl = totalReportsUrl;
+    }
+
+    public String getSpamReportsUrl() {
+        return spamReportsUrl;
+    }
+
+    public void setSpamReportsUrl(String spamReportsUrl) {
+        this.spamReportsUrl = spamReportsUrl;
+    }
+
+    public String getHateReportsUrl() {
+        return hateReportsUrl;
+    }
+
+    public void setHateReportsUrl(String hateReportsUrl) {
+        this.hateReportsUrl = hateReportsUrl;
+    }
+
+    public String getAbuseReportsUrl() {
+        return abuseReportsUrl;
+    }
+
+    public String getPrivacyReportsUrl() {
+        return privacyReportsUrl;
+    }
+
+    public void setPrivacyReportsUrl(String privacyReportsUrl) {
+        this.privacyReportsUrl = privacyReportsUrl;
+    }
+
+    public void setAbuseReportsUrl(String abuseReportsUrl) {
+        this.abuseReportsUrl = abuseReportsUrl;
+    }
+
 }

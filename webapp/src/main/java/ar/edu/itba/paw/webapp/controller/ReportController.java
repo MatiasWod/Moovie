@@ -3,8 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.Reports.*;
 import ar.edu.itba.paw.models.User.User;
-import ar.edu.itba.paw.services.ReportService;
-import ar.edu.itba.paw.services.UserService;
+import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.dto.in.ReportCreateDTO;
 import ar.edu.itba.paw.webapp.dto.out.ReportDTO;
 import ar.edu.itba.paw.webapp.mappers.ExceptionEM;
@@ -15,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
@@ -25,14 +25,21 @@ import java.util.stream.Collectors;
 public class ReportController {
     private final ReportService reportService;
     private final UserService userService;
+    private final CommentService commentService;
+    private final MoovieListService moovieListService;
+    private final ReviewService reviewService;
+
 
     @Context
     private UriInfo uriInfo;
 
     @Autowired
-    public ReportController(ReportService reportService, UserService userService) {
+    public ReportController(ReportService reportService, UserService userService, CommentService commentService, MoovieListService moovieListService, ReviewService reviewService) {
         this.reportService = reportService;
         this.userService = userService;
+        this.commentService = commentService;
+        this.moovieListService = moovieListService;
+        this.reviewService = reviewService;
     }
 
     @GET
@@ -153,5 +160,109 @@ public class ReportController {
         return Response.ok().build();
     }
 
+    @GET
+    @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getReportCount(@QueryParam("contentType") String contentType,@QueryParam("reportType") Integer reportType, @QueryParam("resourceId") Integer resourceId) {
+        try {
+            int totalReports;
+            if (contentType == null) {
+                totalReports = reportService.getTotalReports();
+                return Response.ok(String.valueOf(totalReports)).build();
+            } else if (resourceId==null && reportType!=null) {
+                throw new IllegalArgumentException("The 'resourceId' query parameter must be provided when 'reportType' is provided.");
+            } else if (contentType.equals("comment")) {
+                if (resourceId == null && reportType == null) {
+                    totalReports = reportService.getReportedCommentsCount();
+                }
+                else if ( reportType == null) {
+                    totalReports = commentService.getCommentById(resourceId).getTotalReports();
+                } else {
+                    if (reportType == ReportTypesEnum.hatefulContent.getType())
+                        totalReports =commentService.getCommentById(resourceId).getHateReports();
+                    else if (reportType == ReportTypesEnum.abuse.getType())
+                        totalReports = commentService.getCommentById(resourceId).getAbuseReports();
+                    else if (reportType == ReportTypesEnum.spam.getType())
+                        totalReports = commentService.getCommentById(resourceId).getSpamReports();
+                    else if (reportType == ReportTypesEnum.privacy.getType())
+                        totalReports = commentService.getCommentById(resourceId).getPrivacyReports();
+                    else {
+                        throw new IllegalArgumentException("The 'reportType' query parameter must be one of 'hatefulContent', 'abuse', 'spam', or 'privacy'.");
+                    }
+                }
+                return Response.ok(String.valueOf(totalReports)).build();
+            } else if (contentType.equals("moovieList")) {
+                if (resourceId == null && reportType == null) {
+                    totalReports = reportService.getReportedMoovieListsCount();
+                }
+                else if ( reportType == null) {
+                    totalReports = moovieListService.getMoovieListById(resourceId).getTotalReports();
+                } else {
+                    if (reportType == ReportTypesEnum.hatefulContent.getType())
+                        totalReports =moovieListService.getMoovieListById(resourceId).getHateReports();
+                    else if (reportType == ReportTypesEnum.abuse.getType())
+                        totalReports = moovieListService.getMoovieListById(resourceId).getAbuseReports();
+                    else if (reportType == ReportTypesEnum.spam.getType())
+                        totalReports = moovieListService.getMoovieListById(resourceId).getSpamReports();
+                    else if (reportType == ReportTypesEnum.privacy.getType())
+                        totalReports = moovieListService.getMoovieListById(resourceId).getPrivacyReports();
+                    else {
+                        throw new IllegalArgumentException("The 'reportType' query parameter must be one of 'hatefulContent', 'abuse', 'spam', or 'privacy'.");
+                    }
+                }
+                return Response.ok(String.valueOf(totalReports)).build();
+            } else if (contentType.equals("moovieListReview")) {
+                if (resourceId == null && reportType == null) {
+                    totalReports = reportService.getReportedMoovieListReviewsCount();
+                }
+                else if ( reportType == null) {
+                    totalReports = reviewService.getMoovieListReviewById(resourceId).getTotalReports();
+                }
+                else {
+                    if (reportType == ReportTypesEnum.hatefulContent.getType())
+                        totalReports =reviewService.getMoovieListReviewById(resourceId).getHateReports();
+                    else if (reportType == ReportTypesEnum.abuse.getType())
+                        totalReports = reviewService.getMoovieListReviewById(resourceId).getAbuseReports();
+                    else if (reportType == ReportTypesEnum.spam.getType())
+                        totalReports = reviewService.getMoovieListReviewById(resourceId).getSpamReports();
+                    else if (reportType == ReportTypesEnum.privacy.getType())
+                        totalReports =reviewService.getMoovieListReviewById(resourceId).getPrivacyReports();
+                    else {
+                        throw new IllegalArgumentException("The 'reportType' query parameter must be one of 'hatefulContent', 'abuse', 'spam', or 'privacy'.");
+                    }
+                }
+                return Response.ok(String.valueOf(totalReports)).build();
+            } else if (contentType.equals("review")) {
+                if (resourceId == null && reportType == null) {
+                        totalReports = reportService.getReportedReviewsCount();
+                }
+                else if ( reportType == null) {
+                    totalReports = reviewService.getReviewById(resourceId).getTotalReports();
+                } else {
+                    if (reportType == ReportTypesEnum.hatefulContent.getType())
+                        totalReports =reviewService.getReviewById(resourceId).getHateReports();
+                    else if (reportType == ReportTypesEnum.abuse.getType())
+                        totalReports = reviewService.getReviewById(resourceId).getAbuseReports();
+                    else if (reportType == ReportTypesEnum.spam.getType())
+                        totalReports = reviewService.getReviewById(resourceId).getSpamReports();
+                    else if (reportType == ReportTypesEnum.privacy.getType())
+                        totalReports = reviewService.getReviewById(resourceId).getPrivacyReports();
+                    else {
+                        throw new IllegalArgumentException("The 'reportType' query parameter must be one of 'hatefulContent', 'abuse', 'spam', or 'privacy'.");
+                    }
+                }
+                return Response.ok(String.valueOf(totalReports)).build();
+            } else {
+                throw new IllegalArgumentException("The 'contentType' query parameter must be one of 'comment', 'moovieList', 'moovieListReview', or 'review'.");
+            }
+
+        } catch (IllegalArgumentException e) {
+            //TODO doesnt show message
+            throw new BadRequestException(e.getMessage(), e);
+        }
+        catch (Exception e) {
+            throw new InternalServerErrorException(e.getMessage(), e); // Deja que JAX-RS maneje la excepción        }
+        }
+    }
 
 }

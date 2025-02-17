@@ -241,14 +241,13 @@ public class UserController {
 
     @GET
     @Path("/count")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response getUserCount() {
         LOGGER.info("Method: getUserCount, Path: /users/count");
         try {
             int count = userService.getUserCount();
             LOGGER.info("User count retrieved: {}", count);
-            return Response.ok().entity(new GenericEntity<Integer>(count) {
-            }).build();
+            return Response.ok(String.valueOf(count)).build();
         } catch (Exception e) {
             LOGGER.error("Error retrieving user count: {}", e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

@@ -1,8 +1,15 @@
 import React from "react";
 import "./profileImage.css";
 import defaultProfilePicture from "../../../images/defaultProfilePicture.png";
+import profileService from "../../../services/ProfileService";
+import profileApi from "../../../api/ProfileApi";
 
 const ProfileImage = ({ image, username, size, onClick }) => {
+
+    if(username && !image ){
+        image = profileApi.getPfp(username);
+    }
+
     const imgSrc = image || defaultProfilePicture;
 
     return (

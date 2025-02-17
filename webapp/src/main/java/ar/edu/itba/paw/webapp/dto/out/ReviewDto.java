@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.webapp.dto.out;
 
-import ar.edu.itba.paw.models.Comments.Comment;
+import ar.edu.itba.paw.models.Reports.ReportTypesEnum;
 import ar.edu.itba.paw.models.Review.Review;
 
 import javax.ws.rs.core.UriInfo;
@@ -14,19 +14,7 @@ public class ReviewDto {
 
     private int rating;
 
-    private int reviewLikes;
-
-    private boolean currentUserHasLiked;
-
-    private String mediaPosterPath;
-
-    private String mediaTitle;
-
     private String reviewContent;
-
-    private Long commentCount;
-
-    private List<Comment> comments;
 
     private int likes;
 
@@ -34,15 +22,15 @@ public class ReviewDto {
 
     private boolean hasBadge;
 
-    private int totalReports;
+    private String totalReportsUrl;
 
-    private int spamReports;
+    private String spamReportsUrl;
 
-    private int hateReports;
+    private String hateReportsUrl;
 
-    private int privacyReports;
+    private String privacyReportsUrl;
 
-    private int abuseReports;
+    private String abuseReportsUrl;
 
     private String imageUrl;
 
@@ -58,28 +46,52 @@ public class ReviewDto {
         reviewDto.id = review.getReviewId();
         reviewDto.mediaId = review.getMediaId();
         reviewDto.rating = review.getRating();
-        reviewDto.reviewLikes = review.getReviewLikes();
-        reviewDto.currentUserHasLiked = review.isCurrentUserHasLiked();
-        reviewDto.mediaPosterPath = review.getMediaPosterPath();
-        reviewDto.mediaTitle = review.getMediaTitle();
         reviewDto.reviewContent = review.getReviewContent();
-        reviewDto.commentCount = review.getCommentCount();
-        reviewDto.comments = review.getComments();
         reviewDto.likes = review.getReviewLikes();
         reviewDto.username = review.getUser().getUsername();
         reviewDto.hasBadge = review.getUser().isHasBadge();
 
-        reviewDto.totalReports = review.getTotalReports();
-        reviewDto.spamReports = review.getSpamReports();
-        reviewDto.hateReports = review.getHateReports();
-        reviewDto.privacyReports = review.getPrivacyReports();
-        reviewDto.abuseReports=review.getAbuseReports();
+
 
 
         reviewDto.url = uriInfo.getBaseUriBuilder().path("/review/{id}").build(review.getReviewId()).toString();
         reviewDto.userUrl = uriInfo.getBaseUriBuilder().path("/users/username/{username}").build(review.getUser().getUsername()).toString();
-        reviewDto.imageUrl =  uriInfo.getBaseUriBuilder().path("users/{username}/image").build(review.getUser().getUsername()).toString();
         reviewDto.mediaUrl = uriInfo.getBaseUriBuilder().path("/media/{id}").build(review.getMediaId()).toString();
+
+        reviewDto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+                .queryParam("contentType", "review")
+                .queryParam("resourceId", review.getReviewId())
+                .build()
+                .toString();
+
+        reviewDto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+                .queryParam("contentType", "review")
+                .queryParam("resourceId", review.getReviewId())
+                .queryParam("type", ReportTypesEnum.spam.getType())
+                .build()
+                .toString();
+
+        reviewDto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+                .queryParam("contentType", "review")
+                .queryParam("resourceId", review.getReviewId())
+                .queryParam("type", ReportTypesEnum.hatefulContent.getType())
+                .build()
+                .toString();
+
+        reviewDto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+                .queryParam("contentType", "review")
+                .queryParam("resourceId", review.getReviewId())
+                .queryParam("type", ReportTypesEnum.privacy.getType())
+                .build()
+                .toString();
+        reviewDto.abuseReportsUrl = uriInfo.getBaseUriBuilder()
+                .path("/reports/count")
+                .queryParam("contentType", "review")
+                .queryParam("resourceId", review.getReviewId())
+                .queryParam("type", ReportTypesEnum.abuse.getType())
+                .build()
+                .toString();
+
 
         return reviewDto;
     }
@@ -112,38 +124,6 @@ public class ReviewDto {
         this.rating = rating;
     }
 
-    public int getReviewLikes() {
-        return reviewLikes;
-    }
-
-    public void setReviewLikes(int reviewLikes) {
-        this.reviewLikes = reviewLikes;
-    }
-
-    public boolean isCurrentUserHasLiked() {
-        return currentUserHasLiked;
-    }
-
-    public void setCurrentUserHasLiked(boolean currentUserHasLiked) {
-        this.currentUserHasLiked = currentUserHasLiked;
-    }
-
-    public String getMediaPosterPath() {
-        return mediaPosterPath;
-    }
-
-    public void setMediaPosterPath(String mediaPosterPath) {
-        this.mediaPosterPath = mediaPosterPath;
-    }
-
-    public String getMediaTitle() {
-        return mediaTitle;
-    }
-
-    public void setMediaTitle(String mediaTitle) {
-        this.mediaTitle = mediaTitle;
-    }
-
     public String getReviewContent() {
         return reviewContent;
     }
@@ -151,23 +131,6 @@ public class ReviewDto {
     public void setReviewContent(String reviewContent) {
         this.reviewContent = reviewContent;
     }
-
-    public Long getCommentCount() {
-        return commentCount;
-    }
-
-    public void setCommentCount(Long commentCount) {
-        this.commentCount = commentCount;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
-
 
     public int getLikes() {
         return likes;
@@ -193,25 +156,46 @@ public class ReviewDto {
         this.hasBadge = hasBadge;
     }
 
-    public int getTotalReports() {return totalReports;}
+    public String getTotalReportsUrl() {
+        return totalReportsUrl;
+    }
 
-    public void setTotalReports(int totalReports) {this.totalReports = totalReports;}
+    public void setTotalReportsUrl(String totalReportsUrl) {
+        this.totalReportsUrl = totalReportsUrl;
+    }
 
-    public int getSpamReports() {return spamReports;}
+    public String getSpamReportsUrl() {
+        return spamReportsUrl;
+    }
 
-    public void setSpamReports(int spamReports) {this.spamReports = spamReports;}
+    public void setSpamReportsUrl(String spamReportsUrl) {
+        this.spamReportsUrl = spamReportsUrl;
+    }
 
-    public int getHateReports() {return hateReports;}
+    public String getHateReportsUrl() {
+        return hateReportsUrl;
+    }
 
-    public void setHateReports(int hateReports) {this.hateReports = hateReports;}
+    public void setHateReportsUrl(String hateReportsUrl) {
+        this.hateReportsUrl = hateReportsUrl;
+    }
 
-    public int getPrivacyReports() {return privacyReports;}
+    public String getAbuseReportsUrl() {
+        return abuseReportsUrl;
+    }
 
-    public void setPrivacyReports(int privacyReports) {this.privacyReports = privacyReports;}
+    public String getPrivacyReportsUrl() {
+        return privacyReportsUrl;
+    }
 
-    public int getAbuseReports() {return abuseReports;}
+    public void setPrivacyReportsUrl(String privacyReportsUrl) {
+        this.privacyReportsUrl = privacyReportsUrl;
+    }
 
-    public void setAbuseReports(int abuseReports){this.abuseReports=abuseReports;}
+    public void setAbuseReportsUrl(String abuseReportsUrl) {
+        this.abuseReportsUrl = abuseReportsUrl;
+    }
+
 
     public String getImageUrl() {
         return imageUrl;
@@ -244,6 +228,4 @@ public class ReviewDto {
     public void setMediaUrl(String mediaUrl) {
         this.mediaUrl = mediaUrl;
     }
-
-
 }
