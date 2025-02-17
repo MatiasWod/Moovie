@@ -13,9 +13,9 @@
 
 /* Small card variant */
 .media-card-small {
-    width: 180px;  /* 10% smaller */
-    height: 270px; /* 10% smaller */
-    margin: 0;
+    width: 160px;
+    height: 240px;
+    margin: 0; /* Remove margin since we're using grid gap */
 }
 
 .media-card:hover {
@@ -79,19 +79,21 @@
 }
 
 .media-card-button {
-    padding: 5px 15px;
+    padding: 8px;
     font-size: 0.9rem;
-    font-weight: bold;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color: rgba(255, 255, 255, 0.2);
     color: white;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .media-card-button:hover {
-    background-color: #0056b3;
+    background-color: rgba(255, 255, 255, 0.3);
 }
 
 /* Hide overlay when not hovered */

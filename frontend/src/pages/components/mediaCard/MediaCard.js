@@ -8,6 +8,7 @@ import WatchlistWatched from "../../../api/values/WatchlistWatched";
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 import {useTranslation} from "react-i18next";
 import profileService from "../../../services/ProfileService";
+import { BsEye, BsEyeSlash, BsBookmark, BsBookmarkDash } from 'react-icons/bs';
 
 const MediaCard = ({ media, size = 'normal' }) => {
     const releaseDate = new Date(media.releaseDate).getFullYear();
@@ -94,13 +95,13 @@ const MediaCard = ({ media, size = 'normal' }) => {
                                     data-tooltip-id={`watched-tooltip-${media.id}`}
                                     data-tooltip-content={ww.watched ? t('mediaCard.removeFromWatched') : t('mediaCard.addToWatched')}
                                     onClick={(e) => { e.stopPropagation(); handleWatched(); }}>
-                                {ww.watched ? "👁️" : "X👁️"}
+                                {ww.watched ? <BsEye className="fs-5" /> : <BsEyeSlash className="fs-5" />}
                             </button>
                             <button className="media-card-button"
                                     data-tooltip-id={`watchlist-tooltip-${media.id}`}
                                     data-tooltip-content={t('mediaCard.addToWatchlist')}
                                     onClick={(e) => { e.stopPropagation(); handleWatchlist(); }}>
-                                {ww.watchlist ? "☝️" : "X️☝️"}
+                                {ww.watchlist ? <BsBookmark className="fs-5" /> : <BsBookmarkDash className="fs-5" />}
                             </button>
                         </div>
                     </div>

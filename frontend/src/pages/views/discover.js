@@ -150,49 +150,28 @@ const Discover = () => {
                 />
 
                 {/* Media Cards Section */}
-                <div className="d-flex flex-column h-100 px-3">
-                    <div style={{
-                        overflowY: "auto",
-                        height: "calc(100% - 50px)", // Account for pagination height
-                        width: "calc(160px * 5)", // Exactly 5 cards width
+                <div className="container d-flex flex-column">
+                    <div style={{ 
+                        overflowY: "auto", 
+                        maxHeight: "80vh",
+                        width: "880px", // Accommodates 5 cards (160px * 5) + margins (16px * 5)
                         display: "grid",
                         gridTemplateColumns: "repeat(5, 1fr)",
-                        gap: "0", // Remove all gap
-                        padding: "0.25rem",
-                        alignContent: "start",
-                        margin: "0 auto" // Center the grid
-                    }}>
+                        gap: "16px",
+                        padding: "8px"
+                    }} 
+                    className="mx-auto">
                         {mediasError ? (
-                            <div className="alert alert-danger" role="alert">
+                            <div className="alert alert-danger" role="alert" style={{ gridColumn: "span 5" }}>
                                 {t('common.errorOccurred')}
                             </div>
                         ) : (
-                            medias?.data?.map((media, index) => (
-                                <div 
-                                    key={media.id} 
-                                    style={{
-                                        width: "100%",
-                                        aspectRatio: "2/3",
-                                        transform: `translateX(${(index % 5) * -25}px)`,
-                                        transition: "all 0.3s ease",
-                                        position: "relative",
-                                        zIndex: 1,
-                                        marginLeft: index % 5 === 0 ? "0" : "-25px",
-                                    }}
-                                    onMouseEnter={(e) => {
-                                        e.currentTarget.style.transform = `translateX(${(index % 5) * -25}px) scale(1.1)`;
-                                        e.currentTarget.style.zIndex = "9999";
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.currentTarget.style.transform = `translateX(${(index % 5) * -25}px)`;
-                                        e.currentTarget.style.zIndex = "1";
-                                    }}
-                                >
-                                    <MediaCard
-                                        media={media}
-                                        size="small"
-                                    />
-                                </div>
+                            medias?.data?.map((media) => (
+                                <MediaCard
+                                    key={media.id}
+                                    media={media}
+                                    size="small"
+                                />
                             ))
                         )}
                         
@@ -205,7 +184,7 @@ const Discover = () => {
                         )}
                     </div>
 
-                    <div className="d-flex justify-content-center py-2">
+                    <div className="m-1 d-flex justify-content-center">
                         {!mediasLoading && medias?.links?.last?.page > 1 && (
                             <Pagination
                                 page={page}
