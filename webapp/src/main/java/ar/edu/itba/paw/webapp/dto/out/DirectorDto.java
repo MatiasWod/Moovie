@@ -44,7 +44,7 @@ public class DirectorDto {
         return totalMedia;
     }
 
-    public void setTotalMedia(int totalMedia) {
+    public void setTotalMedia(long totalMedia) {
         this.totalMedia = totalMedia;
     }
 
