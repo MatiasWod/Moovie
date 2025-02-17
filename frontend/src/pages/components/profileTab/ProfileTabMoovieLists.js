@@ -65,7 +65,6 @@ function ProfileTabMediaLists({ type, username }) {
                         type: typeQuery,
                         order: sortOrder
                     }
-                    console.log("Fetching lists with params:", params);
                     data = await ListService.getLists(params);
                 } else {
                     data = await ProfileService.getLikedOrFollowedListFromUser(
@@ -76,12 +75,12 @@ function ProfileTabMediaLists({ type, username }) {
                         page
                     );
                     data = await ListService.getListByIdList(ListService.getIdListFromObjectList(data.data));
-                    console.log(data);
                 }
                 setLists(data);
                 setListError(false);
             } catch (error) {
                 console.error("Error fetching data:", error);
+                setLists(null);
                 setListError(true);
             } finally {
                 setListsLoading(false);

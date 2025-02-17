@@ -235,6 +235,10 @@
   "list.deleteListConfirmation": "Are you sure you want to delete this list?",
   "list.dragToModifyOrder" : "Drag media to modify its order in the list.",
   "errorBanned_title": "Account Banned",
-  "errorBanned_message": "Your Account Has Been Banned",
-  "errorBanned_description": "A moderator has banned your account"
+  "errorBanned_message": "Your Account Has Been Banned.",
+  "errorBanned_description": "A moderator has banned your account.",
+  "tooltips.milkyPointsTooltip": "Milky Points.",
+  "tooltips.reviewsTooltip": "Reviews amount.",
+  "tooltips.moovieListTooltip": "MoovieList amount.",
+  "tooltips.badgeTooltip": "Badge given to active Moovie users."
 }

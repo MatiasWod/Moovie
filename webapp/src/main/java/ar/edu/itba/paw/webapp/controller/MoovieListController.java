@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
 import ar.edu.itba.paw.models.Media.OrderedMedia;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
@@ -83,8 +84,12 @@ public class MoovieListController {
 
                 List<MoovieListDto> mlList = new ArrayList<>();
                 for (int id : idList) {
-                    MoovieListDto mlc = MoovieListDto.fromMoovieList(moovieListService.getMoovieListCardById(id), uriInfo);
-                    mlList.add(mlc);
+                    try{
+                        MoovieListDto mlc = MoovieListDto.fromMoovieList(moovieListService.getMoovieListCardById(id), uriInfo);
+                        mlList.add(mlc);
+                    } catch ( InvalidAccessToResourceException e){
+                        //We just ignored the private list its trying to access
+                    }
                 }
 
                 return Response.ok(new GenericEntity<List<MoovieListDto>>(mlList) {}).build();
