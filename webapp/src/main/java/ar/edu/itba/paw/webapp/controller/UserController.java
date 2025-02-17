@@ -21,6 +21,7 @@ import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
@@ -232,7 +233,7 @@ public class UserController {
             userService.resetPassword(tok, userResetPasswordDto.getPassword());
             return Response.noContent().build();
         } catch (RuntimeException e) {
-            LOGGER.error("Error creating password reset token: {}", e.getMessage());
+            LOGGER.error("Error reset passoword: {}", e.getMessage());
             return Response.serverError().entity(e.getMessage()).build();
         }
 

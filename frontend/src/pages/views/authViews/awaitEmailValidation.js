@@ -71,7 +71,7 @@ const AwaitEmailValidation = () => {
                                 >
                                     {loading ? 'Sending...' : 'Resend Verification Email'}
                                 </Button> :
-                                <Button variant={"success"} onClick={navigate('/')}>
+                                <Button variant={"success"} onClick={()=>navigate('/')}>
                                     Go Home
                                 </Button>
                             }
