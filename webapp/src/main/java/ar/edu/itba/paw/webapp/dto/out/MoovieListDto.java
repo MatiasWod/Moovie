@@ -50,9 +50,6 @@ public class MoovieListDto {
     private String privacyReportsUrl;
 
 
-    private int currentUserWatchAmount;
-
-
     public static MoovieListDto fromMoovieList(MoovieListCard moovieList, UriInfo uriInfo) {
         MoovieListDto dto = new MoovieListDto();
         dto.name = moovieList.getName();
@@ -105,7 +102,6 @@ public class MoovieListDto {
                 .build()
                 .toString();
 
-        dto.currentUserWatchAmount = moovieList.getCurrentUserWatchAmount();
         return dto;
     }
 
@@ -225,13 +221,6 @@ public class MoovieListDto {
         this.creatorUrl = creatorUrl;
     }
 
-    public int getCurrentUserWatchAmount() {
-        return currentUserWatchAmount;
-    }
-
-    public void setCurrentUserWatchAmount(int currentUserWatchAmount) {
-        this.currentUserWatchAmount = currentUserWatchAmount;
-    }
 
     public String getTotalReportsUrl() {
         return totalReportsUrl;

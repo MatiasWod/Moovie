@@ -24,6 +24,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -213,6 +214,17 @@ public class ProfileController {
                                       @PathParam("mediaId") final int mediaId){
         moovieListService.removeMediaFromWatched(mediaId, username);
         return Response.ok().build();
+    }
+
+
+    @GET
+    @Path("/{username}/watched/count")
+    @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
+    @Produces(VndType.APPLICATION_WATCHED_MEDIA)
+    public Response getWatchedAmountMediaByListId(@PathParam("username") final String username,
+                                             @QueryParam("listId") @NotNull final int listId) {
+        int count=moovieListService.getMoovieListCardById(listId).getCurrentUserWatchAmount();
+        return Response.ok(String.valueOf(count)).build();
     }
 
     /***

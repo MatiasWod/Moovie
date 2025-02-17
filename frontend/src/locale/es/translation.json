@@ -221,6 +221,8 @@
   "reviewReports.reviewReports": "Revisar Reportes",
   "reviews.deleteYourReview": "Eliminar tu reseña",
   "reviews.noneFound" : "No se encontro ninguna reseña.",
+  "reviews.aboutToDelete" : "Estas por eliminar la reseña.",
+  "review.confirmDelete" : "¿Proceder con la accion?",
   "reviews.onMedia" : "sobre",
   "reviews.loading" : "Cargando reseñas...",
   "search.search": "Buscar",
