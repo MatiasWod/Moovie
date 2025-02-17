@@ -52,10 +52,6 @@ public class MoovieListDto {
 
     private int currentUserWatchAmount;
 
-    private boolean currentUserHasLiked;
-
-    private boolean currentUserHasFollowed;
-
 
     public static MoovieListDto fromMoovieList(MoovieListCard moovieList, UriInfo uriInfo) {
         MoovieListDto dto = new MoovieListDto();
@@ -109,8 +105,6 @@ public class MoovieListDto {
                 .build()
                 .toString();
 
-        dto.currentUserHasFollowed = moovieList.isCurrentUserHasLiked();
-        dto.currentUserHasLiked = moovieList.isCurrentUserHasLiked();
         dto.currentUserWatchAmount = moovieList.getCurrentUserWatchAmount();
         return dto;
     }
@@ -237,22 +231,6 @@ public class MoovieListDto {
 
     public void setCurrentUserWatchAmount(int currentUserWatchAmount) {
         this.currentUserWatchAmount = currentUserWatchAmount;
-    }
-
-    public boolean isCurrentUserHasLiked() {
-        return currentUserHasLiked;
-    }
-
-    public void setCurrentUserHasLiked(boolean currentUserHasLiked) {
-        this.currentUserHasLiked = currentUserHasLiked;
-    }
-
-    public boolean isCurrentUserHasFollowed() {
-        return currentUserHasFollowed;
-    }
-
-    public void setCurrentUserHasFollowed(boolean currentUserHasFollowed) {
-        this.currentUserHasFollowed = currentUserHasFollowed;
     }
 
     public String getTotalReportsUrl() {
