@@ -8,7 +8,6 @@
     cursor: pointer;
     border-radius: 10px;
     transition: all 0.3s ease;
-    z-index: 1; /* Default z-index */
 }
 
 /* Small card variant */
@@ -20,7 +19,6 @@
 
 .media-card:hover {
     transform: scale(1.1);
-    z-index: 100;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
