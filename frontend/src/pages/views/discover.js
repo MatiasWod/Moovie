@@ -154,7 +154,7 @@ const Discover = () => {
                     <div style={{ 
                         overflowY: "auto", 
                         maxHeight: "80vh",
-                        width: "880px", // Accommodates 5 cards (160px * 5) + margins (16px * 5)
+                        width: "900px",
                         display: "grid",
                         gridTemplateColumns: "repeat(5, 1fr)",
                         gap: "16px",
