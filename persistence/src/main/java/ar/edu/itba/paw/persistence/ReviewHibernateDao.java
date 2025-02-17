@@ -143,7 +143,7 @@ public class ReviewHibernateDao implements ReviewDao {
     }
 
     @Override
-    public void editReview(int userId, int mediaId, int rating, String reviewContent, ReviewTypes type) {
+    public boolean editReview(int userId, int mediaId, int rating, String reviewContent, ReviewTypes type) {
         if(type.getType() == ReviewTypes.REVIEW_MEDIA.getType()) {
             Review review = em.createQuery("SELECT r FROM Review r WHERE r.user.userId = :userId AND r.mediaId = :mediaId", Review.class)
                     .setParameter("userId", userId)
@@ -153,6 +153,7 @@ public class ReviewHibernateDao implements ReviewDao {
                 review.setRating(rating);
                 review.setReviewContent(reviewContent);
                 em.merge(review);
+                return true;
             }
         }else{
             MoovieListReview review = em.createQuery("SELECT r FROM MoovieListReview r WHERE r.user.userId = :userId AND r.moovieListId = :mediaId", MoovieListReview.class)
@@ -162,10 +163,10 @@ public class ReviewHibernateDao implements ReviewDao {
             if(review != null) {
                 review.setReviewContent(reviewContent);
                 em.merge(review);
+                return true;
             }
         }
-
-
+        return false;
     }
 
     @Override

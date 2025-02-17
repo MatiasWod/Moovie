@@ -235,5 +235,6 @@
   "list.writeReview": "Escribir Reseña",
   "list.reviewPlaceholder": "Escribe tu reseña aquí...",
   "list.deleteList": "Eliminar Lista",
-  "list.deleteListConfirmation": "¿Estás seguro de que quieres eliminar esta lista?"
+  "list.deleteListConfirmation": "¿Estás seguro de que quieres eliminar esta lista?",
+  "list.dragToModifyOrder": "Arrastra para modificar el orden personalizado de las medias en la lista."
 }

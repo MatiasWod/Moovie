@@ -1,19 +1,23 @@
-import {useSelector} from "react-redux";
-import {useNavigate} from "react-router-dom";
-import {useEffect} from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
-
-const LoggedGate = ({children}) => {
-    const {isLoggedIn, user} = useSelector(state => state.auth);
+const LoggedGate = ({ children, protectForLoggedIn = false }) => {
+    const { isLoggedIn } = useSelector(state => state.auth);
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!isLoggedIn) {
-            navigate('/login')
+        // If logged in, redirect to home page
+        if (protectForLoggedIn && isLoggedIn) {
+            navigate('/');
         }
-    }, [isLoggedIn, navigate]);
+        // If not logged in, redirect to login page
+        else if (!protectForLoggedIn && !isLoggedIn) {
+            navigate('/login');
+        }
+    }, [isLoggedIn, navigate, protectForLoggedIn]);
 
-    return <>{children}</>
-}
+    return <>{children}</>;
+};
 
-export  default LoggedGate
+export default LoggedGate;

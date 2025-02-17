@@ -21,6 +21,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
@@ -126,6 +127,7 @@ public class ProfileController {
 
     @PUT
     @Path("/{username}/image")
+    @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateProfileImage(@PathParam("username") String username,
@@ -146,6 +148,7 @@ public class ProfileController {
 
     @GET
     @Path("/{username}/watched")
+    @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
     @Produces(VndType.APPLICATION_WATCHED_LIST)
     public Response getWatched(@PathParam("username") final String username,
                                @QueryParam("orderBy") String orderBy,
@@ -175,6 +178,7 @@ public class ProfileController {
 
     @POST
     @Path("/{username}/watched")
+    @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
     @Consumes(VndType.APPLICATION_WATCHED_MEDIA_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response insertIntoWatched(@PathParam("username") final String username,
@@ -186,6 +190,7 @@ public class ProfileController {
 
     @GET
     @Path("/{username}/watched/{mediaId}")
+    @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
     @Produces(VndType.APPLICATION_WATCHED_MEDIA)
     public Response getWatchedMediaByMediaId(@PathParam("username") final String username,
                                              @PathParam("mediaId") final int mediaId) {
@@ -199,6 +204,7 @@ public class ProfileController {
 
     @DELETE
     @Path("/{username}/watched/{mediaId}")
+    @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteFromWatched(@PathParam("username") final String username,
                                       @PathParam("mediaId") final int mediaId){
@@ -211,6 +217,7 @@ public class ProfileController {
      */
     @GET
     @Path("/{username}/watchlist")
+    @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
     @Produces(VndType.APPLICATION_WATCHLIST_LIST)
     public Response getWatchlist(@PathParam("username") final String username,
                                  @QueryParam("orderBy") String orderBy,
@@ -240,6 +247,7 @@ public class ProfileController {
 
     @POST
     @Path("/{username}/watchlist")
+    @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
     @Consumes(VndType.APPLICATION_WATCHLIST_MEDIA_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response insertIntoWatchlist(@PathParam("username") final String username,
@@ -250,6 +258,7 @@ public class ProfileController {
 
     @GET
     @Path("/{username}/watchlist/{mediaId}")
+    @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
     @Produces(VndType.APPLICATION_WATCHLIST_MEDIA)
     public Response getWatchlistMediaByMediaId(@PathParam("username") final String username,
                                                @PathParam("mediaId") final int mediaId) {
@@ -263,6 +272,7 @@ public class ProfileController {
 
     @DELETE
     @Path("/{username}/watchlist/{mediaId}")
+    @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteFromWatchlist(@PathParam("username") final String username,
                                         @PathParam("mediaId") final int mediaId){
@@ -276,6 +286,7 @@ public class ProfileController {
 
     @GET
     @Path("/{username}/listFollows")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(VndType.APPLICATION_FOLLOWED_LISTS)
     public Response getFollowedLists(@PathParam("username") final String username,
                                      @QueryParam("orderBy") String orderBy,
@@ -302,6 +313,7 @@ public class ProfileController {
 
     @GET
     @Path("/{username}/listFollows/{listId}")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(VndType.APPLICATION_FOLLOWED_LISTS_USER_LIST)
     public Response getUserFollowedListById(@PathParam("username") String username,
                                             @PathParam("listId") final int listId) {
@@ -319,6 +331,7 @@ public class ProfileController {
     // Returns a list of likes
     @GET
     @Path("/{username}/listLikes")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getLikedLists(@PathParam("username") final String username,
                                   @QueryParam("orderBy") String orderBy,
@@ -347,6 +360,7 @@ public class ProfileController {
     // Returns like status for a specific media
     @GET
     @Path("/{username}/listLikes/{listId}")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserLikedListById(@PathParam("listId") final int listId,
                                          @PathParam("username") final String username) {

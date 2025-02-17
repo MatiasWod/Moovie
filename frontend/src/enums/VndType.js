@@ -137,6 +137,9 @@ export const VndType = {
     // Tipo de medio para form de token de un user individual
     APPLICATION_USER_TOKEN_FORM: "application/vnd.user_token_form.v1+json",
 
+    APPLICATION_RESEND_TOKEN_FORM: "application/vnd.resend_token_form.v1+json",
+
+
     APPLICATION_USER_BAN_FORM: "application/vnd.user-ban-form.v1+json"
 };
 

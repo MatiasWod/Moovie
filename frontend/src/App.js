@@ -1,4 +1,4 @@
-import {HelmetProvider} from "react-helmet-async";
+import {Helmet, HelmetProvider} from "react-helmet-async";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import React, {lazy, Suspense, useEffect, useState, useCallback} from "react";
 import Loader from "./pages/Loader";
@@ -58,27 +58,30 @@ export default function App() {
 
     return (
         <HelmetProvider context={helmetContext}>
+            <Helmet>
+                <title>Moovie</title>
+            </Helmet>
             <BrowserRouter>
                 <Suspense fallback={<Loader/>}>
                     <Nav onLocationChange={handleLocationChange}/>
                     <Routes>
                         <Route path='/' element={<RoleGate><Home/></RoleGate>}/>
                         <Route path='/login' element={<Login/>}/>
-                        <Route path='/register' element={<Register/>}/>
-                        <Route path='/register/verify' element={<AwaitEmailValidation/>}/>
-                        <Route path='/register/confirm' element={<ConfirmToken/>}/>
-                        <Route path='/details/:id' element={<RoleGate><Details/></RoleGate>}/>
-                        <Route path='/list/:id' element={<RoleGate><List/></RoleGate>}/>
-                        <Route path='/discover' element={<RoleGate><Discover/></RoleGate>}/>
-                        <Route path='/browseLists' element={<RoleGate><BrowseLists/></RoleGate>}/>
-                        <Route path='/createList' element={<LoggedGate><RoleGate><CreateList/></RoleGate></LoggedGate>}/>
-                        <Route path='/featuredLists/:type' element={<RoleGate><FeaturedLists/></RoleGate>}/>
-                        <Route path='/leaderboard' element={<RoleGate><MilkyLeaderboard/></RoleGate>}/>
-                        <Route path='/profile/:username' element={<RoleGate><Profile/></RoleGate>}/>
-                        <Route path='/search/:search' element={<RoleGate><Search/></RoleGate>}/>
-                        <Route path='/cast/actor/:id' element={<RoleGate><Cast/></RoleGate>}/>
-                        <Route path='/cast/director/:id' element={<RoleGate><Cast/></RoleGate>}/>
-                        <Route path='/tvcreators/:id' element={<RoleGate><Cast/></RoleGate>}/>
+                        <Route path='/register' element={<LoggedGate protectForLoggedIn={true}><Register/></LoggedGate>}/>
+                        <Route path='/register/verify' element={<LoggedGate protectForLoggedIn={true}><AwaitEmailValidation/></LoggedGate>}/>
+                        <Route path='/register/confirm' element={<LoggedGate protectForLoggedIn={true}><ConfirmToken/></LoggedGate>}/>
+                        <Route path='/details/:id' element={<Details/>}/>
+                        <Route path='/list/:id' element={<List/>}/>
+                        <Route path='/discover' element={<Discover/>}/>
+                        <Route path='/browseLists' element={<BrowseLists/>}/>
+                        <Route path='/createList' element={<LoggedGate><CreateList/></LoggedGate>}/>
+                        <Route path='/featuredLists/:type' element={<FeaturedLists/>}/>
+                        <Route path='/leaderboard' element={<MilkyLeaderboard/>}/>
+                        <Route path='/profile/:username' element={<Profile/>}/>
+                        <Route path='/search/:search' element={<Search/>}/>
+                        <Route path='/cast/actor/:id' element={<Cast/>}/>
+                        <Route path='/cast/director/:id' element={<Cast/>}/>
+                        <Route path='/tvcreators/:id' element={<Cast/>}/>
                         <Route path='/healthcheck' element={<Healthcheck/>}/>
                         <Route path='/authtest' element={<AuthTest/>}/>
                         <Route path='/reports' element={<RoleGate role={UserRoles.MODERATOR}><ReportsDashboard/></RoleGate>}/>

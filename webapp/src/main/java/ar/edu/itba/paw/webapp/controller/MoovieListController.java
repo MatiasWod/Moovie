@@ -117,9 +117,12 @@ public class MoovieListController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createMoovieList(@Valid final MoovieListCreateDto listDto) {
         try {
+
+            MoovieListTypes moovieListType = MoovieListTypes.fromType(listDto.getType());
+
             int listId = moovieListService.createMoovieList(
                     listDto.getName(),
-                    MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
+                    moovieListType.getType(),
                     listDto.getDescription()
             ).getMoovieListId();
             UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder().path(String.valueOf(listId));
@@ -165,7 +168,7 @@ public class MoovieListController {
 
     @PUT
     @Path("/{id}")
-    @PreAuthorize("@accessValidator.userLoggedIn")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_MOOVIELIST_FEEDBACK_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response moovieListFeedback(@PathParam("id") int id,
@@ -202,7 +205,7 @@ public class MoovieListController {
 
     @PUT
     @Path("/{id}")
-    @PreAuthorize("@accessValidator.userLoggedIn")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_MOOVIELIST_FOLLOW_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response followMoovieList(@PathParam("id") int id,

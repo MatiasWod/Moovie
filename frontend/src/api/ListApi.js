@@ -111,9 +111,10 @@ const listApi = (() => {
 
     // POST
 
-    const createMoovieList = (name, description) => {
+    const createMoovieList = (name, type, description) => {
         const body = {
             name: name,
+            type: type,
             description: description
         }
         return api.post('list', body,{

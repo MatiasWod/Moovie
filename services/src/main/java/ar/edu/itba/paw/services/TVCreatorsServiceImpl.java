@@ -45,6 +45,7 @@ public class TVCreatorsServiceImpl implements TVCreatorsService{
         return toReturn;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Media> getMediasForTVCreator(int creatorId) {
         return tvCreatorsDao.getMediasForTVCreator(creatorId, userService.tryToGetCurrentUserId());

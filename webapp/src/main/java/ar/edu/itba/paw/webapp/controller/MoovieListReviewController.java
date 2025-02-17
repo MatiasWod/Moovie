@@ -21,6 +21,7 @@ import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Path("moovieListReviews")
 @Component
@@ -89,25 +90,34 @@ public class MoovieListReviewController {
     }
 
     @PUT
-    @PreAuthorize("accessValidator.isUserLoggedIn()")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_MOOVIELIST_REVIEW_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response editReview(@QueryParam("listId") int listId,
                                @Valid final MoovieListReviewCreateDto moovieListReviewDto) {
-        reviewService.editReview(
-                listId,
-                0,
-                moovieListReviewDto.getReviewContent(),
-                ReviewTypes.REVIEW_MOOVIE_LIST
-        );
-
-        return Response.ok()
-                .entity("MoovieList review successfully updated for MoovieList with ID: " + listId)
-                .build();
+        try {
+            reviewService.editReview(
+                    listId,
+                    0,
+                    moovieListReviewDto.getReviewContent(),
+                    ReviewTypes.REVIEW_MOOVIE_LIST
+            );
+            return Response.ok()
+                    .entity("MoovieList review successfully updated for MoovieList with ID: " + listId)
+                    .build();
+        }catch (ReviewNotFoundException e){
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\":\"MoovieList review not found.\"}")
+                    .build();
+        }catch (RuntimeException e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .build();
+        }
     }
 
     @POST
-    @PreAuthorize("accessValidator.isUserLoggedIn()")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_MOOVIELIST_REVIEW_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createMoovieListReview(@QueryParam("listId") int listId,
@@ -127,7 +137,7 @@ public class MoovieListReviewController {
 
     @PUT
     @Path("/{id}")
-    @PreAuthorize("accessValidator.isUserLoggedIn()")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response feedbackMoovieListReview(@PathParam("id") final int id) {
         try {
@@ -164,7 +174,7 @@ public class MoovieListReviewController {
 
     @DELETE
     @Path("/{id}")
-    @PreAuthorize("accessValidator.isUserReviewAuthor(#id)")
+    @PreAuthorize("@accessValidator.isUserMoovieListReviewAuthor(#id)")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteMoovieListReviewById(@PathParam("id") final int id) {
         try {

@@ -8,23 +8,21 @@ import FiltersGroup from "../../components/filters/filtersGroup/filtersGroup";
 import MediaCard from "../../components/media/mediaCard/mediaCard";
 import {Pagination} from "@mui/material";
 import CreateListForm from "../../components/forms/createListForm/CreateListForm";
-
 import {
     resetList,
-    setDescription,
+    setDescription, setIsPrivate,
     setName,
     toggleMediaSelection
 } from "../../../features/createListSlice";
 import ListService from "../../../services/ListService";
 import useMediaList from "../../../hooks/useMediasList";
-import profileService from "../../../services/ProfileService";
-import WatchlistWatched from "../../../api/values/WatchlistWatched";
+import MoovieListTypes from "../../../api/values/MoovieListTypes";
 
 const CreateListView = () => {
 
     // Form States
     const dispatch = useDispatch();
-    const { selectedMedia, name, description } = useSelector((state) => state.list);
+    const { selectedMedia, name, description, isPrivate } = useSelector((state) => state.list);
     const { user } = useSelector((state) => state.auth);
 
 
@@ -68,6 +66,7 @@ const CreateListView = () => {
         try {
             const response = await ListService.createMoovieList({
                 name: name,
+                type: isPrivate ? MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.type : MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.type,
                 description: description
             });
             if (!response || !response.data || !response.data.url) {
@@ -136,6 +135,7 @@ const CreateListView = () => {
             <div style={{maxWidth: "22vw"}} className={'container d-flex flex-column'}>
                 <CreateListForm name={name} setName={(value) => dispatch(setName(value))}
                                 description={description} setDescription={(value) => dispatch(setDescription(value))}
+                                isPrivate={isPrivate} setIsPrivate={(value) => dispatch(setIsPrivate(value))}
                                 selectedMedia={selectedMedia}
                                 onDeleteCallback={onClickCallback}
                                 onResetCallback={onResetCallback}

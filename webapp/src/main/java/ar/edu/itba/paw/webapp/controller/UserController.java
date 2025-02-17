@@ -17,6 +17,7 @@ import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
@@ -146,6 +147,35 @@ public class UserController {
         }
     }
 
+    @POST
+    @Consumes(VndType.APPLICATION_RESEND_TOKEN_FORM)
+    @Produces(VndType.APPLICATION_USER_TOKEN)
+    public Response resendVerificationEmail(@Valid final TokenDto tokenDto) {
+        LOGGER.info("Method: resendVerificationEmail, Path: /users/resend-verification, Token: {}", tokenDto.getToken());
+
+        try {
+            final Optional<Token> tokenOptional = verificationTokenService.getToken(tokenDto.getToken());
+
+            if (!tokenOptional.isPresent()) {
+                LOGGER.info("Token not found. Returning NOT_FOUND.");
+                return Response.status(Response.Status.NOT_FOUND).entity("Token not found").build();
+            }
+
+            Token token = tokenOptional.get();
+            userService.resendVerificationEmail(token);
+
+            LOGGER.info("Verification email resent successfully for user ID: {}", token.getUserId());
+            return Response.ok().entity("Verification email resent successfully").build();
+
+        } catch (VerificationTokenNotFoundException e) {
+            LOGGER.error("Verification token not found: {}", e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity("Verification token not found").build();
+        } catch (Exception e) {
+            LOGGER.error("Error resending verification email: {}", e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to resend verification email").build();
+        }
+    }
+
     @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
@@ -160,6 +190,7 @@ public class UserController {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 
     @GET
     @Produces(VndType.APPLICATION_USER)
@@ -185,6 +216,7 @@ public class UserController {
 
     @PUT
     @Path("/{username}")
+    @PreAuthorize("@accessValidator.isUserAdmin()")
     @Consumes(VndType.APPLICATION_USER_BAN_FORM)
     @Produces(VndType.APPLICATION_USER)
     public Response banUser(@PathParam("username") final String username,
