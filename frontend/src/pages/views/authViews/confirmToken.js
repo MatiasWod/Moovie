@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import userApi from '../../../api/UserApi';
 import Loader from '../../components/loader/Loader';
 import { useDispatch } from 'react-redux';
@@ -8,17 +8,19 @@ import { attemptReconnect } from '../../../features/authSlice';
 export default function ConfirmToken() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [searchParams] = useSearchParams();
 
     useEffect(() => {
-        const token = new URLSearchParams(window.location.search).get('token');
-        if (!token) {
+        const token = searchParams.get('token');
+        const username = searchParams.get('user');
+
+        if (!token || !username) {
             navigate('/login');
             return;
         }
 
         const confirmToken = async () => {
             try {
-
                 const response = await userApi.confirmToken(token);
 
                 if (response.status === 500) {
@@ -36,26 +38,22 @@ export default function ConfirmToken() {
                     throw new Error('No token received');
                 }
 
-                const username = localStorage.getItem('username');
-                if (!username) {
-                    throw new Error('No username found');
-                }
-
                 sessionStorage.setItem('jwtToken', jwtToken);
                 sessionStorage.setItem('username', username);
 
-
+                await new Promise((resolve) => setTimeout(resolve, 10));
 
                 await dispatch(attemptReconnect());
                 navigate('/');
             } catch (error) {
                 console.error('Error confirming token:', error);
-                navigate('/login');
+                const to = "/login?error=user_verified"
+                navigate(to);
             }
         };
 
         confirmToken();
-    }, [dispatch, navigate]);
+    }, [dispatch, navigate, searchParams]);
 
     return <Loader />;
 }

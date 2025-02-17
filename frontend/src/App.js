@@ -66,7 +66,7 @@ export default function App() {
                     <Nav onLocationChange={handleLocationChange}/>
                     <Routes>
                         <Route path='/' element={<RoleGate><Home/></RoleGate>}/>
-                        <Route path='/login' element={<Login/>}/>
+                        <Route path='/login' element={<LoggedGate protectForLoggedIn={true}><Login/></LoggedGate>}/>
                         <Route path='/register' element={<LoggedGate protectForLoggedIn={true}><Register/></LoggedGate>}/>
                         <Route path='/register/verify' element={<LoggedGate protectForLoggedIn={true}><AwaitEmailValidation/></LoggedGate>}/>
                         <Route path='/register/confirm' element={<LoggedGate protectForLoggedIn={true}><ConfirmToken/></LoggedGate>}/>

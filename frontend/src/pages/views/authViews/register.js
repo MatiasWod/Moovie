@@ -40,7 +40,6 @@ const RegisterForm = () => {
                 email: form.email,
                 password: form.password,
             });
-            localStorage.setItem("username", form.username);
             navigate('/register/verify');
             setError('');
         } catch (error) {
@@ -113,14 +112,14 @@ const RegisterForm = () => {
                     </Form>
 
                     <div className="text-center mt-3">
-                        <p>
+                        <p className={"mb-0 d-flex align-items-center justify-content-center"}>
                             {t("register.alreadyHaveAnAccount")}
-                            <button type="button" className="btn btn-link ps-1" onClick={() => navigate("/login")}>
-                                {t("login.signUp")}
+                            <button type="button" className="btn btn-link p-0" onClick={() => navigate("/login")}>
+                                {t("register.login")}
                             </button>
                         </p>
-                        <p>
-                            <button type="button" className="btn btn-link ps-1" onClick={() => navigate(from)}>
+                        <p className={"mb-0 d-flex align-items-center justify-content-center"}>
+                            <button type="button" className="btn btn-link p-0" onClick={() => navigate(from)}>
                                 {t("register.continueWithoutRegistering")}
                             </button>
                         </p>

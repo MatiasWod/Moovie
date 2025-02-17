@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Container, Form, Button, Alert, Col } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
 import { loginUser, attemptReconnect } from "../../../features/authSlice";
 
 const Login = () => {
@@ -14,6 +14,7 @@ const Login = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
+    const [searchParams] = useSearchParams();
 
     const { isLoggedIn, status, error } = useSelector((state) => state.auth);
 
@@ -55,6 +56,7 @@ const Login = () => {
                 <Col xs={12} md={6} className="p-4 bg-light shadow rounded">
                     <h2 className="text-center mb-3">{t("login.title")}</h2>
 
+                    {searchParams.get("error") && <Alert variant="danger">User already verified</Alert>}
                     {status === "failed" && <Alert variant="danger">{error}</Alert>}
 
                     <Form onSubmit={handleSubmit}>
