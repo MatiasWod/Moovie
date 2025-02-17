@@ -125,6 +125,8 @@ export const VndType = {
     // Tipo de medio para un user individual
     APPLICATION_USER: "application/vnd.user.v1+json",
 
+    APPLICATION_USER_PASSWORD: "application/vnd.user_password.v1+json",
+
     // Tipo de medio para una lista de users
     APPLICATION_USER_LIST: "application/vnd.user-list.v1+json",
 

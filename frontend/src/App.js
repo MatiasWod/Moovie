@@ -32,6 +32,8 @@ const AuthTest = lazy(() => import(views + '/AuthTest')); // Import AuthTest
 const ReportsDashboard = lazy(() => import(views + '/reportsDashboard/ReportsDashboard'));
 const ConfirmToken = lazy(() => import(views + '/authViews/confirmToken'));
 const AwaitEmailValidation = lazy(() => import(views + '/authViews/awaitEmailValidation'));
+const ForgotPassword = lazy(() => import(views + '/authViews/forgotPasswordView'));
+const ResetPassword = lazy(() => import(views + '/authViews/resetPasswordView'));
 const ErrorBanned = lazy(() => import(views + '/errorViews/errorBanned'));
 
 export default function App() {
@@ -67,6 +69,8 @@ export default function App() {
                     <Routes>
                         <Route path='/' element={<RoleGate><Home/></RoleGate>}/>
                         <Route path='/login' element={<LoggedGate protectForLoggedIn={true}><Login/></LoggedGate>}/>
+                        <Route path='/passwordRecovery' element={<LoggedGate protectForLoggedIn={true}><ForgotPassword/></LoggedGate>}/>
+                        <Route path='/reset-password' element={<LoggedGate protectForLoggedIn={true}><ResetPassword/></LoggedGate>}/>
                         <Route path='/register' element={<LoggedGate protectForLoggedIn={true}><Register/></LoggedGate>}/>
                         <Route path='/register/verify' element={<LoggedGate protectForLoggedIn={true}><AwaitEmailValidation/></LoggedGate>}/>
                         <Route path='/register/confirm' element={<LoggedGate protectForLoggedIn={true}><ConfirmToken/></LoggedGate>}/>

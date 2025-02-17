@@ -100,13 +100,16 @@ const Login = () => {
                     </Form>
 
                     <div className="text-center mt-3">
-                        <p className={"d-flex justify-content-center align-items-center"}>
+                        <p className={"d-flex m-0 justify-content-center align-items-center"}>
                             {t("login.noAccount")}
                             <button type={"button"} className={"btn btn-link ps-1"} onClick={()=>navigate("/register", { state: {from: location.state?.from || location.pathname}})}>{t("login.signUp")}</button>
                         </p>
-                        <p className={"d-flex justify-content-center align-items-center"}>
+                        <p className={"d-flex m-0 justify-content-center align-items-center"}>
                             {t("login.continue")}
                             <button type={"button"} className={"btn btn-link ps-1"} onClick={()=>navigate(from)}>{t("login.without")}</button>
+                        </p>
+                        <p className={"d-flex m-0 justify-content-center align-items-center"}>
+                            <button type={"button"} className={"btn btn-link ps-1"} onClick={()=>navigate("/passwordRecovery")}>Forgot password?</button>
                         </p>
                     </div>
                 </Col>

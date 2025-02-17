@@ -83,7 +83,24 @@ const userApi = (() => {
                 { email },
                 {
                     headers: {
-                        'Content-Type': VndType.APPLICATION_PASSWORD_TOKEN_FORM
+                        'Content-Type': VndType.APPLICATION_USER
+                    }
+                }
+            );
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    const resetPassword = async (token, password) => {
+        try {
+            return await api.put(`users/password-token/${token}`,
+                {
+                    password: password
+                },
+                {
+                    headers: {
+                        'Content-Type': VndType.APPLICATION_USER_PASSWORD
                     }
                 }
             );
@@ -150,7 +167,8 @@ const userApi = (() => {
         confirmToken,
         resendVerificationEmail,
         getBanMessage,
-        forgotPassword
+        forgotPassword,
+        resetPassword
     };
 
 })();
