@@ -8,7 +8,6 @@ import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.User.UserRoles;
 import ar.edu.itba.paw.persistence.MoovieListDao;
 import ar.edu.itba.paw.persistence.UserDao;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -128,6 +125,24 @@ public class UserServiceImpl implements UserService {
         return isValidToken;
     }
 
+    @Transactional
+    @Override
+    public String forgotPassword(User user) {
+        String token = verificationTokenService.createVerificationToken(user.getUserId());
+        emailService.sendResetPasswordEmail(user, token, LocaleContextHolder.getLocale());
+        return token;
+    }
+
+    @Transactional
+    @Override
+    public boolean resetPassword(Token token, String newPassword) {
+        boolean isValidToken = verificationTokenService.isValidToken(token);
+        if (isValidToken) {
+            findUserById(token.getUserId()).setPassword(passwordEncoder.encode(newPassword));
+            verificationTokenService.deleteToken(token);
+        }
+        return isValidToken;
+    }
 
     //FIND USERS
 

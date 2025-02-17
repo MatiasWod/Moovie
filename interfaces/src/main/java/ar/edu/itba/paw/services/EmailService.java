@@ -24,4 +24,6 @@ public interface EmailService {
     void sendNotificationFollowMilestoneMoovieListMail(User user, int followCount, MoovieList moovieList, Locale locale);
 
     void sendVerificationEmail(User user, String token, Locale locale);
+
+    void sendResetPasswordEmail(User user, String token, Locale locale);
 }

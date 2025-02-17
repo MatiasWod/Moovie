@@ -44,7 +44,7 @@ const userApi = (() => {
     };
 
     const confirmToken = async (token) => {
-        const response = await api.post(`users/`,
+        const response = await api.put(`users/verification-token`,
             {
                 token: token
             },
@@ -64,7 +64,7 @@ const userApi = (() => {
 
     const resendVerificationEmail = async (token) => {
         try {
-            return await api.post('users/',
+            return await api.post('users/verification-token',
                 { token },
                 {
                     headers: {
@@ -76,6 +76,21 @@ const userApi = (() => {
             throw error;
         }
     };
+
+    const forgotPassword = async (email) => {
+        try {
+            return await api.post('users/password-token',
+                { email },
+                {
+                    headers: {
+                        'Content-Type': VndType.APPLICATION_PASSWORD_TOKEN_FORM
+                    }
+                }
+            );
+        } catch (error) {
+            throw error;
+        }
+    }
 
     const listUsers = ({role}) => {
         return api.get('/users', {params: {role}});
@@ -135,6 +150,7 @@ const userApi = (() => {
         confirmToken,
         resendVerificationEmail,
         getBanMessage,
+        forgotPassword
     };
 
 })();

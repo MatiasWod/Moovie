@@ -1,8 +1,8 @@
 package ar.edu.itba.paw.webapp.vndTypes;
 
 public class VndType {
-    private VndType() {
-    }
+
+    private VndType(){}
 
     // Tipo de medio para una lista de actores
     public static final String APPLICATION_ACTOR_LIST = "application/vnd.actor-list.v1+json";
@@ -130,6 +130,8 @@ public class VndType {
     // Tipo de medio para un user individual
     public static final String APPLICATION_USER = "application/vnd.user.v1+json";
 
+    public static final String APPLICATION_USER_PASSWORD = "application/vnd.user_password.v1+json";
+
     // Tipo de medio para una lista de users
     public static final String APPLICATION_USER_LIST = "application/vnd.user-list.v1+json";
 
@@ -143,6 +145,8 @@ public class VndType {
     public static final String APPLICATION_USER_TOKEN_FORM = "application/vnd.user_token_form.v1+json";
 
     public static final String APPLICATION_RESEND_TOKEN_FORM = "application/vnd.resend_token_form.v1+json";
+
+    public static final String APPLICATION_PASSWORD_TOKEN_FORM = "application/vnd.password_token_form.v1+json";
 
     // Tipo de medio para banear o desbanear un user individual
     public static final String APPLICATION_USER_BAN_FORM = "application/vnd.user-ban-form.v1+json";

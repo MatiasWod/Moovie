@@ -151,4 +151,13 @@ public class EmailServiceImpl implements EmailService {
         mailMap.put("token", token);
         sendEmail(user.getEmail(), subject, "confirmationMail.html", mailMap, locale);
     }
+
+    @Override
+    public void sendResetPasswordEmail(User user, String token, Locale locale) {
+        final String subject = messageSource.getMessage("email.resetPasswordSubject", null, locale);
+        final Map<String, Object> mailMap = new HashMap<>();
+        mailMap.put("username", user.getUsername());
+        mailMap.put("token", token);
+        sendEmail(user.getEmail(), subject, "resetPassword.html", mailMap, locale);
+    }
 }

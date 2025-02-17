@@ -18,7 +18,11 @@ public class DirectorHibernateDao implements DirectorDao{
 
     @Override
     public Optional<Director> getDirectorById(int directorId) {
-        final TypedQuery<Director> query = em.createQuery("FROM Movie WHERE directorId = :directorId ", Director.class).setParameter("directorId", directorId);
+        String sql = "SELECT new ar.edu.itba.paw.models.Cast.Director(d.directorId,d.director,(SELECT COUNT(m) FROM Movie m WHERE m.directorId = d.directorId)) FROM Movie d WHERE d.directorId = :directorId GROUP BY d.directorId,d.director";
+
+        TypedQuery<Director> query = em.createQuery(sql, Director.class)
+                .setParameter("directorId", directorId);
+
         return Optional.ofNullable(query.getSingleResult());
     }
 
