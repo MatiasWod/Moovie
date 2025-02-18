@@ -5,6 +5,7 @@ import api from '../../../api/api';
 import userApi from '../../../api/UserApi';
 import commentApi from '../../../api/CommentApi';
 import {useTranslation} from "react-i18next";
+import ReportTypes from '../../../api/values/ReportTypes';
 
 export default function CommentReports() {
   const [comments, setComments] = useState([]);
@@ -25,8 +26,28 @@ export default function CommentReports() {
     for (const report of reportsData) {
       if (checkedUrls.includes(report.url)) continue;
       checkedUrls.push(report.url);
-      const response = await api.get(report.url);
-      commentsToSet.push(response.data);
+      
+      const commentResponse = await api.get(report.url);
+      const comment = commentResponse.data;
+      
+      // Fetch report counts for each type
+      const params = { contentType: 'comment', resourceId: comment.id };
+      
+      const [abuseReports, hateReports, spamReports, privacyReports] = await Promise.all([
+        reportApi.getReportCounts({ ...params, reportType: ReportTypes['Abuse & Harassment'] }),
+        reportApi.getReportCounts({ ...params, reportType: ReportTypes.Hate }),
+        reportApi.getReportCounts({ ...params, reportType: ReportTypes.Spam }),
+        reportApi.getReportCounts({ ...params, reportType: ReportTypes.Privacy })
+      ]);
+
+      // Add report counts to the comment object
+      comment.abuseReports = abuseReports.data.count;
+      comment.hateReports = hateReports.data.count;
+      comment.spamReports = spamReports.data.count;
+      comment.privacyReports = privacyReports.data.count;
+      comment.totalReports = comment.abuseReports + comment.hateReports + comment.spamReports + comment.privacyReports;
+
+      commentsToSet.push(comment);
     }
     setComments(commentsToSet);
   };
