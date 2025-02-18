@@ -90,6 +90,15 @@ const reportApi = (() => {
         return response;
     }
 
+    const getReportCounts = async ({contentType, reportType, resourceId} = {}) => {
+        const params = {};
+        if (contentType) params.contentType = contentType;
+        if (reportType) params.reportType = reportType;
+        if (resourceId) params.resourceId = resourceId;
+
+        const response = await api.get('/reports/count', {params});
+        return response;
+    }
 
     // --------------- ACTIONS ---------------
 
@@ -140,6 +149,7 @@ const reportApi = (() => {
         reportMoovieList,
         reportMoovieListReview,
         getReports,
+        getReportCounts,
         resolveReviewReport,
         resolveCommentReport,
         resolveMoovieListReport,

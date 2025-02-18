@@ -5,6 +5,7 @@ import api from '../../../api/api';
 import ListApi from '../../../api/ListApi';
 import userApi from '../../../api/UserApi';
 import {useTranslation} from "react-i18next";
+import ReportTypes from '../../../api/values/ReportTypes';
 
 export default function MoovieListReports() {
   const [lists, setLists] = useState([]);
@@ -24,8 +25,28 @@ export default function MoovieListReports() {
     for (const report of reportsData) {
       if (checkedUrls.includes(report.url)) continue;
       checkedUrls.push(report.url);
-      const response = await api.get(report.url);
-      listsToSet.push(response.data);
+      
+      const listResponse = await api.get(report.url);
+      const list = listResponse.data;
+      
+      // Fetch report counts for each type
+      const params = { contentType: 'moovieList', resourceId: list.id };
+      
+      const [abuseReports, hateReports, spamReports, privacyReports] = await Promise.all([
+        reportApi.getReportCounts({ ...params, reportType: ReportTypes['Abuse & Harassment'] }),
+        reportApi.getReportCounts({ ...params, reportType: ReportTypes.Hate }),
+        reportApi.getReportCounts({ ...params, reportType: ReportTypes.Spam }),
+        reportApi.getReportCounts({ ...params, reportType: ReportTypes.Privacy })
+      ]);
+
+      // Add report counts to the list object
+      list.abuseReports = abuseReports.data.count;
+      list.hateReports = hateReports.data.count;
+      list.spamReports = spamReports.data.count;
+      list.privacyReports = privacyReports.data.count;
+      list.totalReports = list.abuseReports + list.hateReports + list.spamReports + list.privacyReports;
+
+      listsToSet.push(list);
     }
     setLists(listsToSet);
   };
