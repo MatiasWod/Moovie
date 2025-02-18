@@ -63,7 +63,7 @@ export default function App() {
             <Helmet>
                 <title>Moovie</title>
             </Helmet>
-            <BrowserRouter>
+            <BrowserRouter basename={process.env.PUBLIC_URL}>
                 <Suspense fallback={<Loader/>}>
                     <Nav onLocationChange={handleLocationChange}/>
                     <Routes>
