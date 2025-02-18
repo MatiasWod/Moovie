@@ -9,6 +9,8 @@ import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.User.User;
 import org.hibernate.SQLQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
@@ -29,6 +31,9 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
     @PersistenceContext
     private EntityManager em;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MoovieListHibernateDao.class);
+
 
 
 
@@ -469,8 +474,8 @@ public class MoovieListHibernateDao implements MoovieListDao{
                                 " WHERE mlc.moovieList.moovieListId = :moovieListId AND mlc.mediaId = :mediaId", Boolean.class )
                         .setParameter("mediaId", mediaId).setParameter("moovieListId", updatedMoovieList.getMoovieListId()).getSingleResult();
                 if(!isPresent){
-                    maxCustomOrder++;
                     MoovieListContent newMoovieListContent = new MoovieListContent(updatedMoovieList, mediaId, maxCustomOrder);
+                    maxCustomOrder++;
                     em.persist(newMoovieListContent);
                 } else {
                     throw new UnableToInsertIntoDatabase("Media already in list.");
