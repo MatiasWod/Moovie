@@ -32,7 +32,7 @@
 
     <p th:text="#{email.reviewDeletedReason(${mediaName})}"/>
 
-    <a th:href="@{http://pawserver.it.itba.edu.ar/paw-2023b-06/discover}" th:text="#{email.reviewDeletedCta}" th:style="'display: inline-block; padding: 10px 20px; background-color: green; color: #fff; text-decoration: none; border-radius: 5px; margin-top: 10px;'"></a>
+    <a th:href="@{${basePath}'/discover'}" th:text="#{email.reviewDeletedCta}" th:style="'display: inline-block; padding: 10px 20px; background-color: green; color: #fff; text-decoration: none; border-radius: 5px; margin-top: 10px;'"></a>
 </div>
 
 </body>

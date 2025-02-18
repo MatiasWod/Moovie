@@ -1,9 +1,10 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import SortOrder from "../../../api/values/SortOrder";
 import OrderBy from "../../../api/values/MediaOrderBy";
 import ListContentPaginated from "../listContentPaginated/ListContentPaginated";
 import MediaService from "../../../services/MediaService";
 import profileApi from "../../../api/ProfileApi";
+import {Spinner} from "react-bootstrap";
 
 function ProfileTabMediaLists({ type, username }) {
     const [currentOrderBy, setOrderBy] = useState(OrderBy.CUSTOM_ORDER);
@@ -41,6 +42,8 @@ function ProfileTabMediaLists({ type, username }) {
         getData();
     }, [type, username, currentOrderBy, currentSortOrder, page]);
 
+
+    if (listContentLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
 
     return (
         <ListContentPaginated

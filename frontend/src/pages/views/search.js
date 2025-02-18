@@ -21,6 +21,7 @@ import {Divider} from "@mui/material";
 import './discover.css';
 import profileService from "../../services/ProfileService";
 import './search.css';
+import {Spinner} from "react-bootstrap";
 
 function Healthcheck() {
     const { t } = useTranslation();
@@ -178,6 +179,8 @@ function Healthcheck() {
 
         getData();
     }, [search,page]);
+
+    if (mediaLoading || listLoading || actorLoading || directorLoading || userLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
 
     return (
         <div className="discover-media-card-container">

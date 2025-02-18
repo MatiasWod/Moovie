@@ -12,6 +12,7 @@ import {createSearchParams, useNavigate, useSearchParams} from "react-router-dom
 import ListService from "../../services/ListService";
 import pagingSizes from "../../api/values/PagingSizes";
 import {useTranslation} from "react-i18next";
+import {Spinner} from "react-bootstrap";
 
 function BrowseLists(){
 
@@ -84,6 +85,8 @@ function BrowseLists(){
         }
         getData();
     }, [search,orderBy,sortOrder,page]);
+
+    if (mlcListLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
 
     return (
         <div className="moovie-default default-container">

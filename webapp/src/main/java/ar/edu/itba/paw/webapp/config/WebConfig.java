@@ -33,7 +33,7 @@ import java.util.Properties;
 @EnableTransactionManagement
 @ComponentScan({ "ar.edu.itba.paw.webapp.controller" , "ar.edu.itba.paw.services" , "ar.edu.itba.paw.persistence" })
 @Configuration
-@PropertySource("classpath:/config/mail-config-development.properties")
+@PropertySource("classpath:/config/mail-config-development.properties") //TODO: CAMBIAR ESTO ANTES DE DEPLOY
 public class WebConfig {
 
     @Value("classpath:schema.sql")
