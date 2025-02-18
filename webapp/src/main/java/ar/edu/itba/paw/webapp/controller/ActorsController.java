@@ -7,10 +7,12 @@ import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.NoResultException;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Path("actors")
 @Component
@@ -62,13 +64,13 @@ public class ActorsController {
     public Response getActor(@PathParam("id") @NotNull final int id) {
         try {
             Actor actor=actorService.getActorById(id);
-            if(actor==null){
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("Actor not found.")
-                        .build();
-            }
             return Response.ok(ActorDto.fromActor(actor, uriInfo)).build();
-        }catch (Exception e){
+        }catch (NoResultException e){
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Actor not found.")
+                    .build();
+        }
+        catch (Exception e){
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An error occurred while processing the request.")
                     .build();

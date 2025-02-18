@@ -7,6 +7,7 @@ import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.NoResultException;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -65,13 +66,13 @@ public class TvCreatorsController {
     public Response getTvCreatorById(@PathParam("id") @NotNull final int tvCreatorId) {
         try {
             TVCreators tvCreators=tvCreatorsService.getTvCreatorById(tvCreatorId);
-            if (tvCreators==null){
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("TvCreator not found.")
-                        .build();
-            }
             return Response.ok(TvCreatorsDto.fromTvCreator(tvCreators,uriInfo)).build();
-        } catch (Exception e){
+        }catch (NoResultException e){
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("TV Creator with id " + tvCreatorId + " not found.")
+                    .build();
+        }
+        catch (Exception e){
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An error occurred while processing the request.")
                     .build();
