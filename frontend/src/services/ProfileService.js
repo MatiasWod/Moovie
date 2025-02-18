@@ -169,6 +169,16 @@ const ProfileService = (() => {
             }
             return CommentStatusEnum.NONE;
         }catch(e){
+            return CommentStatusEnum.NONE;
+        }
+    }
+
+    const getWatchedCountFromMovieListId = async(moovieListId, username) => {
+        try {
+            const res = await profileApi.getWatchedCountFromMovieListId(moovieListId, username);
+            return parsePaginatedResponse(res);
+        } catch(e) {
+            return null;
         }
     }
 
@@ -187,7 +197,8 @@ const ProfileService = (() => {
         currentUserWWStatus,
         currentUserHasLikedReview,
         currentUserHasLikedMoovieListReview,
-        currentUserCommentFeedback
+        currentUserCommentFeedback,
+        getWatchedCountFromMovieListId
     }
 })();
 

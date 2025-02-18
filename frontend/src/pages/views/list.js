@@ -19,6 +19,7 @@ import ConfirmationModal from "../components/forms/confirmationForm/confirmation
 import moovieListReviewApi from "../../api/MoovieListReviewApi";
 import reportApi from "../../api/ReportApi";
 import ReportForm from "../components/forms/reportForm/reportForm";
+import profileService from "../../services/ProfileService";
 
 function List() {
     const [error403, setError403] = useState(false);
@@ -120,6 +121,19 @@ function List() {
         }
         getData();
     }, [currentOrderBy,currentSortOrder,page, flag]);
+
+    const [watchedCount, setWatchedCount] = useState(0);
+    useEffect( () => {
+        async function getWatchedCount() {
+            try{
+                const data = await profileService.getWatchedCountFromMovieListId(id, user.username);
+                setWatchedCount(data.data.count);
+            } catch (e){
+                setWatchedCount(0);
+            }
+        }
+        getWatchedCount();
+    },[id]);
 
     const [listRecommendations, setListRecommendations] = useState(undefined);
     const [listRecommendationsLoading, setlistRecommendationsLoading] = useState(true);
@@ -225,10 +239,12 @@ function List() {
                 />
             )}
 
-            <ProgressBar
-                now={list?.data?.mediaCount === 0 ? 100 : (list?.data?.currentUserWatchAmount / list?.data?.mediaCount) * 100}
-                label={`${Math.round(list?.data?.mediaCount === 0 ? 100 : (list?.data?.currentUserWatchAmount / list?.data?.mediaCount) * 100)}%`}
-            />
+            {(isLoggedIn && list && list.data) && (
+                <ProgressBar
+                now={list?.data?.mediaCount === 0 ? 100 : (watchedCount / list?.data?.mediaCount) * 100}
+                label={`${Math.round(list?.data?.mediaCount === 0 ? 100 : (watchedCount / list?.data?.mediaCount) * 100)}%`}
+            />)}
+
 
 
             {listContentLoading ? (

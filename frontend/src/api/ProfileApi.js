@@ -118,9 +118,14 @@ const profileApi = (() => {
         return api.get(`/profiles/${username}/commentsFeedback/${commentId}`);
     }
 
+    const getWatchedCountFromMovieListId = (movieListId, username) => {
+        return api.get(`/profiles/${username}/watched/count?listId=${movieListId}`);
+    }
 
 
-    return {
+
+
+        return {
         getPfp,
         getProfileByUsername,
         getMilkyLeaderboard,
@@ -135,7 +140,8 @@ const profileApi = (() => {
         removeMediaFromWW,
         currentUserHasLikedReview,
         currentUserHasLikedMoovieListReview,
-        currentUserCommentFeedback
+        currentUserCommentFeedback,
+        getWatchedCountFromMovieListId
     }
 
 }
