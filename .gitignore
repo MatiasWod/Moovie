@@ -57,3 +57,4 @@ package-lock.json
 frontend/node/*
 
 /.smarttomcat
+frontend/.env
