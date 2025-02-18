@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.Reports.MoovieListReviewReport;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +25,9 @@ public class MoovieListReview {
 
     @Column(nullable = false)
     private int moovieListId;
+
+    @Column
+    private LocalDate lastModified;
 
     @Formula("(SELECT COUNT(*) FROM moovieListsReviewsLikes WHERE moovieListsReviewsLikes.moovieListReviewId = moovieListReviewId)")
     private int reviewLikes;
@@ -63,6 +67,7 @@ public class MoovieListReview {
         this.user = user;
         this.moovieListId = moovieListId;
         this.reviewContent = reviewContent;
+        this.lastModified = LocalDate.now();
     }
 
     public MoovieListReview(User user, int moovieListReviewId,  int moovieListId, int reviewLikes, boolean currentUserHasLiked, String moovieListImages, String moovieListTitle, String reviewContent) {
@@ -74,9 +79,10 @@ public class MoovieListReview {
         this.moovieListImages = moovieListImages;
         this.moovieListTitle = moovieListTitle;
         this.reviewContent = reviewContent;
+        this.lastModified = LocalDate.now();
     }
 
-    public MoovieListReview(User user, int moovieListReviewId, int moovieListId, int reviewLikes, String moovieListImages, String moovieListTitle, String reviewContent) {
+    public MoovieListReview(User user, int moovieListReviewId, LocalDate lastModified, int moovieListId, int reviewLikes, String moovieListImages, String moovieListTitle, String reviewContent) {
         this.moovieListReviewId = moovieListReviewId;
         this.user = user;
         this.moovieListId = moovieListId;
@@ -84,6 +90,7 @@ public class MoovieListReview {
         this.moovieListImages = moovieListImages;
         this.moovieListTitle = moovieListTitle;
         this.reviewContent = reviewContent;
+        this.lastModified = lastModified;
     }
 
     public MoovieListReview(MoovieListReview m, int currentUserHasLiked){
@@ -95,6 +102,7 @@ public class MoovieListReview {
         this.moovieListImages = m.moovieListImages;
         this.moovieListTitle = m.moovieListTitle;
         this.reviewContent = m.reviewContent;
+        this.lastModified = m.lastModified;
     }
 
 
@@ -147,6 +155,13 @@ public class MoovieListReview {
         this.moovieListId = mediaId;
     }
 
+    public LocalDate getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(LocalDate lastModified) {
+        this.lastModified = lastModified;
+    }
 
     public void setReviewLikes(int reviewLikes) {
         this.reviewLikes = reviewLikes;

@@ -13,6 +13,7 @@ import ar.edu.itba.paw.webapp.dto.in.TokenDto;
 import ar.edu.itba.paw.webapp.dto.in.UserCreateDto;
 import ar.edu.itba.paw.webapp.dto.out.BanMessageDTO;
 import ar.edu.itba.paw.webapp.dto.in.*;
+import ar.edu.itba.paw.webapp.dto.out.CountDto;
 import ar.edu.itba.paw.webapp.dto.out.UserDto;
 
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
@@ -247,7 +248,7 @@ public class UserController {
         try {
             int count = userService.getUserCount();
             LOGGER.info("User count retrieved: {}", count);
-            return Response.ok(String.valueOf(count)).build();
+            return Response.ok(CountDto.fromCount(count)).build();
         } catch (Exception e) {
             LOGGER.error("Error retrieving user count: {}", e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

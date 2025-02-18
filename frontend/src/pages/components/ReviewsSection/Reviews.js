@@ -15,6 +15,8 @@ import mediaService from "../../../services/MediaService";
 import ReviewForm from "../forms/reviewForm/ReviewForm";
 import ConfirmationForm from "../forms/confirmationForm/confirmationForm";
 import ConfirmationModal from "../forms/confirmationForm/confirmationModal";
+import profileService from "../../../services/ProfileService";
+import ReportForm from "../forms/reportForm/reportForm";
 
 
 const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, reloadReviews }) => {
@@ -24,6 +26,10 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
     const [commentLoading, setCommentLoading] = useState(false);
     const [showDeleteReview, setShowDeleteReview] = useState(false);
     const [showEditReview, setShowEditReview] = useState(false);
+
+    const [likeRefresh, setLikeRefresh] = useState(false);
+
+
 
     const handleToggleDelete = () => {
         setShowDeleteReview(!showDeleteReview)
@@ -94,6 +100,46 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
     }, [source]);
 
 
+    const [currentLikeStatus, setCurrentLikeStatus] = useState(false);
+    useEffect( async () => {
+        try{
+            if(source === 'list' ){
+                setCurrentLikeStatus( await profileService.currentUserHasLikedMoovieListReview(review.id, currentUser.username));
+            } else {
+                setCurrentLikeStatus( await profileService.currentUserHasLikedReview(review.id, currentUser.username));
+            }
+        } catch(e){
+
+        }
+    }, [likeRefresh]);
+
+    const handleLikeReview = async () => {
+        try{
+            if(source === 'media' || source === 'user' ){
+                await reviewService.likeReview(currentUser, review.id);
+                setLikeRefresh(!likeRefresh);
+                if(currentLikeStatus){
+                    review.likes = review.likes - 1;
+                } else{
+                    review.likes = review.likes + 1;
+                }
+            } else {
+                await moovieListReviewService.likeMoovieListReview(currentUser, review.id);
+                setLikeRefresh(!likeRefresh);
+                if(currentLikeStatus){
+                    review.reviewLikes = review.reviewLikes - 1;
+                } else{
+                    review.reviewLikes = review.reviewLikes + 1;
+                }
+            }
+
+        } catch(e)
+        {
+            console.log("Error liking the review.")
+        }
+    }
+
+
     return (
         <div key={review.id} className="review container-fluid bg-white my-3">
             <div className="review-header d-flex align-items-center justify-between">
@@ -105,7 +151,7 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
                     />
                     <div>
                         <strong>{review.username} </strong>
-                        {media && (
+                        { (source === 'user' && media ) && (
                             <>
                                 {t('reviews.onMedia') + " "}
                                 <strong>
@@ -115,35 +161,54 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
                                 </strong>
                             </>
                         )}
+                        {review.lastModified && (<a> - {t('reviews.lastModified')} {review.lastModified}</a>)}
                     </div>
                 </div>
                 <div>
-                    {source !== 'list' && (
-                        <>{review.rating}/5<i className="bi bi-star-fill"/></>
-                    )}
-                    {isLoggedIn && (
-                        <button
-                            className="btn btn-warning btn-sm mx-1"
-                            onClick={() => setReportedReviewId(review.id)}
-                        >
-                            <i className="bi bi-flag"></i>
-                        </button>
-                    )}
-                    {(isLoggedIn && review.username === currentUser.username) && (
-                        <button
-                            className="btn btn-primary btn-sm me-1"
-                            onClick={handleToggleEdit}
-                        >
-                            <i className="bi bi-pencil"></i> Edit
-                        </button>
-                    )}
-                    {(isLoggedIn && review.username === currentUser.username) && (
+                    <div>
+                        {source !== 'list' && (
+                            <>{review.rating}/5<i className="bi bi-star-fill"/></>
+                        )}
+
+                        {isLoggedIn && (
                             <button
-                            className="btn btn-danger btn-sm"
-                            onClick={handleToggleDelete}>
-                            <i className="bi bi-trash"></i>
-                        </button>
-                    )}
+                                className="btn btn-warning btn-sm mx-1"
+                                onClick={() => setReportedReviewId(review.id)}
+                            >
+                                <i className="bi bi-flag"></i>
+                            </button>
+                        )}
+                        {(isLoggedIn && review.username === currentUser.username) && (
+                            <button
+                                className="btn btn-primary btn-sm me-1"
+                                onClick={handleToggleEdit}
+                            >
+                                <i className="bi bi-pencil"></i> Edit
+                            </button>
+                        )}
+                        {(isLoggedIn && review.username === currentUser.username) && (
+                            <button
+                                className="btn btn-danger btn-sm"
+                                onClick={handleToggleDelete}>
+                                <i className="bi bi-trash"></i>
+                            </button>
+                        )}
+
+                    </div>
+                    <div className="d-flex align-items-center justify-content-end mt-2">
+                            <span className="me-2">
+                                Likes: {source === 'list' ? review.reviewLikes : review.likes}
+                            </span> {isLoggedIn && (
+                            <button
+                                className="btn btn-success btn-sm"
+                                onClick={handleLikeReview}
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                title={currentLikeStatus ? t('review.unlike') : t('review.like')}>
+                                <i className={currentLikeStatus ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up"}></i>
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
             <div className="review-content">{review.reviewContent}</div>
@@ -151,11 +216,12 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
                 <>
                     <CommentList reviewId={review.id} reload={{reloadComments}}/>
                     {isLoggedIn && (
-                        <CommentField onSubmit={(comment) => handleCommentSubmit(review.id, comment)} isLoading={commentLoading} />
+                        <CommentField onSubmit={(comment) => handleCommentSubmit(review.id, comment)}
+                                      isLoading={commentLoading}/>
                     )}
                 </>
             )}
-            <Divider />
+            <Divider/>
             {showDeleteReview && (
 
                 <div className="overlay">

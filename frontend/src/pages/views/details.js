@@ -268,14 +268,14 @@ function Details() {
 
                     <div>
                         <h1 className="d-flex flex-row align-items-center ">
-                            <OverlayTrigger trigger="hover" placement="right" overlay={popoverMoovieRating}>
+                            <OverlayTrigger trigger={["hover", "focus"]} placement="right" overlay={popoverMoovieRating}>
                                 <div className="me-3"><i className={"bi bi-star-fill"}/> {media.tmdbRating}</div>
                             </OverlayTrigger>
 
                             {(media.voteCount > 0) && (
                                 <>
                                     <span>•</span>
-                                    <OverlayTrigger trigger="hover" placement="right" overlay={popoverUserRating}>
+                                    <OverlayTrigger trigger={["hover", "focus"]} placement="right" overlay={popoverUserRating}>
                                         <div className="m-3"><i className={"bi bi-star"}/> {media.totalRating}</div>
                                     </OverlayTrigger>
                                 </>

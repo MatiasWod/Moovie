@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Reports.ReportTypesEnum;
 import ar.edu.itba.paw.models.Review.Review;
 
 import javax.ws.rs.core.UriInfo;
+import java.time.LocalDate;
 import java.util.List;
 
 public class ReviewDto {
@@ -20,7 +21,7 @@ public class ReviewDto {
 
     private String username;
 
-    private boolean hasBadge;
+    private LocalDate lastModified;
 
     private String totalReportsUrl;
 
@@ -31,8 +32,6 @@ public class ReviewDto {
     private String privacyReportsUrl;
 
     private String abuseReportsUrl;
-
-    private String imageUrl;
 
     private String url;
 
@@ -49,8 +48,7 @@ public class ReviewDto {
         reviewDto.reviewContent = review.getReviewContent();
         reviewDto.likes = review.getReviewLikes();
         reviewDto.username = review.getUser().getUsername();
-        reviewDto.hasBadge = review.getUser().isHasBadge();
-
+        reviewDto.lastModified = review.getLastModified();
 
 
 
@@ -148,14 +146,6 @@ public class ReviewDto {
         this.username = username;
     }
 
-    public boolean isHasBadge() {
-        return hasBadge;
-    }
-
-    public void setHasBadge(boolean hasBadge) {
-        this.hasBadge = hasBadge;
-    }
-
     public String getTotalReportsUrl() {
         return totalReportsUrl;
     }
@@ -197,13 +187,6 @@ public class ReviewDto {
     }
 
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
 
     public String getUrl() {
         return url;
@@ -227,5 +210,13 @@ public class ReviewDto {
 
     public void setMediaUrl(String mediaUrl) {
         this.mediaUrl = mediaUrl;
+    }
+
+    public LocalDate getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(LocalDate lastModified) {
+        this.lastModified = lastModified;
     }
 }

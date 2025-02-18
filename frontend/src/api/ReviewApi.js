@@ -68,8 +68,14 @@ const reviewApi = (()=> {
         );
     }
 
-    const likeReview = (id) => {
-        return api.put(`/reviews/${id}`);
+    const likeReview = (username, id) => {
+        return api.put(`/reviews/${id}`,
+            {"username": username,
+                "feedbackType" : "LIKE"},
+            {headers: {
+                    'Content-Type': VndType.APPLICATION_MOOVIELIST_FEEDBACK_FORM
+                }
+            });
     }
 
 

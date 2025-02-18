@@ -1,4 +1,5 @@
 import moovieListReviewApi from "../api/MoovieListReviewApi";
+import reviewApi from "../api/ReviewApi";
 
 const MoovieListReviewService = ( () => {
     const getMoovieListReview = async (id) => {
@@ -32,10 +33,11 @@ const MoovieListReviewService = ( () => {
         return res;
     }
 
-    const likeMoovieListReview = async (id) => {
-        const res = await moovieListReviewApi.likeMoovieListReview(id);
+    const likeMoovieListReview = async (username, id) => {
+        const res = await moovieListReviewApi.likeMoovieListReview(username, id);
         return res;
     }
+
 
     return {
         getMoovieListReview,

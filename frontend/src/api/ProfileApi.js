@@ -106,8 +106,21 @@ const profileApi = (() => {
             return api.delete(`/profiles/${username}/${ww}/${mediaId}`);
         }
 
+    const currentUserHasLikedReview = (reviewId, username) => {
+        return api.get(`/profiles/${username}/reviewLikes/${reviewId}`);
+    }
 
-        return {
+    const currentUserHasLikedMoovieListReview = (reviewId, username) => {
+        return api.get(`/profiles/${username}/moovieListsReviewsLikes/${reviewId}`);
+    }
+
+    const currentUserCommentFeedback = (commentId, username) => {
+        return api.get(`/profiles/${username}/commentsFeedback/${commentId}`);
+    }
+
+
+
+    return {
         getPfp,
         getProfileByUsername,
         getMilkyLeaderboard,
@@ -120,7 +133,8 @@ const profileApi = (() => {
         currentUserWW,
         insertMediaIntoWW,
         removeMediaFromWW,
-
+        currentUserHasLikedReview,
+        currentUserHasLikedMoovieListReview
     }
 
 }

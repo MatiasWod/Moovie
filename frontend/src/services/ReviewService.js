@@ -39,11 +39,11 @@ const ReviewService = (() => {
         return  response;
     };
 
-    const likeReview = async (id) => {
-        const response = await reviewApi.likeReview(id);
+    const likeReview = async (username, id) => {
+        const response = await reviewApi.likeReview(username, id);
         return  response;
-
     };
+
 
     return {
         getReviewById,
