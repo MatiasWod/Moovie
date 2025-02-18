@@ -17,6 +17,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.NoResultException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
@@ -40,26 +41,41 @@ public class CommentController {
 
     @GET
     @Produces(VndType.APPLICATION_COMMENT_LIST)
-    public Response getCommentsByReviewId(@QueryParam("reviewId") final int reviewId, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
-        final int commentCount = reviewService.getReviewById(reviewId).getCommentCount().intValue();
-        final List<Comment> commentList = commentService.getComments(reviewId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
-        final List<CommentDto> commentDtoList = CommentDto.fromCommentList(commentList, uriInfo);
+    public Response getCommentsByReviewId(@QueryParam("reviewId") @NotNull final int reviewId, @QueryParam("pageNumber") @DefaultValue("1") final int page) {
+        try {
+            final int commentCount = reviewService.getReviewById(reviewId).getCommentCount().intValue();
+            final List<Comment> commentList = commentService.getComments(reviewId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
+            final List<CommentDto> commentDtoList = CommentDto.fromCommentList(commentList, uriInfo);
 
-        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<CommentDto>>(commentDtoList){} );
-        final PagingUtils<Comment> reviewPagingUtils = new PagingUtils<>(commentList, page, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), commentCount);
-        ResponseUtils.setPaginationLinks(res, reviewPagingUtils, uriInfo);
-        return res.build();
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<CommentDto>>(commentDtoList){} );
+            final PagingUtils<Comment> reviewPagingUtils = new PagingUtils<>(commentList, page, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), commentCount);
+            ResponseUtils.setPaginationLinks(res, reviewPagingUtils, uriInfo);
+            return res.build();
+        }catch (NoResultException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Review not found")
+                    .build();
+        }
+        catch (RuntimeException e) {
+            return Response.serverError().entity(e.getMessage()).build();
+        }
     }
 
     @GET
     @Path("/{id}")
     @Produces(VndType.APPLICATION_COMMENT)
-    public Response getCommentById(@PathParam("id") int id) {
+    public Response getCommentById(@PathParam("id") @NotNull int id) {
         try {
             final Comment comment = commentService.getCommentById(id);
+            if (comment == null) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("Comment not found")
+                        .build();
+            }
             final CommentDto commentDto = CommentDto.fromComment(comment, uriInfo);
             return Response.ok(commentDto).build();
-        } catch (RuntimeException e) {
+        }
+        catch (RuntimeException e) {
             return Response.serverError().entity(e.getMessage()).build();
         }
     }
@@ -71,14 +87,28 @@ public class CommentController {
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(VndType.APPLICATION_COMMENT_FORM)
-    public Response createComment(@QueryParam("reviewId") final int reviewId, @Valid final CommentCreateDto commentDto) {
-        commentService.createComment(
-                reviewId,
-                commentDto.getCommentContent()
-        );
-        return Response.status(Response.Status.CREATED)
-                .entity("Comment successfully created to review with id:" + reviewId)
-                .build();
+    public Response createComment(@QueryParam("reviewId") @NotNull final int reviewId, @Valid @NotNull final CommentCreateDto commentDto) {
+        try {
+            commentService.createComment(
+                    reviewId,
+                    commentDto.getCommentContent()
+            );
+            return Response.status(Response.Status.CREATED)
+                    .entity("Comment successfully created to review with id:" + reviewId)
+                    .build();
+        } catch (UserNotLoggedException e) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"error\":\"User must be logged in to create a comment.\"}")
+                    .build();
+        } catch (NoResultException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Review not found")
+                    .build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .build();
+        }
     }
 
     @PUT
@@ -86,8 +116,14 @@ public class CommentController {
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_COMMENT_FEEDBACK_FORM)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateFeedbackOnComment(@PathParam("id") int id, @Valid @NotNull final CommentFeedbackDto commentFeedbackDto) {
+    public Response updateFeedbackOnComment(@PathParam("id") @NotNull int id, @Valid @NotNull final CommentFeedbackDto commentFeedbackDto) {
         try {
+            Comment comment = commentService.getCommentById(id);
+            if(comment == null) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("Comment not found")
+                        .build();
+            }
             CommentFeedbackType commentFeedbackType=commentFeedbackDto.transformToEnum();
             if (commentFeedbackType == CommentFeedbackType.LIKE) {
                 boolean liked = commentService.likeComment(id);
@@ -135,7 +171,7 @@ public class CommentController {
     @Path("/{id}")
     @PreAuthorize("@accessValidator.isUserCommentAuthor(#id)")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteComment(@PathParam("id") int id) {
+    public Response deleteComment(@PathParam("id") @NotNull int id) {
             try {
                 if (commentService.getCommentById(id) == null) {
                     return Response.status(Response.Status.NOT_FOUND)
