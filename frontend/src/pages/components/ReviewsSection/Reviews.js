@@ -16,6 +16,7 @@ import ReviewForm from "../forms/reviewForm/ReviewForm";
 import ConfirmationForm from "../forms/confirmationForm/confirmationForm";
 import ConfirmationModal from "../forms/confirmationForm/confirmationModal";
 import profileService from "../../../services/ProfileService";
+import ReportForm from "../forms/reportForm/reportForm";
 
 
 const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, reloadReviews }) => {
@@ -203,7 +204,7 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
                                 onClick={handleLikeReview}
                                 data-bs-toggle="tooltip"
                                 data-bs-placement="top"
-                                title={currentLikeStatus ? "Unlike this review" : "Like this review"}>
+                                title={currentLikeStatus ? t('review.unlike') : t('review.like')}>
                                 <i className={currentLikeStatus ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up"}></i>
                             </button>
                         )}
