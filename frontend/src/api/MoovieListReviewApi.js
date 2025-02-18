@@ -30,7 +30,7 @@ const moovieListReviewApi = (()=> {
     }
 
     const editReview = (id,reviewContent) => {
-        return api.put(`/moovieListReviews}`,
+        return api.put(`/moovieListReviews`,
             {
                 reviewContent: reviewContent
             },

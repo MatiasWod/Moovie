@@ -309,7 +309,7 @@ function List() {
                 />
             )}
 
-            <Reviews id={id} source={'list'} handleParentReload={() => setFlag(!flag)} />
+            <Reviews id={id} source={'list'} handleParentReload={() => setFlag(!flag)} parentReload={flag} />
 
         </div>
     );
