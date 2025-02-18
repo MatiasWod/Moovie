@@ -127,6 +127,32 @@ const ProfileService = (() => {
         }
     }
 
+    const currentUserHasLikedReview = async (reviewId, username) => {
+        try {
+            const res = await profileApi.currentUserHasLikedReview(reviewId, username);
+            const parsedResponse = parsePaginatedResponse(res);
+            if (!parsedResponse || res.status === 204) {
+                return false;
+            }
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    const currentUserHasLikedMoovieListReview = async (reviewId, username) => {
+        try {
+            const res = await profileApi.currentUserHasLikedMoovieListReview(reviewId, username);
+            const parsedResponse = parsePaginatedResponse(res);
+            if (!parsedResponse || res.status === 204) {
+                return false;
+            }
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
     return {
         getMilkyLeaderboard,
         getSearchedUsers,
@@ -139,7 +165,9 @@ const ProfileService = (() => {
         insertMediaIntoWW,
         removeMediaFromWW,
         currentUserLikeFollowStatus,
-        currentUserWWStatus
+        currentUserWWStatus,
+        currentUserHasLikedReview,
+        currentUserHasLikedMoovieListReview
 
     }
 })();
