@@ -11,6 +11,8 @@ import ConfirmationModal from "../forms/confirmationForm/confirmationModal";
 import profileService from "../../../services/ProfileService";
 import profileApi from "../../../api/ProfileApi";
 import CommentStatusEnum from "../../../api/values/CommentStatusEnum";
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import './CommentList.css';
 
 export default function CommentList({ reviewId, reload }) {
     const { t } = useTranslation();
@@ -31,7 +33,7 @@ export default function CommentList({ reviewId, reload }) {
 
     useEffect(() => {
         fetchComments();
-    }, [reviewId, refreshComments, reload]);
+    }, [reviewId, refreshComments, reload?.reloadComments]);
 
     const fetchComments = async () => {
         try {
@@ -74,7 +76,7 @@ export default function CommentList({ reviewId, reload }) {
                 user={user}
                 onDelete={handleDeleteComment}
                 onReport={handleReportComment}
-                reload = {handleRefreshComments}
+                reload={handleRefreshComments}
             />
 
             {comments.length > 1 && (
@@ -112,7 +114,7 @@ export default function CommentList({ reviewId, reload }) {
                             user={user}
                             onDelete={handleDeleteComment}
                             onReport={handleReportComment}
-                            reload = {reload}
+                            reload={handleRefreshComments}
                         />
                     ))}
                 </div>
@@ -150,38 +152,71 @@ function CommentItem({ comment, isLoggedIn, user, onDelete, reload, onReport }) 
     const [currentLikeStatus, setCurrentLikeStatus] = useState(false);
     const [currentDislikeStatus, setCurrentDislikeStatus] = useState(false);
     const [refreshLikeStatus, setRefreshLikeStatus] = useState(false);
-    useEffect( async () => {
-        try{
-            const feedback = await profileService.currentUserCommentFeedback(comment.id, user.username);
-            setCurrentLikeStatus(false);
-            setCurrentDislikeStatus(false);
-            if(feedback === CommentStatusEnum.LIKE){
-                setCurrentLikeStatus(true);
-            } else if (feedback === CommentStatusEnum.DISLIKE){
-                setCurrentDislikeStatus(true);
-            }
-        } catch(e){
 
-        }
-    }, [currentLikeStatus, currentDislikeStatus, refreshLikeStatus]);
+    useEffect(() => {
+        const fetchFeedbackStatus = async () => {
+            if (!isLoggedIn || !user) return;
+            
+            try {
+                const feedback = await profileService.currentUserCommentFeedback(comment.id, user.username);
+                setCurrentLikeStatus(feedback === CommentStatusEnum.LIKE);
+                setCurrentDislikeStatus(feedback === CommentStatusEnum.DISLIKE);
+            } catch(e) {
+                console.error('Error fetching feedback status:', e);
+            }
+        };
+
+        fetchFeedbackStatus();
+    }, [comment.id, user?.username, isLoggedIn, refreshLikeStatus]);
+
+    const [localLikes, setLocalLikes] = useState(comment.commentLikes);
+    const [localDislikes, setLocalDislikes] = useState(comment.commentDislikes);
 
     const handleLikeComment = async () => {
-        try{
-            await commentApi.commentFeedback(comment.id,"LIKE");
+        try {
+            await commentApi.commentFeedback(comment.id, "LIKE");
+            // Update counts based on previous state
+            if (currentLikeStatus) {
+                setLocalLikes(prev => prev - 1);
+            } else {
+                setLocalLikes(prev => prev + 1);
+                if (currentDislikeStatus) {
+                    setLocalDislikes(prev => prev - 1);
+                }
+            }
             setRefreshLikeStatus(!refreshLikeStatus);
         } catch (e) {
-
+            // Revert to original counts if the API call fails
+            setLocalLikes(comment.commentLikes);
+            setLocalDislikes(comment.commentDislikes);
         }
     }
 
     const handleDislikeComment = async () => {
-        try{
-            await commentApi.commentFeedback(comment.id,"DISLIKE");
+        try {
+            await commentApi.commentFeedback(comment.id, "DISLIKE");
+            // Update counts based on previous state
+            if (currentDislikeStatus) {
+                setLocalDislikes(prev => prev - 1);
+            } else {
+                setLocalDislikes(prev => prev + 1);
+                if (currentLikeStatus) {
+                    setLocalLikes(prev => prev - 1);
+                }
+            }
             setRefreshLikeStatus(!refreshLikeStatus);
         } catch (e) {
-
+            // Revert to original counts if the API call fails
+            setLocalLikes(comment.commentLikes);
+            setLocalDislikes(comment.commentDislikes);
         }
     }
+
+    // Update local counts when comment prop changes
+    useEffect(() => {
+        setLocalLikes(comment.commentLikes);
+        setLocalDislikes(comment.commentDislikes);
+    }, [comment.commentLikes, comment.commentDislikes]);
 
     return (
         <div className="bg-gray-50 p-3 rounded-lg">
@@ -192,50 +227,75 @@ function CommentItem({ comment, isLoggedIn, user, onDelete, reload, onReport }) 
                         {t('commentList.by')} {comment.userUrl.split('/').pop()}
                     </span>
                 </div>
-                {isLoggedIn && (
-                    <div className="flex gap-2">
-                        <button
-                            className="btn btn-success btn-sm"
-                            onClick={handleLikeComment}
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="top"
-                            title={currentLikeStatus ? t('review.unlike') : t('review.like')}>
-                            <i className={currentLikeStatus ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up"}></i>
-                        </button>
-
-                        <button
-                            className="btn btn-danger btn-sm"
-                            onClick={handleDislikeComment}
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="top"
-                            title={currentLikeStatus ? t('review.unlike') : t('review.like')}>
-                            <i className={currentDislikeStatus ? "bi bi-hand-thumbs-down-fill" : "bi bi-hand-thumbs-down"}></i>
-                        </button>
-
-                        <button
-                            onClick={() => setIsReporting(true)}
-                            className="text-yellow-600 hover:text-yellow-700 transition-colors"
-                            title={t('commentList.reportComment')}
-                        >
-                            <i className="bi bi-flag text-sm"></i>
-                        </button>
-                        {user.username === comment.username && (
+                <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
+                        <span className="text-xs text-gray-600">{localLikes}</span>
+                        {isLoggedIn ? (
                             <button
-                                onClick={handleToggleDelete}
-                                className="text-red-600 hover:text-red-700 transition-colors"
-                                title={t('commentList.deleteComment')}
-                            >
-                                <i className="bi bi-trash text-sm"></i>
+                                className="btn btn-success btn-sm"
+                                onClick={handleLikeComment}
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                title={currentLikeStatus ? t('comment.unlike') : t('comment.like')}>
+                                <i className={currentLikeStatus ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up"}></i>
                             </button>
+                        ) : (
+                            <i className="bi bi-hand-thumbs-up text-gray-400 text-sm"></i>
                         )}
                     </div>
-                )}
+
+                    <div className="flex items-center gap-1">
+                        <span className="text-xs text-gray-600">{localDislikes}</span>
+                        {isLoggedIn ? (
+                            <button
+                                className="btn btn-danger btn-sm"
+                                onClick={handleDislikeComment}
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                title={currentDislikeStatus ? t('comment.undislike') : t('comment.dislike')}>
+                                <i className={currentDislikeStatus ? "bi bi-hand-thumbs-down-fill" : "bi bi-hand-thumbs-down"}></i>
+                            </button>
+                        ) : (
+                            <i className="bi bi-hand-thumbs-down text-gray-400 text-sm"></i>
+                        )}
+                    </div>
+
+                    {isLoggedIn && (
+                        <NavDropdown
+                            title={<i className="bi bi-three-dots-vertical"></i>}
+                            id="comment-actions-dropdown"
+                            className="custom-dropdown"
+                        >
+                            <NavDropdown.Item 
+                                onClick={() => setIsReporting(true)}
+                                className="text-yellow-600 hover:text-yellow-700"
+                            >
+                                <i className="bi bi-flag text-sm me-2"></i>
+                                {t('comment.report')}
+                            </NavDropdown.Item>
+                            
+                            {user.username === comment.username && (
+                                <NavDropdown.Item 
+                                    onClick={handleToggleDelete}
+                                    className="text-red-600 hover:text-red-700"
+                                >
+                                    <i className="bi bi-trash text-sm me-2"></i>
+                                    {t('comment.delete')}
+                                </NavDropdown.Item>
+                            )}
+                        </NavDropdown>
+                    )}
+                </div>
             </div>
 
             {showDeleteComment && (
                 <div className="overlay">
-                    <ConfirmationModal onConfirm={handleDelete} onCancel={handleToggleDelete}
-                                       message={t('reviews.aboutToDelete')} title={t('review.confirmDelete')}/>
+                    <ConfirmationModal 
+                        onConfirm={handleDelete} 
+                        onCancel={handleToggleDelete}
+                        message={t('comment.confirmDeleteMessage')} 
+                        title={t('comment.confirmDelete')}
+                    />
                 </div>
             )}
 

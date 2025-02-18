@@ -249,5 +249,14 @@
   "tooltips.milkyPointsTooltip": "Puntos Milky.",
   "tooltips.reviewsTooltip": "Cantidad de reviews.",
   "tooltips.moovieListTooltip": "Cantidad de MoovieList.",
-  "tooltips.badgeTooltip": "Insigna para los usuarios mas activos."
+  "tooltips.badgeTooltip": "Insigna para los usuarios mas activos.",
+  "comment.delete": "Eliminar Comentario",
+  "comment.edit": "Editar Comentario",
+  "comment.report": "Reportar Comentario",
+  "comment.confirmDelete": "Confirmar Eliminación",
+  "comment.confirmDeleteMessage": "¿Estás seguro de que quieres eliminar este comentario?",
+  "comment.like": "Me gusta este comentario",
+  "comment.unlike": "Quitar me gusta de este comentario",
+  "comment.dislike": "No me gusta este comentario",
+  "comment.undislike": "Quitar no me gusta de este comentario"
 }
