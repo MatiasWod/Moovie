@@ -7,6 +7,7 @@ import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
@@ -61,7 +62,7 @@ public class TvCreatorsController {
     @GET
     @Path("/{id}")
     @Produces(VndType.APPLICATION_TVCREATOR)
-    public Response getTvCreatorById(@PathParam("id") final int tvCreatorId) {
+    public Response getTvCreatorById(@PathParam("id") @NotNull final int tvCreatorId) {
         try {
             TVCreators tvCreators=tvCreatorsService.getTvCreatorById(tvCreatorId);
             if (tvCreators==null){

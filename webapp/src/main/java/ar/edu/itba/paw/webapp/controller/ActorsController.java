@@ -7,6 +7,7 @@ import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
@@ -58,7 +59,7 @@ public class ActorsController {
     @GET
     @Path("/{id}")
     @Produces(VndType.APPLICATION_ACTOR)
-    public Response getActor(@PathParam("id") final int id) {
+    public Response getActor(@PathParam("id") @NotNull final int id) {
         try {
             Actor actor=actorService.getActorById(id);
             if(actor==null){
