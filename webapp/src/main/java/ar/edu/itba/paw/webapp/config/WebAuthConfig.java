@@ -201,7 +201,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/users/authtest").hasRole(UserRoles.USER.name())
 
                 .antMatchers("/createreview", "/uploadProfilePicture", "/createrating", "/insertMediaToList", "/like", "/createlist",
-                        "/profile/**", "/createListAction", "/deleteMediaFromList", "/likeReview", "/unlikeReview", "/editList/**",
+                        "/profiles/**", "/createListAction", "/deleteMediaFromList", "/likeReview", "/unlikeReview", "/editList/**",
                         "/updateMoovieListOrder/**", "/followList", "/likeMoovieListReview", "/unlikeMoovieListReview",
                         "/MoovieListReview", "/likeComment", "/dislikeComment", "/createcomment", "/reports/new", "/deleteUserReview/**",
                         "/deleteMoovieList/**").hasRole("USER")
