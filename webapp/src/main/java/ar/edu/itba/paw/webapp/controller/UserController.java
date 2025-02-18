@@ -335,5 +335,25 @@ public class UserController {
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
+    @PUT
+    @Path("/{username}")
+    @PreAuthorize("@accessValidator.isUserAdmin()")
+    @Produces(VndType.APPLICATION_USER)
+    public Response makeUserMod(@PathParam("username") final String username) {
+        User user = null;
+        try {
+            user = userService.findUserByUsername(username);
+            moderatorService.makeUserModerator(user.getUserId());
+        } catch (UnableToFindUserException e) {
+            return new UnableToFindUserEM().toResponse(e);
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+//        Actualizar el modelo a devolver
+//        Llegar aqui implica un exito en la operacion
+        user.setRole(UserRoles.MODERATOR.getRole());
+        return Response.ok(UserDto.fromUser(user, uriInfo)).build();
+    }
+
 
 }

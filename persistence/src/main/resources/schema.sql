@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS reviews(
     mediaId                                     INTEGER NOT NULL,
     rating                                      INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),
     reviewContent                               TEXT,
+    lastModified                                TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE,
     FOREIGN KEY(mediaId) REFERENCES media(mediaId) ON DELETE CASCADE,
     UNIQUE(userId,mediaId)
@@ -299,6 +300,7 @@ CREATE TABLE IF NOT EXISTS moovieListsReviews(
     userId                                      INTEGER NOT NULL,
     moovieListId                                INTEGER NOT NULL,
     reviewContent                               TEXT,
+    lastModified                                TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE,
     FOREIGN KEY(moovieListId) REFERENCES moovieLists(moovieListId) ON DELETE CASCADE,
     UNIQUE(userId,moovieListId)
@@ -441,5 +443,13 @@ ALTER TABLE moovielistscontent DROP CONSTRAINT moovielistscontent_moovielistid_m
 ALTER TABLE moovielistscontent ADD COLUMN id SERIAL PRIMARY KEY;
 UPDATE moovielistscontent mlc SET id = DEFAULT;
 ALTER TABLE actors DROP COLUMN charactername;
+
+ALTER TABLE bannedmessage DROP CONSTRAINT "bannedmessage_pkey";
+ALTER TABLE bannedmessage ADD PRIMARY KEY (banneduserid);
+
+ALTER TABLE reviews ADD COLUMN lastModified TIMESTAMP;
+UPDATE reviews SET lastModified = NULL;
+ALTER TABLE moovieListsReviews ADD COLUMN lastModified TIMESTAMP;
+UPDATE moovieListsReviews SET lastModified = NULL;
 
  */

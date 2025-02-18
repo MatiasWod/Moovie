@@ -43,6 +43,7 @@ function Profile() {
   const { t } = useTranslation();
   const [showBanModal, setShowBanModal] = useState(false);
   const [showUnbanModal, setShowUnbanModal] = useState(false);
+  const [showMakeModModal, setShowMakeModModal] = useState(false);
 
   const fetchProfile = async () => {
     try {
@@ -67,6 +68,10 @@ function Profile() {
     setShowUnbanModal(true);
   };
 
+  const handleMakeModerator = async () => {
+    setShowMakeModModal(true);
+  };
+
   const confirmBanUser = async () => {
     try {
       await userApi.banUser(username);
@@ -86,6 +91,17 @@ function Profile() {
       console.error("Error unbanning user:", err);
     } finally {
       setShowUnbanModal(false);
+    }
+  };
+
+  const confirmMakeModerator = async () => {
+    try {
+      await userApi.makeUserModerator(username);
+      fetchProfile();
+    } catch (err) {
+      console.error("Error making user moderator:", err);
+    } finally {
+      setShowMakeModModal(false);
     }
   };
 
@@ -125,6 +141,7 @@ function Profile() {
           profile={profile}
           handleBanUser={handleBanUser}
           handleUnbanUser={handleUnbanUser}
+          handleMakeModerator={handleMakeModerator}
         />
         <div className="border-t">
           <ProfileTabNavigation selectedTab={selectedTab} onTabSelect={handleTabSelect} isLoggedIn={isLoggedIn} isMe={isMe}/>
@@ -149,6 +166,15 @@ function Profile() {
           message={t('confirmationForm.prompt', { actionName: t('profile.unbanUser').toLowerCase() })}
           onConfirm={confirmUnbanUser}
           onCancel={() => setShowUnbanModal(false)}
+        />
+      )}
+
+      {showMakeModModal && (
+        <ConfirmationModal
+          title={t('profile.makeUserModerator')}
+          message={t('confirmationForm.prompt', { actionName: t('profile.makeUserModerator').toLowerCase() })}
+          onConfirm={confirmMakeModerator}
+          onCancel={() => setShowMakeModModal(false)}
         />
       )}
     </div>

@@ -7,7 +7,7 @@ import reportApi from '../../../api/ReportApi';
 import { useNavigate } from 'react-router-dom';
 import {useTranslation} from "react-i18next";
 
-export default function CommentList({ reviewId }) {
+export default function CommentList({ reviewId , reload}) {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { isLoggedIn, user } = useSelector(state => state.auth);
@@ -23,7 +23,7 @@ export default function CommentList({ reviewId }) {
 
     useEffect(() => {
         fetchComments();
-    }, [reviewId]);
+    }, [reviewId, reload]);
 
     const fetchComments = async () => {
         try {

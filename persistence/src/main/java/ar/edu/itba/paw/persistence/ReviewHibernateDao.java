@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -152,6 +153,7 @@ public class ReviewHibernateDao implements ReviewDao {
             if(review != null) {
                 review.setRating(rating);
                 review.setReviewContent(reviewContent);
+                review.setLastModified(LocalDate.now());
                 em.merge(review);
                 return true;
             }
@@ -162,6 +164,7 @@ public class ReviewHibernateDao implements ReviewDao {
                     .getSingleResult();
             if(review != null) {
                 review.setReviewContent(reviewContent);
+                review.setLastModified(LocalDate.now());
                 em.merge(review);
                 return true;
             }

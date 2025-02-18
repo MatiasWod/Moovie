@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.dto.out;
 import ar.edu.itba.paw.models.Reports.ReportTypesEnum;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 import javax.ws.rs.core.UriInfo;
+import java.time.LocalDate;
 import java.util.List;
 
 public class MoovieListReviewDto {
@@ -12,6 +13,8 @@ public class MoovieListReviewDto {
     private int moovieListid;
 
     private int reviewLikes;
+
+    private LocalDate lastModififed;
 
     private String reviewContent;
 
@@ -42,6 +45,7 @@ public class MoovieListReviewDto {
         moovieListReviewDto.reviewLikes=moovieListReview.getReviewLikes();
         moovieListReviewDto.reviewContent= moovieListReview.getReviewContent();
         moovieListReviewDto.username = moovieListReview.getUser().getUsername();
+        moovieListReviewDto.lastModififed = moovieListReview.getLastModified();
 
         moovieListReviewDto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
                 .queryParam("contentType", "moovieListReview")
@@ -147,6 +151,14 @@ public class MoovieListReviewDto {
 
     public void setSpamReportsUrl(String spamReportsUrl) {
         this.spamReportsUrl = spamReportsUrl;
+    }
+
+    public LocalDate getLastModififed() {
+        return lastModififed;
+    }
+
+    public void setLastModififed(LocalDate lastModififed) {
+        this.lastModififed = lastModififed;
     }
 
     public String getHateReportsUrl() {
