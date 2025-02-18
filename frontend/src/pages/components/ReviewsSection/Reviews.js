@@ -40,9 +40,11 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
 
     const handleDelete = async () =>{
         try{
-            if(source === 'media'){
+            if(source === 'media' || source === 'user' ){
                 await reviewService.deleteReviewById(review.id);
                 setShowDeleteReview(!showDeleteReview);
+            } else {
+                await moovieListReviewService.deleteMoovieListReview(review.id);
             }
             reloadReviews();
         } catch (e){
@@ -54,17 +56,20 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
         setShowEditReview(!showEditReview)
     }
 
-    const handleEdit = async () =>{
-        try{
-            if(source === 'media'){
-                await reviewService.editReview( );
-                handleToggleEdit();
-            }
-            reloadReviews();
-        } catch (e){
+    const [reviewContent, setReviewContent] = useState(review.reviewContent);
 
+    const handleEdit = async () => {
+        try {
+            if (source !== 'media' && source !== 'lists') {
+                console.log(review.id);
+                await moovieListReviewService.editReview(review.moovieListid, reviewContent);
+            }
+            handleToggleEdit();
+            reloadReviews();
+        } catch (e) {
+            console.error("Failed to edit review:", e);
         }
-    }
+    };
 
 
     const [reloadComments, setReloadComments] = useState(false);
@@ -255,12 +260,35 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
                 </div>
             )}
             {showEditReview && (
-                <ReviewForm mediaName={media.name}
-                mediaId={review.mediaId}
-                userReview={review}
-                closeReview={handleToggleEdit}
-                onReviewSubmit={handleEdit}/>)
-            }
+                source === 'list' ? (
+                    <ConfirmationModal
+                        title={t('list.writeReview')}
+                        message={
+                            <textarea
+                                className="form-control"
+                                value={reviewContent}
+                                onChange={(e) => setReviewContent(e.target.value)}
+                                rows={4}
+                                placeholder={t('list.reviewPlaceholder')}
+                            />
+                        }
+                        onConfirm={handleEdit}
+                        onCancel={() => {
+                            handleToggleEdit();
+                            setReviewContent("");
+                        }}
+                    />
+                ) : (
+                    <ReviewForm
+                        mediaName={media.name}
+                        mediaId={review.mediaId}
+                        userReview={review}
+                        closeReview={handleToggleEdit}
+                        onReviewSubmit={handleEdit}
+                    />
+                )
+            )}
+
             {showReportForm && (
                 <ReportForm
                     onReportSubmit={handleReportSubmit}
@@ -271,7 +299,7 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
     );
 };
 
-function Reviews({ id, username, source, handleParentReload }) {
+function Reviews({ id, username, source, handleParentReload, parentReload }) {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
@@ -311,7 +339,7 @@ function Reviews({ id, username, source, handleParentReload }) {
             }
         };
         fetchReviews();
-    }, [id, page, reload]);
+    }, [id, page, reload, parentReload]);
 
     const handlePageChange = (event, newPage) => {
         setPage(newPage);

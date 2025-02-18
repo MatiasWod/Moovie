@@ -14,7 +14,7 @@ public class MoovieListReviewDto {
 
     private int reviewLikes;
 
-    private LocalDate lastModififed;
+    private LocalDate lastModified;
 
     private String reviewContent;
 
@@ -43,7 +43,7 @@ public class MoovieListReviewDto {
         moovieListReviewDto.reviewLikes=moovieListReview.getReviewLikes();
         moovieListReviewDto.reviewContent= moovieListReview.getReviewContent();
         moovieListReviewDto.username = moovieListReview.getUser().getUsername();
-        moovieListReviewDto.lastModififed = moovieListReview.getLastModified();
+        moovieListReviewDto.lastModified = moovieListReview.getLastModified();
 
         moovieListReviewDto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
                 .queryParam("contentType", "moovieListReview")
@@ -84,7 +84,7 @@ public class MoovieListReviewDto {
 
         moovieListReviewDto.url= uriInfo.getBaseUriBuilder().path("/moovieListReview/{id}").build(moovieListReview.getMoovieListReviewId()).toString();
         moovieListReviewDto.userUrl=uriInfo.getBaseUriBuilder().path("/users/username/{username}").build(moovieListReview.getUser().getUsername()).toString();
-        moovieListReviewDto.moovieListUrl=uriInfo.getBaseUriBuilder().path("/list/{id}").build(moovieListReview.getMoovieListId()).toString();
+        moovieListReviewDto.moovieListUrl=uriInfo.getBaseUriBuilder().path("/lists/{id}").build(moovieListReview.getMoovieListId()).toString();
 
 
         return moovieListReviewDto;
@@ -151,12 +151,12 @@ public class MoovieListReviewDto {
         this.spamReportsUrl = spamReportsUrl;
     }
 
-    public LocalDate getLastModififed() {
-        return lastModififed;
+    public LocalDate getLastModified() {
+        return lastModified;
     }
 
-    public void setLastModififed(LocalDate lastModififed) {
-        this.lastModififed = lastModififed;
+    public void setLastModified(LocalDate lastModified) {
+        this.lastModified = lastModified;
     }
 
     public String getHateReportsUrl() {
