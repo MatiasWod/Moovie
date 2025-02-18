@@ -260,5 +260,12 @@
   "comment.like": "Like this comment",
   "comment.unlike": "Unlike this comment",
   "comment.dislike": "Dislike this comment",
-  "comment.undislike": "Remove dislike from this comment"
+  "comment.undislike": "Remove dislike from this comment",
+  "listContentSearch.title": "Search Media to Add",
+  "listContentSearch.placeholder": "Search for movies...",
+  "listContentSearch.helper": "Click on a movie to add it to your list",
+  "listContentSearch.noResults": "No results found",
+  "listContentSearch.startTyping": "Start typing to search for movies",
+  "listContentSearch.addedToList": "added to list",
+  "listContentSearch.alreadyInList": "is already in list"
 }

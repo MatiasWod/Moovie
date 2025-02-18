@@ -4,7 +4,7 @@ import VndType from "../enums/VndType";
 const listApi = (() => {
 
     const getLists = ({search, ownerUsername, type, orderBy, order, pageNumber, pageSize}) =>{
-        return api.get('list',
+        return api.get('lists',
             {
                 params:{
                     'search' : search,
@@ -19,16 +19,16 @@ const listApi = (() => {
     }
 
     const getListById = (id) => {
-        return api.get( `/list/${id}`);
+        return api.get( `/lists/${id}`);
     }
 
     const getListByIdList = (idListString) => {
-        return api.get(`/list?ids=${idListString}`);
+        return api.get(`/lists?ids=${idListString}`);
     };
 
 
     const getListContentById= ({id, orderBy, sortOrder, pageNumber, pageSize}) => {
-        return api.get(`/list/${id}/content`,
+        return api.get(`/lists/${id}/content`,
             {
                 params: {
                     'orderBy': orderBy,
@@ -40,7 +40,7 @@ const listApi = (() => {
     }
 
     const deleteList = (id) => {
-        return api.delete(`/list/${id}`);
+        return api.delete(`/lists/${id}`);
     }
 
 
@@ -48,7 +48,7 @@ const listApi = (() => {
 
     const insertMediaIntoMoovieList = ({ id, mediaIds }) => {
         return api.post(
-            `/list/${id}/content`,
+            `/lists/${id}/content`,
             { mediaIdList: mediaIds },  // Rename `mediaIds` to `mediaIdList`
             {
                 headers: {
@@ -60,7 +60,7 @@ const listApi = (() => {
 
     const deleteMediaFromMoovieList = ({ id, mediaId }) => {
         return api.delete(
-            `/list/${id}/content/${mediaId}`
+            `/lists/${id}/content/${mediaId}`
         );
     };
 
@@ -71,7 +71,7 @@ const listApi = (() => {
             listName: name,
             listDescription: description,
         };
-        const response = await api.put('/list/' + mlId,
+        const response = await api.put('/lists/' + mlId,
             form,{
                 headers: {
                     'Content-Type': VndType.APPLICATION_MOOVIELIST_FORM
@@ -83,7 +83,7 @@ const listApi = (() => {
 
 
     const getRecommendedLists =  (id) => {
-        return api.get(`/list/${id}/recommendedLists`,
+        return api.get(`/lists/${id}/recommendedLists`,
             {
                 params:{
                     'id': id
@@ -99,7 +99,7 @@ const listApi = (() => {
 
         };
 
-        const response =  api.put(`list/${listId}/content/${mediaId}`,
+        const response =  api.put(`lists/${listId}/content/${mediaId}`,
             input,{
                 headers: {
                     'Content-Type': VndType.APPLICATION_MOOVIELIST_MEDIA_FORM,
@@ -117,7 +117,7 @@ const listApi = (() => {
             type: type,
             description: description
         }
-        return api.post('list', body,{
+        return api.post('lists', body,{
             headers: {
                 'Content-Type': VndType.APPLICATION_MOOVIELIST_FORM
             }
@@ -125,7 +125,7 @@ const listApi = (() => {
     }
 
     const likeList = (moovieListId, username) =>{
-        return api.put(`/list/${moovieListId}`,
+        return api.put(`/lists/${moovieListId}`,
             {"username": username,
                 "feedbackType" : "LIKE"},
             {headers: {
@@ -135,7 +135,7 @@ const listApi = (() => {
     }
 
     const unlikeList = (moovieListId, username) =>{
-        return api.put(`/list/${moovieListId}`,
+        return api.put(`/lists/${moovieListId}`,
             {"username": username,
                 "feedbackType" : "UNLIKE"},
             {headers: {
@@ -145,7 +145,7 @@ const listApi = (() => {
     }
 
     const followList = (moovieListId, username) =>{
-        return api.put(`/list/${moovieListId}`,
+        return api.put(`/lists/${moovieListId}`,
             {"username":username,
                 "actionType": "FOLLOW"},
 
@@ -156,7 +156,7 @@ const listApi = (() => {
     }
 
     const unfollowList = (moovieListId, username) =>{
-        return api.delete(`/list/${moovieListId}`,
+        return api.delete(`/lists/${moovieListId}`,
             {"username":username,
                 "actionType": "UNFOLLOW"},
 

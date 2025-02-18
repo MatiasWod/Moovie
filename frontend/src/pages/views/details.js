@@ -10,7 +10,7 @@ import ActorCardList from "../components/actorCards/ActorCardList";
 import {useSelector} from "react-redux";
 import MediaTag from "../components/detailsSection/mediaTag/mediaTag";
 import Popover from 'react-bootstrap/Popover';
-import {OverlayTrigger} from "react-bootstrap";
+import {OverlayTrigger, Spinner} from "react-bootstrap";
 import MediaService from "../../services/MediaService";
 import GenreService from "../../services/GenreService";
 import ProviderService from "../../services/ProviderService";
@@ -247,6 +247,7 @@ function Details() {
         setReload(!reload);
     };
 
+    if (mediaLoading || genresLoading || providersLoading || tvCreatorsLoading || userReviewLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
 
     return (
         <div className="container my-1">

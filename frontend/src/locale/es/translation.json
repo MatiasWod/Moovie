@@ -260,5 +260,12 @@
   "comment.like": "Me gusta este comentario",
   "comment.unlike": "Quitar me gusta de este comentario",
   "comment.dislike": "No me gusta este comentario",
-  "comment.undislike": "Quitar no me gusta de este comentario"
+  "comment.undislike": "Quitar no me gusta de este comentario",
+  "listContentSearch.title": "Buscar Media para Agregar",
+  "listContentSearch.placeholder": "Buscar películas...",
+  "listContentSearch.helper": "Haz clic en una película para agregarla a tu lista",
+  "listContentSearch.noResults": "No se encontraron resultados",
+  "listContentSearch.startTyping": "Empieza a escribir para buscar películas",
+  "listContentSearch.addedToList": "agregado a la lista",
+  "listContentSearch.alreadyInList": "ya está en la lista"
 }

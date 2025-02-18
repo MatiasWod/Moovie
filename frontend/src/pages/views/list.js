@@ -9,7 +9,7 @@ import pagingSizes from "../../api/values/PagingSizes";
 import ListContentPaginated from "../components/listContentPaginated/ListContentPaginated";
 import Reviews from "../components/ReviewsSection/Reviews";
 import ListCard from "../components/listCard/ListCard";
-import {ProgressBar} from "react-bootstrap"
+import {ProgressBar, Spinner} from "react-bootstrap"
 import ListApi from "../../api/ListApi";
 import Error403 from "./errorViews/error403";
 import {parsePaginatedResponse} from "../../utils/ResponseUtils";
@@ -210,6 +210,8 @@ function List() {
         )
     }
 
+    if (listLoading || listContentLoading || listRecommendationsLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
+
     return (
         <div className="default-container moovie-default">
             <ListHeader 
@@ -307,7 +309,7 @@ function List() {
                 />
             )}
 
-            <Reviews id={id} source={'list'} handleParentReload={() => setFlag(!flag)} />
+            <Reviews id={id} source={'list'} handleParentReload={() => setFlag(!flag)} parentReload={flag} />
 
         </div>
     );

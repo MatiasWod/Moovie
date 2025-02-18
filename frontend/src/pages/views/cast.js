@@ -7,6 +7,7 @@ import castService from "../../services/CastService";
 import MediaCard from "../components/mediaCard/MediaCard";
 import defaultPoster from "../../images/defaultPoster.png";
 import "./cast.css";
+import {Spinner} from "react-bootstrap";
 
 function Cast() {
     const { id } = useParams();
@@ -46,6 +47,8 @@ function Cast() {
         }
         getData();
     }, [id]);
+
+    if (actorMediasLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
 
     return (
         <div className="cast-container">
