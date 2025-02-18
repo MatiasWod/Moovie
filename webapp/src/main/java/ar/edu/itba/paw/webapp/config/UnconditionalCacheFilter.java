@@ -12,13 +12,18 @@ import java.io.IOException;
 import java.time.Duration;
 
 public class UnconditionalCacheFilter extends OncePerRequestFilter {
-    public static final long MAX_AGE = Duration.ofDays(365).getSeconds();
+    public static final long MEDIA_MAX_AGE = Duration.ofMinutes(5).getSeconds();  // 5 minutes
+    public static final long DEFAULT_MAX_AGE = Duration.ofDays(7).getSeconds(); // 1 week
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         if (HttpMethod.GET.matches(httpServletRequest.getMethod())) {
-            httpServletResponse.setHeader(HttpHeaders.CACHE_CONTROL, String.format("public, max-age=%d, inmutable", MAX_AGE));
+            String requestURI = httpServletRequest.getRequestURI();
+            long maxAge = requestURI.startsWith("/medias/") ? MEDIA_MAX_AGE : DEFAULT_MAX_AGE;
+
+            httpServletResponse.setHeader(HttpHeaders.CACHE_CONTROL, String.format("public, max-age=%d, immutable", maxAge));
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 }
+

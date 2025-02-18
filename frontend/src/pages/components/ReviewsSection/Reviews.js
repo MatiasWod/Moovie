@@ -314,10 +314,18 @@ function Reviews({ id, username, source, handleParentReload }) {
 
     const handlePageChange = (event, newPage) => {
         setPage(newPage);
-        navigate({
-            pathname: `/${source}/${id}`,
-            search: createSearchParams({ page: newPage.toString() }).toString(),
-        });
+        if(source === 'user') {
+            navigate({
+                pathname: `/profile/${username}`,
+                search: createSearchParams({page: newPage.toString()}).toString(),
+            });
+        }
+        else {
+            navigate({
+                pathname: `/${source}/${username}`,
+                search: createSearchParams({page: newPage.toString()}).toString(),
+            });
+        }
     };
 
     return (
