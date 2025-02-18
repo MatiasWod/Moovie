@@ -17,6 +17,7 @@ import ConfirmationForm from "../forms/confirmationForm/confirmationForm";
 import ConfirmationModal from "../forms/confirmationForm/confirmationModal";
 import profileService from "../../../services/ProfileService";
 import ReportForm from "../forms/reportForm/reportForm";
+import reportApi from "../../../api/ReportApi";
 
 
 const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, reloadReviews }) => {
@@ -26,6 +27,7 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
     const [commentLoading, setCommentLoading] = useState(false);
     const [showDeleteReview, setShowDeleteReview] = useState(false);
     const [showEditReview, setShowEditReview] = useState(false);
+    const [showReportForm, setShowReportForm] = useState(false);
 
     const [likeRefresh, setLikeRefresh] = useState(false);
 
@@ -139,6 +141,28 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
         }
     }
 
+    const handleReportSubmit = async (reportReason, additionalInfo) => {
+        try {
+            if (source === 'list') {
+                await reportApi.reportMoovieListReview({
+                    moovieListReviewId: review.id,
+                    reportedBy: currentUser.username,
+                    content: additionalInfo,
+                    type: reportReason
+                });
+            } else {
+                await reportApi.reportReview({
+                    reviewId: review.id,
+                    reportedBy: currentUser.username,
+                    content: additionalInfo,
+                    type: reportReason
+                });
+            }
+            setShowReportForm(false);
+        } catch (error) {
+            console.error("Error reporting review:", error);
+        }
+    };
 
     return (
         <div key={review.id} className="review container-fluid bg-white my-3">
@@ -173,7 +197,7 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
                         {isLoggedIn && (
                             <button
                                 className="btn btn-warning btn-sm mx-1"
-                                onClick={() => setReportedReviewId(review.id)}
+                                onClick={() => setShowReportForm(true)}
                             >
                                 <i className="bi bi-flag"></i>
                             </button>
@@ -236,6 +260,12 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
                 closeReview={handleToggleEdit}
                 onReviewSubmit={handleEdit}/>)
             }
+            {showReportForm && (
+                <ReportForm
+                    onReportSubmit={handleReportSubmit}
+                    onCancel={() => setShowReportForm(false)}
+                />
+            )}
         </div>
     );
 };

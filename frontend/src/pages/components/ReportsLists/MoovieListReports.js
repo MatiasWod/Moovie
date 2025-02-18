@@ -19,36 +19,45 @@ export default function MoovieListReports() {
   const fetchLists = async () => {
     const response = await reportApi.getReports({ contentType: 'list' });
     const reportsData = response.data || [];
-    const listsToSet = [];
-    const checkedUrls = [];
-
-    for (const report of reportsData) {
-      if (checkedUrls.includes(report.url)) continue;
-      checkedUrls.push(report.url);
-      
-      const listResponse = await api.get(report.url);
-      const list = listResponse.data;
-      
-      // Fetch report counts for each type
+    
+    // Get unique URLs
+    const uniqueUrls = [...new Set(reportsData.map(report => report.url))];
+    
+    // Fetch all lists in parallel
+    const listPromises = uniqueUrls.map(url => api.get(url));
+    const listResponses = await Promise.all(listPromises);
+    const lists = listResponses.map(response => response.data);
+    
+    // Fetch all report counts in parallel
+    const reportCountPromises = lists.flatMap(list => {
       const params = { contentType: 'moovieList', resourceId: list.id };
-      
-      const [abuseReports, hateReports, spamReports, privacyReports] = await Promise.all([
+      return [
         reportApi.getReportCounts({ ...params, reportType: ReportTypes['Abuse & Harassment'] }),
         reportApi.getReportCounts({ ...params, reportType: ReportTypes.Hate }),
         reportApi.getReportCounts({ ...params, reportType: ReportTypes.Spam }),
         reportApi.getReportCounts({ ...params, reportType: ReportTypes.Privacy })
-      ]);
+      ];
+    });
+    
+    const reportCounts = await Promise.all(reportCountPromises);
+    
+    // Add report counts to lists
+    const listsWithReports = lists.map((list, index) => {
+      const baseIndex = index * 4;
+      return {
+        ...list,
+        abuseReports: reportCounts[baseIndex].data.count,
+        hateReports: reportCounts[baseIndex + 1].data.count,
+        spamReports: reportCounts[baseIndex + 2].data.count,
+        privacyReports: reportCounts[baseIndex + 3].data.count,
+        totalReports: reportCounts[baseIndex].data.count + 
+                     reportCounts[baseIndex + 1].data.count + 
+                     reportCounts[baseIndex + 2].data.count + 
+                     reportCounts[baseIndex + 3].data.count
+      };
+    });
 
-      // Add report counts to the list object
-      list.abuseReports = abuseReports.data.count;
-      list.hateReports = hateReports.data.count;
-      list.spamReports = spamReports.data.count;
-      list.privacyReports = privacyReports.data.count;
-      list.totalReports = list.abuseReports + list.hateReports + list.spamReports + list.privacyReports;
-
-      listsToSet.push(list);
-    }
-    setLists(listsToSet);
+    setLists(listsWithReports);
   };
 
   const handleDelete = async (ml) => {

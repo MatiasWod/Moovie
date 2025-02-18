@@ -95,13 +95,13 @@ const MediaCard = ({ media, size = 'normal' }) => {
                                     data-tooltip-id={`watched-tooltip-${media.id}`}
                                     data-tooltip-content={ww.watched ? t('mediaCard.removeFromWatched') : t('mediaCard.addToWatched')}
                                     onClick={(e) => { e.stopPropagation(); handleWatched(); }}>
-                                {ww.watched ? <BsEye className="fs-5" /> : <BsEyeSlash className="fs-5" />}
+                                {ww.watched ? <BsEyeSlash className="fs-5" /> : <BsEye className="fs-5" />}
                             </button>
                             <button className="media-card-button"
                                     data-tooltip-id={`watchlist-tooltip-${media.id}`}
                                     data-tooltip-content={t('mediaCard.addToWatchlist')}
                                     onClick={(e) => { e.stopPropagation(); handleWatchlist(); }}>
-                                {ww.watchlist ? <BsBookmark className="fs-5" /> : <BsBookmarkDash className="fs-5" />}
+                                {ww.watchlist ? <BsBookmarkDash className="fs-5" /> : <BsBookmark className="fs-5" />}
                             </button>
                         </div>
                     </div>

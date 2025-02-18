@@ -46,7 +46,7 @@ const profileApi = (() => {
     }
 
     const getPfp =  (username) => {
-        return process.env.REACT_APP_API_URL +  `profiles/${username}/image`;
+        return process.env.REACT_APP_API_URL +  `/profiles/${username}/image`;
     }
 
     /*

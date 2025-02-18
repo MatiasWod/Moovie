@@ -21,21 +21,23 @@ export default function BannedUsers() {
       const response = await userApi.listUsers({ role: UserRoles.BANNED });
       const bannedUsers = response.data || [];
       
-      // Fetch ban messages and profile info for each user
-      const usersWithDetails = await Promise.all(
-        bannedUsers.map(async (user) => {
-          const [banMessageResponse, profileResponse] = await Promise.all([
-            userApi.getBanMessage(user.username),
-            profileApi.getProfileByUsername(user.username)
-          ]);
-          
-          return {
-            ...user,
-            banInfo: banMessageResponse.data,
-            profile: profileResponse.data
-          };
-        })
-      );
+      // Fetch ban messages and profile info in parallel for all users
+      const detailPromises = bannedUsers.flatMap(user => [
+        userApi.getBanMessage(user.username),
+        profileApi.getProfileByUsername(user.username)
+      ]);
+      
+      const detailResponses = await Promise.all(detailPromises);
+      
+      // Combine the results with the user data
+      const usersWithDetails = bannedUsers.map((user, index) => {
+        const baseIndex = index * 2; // 2 promises per user
+        return {
+          ...user,
+          banInfo: detailResponses[baseIndex].data,
+          profile: detailResponses[baseIndex + 1].data
+        };
+      });
       
       setUsers(usersWithDetails);
     } catch (error) {

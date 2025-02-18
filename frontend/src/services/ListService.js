@@ -38,6 +38,14 @@ const ListService = (() => {
         const res = await listApi.getListContentById({id, orderBy, sortOrder, pageNumber, pageSize});
         const contentList = parsePaginatedResponse(res).data;
         const contentListLinks = parsePaginatedResponse(res).links;
+        
+        if (contentList.length === 0) {
+            return {
+                data: [],
+                links: contentListLinks
+            };
+        }
+
         const toRetMedia = await mediaService.getMediaByIdList(mediaService.getIdMediaFromObjectList(contentList));
         for( let i= 0 ; i < contentList.length ; i++ ){
             toRetMedia.data[i].customOrder =  contentList[i].customOrder;

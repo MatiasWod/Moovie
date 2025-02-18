@@ -20,36 +20,45 @@ export default function CommentReports() {
   const fetchComments = async () => {
     const response = await reportApi.getReports({ contentType: 'comment' });
     const reportsData = response.data || [];
-    const commentsToSet = [];
-    const checkedUrls = [];
-
-    for (const report of reportsData) {
-      if (checkedUrls.includes(report.url)) continue;
-      checkedUrls.push(report.url);
-      
-      const commentResponse = await api.get(report.url);
-      const comment = commentResponse.data;
-      
-      // Fetch report counts for each type
+    
+    // Get unique URLs
+    const uniqueUrls = [...new Set(reportsData.map(report => report.url))];
+    
+    // Fetch all comments in parallel
+    const commentPromises = uniqueUrls.map(url => api.get(url));
+    const commentResponses = await Promise.all(commentPromises);
+    const comments = commentResponses.map(response => response.data);
+    
+    // Fetch all report counts in parallel
+    const reportCountPromises = comments.flatMap(comment => {
       const params = { contentType: 'comment', resourceId: comment.id };
-      
-      const [abuseReports, hateReports, spamReports, privacyReports] = await Promise.all([
+      return [
         reportApi.getReportCounts({ ...params, reportType: ReportTypes['Abuse & Harassment'] }),
         reportApi.getReportCounts({ ...params, reportType: ReportTypes.Hate }),
         reportApi.getReportCounts({ ...params, reportType: ReportTypes.Spam }),
         reportApi.getReportCounts({ ...params, reportType: ReportTypes.Privacy })
-      ]);
+      ];
+    });
+    
+    const reportCounts = await Promise.all(reportCountPromises);
+    
+    // Add report counts to comments
+    const commentsWithReports = comments.map((comment, index) => {
+      const baseIndex = index * 4;
+      return {
+        ...comment,
+        abuseReports: reportCounts[baseIndex].data.count,
+        hateReports: reportCounts[baseIndex + 1].data.count,
+        spamReports: reportCounts[baseIndex + 2].data.count,
+        privacyReports: reportCounts[baseIndex + 3].data.count,
+        totalReports: reportCounts[baseIndex].data.count + 
+                     reportCounts[baseIndex + 1].data.count + 
+                     reportCounts[baseIndex + 2].data.count + 
+                     reportCounts[baseIndex + 3].data.count
+      };
+    });
 
-      // Add report counts to the comment object
-      comment.abuseReports = abuseReports.data.count;
-      comment.hateReports = hateReports.data.count;
-      comment.spamReports = spamReports.data.count;
-      comment.privacyReports = privacyReports.data.count;
-      comment.totalReports = comment.abuseReports + comment.hateReports + comment.spamReports + comment.privacyReports;
-
-      commentsToSet.push(comment);
-    }
-    setComments(commentsToSet);
+    setComments(commentsWithReports);
   };
 
   const handleDelete = async (comment) => {

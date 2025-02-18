@@ -20,43 +20,54 @@ export default function ReviewReports() {
   const fetchReports = async () => {
     const response = await reportApi.getReports({ contentType: 'review' });
     const reportsData = response.data || [];
-    const reviewsToSet = [];
-    const checkedUrls = [];
     
-    for (const report of reportsData) {
-      if (checkedUrls.includes(report.url)) continue;
-      checkedUrls.push(report.url);
-      
-      const reviewResponse = await api.get(report.url);
-      const review = reviewResponse.data;
-      
-      // Fetch report counts for each type
+    // Get unique URLs
+    const uniqueUrls = [...new Set(reportsData.map(report => report.url))];
+    
+    // Fetch all reviews in parallel
+    const reviewPromises = uniqueUrls.map(url => api.get(url));
+    const reviewResponses = await Promise.all(reviewPromises);
+    const reviews = reviewResponses.map(response => response.data);
+    
+    // Fetch all report counts and media details in parallel
+    const allPromises = reviews.flatMap(review => {
       const params = { contentType: 'review', resourceId: review.id };
-      
-      const [abuseReports, hateReports, spamReports, privacyReports] = await Promise.all([
+      const promises = [
         reportApi.getReportCounts({ ...params, reportType: ReportTypes['Abuse & Harassment'] }),
         reportApi.getReportCounts({ ...params, reportType: ReportTypes.Hate }),
         reportApi.getReportCounts({ ...params, reportType: ReportTypes.Spam }),
         reportApi.getReportCounts({ ...params, reportType: ReportTypes.Privacy })
-      ]);
-
-      // Add report counts to the review object
-      review.abuseReports = abuseReports.data.count;
-      review.hateReports = hateReports.data.count;
-      review.spamReports = spamReports.data.count;
-      review.privacyReports = privacyReports.data.count;
-      review.totalReports = review.abuseReports + review.hateReports + review.spamReports + review.privacyReports;
-
-      // Fetch media details if available
+      ];
+      
       if (review.mediaId) {
-        const mediaResponse = await mediaApi.getMediaById(review.mediaId);
-        review.mediaDetails = mediaResponse.data;
+        promises.push(mediaApi.getMediaById(review.mediaId));
+      } else {
+        promises.push(Promise.resolve({ data: null }));
       }
+      
+      return promises;
+    });
+    
+    const allResults = await Promise.all(allPromises);
+    
+    // Add report counts and media details to reviews
+    const reviewsWithReports = reviews.map((review, index) => {
+      const baseIndex = index * 5; // 4 report types + 1 media detail
+      return {
+        ...review,
+        abuseReports: allResults[baseIndex].data.count,
+        hateReports: allResults[baseIndex + 1].data.count,
+        spamReports: allResults[baseIndex + 2].data.count,
+        privacyReports: allResults[baseIndex + 3].data.count,
+        totalReports: allResults[baseIndex].data.count + 
+                     allResults[baseIndex + 1].data.count + 
+                     allResults[baseIndex + 2].data.count + 
+                     allResults[baseIndex + 3].data.count,
+        mediaDetails: allResults[baseIndex + 4].data
+      };
+    });
 
-      reviewsToSet.push(review);
-    }
-    console.log(reviewsToSet);
-    setReviews(reviewsToSet);
+    setReviews(reviewsWithReports);
   };
 
   const handleDelete = async (review) => {

@@ -40,7 +40,7 @@ function NavbarComponent({ onLocationChange }) {
     return (
         <Navbar expand="lg"  sticky="top"  className="navbar navbar-expand-lg navbar-light bg-body-tertiary container-nav">
             <Container fluid>
-                <Navbar.Brand href="/" className="d-flex align-items-center">
+                <Navbar.Brand href={process.env.PUBLIC_URL} className="d-flex align-items-center">
                     <Image src={Logo} width={50} className="me-2"/> Moovie
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>

@@ -67,14 +67,18 @@ function ProfileTabMediaLists({ type, username }) {
                     }
                     data = await ListService.getLists(params);
                 } else {
-                    data = await ProfileService.getLikedOrFollowedListFromUser(
+                    const initialData = await ProfileService.getLikedOrFollowedListFromUser(
                         username,
                         typeString,
                         orderBy,
                         sortOrder,
                         page
                     );
-                    data = await ListService.getListByIdList(ListService.getIdListFromObjectList(data.data));
+                    if (initialData.data && initialData.data.length > 0) {
+                        data = await ListService.getListByIdList(ListService.getIdListFromObjectList(initialData.data));
+                    } else {
+                        data = initialData;
+                    }
                 }
                 setLists(data);
                 setListError(false);
