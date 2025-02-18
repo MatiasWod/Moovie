@@ -169,7 +169,7 @@ public class CommentController {
 
     @DELETE
     @Path("/{id}")
-    @PreAuthorize("@accessValidator.isUserCommentAuthor(#id)")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteComment(@PathParam("id") @NotNull int id) {
             try {
