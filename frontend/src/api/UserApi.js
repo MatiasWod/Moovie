@@ -44,7 +44,7 @@ const userApi = (() => {
     };
 
     const confirmToken = async (token) => {
-        const response = await api.put(`users/verification-token`,
+        const response = await api.put(`users/`,
             {
                 token: token
             },
@@ -64,7 +64,7 @@ const userApi = (() => {
 
     const resendVerificationEmail = async (token) => {
         try {
-            return await api.post('users/verification-token',
+            return await api.post('users/',
                 { token },
                 {
                     headers: {
@@ -79,11 +79,11 @@ const userApi = (() => {
 
     const forgotPassword = async (email) => {
         try {
-            return await api.post('users/password-token',
+            return await api.post('users/',
                 { email },
                 {
                     headers: {
-                        'Content-Type': VndType.APPLICATION_USER
+                        'Content-Type': VndType.APPLICATION_PASSWORD_TOKEN_FORM
                     }
                 }
             );
@@ -94,9 +94,10 @@ const userApi = (() => {
 
     const resetPassword = async (token, password) => {
         try {
-            return await api.put(`users/password-token/${token}`,
+            return await api.put(`users/`,
                 {
-                    password: password
+                    password: password,
+                    token: token
                 },
                 {
                     headers: {
