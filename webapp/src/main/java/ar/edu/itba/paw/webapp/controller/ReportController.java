@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
-import javax.validation.Valid;import javax.ws.rs.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,8 +44,13 @@ public class ReportController {
 
     @GET
     @Produces(VndType.APPLICATION_REPORT_LIST)
-    public Response getReports(@QueryParam("contentType") String contentType) {
+    public Response getReports(@QueryParam("contentType") @NotNull String contentType) {
         try {
+
+            if(contentType!=null && !contentType.equals("comment") && !contentType.equals("moovieList") && !contentType.equals("moovieListReview") && !contentType.equals("review")){
+                throw new IllegalArgumentException("The 'contentType' query parameter must be one of 'comment', 'moovieList', 'moovieListReview', or 'review'.");
+            }
+
             // Fetch reports based on filters using the ReportService
             List<Object> reports = reportService.getReports(contentType);
 
@@ -63,7 +70,10 @@ public class ReportController {
 
             return Response.ok(new GenericEntity<List<ReportDTO>>(reportDTOs) {
             }).build();
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException(e.getMessage(), e);
+        }
+        catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage(), e); // Deja que JAX-RS maneje la excepción        }
         }
     }
@@ -123,7 +133,10 @@ public class ReportController {
             }
         } catch (UnableToFindUserException e) {
             return new UnableToFindUserEM().toResponse(e);
-        } catch (Exception e) {
+        }  catch (IllegalArgumentException e) {
+            throw new BadRequestException(e.getMessage(), e);
+        }
+        catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage(), e);
         }
     }
@@ -152,10 +165,13 @@ public class ReportController {
             } else {
                 throw new IllegalArgumentException("At least one of 'moovieListId', 'commentId', 'moovieListReviewId', or 'reviewId' must be provided.");
             }
-        } catch (Exception e) {
+            return Response.ok().build();
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException(e.getMessage(), e);
+        }
+        catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage(), e);
         }
-        return Response.ok().build();
     }
 
     @GET
@@ -254,11 +270,10 @@ public class ReportController {
             }
 
         } catch (IllegalArgumentException e) {
-            //TODO doesnt show message
             throw new BadRequestException(e.getMessage(), e);
         }
         catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage(), e); // Deja que JAX-RS maneje la excepción        }
+            throw new InternalServerErrorException(e.getMessage(), e);
         }
     }
 
