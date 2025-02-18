@@ -19,36 +19,45 @@ export default function MoovieListReviewReports() {
   const fetchReviews = async () => {
     const response = await reportApi.getReports({ contentType: 'listReview' });
     const reportsData = response.data || [];
-    const reviewsToSet = [];
-    const checkedUrls = [];
-
-    for (const report of reportsData) {
-      if (checkedUrls.includes(report.url)) continue;
-      checkedUrls.push(report.url);
-      
-      const reviewResponse = await api.get(report.url);
-      const review = reviewResponse.data;
-      
-      // Fetch report counts for each type
+    
+    // Get unique URLs
+    const uniqueUrls = [...new Set(reportsData.map(report => report.url))];
+    
+    // Fetch all reviews in parallel
+    const reviewPromises = uniqueUrls.map(url => api.get(url));
+    const reviewResponses = await Promise.all(reviewPromises);
+    const reviews = reviewResponses.map(response => response.data);
+    
+    // Fetch all report counts in parallel
+    const reportCountPromises = reviews.flatMap(review => {
       const params = { contentType: 'moovieListReview', resourceId: review.id };
-      
-      const [abuseReports, hateReports, spamReports, privacyReports] = await Promise.all([
+      return [
         reportApi.getReportCounts({ ...params, reportType: ReportTypes['Abuse & Harassment'] }),
         reportApi.getReportCounts({ ...params, reportType: ReportTypes.Hate }),
         reportApi.getReportCounts({ ...params, reportType: ReportTypes.Spam }),
         reportApi.getReportCounts({ ...params, reportType: ReportTypes.Privacy })
-      ]);
+      ];
+    });
+    
+    const reportCounts = await Promise.all(reportCountPromises);
+    
+    // Add report counts to reviews
+    const reviewsWithReports = reviews.map((review, index) => {
+      const baseIndex = index * 4;
+      return {
+        ...review,
+        abuseReports: reportCounts[baseIndex].data.count,
+        hateReports: reportCounts[baseIndex + 1].data.count,
+        spamReports: reportCounts[baseIndex + 2].data.count,
+        privacyReports: reportCounts[baseIndex + 3].data.count,
+        totalReports: reportCounts[baseIndex].data.count + 
+                     reportCounts[baseIndex + 1].data.count + 
+                     reportCounts[baseIndex + 2].data.count + 
+                     reportCounts[baseIndex + 3].data.count
+      };
+    });
 
-      // Add report counts to the review object
-      review.abuseReports = abuseReports.data.count;
-      review.hateReports = hateReports.data.count;
-      review.spamReports = spamReports.data.count;
-      review.privacyReports = privacyReports.data.count;
-      review.totalReports = review.abuseReports + review.hateReports + review.spamReports + review.privacyReports;
-
-      reviewsToSet.push(review);
-    }
-    setReviews(reviewsToSet);
+    setReviews(reviewsWithReports);
   };
 
   const handleDelete = async (review) => {
