@@ -205,8 +205,8 @@ public class UserController {
     }
 
     @POST
-    @Produces(VndType.APPLICATION_PASSWORD_TOKEN_FORM)
-    @Consumes(VndType.APPLICATION_USER)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(VndType.APPLICATION_PASSWORD_TOKEN_FORM)
     public Response createPasswordResetToken(@Valid UserEmailDto userEmailDto) {
         LOGGER.info("Method: createPasswordResetToken, Path: /users, Email: {}", userEmailDto.getEmail());
         try {

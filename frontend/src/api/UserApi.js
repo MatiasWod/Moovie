@@ -79,8 +79,8 @@ const userApi = (() => {
 
     const forgotPassword = async (email) => {
         try {
-            return await api.post('users/',
-                { email },
+            return await api.post('/users/',
+                { email: email },
                 {
                     headers: {
                         'Content-Type': VndType.APPLICATION_PASSWORD_TOKEN_FORM
