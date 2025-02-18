@@ -66,7 +66,7 @@ const CreateListView = () => {
         try {
             const response = await ListService.createMoovieList({
                 name: name,
-                type: isPrivate ? MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.type : MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.type,
+                type: isPrivate ? MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.type : MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.type,
                 description: description
             });
             if (!response || !response.data || !response.data.url) {
