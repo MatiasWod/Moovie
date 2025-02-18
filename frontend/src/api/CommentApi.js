@@ -35,7 +35,7 @@ const commentApi = (() => {
     const commentFeedback = async (commentId, feedback) => {
         const response = await api.put('/comments/' + commentId,
             {
-                feedback: feedback
+                feedbackType: feedback
             },
             {
                 headers: {

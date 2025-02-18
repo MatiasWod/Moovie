@@ -427,9 +427,9 @@ public class ProfileController {
     public Response getFeedbackedCommentById(@PathParam("username") final String username,
                                                   @PathParam("commentId") final int commentId) {
 
-        Comment comment = commentService.getCommentById(commentId);
-        boolean liked=comment.isCurrentUserHasLiked();
-        boolean disliked=comment.isCurrentUserHasDisliked();
+        int uid = userService.getProfileByUsername(username).getUserId();
+        boolean liked= commentService.userHasLiked(commentId, uid);
+        boolean disliked=commentService.userHasDisliked(commentId, uid);
 
         if(liked || disliked){
             return Response.ok(UserCommentIdDto.fromUserCommentId(commentId,username,liked,disliked)).build();

@@ -1,6 +1,7 @@
 import {parsePaginatedResponse} from "../utils/ResponseUtils";
 import profileApi from "../api/ProfileApi";
 import WatchlistWatched from "../api/values/WatchlistWatched";
+import CommentStatusEnum from "../api/values/CommentStatusEnum";
 
 const ProfileService = (() => {
     const getMilkyLeaderboard = async ({page, pageSize}) => {
@@ -153,6 +154,24 @@ const ProfileService = (() => {
         }
     }
 
+    const currentUserCommentFeedback = async(commentId, username) =>{
+        try {
+            let res = await profileApi.currentUserCommentFeedback(commentId, username);
+            if ( res.status === 204) {
+                return CommentStatusEnum.NONE;
+            }
+            res = res.data;
+            if(res.liked === true){
+                return CommentStatusEnum.LIKE;
+            }
+            if(res.disliked === true){
+                return CommentStatusEnum.DISLIKE;
+            }
+            return CommentStatusEnum.NONE;
+        }catch(e){
+        }
+    }
+
     return {
         getMilkyLeaderboard,
         getSearchedUsers,
@@ -167,8 +186,8 @@ const ProfileService = (() => {
         currentUserLikeFollowStatus,
         currentUserWWStatus,
         currentUserHasLikedReview,
-        currentUserHasLikedMoovieListReview
-
+        currentUserHasLikedMoovieListReview,
+        currentUserCommentFeedback
     }
 })();
 

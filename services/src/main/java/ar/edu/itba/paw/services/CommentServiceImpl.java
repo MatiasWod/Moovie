@@ -32,11 +32,13 @@ public class CommentServiceImpl implements CommentService{
         return commentDao.getCommentById(commentId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public boolean userHasLiked(int commentId, int userId) {
         return commentDao.userHasLiked(commentId, userId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public boolean userHasDisliked(int commentId, int userId) {
         return commentDao.userHasDisliked(commentId,userId);

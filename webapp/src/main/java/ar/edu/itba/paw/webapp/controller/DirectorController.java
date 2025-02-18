@@ -7,6 +7,7 @@ import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
@@ -46,7 +47,7 @@ public class DirectorController {
     @GET
     @Path("/{id}")
     @Produces(VndType.APPLICATION_DIRECTOR)
-    public Response getDirectorById(@PathParam("id") final int directorId) {
+    public Response getDirectorById(@PathParam("id") @NotNull final int directorId) {
         Director director = directorService.getDirectorById(directorId);
         return Response.ok(DirectorDto.fromDirector(director, uriInfo)).build();
     }
