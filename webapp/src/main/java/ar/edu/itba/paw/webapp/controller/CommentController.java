@@ -86,7 +86,7 @@ public class CommentController {
     @POST
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(VndType.APPLICATION_COMMENT_FORM)
+    @Consumes({VndType.APPLICATION_COMMENT_FORM})
     public Response createComment(@QueryParam("reviewId") @NotNull final int reviewId, @Valid @NotNull final CommentCreateDto commentDto) {
         try {
             commentService.createComment(
@@ -114,7 +114,7 @@ public class CommentController {
     @PUT
     @Path("/{id}")
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Consumes(VndType.APPLICATION_COMMENT_FEEDBACK_FORM)
+    @Consumes({VndType.APPLICATION_COMMENT_FEEDBACK_FORM})
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateFeedbackOnComment(@PathParam("id") @NotNull int id, @Valid @NotNull final CommentFeedbackDto commentFeedbackDto) {
         try {
