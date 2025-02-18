@@ -35,8 +35,6 @@ public class MoovieListReviewDto {
 
     private String moovieListUrl;
 
-    //TODO URL a Likes y Reports
-
 
     public static MoovieListReviewDto fromMoovieListReview(final MoovieListReview moovieListReview, UriInfo uriInfo){
         MoovieListReviewDto moovieListReviewDto= new MoovieListReviewDto();

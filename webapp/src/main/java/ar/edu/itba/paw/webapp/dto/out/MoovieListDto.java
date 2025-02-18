@@ -18,7 +18,6 @@ public class MoovieListDto {
 
     private String description;
 
-    //TODO Considerar que capaz no hay que devolver esto
     private int type;
 
     private int likes;

@@ -37,7 +37,6 @@ public class CommentDto {
 
     private String reviewUrl;
 
-    //TODO IMPLEMENTAR ESTE URL
     private String reportsUrl;
 
     public static CommentDto fromComment(final Comment comment, UriInfo uriInfo) {
