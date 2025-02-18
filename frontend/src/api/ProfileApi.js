@@ -134,7 +134,8 @@ const profileApi = (() => {
         insertMediaIntoWW,
         removeMediaFromWW,
         currentUserHasLikedReview,
-        currentUserHasLikedMoovieListReview
+        currentUserHasLikedMoovieListReview,
+        currentUserCommentFeedback
     }
 
 }

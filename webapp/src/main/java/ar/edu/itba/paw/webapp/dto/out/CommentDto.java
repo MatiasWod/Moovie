@@ -21,6 +21,8 @@ public class CommentDto {
 
     private int commentDislikes;
 
+    private String username;
+
     private String totalReportsUrl;
 
     private String spamReportsUrl;
@@ -47,6 +49,7 @@ public class CommentDto {
         commentDto.content = comment.getContent();
         commentDto.commentLikes = comment.getCommentLikes();
         commentDto.commentDislikes = comment.getCommentDislikes();
+        commentDto.username = comment.getUsername();
 
         commentDto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
                 .queryParam("contentType", "comment")
@@ -185,6 +188,14 @@ public class CommentDto {
 
     public String getUrl() {
         return url;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setUrl(String url) {
