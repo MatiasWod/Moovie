@@ -18,6 +18,7 @@ import ConfirmationModal from "../forms/confirmationForm/confirmationModal";
 import profileService from "../../../services/ProfileService";
 import ReportForm from "../forms/reportForm/reportForm";
 import reportApi from "../../../api/ReportApi";
+import {Spinner} from "react-bootstrap";
 
 
 const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, reloadReviews }) => {
@@ -328,9 +329,10 @@ function Reviews({ id, username, source, handleParentReload }) {
         }
     };
 
+    if (loading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
+
     return (
         <div className="reviews-container">
-            {loading && <p>{t('reviews.loading')}</p>}
             {error && <p className="error">{t('reviews.error')} {error.message}</p>}
             {!loading && !error && reviews.length > 0 ? (
                 reviews.map(review => (

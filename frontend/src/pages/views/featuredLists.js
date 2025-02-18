@@ -15,6 +15,7 @@ import Error404 from "./errorViews/error404";
 import MediaService from "../../services/MediaService";
 import pagingSizes from "../../api/values/PagingSizes";
 import {useTranslation} from "react-i18next";
+import {Spinner} from "react-bootstrap";
 
 
 function FeaturedLists() {
@@ -110,6 +111,8 @@ function FeaturedLists() {
 
         getData();
     }, [type, page]);
+
+    if (featuredMediaLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
 
     return (
         <div className="default-container moovie-default">

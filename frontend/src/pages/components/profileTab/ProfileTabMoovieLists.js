@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import SortOrder from "../../../api/values/SortOrder";
 import OrderBy from "../../../api/values/MediaOrderBy";
 import UserApi from "../../../api/UserApi";
@@ -10,6 +10,7 @@ import MoovieListTypes from "../../../api/values/MoovieListTypes";
 import ListCardsPaginated from "../ListCardsPaginated/ListCardsPaginated";
 import UserService from "../../../services/UserService";
 import ProfileService from "../../../services/ProfileService";
+import {Spinner} from "react-bootstrap";
 
 function ProfileTabMediaLists({ type, username }) {
 
@@ -93,6 +94,7 @@ function ProfileTabMediaLists({ type, username }) {
         getData();
     }, [orderBy, sortOrder, page, typeQuery, typeString, username, search, pagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS]);
 
+    if (listsLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
 
     return (
         <ListCardsPaginated

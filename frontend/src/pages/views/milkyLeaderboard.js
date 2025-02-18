@@ -8,6 +8,7 @@ import logo from "../../images/logo.png"
 import {useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import profileApi from "../../api/ProfileApi";
+import {Spinner} from "react-bootstrap";
 
 function MilkyLeaderboard() {
     const [milkyLeaderboard, setMilkyLeaderboard] = useState([]);
@@ -37,6 +38,8 @@ function MilkyLeaderboard() {
     //Alguien que tenga buenos gustos dieñativos que ponga esto en algun lugar
     //<img style={{width: "100px", height: "100px"}} src={logo}
     //                  alt="Milky Logo"/>
+
+    if (milkyLeaderboardLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
 
     return (
         <div className="moovie-default default-container">
