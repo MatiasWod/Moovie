@@ -178,11 +178,25 @@ public class MediaController {
     @Path("/{id}")
     @Produces(VndType.APPLICATION_MEDIA)
     public Response getMediaById(@PathParam("id") final int id) {
-        Media media = mediaService.getMediaById(id);
-        if(media.isType()){
-            return Response.ok(TVSerieDto.fromTVSerie(mediaService.getTvById(id), uriInfo)).build();
+        try {
+            Media media = mediaService.getMediaById(id);
+
+            if (media == null) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("Media with ID: " + id + " not found.")
+                        .build();
+            }
+
+            if(media.isType()){
+                return Response.ok(TVSerieDto.fromTVSerie(mediaService.getTvById(id), uriInfo)).build();
+            }
+            return Response.ok(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo)).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An error occurred: " + e.getMessage())
+                    .build();
         }
-        return Response.ok(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo)).build();
+
 
     }
 
