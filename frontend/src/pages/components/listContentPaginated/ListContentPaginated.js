@@ -9,6 +9,7 @@ import Button from "react-bootstrap/Button";
 import {useSelector} from "react-redux";
 import SortOrder from "../../../api/values/SortOrder";
 import {useTranslation} from "react-i18next";
+import ListContentPaginatedSearchMode from "./ListContentPaginatedSearchMode";
 
 const ListContentPaginated = ({
                                   listContent,
@@ -34,6 +35,12 @@ const ListContentPaginated = ({
         setSortOrder(SortOrder.ASC);
     }
 
+    const [searchMediaMode, setSearchMediaMode] = useState(false);
+    const handleSearchMediaToAdd = () => {
+        setSearchMediaMode(!searchMediaMode);
+    }
+
+
     return (
         <div>
             {
@@ -56,6 +63,7 @@ const ListContentPaginated = ({
                     <>
                         <Button onClick={handleEditMode}>{t('listContentPaginated.save')}</Button>
                         <div>{t('list.dragToModifyOrder')}</div>
+                        <Button onClick={handleSearchMediaToAdd}>{t('listContentPaginated.searchMediaToAdd')}</Button>
                     </>
                 )
             )}
@@ -74,6 +82,12 @@ const ListContentPaginated = ({
                     />
                 )}
             </div>
+
+            {
+                searchMediaMode && (
+                    <ListContentPaginatedSearchMode moovieListId={listId} handleCloseSearchMode={handleSearchMediaToAdd}/>
+                )
+            }
         </div>
     );
 };

@@ -106,6 +106,8 @@
   "listContent.releaseDate": "Fecha de lanzamiento",
   "listContentPaginated.edit": "Editar",
   "listContentPaginated.save": "Guardar",
+  "listContentPaginated.searchMediaToAdd": "Agregar medias",
+  "listContentPaginated.addToList": "Clickea en la media para agregarla a la lista.",
   "listHeader.by": "Por",
   "listHeader.dislike": "No me gusta",
   "listHeader.edit": "Editar",

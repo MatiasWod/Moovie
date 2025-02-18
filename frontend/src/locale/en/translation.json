@@ -103,6 +103,8 @@
   "listContent.releaseDate": "Release Date",
   "listContentPaginated.edit": "Edit",
   "listContentPaginated.save": "Save",
+  "listContentPaginated.searchMediaToAdd": "Add medias",
+  "listContentPaginated.addToList": "Click on media to add to list.",
   "listHeader.by": "By",
   "listHeader.dislike": "Dislike",
   "listHeader.edit": "Edit",

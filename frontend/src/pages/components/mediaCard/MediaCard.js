@@ -10,7 +10,7 @@ import {useTranslation} from "react-i18next";
 import profileService from "../../../services/ProfileService";
 import { BsEye, BsEyeSlash, BsBookmark, BsBookmarkDash } from 'react-icons/bs';
 
-const MediaCard = ({ media, size = 'normal' }) => {
+const MediaCard = ({ media, size = 'normal' , showWWButtons = true, disableOnClick = false}) => {
     const releaseDate = new Date(media.releaseDate).getFullYear();
 
     const [ww, setWW] = useState({ watched: false, watchlist: false });
@@ -42,7 +42,9 @@ const MediaCard = ({ media, size = 'normal' }) => {
     };
 
     const handleClick = () => {
-        navigate(`/details/${media.id}`);
+        if(!disableOnClick){
+            navigate(`/details/${media.id}`);
+        }
     };
 
     const handleWatched = async () => {
@@ -90,6 +92,7 @@ const MediaCard = ({ media, size = 'normal' }) => {
                         <h5>{releaseDate}</h5>
                         <h5>{media.tmdbRating}⭐</h5>
 
+                        {showWWButtons &&(
                         <div className="media-card-buttons">
                             <button className="media-card-button"
                                     data-tooltip-id={`watched-tooltip-${media.id}`}
@@ -104,6 +107,7 @@ const MediaCard = ({ media, size = 'normal' }) => {
                                 {ww.watchlist ? <BsBookmarkDash className="fs-5" /> : <BsBookmark className="fs-5" />}
                             </button>
                         </div>
+                        )}
                     </div>
                 )}
             </div>
