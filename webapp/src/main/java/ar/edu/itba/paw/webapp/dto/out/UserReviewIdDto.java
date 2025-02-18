@@ -8,9 +8,11 @@ public class UserReviewIdDto {
 
     public UserReviewIdDto() {}
 
-    public UserReviewIdDto(int reviewId, String username) {
-        this.reviewId = reviewId;
-        this.username = username;
+    public static UserReviewIdDto fromUserReviewId(int reviewId, String username) {
+        UserReviewIdDto dto = new UserReviewIdDto();
+        dto.reviewId = reviewId;
+        dto.username = username;
+        return dto;
     }
 
     public int getReviewId() {

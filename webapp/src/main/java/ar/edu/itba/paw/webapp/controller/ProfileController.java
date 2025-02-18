@@ -310,8 +310,6 @@ public class ProfileController {
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(VndType.APPLICATION_FOLLOWED_LISTS)
     public Response getFollowedLists(@PathParam("username") final String username,
-                                     @QueryParam("orderBy") String orderBy,
-                                     @QueryParam("order") String order,
                                      @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
         int userid = userService.getProfileByUsername(username).getUserId();
         List<MoovieListCard> mlcList = moovieListService.getFollowedMoovieListCards(userid, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
@@ -340,7 +338,7 @@ public class ProfileController {
                                             @PathParam("listId") final int listId) {
         UserMoovieListId userMoovieListId = moovieListService.currentUserHasFollowed(listId);
         if (userMoovieListId != null && userMoovieListId.getUsername().equals(username)) {
-            return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId, username)).build();
+            return Response.ok(UserListIdDto.fromUserMoovieList(userMoovieListId, username)).build();
         }
         return Response.noContent().build();
     }
@@ -355,8 +353,6 @@ public class ProfileController {
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getLikedLists(@PathParam("username") final String username,
-                                  @QueryParam("orderBy") String orderBy,
-                                  @QueryParam("order") String order,
                                   @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
         List<MoovieListCard> mlcList = moovieListService.getLikedMoovieListCards(username, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
                 PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1);
@@ -386,7 +382,7 @@ public class ProfileController {
                                          @PathParam("username") final String username) {
         UserMoovieListId userMoovieListId = moovieListService.currentUserHasLiked(listId);
         if (userMoovieListId != null && userMoovieListId.getUsername().equals(username)) {
-            return Response.ok(new UserListIdDto().fromUserMoovieList(userMoovieListId, username)).build();
+            return Response.ok(UserListIdDto.fromUserMoovieList(userMoovieListId, username)).build();
         }
         return Response.noContent().build();
     }
@@ -397,15 +393,12 @@ public class ProfileController {
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getLikedReviewById(@PathParam("username") final String username,
-                                       @PathParam("reviewId") final int reviewId,
-                                       @QueryParam("orderBy") String orderBy,
-                                       @QueryParam("order") String order,
-                                       @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
+                                       @PathParam("reviewId") final int reviewId) {
         Review review = reviewService.getReviewById(reviewId);
         boolean liked=review.isCurrentUserHasLiked();
 
         if(liked){
-            return Response.ok(new UserReviewIdDto(reviewId,username)).build();
+            return Response.ok(UserReviewIdDto.fromUserReviewId(reviewId,username)).build();
         }
 
         return Response.noContent().build();
@@ -417,15 +410,12 @@ public class ProfileController {
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getLikedMoovieListsReviewById(@PathParam("username") final String username,
-                                       @PathParam("moovieListReviewId") final int moovieListReviewId,
-                                       @QueryParam("orderBy") String orderBy,
-                                       @QueryParam("order") String order,
-                                       @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
+                                       @PathParam("moovieListReviewId") final int moovieListReviewId) {
         MoovieListReview review = reviewService.getMoovieListReviewById(moovieListReviewId);
         boolean liked=review.isCurrentUserHasLiked();
 
         if(liked){
-            return Response.ok(new UserReviewIdDto(moovieListReviewId,username)).build();
+            return Response.ok(UserReviewIdDto.fromUserReviewId(moovieListReviewId,username)).build();
         }
 
         return Response.noContent().build();
@@ -437,17 +427,14 @@ public class ProfileController {
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFeedbackedCommentById(@PathParam("username") final String username,
-                                                  @PathParam("commentId") final int commentId,
-                                                  @QueryParam("orderBy") String orderBy,
-                                                  @QueryParam("order") String order,
-                                                  @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
+                                                  @PathParam("commentId") final int commentId) {
 
         Comment comment = commentService.getCommentById(commentId);
         boolean liked=comment.isCurrentUserHasLiked();
         boolean disliked=comment.isCurrentUserHasDisliked();
 
         if(liked || disliked){
-            return Response.ok(new UserCommentIdDto(commentId,username,liked,disliked)).build();
+            return Response.ok(UserCommentIdDto.fromUserCommentId(commentId,username,liked,disliked)).build();
         }
         return Response.noContent().build();
 

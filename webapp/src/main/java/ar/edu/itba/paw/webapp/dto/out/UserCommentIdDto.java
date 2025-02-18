@@ -8,11 +8,13 @@ public class UserCommentIdDto {
 
     public UserCommentIdDto() {}
 
-    public UserCommentIdDto(int commentId, String username, boolean liked, boolean disliked) {
-        this.commentId = commentId;
-        this.username = username;
-        this.liked = liked;
-        this.disliked = disliked;
+    public static UserCommentIdDto fromUserCommentId(int commentId, String username, boolean liked, boolean disliked) {
+        UserCommentIdDto dto = new UserCommentIdDto();
+        dto.commentId = commentId;
+        dto.username = username;
+        dto.liked = liked;
+        dto.disliked = disliked;
+        return dto;
     }
 
     public int getCommentId() {
