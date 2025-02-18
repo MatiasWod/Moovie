@@ -140,6 +140,9 @@ public class UserController {
             userService.createUser(userCreateDto.getUsername(), userCreateDto.getEmail(), userCreateDto.getPassword());
             final User user = userService.findUserByUsername(userCreateDto.getUsername());
             return Response.created(uriInfo.getBaseUriBuilder().path("users").path(String.valueOf(user.getUserId())).build()).entity(UserDto.fromUser(user, uriInfo)).build();
+        }  catch (UnableToCreateUserException e) {
+            LOGGER.info("User already exists. Returning CONFLICT.");
+            return Response.status(Response.Status.CONFLICT).entity("User already exists").build();
         } catch (RuntimeException e) {
             LOGGER.error("Error creating user: {}", e.getMessage());
             return Response.serverError().entity(e.getMessage()).build();
@@ -147,10 +150,9 @@ public class UserController {
     }
 
     @PUT
-    @Path("/verification-token")
     @Consumes(VndType.APPLICATION_USER_TOKEN_FORM)
     @Produces(VndType.APPLICATION_USER_TOKEN)
-    public Response verifyUser(@Valid final TokenDto tokenDto) {
+    public Response verifyUser(@Valid @NotNull final TokenDto tokenDto) {
         String tokenString = tokenDto.getToken();
         LOGGER.info("Method: verifyUser, Path: users, Token: {}", tokenString);
         try {
@@ -159,7 +161,8 @@ public class UserController {
                 Token token = tok.get();
                 if (userService.confirmRegister(token)) {
                     User user = userService.findUserById(token.getUserId());
-                    return Response.notModified().header(HttpHeaders.AUTHORIZATION, jwtTokenProvider.createToken(user)).build();
+                    String jwt = jwtTokenProvider.createToken(user);
+                    return Response.ok(UserDto.fromUser(user, uriInfo)).header(HttpHeaders.AUTHORIZATION, jwt).build();
                 }
                 LOGGER.info("Token validation failed. Returning INTERNAL_SERVER_ERROR.");
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -173,11 +176,10 @@ public class UserController {
     }
 
     @POST
-    @Path("/verification-token")
     @Consumes(VndType.APPLICATION_RESEND_TOKEN_FORM)
     @Produces(VndType.APPLICATION_USER_TOKEN)
     public Response resendVerificationEmail(@Valid final TokenDto tokenDto) {
-        LOGGER.info("Method: resendVerificationEmail, Path: /users/verification-token, Token: {}", tokenDto.getToken());
+        LOGGER.info("Method: resendVerificationEmail, Path: /users/, Token: {}", tokenDto.getToken());
 
         try {
             final Optional<Token> tokenOptional = verificationTokenService.getToken(tokenDto.getToken());
@@ -203,11 +205,10 @@ public class UserController {
     }
 
     @POST
-    @Path("/password-token")
     @Produces(VndType.APPLICATION_PASSWORD_TOKEN_FORM)
     @Consumes(VndType.APPLICATION_USER)
     public Response createPasswordResetToken(@Valid UserEmailDto userEmailDto) {
-        LOGGER.info("Method: createPasswordResetToken, Path: /users/password-token, Email: {}", userEmailDto.getEmail());
+        LOGGER.info("Method: createPasswordResetToken, Path: /users, Email: {}", userEmailDto.getEmail());
         try {
             final User user = userService.findUserByEmail(userEmailDto.getEmail());
             final String token = userService.forgotPassword(user);
@@ -220,12 +221,11 @@ public class UserController {
     }
 
     @PUT
-    @Path("/password-token/{token}")
     @Consumes(VndType.APPLICATION_USER_PASSWORD)
-    public Response resetPassword(@Valid UserResetPasswordDto userResetPasswordDto, @PathParam("token") String token) {
-        LOGGER.info("Method: resetPassword, Path: /users/password-token, Token: {}", token);
+    public Response resetPassword(@Valid UserResetPasswordDto userResetPasswordDto) {
+        LOGGER.info("Method: resetPassword, Path: /users, Token: {}", userResetPasswordDto.getToken());
         try {
-            final Optional<Token> tokenOptional = verificationTokenService.getToken(token);
+            final Optional<Token> tokenOptional = verificationTokenService.getToken(userResetPasswordDto.getToken());
             if (!tokenOptional.isPresent()) {
                 LOGGER.info("Token not found. Returning NOT_FOUND.");
                 return Response.status(Response.Status.NOT_FOUND).entity("Token not found").build();
@@ -268,7 +268,11 @@ public class UserController {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
             return Response.ok(UserDto.fromUser(user, uriInfo)).build();
-        } catch (RuntimeException e) {
+        }catch (UnableToFindUserException e){
+            LOGGER.info("User with username {} not found. Returning NOT_FOUND.", username);
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        catch (RuntimeException e) {
             LOGGER.error("Error retrieving user: {}", e.getMessage());
             return Response.serverError().entity(e.getMessage()).build();
         }
