@@ -53,7 +53,7 @@ public class ReportDTO {
     }
 
     public static ReportDTO fromMoovieListReport(MoovieListReport mlReport, UriInfo uriInfo) {
-        String url = uriInfo.getBaseUriBuilder().path("/list/" + mlReport.getMoovieList().getMoovieListId()).toString();
+        String url = uriInfo.getBaseUriBuilder().path("/lists/" + mlReport.getMoovieList().getMoovieListId()).toString();
         String reportedByUrl = uriInfo.getBaseUriBuilder().path("/users/" + mlReport.getReportedBy().getUsername()).toString();
         return new ReportDTO(url, mlReport.getResolved(), mlReport.getReport_date(), reportedByUrl, mlReport.getContent(), mlReport.getType());
     }

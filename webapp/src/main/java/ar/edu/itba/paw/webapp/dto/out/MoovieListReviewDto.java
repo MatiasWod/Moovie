@@ -84,7 +84,7 @@ public class MoovieListReviewDto {
 
         moovieListReviewDto.url= uriInfo.getBaseUriBuilder().path("/moovieListReview/{id}").build(moovieListReview.getMoovieListReviewId()).toString();
         moovieListReviewDto.userUrl=uriInfo.getBaseUriBuilder().path("/users/username/{username}").build(moovieListReview.getUser().getUsername()).toString();
-        moovieListReviewDto.moovieListUrl=uriInfo.getBaseUriBuilder().path("/list/{id}").build(moovieListReview.getMoovieListId()).toString();
+        moovieListReviewDto.moovieListUrl=uriInfo.getBaseUriBuilder().path("/lists/{id}").build(moovieListReview.getMoovieListId()).toString();
 
 
         return moovieListReviewDto;
