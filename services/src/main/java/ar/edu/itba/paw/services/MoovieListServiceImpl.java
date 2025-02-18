@@ -242,11 +242,11 @@ public class MoovieListServiceImpl implements MoovieListService{
 
             }
             List<User> followers = moovieListDao.getMoovieListFollowers(moovieListId);
+            LOGGER.info("About to insert media into empty list {}", moovieListId);
+            MoovieList mlRet = moovieListDao.insertMediaIntoMoovieList(moovieListId, mediaIdList);
             followers.forEach( user -> {
                 emailService.sendMediaAddedToFollowedListMail(user,ml, LocaleContextHolder.getLocale());
             });
-            LOGGER.info("About to insert media into empty list {}", moovieListId);
-            MoovieList mlRet = moovieListDao.insertMediaIntoMoovieList(moovieListId, mediaIdList);
             LOGGER.info("Succesfully inserted media: {} in list: {}.", mediaIdList,moovieListId);
             return mlRet;
         }
