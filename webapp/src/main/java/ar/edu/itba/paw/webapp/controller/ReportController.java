@@ -5,17 +5,15 @@ import ar.edu.itba.paw.models.Reports.*;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.dto.in.ReportCreateDTO;
+import ar.edu.itba.paw.webapp.dto.out.CountDto;
 import ar.edu.itba.paw.webapp.dto.out.ReportDTO;
-import ar.edu.itba.paw.webapp.mappers.ExceptionEM;
 import ar.edu.itba.paw.webapp.mappers.UnableToFindUserEM;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.ws.rs.*;
+import javax.validation.Valid;import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -162,13 +160,12 @@ public class ReportController {
 
     @GET
     @Path("/count")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response getReportCount(@QueryParam("contentType") String contentType,@QueryParam("reportType") Integer reportType, @QueryParam("resourceId") Integer resourceId) {
         try {
             int totalReports;
             if (contentType == null) {
                 totalReports = reportService.getTotalReports();
-                return Response.ok(String.valueOf(totalReports)).build();
+                return Response.ok(CountDto.fromCount(totalReports)).build();
             } else if (resourceId==null && reportType!=null) {
                 throw new IllegalArgumentException("The 'resourceId' query parameter must be provided when 'reportType' is provided.");
             } else if (contentType.equals("comment")) {
@@ -190,7 +187,7 @@ public class ReportController {
                         throw new IllegalArgumentException("The 'reportType' query parameter must be one of 'hatefulContent', 'abuse', 'spam', or 'privacy'.");
                     }
                 }
-                return Response.ok(String.valueOf(totalReports)).build();
+                return Response.ok(CountDto.fromCount(totalReports)).build();
             } else if (contentType.equals("moovieList")) {
                 if (resourceId == null && reportType == null) {
                     totalReports = reportService.getReportedMoovieListsCount();
@@ -210,7 +207,7 @@ public class ReportController {
                         throw new IllegalArgumentException("The 'reportType' query parameter must be one of 'hatefulContent', 'abuse', 'spam', or 'privacy'.");
                     }
                 }
-                return Response.ok(String.valueOf(totalReports)).build();
+                return Response.ok(CountDto.fromCount(totalReports)).build();
             } else if (contentType.equals("moovieListReview")) {
                 if (resourceId == null && reportType == null) {
                     totalReports = reportService.getReportedMoovieListReviewsCount();
@@ -231,7 +228,7 @@ public class ReportController {
                         throw new IllegalArgumentException("The 'reportType' query parameter must be one of 'hatefulContent', 'abuse', 'spam', or 'privacy'.");
                     }
                 }
-                return Response.ok(String.valueOf(totalReports)).build();
+                return Response.ok(CountDto.fromCount(totalReports)).build();
             } else if (contentType.equals("review")) {
                 if (resourceId == null && reportType == null) {
                         totalReports = reportService.getReportedReviewsCount();
@@ -251,7 +248,7 @@ public class ReportController {
                         throw new IllegalArgumentException("The 'reportType' query parameter must be one of 'hatefulContent', 'abuse', 'spam', or 'privacy'.");
                     }
                 }
-                return Response.ok(String.valueOf(totalReports)).build();
+                return Response.ok(CountDto.fromCount(totalReports)).build();
             } else {
                 throw new IllegalArgumentException("The 'contentType' query parameter must be one of 'comment', 'moovieList', 'moovieListReview', or 'review'.");
             }

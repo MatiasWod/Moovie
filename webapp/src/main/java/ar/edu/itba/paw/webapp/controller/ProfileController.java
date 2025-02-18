@@ -29,7 +29,9 @@ import javax.validation.constraints.Size;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Path("/profiles")
 @Component
@@ -220,11 +222,15 @@ public class ProfileController {
     @GET
     @Path("/{username}/watched/count")
     @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
-    @Produces(VndType.APPLICATION_WATCHED_MEDIA)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getWatchedAmountMediaByListId(@PathParam("username") final String username,
                                              @QueryParam("listId") @NotNull final int listId) {
-        int count=moovieListService.getMoovieListCardById(listId).getCurrentUserWatchAmount();
-        return Response.ok(String.valueOf(count)).build();
+        MoovieListCard card = moovieListService.getMoovieListCardById(listId);
+        if (card == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("List not found").build();
+        }
+        int count = card.getCurrentUserWatchAmount();
+        return Response.ok(CountDto.fromCount(count)).build();
     }
 
     /***
