@@ -363,7 +363,7 @@ function Reviews({ id, username, source, handleParentReload, parentReload }) {
         <div className="reviews-container">
             {error && <p className="error">{t('reviews.error')} {error.message}</p>}
             {!loading && !error && reviews.length > 0 ? (
-                reviews.map(review => (
+                reviews.slice().reverse().map(review => (
                     <ReviewItem
                         key={review.id}
                         review={review}
