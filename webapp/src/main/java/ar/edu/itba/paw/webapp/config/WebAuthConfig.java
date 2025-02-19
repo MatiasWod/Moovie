@@ -67,9 +67,6 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     private MoovieUserDetailsService userDetailsService;
 
     @Autowired
-    private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
-
-    @Autowired
     private JwtTokenFilter jwtTokenFilter;
 
     @Autowired
@@ -158,56 +155,17 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.sessionManagement()
-//                .invalidSessionUrl("/")
-//                .and().formLogin()
-//                    .defaultSuccessUrl("/", false)
-//                    .loginPage("/login")
-//                    .usernameParameter("username")
-//                    .passwordParameter("password")
-//                    //.successHandler(customAuthenticationSuccessHandler)
-//                    .failureHandler(authenticationFailureHandler)
-//                .and().rememberMe()
-//                    .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
-//                    .userDetailsService(userDetailsService)
-//                    .rememberMeParameter("rememberme")
-//                    .key(FileCopyUtils.copyToString(new InputStreamReader(supersecrete.getInputStream())))
-//                .and().logout()
-//                    .logoutUrl("/logout")
-//                    .logoutSuccessUrl("/login")
-//                    .deleteCookies("JSESSIONID")
-//                    .deleteCookies("remember-me")
-//                .and().authorizeRequests()
-//                    .antMatchers("/login", "/register").anonymous()
-//                    .antMatchers( "/createreview", "/uploadProfilePicture","/createrating","/insertMediaToList","/like", "/createlist", "/profile/**"
-//                            ,"/createListAction","/deleteMediaFromList","/likeReview","/unlikeReview","/editList/**", "/updateMoovieListOrder/**", "/followList","/likeMoovieListReview","/unlikeMoovieListReview","/MoovieListReview",
-//                            "/likeComment","/dislikeComment","/createcomment","/reports/new","/deleteUserReview/**", "/deleteMoovieList/**").hasRole( "USER")
-//                    .antMatchers(  "/deleteList/**","/deleteReview/**","/banUser/**","/unbanUser/**","/makeUserMod/**","/deleteUserMoovieListReviewMod/**","/reports/review/**","/reports/resolve/**").hasRole("MODERATOR")
-//                    .antMatchers("/**").permitAll()
-//                .and().exceptionHandling()
-//                    .accessDeniedPage("/403")
-//                .and().csrf().disable();
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().exceptionHandling()
                     .authenticationEntryPoint(new UnauthorizedRequestHandler())
                     .accessDeniedHandler(new ForbiddenRequestHandler())
-
                 .and()
                 .headers().cacheControl().disable()
                 .and()
                 .authorizeRequests()
                 .accessDecisionManager(accessDecisionManager())
                 .antMatchers(HttpMethod.GET, "/login", "/register").anonymous()
-
                 .antMatchers(HttpMethod.GET, "/users/authtest").hasRole(UserRoles.USER.name())
-
-                .antMatchers("/createreview", "/uploadProfilePicture", "/createrating", "/insertMediaToList", "/like", "/createlist",
-                        "/profiles/**", "/createListAction", "/deleteMediaFromList", "/likeReview", "/unlikeReview", "/editList/**",
-                        "/updateMoovieListOrder/**", "/followList", "/likeMoovieListReview", "/unlikeMoovieListReview",
-                        "/MoovieListReview", "/likeComment", "/dislikeComment", "/createcomment", "/reports/new", "/deleteUserReview/**",
-                        "/deleteMoovieList/**").hasRole("USER")
-                .antMatchers("/deleteList/**", "/deleteReview/**", "/banUser/**", "/unbanUser/**", "/makeUserMod/**",
-                        "/deleteUserMoovieListReviewMod/**", "/reports/review/**", "/reports/resolve/**").hasRole("MODERATOR")
-                .antMatchers(HttpMethod.GET, "/users/*").permitAll()
                 .antMatchers(HttpMethod.GET, "/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/users").permitAll()
                 .antMatchers(HttpMethod.POST, "/comments/*").authenticated()
