@@ -18,7 +18,7 @@ const BrowseListsSearchBar = () => {
 
     return (
         <Form inline onSubmit={handleSearchSubmit}> {}
-            <InputGroup className={"InputGroup"}>
+            <InputGroup className={"InputGroup z-0"}>
                 <Form.Control
                     type="search"
                     placeholder={t('search.search')}
@@ -26,7 +26,7 @@ const BrowseListsSearchBar = () => {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                 />
-                <Button variant="outline-success" type="submit" style={{marginRight: "10px"}}>
+                <Button variant="outline-success" type="submit" style={{marginRight: "10px", zIndex: "0"}}>
                     <i className={"bi bi-search"} /> {t('search.search')}
                 </Button>
             </InputGroup>

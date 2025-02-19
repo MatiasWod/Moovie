@@ -26,7 +26,7 @@ const DropdownMenu = ({ setOrderBy, setSortOrder, currentSortOrder, values }) =>
 
     return (
         <div style={{ display: "flex" }}>
-            <NavDropdown title="Order By">
+            <NavDropdown title={t('dropdownMenu.orderBy')}>
                 {values.map((value) => (
                     <NavDropdown.Item key={value} onClick={() => handleSelect(value)}>
                         {value}
@@ -34,7 +34,7 @@ const DropdownMenu = ({ setOrderBy, setSortOrder, currentSortOrder, values }) =>
                 ))}
             </NavDropdown>
             <ReactTooltip id="tooltip-id" place="bottom" type="dark" effect="solid" />
-            <Button onClick={handleClick} data-tooltip-id={"tooltip-id"}
+            <Button className="z-0" onClick={handleClick} data-tooltip-id={"tooltip-id"}
                     data-tooltip-content={t('dropdownMenu.invertOrder')}>
                 {btnState === SortOrder.DESC ? "↑" : "↓"}
             </Button>
