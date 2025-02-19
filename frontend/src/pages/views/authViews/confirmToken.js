@@ -24,7 +24,7 @@ export default function ConfirmToken() {
                 const response = await userApi.confirmToken(token);
 
                 if (response.status === 500) {
-                    navigate('/register/verify?error=token_expired');
+                    navigate(`/register/verify?error=token_expired&token=${token}`);
                     return;
                 }
 

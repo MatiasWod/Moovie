@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Form, Button, Alert, Col } from 'react-bootstrap';
-import {useNavigate, useLocation, useSearchParams} from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import userApi from "../../../api/UserApi";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -28,18 +28,18 @@ const ResetPassword = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (password !== repeatPassword) {
-            setError("register.passwordMismatch");
+            setError(t("resetPassword.passwordMismatch"));
             return;
         }
 
         try {
             setLoading(true);
-            await userApi.resetPassword(token,password)
+            await userApi.resetPassword(token, password);
             setError('');
-            setSuccess(true)
+            setSuccess(true);
         } catch (error) {
             setLoading(false);
-            setError(error.message);
+            setError(t("resetPassword.error"));
         }
     };
 
@@ -47,16 +47,17 @@ const ResetPassword = () => {
         <div className="p-5 vh-100" style={{ background: "whitesmoke" }}>
             <Container className="d-flex align-items-center justify-content-center">
                 <Col xs={12} md={6} className="p-4 bg-light shadow rounded">
-                    <h2 className="text-center mb-3">Reset your Password</h2>
-                    <p style={{fontWeight: "bold"}} className="text-center mb-3">Enter your new password!</p>
+                    <h2 className="text-center mb-3">{t("resetPassword.title")}</h2>
+                    <p style={{ fontWeight: "bold" }} className="text-center mb-3">
+                        {t("resetPassword.instruction")}
+                    </p>
 
-                    {success && <Alert variant={"success"}>Password reset, yo may now login!</Alert>}
-
+                    {success && <Alert variant={"success"}>{t("resetPassword.success")}</Alert>}
                     {error && <Alert variant="danger">{error}</Alert>}
 
                     <Form onSubmit={handleSubmit}>
                         <Form.Group className="mb-3">
-                            <Form.Label>{t("login.password")}</Form.Label>
+                            <Form.Label>{t("resetPassword.passwordLabel")}</Form.Label>
                             <Form.Control
                                 type="password"
                                 value={password}
@@ -66,7 +67,7 @@ const ResetPassword = () => {
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>{t("login.password")}</Form.Label>
+                            <Form.Label>{t("resetPassword.repeatPasswordLabel")}</Form.Label>
                             <Form.Control
                                 type="password"
                                 value={repeatPassword}
@@ -76,7 +77,7 @@ const ResetPassword = () => {
                         </Form.Group>
 
                         <Button variant="success" type="submit" className="w-100" disabled={loading}>
-                            Set new password
+                            {t("resetPassword.submit")}
                         </Button>
                     </Form>
                 </Col>

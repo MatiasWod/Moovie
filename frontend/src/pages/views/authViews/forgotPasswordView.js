@@ -21,14 +21,13 @@ const ForgotPassword = () => {
         e.preventDefault();
         try {
             setLoading(true);
-            const response = await userApi.forgotPassword(email)
+            const response = await userApi.forgotPassword(email);
 
             if (response.status === 500) {
-                setError("Failed to send password recovery email.");
+                setError(t("forgotPassword.error"));
             } else {
-                setSuccess(true)
+                setSuccess(true);
             }
-
         } catch (error) {
             setLoading(false);
             setError(error.message);
@@ -39,16 +38,17 @@ const ForgotPassword = () => {
         <div className="p-5 vh-100" style={{ background: "whitesmoke" }}>
             <Container className="d-flex align-items-center justify-content-center">
                 <Col xs={12} md={6} className="p-4 bg-light shadow rounded">
-                    <h2 className="text-center mb-3">Reset your Password</h2>
-                    <p style={{fontWeight: "bold"}} className="text-center mb-3">Enter your email so that we can send a recovery email!</p>
+                    <h2 className="text-center mb-3">{t("forgotPassword.title")}</h2>
+                    <p style={{ fontWeight: "bold" }} className="text-center mb-3">
+                        {t("forgotPassword.instruction")}
+                    </p>
 
-                    {success && <Alert variant={"success"}>Email sent</Alert>}
-
+                    {success && <Alert variant={"success"}>{t("forgotPassword.success")}</Alert>}
                     {error && <Alert variant="danger">{error}</Alert>}
 
                     <Form onSubmit={handleSubmit}>
                         <Form.Group className="mb-3">
-                            <Form.Label>{t("register.email")}</Form.Label>
+                            <Form.Label>{t("forgotPassword.emailLabel")}</Form.Label>
                             <Form.Control
                                 type="email"
                                 value={email}
@@ -59,11 +59,14 @@ const ForgotPassword = () => {
                         </Form.Group>
 
                         <Button variant="success" type="submit" className="w-100" disabled={loading}>
-                            Send recovery email
+                            {t("forgotPassword.submit")}
                         </Button>
-                        <Button className={"w-100"} variant={"link"} type={"button"} onClick={()=>navigate('/login')}>Go to login</Button>
-                        <Button className={"w-100"} variant={"link"} type={"button"} onClick={()=>navigate('/')}>Return to home screen</Button>
-
+                        <Button className="w-100" variant="link" type="button" onClick={() => navigate('/login')}>
+                            {t("forgotPassword.goToLogin")}
+                        </Button>
+                        <Button className="w-100" variant="link" type="button" onClick={() => navigate('/')}>
+                            {t("forgotPassword.returnHome")}
+                        </Button>
                     </Form>
                 </Col>
             </Container>

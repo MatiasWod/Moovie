@@ -141,6 +141,7 @@
   "login.without": "sin iniciar sesión",
   "login.login": "¡Iniciar sesión!",
   "login.submitting": "Iniciando sesión...",
+  "login.forgot": "¿Has olvidado tu contraseña?",
   "mediaCard.addToWatched": "Agregar a Visto",
   "mediaCard.addToWatchlist": "Agregar a Por ver",
   "mediaCard.removeFromWatched": "Borrar de Visto",
@@ -290,7 +291,23 @@
   "awaitEmailValidation.expired": "Su enlace de verificación ha caducado. Por favor solicite uno nuevo",
   "awaitEmailValidation.email": "Por favor revise su correo electrónico y verifique su cuenta para continuar.",
   "awaitEmailValidation.sending": "Enviando...",
-  "awaitEmailValidation.resend": "Reenviar correo electrónico de verificación"
+  "awaitEmailValidation.resend": "Reenviar correo electrónico de verificación",
+  "forgotPassword.title": "Restablecer tu contraseña",
+  "forgotPassword.instruction": "Ingresa tu correo electrónico para que podamos enviarte un correo de recuperación.",
+  "forgotPassword.success": "Correo enviado",
+  "forgotPassword.error": "No se pudo enviar el correo de recuperación de contraseña.",
+  "forgotPassword.emailLabel": "Correo electrónico",
+  "forgotPassword.submit": "Enviar correo de recuperación",
+  "forgotPassword.goToLogin": "Ir al inicio de sesión",
+  "forgotPassword.returnHome": "Volver a la pantalla de inicio",
+  "resetPassword.title": "Restablecer tu contraseña",
+  "resetPassword.instruction": "Ingresa tu nueva contraseña.",
+  "resetPassword.success": "Contraseña restablecida, ahora puedes iniciar sesión.",
+  "resetPassword.error": "Hubo un error al restablecer la contraseña.",
+  "resetPassword.passwordLabel": "Nueva contraseña",
+  "resetPassword.repeatPasswordLabel": "Repetir nueva contraseña",
+  "resetPassword.submit": "Establecer nueva contraseña",
+  "resetPassword.passwordMismatch": "Las contraseñas no coinciden."
 
 
 }
