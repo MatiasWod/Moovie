@@ -5,12 +5,15 @@ import UserRoles from '../../../api/values/UserRoles';
 import ConfirmationModal from '../../components/forms/confirmationForm/confirmationModal';
 import {useTranslation} from "react-i18next";
 import defaultProfilePicture from "../../../images/defaultProfilePicture.png"
+import ProfileImage from "../profileImage/ProfileImage";
+import {useNavigate} from "react-router-dom";
 
 export default function BannedUsers() {
   const [users, setUsers] = useState([]);
   const [selectedAction, setSelectedAction] = useState(null);
   const [showUnbanModal, setShowUnbanModal] = useState(false);
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchBannedUsers();
@@ -56,6 +59,10 @@ export default function BannedUsers() {
     }
   };
 
+  const handleProfilePictureClick = (username) => {
+    navigate(`/profile/${username}`);
+  }
+
   return (
     <div>
       <h3 className="text-xl font-semibold mb-4">{t('bannedUsers.bannedUsers')}</h3>
@@ -67,16 +74,14 @@ export default function BannedUsers() {
             <div key={user.username} className="bg-white p-4 rounded shadow">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center space-x-4">
-                  <img 
-                    src={`http://localhost:8080/profiles/${user.username}/image`} 
-                    alt={t('mpl.picture')} 
-                    className="h-12 w-12 rounded-full border"
-                    onError={(e) => {
-                        e.target.src = defaultProfilePicture;
-                    }}
+                  <ProfileImage
+                      username = {user.username}
+                      size="60px"
+                      defaultProfilePicture="https://example.com/default-profile.jpg"
+                      onClick={() => handleProfilePictureClick(user.username)}
                   />
                   <div>
-                    <div className="font-bold"><a href={`/profile/${user.username}`}>{user.username}</a></div>
+                    <div className="font-bold"><a href={ process.env.PUBLIC_URL + `/profile/${user.username}`}>{user.username}</a></div>
                     <div className="text-sm text-gray-600">{user.banInfo?.banMessage}</div>
                     <div className="text-sm text-gray-500">{user.email}</div>
                   </div>

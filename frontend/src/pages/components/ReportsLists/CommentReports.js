@@ -132,20 +132,20 @@ export default function CommentReports() {
 
                 <div className="text-right">
                   <div className="text-sm text-gray-600 flex flex-col items-end space-y-1">
-                    <span className="flex items-center" title={t('reports.total')}>
+                    <span className="flex items-center" title={t('reports.totalReports')}>
                       <i className="bi bi-flag mr-1"></i>{comment.totalReports}
                     </span>
                     <div className="flex space-x-3">
-                      <span className="flex items-center" title={t('reports.spam')}>
+                      <span className="flex items-center" title={t('reports.spamReports')}>
                         <i className="bi bi-envelope-exclamation mr-1"></i>{comment.spamReports}
                       </span>
-                      <span className="flex items-center" title={t('reports.hate')}>
+                      <span className="flex items-center" title={t('reports.hateReports')}>
                         <i className="bi bi-emoji-angry mr-1"></i>{comment.hateReports}
                       </span>
-                      <span className="flex items-center" title={t('reports.abuse')}>
+                      <span className="flex items-center" title={t('reports.abuseReports')}>
                         <i className="bi bi-slash-circle mr-1"></i>{comment.abuseReports}
                       </span>
-                      <span className="flex items-center" title={t('reports.privacy')}>
+                      <span className="flex items-center" title={t('reports.privacyReports')}>
                         <i className="bi bi-incognito mr-1"></i>{comment.privacyReports}
                       </span>
                     </div>

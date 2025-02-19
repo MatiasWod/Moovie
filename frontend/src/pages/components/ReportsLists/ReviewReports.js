@@ -101,12 +101,12 @@ export default function ReviewReports() {
               <div className="review-header d-flex align-items-center justify-between">
                 <div>
                   <div className="flex items-center space-x-4">
-                    <a href={`/profile/${review.username}`} className="text-blue-600 font-bold hover:underline">
+                    <a href={ process.env.PUBLIC_URL + `/profile/${review.username}`} className="text-blue-600 font-bold hover:underline">
                       {review.username}
                     </a>
                     {review.mediaDetails && (
                       <span className="text-gray-600">
-                        {t('reviews.onMedia')} <a href={`/details/${review.mediaDetails.id}`} className="text-blue-600 hover:underline">
+                        {t('reviews.onMedia')} <a href={ process.env.PUBLIC_URL + `/details/${review.mediaDetails.id}`} className="text-blue-600 hover:underline">
                           {review.mediaDetails.name}
                         </a>
                       </span>
@@ -130,19 +130,19 @@ export default function ReviewReports() {
                     </span>
                   </div>
                   <div className="text-sm text-gray-600 flex space-x-3">
-                    <span className="flex items-center" title={t('reports.total')}>
+                    <span className="flex items-center" title={t('reports.totalReports')}>
                       <i className="bi bi-flag mr-1"></i>{review.totalReports}
                     </span>
-                    <span className="flex items-center" title={t('reports.spam')}>
+                    <span className="flex items-center" title={t('reports.spamReports')}>
                       <i className="bi bi-envelope-exclamation mr-1"></i>{review.spamReports}
                     </span>
-                    <span className="flex items-center" title={t('reports.hate')}>
+                    <span className="flex items-center" title={t('reports.hateReports')}>
                       <i className="bi bi-emoji-angry mr-1"></i>{review.hateReports}
                     </span>
-                    <span className="flex items-center" title={t('reports.abuse')}>
+                    <span className="flex items-center" title={t('reports.abuseReports')}>
                       <i className="bi bi-slash-circle mr-1"></i>{review.abuseReports}
                     </span>
-                    <span className="flex items-center" title={t('reports.privacy')}>
+                    <span className="flex items-center" title={t('reports.privacyReports')}>
                       <i className="bi bi-incognito mr-1"></i>{review.privacyReports}
                     </span>
                   </div>
@@ -184,9 +184,9 @@ export default function ReviewReports() {
             selectedAction.type === 'ban' ? userApi.banUser :
             reportApi.resolveReviewReport}
           actionName={
-            selectedAction.type === 'delete' ? 'Delete Review' :
-            selectedAction.type === 'ban' ? 'Ban User' : 
-            'Resolve Report'
+            selectedAction.type === 'delete' ? t('reports.confirmReviewDeletionTitle') :
+            selectedAction.type === 'ban' ? t('reports.confirmUserBanTitle') :
+                t('reports.resolveReport')
           }
           serviceParams={
             selectedAction.type === 'delete' ? [selectedAction.item.id] :

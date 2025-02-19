@@ -13,6 +13,7 @@ import ListService from "../../services/ListService";
 import pagingSizes from "../../api/values/PagingSizes";
 import {useTranslation} from "react-i18next";
 import {Spinner} from "react-bootstrap";
+import "../components/listContent/listContent.css";
 
 function BrowseLists(){
 
