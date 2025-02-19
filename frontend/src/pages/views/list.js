@@ -214,7 +214,7 @@ function List() {
 
     return (
         <div className="default-container moovie-default">
-            <ListHeader 
+            <ListHeader
                 list={list?.data || []} 
                 updateHeader={handleUpdateList}
                 onDelete={handleDeleteList}
@@ -242,10 +242,13 @@ function List() {
             )}
 
             {(isLoggedIn && list && list.data) && (
-                <ProgressBar
-                now={list?.data?.mediaCount === 0 ? 100 : (watchedCount / list?.data?.mediaCount) * 100}
-                label={`${Math.round(list?.data?.mediaCount === 0 ? 100 : (watchedCount / list?.data?.mediaCount) * 100)}%`}
-            />)}
+                <div style={{marginTop : "5px"}}>
+                    <ProgressBar
+                        now={list.data.mediaCount === 0 ? 100 : (watchedCount / list.data.mediaCount) * 100}
+                        label={t('profile.watched') + ": "  + `${Math.round(list.data.mediaCount === 0 ? 100 : (watchedCount / list.data.mediaCount) * 100)}%`}
+                    />
+                </div>
+            )}
 
 
 
