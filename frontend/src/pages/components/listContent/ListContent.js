@@ -114,18 +114,19 @@ const MediaRow = ({
 
             <span className="media-release">{new Date(media.releaseDate).getFullYear()}</span>
 
-            {isLoggedIn && (<span onClick={(e) => {e.stopPropagation(); handleWatched();}}>
+            { (isLoggedIn && !editMode) && (<span onClick={(e) => {e.stopPropagation(); handleWatched();}}>
                 {ww.watched ? <BsEye className="fs-5" style={{ color: "green" }}/> :
                 <BsEyeSlash className="fs-5" style={{ color: "red" }}/>}</span>)}
 
-            {editMode && (
+            { editMode && (
+                <span>
                 <div className="menu-container">
                 <button className="menu-button" onClick={(e) => {
                         e.stopPropagation();
                         setMenuOpen(!menuOpen);
                     }}>
-                        <i className="fas fa-ellipsis-v"></i>
-                    </button>
+                    <i className="bi bi-three-dots-vertical"></i>
+                </button>
                     {menuOpen && (
                         <div className="menu-dropdown">
                             <Button variant="outline-primary" onClick={() => pageChange(1, media.id)}>
@@ -143,6 +144,7 @@ const MediaRow = ({
                         </div>
                     )}
                 </div>
+                </span>
             )}
         </div>
     );
@@ -224,7 +226,7 @@ const ListContent = ({ listContent, editMode, setCurrentSortOrder, listId, curre
                     <i className="fas fa-calendar me-1"></i>
                     {t("listContent.year")}
                 </span>
-                { isLoggedIn && (<span>{t('profile.watched')}</span>) }
+                { (isLoggedIn && !editMode) && (<span>{t('profile.watched')}</span>) }
 
             </div>
             <div className="media-list">
