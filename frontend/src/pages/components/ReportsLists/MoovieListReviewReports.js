@@ -78,44 +78,70 @@ export default function MoovieListReviewReports() {
   };
 
   return (
-    <div>
+    <div className="container-fluid">
       <h3 className="text-xl font-semibold mb-4">{t('moovieListReviewReports.moovieListReviewReports')}</h3>
       {reviews.length === 0 ? (
         <div className="text-center text-gray-500">{t('moovieListReviewReports.noMoovieListReviewReports')}</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-4">
           {reviews.map((review, index) => (
-            <div key={index} className="bg-white p-4 rounded shadow">
-              <div className="flex justify-between items-center mb-2">
-                <a href={review.creatorUrl} className="text-blue-600 font-bold hover:underline">
-                  {review.creatorUrl?.split('/').pop()}
-                </a>
-                <div className="text-sm text-gray-600 flex space-x-2">
-                  <span className="flex items-center"><i className="bi bi-flag mr-1"></i>{review.totalReports}</span>
-                  <span className="flex items-center"><i className="bi bi-envelope-exclamation mr-1"></i>{review.spamReports}</span>
-                  <span className="flex items-center"><i className="bi bi-emoji-angry mr-1"></i>{review.hateReports}</span>
-                  <span className="flex items-center"><i className="bi bi-slash-circle mr-1"></i>{review.abuseReports}</span>
-                  <span className="flex items-center"><i className="bi bi-incognito mr-1"></i>{review.privacyReports}</span>
+            <div key={index} className="container-fluid bg-white my-3 p-4 rounded shadow">
+              <div className="review-header d-flex align-items-center justify-between">
+                <div>
+                  <div className="flex items-center space-x-4">
+                    <a href={review.creatorUrl} className="text-blue-600 font-bold hover:underline">
+                      {review.creatorUrl?.split('/').pop()}
+                    </a>
+                  </div>
+                  {review.lastModified && (
+                    <div className="text-sm text-gray-500">
+                      {t('reviews.lastModified')} {review.lastModified}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <div className="text-sm text-gray-600 flex space-x-3">
+                    <span className="flex items-center" title={t('reports.total')}>
+                      <i className="bi bi-flag mr-1"></i>{review.totalReports}
+                    </span>
+                    <span className="flex items-center" title={t('reports.spam')}>
+                      <i className="bi bi-envelope-exclamation mr-1"></i>{review.spamReports}
+                    </span>
+                    <span className="flex items-center" title={t('reports.hate')}>
+                      <i className="bi bi-emoji-angry mr-1"></i>{review.hateReports}
+                    </span>
+                    <span className="flex items-center" title={t('reports.abuse')}>
+                      <i className="bi bi-slash-circle mr-1"></i>{review.abuseReports}
+                    </span>
+                    <span className="flex items-center" title={t('reports.privacy')}>
+                      <i className="bi bi-incognito mr-1"></i>{review.privacyReports}
+                    </span>
+                  </div>
                 </div>
               </div>
-              <p className="mb-4 text-gray-700">{review.reviewContent}</p>
-              <div className="flex justify-evenly">
+              <div className="review-content my-4 text-gray-700">
+                {review.reviewContent}
+              </div>
+              <div className="flex justify-end space-x-3">
                 <button
                   onClick={() => setSelectedAction({type:'delete', item:review})}
-                  className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+                  className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
                 >
+                  <i className="bi bi-trash mr-2"></i>
                   {t('moovieListReviewReports.delete')}
                 </button>
                 <button
                   onClick={() => setSelectedAction({type:'ban', item:review})}
-                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
                 >
+                  <i className="bi bi-person-x mr-2"></i>
                   {t('moovieListReviewReports.banUser')}
                 </button>
                 <button
                   onClick={() => setSelectedAction({type:'resolve', item:review})}
-                  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                 >
+                  <i className="bi bi-check2-circle mr-2"></i>
                   {t('moovieListReviewReports.resolve')}
                 </button>
               </div>

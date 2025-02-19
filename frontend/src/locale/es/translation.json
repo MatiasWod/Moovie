@@ -336,6 +336,6 @@
   "createListForm.successMessage": "¡Has creado una lista! Encuéntrala aquí:",
   "createListForm.errorMessage": "Error al crear la lista. Por favor, inténtalo de nuevo.",
   "createListForm.deleteButton": "Eliminar",
-  "createListForm.loading": "Cargando..."
-
+  "createListForm.loading": "Cargando...",
+  "reviews.reviews": "reseña"
 }
