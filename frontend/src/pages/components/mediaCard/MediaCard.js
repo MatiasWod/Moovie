@@ -49,6 +49,12 @@ const MediaCard = ({ media, size = 'normal' , showWWButtons = true, disableOnCli
 
     const handleWatched = async () => {
         try {
+
+            if (!isLoggedIn) {
+                navigate('/login');
+                return;
+            }
+
             if (ww.watched) {
                 await profileService.removeMediaFromWW(WatchlistWatched.Watched, media.id, user.username);
             } else {
@@ -61,6 +67,12 @@ const MediaCard = ({ media, size = 'normal' , showWWButtons = true, disableOnCli
 
     const handleWatchlist = async () => {
         try {
+
+            if (!isLoggedIn) {
+                navigate('/login');
+                return;
+            }
+
             if (ww.watchlist) {
                 await profileService.removeMediaFromWW(WatchlistWatched.Watchlist, media.id, user.username);
             } else {
@@ -102,7 +114,7 @@ const MediaCard = ({ media, size = 'normal' , showWWButtons = true, disableOnCli
                             </button>
                             <button className="media-card-button"
                                     data-tooltip-id={`watchlist-tooltip-${media.id}`}
-                                    data-tooltip-content={t('mediaCard.addToWatchlist')}
+                                    data-tooltip-content={ww.watchlist ? t('mediaCard.removeFromWatchlist') : t('mediaCard.addToWatchlist')}
                                     onClick={(e) => { e.stopPropagation(); handleWatchlist(); }}>
                                 {ww.watchlist ? <BsBookmarkDash className="fs-5" /> : <BsBookmark className="fs-5" />}
                             </button>
