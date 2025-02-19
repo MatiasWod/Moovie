@@ -123,6 +123,8 @@
 
 .list-actions-container {
     margin-bottom: 1rem;
+    margin-top: 1rem;
+    padding-top: 0rem;
 }
 
 .list-card-container {
@@ -130,7 +132,11 @@
     flex-wrap: nowrap;
     gap: 1rem;
     overflow-x: auto;
+    overflow-y: hidden;
     padding: 1rem 0;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
 }
 
 .list-card-container::-webkit-scrollbar {
@@ -154,5 +160,6 @@
 .list-card-container > * {
     flex: 0 0 auto;
     width: 300px;
+    max-width: 300px;
 }
 
