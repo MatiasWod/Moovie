@@ -52,6 +52,9 @@
   "confirmationForm.close": "Cerrar",
   "confirmationForm.confirm": "Confirmar",
   "confirmationForm.prompt": "¿Estás seguro de que quieres {{actionName}}?",
+  "confirmationForm.successMessage": "Acción completada exitosamente.",
+  "confirmationForm.errorMessage": "Error al completar la acción.",
+  "confirmationForm.requestError": "Error al realizar la solicitud.",
   "details.budget": "Presupuesto",
   "details.cast": "Elenco",
   "details.director": "Director",
@@ -369,5 +372,10 @@
   "createListForm.deleteButton": "Eliminar",
   "createListForm.loading": "Cargando...",
   "reviews.reviews": "reseña",
-  "list.removed": "Esta lista fue eliminada"
+  "list.removed": "Esta lista fue eliminada",
+  "reviewReports.confirmReviewDeletionMessage": "¿Estás seguro de que quieres eliminar esta reseña?",
+  "reviewReports.confirmReviewDeletionTitle": "Confirmar eliminación de reseña",
+  "reviewReports.confirmUserBanMessage": "¿Estás seguro de que quieres banear a este usuario?",
+  "reviewReports.confirmUserBanTitle": "Confirmar baneo de usuario",
+  "reviewReports.resolveReport": "Resolver reporte"
 }

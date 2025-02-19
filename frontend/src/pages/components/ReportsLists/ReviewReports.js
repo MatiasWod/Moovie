@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import reportApi from '../../../api/ReportApi';
 import reviewApi from '../../../api/ReviewApi';
 import userApi from '../../../api/UserApi';
-import ConfirmationForm from '../../components/forms/confirmationForm/confirmationForm';
+import ConfirmationModal from '../../components/forms/confirmationForm/confirmationModal';
 import api from '../../../api/api';
 import {useTranslation} from "react-i18next";
 import ReportTypes from '../../../api/values/ReportTypes';
@@ -91,7 +91,7 @@ export default function ReviewReports() {
 
   const handleDelete = async (review) => {
     try {
-      await reviewApi.deleteReview(review.id);
+      await reviewApi.deleteReviewById(review.id);
       await fetchReports();
     } catch (error) {
       console.error('Error deleting review:', error);
@@ -212,19 +212,16 @@ export default function ReviewReports() {
         </div>
       )}
       {selectedAction && (
-        <ConfirmationForm
-          service={selectedAction.type === 'delete' ? reviewApi.deleteReview :
-            selectedAction.type === 'ban' ? userApi.banUser :
-            reportApi.resolveReviewReport}
-          actionName={
-            selectedAction.type === 'delete' ? t('reports.confirmReviewDeletionTitle') :
-            selectedAction.type === 'ban' ? t('reports.confirmUserBanTitle') :
-                t('reports.resolveReport')
+        <ConfirmationModal
+          title={
+            selectedAction.type === 'delete' ? t('reviewReports.confirmReviewDeletionTitle') :
+            selectedAction.type === 'ban' ? t('reviewReports.confirmUserBanTitle') :
+            t('reviewReports.resolveReport')
           }
-          serviceParams={
-            selectedAction.type === 'delete' ? [selectedAction.item.id] :
-            selectedAction.type === 'ban' ? [selectedAction.item.userUrl] :
-            [selectedAction.item.id]
+          message={
+            selectedAction.type === 'delete' ? t('reviewReports.confirmReviewDeletionMessage') :
+            selectedAction.type === 'ban' ? t('reviewReports.confirmUserBanMessage') :
+            t('reviewReports.confirmResolveReportMessage')
           }
           onConfirm={async () => {
             if (selectedAction.type === 'delete') await handleDelete(selectedAction.item);
