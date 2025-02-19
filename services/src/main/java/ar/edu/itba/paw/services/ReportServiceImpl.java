@@ -182,6 +182,7 @@ public class ReportServiceImpl implements ReportService {
         return reportDao.getReportedComments();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public int getReportedCommentsCount() {
         return reportDao.getReportedCommentsCount();

@@ -90,12 +90,12 @@ export default function MoovieListReports() {
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
                     <h4 className="text-lg font-semibold">
-                      <a href={`/list/${ml.id}`} className="text-blue-600 hover:underline">
+                      <a href={process.env.PUBLIC_URL + `/list/${ml.id}`} className="text-blue-600 hover:underline">
                         {ml.name}
                       </a>
                       <span className="text-gray-600 text-sm ml-2">
                         {t('listHeader.by')}{' '}
-                        <a href={`/profile/${ml.createdBy}`} className="text-blue-600 font-bold hover:underline">
+                        <a href={process.env.PUBLIC_URL + `/profile/${ml.createdBy}`} className="text-blue-600 font-bold hover:underline">
                           {ml.createdBy}
                         </a>
                       </span>
