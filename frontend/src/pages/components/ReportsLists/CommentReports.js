@@ -98,7 +98,7 @@ export default function CommentReports() {
               <div className="flex justify-between items-start mb-4">
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
-                    <a href={comment.userUrl} className="text-blue-600 font-bold hover:underline">
+                    <a href={`/profile/${comment.username}`} className="text-blue-600 font-bold hover:underline">
                       {comment.username}
                     </a>
                     <span className="text-gray-500">
