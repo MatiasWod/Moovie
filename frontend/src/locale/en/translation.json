@@ -380,5 +380,7 @@
   "reviewReports.confirmReviewDeletionTitle": "Confirm Review Deletion",
   "reviewReports.confirmUserBanMessage": "Are you sure you want to ban this user?",
   "reviewReports.confirmUserBanTitle": "Confirm User Ban",
-  "reviewReports.resolveReport": "Resolve Report"
+  "reviewReports.resolveReport": "Resolve Report",
+  "filters.apply": "Apply",
+  "filters.clear": "Clear"
 }

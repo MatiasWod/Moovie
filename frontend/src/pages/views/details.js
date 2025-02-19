@@ -304,6 +304,7 @@ function Details() {
                                     text={provider.providerName}
                                     image={provider.logoPath}
                                     id={provider.providerId}
+                                    object={provider}
                                 />
                             ))
                         ) : null}
@@ -313,7 +314,8 @@ function Details() {
                         <h5>{t('details.genres')}:</h5>
                         {genres.length > 0 ? genres.map((genre) => <MediaTag darkmode={true} link={`genres`}
                                                                              text={genre.genreName}
-                                                                             id={genre.genreId}/>) :
+                                                                             id={genre.genreId}
+                                                                             object={genre}/>) :
                             <MediaTag darkmode={true} text={t('details.noGenresAvailable')}/>}
                     </div>
                     {detailsColumn}

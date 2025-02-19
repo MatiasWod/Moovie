@@ -380,5 +380,7 @@
   "reviewReports.confirmReviewDeletionTitle": "Confirmar eliminación de reseña",
   "reviewReports.confirmUserBanMessage": "¿Estás seguro de que quieres banear a este usuario?",
   "reviewReports.confirmUserBanTitle": "Confirmar baneo de usuario",
-  "reviewReports.resolveReport": "Resolver reporte"
+  "reviewReports.resolveReport": "Resolver reporte",
+  "filters.apply": "Aplicar",
+  "filters.clear": "Limpiar"
 }

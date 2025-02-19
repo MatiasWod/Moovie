@@ -1,7 +1,7 @@
 import React from 'react';
 
 const FilterList = ({ searchValue, onSearchChange, items, selectedItems, onToggleItem }) => (
-
+    
     <>
         <input
             type="text"
@@ -17,7 +17,7 @@ const FilterList = ({ searchValue, onSearchChange, items, selectedItems, onToggl
                         type="checkbox"
                         className="form-check-input"
                         id={`item-${index}`}
-                        checked={selectedItems.includes(item)}
+                        checked={selectedItems.some(selectedItem => selectedItem.id === item.id)? true : false}
                         onClick={() => onToggleItem(item)}
                     />
                     <label className="form-check-label" htmlFor={`item-${index}`}>
