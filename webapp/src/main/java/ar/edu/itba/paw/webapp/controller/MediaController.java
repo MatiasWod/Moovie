@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 
+import ar.edu.itba.paw.exceptions.MediaNotFoundException;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.Media.Movie;
@@ -191,7 +192,12 @@ public class MediaController {
                 return Response.ok(TVSerieDto.fromTVSerie(mediaService.getTvById(id), uriInfo)).build();
             }
             return Response.ok(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo)).build();
-        } catch (Exception e) {
+        }catch (MediaNotFoundException e){
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Media with ID: " + id + " not found.")
+                    .build();
+        }
+        catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An error occurred: " + e.getMessage())
                     .build();
