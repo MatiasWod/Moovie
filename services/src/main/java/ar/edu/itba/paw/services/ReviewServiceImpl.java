@@ -8,6 +8,7 @@ import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
 import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.models.User.UserRoles;
 import ar.edu.itba.paw.persistence.ReviewDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -175,13 +176,13 @@ public class ReviewServiceImpl implements ReviewService{
         if(type.getType() == ReviewTypes.REVIEW_MEDIA.getType()){
             Review review = reviewDao.getReviewById(currentUser.getUserId(), reviewId)
                     .orElseThrow(() -> new ReviewNotFoundException("Review not found"));
-            if (currentUser.getUserId()!=review.getUserId()) {
+            if (currentUser.getUserId()!=review.getUserId() && currentUser.getRole() != UserRoles.MODERATOR.getRole()) {
                 throw new InvalidAccessToResourceException("User is not owner of the Review.");
             }
         } else{
             MoovieListReview review = reviewDao.getMoovieListReviewById(currentUser.getUserId(), reviewId)
                     .orElseThrow(() -> new ReviewNotFoundException("Review not found"));
-            if (currentUser.getUserId()!=review.getUserId()) {
+            if (currentUser.getUserId()!=review.getUserId() && currentUser.getRole() != UserRoles.MODERATOR.getRole()) {
                 throw new InvalidAccessToResourceException("User is not owner of the Review.");
             }
         }

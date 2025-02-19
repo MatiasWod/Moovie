@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Comments.Comment;
 import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.models.User.UserRoles;
 import ar.edu.itba.paw.persistence.CommentDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -109,7 +110,8 @@ public class CommentServiceImpl implements CommentService{
     @Transactional
     @Override
     public void deleteComment(int commentId) {
-        if (userService.getInfoOfMyUser().getUserId() != commentDao.getCommentById(commentId).getUserId()){
+        User currentUser = userService.getInfoOfMyUser();
+        if (currentUser.getUserId() != commentDao.getCommentById(commentId).getUserId() && currentUser.getRole() != UserRoles.MODERATOR.getRole()){
             throw new AccessDeniedException("User is not the author of the comment");
         }
 
