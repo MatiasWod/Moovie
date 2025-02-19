@@ -19,65 +19,93 @@ export default function MoovieListReports() {
   }, []);
 
   const fetchLists = async () => {
-    const response = await reportApi.getReports({ contentType: 'moovieList' });
-    const reportsData = response.data || [];
-    
-    // Get unique URLs
-    const uniqueUrls = [...new Set(reportsData.map(report => report.url))];
-    
-    // Fetch all lists in parallel
-    const listPromises = uniqueUrls.map(url => api.get(url));
-    const listResponses = await Promise.all(listPromises);
-    const lists = listResponses.map(response => response.data);
-    
-    // Fetch all report counts in parallel
-    const reportCountPromises = lists.flatMap(list => {
-      const params = { contentType: 'moovieList', resourceId: list.id };
-      return [
-        reportApi.getReportCounts({ ...params, reportType: ReportTypes['Abuse & Harassment'] }),
-        reportApi.getReportCounts({ ...params, reportType: ReportTypes.Hate }),
-        reportApi.getReportCounts({ ...params, reportType: ReportTypes.Spam }),
-        reportApi.getReportCounts({ ...params, reportType: ReportTypes.Privacy })
-      ];
-    });
-    
-    const reportCounts = await Promise.all(reportCountPromises);
-    
-    // Add report counts to lists
-    const listsWithReports = lists.map((list, index) => {
-      const baseIndex = index * 4;
-      return {
-        ...list,
-        abuseReports: reportCounts[baseIndex].data.count,
-        hateReports: reportCounts[baseIndex + 1].data.count,
-        spamReports: reportCounts[baseIndex + 2].data.count,
-        privacyReports: reportCounts[baseIndex + 3].data.count,
-        totalReports: reportCounts[baseIndex].data.count + 
-                     reportCounts[baseIndex + 1].data.count + 
-                     reportCounts[baseIndex + 2].data.count + 
-                     reportCounts[baseIndex + 3].data.count
-      };
-    });
+    try {
+      const response = await reportApi.getReports({ contentType: 'moovieList' });
+      const reportsData = response.data || [];
+      
+      // Get unique URLs
+      const uniqueUrls = [...new Set(reportsData.map(report => report.url))];
+      
+      try {
+        // Fetch all lists in parallel
+        const listPromises = uniqueUrls.map(url => api.get(url));
+        const listResponses = await Promise.all(listPromises);
+        const lists = listResponses.map(response => response.data);
+        
+        try {
+          // Fetch all report counts in parallel
+          const reportCountPromises = lists.flatMap(list => {
+            const params = { contentType: 'moovieList', resourceId: list.id };
+            return [
+              reportApi.getReportCounts({ ...params, reportType: ReportTypes['Abuse & Harassment'] }),
+              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Hate }),
+              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Spam }),
+              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Privacy })
+            ];
+          });
+          
+          const reportCounts = await Promise.all(reportCountPromises);
+          
+          // Add report counts to lists
+          const listsWithReports = lists.map((list, index) => {
+            const baseIndex = index * 4;
+            return {
+              ...list,
+              abuseReports: reportCounts[baseIndex].data.count,
+              hateReports: reportCounts[baseIndex + 1].data.count,
+              spamReports: reportCounts[baseIndex + 2].data.count,
+              privacyReports: reportCounts[baseIndex + 3].data.count,
+              totalReports: reportCounts[baseIndex].data.count + 
+                           reportCounts[baseIndex + 1].data.count + 
+                           reportCounts[baseIndex + 2].data.count + 
+                           reportCounts[baseIndex + 3].data.count
+            };
+          });
 
-    setLists(listsWithReports);
-    setListsLoading(false);
+          setLists(listsWithReports);
+        } catch (error) {
+          console.error('Error fetching report counts:', error);
+          setLists(lists); // Set lists without report counts
+        }
+      } catch (error) {
+        console.error('Error fetching lists:', error);
+        setLists([]); 
+      }
+    } catch (error) {
+      console.error('Error fetching reports:', error);
+      setLists([]);
+    } finally {
+      setListsLoading(false);
+    }
   };
 
   const handleDelete = async (ml) => {
-    await ListApi.deleteList(ml.id);
-    fetchLists();
+    try {
+      await ListApi.deleteList(ml.id);
+      await fetchLists();
+    } catch (error) {
+      console.error('Error deleting list:', error);
+    }
   };
 
   const handleBan = async (ml) => {
-    const response = await api.get(ml.creatorUrl);
-    const user = response.data;
-    await userApi.banUser(user.username);
-    fetchLists();
+    try {
+      const response = await api.get(ml.creatorUrl);
+      const user = response.data;
+      await userApi.banUser(user.username);
+      await fetchLists();
+    } catch (error) {
+      console.error('Error banning user:', error);
+    }
   };
 
   const handleResolve = async (ml) => {
-    await reportApi.resolveMoovieListReport(ml.id);
-    fetchLists();
+    try {
+      await reportApi.resolveMoovieListReport(ml.id);
+      await fetchLists();
+    } catch (error) {
+      console.error('Error resolving report:', error);
+    }
   };
 
   if (listsLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>

@@ -368,5 +368,6 @@
   "createListForm.errorMessage": "Error creating the list. Please try again.",
   "createListForm.deleteButton": "Remove",
   "createListForm.loading": "Loading...",
-  "reviews.reviews": "review"
+  "reviews.reviews": "review",
+  "list.removed": "This list was removed"
 }
