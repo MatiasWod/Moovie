@@ -33,7 +33,7 @@ import java.util.Properties;
 @EnableTransactionManagement
 @ComponentScan({ "ar.edu.itba.paw.webapp.controller" , "ar.edu.itba.paw.services" , "ar.edu.itba.paw.persistence" })
 @Configuration
-@PropertySource("classpath:/config/mail-config-development.properties") //TODO: CAMBIAR ESTO ANTES DE DEPLOY
+@PropertySource("classpath:/config/mail-config-production.properties")
 public class WebConfig {
 
     @Value("classpath:schema.sql")
@@ -116,10 +116,9 @@ public class WebConfig {
     public DataSource dataSource(){
         final SimpleDriverDataSource ds = new SimpleDriverDataSource();
         ds.setDriverClass(org.postgresql.Driver.class);
-        ds.setUrl("jdbc:postgresql://localhost:5432/paw");
-        ds.setUsername("postgres");
-        ds.setUsername("postgres");
-        ds.setPassword("admin");
+        ds.setUrl("jdbc:postgresql://localhost/paw-2023b-06");
+        ds.setUsername("paw-2023b-06");
+        ds.setPassword("u5Ho8Kdaa");
         return ds;
     }
 
