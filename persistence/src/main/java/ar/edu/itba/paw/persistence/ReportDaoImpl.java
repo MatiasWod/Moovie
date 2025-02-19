@@ -25,8 +25,6 @@ public class ReportDaoImpl implements ReportDao {
     @PersistenceContext
     private EntityManager em;
 
-    private static int MAX_DEFAULT_REPORTS = 10;
-
     @Override
     public int getTotalReports() {
         String sql = "SELECT " +
@@ -57,9 +55,9 @@ public class ReportDaoImpl implements ReportDao {
     @Override
     public List<ReviewReport> getReviewReports() {
 
-        String sql = "SELECT c FROM ReviewReport c ORDER BY c.reportid DESC";
+        String sql = "SELECT c FROM ReviewReport c";
 
-        TypedQuery<ReviewReport> query = em.createQuery(sql, ReviewReport.class).setMaxResults(MAX_DEFAULT_REPORTS);
+        TypedQuery<ReviewReport> query = em.createQuery(sql, ReviewReport.class);
 
         return query.getResultList();
     }
@@ -106,9 +104,9 @@ public class ReportDaoImpl implements ReportDao {
     @Override
     public List<MoovieListReviewReport> getMoovieListReviewReports() {
 
-        String sql = "SELECT c FROM MoovieListReviewReport c ORDER BY c.reportid DESC";
+        String sql = "SELECT c FROM MoovieListReviewReport c";
 
-        TypedQuery<MoovieListReviewReport> query = em.createQuery(sql, MoovieListReviewReport.class).setMaxResults(MAX_DEFAULT_REPORTS);
+        TypedQuery<MoovieListReviewReport> query = em.createQuery(sql, MoovieListReviewReport.class);
 
         return query.getResultList();
     }
@@ -156,9 +154,9 @@ public class ReportDaoImpl implements ReportDao {
     @Override
     public List<MoovieListReport> getMoovieListReports() {
 
-        String sql = "SELECT c FROM MoovieListReport c ORDER BY c.reportid DESC";
+        String sql = "SELECT c FROM MoovieListReport c";
 
-        TypedQuery<MoovieListReport> query = em.createQuery(sql, MoovieListReport.class).setMaxResults(MAX_DEFAULT_REPORTS);
+        TypedQuery<MoovieListReport> query = em.createQuery(sql, MoovieListReport.class);
 
         return query.getResultList();
     }
@@ -206,9 +204,9 @@ public class ReportDaoImpl implements ReportDao {
 
     @Override
     public List<CommentReport> getCommentReports() {
-        String sql = "SELECT c FROM CommentReport c ORDER BY c.reportid DESC";
+        String sql = "SELECT c FROM CommentReport c";
 
-        TypedQuery<CommentReport> query = em.createQuery(sql, CommentReport.class).setMaxResults(MAX_DEFAULT_REPORTS);
+        TypedQuery<CommentReport> query = em.createQuery(sql, CommentReport.class);
 
         return query.getResultList();
 
