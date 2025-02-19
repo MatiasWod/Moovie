@@ -418,7 +418,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
 
             List<MoovieList> results = query.getResultList();
 
-            if (!results.isEmpty()) {
+            if (!results.isEmpty() && (type==(MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType()) || type==(MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.getType())) ) {
                 throw new UnableToInsertIntoDatabase("Create MoovieList failed, already have a table with the given name");
             }
             em.persist(newMoovieList);

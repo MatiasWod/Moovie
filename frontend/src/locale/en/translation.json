@@ -6,6 +6,7 @@
   "addMediaToListButton.errorAddedToList": "Error making request.",
   "addMediaToListButton.addedToList": "Already in this list",
   "addMediaToListButton.createNewList": "Create New List",
+  "awaitEmailValidation.goHome": "Go Home",
   "bannedUsers.bannedUsers": "Banned Users",
   "bannedUsers.confirmationModalTitle": "Confirm Unban",
   "bannedUsers.confirmationModalMessage": "Are you sure you want to unban this user?",
