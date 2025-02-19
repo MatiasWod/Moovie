@@ -25,13 +25,17 @@ export default function BannedUsers() {
     try {
       const response = await userApi.listUsers({ role: UserRoles.BANNED });
       const bannedUsers = response.data || [];
-      
+
+
+
+
       // Fetch ban messages and profile info in parallel for all users
       const detailPromises = bannedUsers.flatMap(user => [
-        userApi.getBanMessage(user.username),
+          userApi.getBanMessage(user.username).catch(() => ({ data: {} })),
         profileApi.getProfileByUsername(user.username)
       ]);
-      
+
+
       const detailResponses = await Promise.all(detailPromises);
       
       // Combine the results with the user data
@@ -66,6 +70,7 @@ export default function BannedUsers() {
   }
 
   if (usersLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
+
 
   return (
     <div>

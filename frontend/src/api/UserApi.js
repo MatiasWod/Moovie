@@ -115,7 +115,11 @@ const userApi = (() => {
     };
 
     const getBanMessage = (username) => {
-        return api.get(`/users/${username}/banMessage`);
+        try {
+            return api.get(`/users/${username}/banMessage`);
+        } catch (error) {
+            return " ";
+        }
     };
 
     const authTest = async () => {
