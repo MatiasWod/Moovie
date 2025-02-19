@@ -147,22 +147,25 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
 
     const handleReportSubmit = async (reportReason) => {
         try {
+            let response;
             if (source === 'list') {
-                await reportApi.reportMoovieListReview({
+                response = await reportApi.reportMoovieListReview({
                     moovieListReviewId: review.id,
                     reportedBy: currentUser.username,
                     type: reportReason
                 });
             } else {
-                await reportApi.reportReview({
+                response = await reportApi.reportReview({
                     reviewId: review.id,
                     reportedBy: currentUser.username,
                     type: reportReason
                 });
             }
             setShowReportForm(false);
+            return response;
         } catch (error) {
             console.error("Error reporting review:", error);
+            return error;
         }
     };
 

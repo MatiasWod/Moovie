@@ -17,8 +17,18 @@ const ReportForm = ({onCancel, onReportSubmit }) => {
 
     const handleSubmit = async () => {
         try {
+            console.log('About to report');
             const reportType = ReportTypes[reportReason];
-            onReportSubmit?.(reportType);
+            const response = await onReportSubmit?.(reportType);
+            console.log('reported', response);
+            if (response) {
+                if (response.status === 200) {
+                    onCancel();
+                } else {
+                    console.log(response);
+                    setError(response.response.data.message);
+                }
+            }
         } catch (error) {
             setError(error.response?.data?.message || "Error making request");
         }
