@@ -103,7 +103,11 @@ const ListContentPaginated = ({
 
             {
                 searchMediaMode && (
-                    <ListContentPaginatedSearchMode moovieListId={listId} handleCloseSearchMode={handleSearchMediaToAdd}/>
+                    <ListContentPaginatedSearchMode 
+                        moovieListId={listId} 
+                        handleCloseSearchMode={handleSearchMediaToAdd}
+                        onMediaAdded={Refresh}
+                    />
                 )
             }
         </div>
