@@ -22,70 +22,98 @@ export default function CommentReports() {
   }, []);
 
   const fetchComments = async () => {
-    const response = await reportApi.getReports({ contentType: 'comment' });
-    const reportsData = response.data || [];
-    
-    // Get unique URLs
-    const uniqueUrls = [...new Set(reportsData.map(report => report.url))];
-    
-    // Fetch all comments in parallel
-    const commentPromises = uniqueUrls.map(url => api.get(url));
-    const commentResponses = await Promise.all(commentPromises);
-    const comments = commentResponses.map(response => response.data);
-    
-    // Fetch all report counts, reviews, and media details in parallel
-    const allPromises = comments.flatMap(comment => {
-      const params = { contentType: 'comment', resourceId: comment.id };
-      const promises = [
-        reportApi.getReportCounts({ ...params, reportType: ReportTypes['Abuse & Harassment'] }),
-        reportApi.getReportCounts({ ...params, reportType: ReportTypes.Hate }),
-        reportApi.getReportCounts({ ...params, reportType: ReportTypes.Spam }),
-        reportApi.getReportCounts({ ...params, reportType: ReportTypes.Privacy }),
-        api.get(comment.reviewUrl),
-        mediaApi.getMediaById(comment.mediaId)
-      ];
-      return promises;
-    });
-    
-    const allResults = await Promise.all(allPromises);
-    
-    // Add report counts, review, and media details to comments
-    const commentsWithDetails = comments.map((comment, index) => {
-      const baseIndex = index * 6; // 4 report types + review + media
-      return {
-        ...comment,
-        abuseReports: allResults[baseIndex].data.count,
-        hateReports: allResults[baseIndex + 1].data.count,
-        spamReports: allResults[baseIndex + 2].data.count,
-        privacyReports: allResults[baseIndex + 3].data.count,
-        totalReports: allResults[baseIndex].data.count + 
-                     allResults[baseIndex + 1].data.count + 
-                     allResults[baseIndex + 2].data.count + 
-                     allResults[baseIndex + 3].data.count,
-        reviewDetails: allResults[baseIndex + 4].data,
-        mediaDetails: allResults[baseIndex + 5].data
-      };
-    });
+    try {
+      const response = await reportApi.getReports({ contentType: 'comment' });
+      const reportsData = response.data || [];
+      
+      // Get unique URLs
+      const uniqueUrls = [...new Set(reportsData.map(report => report.url))];
+      
+      try {
+        // Fetch all comments in parallel
+        const commentPromises = uniqueUrls.map(url => api.get(url));
+        const commentResponses = await Promise.all(commentPromises);
+        const comments = commentResponses.map(response => response.data);
+        
+        try {
+          // Fetch all report counts, reviews, and media details in parallel
+          const allPromises = comments.flatMap(comment => {
+            const params = { contentType: 'comment', resourceId: comment.id };
+            const promises = [
+              reportApi.getReportCounts({ ...params, reportType: ReportTypes['Abuse & Harassment'] }),
+              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Hate }),
+              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Spam }),
+              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Privacy }),
+              api.get(comment.reviewUrl),
+              mediaApi.getMediaById(comment.mediaId)
+            ];
+            return promises;
+          });
+          
+          const allResults = await Promise.all(allPromises);
+          
+          // Add report counts, review, and media details to comments
+          const commentsWithDetails = comments.map((comment, index) => {
+            const baseIndex = index * 6;
+            return {
+              ...comment,
+              abuseReports: allResults[baseIndex].data.count,
+              hateReports: allResults[baseIndex + 1].data.count,
+              spamReports: allResults[baseIndex + 2].data.count,
+              privacyReports: allResults[baseIndex + 3].data.count,
+              totalReports: allResults[baseIndex].data.count + 
+                           allResults[baseIndex + 1].data.count + 
+                           allResults[baseIndex + 2].data.count + 
+                           allResults[baseIndex + 3].data.count,
+              reviewDetails: allResults[baseIndex + 4].data,
+              mediaDetails: allResults[baseIndex + 5].data
+            };
+          });
 
-    setComments(commentsWithDetails);
-    setCommentsLoading(false);
+          setComments(commentsWithDetails);
+        } catch (error) {
+          console.error('Error fetching additional details:', error);
+          setComments(comments); // Set comments without additional details
+        }
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+        setComments([]);
+      }
+    } catch (error) {
+      console.error('Error fetching reports:', error);
+      setComments([]);
+    } finally {
+      setCommentsLoading(false);
+    }
   };
 
   const handleDelete = async (comment) => {
-    await commentApi.deleteComment(comment.id);
-    fetchComments();
+    try {
+      await commentApi.deleteComment(comment.id);
+      await fetchComments();
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+    }
   };
 
   const handleBan = async (comment) => {
-    const response = await api.get(comment.userUrl);
-    const user = response.data;
-    await userApi.banUser(user.username);
-    fetchComments();
+    try {
+      const response = await api.get(comment.userUrl);
+      const user = response.data;
+      await userApi.banUser(user.username);
+      await fetchComments();
+    } catch (error) {
+      console.error('Error banning user:', error);
+    }
   };
 
   const handleResolve = async (comment) => {
-    await reportApi.resolveCommentReport(comment.id);
-    fetchComments();
+    try {
+      await reportApi.resolveCommentReport(comment.id);
+      await fetchComments();
+    } catch (error) {
+      console.error('Error resolving report:', error);
+    }
   };
 
   if (commentsLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>

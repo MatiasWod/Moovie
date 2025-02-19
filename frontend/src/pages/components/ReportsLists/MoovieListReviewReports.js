@@ -21,68 +21,96 @@ export default function MoovieListReviewReports() {
   }, []);
 
   const fetchReviews = async () => {
-    const response = await reportApi.getReports({ contentType: 'moovieListReview' });
-    const reportsData = response.data || [];
-    
-    // Get unique URLs
-    const uniqueUrls = [...new Set(reportsData.map(report => report.url))];
-    
-    // Fetch all reviews in parallel
-    const reviewPromises = uniqueUrls.map(url => api.get(url));
-    const reviewResponses = await Promise.all(reviewPromises);
-    const reviews = reviewResponses.map(response => response.data);
-    
-    // Fetch all report counts and moovie lists in parallel
-    const allPromises = reviews.flatMap(review => {
-      const params = { contentType: 'moovieListReview', resourceId: review.id };
-      const promises = [
-        reportApi.getReportCounts({ ...params, reportType: ReportTypes['Abuse & Harassment'] }),
-        reportApi.getReportCounts({ ...params, reportType: ReportTypes.Hate }),
-        reportApi.getReportCounts({ ...params, reportType: ReportTypes.Spam }),
-        reportApi.getReportCounts({ ...params, reportType: ReportTypes.Privacy }),
-        api.get(review.moovieListUrl)
-      ];
-      return promises;
-    });
-    
-    const allResults = await Promise.all(allPromises);
-    
-    // Add report counts and list details to reviews
-    const reviewsWithDetails = reviews.map((review, index) => {
-      const baseIndex = index * 5; // 4 report types + list details
-      return {
-        ...review,
-        abuseReports: allResults[baseIndex].data.count,
-        hateReports: allResults[baseIndex + 1].data.count,
-        spamReports: allResults[baseIndex + 2].data.count,
-        privacyReports: allResults[baseIndex + 3].data.count,
-        totalReports: allResults[baseIndex].data.count + 
-                     allResults[baseIndex + 1].data.count + 
-                     allResults[baseIndex + 2].data.count + 
-                     allResults[baseIndex + 3].data.count,
-        listDetails: allResults[baseIndex + 4].data
-      };
-    });
+    try {
+      const response = await reportApi.getReports({ contentType: 'moovieListReview' });
+      const reportsData = response.data || [];
+      
+      // Get unique URLs
+      const uniqueUrls = [...new Set(reportsData.map(report => report.url))];
+      
+      try {
+        // Fetch all reviews in parallel
+        const reviewPromises = uniqueUrls.map(url => api.get(url));
+        const reviewResponses = await Promise.all(reviewPromises);
+        const reviews = reviewResponses.map(response => response.data);
+        
+        try {
+          // Fetch all report counts and moovie lists in parallel
+          const allPromises = reviews.flatMap(review => {
+            const params = { contentType: 'moovieListReview', resourceId: review.id };
+            const promises = [
+              reportApi.getReportCounts({ ...params, reportType: ReportTypes['Abuse & Harassment'] }),
+              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Hate }),
+              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Spam }),
+              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Privacy }),
+              api.get(review.moovieListUrl).catch(() => ({ data: { removed: true } }))
+            ];
+            return promises;
+          });
+          
+          const allResults = await Promise.all(allPromises);
+          
+          // Add report counts and list details to reviews
+          const reviewsWithDetails = reviews.map((review, index) => {
+            const baseIndex = index * 5;
+            return {
+              ...review,
+              abuseReports: allResults[baseIndex].data.count,
+              hateReports: allResults[baseIndex + 1].data.count,
+              spamReports: allResults[baseIndex + 2].data.count,
+              privacyReports: allResults[baseIndex + 3].data.count,
+              totalReports: allResults[baseIndex].data.count + 
+                           allResults[baseIndex + 1].data.count + 
+                           allResults[baseIndex + 2].data.count + 
+                           allResults[baseIndex + 3].data.count,
+              listDetails: allResults[baseIndex + 4].data
+            };
+          });
 
-    setReviews(reviewsWithDetails);
-    setReviewsLoading(false);
+          setReviews(reviewsWithDetails);
+        } catch (error) {
+          console.error('Error fetching additional details:', error);
+          setReviews(reviews);
+        }
+      } catch (error) {
+        console.error('Error fetching reviews:', error);
+        setReviews([]);
+      }
+    } catch (error) {
+      console.error('Error fetching reports:', error);
+      setReviews([]);
+    } finally {
+      setReviewsLoading(false);
+    }
   };
 
   const handleDelete = async (review) => {
-    await moovieListReviewApi.deleteMoovieListReviewById(review.id);
-    fetchReviews();
+    try {
+      await moovieListReviewApi.deleteMoovieListReviewById(review.id);
+      await fetchReviews();
+    } catch (error) {
+      console.error('Error deleting review:', error);
+    }
   };
 
   const handleBan = async (review) => {
-    const response = await api.get(review.creatorUrl);
-    const user = response.data;
-    await userApi.banUser(user.username);
-    fetchReviews();
+    try {
+      const response = await api.get(review.creatorUrl);
+      const user = response.data;
+      await userApi.banUser(user.username);
+      await fetchReviews();
+    } catch (error) {
+      console.error('Error banning user:', error);
+    }
   };
 
   const handleResolve = async (review) => {
-    await reportApi.resolveMoovieListReviewReport(review.id);
-    fetchReviews();
+    try {
+      await reportApi.resolveMoovieListReviewReport(review.id);
+      await fetchReviews();
+    } catch (error) {
+      console.error('Error resolving report:', error);
+    }
   };
 
   if (reviewsLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
@@ -105,9 +133,13 @@ export default function MoovieListReviewReports() {
                     <span className="text-gray-500">
                       {t('reviews.onMedia')}
                     </span>
-                    <a href={process.env.PUBLIC_URL + `/list/${review.listDetails?.id}`} className="text-blue-600 hover:underline">
-                      {review.listDetails?.name}
-                    </a>
+                    {review.listDetails?.removed ? (
+                      <span className="text-gray-600">{t('list.removed')}</span>
+                    ) : (
+                      <a href={process.env.PUBLIC_URL + `/list/${review.listDetails?.id}`} className="text-blue-600 hover:underline">
+                        {review.listDetails?.name}
+                      </a>
+                    )}
                   </div>
 
                   <div className="flex items-center space-x-4 text-sm text-gray-600">
