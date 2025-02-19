@@ -337,7 +337,7 @@ public class MoovieListController {
 
             List<OrderedMedia> mediaList = moovieListService.getMoovieListContentOrdered(id, orderBy, sortOrder, pageSizeQuery, pageNumber);
             final int mediaCount = moovieListService.getMoovieListCardById(id).getSize();
-            List<MediaIdListIdDto> dtoList = MediaIdListIdDto.fromOrderedMediaList(mediaList, id);
+            List<MediaIdListIdDto> dtoList = MediaIdListIdDto.fromOrderedMediaList(mediaList, id, uriInfo);
             Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdListIdDto>>(dtoList) {
             });
             final PagingUtils<MediaIdListIdDto> toReturnMediaIdListId = new PagingUtils<>(dtoList, pageNumber, pageSizeQuery, mediaCount);
@@ -398,7 +398,7 @@ public class MoovieListController {
 
             int customOrder = moovieListService.isMediaInMoovieList(mediaId,id);
             if( customOrder != -1){
-                return Response.ok(new MediaIdListIdDto(mediaId, id, customOrder)).build();
+                return Response.ok(new MediaIdListIdDto(mediaId, id, customOrder, uriInfo)).build();
             }
 
             return Response.noContent().build();
