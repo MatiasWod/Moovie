@@ -12,14 +12,15 @@ import {Dropdown} from "react-bootstrap";
 import {useTranslation} from "react-i18next";
 import {addIfNotExists, toggleMediaSelection} from "../../../../features/createListSlice";
 import WatchlistWatched from "../../../../api/values/WatchlistWatched";
+import listApi from "../../../../api/ListApi";
+import {OverlayTrigger, Tooltip} from "react-bootstrap";
 
-const AddMediaToListButton = ({ currentId, media }) => {
-    const { t } = useTranslation();
+const AddMediaToListButton = ({currentId, media}) => {
+    const {t} = useTranslation();
     const {isLoggedIn, user} = useSelector(state => state.auth);
 
     const dispatch = useDispatch();
-    const { selectedMedia, name, description } = useSelector((state) => state.list);
-
+    const {selectedMedia, name, description} = useSelector((state) => state.list);
 
     const [lists, setLists] = useState([]);
     const [listsLoading, setListsLoading] = useState(true);
@@ -29,12 +30,12 @@ const AddMediaToListButton = ({ currentId, media }) => {
     const [popupType, setPopupType] = useState("");
     const [popupVisible, setPopupVisible] = useState(false);
     const [options, setOptions] = useState([]);
+    const [alreadyInList, setAlreadyInList] = useState([]);
 
     const handleCreateListButton = () => {
         dispatch(addIfNotExists(media))
         navigate('/createList')
     }
-
 
     const fetchCurrentUserLists = async () => {
         try {
@@ -80,21 +81,52 @@ const AddMediaToListButton = ({ currentId, media }) => {
         }
     };
 
+    const fetchMediasInList = async () => {
+        try {
+            for (const list of lists) {
+                const response = await listApi.getMediaFromList(list.id, currentId)
+                if (response.status === 200) {
+                    setAlreadyInList((prev) => [...prev, list.id]);
+                }
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     useEffect(() => {
-        fetchCurrentUserLists();
-    }, []);
+        if (isLoggedIn) {
+            fetchCurrentUserLists();
+        }
+    }, [isLoggedIn]);
+
+    useEffect(() => {
+        if (lists.length > 0) {
+            fetchMediasInList();
+        }
+    }, [lists]);
 
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
 
     const handleToggle = () => {
-        if(!isLoggedIn){
+        if (!isLoggedIn) {
             navigate(`/login`);
         }
         setIsOpen(!isOpen);
     };
 
+    const renderTooltip = (props) => (
+        <Tooltip id="already-in-list-tooltip" {...props}>
+            {t('addMediaToListButton.addedToList')}
+        </Tooltip>
+    );
+
     const handleOptionClick = async (option) => {
+        if (alreadyInList.includes(option.id)) {
+            return; // No hacer nada si el medio ya está en la lista
+        }
+
         setPopupVisible(true);
         setIsOpen(false);
         setLoading(true);
@@ -103,12 +135,11 @@ const AddMediaToListButton = ({ currentId, media }) => {
 
         try {
             let response;
-            if (option.name === "Watchlist" ) {
-                response = await profileService.insertMediaIntoWW(WatchlistWatched.Watchlist, Number(currentId),user.username);
-            }else if (option.name === "Watched") {
-                response = await profileService.insertMediaIntoWW(WatchlistWatched.Watched, Number(currentId),user.username);
-            }
-            else {
+            if (option.name === "Watchlist") {
+                response = await profileService.insertMediaIntoWW(WatchlistWatched.Watchlist, Number(currentId), user.username);
+            } else if (option.name === "Watched") {
+                response = await profileService.insertMediaIntoWW(WatchlistWatched.Watched, Number(currentId), user.username);
+            } else {
                 response = await listService.insertMediaIntoMoovieList({
                     id: option.id,
                     mediaIds: [Number(currentId)],
@@ -117,15 +148,15 @@ const AddMediaToListButton = ({ currentId, media }) => {
 
             if (response.status === 200) {
                 setPopupType("success");
-                setPopupMessage("Media successfully added to the list.");
+                setPopupMessage(t('addMediaToListButton.successfullyAddedToList'));
+                setAlreadyInList((prev) => [...prev, option.id]);
             } else {
                 setPopupType("error");
                 setPopupMessage(response.data.message);
             }
         } catch (error) {
-
             setPopupType("error");
-            setPopupMessage("Error making request.");
+            setPopupMessage(t('addMediaToListButton.errorAddingToList'));
         } finally {
             setLoading(false);
         }
@@ -149,13 +180,30 @@ const AddMediaToListButton = ({ currentId, media }) => {
                     <i className="bi bi-plus-circle-fill"></i> {t('addMediaToListButton.addToList')}
                 </Dropdown.Toggle>
 
-                { isLoggedIn && (
+                {isLoggedIn && (
                     <Dropdown.Menu>
                         {options.map((option, index) => (
-                            <Dropdown.Item key={index} onClick={ () => handleOptionClick(option)}>{option.name}</Dropdown.Item>
+                            alreadyInList.includes(option.id) ? (
+                                <OverlayTrigger key={index} placement="right" overlay={renderTooltip}>
+                                    <div>
+                                        <Dropdown.Item
+                                            onClick={() => handleOptionClick(option)}
+                                            disabled
+                                            className="disabled-option"
+                                        >
+                                            {option.name}
+                                        </Dropdown.Item>
+                                    </div>
+                                </OverlayTrigger>
+                            ) : (
+                                <Dropdown.Item key={index} onClick={() => handleOptionClick(option)}>
+                                    {option.name}
+                                </Dropdown.Item>
+                            )
                         ))}
                         <Dropdown.Item onClick={handleCreateListButton}> <i
-                            className="bi bi-plus-circle-fill"></i> {t('addMediaToListButton.createNewList')}</Dropdown.Item>
+                            className="bi bi-plus-circle-fill"></i> {t('addMediaToListButton.createNewList')}
+                        </Dropdown.Item>
                     </Dropdown.Menu>
                 )}
             </Dropdown>

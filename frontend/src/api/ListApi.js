@@ -91,6 +91,10 @@ const listApi = (() => {
             })
     }
 
+    const getMediaFromList = ( listId, mediaId) => {
+        return api.get(`/lists/${listId}/content/${mediaId}`);
+    }
+
     const editListContent =  (listId, mediaId, customOrder) => {
         const input = {
             mediaId: mediaId,
@@ -181,7 +185,8 @@ const listApi = (() => {
         likeList,
         unlikeList,
         followList,
-        unfollowList
+        unfollowList,
+        getMediaFromList
     }
 })();
 

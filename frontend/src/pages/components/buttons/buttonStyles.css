@@ -57,3 +57,8 @@
     color: white;
 }
 
+.disabled-option {
+    color: grey !important;
+    pointer-events: none;
+}
+

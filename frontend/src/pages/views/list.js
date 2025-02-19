@@ -20,12 +20,14 @@ import moovieListReviewApi from "../../api/MoovieListReviewApi";
 import reportApi from "../../api/ReportApi";
 import ReportForm from "../components/forms/reportForm/reportForm";
 import profileService from "../../services/ProfileService";
+import useErrorStatus from "../../hooks/useErrorStatus";
 
 function List() {
     const [error403, setError403] = useState(false);
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const {t} = useTranslation();
+    const { setErrorStatus } = useErrorStatus();
 
     const {id} = useParams();
     const [currentOrderBy, setOrderBy] = useState(OrderBy.CUSTOM_ORDER);
@@ -74,23 +76,18 @@ function List() {
     useEffect(() => {
         async function getData() {
             try {
-                let data = await ListApi.getListById(id);
-                if(data.status === 403 || data.status === 404){
-                    setError403(true);
-                    return;
-                }
-                data = parsePaginatedResponse(data);
+                const data = await ListService.getListById(id);
                 setList(data);
                 setListLoading(false);
                 setUpdateListHeader(false);
-
             } catch (error) {
                 setListError(error);
                 setListLoading(false);
+                setErrorStatus(error.response.status);
             }
         }
         getData();
-    }, [id, updateListHeader]);
+    }, [id, updateListHeader, setErrorStatus]);
 
     //GET VALUES FOR LIST CONTENT
     const [listContent, setListContent] = useState(undefined);

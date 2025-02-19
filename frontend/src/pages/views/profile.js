@@ -10,6 +10,7 @@ import profileApi from "../../api/ProfileApi";
 import ConfirmationModal from "../components/forms/confirmationForm/confirmationModal";
 import { useTranslation } from "react-i18next";
 import {useSelector} from "react-redux";
+import useErrorStatus from "../../hooks/useErrorStatus";
 
 function ProfileTab({ selectedTab, profile }) {
   switch (selectedTab.toLowerCase()) {
@@ -35,6 +36,7 @@ function ProfileTab({ selectedTab, profile }) {
 function Profile() {
   const { username } = useParams();
   const {isLoggedIn, user} = useSelector(state => state.auth);
+  const { setErrorStatus } = useErrorStatus();
   const isMe = isLoggedIn && user.username === username;
 
   const [profile, setProfile] = useState({});
@@ -53,6 +55,7 @@ function Profile() {
     } catch (err) {
       console.error("Error fetching profile:", err);
       setProfileError(err);
+      setErrorStatus(err.response.status);
     } finally {
       setProfileLoading(false);
     }
@@ -105,7 +108,7 @@ function Profile() {
 
   useEffect(() => {
     fetchProfile();
-  }, [username]);
+  }, [username,setErrorStatus]);
 
   const [selectedTab, setSelectedTab] = useState("public-lists");
   const handleTabSelect = (tab) => {

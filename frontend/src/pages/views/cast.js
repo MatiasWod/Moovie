@@ -8,11 +8,13 @@ import MediaCard from "../components/mediaCard/MediaCard";
 import defaultPoster from "../../images/defaultPoster.png";
 import "./cast.css";
 import {Spinner} from "react-bootstrap";
+import useErrorStatus from "../../hooks/useErrorStatus";
 
 function Cast() {
     const { id } = useParams();
     const location = useLocation();
     const { t } = useTranslation();
+    const { setErrorStatus } = useErrorStatus();
 
     const [actorObject, setActorObject] = useState(null);
     const [actorMedias, setActorMedias] = useState(undefined);
@@ -41,12 +43,13 @@ function Cast() {
             } catch (error) {
                 console.error("Error fetching actor media:", error);
                 setActorMediasError(error);
+                setErrorStatus(error.response.status);
             } finally {
                 setActorMediasLoading(false);
             }
         }
         getData();
-    }, [id]);
+    }, [id,setErrorStatus]);
 
     if (actorMediasLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
 
