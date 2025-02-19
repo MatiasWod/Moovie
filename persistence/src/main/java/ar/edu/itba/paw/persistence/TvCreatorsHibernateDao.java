@@ -48,7 +48,6 @@ public class TvCreatorsHibernateDao implements TVCreatorsDao{
     }
 
 
-    //TODO por que se usa size aca?
     @Override
     public List<TVCreators> getTVCreatorsForQuery(String query, int size) {
         String sql = "SELECT c FROM TVCreators c WHERE LOWER(c.creatorName) LIKE :query ORDER BY c.medias.size DESC";

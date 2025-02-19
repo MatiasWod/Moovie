@@ -59,6 +59,7 @@
   "confirmationForm.successMessage": "Action completed successfully.",
   "confirmationForm.errorMessage": "Error completing action.",
   "confirmationForm.requestError": "Error making request.",
+  "createListForm.link": "Link",
   "details.budget": "Budget",
   "details.cast": "Cast",
   "details.director": "Director",

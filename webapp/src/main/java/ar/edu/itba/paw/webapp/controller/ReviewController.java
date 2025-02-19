@@ -23,7 +23,6 @@ import javax.ws.rs.core.*;
 import java.util.List;
 
 
-//TODO CHECK LOGGERS
 //import com.sun.org.slf4j.internal.Logger;
 //import com.sun.org.slf4j.internal.LoggerFactory;
 

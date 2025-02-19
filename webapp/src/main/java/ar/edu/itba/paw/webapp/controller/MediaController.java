@@ -44,8 +44,6 @@ public class MediaController {
         this.moovieListService = moovieListService;
     }
 
-    //TODO capaz considerar en listAll poder pedir paginas de distintos tamaños, tambien filtros y
-    // ordenado, hasta se podria devolder el count en esta misma query....
 
 
 
