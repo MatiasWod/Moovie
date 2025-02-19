@@ -94,13 +94,13 @@ export default function MoovieListReviewReports() {
               <div className="flex justify-between items-start mb-4">
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
-                    <a href={`/profile/${review.username}`} className="text-blue-600 font-bold hover:underline">
+                    <a href={ process.env.PUBLIC_URL + `/profile/${review.username}`} className="text-blue-600 font-bold hover:underline">
                       {review.username}
                     </a>
                     <span className="text-gray-500">
                       {t('reviews.onMedia')}
                     </span>
-                    <a href={`/list/${review.listDetails?.id}`} className="text-blue-600 hover:underline">
+                    <a href={process.env.PUBLIC_URL + `/list/${review.listDetails?.id}`} className="text-blue-600 hover:underline">
                       {review.listDetails?.name}
                     </a>
                   </div>
