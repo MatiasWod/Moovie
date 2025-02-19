@@ -72,7 +72,7 @@ const AwaitEmailValidation = () => {
                                     {loading ? t("awaitEmailValidation.sending") : t("awaitEmailValidation.resend")}
                                 </Button> :
                                 <Button variant={"success"} onClick={()=>navigate('/')}>
-                                    Go Home
+                                    {t('awaitEmailValidation.goHome')}
                                 </Button>
                             }
                         </Card.Body>
