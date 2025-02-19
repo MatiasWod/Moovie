@@ -187,14 +187,16 @@ function List() {
 
     const handleReportList = async (reportReason) => {
         try {
-            await reportApi.reportMoovieList({
+            const response = await reportApi.reportMoovieList({
                 moovieListId: id,
                 reportedBy: user.username,
                 type: reportReason
             });
             setShowReportForm(false);
+            return response;
         } catch (error) {
             console.error("Error reporting list:", error);
+            return error;
         }
     };
 

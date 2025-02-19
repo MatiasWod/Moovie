@@ -56,11 +56,17 @@ export default function CommentList({ reviewId, reload }) {
     };
 
     const handleReportComment = async (commentId, reportReason) => {
-        await reportApi.reportComment({
-            commentId,
-            reportedBy: user.username,
-            type: reportReason
-        });
+        try{
+            const response =await reportApi.reportComment({
+                commentId,
+                reportedBy: user.username,
+                type: reportReason
+            });
+            return response;
+        } catch (error) {
+            console.error("Error reporting comment:", error);
+            return error;
+        }
     };
 
     if (isLoading) return <div className="text-gray-500 text-sm">{t('commentList.loadingComments')}</div>;
@@ -143,8 +149,7 @@ function CommentItem({ comment, isLoggedIn, user, onDelete, reload, onReport }) 
     }
 
     const handleReportSubmit = async (reportReason) => {
-        await onReport(comment.id, reportReason);
-        setIsReporting(false);
+        return await onReport(comment.id, reportReason);
     };
 
 
