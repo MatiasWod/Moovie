@@ -7,6 +7,7 @@ import {useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import UserRoles from '../../../api/values/UserRoles';
+import RoleBadge from "../RoleBadge/RoleBadge";
 
 const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser, handleMakeModerator }) => {
     const { t } = useTranslation();
@@ -41,8 +42,9 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser, handleMakeMode
                         {profile.username}
                         {profile.hasBadge && <span title={t('tooltips.badgeTooltip')}> 🏆</span>}
                         {showModActions && (
-                            <>
-                                {(profile.role === -101 || profile.role === -2) ? (
+                            <>{(profile.role !== UserRoles.MODERATOR) ? (
+                                <>
+                                {(profile.role === UserRoles.BANNED_NOT_REGISTERED || profile.role === UserRoles.BANNED) ? (
                                     <Button
                                         variant="success"
                                         size="sm"
@@ -71,6 +73,8 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser, handleMakeMode
                                         {t('profile.makeUserModerator')}
                                     </Button>
                                 )}
+                                    </>
+                            ) : (<RoleBadge role={profile.role} size={"50px"}></RoleBadge>)}
                             </>
                         )}
                     </h1>
