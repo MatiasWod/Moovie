@@ -22,3 +22,8 @@ Java 8 y la metodologia Scrum
 Actualizar la bd descomentando
 en el WebConfig la linea 79 (dbp.addScript(mediaSql);)
 o correr el archivo media.sql
+
+## Documentacion de la API
+Se puede acceder a la documentacion de la API en el siguiente link:
+https://app.swaggerhub.com/apis-docs/moovie/paw-2023b-06/1.0.0
+
