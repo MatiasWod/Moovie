@@ -29,7 +29,11 @@ function ProfileTabMediaLists({ type, username }) {
                 );
                 setListPagination(data.data);
                 const idList = MediaService.getIdMediaFromObjectList(data.data);
-                setListContent(await MediaService.getMediaByIdList(idList));
+                if (idList.length > 0) {
+                    setListContent(await MediaService.getMediaByIdList(idList));
+                } else {
+                    setListContent([]);
+                }
                 setListContentLoading(false);
             } catch (error) {
                 setListContentError(error);
