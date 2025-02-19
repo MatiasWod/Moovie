@@ -267,5 +267,11 @@
   "listContentSearch.noResults": "No se encontraron resultados",
   "listContentSearch.startTyping": "Empieza a escribir para buscar películas",
   "listContentSearch.addedToList": "agregado a la lista",
-  "listContentSearch.alreadyInList": "ya está en la lista"
+  "listContentSearch.alreadyInList": "ya está en la lista",
+  "listContent.tmdbScore": "Puntuación TMDB",
+  "listContent.userScore": "Puntuación Usuarios",
+  "listContent.year": "Año",
+  "listContent.nextPage": "Mover a Siguiente Página",
+  "listContent.prevPage": "Mover a Página Anterior",
+  "listContent.remove": "Quitar de la Lista"
 }

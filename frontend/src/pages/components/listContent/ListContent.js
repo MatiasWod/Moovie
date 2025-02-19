@@ -12,51 +12,102 @@ const MediaRow = ({
                       position, media, handleClick, handleMouseEnter, handleMouseLeave,
                       index, moveItem, editMode, pageChange, removeFromList
                   }) => {
+    const [isDragging, setIsDragging] = useState(false);
+
     const handleDragStart = (e) => {
-        e.dataTransfer.setData("index", index);
+        setIsDragging(true);
+        e.dataTransfer.setData("mediaId", media.id);
+        e.dataTransfer.setData("currentOrder", media.customOrder);
+        e.target.classList.add('dragging');
+    };
+
+    const handleDragEnd = (e) => {
+        setIsDragging(false);
+        e.target.classList.remove('dragging');
     };
 
     const handleDragOver = (e) => {
         e.preventDefault();
+        e.currentTarget.classList.add('drag-over');
+    };
+
+    const handleDragLeave = (e) => {
+        e.currentTarget.classList.remove('drag-over');
     };
 
     const handleDrop = (e) => {
-        const fromIndex = e.dataTransfer.getData("index");
-        moveItem(Number(fromIndex), index);
+        e.preventDefault();
+        e.currentTarget.classList.remove('drag-over');
+        const draggedMediaId = e.dataTransfer.getData("mediaId");
+        const currentOrder = Number(e.dataTransfer.getData("currentOrder"));
+        const targetOrder = media.customOrder;
+        
+        if (draggedMediaId !== media.id) {
+            moveItem(draggedMediaId, currentOrder, targetOrder);
+        }
     };
 
     const [menuOpen, setMenuOpen] = useState(false);
+    const { t } = useTranslation();
 
     return (
         <div
-            className="media-row"
+            className={`media-row ${isDragging ? 'dragging' : ''}`}
             onMouseEnter={() => handleMouseEnter(media.id)}
             onMouseLeave={handleMouseLeave}
             onClick={() => !editMode && handleClick(media.id)}
             draggable={editMode}
             onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
             onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            style={{ cursor: editMode ? "grab" : "pointer", position: "relative" }}
+            style={{ 
+                cursor: editMode ? "grab" : "pointer", 
+                position: "relative",
+                opacity: isDragging ? 0.5 : 1
+            }}
         >
             <span className="media-position">{position}</span>
-            <img className="media-image" src={media.posterPath} alt={media.name} />
-            <div className="media-info">
-                <span className="media-name">{media.name}</span>
-                <span className="media-type">{media.type}</span>
+            <div className="media-title-section">
+                <img className="media-image" src={media.posterPath} alt={media.name} />
+                <div className="media-info">
+                    <span className="media-name">{media.name}</span>
+                    <span className="media-type">{media.type}</span>
+                </div>
             </div>
-            <span className="media-score">{media.tmdbRating} ★</span>
-            <span className="media-score">{media.totalRating} ☆</span>
+            <span className="media-score">
+                <i className="fas fa-star text-warning me-1"></i>
+                {media.tmdbRating}
+            </span>
+            <span className="media-score">
+                <i className="fas fa-users text-info me-1"></i>
+                {media.totalRating}
+            </span>
             <span className="media-release">{new Date(media.releaseDate).getFullYear()}</span>
 
             {editMode && (
                 <div className="menu-container">
-                    <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)}>⋮</button>
+                    <button className="menu-button" onClick={(e) => {
+                        e.stopPropagation();
+                        setMenuOpen(!menuOpen);
+                    }}>
+                        <i className="fas fa-ellipsis-v"></i>
+                    </button>
                     {menuOpen && (
                         <div className="menu-dropdown">
-                            <Button onClick={() => pageChange(1, media.id)}>Send to next page</Button>
-                            <Button onClick={() => pageChange(-1, media.id)}>Send to prev page</Button>
-                            <Button onClick={() => removeFromList(media.id)}>Delete from list</Button>
+                            <Button variant="outline-primary" onClick={() => pageChange(1, media.id)}>
+                                <i className="fas fa-arrow-right me-2"></i>
+                                {t('listContent.nextPage')}
+                            </Button>
+                            <Button variant="outline-primary" onClick={() => pageChange(-1, media.id)}>
+                                <i className="fas fa-arrow-left me-2"></i>
+                                {t('listContent.prevPage')}
+                            </Button>
+                            <Button variant="outline-danger" onClick={() => removeFromList(media.id)}>
+                                <i className="fas fa-trash me-2"></i>
+                                {t('listContent.remove')}
+                            </Button>
                         </div>
                     )}
                 </div>
@@ -65,7 +116,7 @@ const MediaRow = ({
     );
 };
 
-const ListContent = ({ listContent, editMode, Refresh, listId, currentPage}) => {
+const ListContent = ({ listContent, editMode, setCurrentSortOrder, listId, currentPage, Refresh }) => {
     const navigate = useNavigate();
     const { t } = useTranslation();
     const [hoveredId, setHoveredId] = useState(null);
@@ -109,14 +160,17 @@ const ListContent = ({ listContent, editMode, Refresh, listId, currentPage}) => 
 
     }
 
-    const moveItem = async (fromIndex, toIndex) => {
-        await ListService.editListContent({
-            mediaId: listContent[fromIndex].id,
-            listId: listId,
-            customOrder: listContent[toIndex].customOrder
+    const moveItem = async (mediaId, fromOrder, toOrder) => {
+        try {
+            await ListService.editListContent({
+                mediaId: mediaId,
+                listId: listId,
+                customOrder: toOrder
+            });
+            Refresh();
+        } catch (error) {
+            console.error("Error moving item:", error);
         }
-        );
-        Refresh();
     };
 
     if (!listContent || listContent.length === 0) {
@@ -128,10 +182,18 @@ const ListContent = ({ listContent, editMode, Refresh, listId, currentPage}) => 
             <div className="media-header">
                 <span>#</span>
                 <span>{t("listContent.title")}</span>
-                <span>{t("listContent.type")}</span>
-                <span>{t("listContent.score")}</span>
-                <span>{t("listContent.usersScore")}</span>
-                <span>{t("listContent.releaseDate")}</span>
+                <span>
+                    <i className="fas fa-star text-warning me-1"></i>
+                    {t("listContent.tmdbScore")}
+                </span>
+                <span>
+                    <i className="fas fa-users text-info me-1"></i>
+                    {t("listContent.userScore")}
+                </span>
+                <span>
+                    <i className="fas fa-calendar me-1"></i>
+                    {t("listContent.year")}
+                </span>
             </div>
             <div className="media-list">
                 {listContent.map((media, index) => (

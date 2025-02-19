@@ -267,5 +267,11 @@
   "listContentSearch.noResults": "No results found",
   "listContentSearch.startTyping": "Start typing to search for movies",
   "listContentSearch.addedToList": "added to list",
-  "listContentSearch.alreadyInList": "is already in list"
+  "listContentSearch.alreadyInList": "is already in list",
+  "listContent.tmdbScore": "TMDB Score",
+  "listContent.userScore": "User Score",
+  "listContent.year": "Year",
+  "listContent.nextPage": "Move to Next Page",
+  "listContent.prevPage": "Move to Previous Page",
+  "listContent.remove": "Remove from List"
 }
