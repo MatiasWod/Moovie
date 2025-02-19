@@ -146,7 +146,6 @@ function Healthcheck() {
                 const data = await CastService.getDirectorsForQuery({
                     search: search
                 });
-                console.log(data);
                 setDirectors(data.data);
                 setDirectorLoading(false);
             } catch (error) {
@@ -162,7 +161,6 @@ function Healthcheck() {
     useEffect(() => {
         async function getData() {
             try {
-                console.log(search)
                 const data = await profileService.getSearchedUsers({
                     username: search,
                     orderBy: "username",

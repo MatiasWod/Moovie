@@ -11,9 +11,7 @@ const api = axios.create({
 api.interceptors.request.use(
     config => {
         const token = sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken');
-        //console.log('Retrieved token:', token);
         if (token === undefined || token === null || token === 'undefined') {
-            console.log('No token');
             return config;
         }
         if (token) {

@@ -23,8 +23,6 @@ const ActorCardList = ({ mediaId }) => {
                 const response = await castService.getActorsByMediaId(mediaId);
                 setActors(response.data);
 
-                console.log(response.data.length)
-
             } catch (err) {
                 setActorsError(err);
 

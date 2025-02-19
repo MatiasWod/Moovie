@@ -20,7 +20,6 @@ function ProfileTabMediaLists({ type, username }) {
     useEffect(() => {
         async function getData() {
             try {
-                console.log("Fetching media lists for username:", username, " - and type:", type, ' - currentOrderBy:', currentOrderBy, ' - currentSortOrder:', currentSortOrder, ' - page:', page);
                 const data = await profileApi.getSpecialListFromUser(
                     username,
                     type,
@@ -30,9 +29,7 @@ function ProfileTabMediaLists({ type, username }) {
                 );
                 setListPagination(data.data);
                 const idList = MediaService.getIdMediaFromObjectList(data.data);
-                console.log(idList);
                 setListContent(await MediaService.getMediaByIdList(idList));
-                console.log(listContent);
                 setListContentLoading(false);
             } catch (error) {
                 setListContentError(error);

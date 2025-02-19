@@ -61,7 +61,6 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
     const handleEdit = async () => {
         try {
             if (source !== 'media' && source !== 'lists') {
-                console.log(review.id);
                 await moovieListReviewService.editReview(review.moovieListid, reviewContent);
             }
             handleToggleEdit();
@@ -143,7 +142,6 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
 
         } catch(e)
         {
-            console.log("Error liking the review.")
         }
     }
 

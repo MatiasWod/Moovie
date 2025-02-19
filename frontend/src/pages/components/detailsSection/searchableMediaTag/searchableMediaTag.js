@@ -15,7 +15,6 @@ const SearchableMediaTag = ({ image, text, link, id }) => {
             });
         }
         if (link === `tvcreators` || link === `cast/director`) {
-            console.log(id);
             navigate(`/${link}/${id}`,{ state: { actorName: text } });
         }
     };

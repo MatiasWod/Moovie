@@ -84,7 +84,6 @@ export default function CommentReports() {
   };
 
   const handleResolve = async (comment) => {
-    console.log('resolving report', comment);
     await reportApi.resolveCommentReport(comment.id);
     fetchComments();
   };

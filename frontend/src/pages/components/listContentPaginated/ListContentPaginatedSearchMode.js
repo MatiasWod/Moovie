@@ -88,7 +88,6 @@ const ListContentPaginatedSearchMode = ({ moovieListId, handleCloseSearchMode, o
                 }, 5000);
             }
         } catch(e) {
-            console.log("error while adding the media")
         }
     };
 
