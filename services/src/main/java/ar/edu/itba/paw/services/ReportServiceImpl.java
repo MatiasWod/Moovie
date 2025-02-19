@@ -55,10 +55,10 @@ public class ReportServiceImpl implements ReportService {
                 case "review":
                     reports.addAll(reportDao.getReviewReports());
                     break;
-                case "list":
+                case "moovielist":
                     reports.addAll(reportDao.getMoovieListReports());
                     break;
-                case "listreview":
+                case "moovielistreview":
                     reports.addAll(reportDao.getMoovieListReviewReports());
                     break;
                 default:

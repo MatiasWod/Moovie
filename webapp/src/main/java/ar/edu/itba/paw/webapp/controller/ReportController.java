@@ -45,37 +45,29 @@ public class ReportController {
     @GET
     @Produces(VndType.APPLICATION_REPORT_LIST)
     public Response getReports(@QueryParam("contentType") @NotNull String contentType) {
-        try {
+        if(contentType!=null && !contentType.equalsIgnoreCase("comment") && !contentType.equalsIgnoreCase("moovieList") && !contentType.equalsIgnoreCase("moovieListReview") && !contentType.equalsIgnoreCase("review")){
+            throw new IllegalArgumentException("The 'contentType' query parameter must be one of 'comment', 'moovieList', 'moovieListReview', or 'review'.");
+        }
 
-            if(contentType!=null && !contentType.equals("comment") && !contentType.equals("moovieList") && !contentType.equals("moovieListReview") && !contentType.equals("review")){
-                throw new IllegalArgumentException("The 'contentType' query parameter must be one of 'comment', 'moovieList', 'moovieListReview', or 'review'.");
+        // Fetch reports based on filters using the ReportService
+        List<Object> reports = reportService.getReports(contentType);
+
+        // Map reports to DTOs
+        List<ReportDTO> reportDTOs = reports.stream().map(report -> {
+            if (report instanceof ReviewReport) {
+                return ReportDTO.fromReviewReport((ReviewReport) report, uriInfo);
+            } else if (report instanceof CommentReport) {
+                return ReportDTO.fromCommentReport((CommentReport) report, uriInfo);
+            } else if (report instanceof MoovieListReport) {
+                return ReportDTO.fromMoovieListReport((MoovieListReport) report, uriInfo);
+            } else if (report instanceof MoovieListReviewReport) {
+                return ReportDTO.fromMoovieListReviewReport((MoovieListReviewReport) report, uriInfo);
             }
+            return null;
+        }).collect(Collectors.toList());
 
-            // Fetch reports based on filters using the ReportService
-            List<Object> reports = reportService.getReports(contentType);
-
-            // Map reports to DTOs
-            List<ReportDTO> reportDTOs = reports.stream().map(report -> {
-                if (report instanceof ReviewReport) {
-                    return ReportDTO.fromReviewReport((ReviewReport) report, uriInfo);
-                } else if (report instanceof CommentReport) {
-                    return ReportDTO.fromCommentReport((CommentReport) report, uriInfo);
-                } else if (report instanceof MoovieListReport) {
-                    return ReportDTO.fromMoovieListReport((MoovieListReport) report, uriInfo);
-                } else if (report instanceof MoovieListReviewReport) {
-                    return ReportDTO.fromMoovieListReviewReport((MoovieListReviewReport) report, uriInfo);
-                }
-                return null;
-            }).collect(Collectors.toList());
-
-            return Response.ok(new GenericEntity<List<ReportDTO>>(reportDTOs) {
-            }).build();
-        } catch (IllegalArgumentException e) {
-            throw new BadRequestException(e.getMessage(), e);
-        }
-        catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage(), e); // Deja que JAX-RS maneje la excepción        }
-        }
+        return Response.ok(new GenericEntity<List<ReportDTO>>(reportDTOs) {
+        }).build();
     }
 
 
