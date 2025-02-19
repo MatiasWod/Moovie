@@ -28,7 +28,7 @@ public interface ReportService {
 
     int getReportedReviewsCount();
 
-    ReviewReport reportReview(int reviewId, int userId, int type, String content);
+    ReviewReport reportReview(int reviewId, int userId, int type);
 
     void resolveReviewReport(int reviewId);
 
@@ -40,7 +40,7 @@ public interface ReportService {
 
     int getReportedMoovieListReviewsCount();
 
-    MoovieListReviewReport reportMoovieListReview(int moovieListReviewId, int userId, int type, String content);
+    MoovieListReviewReport reportMoovieListReview(int moovieListReviewId, int userId, int type);
 
     void resolveMoovieListReviewReport(int mlrId);
 
@@ -52,7 +52,7 @@ public interface ReportService {
 
     int getReportedMoovieListsCount();
 
-    MoovieListReport reportMoovieList(int moovieListId, int userId, int type, String content);
+    MoovieListReport reportMoovieList(int moovieListId, int userId, int type);
 
     void resolveMoovieListReport(int mlId);
 
@@ -64,7 +64,7 @@ public interface ReportService {
 
     int getReportedCommentsCount();
 
-    CommentReport reportComment(int commentId, int userId, int type, String content);
+    CommentReport reportComment(int commentId, int userId, int type);
 
     void resolveCommentReport(int commentId);
 }

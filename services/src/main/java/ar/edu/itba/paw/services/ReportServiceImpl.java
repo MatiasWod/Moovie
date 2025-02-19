@@ -92,9 +92,9 @@ public class ReportServiceImpl implements ReportService {
 
     @Transactional
     @Override
-    public ReviewReport reportReview(int reviewId, int userId, int type, String content) {
+    public ReviewReport reportReview(int reviewId, int userId, int type) {
         LOGGER.info("reportReview insert");
-        return reportDao.reportReview(reviewId, userId, type, content);
+        return reportDao.reportReview(reviewId, userId, type,null);
     }
 
     @Transactional
@@ -126,8 +126,8 @@ public class ReportServiceImpl implements ReportService {
 
     @Transactional
     @Override
-    public MoovieListReviewReport reportMoovieListReview(int moovieListReviewId, int userId, int type, String content) {
-        return reportDao.reportMoovieListReview(moovieListReviewId, userId, type, content);
+    public MoovieListReviewReport reportMoovieListReview(int moovieListReviewId, int userId, int type) {
+        return reportDao.reportMoovieListReview(moovieListReviewId, userId, type, null);
     }
 
     @Transactional
@@ -158,8 +158,8 @@ public class ReportServiceImpl implements ReportService {
 
     @Transactional
     @Override
-    public MoovieListReport reportMoovieList(int moovieListId, int userId, int type, String content) {
-        return reportDao.reportMoovieList(moovieListId, userId, type, content);
+    public MoovieListReport reportMoovieList(int moovieListId, int userId, int type) {
+        return reportDao.reportMoovieList(moovieListId, userId, type, null);
     }
 
     @Transactional
@@ -189,8 +189,8 @@ public class ReportServiceImpl implements ReportService {
 
     @Transactional
     @Override
-    public CommentReport reportComment(int commentId, int userId, int type, String content) {
-        return reportDao.reportComment(commentId, userId, type, content);
+    public CommentReport reportComment(int commentId, int userId, int type) {
+        return reportDao.reportComment(commentId, userId, type, null);
     }
 
     @Transactional
