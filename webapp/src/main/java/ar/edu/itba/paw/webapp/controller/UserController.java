@@ -188,8 +188,10 @@ public class UserController {
                 LOGGER.info("Token not found. Returning NOT_FOUND.");
                 return Response.status(Response.Status.NOT_FOUND).entity("Token not found").build();
             }
-
             Token token = tokenOptional.get();
+            if (userService.findUserById(token.getUserId()).getRole() > 0) {
+                throw new UserVerifiedException();
+            }
             userService.resendVerificationEmail(token);
 
             LOGGER.info("Verification email resent successfully for user ID: {}", token.getUserId());
@@ -198,7 +200,11 @@ public class UserController {
         } catch (VerificationTokenNotFoundException e) {
             LOGGER.error("Verification token not found: {}", e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity("Verification token not found").build();
-        } catch (Exception e) {
+        } catch (UserVerifiedException e) {
+            LOGGER.error("User is already verified. Returning CONFLICT.");
+            return Response.status(Response.Status.CONFLICT).entity("User is already verified").build();
+        }
+        catch (Exception e) {
             LOGGER.error("Error resending verification email: {}", e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to resend verification email").build();
         }

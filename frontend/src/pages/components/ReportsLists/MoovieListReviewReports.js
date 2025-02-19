@@ -17,7 +17,7 @@ export default function MoovieListReviewReports() {
   }, []);
 
   const fetchReviews = async () => {
-    const response = await reportApi.getReports({ contentType: 'listReview' });
+    const response = await reportApi.getReports({ contentType: 'moovieListReview' });
     const reportsData = response.data || [];
     
     // Get unique URLs
