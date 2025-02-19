@@ -184,6 +184,42 @@ const FiltersGroup = ({
                     )}
 
                     <FormButtons onApply={handleFilterSubmit} onReset={handleReset} />
+
+                    <FilterSection
+                        title={t("filters.genres")}
+                        isOpen={openGenres}
+                        toggleOpen={() => setOpenGenres(!openGenres)}
+                    >
+                        <FilterList
+                            searchValue={searchGenre}
+                            onSearchChange={setSearchGenre}
+                            items={genresList}
+                            selectedItems={selectedGenres}
+                            onToggleItem={(genre) =>
+                                setSelectedGenres((prev) =>
+                                    prev.includes(genre.id) ? prev.filter((g) => g.id !== genre.id) : [...prev, genre]
+                                )
+                            }
+                        />
+                    </FilterSection>
+
+                    <FilterSection
+                        title={t("filters.providers")}
+                        isOpen={openProviders}
+                        toggleOpen={() => setOpenProviders(!openProviders)}
+                    >
+                        <FilterList
+                            searchValue={searchProvider}
+                            onSearchChange={setSearchProvider}
+                            items={providersList}
+                            selectedItems={selectedProviders}
+                            onToggleItem={(provider) =>
+                                setSelectedProviders((prev) =>
+                                    prev.includes(provider.id) ? prev.filter((p) => p.id !== provider.id) : [...prev, provider]
+                                )
+                            }
+                        />
+                    </FilterSection>
                 </form>
             </div>
         </div>
