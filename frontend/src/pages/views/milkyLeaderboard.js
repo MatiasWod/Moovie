@@ -9,6 +9,7 @@ import {useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import profileApi from "../../api/ProfileApi";
 import {Spinner} from "react-bootstrap";
+import {FaInfoCircle} from "react-icons/fa";
 
 function MilkyLeaderboard() {
     const [milkyLeaderboard, setMilkyLeaderboard] = useState([]);
@@ -53,7 +54,10 @@ function MilkyLeaderboard() {
                         <th className="col bold-letters">{t('mpl.username')}</th>
                         <th className="col bold-letters">{t('mpl.moovieListCount')}</th>
                         <th className="col bold-letters">{t('mpl.reviewsCount')}</th>
-                        <th className="col bold-letters">{t('mpl.points')}</th>
+                        <th className="col bold-letters">{t('mpl.points')}<FaInfoCircle
+                            title={t('mpl.pointsTooltip')}
+                            style={{marginLeft: "5px"}}
+                        /></th>
                     </tr>
                     </thead>
 

@@ -85,59 +85,101 @@ export default function MoovieListReports() {
       ) : (
         <div className="space-y-4">
           {lists.map((ml, index) => (
-            <div key={index} className="container-fluid bg-white my-3 p-4 rounded shadow">
-              <div className="review-header d-flex align-items-center justify-between">
-                <div>
-                  <div className="flex items-center space-x-4">
-                    <a href={ml.creatorUrl} className="text-blue-600 font-bold hover:underline">
-                      {ml.creatorUrl?.split('/').pop()}
-                    </a>
+            <div key={index} className="bg-white rounded-lg shadow-md p-6">
+              <div className="flex justify-between items-start mb-4">
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <h4 className="text-lg font-semibold">
+                      <a href={`/list/${ml.id}`} className="text-blue-600 hover:underline">
+                        {ml.name}
+                      </a>
+                      <span className="text-gray-600 text-sm ml-2">
+                        {t('listHeader.by')}{' '}
+                        <a href={`/profile/${ml.createdBy}`} className="text-blue-600 font-bold hover:underline">
+                          {ml.createdBy}
+                        </a>
+                      </span>
+                    </h4>
                   </div>
-                  <h4 className="text-lg font-bold text-blue-600 hover:underline">
-                    <a href={ml.url}>{ml.name}</a>
-                  </h4>
+
+                  <div className="flex items-center space-x-4 text-sm text-gray-600">
+                    <span className="flex items-center">
+                      <i className="bi bi-film mr-1"></i>
+                      {ml.movieCount} {t('listCard.movies')}
+                    </span>
+                    <span className="flex items-center">
+                      <i className="bi bi-tv mr-1"></i>
+                      {ml.mediaCount - ml.movieCount} {t('listCard.series')}
+                    </span>
+                    <span className="flex items-center">
+                      <i className="bi bi-people mr-1"></i>
+                      {ml.followers} {t('listHeader.followers')}
+                    </span>
+                    <span className="flex items-center">
+                      <i className="bi bi-hand-thumbs-up mr-1"></i>
+                      {ml.likes}
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-sm text-gray-600 flex space-x-3">
+
+                <div className="text-right">
+                  <div className="text-sm text-gray-600 flex flex-col items-end space-y-1">
                     <span className="flex items-center" title={t('reports.total')}>
                       <i className="bi bi-flag mr-1"></i>{ml.totalReports}
                     </span>
-                    <span className="flex items-center" title={t('reports.spam')}>
-                      <i className="bi bi-envelope-exclamation mr-1"></i>{ml.spamReports}
-                    </span>
-                    <span className="flex items-center" title={t('reports.hate')}>
-                      <i className="bi bi-emoji-angry mr-1"></i>{ml.hateReports}
-                    </span>
-                    <span className="flex items-center" title={t('reports.abuse')}>
-                      <i className="bi bi-slash-circle mr-1"></i>{ml.abuseReports}
-                    </span>
-                    <span className="flex items-center" title={t('reports.privacy')}>
-                      <i className="bi bi-incognito mr-1"></i>{ml.privacyReports}
-                    </span>
+                    <div className="flex space-x-3">
+                      <span className="flex items-center" title={t('reports.spam')}>
+                        <i className="bi bi-envelope-exclamation mr-1"></i>{ml.spamReports}
+                      </span>
+                      <span className="flex items-center" title={t('reports.hate')}>
+                        <i className="bi bi-emoji-angry mr-1"></i>{ml.hateReports}
+                      </span>
+                      <span className="flex items-center" title={t('reports.abuse')}>
+                        <i className="bi bi-slash-circle mr-1"></i>{ml.abuseReports}
+                      </span>
+                      <span className="flex items-center" title={t('reports.privacy')}>
+                        <i className="bi bi-incognito mr-1"></i>{ml.privacyReports}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="review-content my-4 text-gray-700">
-                {ml.description}
+
+              {ml.images && ml.images.length > 0 && (
+                <div className="flex space-x-2 mb-4 overflow-x-auto py-2">
+                  {ml.images.slice(0, 4).map((image, imgIndex) => (
+                    <img
+                      key={imgIndex}
+                      src={image}
+                      alt={`List preview ${imgIndex + 1}`}
+                      className="h-20 w-36 object-cover rounded-md shadow-sm"
+                    />
+                  ))}
+                </div>
+              )}
+
+              <div className="bg-gray-50 rounded p-4 my-4">
+                <p className="text-gray-700">{ml.description}</p>
               </div>
+
               <div className="flex justify-end space-x-3">
                 <button
                   onClick={() => setSelectedAction({type:'delete', item:ml})}
-                  className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+                  className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition-colors"
                 >
                   <i className="bi bi-trash mr-2"></i>
                   {t('moovieListReports.delete')}
                 </button>
                 <button
                   onClick={() => setSelectedAction({type:'ban', item:ml})}
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
                 >
                   <i className="bi bi-person-x mr-2"></i>
                   {t('moovieListReports.banUser')}
                 </button>
                 <button
                   onClick={() => setSelectedAction({type:'resolve', item:ml})}
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
                 >
                   <i className="bi bi-check2-circle mr-2"></i>
                   {t('moovieListReports.resolve')}

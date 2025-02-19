@@ -76,7 +76,7 @@ export default function BannedUsers() {
                     }}
                   />
                   <div>
-                    <div className="font-bold">{user.username}</div>
+                    <div className="font-bold"><a href={`/profile/${user.username}`}>{user.username}</a></div>
                     <div className="text-sm text-gray-600">{user.banInfo?.banMessage}</div>
                     <div className="text-sm text-gray-500">{user.email}</div>
                   </div>
