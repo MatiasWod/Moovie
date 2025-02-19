@@ -164,8 +164,6 @@ const ListContent = ({ listContent, editMode, setCurrentSortOrder, listId, curre
 
     //to === -1 if to prev to === 1 if next page
     const pageChange = async (to, mId) => {
-        console.log(currentPage);
-        console.log((currentPage - 1 + to) * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT);
         if(to===1){
             await ListService.editListContent({
                 mediaId: mId,

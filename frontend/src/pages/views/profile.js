@@ -47,8 +47,6 @@ function Profile() {
 
   const fetchProfile = async () => {
     try {
-        console.log("Fetching profile for username:", username);
-        
       const response = await profileApi.getProfileByUsername(username);
       setProfile(response.data);
       setProfileError(null);
