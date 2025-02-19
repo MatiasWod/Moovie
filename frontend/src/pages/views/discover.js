@@ -128,7 +128,7 @@ const Discover = () => {
         return (
             <div className="d-flex justify-content-center align-items-center" style={{ height: "calc(100vh - 76px)" }}>
                 <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading...</span>
+                    <span className="visually-hidden">{t('loader.loading')}</span>
                 </Spinner>
             </div>
         );

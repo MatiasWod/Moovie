@@ -7,9 +7,11 @@ import {useTranslation} from "react-i18next";
 import defaultProfilePicture from "../../../images/defaultProfilePicture.png"
 import ProfileImage from "../profileImage/ProfileImage";
 import {useNavigate} from "react-router-dom";
+import {Spinner} from "react-bootstrap";
 
 export default function BannedUsers() {
   const [users, setUsers] = useState([]);
+  const [usersLoading, setUsersLoading] = useState(true);
   const [selectedAction, setSelectedAction] = useState(null);
   const [showUnbanModal, setShowUnbanModal] = useState(false);
   const { t } = useTranslation();
@@ -41,8 +43,8 @@ export default function BannedUsers() {
           profile: detailResponses[baseIndex + 1].data
         };
       });
-      
       setUsers(usersWithDetails);
+      setUsersLoading(false);
     } catch (error) {
       console.error('Error fetching banned users:', error);
     }
@@ -62,6 +64,8 @@ export default function BannedUsers() {
   const handleProfilePictureClick = (username) => {
     navigate(`/profile/${username}`);
   }
+
+  if (usersLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
 
   return (
     <div>

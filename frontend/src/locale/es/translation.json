@@ -128,6 +128,7 @@
   "listHeader.liked": "Te gusta",
   "listHeader.unfollow": "Dejar de seguir",
   "listHeader.followers": "Seguidores",
+  "loader.loading": "Cargando...",
   "login.title": "¡Moovie - Iniciar sesión!",
   "login.banned": "Cuenta bloqueada",
   "login.emailVerificationPending": "Verificación de correo electrónico pendiente",

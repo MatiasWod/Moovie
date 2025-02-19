@@ -8,9 +8,11 @@ import {useTranslation} from "react-i18next";
 import ReportTypes from '../../../api/values/ReportTypes';
 import { Tooltip } from "react-tooltip";
 import mediaApi from '../../../api/MediaApi';
+import {Spinner} from "react-bootstrap";
 
 export default function CommentReports() {
   const [comments, setComments] = useState([]);
+  const [commentsLoading, setCommentsLoading] = useState(true);
   const [selectedAction, setSelectedAction] = useState(null);
   const { t } = useTranslation();
   // selectedAction = {type: 'delete'|'ban'|'resolve', item: comment}
@@ -66,6 +68,7 @@ export default function CommentReports() {
     });
 
     setComments(commentsWithDetails);
+    setCommentsLoading(false);
   };
 
   const handleDelete = async (comment) => {
@@ -85,6 +88,8 @@ export default function CommentReports() {
     await reportApi.resolveCommentReport(comment.id);
     fetchComments();
   };
+
+  if (commentsLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
 
   return (
     <div className="container-fluid">
