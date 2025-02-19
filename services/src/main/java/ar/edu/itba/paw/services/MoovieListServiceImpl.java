@@ -317,6 +317,9 @@ public class MoovieListServiceImpl implements MoovieListService{
             throw new UserNotLoggedException();
         }
         MoovieListCard mlc = getMoovieListCardById(moovieListId);
+        if (mlc.getType()==MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.getType() || mlc.getType()==MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType()){
+            throw new ForbiddenException("User can't like a private list");
+        }
         LOGGER.info("userID: {} -- will like {}  -- likestate is: {}",userId,mlc.getName(), mlc.isCurrentUserHasLiked());
         if(mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType()){
             if(mlc.isCurrentUserHasLiked()){
@@ -374,7 +377,9 @@ public class MoovieListServiceImpl implements MoovieListService{
     public boolean followMoovieList(int moovieListId) {
         int userId = userService.tryToGetCurrentUserId();
         MoovieListCard mlc = getMoovieListCardById(moovieListId);
-
+        if (mlc.getType()==MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.getType() || mlc.getType()==MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType()){
+            throw new ForbiddenException("User can't follow a private list");
+        }
         if(mlc.getType() == MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType()) {
             if (mlc.isCurrentUserHasFollowed()) {
                 return false;

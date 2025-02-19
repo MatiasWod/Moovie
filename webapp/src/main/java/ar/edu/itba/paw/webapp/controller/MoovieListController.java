@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.ForbiddenException;
 import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
 import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
@@ -231,6 +232,11 @@ public class MoovieListController {
                     .entity("{\"message\":\"Invalid feedback type.\"}")
                     .build();
         }
+        catch (ForbiddenException e) {
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity(e.getMessage())
+                    .build();
+        }
         catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("{\"message\":\"An unexpected error occurred.\"}")
@@ -269,7 +275,12 @@ public class MoovieListController {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("{\"message\":\"Invalid action type.\"}")
                     .build();
-        } catch (RuntimeException e) {
+        }catch (ForbiddenException e) {
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity(e.getMessage())
+                    .build();
+        }
+        catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("{\"message\":\"An unexpected error occurred.\"}")
                     .build();
