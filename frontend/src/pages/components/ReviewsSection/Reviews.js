@@ -181,7 +181,7 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
                             <>
                                 {t('reviews.onMedia') + " "}
                                 <strong>
-                                    <a href={`/details/${media.id}`} className="media-link">
+                                    <a href={process.env.PUBLIC_URL + `/details/${media.id}`} className="media-link">
                                         {media.name}
                                     </a>
                                 </strong>
