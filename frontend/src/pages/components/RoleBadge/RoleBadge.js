@@ -9,10 +9,12 @@ const RoleBadge = ({ role,size }) => {
             <img
                 src={defaultBadgePicture}
                 alt="Role Badge"
-                style={{ height: size, width: size}}
+                title="Mod Badge" 
+                style={{ height: size, width: size }}
                 className="role-badge"
             />
         );
+
     }
 
     // Retorna null si role <= 2

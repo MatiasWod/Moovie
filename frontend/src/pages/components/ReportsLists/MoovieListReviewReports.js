@@ -7,9 +7,11 @@ import userApi from '../../../api/UserApi';
 import {useTranslation} from "react-i18next";
 import ReportTypes from '../../../api/values/ReportTypes';
 import moovieListApi from '../../../api/MoovieListApi';
+import {Spinner} from "react-bootstrap";
 
 export default function MoovieListReviewReports() {
   const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
   const [selectedAction, setSelectedAction] = useState(null);
   const [reviewsWithLists, setReviewsWithLists] = useState([]);
   const { t } = useTranslation();
@@ -63,6 +65,7 @@ export default function MoovieListReviewReports() {
     });
 
     setReviews(reviewsWithDetails);
+    setReviewsLoading(false);
   };
 
   const handleDelete = async (review) => {
@@ -81,6 +84,8 @@ export default function MoovieListReviewReports() {
     await reportApi.resolveMoovieListReviewReport(review.id);
     fetchReviews();
   };
+
+  if (reviewsLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
 
   return (
     <div className="container-fluid">

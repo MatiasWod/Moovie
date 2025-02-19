@@ -7,9 +7,11 @@ import api from '../../../api/api';
 import {useTranslation} from "react-i18next";
 import ReportTypes from '../../../api/values/ReportTypes';
 import mediaApi from '../../../api/MediaApi';
+import {Spinner} from "react-bootstrap";
 
 export default function ReviewReports() {
   const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
   const [selectedAction, setSelectedAction] = useState(null);
   const { t } = useTranslation();
 
@@ -68,6 +70,7 @@ export default function ReviewReports() {
     });
 
     setReviews(reviewsWithReports);
+    setReviewsLoading(false);
   };
 
   const handleDelete = async (review) => {
@@ -86,6 +89,8 @@ export default function ReviewReports() {
     await reportApi.resolveReviewReport(review.id);
     fetchReports();
   };
+
+  if (reviewsLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
 
   return (
     <div className="container-fluid">

@@ -6,9 +6,11 @@ import ListApi from '../../../api/ListApi';
 import userApi from '../../../api/UserApi';
 import {useTranslation} from "react-i18next";
 import ReportTypes from '../../../api/values/ReportTypes';
+import {Spinner} from "react-bootstrap";
 
 export default function MoovieListReports() {
   const [lists, setLists] = useState([]);
+  const [listsLoading, setListsLoading] = useState(true);
   const [selectedAction, setSelectedAction] = useState(null);
   const { t } = useTranslation();
 
@@ -58,6 +60,7 @@ export default function MoovieListReports() {
     });
 
     setLists(listsWithReports);
+    setListsLoading(false);
   };
 
   const handleDelete = async (ml) => {
@@ -76,6 +79,8 @@ export default function MoovieListReports() {
     await reportApi.resolveMoovieListReport(ml.id);
     fetchLists();
   };
+
+  if (listsLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
 
   return (
     <div className="container-fluid">
