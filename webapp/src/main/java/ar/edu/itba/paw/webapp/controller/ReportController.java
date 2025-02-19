@@ -170,6 +170,7 @@ public class ReportController {
 
     @GET
     @Path("/count")
+    @PreAuthorize("@accessValidator.isUserAdmin()")
     @Produces(VndType.APPLICATION_REPORT_COUNT)
     public Response getReportCount(@QueryParam("contentType") String contentType,@QueryParam("reportType") Integer reportType, @QueryParam("resourceId") Integer resourceId) {
         try {
