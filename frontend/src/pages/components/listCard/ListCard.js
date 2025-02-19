@@ -40,7 +40,7 @@ const ListCard = ({ listCard }) => {
                     ))}
                 </div>
                 <div className="list-card-body">
-                    <div className="list-card-title">{listCard.name}</div>
+                    <div className="list-card-title" title={listCard.name}>{listCard.name}</div>
                     <div className="list-card-details">
                         <span>{listCard.movieCount} {t('listCard.movies')}</span> • <span>{listCard.mediaCount - listCard.movieCount} {t('listCard.series')}</span>
                     </div>

@@ -70,6 +70,7 @@
   "discover.genres": "Genres",
   "discover.noMediaAvailable": "No media available",
   "dropdownMenu.invertOrder": "Invert Order",
+  "dropdownMenu.orderBy": "Order by",
   "editList.back": "Back",
   "editList.cancel": "Cancel",
   "editList.close": "Close",

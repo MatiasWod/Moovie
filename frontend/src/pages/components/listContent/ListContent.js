@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./listContent.css";
@@ -7,10 +7,13 @@ import SortOrder from "../../../api/values/SortOrder";
 import PagingSizes from "../../../api/values/PagingSizes";
 import listService from "../../../services/ListService";
 import Button from "react-bootstrap/Button";
+import {BsEye, BsEyeSlash} from "react-icons/bs";
+import profileService from "../../../services/ProfileService";
+import WatchlistWatched from "../../../api/values/WatchlistWatched";
 
 const MediaRow = ({
                       position, media, handleClick, handleMouseEnter, handleMouseLeave,
-                      index, moveItem, editMode, pageChange, removeFromList
+                      index, moveItem, editMode, pageChange, removeFromList, isLoggedIn, username
                   }) => {
     const [isDragging, setIsDragging] = useState(false);
 
@@ -50,6 +53,30 @@ const MediaRow = ({
     const [menuOpen, setMenuOpen] = useState(false);
     const { t } = useTranslation();
 
+    const [ww, setWW] = useState({watched:false, watchlist:false});
+    const [refreshWatched, setRefreshWatched] = useState(false);
+    useEffect(async () => {
+        try{
+            const data = await profileService.currentUserWWStatus(media.id, username);
+            setWW(data);
+        }catch (e){
+
+        }
+    }, [media, refreshWatched]);
+
+    const handleWatched = async() => {
+        try{
+            if (ww.watched) {
+                await profileService.removeMediaFromWW(WatchlistWatched.Watched, media.id, username);
+            } else {
+                await profileService.insertMediaIntoWW(WatchlistWatched.Watched, media.id, username);
+            }
+            setRefreshWatched(!refreshWatched);
+        } catch(e){
+
+        }
+    }
+
     return (
         <div
             className={`media-row ${isDragging ? 'dragging' : ''}`}
@@ -84,11 +111,16 @@ const MediaRow = ({
                 <i className="fas fa-users text-info me-1"></i>
                 {media.totalRating}
             </span>
+
             <span className="media-release">{new Date(media.releaseDate).getFullYear()}</span>
+
+            {isLoggedIn && (<span onClick={(e) => {e.stopPropagation(); handleWatched();}}>
+                {ww.watched ? <BsEye className="fs-5" style={{ color: "green" }}/> :
+                <BsEyeSlash className="fs-5" style={{ color: "red" }}/>}</span>)}
 
             {editMode && (
                 <div className="menu-container">
-                    <button className="menu-button" onClick={(e) => {
+                <button className="menu-button" onClick={(e) => {
                         e.stopPropagation();
                         setMenuOpen(!menuOpen);
                     }}>
@@ -116,7 +148,7 @@ const MediaRow = ({
     );
 };
 
-const ListContent = ({ listContent, editMode, setCurrentSortOrder, listId, currentPage, Refresh }) => {
+const ListContent = ({ listContent, editMode, setCurrentSortOrder, listId, currentPage, Refresh,isLoggedIn, username }) => {
     const navigate = useNavigate();
     const { t } = useTranslation();
     const [hoveredId, setHoveredId] = useState(null);
@@ -132,8 +164,6 @@ const ListContent = ({ listContent, editMode, setCurrentSortOrder, listId, curre
 
     //to === -1 if to prev to === 1 if next page
     const pageChange = async (to, mId) => {
-        console.log(currentPage);
-        console.log((currentPage - 1 + to) * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT);
         if(to===1){
             await ListService.editListContent({
                 mediaId: mId,
@@ -194,6 +224,8 @@ const ListContent = ({ listContent, editMode, setCurrentSortOrder, listId, curre
                     <i className="fas fa-calendar me-1"></i>
                     {t("listContent.year")}
                 </span>
+                { isLoggedIn && (<span>{t('profile.watched')}</span>) }
+
             </div>
             <div className="media-list">
                 {listContent.map((media, index) => (
@@ -209,6 +241,8 @@ const ListContent = ({ listContent, editMode, setCurrentSortOrder, listId, curre
                         editMode={editMode}
                         pageChange={pageChange}
                         removeFromList={removeFromList}
+                        isLoggedIn={isLoggedIn}
+                        username={username}
                     />
                 ))}
             </div>

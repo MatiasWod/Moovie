@@ -96,8 +96,7 @@ function BrowseLists(){
 
                 <div className="browse-list-header-searchable">
                     <BrowseListsSearchBar/>
-                    <div style={{display:"flex", float:"right"}}>
-                        <div style={{marginInline:"10px"}}>{t('browseLists.orderBy')}</div>
+                    <div style={{display:"flex", float:"right", marginLeft:"10px"}}>
                         <DropdownMenu setOrderBy={setOrderBy} setSortOrder={setSortOrder} currentOrderDefault={sortOrder} values={Object.values(CardsListOrderBy)}/>
                     </div>
                 </div>
