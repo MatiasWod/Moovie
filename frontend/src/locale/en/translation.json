@@ -383,5 +383,6 @@
   "reviewReports.confirmUserBanTitle": "Confirm User Ban",
   "reviewReports.resolveReport": "Resolve Report",
   "filters.apply": "Apply",
-  "filters.clear": "Clear"
+  "filters.clear": "Clear",
+  "reviewReports.confirmResolveReportMessage": "Are you sure you want to mark this report as resolved?"
 }
