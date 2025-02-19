@@ -7,5 +7,6 @@ export const parsePaginatedResponse = (response) => {
     const linkHeader = response.headers?.link;
     const links = linkHeader ? parseLinkHeader(linkHeader) : null;
     const data = response.data;
-    return { links, data };
+    const status = response.status
+    return { links, data , status};
 };

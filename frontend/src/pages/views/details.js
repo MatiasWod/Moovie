@@ -18,11 +18,13 @@ import mediaService from "../../services/MediaService";
 import {useTranslation} from "react-i18next";
 import reviewService from "../../services/ReviewService";
 import castService from "../../services/CastService";
+import Error404 from "./errorViews/error404";
+import useErrorStatus from "../../hooks/useErrorStatus";
 
 function Details() {
     const { t } = useTranslation();
     const {id} = useParams();
-
+    const { setErrorStatus } = useErrorStatus();
     //GET VALUES FOR Media
     const [media, setMedia] = useState({});
     const [mediaLoading, setMediaLoading] = useState(true);
@@ -70,11 +72,13 @@ function Details() {
             const response = await MediaService.getMediaById(id);
             setMedia(response.data);
         } catch (err) {
+            setErrorStatus(err.response.status);
             setMediaError(err);
         } finally {
             setMediaLoading(false);
         }
     };
+
 
     const fetchGenres = async () => {
         try {
@@ -129,7 +133,8 @@ function Details() {
     useEffect(() => {
         fetchMedia();
         fetchUserReview();
-    }, [id, reload]);
+
+    }, [id, reload,setErrorStatus]);
 
     useEffect(() => {
 
@@ -142,6 +147,10 @@ function Details() {
 
     const trailerLink = (media.trailerLink === 'None' ? null : media.trailerLink);
     const releaseYear = new Date(media.releaseDate).getFullYear();
+
+    // Buttons for creating reviews
+    const [showReviewForm, setShowReviewForm] = useState(false);
+    const navigate = useNavigate();
 
     let detailsColumn = <div/>;
     let info = <div/>;
@@ -220,10 +229,6 @@ function Details() {
         info = <h5>{releaseYear} • {t('details.serie')} • {media.numberOfSeasons} {t('details.seasons')} • {media.numberOfEpisodes} {t('details.episodes')}</h5>
 
     }
-
-    // Buttons for creating reviews
-    const [showReviewForm, setShowReviewForm] = useState(false);
-    const navigate = useNavigate();
 
     const handleOpenReviewForm = () => {
         if (!isLoggedIn) {

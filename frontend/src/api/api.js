@@ -18,18 +18,12 @@ api.interceptors.request.use(
             config.headers['Authorization'] = `${token}`;
         }
         return config;
-    },
-    error => {
-        return Promise.reject(error);
     }
 );
 
 api.interceptors.response.use(
     response => {
         return response;
-    },
-    error => {
-        return error.response;
     }
 );
 

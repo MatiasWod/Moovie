@@ -9,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import LoggedGate from "./pages/components/permissions/LoggedGate";
 import RoleGate from "./pages/components/permissions/RoleGate";
 import UserRoles from "./api/values/UserRoles";
+import ContextProviderWrapper from "./store/contextProviderWrapper";
 
 const views = './pages/views';
 
@@ -55,7 +56,7 @@ export default function App() {
     }, [dispatch, isInitialized]);
 
     if (!isInitialized) {
-        return <Loader />;
+        return <Loader/>;
     }
 
     return (
@@ -66,31 +67,40 @@ export default function App() {
             <BrowserRouter basename={process.env.PUBLIC_URL}>
                 <Suspense fallback={<Loader/>}>
                     <Nav onLocationChange={handleLocationChange}/>
+                    <ContextProviderWrapper>
                     <Routes>
-                        <Route path='/' element={<RoleGate><Home/></RoleGate>}/>
-                        <Route path='/login' element={<LoggedGate protectForLoggedIn={true}><Login/></LoggedGate>}/>
-                        <Route path='/passwordRecovery' element={<LoggedGate protectForLoggedIn={true}><ForgotPassword/></LoggedGate>}/>
-                        <Route path='/reset-password' element={<LoggedGate protectForLoggedIn={true}><ResetPassword/></LoggedGate>}/>
-                        <Route path='/register' element={<LoggedGate protectForLoggedIn={true}><Register/></LoggedGate>}/>
-                        <Route path='/register/verify' element={<LoggedGate protectForLoggedIn={true}><AwaitEmailValidation/></LoggedGate>}/>
-                        <Route path='/register/confirm' element={<LoggedGate protectForLoggedIn={true}><ConfirmToken/></LoggedGate>}/>
-                        <Route path='/details/:id' element={<RoleGate><Details/></RoleGate>}/>
-                        <Route path='/list/:id' element={<RoleGate><List/></RoleGate>}/>
-                        <Route path='/discover' element={<RoleGate><Discover/></RoleGate>}/>
-                        <Route path='/browseLists' element={<RoleGate><BrowseLists/></RoleGate>}/>
-                        <Route path='/createList' element={<LoggedGate><RoleGate><CreateList/></RoleGate></LoggedGate>}/>
-                        <Route path='/featuredLists/:type' element={<RoleGate><FeaturedLists/></RoleGate>}/>
-                        <Route path='/leaderboard' element={<RoleGate><MilkyLeaderboard/></RoleGate>}/>
-                        <Route path='/profile/:username' element={<RoleGate><Profile/></RoleGate>}/>
-                        <Route path='/search/:search' element={<RoleGate><Search/></RoleGate>}/>
-                        <Route path='/cast/actor/:id' element={<RoleGate><Cast/></RoleGate>}/>
-                        <Route path='/cast/director/:id' element={<RoleGate><Cast/></RoleGate>}/>
-                        <Route path='/tvcreators/:id' element={<RoleGate><Cast/></RoleGate>}/>
-                        <Route path='/healthcheck' element={<RoleGate><Healthcheck/></RoleGate>}/>
-                        <Route path='/authtest' element={<RoleGate><AuthTest/></RoleGate>}/>
-                        <Route path='/reports' element={<RoleGate role={UserRoles.MODERATOR}><ReportsDashboard/></RoleGate>}/>
-                        <Route path='*' element={<Error404/>}/>
+                            <Route path='/' element={<RoleGate><Home/></RoleGate>}/>
+                            <Route path='/login' element={<LoggedGate protectForLoggedIn={true}><Login/></LoggedGate>}/>
+                            <Route path='/passwordRecovery'
+                                   element={<LoggedGate protectForLoggedIn={true}><ForgotPassword/></LoggedGate>}/>
+                            <Route path='/reset-password'
+                                   element={<LoggedGate protectForLoggedIn={true}><ResetPassword/></LoggedGate>}/>
+                            <Route path='/register'
+                                   element={<LoggedGate protectForLoggedIn={true}><Register/></LoggedGate>}/>
+                            <Route path='/register/verify' element={<LoggedGate
+                                protectForLoggedIn={true}><AwaitEmailValidation/></LoggedGate>}/>
+                            <Route path='/register/confirm'
+                                   element={<LoggedGate protectForLoggedIn={true}><ConfirmToken/></LoggedGate>}/>
+                            <Route path='/details/:id' element={<RoleGate><Details/></RoleGate>}/>
+                            <Route path='/list/:id' element={<RoleGate><List/></RoleGate>}/>
+                            <Route path='/discover' element={<RoleGate><Discover/></RoleGate>}/>
+                            <Route path='/browseLists' element={<RoleGate><BrowseLists/></RoleGate>}/>
+                            <Route path='/createList'
+                                   element={<LoggedGate><RoleGate><CreateList/></RoleGate></LoggedGate>}/>
+                            <Route path='/featuredLists/:type' element={<RoleGate><FeaturedLists/></RoleGate>}/>
+                            <Route path='/leaderboard' element={<RoleGate><MilkyLeaderboard/></RoleGate>}/>
+                            <Route path='/profile/:username' element={<RoleGate><Profile/></RoleGate>}/>
+                            <Route path='/search/:search' element={<RoleGate><Search/></RoleGate>}/>
+                            <Route path='/cast/actor/:id' element={<RoleGate><Cast/></RoleGate>}/>
+                            <Route path='/cast/director/:id' element={<RoleGate><Cast/></RoleGate>}/>
+                            <Route path='/tvcreators/:id' element={<RoleGate><Cast/></RoleGate>}/>
+                            <Route path='/healthcheck' element={<RoleGate><Healthcheck/></RoleGate>}/>
+                            <Route path='/authtest' element={<RoleGate><AuthTest/></RoleGate>}/>
+                            <Route path='/reports'
+                                   element={<RoleGate role={UserRoles.MODERATOR}><ReportsDashboard/></RoleGate>}/>
+                            <Route path='*' element={<Error404/>}/>
                     </Routes>
+                    </ContextProviderWrapper>
                 </Suspense>
             </BrowserRouter>
         </HelmetProvider>
