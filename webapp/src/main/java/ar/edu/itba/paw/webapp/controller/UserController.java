@@ -291,7 +291,10 @@ public class UserController {
             }
             LOGGER.info("RETURNING BAN MESSAGE: " + message.getMessage());
             return Response.ok(BanMessageDTO.fromBannedMessage(message, user.getUsername(), uriInfo)).build();
-        } catch (RuntimeException e) {
+        }catch (BannedMessageNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
