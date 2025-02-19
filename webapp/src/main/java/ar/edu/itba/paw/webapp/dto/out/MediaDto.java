@@ -62,7 +62,7 @@ public class MediaDto {
         mediaDTO.status = media.getStatus();
         mediaDTO.totalRating = media.getTotalRating();
         mediaDTO.originalLanguage = media.getOriginalLanguage();
-        mediaDTO.url = uriInfo.getBaseUriBuilder().path("media/{mediaId}").build(media.getMediaId()).toString();
+        mediaDTO.url = uriInfo.getBaseUriBuilder().path("medias/{mediaId}").build(media.getMediaId()).toString();
         mediaDTO.providersUrl = uriInfo.getBaseUriBuilder().path("providers/{mediaId}").build(media.getMediaId()).toString();
         mediaDTO.genresUrl = uriInfo.getBaseUriBuilder().path("genres/{mediaId}").build(media.getMediaId()).toString();
         return mediaDTO;
@@ -84,6 +84,9 @@ public class MediaDto {
         mediaDTO.setTotalRating(media.getTotalRating());
         mediaDTO.setOriginalLanguage(media.getOriginalLanguage());
         mediaDTO.setUrl(uriInfo.getBaseUriBuilder().path("media/{mediaId}").build(media.getMediaId()).toString());
+        mediaDTO.providersUrl = uriInfo.getBaseUriBuilder().path("providers/{mediaId}").build(media.getMediaId()).toString();
+        mediaDTO.genresUrl = uriInfo.getBaseUriBuilder().path("genres/{mediaId}").build(media.getMediaId()).toString();
+
     }
 
     public static List<MediaDto> fromMediaList(List<Media> mediaList, UriInfo uriInfo) {

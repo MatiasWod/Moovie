@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.exceptions.ResourceNotFoundException;
 import ar.edu.itba.paw.models.Genre.Genre;
 import ar.edu.itba.paw.persistence.GenreDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,5 +24,15 @@ public class GenreServiceImpl implements GenreService{
     @Override
     public List<Genre> getGenresForMedia(int mediaId) {
         return genreDao.getGenresForMedia(mediaId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Genre getGenreById (int genreId) {
+        Genre genre = genreDao.getGenreById(genreId);
+        if(genre == null){
+            throw new ResourceNotFoundException("Genre with id " + genreId + " not found");
+        }
+        return genre;
     }
 }

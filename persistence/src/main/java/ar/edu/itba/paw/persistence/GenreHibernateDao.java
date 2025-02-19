@@ -29,4 +29,15 @@ public class GenreHibernateDao implements GenreDao{
                 .getResultList();
     }
 
+    @Override
+    public Genre getGenreById(int genreId) {
+        List<Genre> results = em.createQuery(
+                        "SELECT g FROM Genre g WHERE g.genreId = :genreId", Genre.class
+                )
+                .setParameter("genreId", genreId)
+                .getResultList();
+
+        return results.isEmpty() ? null : results.get(0);
+    }
+
 }
