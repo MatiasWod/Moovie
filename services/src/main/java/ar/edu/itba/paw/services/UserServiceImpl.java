@@ -48,11 +48,13 @@ public class UserServiceImpl implements UserService {
 
     //REGSITRATION
 
+    @Transactional(readOnly = true)
     @Override
     public List<User> listAll(int page) {
         return userDao.listAll(page);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<User> listAll(int role, int page) {
         return userDao.listAll(role, page);
