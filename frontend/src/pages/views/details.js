@@ -103,7 +103,6 @@ function Details() {
         try {
             const response = await castService.getTvCreatorsByMediaId(id);
             setTvCreators(response.data);
-            console.log(response)
         } catch (err) {
             setTvCreatorsError(err);
 

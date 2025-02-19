@@ -93,7 +93,7 @@ const ListContentPaginated = ({
                 currentPage={page}
                 Refresh={Refresh}
                 isLoggedIn={isLoggedIn}
-                username={user.username}
+                username={isLoggedIn ?  user.username : null}
             />
 
             <div className="flex justify-center pt-4">

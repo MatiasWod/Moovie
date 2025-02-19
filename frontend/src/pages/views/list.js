@@ -77,7 +77,6 @@ function List() {
                 let data = await ListApi.getListById(id);
                 if(data.status === 403 || data.status === 404){
                     setError403(true);
-                    console.log("error found");
                     return;
                 }
                 data = parsePaginatedResponse(data);
@@ -144,7 +143,6 @@ function List() {
             try {
                 const data = await ListService.getRecommendedLists(id)
                 setListRecommendations(data);
-                console.log("Recomended list:"+ listRecommendations);
 
                 setlistRecommendationsLoading(false);
             } catch (error) {
