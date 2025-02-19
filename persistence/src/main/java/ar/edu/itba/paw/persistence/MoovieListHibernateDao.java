@@ -412,6 +412,15 @@ public class MoovieListHibernateDao implements MoovieListDao{
     public MoovieList createMoovieList(int userId, String name, int type, String description) {
         MoovieList newMoovieList = new MoovieList(userId, name, description, type);
         try{
+            TypedQuery<MoovieList> query = em.createQuery(
+                    "SELECT m FROM MoovieList m WHERE m.name = :name", MoovieList.class);
+            query.setParameter("name", newMoovieList.getName());
+
+            List<MoovieList> results = query.getResultList();
+
+            if (!results.isEmpty()) {
+                throw new UnableToInsertIntoDatabase("Create MoovieList failed, already have a table with the given name");
+            }
             em.persist(newMoovieList);
             return newMoovieList;
         } catch(DuplicateKeyException e){

@@ -12,7 +12,7 @@ import moovieListReviewService from "../../../services/MoovieListReviewService";
 import listService from "../../../services/ListService";
 import { useTranslation } from "react-i18next";
 
-const ListContentPaginatedSearchMode = ({ moovieListId, handleCloseSearchMode }) => {
+const ListContentPaginatedSearchMode = ({ moovieListId, handleCloseSearchMode, onMediaAdded }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [mediaList, setMediaList] = useState(null);
     const { t } = useTranslation();
@@ -73,19 +73,20 @@ const ListContentPaginatedSearchMode = ({ moovieListId, handleCloseSearchMode })
                 mediaIds: [media.id]
             });
             if (response.status === 200) {
-            // Show success message
-            setSuccessMessage(media.name);
-            // Hide message after 2 seconds
+                // Show success message
+                setSuccessMessage(media.name);
+                // Trigger refresh in parent component
+                onMediaAdded();
+                // Hide message after 2 seconds
                 setTimeout(() => {
                     setSuccessMessage(null);
                 }, 5000);
-            }else{
+            } else {
                 setErrorMessage(media.name);
                 setTimeout(() => {
                     setErrorMessage(null);
                 }, 5000);
             }
-
         } catch(e) {
             console.log("error while adding the media")
         }

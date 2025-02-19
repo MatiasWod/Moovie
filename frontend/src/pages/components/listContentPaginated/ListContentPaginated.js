@@ -43,35 +43,53 @@ const ListContentPaginated = ({
 
     return (
         <div>
-            {
-                !editMode && (
+            <div className="list-actions-container d-flex justify-content-between align-items-center mb-3">
+                <div className="d-flex gap-2">
+                    {isOwner && (
+                        <>
+                            <Button 
+                                variant={editMode ? "secondary" : "primary"}
+                                onClick={handleEditMode}
+                            >
+                                <i className={`fas fa-${editMode ? 'save' : 'edit'} me-2`}></i>
+                                {editMode ? t('listContentPaginated.save') : t('listContentPaginated.edit')}
+                            </Button>
+                            <Button 
+                                variant="success"
+                                onClick={handleSearchMediaToAdd}
+                            >
+                                <i className="fas fa-plus me-2"></i>
+                                {t('listContentPaginated.searchMediaToAdd')}
+                            </Button>
+                        </>
+                    )}
+                </div>
+                
+                {!editMode && (
                     <DropdownMenu
                         setOrderBy={setOrderBy}
                         setSortOrder={setSortOrder}
                         currentOrderDefault={currentSortOrder}
                         values={Object.values(MediaOrderBy)}
                     />
-                )
-            }
+                )}
+            </div>
 
-
-
-            {isOwner && (
-                !editMode ? (
-                    <Button onClick={handleEditMode}>{t('listContentPaginated.edit')}</Button>
-                ) : (
-                    <>
-                        <Button onClick={handleEditMode}>{t('listContentPaginated.save')}</Button>
-                        <div>{t('list.dragToModifyOrder')}</div>
-                        <Button onClick={handleSearchMediaToAdd}>{t('listContentPaginated.searchMediaToAdd')}</Button>
-                    </>
-                )
+            {editMode && (
+                <div className="alert alert-info">
+                    <i className="fas fa-info-circle me-2"></i>
+                    {t('list.dragToModifyOrder')}
+                </div>
             )}
 
-
-            <ListContent listContent={listContent?.data ?? []} editMode={editMode}
-                         setCurrentSortOrder={setSortOrder} listId={listId} currentPage={page}
-                            Refresh={Refresh}/>
+            <ListContent 
+                listContent={listContent?.data ?? []} 
+                editMode={editMode}
+                setCurrentSortOrder={setSortOrder} 
+                listId={listId} 
+                currentPage={page}
+                Refresh={Refresh}
+            />
 
             <div className="flex justify-center pt-4">
                 {listContent?.data?.length > 0 && listContent.links?.last?.page > 1 && (
@@ -85,7 +103,11 @@ const ListContentPaginated = ({
 
             {
                 searchMediaMode && (
-                    <ListContentPaginatedSearchMode moovieListId={listId} handleCloseSearchMode={handleSearchMediaToAdd}/>
+                    <ListContentPaginatedSearchMode 
+                        moovieListId={listId} 
+                        handleCloseSearchMode={handleSearchMediaToAdd}
+                        onMediaAdded={Refresh}
+                    />
                 )
             }
         </div>

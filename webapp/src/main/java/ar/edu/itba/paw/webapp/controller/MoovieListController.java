@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
+import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
+import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.OrderedMedia;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
@@ -111,7 +113,10 @@ public class MoovieListController {
 
                 return res.build();
             }
-        } catch (RuntimeException e) {
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+        catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
@@ -122,6 +127,8 @@ public class MoovieListController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createMoovieList(@Valid final MoovieListCreateDto listDto) {
         try {
+
+
 
             MoovieListTypes moovieListType = MoovieListTypes.fromType(listDto.getType());
 
@@ -137,12 +144,13 @@ public class MoovieListController {
                     .build();
 
 
-        } catch (DuplicateKeyException e) {
+        }
+        catch (UnableToInsertIntoDatabase | DuplicateKeyException e) {
             return Response.status(Response.Status.CONFLICT)
                     .entity("A movie list with the same name already exists.")
                     .build();
-
-        } catch (RuntimeException e) {
+        }
+        catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An unexpected error occurred: " + e.getMessage())
                     .build();
@@ -154,21 +162,43 @@ public class MoovieListController {
     @Path("/{id}")
     @Produces(VndType.APPLICATION_MOOVIELIST)
     public Response getMoovieListById(@PathParam("id") final int id) {
-        return Response.ok(MoovieListDto.fromMoovieList(moovieListService.getMoovieListCardById(id), uriInfo)).build();
+        try {
+            MoovieListCard list=moovieListService.getMoovieListCardById(id);
+            return Response.ok(MoovieListDto.fromMoovieList(list, uriInfo)).build();
+        }catch (InvalidAccessToResourceException e){
+            return Response.status(Response.Status.FORBIDDEN).entity(new ResponseMessage("You do not have access to this resource.")).build();
+        } catch (MoovieListNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage("MoovieList not found.")).build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ResponseMessage("An unexpected error occurred.")).build();
+        }
+
     }
 
     @PUT
     @Path("/{id}")
-    @PreAuthorize("@accessValidator.isUserListAuthor(#listId)")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_MOOVIELIST_FORM)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editMoovieList(@PathParam("id") int listId,
-                                   @Valid final EditListDTO editListForm) {
-        moovieListService.editMoovieList(listId, editListForm.getListName(), editListForm.getListDescription());
+    public Response editMoovieList(@PathParam("id") @NotNull int listId,
+                                   @Valid @NotNull final EditListDTO editListForm) {
+        try {
+            moovieListService.editMoovieList(listId, editListForm.getListName(), editListForm.getListDescription());
 
-        return Response.ok()
-                .entity("MoovieList successfully edited for MoovieList with ID: " + listId)
-                .build();
+            return Response.ok()
+                    .entity("MoovieList successfully edited for MoovieList with ID: " + listId)
+                    .build();
+        }catch (MoovieListNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("MoovieList not found.")
+                    .build();
+        }
+        catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .build();
+        }
+
     }
 
     @PUT
@@ -248,23 +278,44 @@ public class MoovieListController {
 
     @DELETE
     @Path("/{id}")
-    @PreAuthorize("@accessValidator.isUserListAuthor(#id)")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteMoovieList(@PathParam("id") final int id) {
-        moovieListService.deleteMoovieList(id);
-        return Response.noContent().build();
+        try {
+            moovieListService.deleteMoovieList(id);
+            return Response.ok().build();
+        }
+        catch (MoovieListNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("MoovieList not found.")
+                    .build();
+        }
+        catch (InvalidAccessToResourceException e) {
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity("You do not have access to this resource.")
+                    .build();
+        }
+        catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .build();
+        }
+
     }
 
 
-    //TODO TAL VEZ MOVER ESTO BAJO EL GET DE /list/
     @GET
     @Path("{id}/recommendedLists")
     @Produces(VndType.APPLICATION_MOOVIELIST_LIST)
     public Response getRecommendedLists(@PathParam("id") final int id) {
-        List<MoovieListDto> mlcList = MoovieListDto.fromMoovieListList(moovieListService.getRecommendedMoovieListCards(id, 4, 0), uriInfo);
-        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(mlcList) {
-        });
-        return res.build();
+        try {
+            List<MoovieListDto> mlcList = MoovieListDto.fromMoovieListList(moovieListService.getRecommendedMoovieListCards(id, 4, 0), uriInfo);
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(mlcList) {
+            });
+            return res.build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ResponseMessage("An unexpected error occurred.")).build();
+        }
     }
 
     //We have a separate endpoint for content to be able to use filters and no need to do it every time we want to find a list
@@ -277,36 +328,63 @@ public class MoovieListController {
                                                         @QueryParam("sortOrder") @DefaultValue("DESC") final String sortOrder,
                                                         @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber,
                                                         @QueryParam("pageSize") @DefaultValue("-1") final int pageSize) {
-        int pageSizeQuery = pageSize;
-        if (pageSize < 1 || pageSize > PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize()) {
-            pageSizeQuery = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
+        try {
+            moovieListService.getMoovieListCardById(id);
+            int pageSizeQuery = pageSize;
+            if (pageSize < 1 || pageSize > PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize()) {
+                pageSizeQuery = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
+            }
+
+            List<OrderedMedia> mediaList = moovieListService.getMoovieListContentOrdered(id, orderBy, sortOrder, pageSizeQuery, pageNumber);
+            final int mediaCount = moovieListService.getMoovieListCardById(id).getSize();
+            List<MediaIdListIdDto> dtoList = MediaIdListIdDto.fromOrderedMediaList(mediaList, id);
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdListIdDto>>(dtoList) {
+            });
+            final PagingUtils<MediaIdListIdDto> toReturnMediaIdListId = new PagingUtils<>(dtoList, pageNumber, pageSizeQuery, mediaCount);
+            ResponseUtils.setPaginationLinks(res, toReturnMediaIdListId, uriInfo);
+            return res.build();
+        }catch (InvalidAccessToResourceException e){
+            return Response.status(Response.Status.FORBIDDEN).entity(new ResponseMessage("You do not have access to this resource.")).build();
+        }
+        catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ResponseMessage("An unexpected error occurred.")).build();
         }
 
-        List<OrderedMedia> mediaList = moovieListService.getMoovieListContentOrdered(id, orderBy, sortOrder, pageSizeQuery, pageNumber);
-        final int mediaCount = moovieListService.getMoovieListCardById(id).getSize();
-        List<MediaIdListIdDto> dtoList = MediaIdListIdDto.fromOrderedMediaList(mediaList, id);
-        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdListIdDto>>(dtoList) {
-        });
-        final PagingUtils<MediaIdListIdDto> toReturnMediaIdListId = new PagingUtils<>(dtoList, pageNumber, pageSizeQuery, mediaCount);
-        ResponseUtils.setPaginationLinks(res, toReturnMediaIdListId, uriInfo);
-        return res.build();
     }
 
     @POST
     @Path("/{id}/content")
-    @PreAuthorize("@accessValidator.isUserListAuthor(#id)")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_MOOVIELIST_MEDIA_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response insertMediaIntoMoovieList(@PathParam("id") int id,
                                               @Valid MediaListDto mediaIdListDto) {
-        List<Integer> mediaIdList = mediaIdListDto.getMediaIdList();
-        MoovieList updatedList = moovieListService.insertMediaIntoMoovieList(id, mediaIdList);
-        if (mediaIdList == null || mediaIdList.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new ResponseMessage("No media IDs provided."))
+
+        try {
+            moovieListService.getMoovieListCardById(id);
+            List<Integer> mediaIdList = mediaIdListDto.getMediaIdList();
+            MoovieList updatedList = moovieListService.insertMediaIntoMoovieList(id, mediaIdList);
+            if (mediaIdList == null || mediaIdList.isEmpty()) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity(new ResponseMessage("No media IDs provided."))
+                        .build();
+            }
+            return Response.ok(updatedList).entity(new ResponseMessage("Media added successfully to the list.")).build();
+        } catch (InvalidAccessToResourceException e) {
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity(new ResponseMessage("You do not have access to this resource."))
                     .build();
         }
-        return Response.ok(updatedList).entity(new ResponseMessage("Media added successfully to the list.")).build();
+        catch (MoovieListNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("MoovieList not found."))
+                    .build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(new ResponseMessage("An unexpected error occurred."))
+                    .build();
+        }
+
     }
 
 
@@ -315,13 +393,29 @@ public class MoovieListController {
     @Produces(VndType.APPLICATION_MOOVIELIST_MEDIA)
     public Response getMoovieListMediaByMediaId(@PathParam("id") final int id,
                                                 @PathParam("mediaId") final int mediaId ){
-        int customOrder = moovieListService.isMediaInMoovieList(mediaId,id);
-        if( customOrder != -1){
-            return Response.ok(new MediaIdListIdDto(mediaId, id, customOrder)).build();
+        try {
+            moovieListService.getMoovieListCardById(id);
+
+            int customOrder = moovieListService.isMediaInMoovieList(mediaId,id);
+            if( customOrder != -1){
+                return Response.ok(new MediaIdListIdDto(mediaId, id, customOrder)).build();
+            }
+
+            return Response.noContent().build();
+        } catch (InvalidAccessToResourceException e) {
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity(new ResponseMessage("You do not have access to this resource."))
+                    .build();
+        } catch (MoovieListNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("MoovieList not found."))
+                    .build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(new ResponseMessage("An unexpected error occurred."))
+                    .build();
         }
 
-        //TODO noContent() ?
-        return Response.noContent().build();
     }
 
     @PUT
@@ -332,9 +426,26 @@ public class MoovieListController {
     public Response editMoovieListMediaByMediaId(@PathParam("id") final int id,
                                                 @PathParam("mediaId") final int mediaId,
                                                  final MediaIdListIdDto input){
-        moovieListService.updateMoovieListOrder(input.getMoovieListId(), input.getMediaId(), input.getCustomOrder());
-        return Response.ok()
-            .entity("MoovieList order succesfully modified.").build();
+        try {
+            moovieListService.getMoovieListCardById(id);
+
+            moovieListService.updateMoovieListOrder(input.getMoovieListId(), input.getMediaId(), input.getCustomOrder());
+            return Response.ok()
+                    .entity("MoovieList order succesfully modified.").build();
+        } catch (InvalidAccessToResourceException e) {
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity(new ResponseMessage("You do not have access to this resource."))
+                    .build();
+        } catch (MoovieListNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("MoovieList not found."))
+                    .build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(new ResponseMessage("An unexpected error occurred."))
+                    .build();
+        }
+
     }
 
     @DELETE
@@ -342,8 +453,23 @@ public class MoovieListController {
     @PreAuthorize("@accessValidator.isUserListAuthor(#id)")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteMediaMoovieList(@PathParam("id") final int id, @PathParam("mediaId") final int mId) {
-        moovieListService.deleteMediaFromMoovieList(id, mId);
-        return Response.noContent().build();
+        try {
+            moovieListService.deleteMediaFromMoovieList(id, mId);
+            return Response.noContent().build();
+        } catch (InvalidAccessToResourceException e) {
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity(new ResponseMessage("You do not have access to this resource."))
+                    .build();
+        } catch (MoovieListNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("MoovieList not found."))
+                    .build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(new ResponseMessage("An unexpected error occurred."))
+                    .build();
+        }
+
     }
 
 
