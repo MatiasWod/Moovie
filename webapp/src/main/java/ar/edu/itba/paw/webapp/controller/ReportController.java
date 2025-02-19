@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.ConflictException;
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.Reports.*;
 import ar.edu.itba.paw.models.User.User;
@@ -125,6 +126,9 @@ public class ReportController {
             return new UnableToFindUserEM().toResponse(e);
         }  catch (IllegalArgumentException e) {
             throw new BadRequestException(e.getMessage(), e);
+        }
+        catch (ConflictException e) {
+            throw new ConflictException(e.getMessage(), e);
         }
         catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage(), e);
