@@ -44,6 +44,9 @@ const ListHeader = ({
 
     const handleLike = async () => {
         try {
+            if(!isLoggedIn){
+                navigate("/login");
+            }
             if (hasLikedAndFollowed.liked) {
                 await listService.unlikeList(list.id, user.username);
             } else {
@@ -57,6 +60,9 @@ const ListHeader = ({
 
     const handleFollow = async () => {
         try {
+            if(!isLoggedIn){
+                navigate("/login");
+            }
             if (hasLikedAndFollowed.followed) {
                 await listService.unfollowList(list.id, user.username);
             } else {

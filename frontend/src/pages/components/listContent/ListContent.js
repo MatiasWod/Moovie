@@ -109,7 +109,7 @@ const MediaRow = ({
             </span>
             <span className="media-score">
                 <i className="fas fa-users text-info me-1"></i>
-                {media.totalRating}
+                {media.totalRating.toFixed(2)}
             </span>
 
             <span className="media-release">{new Date(media.releaseDate).getFullYear()}</span>
