@@ -248,7 +248,7 @@ public class UserController {
 
     @GET
     @Path("/count")
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(VndType.APPLICATION_USER_COUNT)
     public Response getUserCount() {
         LOGGER.info("Method: getUserCount, Path: /users/count");
         try {

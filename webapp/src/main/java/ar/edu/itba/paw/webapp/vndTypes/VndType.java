@@ -91,6 +91,9 @@ public class VndType {
     // Tipo de medio para un medio en la lista de "Watchlist"
     public static final String APPLICATION_WATCHLIST_MEDIA = "application/vnd.watchlist-media.v1+json";
 
+    // Tipo de medio para un conteo en la lista de "Watchlist"
+    public static final String APPLICATION_WATCHLIST_COUNT = "application/vnd.watchlist-count.v1+json";
+
     // Tipo de medio para operaciones de creación/edición de una media de Watchlist
     public static final String APPLICATION_WATCHLIST_MEDIA_FORM = "application/vnd.watchlist-media-form.v1+json";
 
@@ -99,6 +102,21 @@ public class VndType {
 
     // Tipo de medio para la lista de listas seguidas (Follows)
     public static final String APPLICATION_FOLLOWED_LISTS_USER_LIST = "application/vnd.followed-lists-user-list.v1+json";
+
+    // Tipo de medio para la lista de likes de listas
+    public static final String APPLICATION_LIST_LIKE_LISTS = "application/vnd.list-like-lists.v1+json";
+
+    // Tipo de medio para like de lista
+    public static final String APPLICATION_LIST_LIKE = "application/vnd.list-like.v1+json";
+
+    // Tipo de medio para  likes  de review
+    public static final String APPLICATION_REVIEW_LIKE = "application/vnd.review-like.v1+json";
+
+    // Tipo de medio para  likes  de review de lista
+    public static final String APPLICATION_MOOVIELIST_REVIEW_LIKE = "application/vnd.moovielist-review-like.v1+json";
+
+    // Tipo de medio para  likes  de comments
+    public static final String APPLICATION_COMMENT_LIKE = "application/vnd.comment-like.v1+json";
 
     // Tipo de medio para una lista de proveedores "
     public static final String APPLICATION_PROVIDER_LIST = "application/vnd.provider-list.v1+json";
@@ -111,6 +129,9 @@ public class VndType {
 
     // Tipo de medio para operaciones de creación de reportes
     public static final String APPLICATION_REPORT_FORM = "application/vnd.report-form.v1+json";
+
+    // Tipo de medio para operaciones de creación de reportes
+    public static final String APPLICATION_REPORT_COUNT = "application/vnd.report-count.v1+json";
 
     // Tipo de medio para una reseña individual
     public static final String APPLICATION_REVIEW = "application/vnd.review.v1+json";
@@ -140,6 +161,9 @@ public class VndType {
 
     // Tipo de medio para token de un user individual
     public static final String APPLICATION_USER_TOKEN = "application/vnd.user_token.v1+json";
+
+    // Tipo de medio para token de un user individual
+    public static final String APPLICATION_USER_COUNT = "application/vnd.user_count.v1+json";
 
     // Tipo de medio para form de token de un user individual
     public static final String APPLICATION_USER_TOKEN_FORM = "application/vnd.user_token_form.v1+json";

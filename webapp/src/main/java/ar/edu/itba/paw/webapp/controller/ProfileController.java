@@ -276,7 +276,7 @@ public class ProfileController {
     @GET
     @Path("/{username}/watched/count")
     @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_WATCHLIST_COUNT)
     public Response getWatchedAmountMediaByListId(@PathParam("username") final String username,
                                              @QueryParam("listId") @NotNull final int listId) {
         try {
@@ -470,7 +470,7 @@ public class ProfileController {
     @GET
     @Path("/{username}/listLikes")
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_LIST_LIKE_LISTS)
     public Response getLikedLists(@PathParam("username") final String username,
                                   @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
         try {
@@ -505,7 +505,7 @@ public class ProfileController {
     @GET
     @Path("/{username}/listLikes/{listId}")
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_LIST_LIKE)
     public Response getUserLikedListById(@PathParam("listId") final int listId,
                                          @PathParam("username") final String username) {
         try {
@@ -526,7 +526,7 @@ public class ProfileController {
     @GET
     @Path("/{username}/reviewLikes/{reviewId}")
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_REVIEW_LIKE)
     public Response getLikedReviewById(@PathParam("username") final String username,
                                        @PathParam("reviewId") final int reviewId) {
         try {
@@ -550,7 +550,7 @@ public class ProfileController {
     @GET
     @Path("/{username}/moovieListsReviewsLikes/{moovieListReviewId}")
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_MOOVIELIST_REVIEW_LIKE)
     public Response getLikedMoovieListsReviewById(@PathParam("username") final String username,
                                        @PathParam("moovieListReviewId") final int moovieListReviewId) {
         try {
@@ -574,7 +574,7 @@ public class ProfileController {
     @GET
     @Path("/{username}/commentsFeedback/{commentId}")
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(VndType.APPLICATION_COMMENT_LIKE)
     public Response getFeedbackedCommentById(@PathParam("username") final String username,
                                                   @PathParam("commentId") final int commentId) {
         try {
