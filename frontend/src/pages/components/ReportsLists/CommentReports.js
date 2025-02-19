@@ -6,6 +6,7 @@ import userApi from '../../../api/UserApi';
 import commentApi from '../../../api/CommentApi';
 import {useTranslation} from "react-i18next";
 import ReportTypes from '../../../api/values/ReportTypes';
+import { Tooltip } from "react-tooltip";
 
 export default function CommentReports() {
   const [comments, setComments] = useState([]);
@@ -93,10 +94,22 @@ export default function CommentReports() {
                   {comment.userUrl?.split('/').pop()}
                 </a>
                 <div className="text-sm text-gray-600 flex space-x-2">
-                  <span className="flex items-center"><i className="bi bi-flag mr-1"></i>{comment.totalReports}</span>
-                  <span className="flex items-center"><i className="bi bi-envelope-exclamation mr-1"></i>{comment.spamReports}</span>
-                  <span className="flex items-center"><i className="bi bi-emoji-angry mr-1"></i>{comment.hateReports}</span>
-                  <span className="flex items-center"><i className="bi bi-slash-circle mr-1"></i>{comment.abuseReports}</span>
+                  <span className="flex items-center" data-tooltip-id="total-reports-tooltip"><i className="bi bi-flag mr-1"></i>{comment.totalReports}</span>
+                  <span className="flex items-center" data-tooltip-id="spam-reports-tooltip"><i className="bi bi-envelope-exclamation mr-1"></i>{comment.spamReports}</span>
+                  <span className="flex items-center" data-tooltip-id="hate-reports-tooltip"><i className="bi bi-emoji-angry mr-1"></i>{comment.hateReports}</span>
+                  <span className="flex items-center" data-tooltip-id="abuse-reports-tooltip"><i className="bi bi-slash-circle mr-1"></i>{comment.abuseReports}</span>
+                  <Tooltip id="total-reports-tooltip" place="bottom" effect="solid">
+                    {t('commentReports.totalReports')}
+                  </Tooltip>
+                  <Tooltip id="spam-reports-tooltip" place="bottom" effect="solid">
+                    {t('commentReports.spamReports')}
+                  </Tooltip>
+                  <Tooltip id="hate-reports-tooltip" place="bottom" effect="solid">
+                    {t('commentReports.hateReports')}
+                  </Tooltip>
+                  <Tooltip id="abuse-reports-tooltip" place="bottom" effect="solid">
+                    {t('commentReports.abuseReports')}
+                  </Tooltip>
                 </div>
               </div>
               <p className="mb-4 text-gray-700">{comment.content}</p>
@@ -127,14 +140,14 @@ export default function CommentReports() {
       {selectedAction && (
         <ConfirmationModal
           title={
-            selectedAction.type === 'delete' ? 'Confirm Comment Deletion' :
-            selectedAction.type === 'ban' ? 'Confirm User Ban' : 
-            'Resolve Report'
+            selectedAction.type === 'delete' ? t('commentReports.confirmCommentDeletionTitle') :
+            selectedAction.type === 'ban' ? t('commentReports.confirmUserBanTitle') :
+            t('commentReports.resolveReport')
           }
           message={
-            selectedAction.type === 'delete' ? 'Are you sure you want to delete this comment?' :
-            selectedAction.type === 'ban' ? 'Are you sure you want to ban this user?' :
-            'Are you sure you want to mark this report as resolved?'
+            selectedAction.type === 'delete' ? t('commentReports.confirmCommentDeletionMessage') :
+            selectedAction.type === 'ban' ? t('commentReports.confirmUserBanMessage') :
+            t('commentReports.confirmResolveReportMessage')
           }
           onConfirm={async () => {
             if (selectedAction.type === 'delete') await handleDelete(selectedAction.item);
