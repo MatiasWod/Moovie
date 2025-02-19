@@ -128,6 +128,7 @@
   "login.without": "without logging in",
   "login.login": "Login!",
   "login.submitting": "Logging in...",
+  "login.forgot": "Forgot password?",
   "mediaCard.addToWatched": "Add to Watched",
   "mediaCard.addToWatchlist": "Add to Watchlist",
   "mediaCard.removeFromWatched": "Remove from Watched",
@@ -274,6 +275,24 @@
   "awaitEmailValidation.expired": "Your verification link has expired. Please request a new one",
   "awaitEmailValidation.email": "Please check your email and verify your account to continue.",
   "awaitEmailValidation.sending": "Sending...",
-  "awaitEmailValidation.resend": "Resend Verification Email"
+  "awaitEmailValidation.resend": "Resend Verification Email",
+  "forgotPassword.title": "Reset your Password",
+  "forgotPassword.instruction": "Enter your email so that we can send a recovery email!",
+  "forgotPassword.success": "Email sent",
+  "forgotPassword.error": "Failed to send password recovery email.",
+  "forgotPassword.emailLabel": "Email Address",
+  "forgotPassword.submit": "Send recovery email",
+  "forgotPassword.goToLogin": "Go to login",
+  "forgotPassword.returnHome": "Return to home screen",
+  "resetPassword.title": "Restablecer tu contraseña",
+  "resetPassword.instruction": "Ingresa tu nueva contraseña.",
+  "resetPassword.success": "Contraseña restablecida, ahora puedes iniciar sesión.",
+  "resetPassword.error": "Hubo un error al restablecer la contraseña.",
+  "resetPassword.passwordLabel": "Nueva contraseña",
+  "resetPassword.repeatPasswordLabel": "Repetir nueva contraseña",
+  "resetPassword.submit": "Establecer nueva contraseña",
+  "resetPassword.passwordMismatch": "Las contraseñas no coinciden."
+
+
 
 }

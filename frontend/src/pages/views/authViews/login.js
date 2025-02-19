@@ -109,7 +109,7 @@ const Login = () => {
                             <button type={"button"} className={"btn btn-link ps-1"} onClick={()=>navigate(from)}>{t("login.without")}</button>
                         </p>
                         <p className={"d-flex m-0 justify-content-center align-items-center"}>
-                            <button type={"button"} className={"btn btn-link ps-1"} onClick={()=>navigate("/passwordRecovery")}>Forgot password?</button>
+                            <button type={"button"} className={"btn btn-link ps-1"} onClick={()=>navigate("/passwordRecovery")}>{t("login.forgot")}</button>
                         </p>
                     </div>
                 </Col>

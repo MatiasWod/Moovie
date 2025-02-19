@@ -17,5 +17,5 @@ public class UserVerifiedEM implements ExceptionMapper<UserVerifiedException> {
     @Override
     public Response toResponse(UserVerifiedException e) {
         return Response.status(Response.Status.CONFLICT)
-                .entity(new ResponseMessage("User is already verified")).build();    }
+                .entity(new ResponseMessage(e.getMessage())).build();    }
 }

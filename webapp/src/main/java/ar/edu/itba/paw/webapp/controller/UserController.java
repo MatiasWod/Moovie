@@ -190,7 +190,7 @@ public class UserController {
             }
             Token token = tokenOptional.get();
             if (userService.findUserById(token.getUserId()).getRole() > 0) {
-                throw new UserVerifiedException();
+                throw new UserVerifiedException("User already verified.");
             }
             userService.resendVerificationEmail(token);
 
