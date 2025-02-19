@@ -56,6 +56,7 @@ const reportApi = (() => {
     }
 
     const reportMoovieListReview = async ({moovieListReviewId, reportedBy, content, type}) => {
+        console.log(type);
         const response = await api.post('/reports',
             {
                 type: type

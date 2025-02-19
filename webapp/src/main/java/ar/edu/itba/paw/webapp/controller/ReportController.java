@@ -122,13 +122,6 @@ public class ReportController {
             } else {
                 throw new IllegalArgumentException("At least one of 'commentId', 'reviewId', 'moovieListReviewId', or 'generalReviewId' must be provided.");
             }
-        } catch (UnableToFindUserException e) {
-            return new UnableToFindUserEM().toResponse(e);
-        }  catch (IllegalArgumentException e) {
-            throw new BadRequestException(e.getMessage(), e);
-        }
-        catch (ConflictException e) {
-            throw new ConflictException(e.getMessage(), e);
         }
         catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage(), e);

@@ -151,7 +151,7 @@ public class ReportDaoImpl implements ReportDao {
         User user = em.find(User.class, userId);
 
 
-        List<MoovieListReport> existingReports=em.createQuery("SELECT m FROM MoovieListReviewReport m WHERE m.moovieListReview = :moovieListReview AND m.reportedBy = :user", MoovieListReport.class)
+        List<MoovieListReviewReport> existingReports=em.createQuery("SELECT m FROM MoovieListReviewReport m WHERE m.moovieListReview = :moovieListReview AND m.reportedBy = :user", MoovieListReviewReport.class)
                 .setParameter("moovieListReview", review)
                 .setParameter("user", user)
                 .getResultList();
@@ -159,6 +159,7 @@ public class ReportDaoImpl implements ReportDao {
         if (!existingReports.isEmpty()) {
             throw new ConflictException("User already reported this moovielistReview");
         }
+
 
         MoovieListReviewReport report = new MoovieListReviewReport(type, content, user, review);
         em.persist(report);
