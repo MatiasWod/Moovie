@@ -267,21 +267,12 @@ public class UserController {
     @Path("/{username}")
     public Response getUserByUsername(@PathParam("username") final String username) {
         LOGGER.info("Method: getUserByUsername, Path: /users/{username}, Username: {}", username);
-        try {
-            final User user = userService.findUserByUsername(username);
-            if (user == null) {
-                LOGGER.info("User with username {} not found. Returning NOT_FOUND.", username);
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-            return Response.ok(UserDto.fromUser(user, uriInfo)).build();
-        }catch (UnableToFindUserException e){
+        final User user = userService.findUserByUsername(username);
+        if (user == null) {
             LOGGER.info("User with username {} not found. Returning NOT_FOUND.", username);
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        catch (RuntimeException e) {
-            LOGGER.error("Error retrieving user: {}", e.getMessage());
-            return Response.serverError().entity(e.getMessage()).build();
-        }
+        return Response.ok(UserDto.fromUser(user, uriInfo)).build();
     }
 
 

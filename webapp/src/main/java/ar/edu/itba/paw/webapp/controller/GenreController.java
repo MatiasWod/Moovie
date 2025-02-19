@@ -48,4 +48,12 @@ public class GenreController {
                     .build();
         }
     }
+
+    @GET()
+    @Path("/{genreId}")
+    @Produces(VndType.APPLICATION_GENRE)
+    public Response getGenre(@PathParam("genreId") final Integer genreId) {
+        Genre genre = genreService.getGenreById(genreId);
+        return Response.ok(GenreDto.fromGenre(genre, uriInfo)).build();
+    }
 }

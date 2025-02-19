@@ -62,9 +62,9 @@ public class MoovieListDto {
         dto.mediaCount =  moovieList.getSize();
         dto.movieCount = moovieList.getMoviesAmount();
         dto.images =  moovieList.getImages();
-        dto.url = uriInfo.getBaseUriBuilder().path("list/{moovieListId}").build(moovieList.getMoovieListId()).toString();
-        dto.contentUrl = uriInfo.getBaseUriBuilder().path("list/{moovieListId}/content").build(moovieList.getMoovieListId()).toString();
-        dto.creatorUrl = uriInfo.getBaseUriBuilder().path("users/username/{username}").build(moovieList.getUsername()).toString();
+        dto.url = uriInfo.getBaseUriBuilder().path("lists/{moovieListId}").build(moovieList.getMoovieListId()).toString();
+        dto.contentUrl = uriInfo.getBaseUriBuilder().path("lists/{moovieListId}/content").build(moovieList.getMoovieListId()).toString();
+        dto.creatorUrl = uriInfo.getBaseUriBuilder().path("users/{username}").build(moovieList.getUsername()).toString();
 
 
         dto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
