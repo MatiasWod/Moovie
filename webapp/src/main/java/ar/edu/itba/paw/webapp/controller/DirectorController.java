@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.ResourceNotFoundException;
 import ar.edu.itba.paw.models.Cast.Director;
 import ar.edu.itba.paw.services.DirectorService;
 import ar.edu.itba.paw.webapp.dto.out.DirectorDto;
@@ -60,9 +61,7 @@ public class DirectorController {
             Director director = directorService.getDirectorById(directorId);
             return Response.ok(DirectorDto.fromDirector(director, uriInfo)).build();
         }catch (NoResultException e){
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Director not found.")
-                    .build();
+            throw new ResourceNotFoundException("Director not found");
         }
         catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

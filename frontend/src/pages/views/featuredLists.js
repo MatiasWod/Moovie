@@ -33,48 +33,55 @@ function FeaturedLists() {
     let featuredListTypeName;
     let mediaType;
     let orderBy;
+    let typeSubtext;
 
     switch (type) {
-        //TODO Reviasr que parece que la media es lo mismo que para los movie
         case "topRatedMedia":
             featuredListTypeName = "topRatedMedia";
-            mediaType = MediaTypes.TYPE_ALL
-            orderBy = OrderBy.TMDB_RATING
+            mediaType = MediaTypes.TYPE_ALL;
+            orderBy = OrderBy.TMDB_RATING;
+            typeSubtext = t('featuredLists.topRatedMedia');
             break;
         case "topRatedMovies":
             featuredListTypeName = "topRatedMovies";
-            mediaType = MediaTypes.TYPE_MOVIE
-            orderBy = OrderBy.TMDB_RATING
+            mediaType = MediaTypes.TYPE_MOVIE;
+            orderBy = OrderBy.TMDB_RATING;
+            typeSubtext = t('featuredLists.topRatedMedia');
             break;
 
         case "topRatedSeries":
             featuredListTypeName = "topRatedSeries";
-            mediaType = MediaTypes.TYPE_TVSERIE
-            orderBy = OrderBy.TMDB_RATING
+            mediaType = MediaTypes.TYPE_TVSERIE;
+            orderBy = OrderBy.TMDB_RATING;
+            typeSubtext = t('featuredLists.topRatedMedia');
             break;
 
         case "mostPopularMedia":
             featuredListTypeName = "mostPopularMedia";
-            mediaType = MediaTypes.TYPE_ALL
-            orderBy = OrderBy.VOTE_COUNT
+            mediaType = MediaTypes.TYPE_ALL;
+            orderBy = OrderBy.VOTE_COUNT;
+            typeSubtext = t('featuredLists.topRatedMedia');
             break;
 
         case "mostPopularMovies":
             featuredListTypeName = "mostPopularMovies";
-            mediaType = MediaTypes.TYPE_MOVIE
-            orderBy = OrderBy.VOTE_COUNT
+            mediaType = MediaTypes.TYPE_MOVIE;
+            orderBy = OrderBy.VOTE_COUNT;
+            typeSubtext = t('featuredLists.topRatedMedia');
             break;
 
         case "mostPopularSeries":
             featuredListTypeName = "mostPopularSeries";
-            mediaType = MediaTypes.TYPE_TVSERIE
-            orderBy = OrderBy.VOTE_COUNT
+            mediaType = MediaTypes.TYPE_TVSERIE;
+            orderBy = OrderBy.VOTE_COUNT;
+            typeSubtext = t('featuredLists.topRatedMedia');
             break;
 
         default:
             featuredListTypeName = null
             mediaType = null;
             orderBy = null;
+            typeSubtext = "";
     }
 
     const handlePageChange = (newPage) => {
@@ -117,6 +124,7 @@ function FeaturedLists() {
     return (
         <div className="default-container moovie-default">
             <h1>{t('featuredLists.featuredList')}</h1>
+            <h3>{typeSubtext}</h3>
 
             <ListContent listContent={featuredMedia?.data || []} />
             <div className="flex justify-center pt-4">

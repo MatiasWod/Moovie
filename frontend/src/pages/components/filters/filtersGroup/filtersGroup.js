@@ -182,9 +182,6 @@ const FiltersGroup = ({
                             />
                         </div>
                     )}
-
-                    <FormButtons onApply={handleFilterSubmit} onReset={handleReset} />
-
                     <FilterSection
                         title={t("filters.genres")}
                         isOpen={openGenres}
@@ -220,6 +217,10 @@ const FiltersGroup = ({
                             }
                         />
                     </FilterSection>
+
+
+                    <FormButtons onApply={handleFilterSubmit} onReset={handleReset} />
+
                 </form>
             </div>
         </div>
