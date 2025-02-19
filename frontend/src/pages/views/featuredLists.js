@@ -17,6 +17,7 @@ import pagingSizes from "../../api/values/PagingSizes";
 import {useTranslation} from "react-i18next";
 import {Spinner} from "react-bootstrap";
 import useErrorStatus from "../../hooks/useErrorStatus";
+import {useSelector} from "react-redux";
 
 
 function FeaturedLists() {
@@ -96,6 +97,8 @@ function FeaturedLists() {
         });
     };
 
+    const {isLoggedIn, user} = useSelector(state => state.auth);
+
 
     useEffect(() => {
         async function getData() {
@@ -126,7 +129,7 @@ function FeaturedLists() {
             <h1>{t('featuredLists.featuredList')}</h1>
             <h3>{typeSubtext}</h3>
 
-            <ListContent listContent={featuredMedia?.data || []} />
+            <ListContent listContent={featuredMedia?.data || []} isLoggedIn={isLoggedIn} editMode={false} />
             <div className="flex justify-center pt-4">
                 {featuredMedia?.data?.length > 0 && featuredMedia.links?.last?.page > 1 && (
                     <PaginationButton
