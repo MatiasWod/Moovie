@@ -7,7 +7,6 @@ const ReportForm = ({onCancel, onReportSubmit }) => {
     const { t } = useTranslation();
     const [error, setError] = useState(null);
     const [reportReason, setReportReason] = useState("");
-    const [additionalInfo, setAdditionalInfo] = useState("");
 
     const reportReasons = [
         t('reportForm.hate'),
@@ -19,7 +18,7 @@ const ReportForm = ({onCancel, onReportSubmit }) => {
     const handleSubmit = async () => {
         try {
             const reportType = ReportTypes[reportReason];
-            onReportSubmit?.(reportType, additionalInfo);
+            onReportSubmit?.(reportType);
         } catch (error) {
             setError(error.response?.data?.message || "Error making request");
         }
@@ -46,13 +45,6 @@ const ReportForm = ({onCancel, onReportSubmit }) => {
                                 </div>
                             ))}
                         </div>
-                        <textarea
-                            placeholder={t('reportForm.additionalInformationPlaceholder')}
-                            value={additionalInfo}
-                            onChange={(e) => setAdditionalInfo(e.target.value)}
-                            maxLength="500"
-                        ></textarea>
-                        <p>{additionalInfo.length}/500</p>
                         <div className="buttons">
                             <button className="cancel" onClick={onCancel}>
                                 {t('reportForm.cancel')}

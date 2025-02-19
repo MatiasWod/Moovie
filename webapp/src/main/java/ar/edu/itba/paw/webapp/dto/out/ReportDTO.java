@@ -18,44 +18,42 @@ public class ReportDTO {
     //    URL for the user that reported
     //    /user/{username}
     private String reportedByUrl;
-    private String content;
     private int type;
 
     // No-argument constructor for JAXB
     public ReportDTO() {
     }
 
-    public ReportDTO(String url, Boolean resolved, LocalDateTime report_date, String reportedByUrl, String content, int type) {
+    public ReportDTO(String url, Boolean resolved, LocalDateTime report_date, String reportedByUrl, int type) {
         this.url = url;
         this.resolved = resolved;
         this.report_date = report_date;
         this.reportedByUrl = reportedByUrl;
-        this.content = content;
         this.type = type;
     }
 
     public static ReportDTO fromReviewReport(ReviewReport reviewReport, UriInfo uriInfo) {
         String url = uriInfo.getBaseUriBuilder().path("/reviews/" + reviewReport.getReview().getReviewId()).toString();
         String reportedByUrl = uriInfo.getBaseUriBuilder().path("/users/" + reviewReport.getReportedBy().getUsername()).toString();
-        return new ReportDTO(url, reviewReport.getResolved(), reviewReport.getReport_date(), reportedByUrl, reviewReport.getContent(), reviewReport.getType());
+        return new ReportDTO(url, reviewReport.getResolved(), reviewReport.getReport_date(), reportedByUrl, reviewReport.getType());
     }
 
     public static ReportDTO fromCommentReport(CommentReport commentReport, UriInfo uriInfo) {
         String url = uriInfo.getBaseUriBuilder().path("/comments/" + commentReport.getComment().getCommentId()).toString();
         String reportedByUrl = uriInfo.getBaseUriBuilder().path("/users/" + commentReport.getReportedBy().getUsername()).toString();
-        return new ReportDTO(url, commentReport.getResolved(), commentReport.getReport_date(), reportedByUrl, commentReport.getContent(), commentReport.getType());
+        return new ReportDTO(url, commentReport.getResolved(), commentReport.getReport_date(), reportedByUrl, commentReport.getType());
     }
 
     public static ReportDTO fromMoovieListReviewReport(MoovieListReviewReport mlrReport, UriInfo uriInfo) {
         String url = uriInfo.getBaseUriBuilder().path("/moovieListReviews/" + mlrReport.getMoovieListReview().getMoovieListReviewId()).toString();
         String reportedByUrl = uriInfo.getBaseUriBuilder().path("/users/" + mlrReport.getReportedBy().getUsername()).toString();
-        return new ReportDTO(url, mlrReport.getResolved(), mlrReport.getReport_date(), reportedByUrl, mlrReport.getContent(), mlrReport.getType());
+        return new ReportDTO(url, mlrReport.getResolved(), mlrReport.getReport_date(), reportedByUrl, mlrReport.getType());
     }
 
     public static ReportDTO fromMoovieListReport(MoovieListReport mlReport, UriInfo uriInfo) {
         String url = uriInfo.getBaseUriBuilder().path("/lists/" + mlReport.getMoovieList().getMoovieListId()).toString();
         String reportedByUrl = uriInfo.getBaseUriBuilder().path("/users/" + mlReport.getReportedBy().getUsername()).toString();
-        return new ReportDTO(url, mlReport.getResolved(), mlReport.getReport_date(), reportedByUrl, mlReport.getContent(), mlReport.getType());
+        return new ReportDTO(url, mlReport.getResolved(), mlReport.getReport_date(), reportedByUrl, mlReport.getType());
     }
 
     public String getUrl() {
@@ -88,14 +86,6 @@ public class ReportDTO {
 
     public void setReportedByUrl(String reportedByUrl) {
         this.reportedByUrl = reportedByUrl;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 
     public int getType() {

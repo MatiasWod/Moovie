@@ -8,8 +8,6 @@ const reportApi = (() => {
     const reportReview = async ({reviewId, reportedBy, content, type}) => {
         const response = await api.post('/reports',
             {
-                reportedBy: reportedBy,
-                content: content,
                 type: type
             },
             {params:
@@ -26,9 +24,6 @@ const reportApi = (() => {
     const reportComment = async ({commentId, reportedBy, content, type}) => {
         const response = await api.post('/reports',
             {
-                commentId: commentId,
-                reportedBy: reportedBy,
-                content: content,
                 type: type
             },
             {params:
@@ -46,9 +41,6 @@ const reportApi = (() => {
     const reportMoovieList = async ({moovieListId, reportedBy, content, type}) => {
         const response = await api.post('/reports',
             {
-                moovieListId: moovieListId,
-                reportedBy: reportedBy,
-                content: content,
                 type: type
             },
             {params:
@@ -66,9 +58,6 @@ const reportApi = (() => {
     const reportMoovieListReview = async ({moovieListReviewId, reportedBy, content, type}) => {
         const response = await api.post('/reports',
             {
-                moovieListReviewId: moovieListReviewId,
-                reportedBy: reportedBy,
-                content: content,
                 type: type
             },
             {params:

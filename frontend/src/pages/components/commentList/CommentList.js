@@ -55,11 +55,10 @@ export default function CommentList({ reviewId, reload }) {
         fetchComments();
     };
 
-    const handleReportComment = async (commentId, reportReason, additionalInfo) => {
+    const handleReportComment = async (commentId, reportReason) => {
         await reportApi.reportComment({
             commentId,
             reportedBy: user.username,
-            content: additionalInfo,
             type: reportReason
         });
     };
@@ -143,8 +142,8 @@ function CommentItem({ comment, isLoggedIn, user, onDelete, reload, onReport }) 
         }
     }
 
-    const handleReportSubmit = async (reportReason, additionalInfo) => {
-        await onReport(comment.id, reportReason, additionalInfo);
+    const handleReportSubmit = async (reportReason) => {
+        await onReport(comment.id, reportReason);
         setIsReporting(false);
     };
 

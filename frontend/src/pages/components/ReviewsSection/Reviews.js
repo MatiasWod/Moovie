@@ -147,20 +147,18 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
         }
     }
 
-    const handleReportSubmit = async (reportReason, additionalInfo) => {
+    const handleReportSubmit = async (reportReason) => {
         try {
             if (source === 'list') {
                 await reportApi.reportMoovieListReview({
                     moovieListReviewId: review.id,
                     reportedBy: currentUser.username,
-                    content: additionalInfo,
                     type: reportReason
                 });
             } else {
                 await reportApi.reportReview({
                     reviewId: review.id,
                     reportedBy: currentUser.username,
-                    content: additionalInfo,
                     type: reportReason
                 });
             }
