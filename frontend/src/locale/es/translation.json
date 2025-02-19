@@ -267,5 +267,14 @@
   "listContentSearch.noResults": "No se encontraron resultados",
   "listContentSearch.startTyping": "Empieza a escribir para buscar películas",
   "listContentSearch.addedToList": "agregado a la lista",
-  "listContentSearch.alreadyInList": "ya está en la lista"
+  "listContentSearch.alreadyInList": "ya está en la lista",
+  "awaitEmailValidation.noToken": "No se ha proporcionado ningún token",
+  "awaitEmailValidation.success":"¡El correo electrónico de verificación se reenvió exitosamente!",
+  "awaitEmailValidation.title":"Verificación de cuenta",
+  "awaitEmailValidation.expired": "Su enlace de verificación ha caducado. Por favor solicite uno nuevo",
+  "awaitEmailValidation.email": "Por favor revise su correo electrónico y verifique su cuenta para continuar.",
+  "awaitEmailValidation.sending": "Enviando...",
+  "awaitEmailValidation.resend": "Reenviar correo electrónico de verificación"
+
+
 }

@@ -267,5 +267,13 @@
   "listContentSearch.noResults": "No results found",
   "listContentSearch.startTyping": "Start typing to search for movies",
   "listContentSearch.addedToList": "added to list",
-  "listContentSearch.alreadyInList": "is already in list"
+  "listContentSearch.alreadyInList": "is already in list",
+  "awaitEmailValidation.noToken": "No token provided",
+  "awaitEmailValidation.success":"Verification email resent successfully!",
+  "awaitEmailValidation.title":"Account Verification",
+  "awaitEmailValidation.expired": "Your verification link has expired. Please request a new one",
+  "awaitEmailValidation.email": "Please check your email and verify your account to continue.",
+  "awaitEmailValidation.sending": "Sending...",
+  "awaitEmailValidation.resend": "Resend Verification Email"
+
 }

@@ -119,7 +119,7 @@ public class WebConfig {
         ds.setUrl("jdbc:postgresql://localhost:5432/paw");
         ds.setUsername("postgres");
         ds.setUsername("postgres");
-        ds.setPassword("admin12345");
+        ds.setPassword("admin");
         return ds;
     }
 
