@@ -31,8 +31,12 @@ function ProfileTabMediaLists({ type, username }) {
                 setListPagination(data.data);
                 const idList = MediaService.getIdMediaFromObjectList(data.data);
                 console.log(idList);
-                setListContent(await MediaService.getMediaByIdList(idList));
-                console.log(listContent);
+                if (idList.length > 0) {
+                    setListContent(await MediaService.getMediaByIdList(idList));
+                    console.log(listContent);
+                } else {
+                    setListContent([]);
+                }
                 setListContentLoading(false);
             } catch (error) {
                 setListContentError(error);
