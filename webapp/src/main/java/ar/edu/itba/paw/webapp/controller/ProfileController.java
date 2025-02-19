@@ -189,7 +189,7 @@ public class ProfileController {
             List<MediaIdDto> listToRet = new ArrayList<>();
 
             for ( Media media : mediaList){
-                listToRet.add(new MediaIdDto(media.getMediaId(), username));
+                listToRet.add(new MediaIdDto(media.getMediaId(), username, uriInfo));
             }
 
             Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdDto>>(listToRet) {
@@ -242,7 +242,7 @@ public class ProfileController {
             userService.isUsernameMe(username);
             boolean watched = mediaService.getMediaById(mediaId).isWatched();
             if(watched){
-                return Response.ok(new MediaIdDto(mediaId, username)).build();
+                return Response.ok(new MediaIdDto(mediaId, username, uriInfo)).build();
             }
             return Response.noContent().build();
         } catch (UnableToFindUserException e) {
@@ -328,7 +328,7 @@ public class ProfileController {
             List<MediaIdDto> listToRet = new ArrayList<>();
 
             for ( Media media : mediaList){
-                listToRet.add(new MediaIdDto(media.getMediaId(), username));
+                listToRet.add(new MediaIdDto(media.getMediaId(), username, uriInfo));
             }
 
             Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdDto>>(listToRet) {
@@ -377,7 +377,7 @@ public class ProfileController {
             userService.isUsernameMe(username);
             boolean watchlist = mediaService.getMediaById(mediaId).isWatchlist();
             if(watchlist){
-                return Response.ok(new MediaIdDto(mediaId, username)).build();
+                return Response.ok(new MediaIdDto(mediaId, username, uriInfo)).build();
             }
             return Response.noContent().build();
         } catch (UnableToFindUserException e) {

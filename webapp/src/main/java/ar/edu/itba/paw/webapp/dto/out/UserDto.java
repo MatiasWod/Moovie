@@ -13,6 +13,7 @@ public class UserDto {
     private int role;
 
     private String url;
+    private String profileUrl;
 
     public static UserDto fromUser(final User user, final UriInfo uriInfo) {
         final UserDto dto = new UserDto();
@@ -22,7 +23,7 @@ public class UserDto {
         dto.email = user.getEmail();
         dto.role = user.getRole();
         dto.url = uriInfo.getBaseUriBuilder().path("/users/{username}").build(user.getUsername()).toString();
-
+        dto.profileUrl = uriInfo.getBaseUriBuilder().path("/profiles/{username}").build(user.getUsername()).toString();
         return dto;
     }
 
