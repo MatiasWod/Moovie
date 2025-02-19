@@ -49,6 +49,12 @@ const MediaCard = ({ media, size = 'normal' , showWWButtons = true, disableOnCli
 
     const handleWatched = async () => {
         try {
+
+            if (!isLoggedIn) {
+                navigate('/login');
+                return;
+            }
+
             if (ww.watched) {
                 await profileService.removeMediaFromWW(WatchlistWatched.Watched, media.id, user.username);
             } else {
@@ -61,6 +67,12 @@ const MediaCard = ({ media, size = 'normal' , showWWButtons = true, disableOnCli
 
     const handleWatchlist = async () => {
         try {
+
+            if (!isLoggedIn) {
+                navigate('/login');
+                return;
+            }
+
             if (ww.watchlist) {
                 await profileService.removeMediaFromWW(WatchlistWatched.Watchlist, media.id, user.username);
             } else {
