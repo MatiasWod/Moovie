@@ -269,10 +269,24 @@ function List() {
             )}
 
             <h3>{t('list.prompt')}</h3>
-            <div className="moovie-default default-container">
-                <div className="list-card-container">
+            <div style={{ 
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                overflow: 'hidden' // Contain the scroll area
+            }}>
+                <div style={{ 
+                    maxWidth: '95%',
+                    overflowX: 'auto',
+                    display: 'flex',
+                    justifyContent: 'flex-start',
+                    gap: '1rem',
+                    padding: '1rem'
+                }}>
                     {listRecommendations?.data?.map(list => (
-                        <ListCard listCard={list}/>
+                        <div style={{ flex: '0 0 300px' }}> {/* Fixed width for each card */}
+                            <ListCard key={list.id} listCard={list} />
+                        </div>
                     ))}
                 </div>
             </div>
