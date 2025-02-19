@@ -13,21 +13,23 @@ import {Pagination} from "@mui/material";
 import mediaTypes from "../../api/values/MediaTypes";
 import mediaOrderBy from "../../api/values/MediaOrderBy";
 import SortOrder from "../../api/values/SortOrder";
+import { useLocation } from "react-router-dom";
 
 const Discover = () => {
     const { t } = useTranslation();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const location = useLocation();
 
     // Filter States
     const [type, setType] = useState(searchParams.get("type") || mediaTypes.TYPE_ALL);
     const [orderBy, setOrderBy] = useState(searchParams.get("orderBy") || mediaOrderBy.TOTAL_RATING);
     const [sortOrder, setSortOrder] = useState(searchParams.get("sortOrder") || SortOrder.DESC);
     const [selectedProviders, setSelectedProviders] = useState(
-        searchParams.get("providers") ? JSON.parse(searchParams.get("providers")) : []
+        location.state?.selectedProviders ? location.state.selectedProviders : []
     );
     const [selectedGenres, setSelectedGenres] = useState(
-        searchParams.get("genres") ? JSON.parse(searchParams.get("genres")) : []
+        location.state?.selectedGenres ? location.state.selectedGenres : []
     );
     const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
     const [page, setPage] = useState(parseInt(searchParams.get("page")) || 1);

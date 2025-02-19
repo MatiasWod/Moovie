@@ -67,6 +67,8 @@ const FiltersGroup = ({
                     id: genre.genreId
                 }));
                 setGenresList(genreList);
+                console.log("genreList", genreList);
+                console.log("selectedGenres", selectedGenres);
             } catch (error) {
                 setError(t("filters.error.fetch_genres"));
                 setLoading(false);
@@ -102,14 +104,6 @@ const FiltersGroup = ({
         setSortOrderInput(SortOrder.DESC);
         setMediaTypeInput(mediaTypes.TYPE_ALL);
         setMediaOrderByInput(mediaOrderBy.TOTAL_RATING);
-        submitCallback({
-            type: mediaTypeInput,
-            sortOrder: sortOrderInput,
-            orderBy: mediaOrderByInput,
-            search: queryInput,
-            selectedProviders: selectedProviders,
-            selectedGenres: selectedGenres
-        });
     };
 
     if (loading) return <CircularProgress />;
@@ -193,9 +187,11 @@ const FiltersGroup = ({
                             items={genresList}
                             selectedItems={selectedGenres}
                             onToggleItem={(genre) =>
+                            {
                                 setSelectedGenres((prev) =>
-                                    prev.includes(genre.id) ? prev.filter((g) => g.id !== genre.id) : [...prev, genre]
+                                    prev.some(g => g.id === genre.id) ? prev.filter(g => g.id !== genre.id) : [...prev, genre]
                                 )
+                            }
                             }
                         />
                     </FilterSection>
@@ -212,7 +208,7 @@ const FiltersGroup = ({
                             selectedItems={selectedProviders}
                             onToggleItem={(provider) =>
                                 setSelectedProviders((prev) =>
-                                    prev.includes(provider.id) ? prev.filter((p) => p.id !== provider.id) : [...prev, provider]
+                                    prev.some(p => p.id === provider.id) ? prev.filter(p => p.id !== provider.id) : [...prev, provider]
                                 )
                             }
                         />
