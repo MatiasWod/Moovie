@@ -397,11 +397,12 @@ public class MoovieListController {
             moovieListService.getMoovieListCardById(id);
 
             int customOrder = moovieListService.isMediaInMoovieList(mediaId,id);
-            if( customOrder != -1){
-                return Response.ok(new MediaIdListIdDto(mediaId, id, customOrder, uriInfo)).build();
+            if( customOrder == -1){
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity(new ResponseMessage("Media not found in MoovieList."))
+                        .build();
             }
-
-            return Response.noContent().build();
+            return Response.ok(new MediaIdListIdDto(mediaId, id, customOrder, uriInfo)).build();
         } catch (InvalidAccessToResourceException e) {
             return Response.status(Response.Status.FORBIDDEN)
                     .entity(new ResponseMessage("You do not have access to this resource."))

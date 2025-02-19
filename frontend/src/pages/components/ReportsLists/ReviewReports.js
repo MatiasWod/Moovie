@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import reportApi from '../../../api/ReportApi';
 import reviewApi from '../../../api/ReviewApi';
 import userApi from '../../../api/UserApi';
-import ConfirmationForm from '../../components/forms/confirmationForm/confirmationForm';
+import ConfirmationModal from '../../components/forms/confirmationForm/confirmationModal';
 import api from '../../../api/api';
 import {useTranslation} from "react-i18next";
 import ReportTypes from '../../../api/values/ReportTypes';
@@ -20,74 +20,102 @@ export default function ReviewReports() {
   }, []);
 
   const fetchReports = async () => {
-    const response = await reportApi.getReports({ contentType: 'review' });
-    const reportsData = response.data || [];
-    
-    // Get unique URLs
-    const uniqueUrls = [...new Set(reportsData.map(report => report.url))];
-    
-    // Fetch all reviews in parallel
-    const reviewPromises = uniqueUrls.map(url => api.get(url));
-    const reviewResponses = await Promise.all(reviewPromises);
-    const reviews = reviewResponses.map(response => response.data);
-    
-    // Fetch all report counts and media details in parallel
-    const allPromises = reviews.flatMap(review => {
-      const params = { contentType: 'review', resourceId: review.id };
-      const promises = [
-        reportApi.getReportCounts({ ...params, reportType: ReportTypes['Abuse & Harassment'] }),
-        reportApi.getReportCounts({ ...params, reportType: ReportTypes.Hate }),
-        reportApi.getReportCounts({ ...params, reportType: ReportTypes.Spam }),
-        reportApi.getReportCounts({ ...params, reportType: ReportTypes.Privacy })
-      ];
+    try {
+      const response = await reportApi.getReports({ contentType: 'review' });
+      const reportsData = response.data || [];
       
-      if (review.mediaId) {
-        promises.push(mediaApi.getMediaById(review.mediaId));
-      } else {
-        promises.push(Promise.resolve({ data: null }));
-      }
+      // Get unique URLs
+      const uniqueUrls = [...new Set(reportsData.map(report => report.url))];
       
-      return promises;
-    });
-    
-    const allResults = await Promise.all(allPromises);
-    
-    // Add report counts and media details to reviews
-    const reviewsWithReports = reviews.map((review, index) => {
-      const baseIndex = index * 5; // 4 report types + 1 media detail
-      return {
-        ...review,
-        abuseReports: allResults[baseIndex].data.count,
-        hateReports: allResults[baseIndex + 1].data.count,
-        spamReports: allResults[baseIndex + 2].data.count,
-        privacyReports: allResults[baseIndex + 3].data.count,
-        totalReports: allResults[baseIndex].data.count + 
-                     allResults[baseIndex + 1].data.count + 
-                     allResults[baseIndex + 2].data.count + 
-                     allResults[baseIndex + 3].data.count,
-        mediaDetails: allResults[baseIndex + 4].data
-      };
-    });
+      try {
+        // Fetch all reviews in parallel
+        const reviewPromises = uniqueUrls.map(url => api.get(url));
+        const reviewResponses = await Promise.all(reviewPromises);
+        const reviews = reviewResponses.map(response => response.data);
+        
+        try {
+          // Fetch all report counts and media details in parallel
+          const allPromises = reviews.flatMap(review => {
+            const params = { contentType: 'review', resourceId: review.id };
+            const promises = [
+              reportApi.getReportCounts({ ...params, reportType: ReportTypes['Abuse & Harassment'] }),
+              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Hate }),
+              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Spam }),
+              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Privacy })
+            ];
+            
+            if (review.mediaId) {
+              promises.push(mediaApi.getMediaById(review.mediaId));
+            } else {
+              promises.push(Promise.resolve({ data: null }));
+            }
+            
+            return promises;
+          });
+          
+          const allResults = await Promise.all(allPromises);
+          
+          // Add report counts and media details to reviews
+          const reviewsWithReports = reviews.map((review, index) => {
+            const baseIndex = index * 5;
+            return {
+              ...review,
+              abuseReports: allResults[baseIndex].data.count,
+              hateReports: allResults[baseIndex + 1].data.count,
+              spamReports: allResults[baseIndex + 2].data.count,
+              privacyReports: allResults[baseIndex + 3].data.count,
+              totalReports: allResults[baseIndex].data.count + 
+                           allResults[baseIndex + 1].data.count + 
+                           allResults[baseIndex + 2].data.count + 
+                           allResults[baseIndex + 3].data.count,
+              mediaDetails: allResults[baseIndex + 4].data
+            };
+          });
 
-    setReviews(reviewsWithReports);
-    setReviewsLoading(false);
+          setReviews(reviewsWithReports);
+        } catch (error) {
+          console.error('Error fetching additional details:', error);
+          setReviews(reviews); // Set reviews without additional details
+        }
+      } catch (error) {
+        console.error('Error fetching reviews:', error);
+        setReviews([]);
+      }
+    } catch (error) {
+      console.error('Error fetching reports:', error);
+      setReviews([]);
+    } finally {
+      setReviewsLoading(false);
+    }
   };
 
   const handleDelete = async (review) => {
-    await reviewApi.deleteReview(review.id);
-    fetchReports();
+    try {
+      await reviewApi.deleteReviewById(review.id);
+      await fetchReports();
+    } catch (error) {
+      console.error('Error deleting review:', error);
+    }
   };
 
   const handleBan = async (review) => {
-    const response = await api.get(review.userUrl);
-    const user = response.data;
-    await userApi.banUser(user.username);
-    fetchReports();
+    try {
+      const response = await api.get(review.userUrl);
+      const user = response.data;
+      await userApi.banUser(user.username);
+      await fetchReports();
+    } catch (error) {
+      console.error('Error banning user:', error);
+    }
   };
 
   const handleResolve = async (review) => {
-    await reportApi.resolveReviewReport(review.id);
-    fetchReports();
+    try {
+      await reportApi.resolveReviewReport(review.id);
+      await fetchReports();
+    } catch (error) {
+      console.error('Error resolving report:', error);
+    }
   };
 
   if (reviewsLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
@@ -184,19 +212,16 @@ export default function ReviewReports() {
         </div>
       )}
       {selectedAction && (
-        <ConfirmationForm
-          service={selectedAction.type === 'delete' ? reviewApi.deleteReview :
-            selectedAction.type === 'ban' ? userApi.banUser :
-            reportApi.resolveReviewReport}
-          actionName={
-            selectedAction.type === 'delete' ? t('reports.confirmReviewDeletionTitle') :
-            selectedAction.type === 'ban' ? t('reports.confirmUserBanTitle') :
-                t('reports.resolveReport')
+        <ConfirmationModal
+          title={
+            selectedAction.type === 'delete' ? t('reviewReports.confirmReviewDeletionTitle') :
+            selectedAction.type === 'ban' ? t('reviewReports.confirmUserBanTitle') :
+            t('reviewReports.resolveReport')
           }
-          serviceParams={
-            selectedAction.type === 'delete' ? [selectedAction.item.id] :
-            selectedAction.type === 'ban' ? [selectedAction.item.userUrl] :
-            [selectedAction.item.id]
+          message={
+            selectedAction.type === 'delete' ? t('reviewReports.confirmReviewDeletionMessage') :
+            selectedAction.type === 'ban' ? t('reviewReports.confirmUserBanMessage') :
+            t('reviewReports.confirmResolveReportMessage')
           }
           onConfirm={async () => {
             if (selectedAction.type === 'delete') await handleDelete(selectedAction.item);
