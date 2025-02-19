@@ -160,7 +160,7 @@ const listApi = (() => {
     }
 
     const unfollowList = (moovieListId, username) =>{
-        return api.delete(`/lists/${moovieListId}`,
+        return api.put(`/lists/${moovieListId}`,
             {"username":username,
                 "actionType": "UNFOLLOW"},
 
