@@ -8,9 +8,11 @@ import {useTranslation} from "react-i18next";
 import ReportTypes from '../../../api/values/ReportTypes';
 import { Tooltip } from "react-tooltip";
 import mediaApi from '../../../api/MediaApi';
+import {Spinner} from "react-bootstrap";
 
 export default function CommentReports() {
   const [comments, setComments] = useState([]);
+  const [commentsLoading, setCommentsLoading] = useState(true);
   const [selectedAction, setSelectedAction] = useState(null);
   const { t } = useTranslation();
   // selectedAction = {type: 'delete'|'ban'|'resolve', item: comment}
@@ -66,6 +68,7 @@ export default function CommentReports() {
     });
 
     setComments(commentsWithDetails);
+    setCommentsLoading(false);
   };
 
   const handleDelete = async (comment) => {
@@ -86,6 +89,8 @@ export default function CommentReports() {
     fetchComments();
   };
 
+  if (commentsLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
+
   return (
     <div className="container-fluid">
       <h3 className="text-xl font-semibold mb-4">{t('commentReports.commentReports')}</h3>
@@ -98,13 +103,13 @@ export default function CommentReports() {
               <div className="flex justify-between items-start mb-4">
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
-                    <a href={`/profile/${comment.username}`} className="text-blue-600 font-bold hover:underline">
+                    <a href={ process.env.PUBLIC_URL + `/profile/${comment.username}`} className="text-blue-600 font-bold hover:underline">
                       {comment.username}
                     </a>
                     <span className="text-gray-500">
                       {t('reviews.onMedia')}
                     </span>
-                    <a href={`/details/${comment.mediaDetails?.id}`} className="text-blue-600 hover:underline">
+                    <a href={process.env.PUBLIC_URL + `/details/${comment.mediaDetails?.id}`} className="text-blue-600 hover:underline">
                       {comment.mediaDetails?.name}
                     </a>
                   </div>
@@ -132,20 +137,20 @@ export default function CommentReports() {
 
                 <div className="text-right">
                   <div className="text-sm text-gray-600 flex flex-col items-end space-y-1">
-                    <span className="flex items-center" title={t('reports.total')}>
+                    <span className="flex items-center" title={t('reports.totalReports')}>
                       <i className="bi bi-flag mr-1"></i>{comment.totalReports}
                     </span>
                     <div className="flex space-x-3">
-                      <span className="flex items-center" title={t('reports.spam')}>
+                      <span className="flex items-center" title={t('reports.spamReports')}>
                         <i className="bi bi-envelope-exclamation mr-1"></i>{comment.spamReports}
                       </span>
-                      <span className="flex items-center" title={t('reports.hate')}>
+                      <span className="flex items-center" title={t('reports.hateReports')}>
                         <i className="bi bi-emoji-angry mr-1"></i>{comment.hateReports}
                       </span>
-                      <span className="flex items-center" title={t('reports.abuse')}>
+                      <span className="flex items-center" title={t('reports.abuseReports')}>
                         <i className="bi bi-slash-circle mr-1"></i>{comment.abuseReports}
                       </span>
-                      <span className="flex items-center" title={t('reports.privacy')}>
+                      <span className="flex items-center" title={t('reports.privacyReports')}>
                         <i className="bi bi-incognito mr-1"></i>{comment.privacyReports}
                       </span>
                     </div>

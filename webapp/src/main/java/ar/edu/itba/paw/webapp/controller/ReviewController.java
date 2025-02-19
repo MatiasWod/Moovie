@@ -67,6 +67,11 @@ public class ReviewController {
         if (mediaId != null && userId != null) {
             // Caso: buscar una reseña específica por mediaId y userId
             final Review review = reviewService.getReviewByMediaIdAndUsername(mediaId, userId);
+            if (review == null) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("Review not found.")
+                        .build();
+            }
             final ReviewDto reviewDto = ReviewDto.fromReview(review, uriInfo);
             return Response.ok(reviewDto).build();
         } else if (mediaId != null) {

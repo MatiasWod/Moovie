@@ -188,12 +188,11 @@ function List() {
         }
     };
 
-    const handleReportList = async (reportReason, additionalInfo) => {
+    const handleReportList = async (reportReason) => {
         try {
             await reportApi.reportMoovieList({
                 moovieListId: id,
                 reportedBy: user.username,
-                content: additionalInfo,
                 type: reportReason
             });
             setShowReportForm(false);

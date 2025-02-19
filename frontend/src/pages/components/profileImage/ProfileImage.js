@@ -21,8 +21,7 @@ const ProfileImage = ({ image, username, size, onClick }) => {
             alt="Profile"
             onClick={onClick}  // Added onClick handler
             onError={(e) => {
-                console.log(`Error loading profile image ${imgSrc}:`, e);
-                e.target.src = defaultProfilePicture; // Reemplaza la imagen con la predeterminada
+                e.target.src = defaultProfilePicture;
             }}
         />
     );

@@ -7,9 +7,11 @@ import userApi from '../../../api/UserApi';
 import {useTranslation} from "react-i18next";
 import ReportTypes from '../../../api/values/ReportTypes';
 import moovieListApi from '../../../api/MoovieListApi';
+import {Spinner} from "react-bootstrap";
 
 export default function MoovieListReviewReports() {
   const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
   const [selectedAction, setSelectedAction] = useState(null);
   const [reviewsWithLists, setReviewsWithLists] = useState([]);
   const { t } = useTranslation();
@@ -63,6 +65,7 @@ export default function MoovieListReviewReports() {
     });
 
     setReviews(reviewsWithDetails);
+    setReviewsLoading(false);
   };
 
   const handleDelete = async (review) => {
@@ -82,6 +85,8 @@ export default function MoovieListReviewReports() {
     fetchReviews();
   };
 
+  if (reviewsLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
+
   return (
     <div className="container-fluid">
       <h3 className="text-xl font-semibold mb-4">{t('moovieListReviewReports.moovieListReviewReports')}</h3>
@@ -94,13 +99,13 @@ export default function MoovieListReviewReports() {
               <div className="flex justify-between items-start mb-4">
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
-                    <a href={`/profile/${review.username}`} className="text-blue-600 font-bold hover:underline">
+                    <a href={ process.env.PUBLIC_URL + `/profile/${review.username}`} className="text-blue-600 font-bold hover:underline">
                       {review.username}
                     </a>
                     <span className="text-gray-500">
                       {t('reviews.onMedia')}
                     </span>
-                    <a href={`/list/${review.listDetails?.id}`} className="text-blue-600 hover:underline">
+                    <a href={process.env.PUBLIC_URL + `/list/${review.listDetails?.id}`} className="text-blue-600 hover:underline">
                       {review.listDetails?.name}
                     </a>
                   </div>
@@ -123,20 +128,20 @@ export default function MoovieListReviewReports() {
 
                 <div className="text-right">
                   <div className="text-sm text-gray-600 flex flex-col items-end space-y-1">
-                    <span className="flex items-center" title={t('reports.total')}>
+                    <span className="flex items-center" title={t('reports.totalReports')}>
                       <i className="bi bi-flag mr-1"></i>{review.totalReports}
                     </span>
                     <div className="flex space-x-3">
-                      <span className="flex items-center" title={t('reports.spam')}>
+                      <span className="flex items-center" title={t('reports.spamReports')}>
                         <i className="bi bi-envelope-exclamation mr-1"></i>{review.spamReports}
                       </span>
-                      <span className="flex items-center" title={t('reports.hate')}>
+                      <span className="flex items-center" title={t('reports.hateReports')}>
                         <i className="bi bi-emoji-angry mr-1"></i>{review.hateReports}
                       </span>
-                      <span className="flex items-center" title={t('reports.abuse')}>
+                      <span className="flex items-center" title={t('reports.abuseReports')}>
                         <i className="bi bi-slash-circle mr-1"></i>{review.abuseReports}
                       </span>
-                      <span className="flex items-center" title={t('reports.privacy')}>
+                      <span className="flex items-center" title={t('reports.privacyReports')}>
                         <i className="bi bi-incognito mr-1"></i>{review.privacyReports}
                       </span>
                     </div>
@@ -191,14 +196,14 @@ export default function MoovieListReviewReports() {
       {selectedAction && (
         <ConfirmationModal
           title={
-            selectedAction.type === 'delete' ? 'Confirm Review Deletion' :
-            selectedAction.type === 'ban' ? 'Confirm User Ban' : 
-            'Resolve Report'
+            selectedAction.type === 'delete' ? t('reports.confirmReviewDeletionTitle') :
+            selectedAction.type === 'ban' ? t('reports.confirmUserBanTitle') :
+            t('reports.resolveReport')
           }
           message={
-            selectedAction.type === 'delete' ? 'Are you sure you want to delete this review?' :
-            selectedAction.type === 'ban' ? 'Are you sure you want to ban this user?' :
-            'Are you sure you want to mark this report as resolved?'
+            selectedAction.type === 'delete' ? t('reports.confirmReviewDeletionMessage') :
+            selectedAction.type === 'ban' ? t('reports.confirmUserBanMessage') :
+            t('reports.confirmResolveReportMessage')
           }
           onConfirm={async () => {
             if (selectedAction.type === 'delete') await handleDelete(selectedAction.item);

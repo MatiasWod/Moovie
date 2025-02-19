@@ -32,29 +32,31 @@ const ListCard = ({ listCard }) => {
     }, [listCard.id]);
 
     return (
-        <Link to={"/list/" + listCard.id} className="not-link">
+
             <div className="list-card">
-                <div className="image-grid">
-                    {images.slice(0, 4).map((image, index) => (
-                        <img className="list-card-image" src={image} alt={`Poster ${index}`} key={index} />
-                    ))}
-                </div>
-                <div className="list-card-body">
-                    <div className="list-card-title" title={listCard.name}>{listCard.name}</div>
-                    <div className="list-card-details">
-                        <span>{listCard.movieCount} {t('listCard.movies')}</span> • <span>{listCard.mediaCount - listCard.movieCount} {t('listCard.series')}</span>
+                <Link to={"/list/" + listCard.id} className="not-link">
+                    <div className="image-grid">
+                        {images.slice(0, 4).map((image, index) => (
+                            <img className="list-card-image" src={image} alt={`Poster ${index}`} key={index} />
+                        ))}
                     </div>
-                    <div className="list-card-footer">
-                        <span>
-                            {t('listCard.by')} {listCard.createdBy} <ProfileImage username={listCard.createdBy}/>
-                        </span>
-                        <span className="list-card-likes">
-                            👍 {listCard.likes} {hasLikedAndFollowed.liked ? t('listCard.youLikedThis') : ""}
-                        </span>
+                    <div className="list-card-body">
+                        <div className="list-card-title" title={listCard.name}>{listCard.name}</div>
+                        <div className="list-card-details">
+                            <span>{listCard.movieCount} {t('listCard.movies')}</span> • <span>{listCard.mediaCount - listCard.movieCount} {t('listCard.series')}</span>
+                        </div>
+                        <div className="list-card-footer">
+                            <span>
+                                {t('listCard.by')} {listCard.createdBy} <ProfileImage username={listCard.createdBy}/>
+                            </span>
+                            <span className="list-card-likes">
+                                👍 {listCard.likes} {hasLikedAndFollowed.liked ? t('listCard.youLikedThis') : ""}
+                            </span>
+                        </div>
                     </div>
-                </div>
+                </Link>
             </div>
-        </Link>
+
     );
 };
 

@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.exceptions.ConflictException;
 import ar.edu.itba.paw.models.Comments.Comment;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.Reports.CommentReport;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.math.BigInteger;
 import java.util.List;
@@ -84,6 +86,19 @@ public class ReportDaoImpl implements ReportDao {
     public ReviewReport reportReview(int reviewId, int userId, int type, String content) {
         Review review = em.find(Review.class, reviewId);
         User user = em.find(User.class, userId);
+
+        List<ReviewReport> existingReports = em.createQuery(
+                        "SELECT r FROM ReviewReport r WHERE r.review = :review AND r.reportedBy = :user",
+                        ReviewReport.class)
+                .setParameter("review", review)
+                .setParameter("user", user)
+                .getResultList();
+
+        if (!existingReports.isEmpty()) {
+            throw new ConflictException("User already reported this review");
+        }
+
+
         ReviewReport report = new ReviewReport(type, content, user, review);
         em.persist(report);
         return report;
@@ -134,6 +149,17 @@ public class ReportDaoImpl implements ReportDao {
     public MoovieListReviewReport reportMoovieListReview(int moovieListReviewId, int userId, int type, String content) {
         MoovieListReview review = em.find(MoovieListReview.class, moovieListReviewId);
         User user = em.find(User.class, userId);
+
+
+        List<MoovieListReport> existingReports=em.createQuery("SELECT m FROM MoovieListReviewReport m WHERE m.moovieListReview = :moovieListReview AND m.reportedBy = :user", MoovieListReport.class)
+                .setParameter("moovieListReview", review)
+                .setParameter("user", user)
+                .getResultList();
+
+        if (!existingReports.isEmpty()) {
+            throw new ConflictException("User already reported this moovielistReview");
+        }
+
         MoovieListReviewReport report = new MoovieListReviewReport(type, content, user, review);
         em.persist(report);
         return report;
@@ -185,6 +211,17 @@ public class ReportDaoImpl implements ReportDao {
 
         MoovieList moovieList = em.find(MoovieList.class, moovieListId);
         User user = em.find(User.class, userId);
+
+
+        List<MoovieListReport> existingReports=em.createQuery("SELECT m FROM MoovieListReport m WHERE m.moovieList = :moovieList AND m.reportedBy = :user", MoovieListReport.class)
+                .setParameter("moovieList", moovieList)
+                .setParameter("user", user)
+                .getResultList();
+
+        if (!existingReports.isEmpty()) {
+            throw new ConflictException("User already reported this moovielist");
+        }
+
         MoovieListReport report = new MoovieListReport(type, content, user, moovieList);
         em.persist(report);
         return report;
@@ -235,6 +272,18 @@ public class ReportDaoImpl implements ReportDao {
     public CommentReport reportComment(int commentId, int userId, int type, String content) {
         Comment comment = em.find(Comment.class, commentId);
         User user = em.find(User.class, userId);
+
+        List<CommentReport> existingReports = em.createQuery(
+                        "SELECT r FROM CommentReport r WHERE r.comment = :comment AND r.reportedBy = :user",
+                        CommentReport.class)
+                .setParameter("comment", comment)
+                .setParameter("user", user)
+                .getResultList();
+
+        if (!existingReports.isEmpty()) {
+            throw new ConflictException("User already reported this comment");
+        }
+
         CommentReport report = new CommentReport(type, content, user, comment);
         em.persist(report);
         return report;

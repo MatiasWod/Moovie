@@ -6,9 +6,11 @@ import ListApi from '../../../api/ListApi';
 import userApi from '../../../api/UserApi';
 import {useTranslation} from "react-i18next";
 import ReportTypes from '../../../api/values/ReportTypes';
+import {Spinner} from "react-bootstrap";
 
 export default function MoovieListReports() {
   const [lists, setLists] = useState([]);
+  const [listsLoading, setListsLoading] = useState(true);
   const [selectedAction, setSelectedAction] = useState(null);
   const { t } = useTranslation();
 
@@ -58,6 +60,7 @@ export default function MoovieListReports() {
     });
 
     setLists(listsWithReports);
+    setListsLoading(false);
   };
 
   const handleDelete = async (ml) => {
@@ -77,6 +80,8 @@ export default function MoovieListReports() {
     fetchLists();
   };
 
+  if (listsLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
+
   return (
     <div className="container-fluid">
       <h3 className="text-xl font-semibold mb-4">{t('moovieListReports.moovieListReports')}</h3>
@@ -90,12 +95,12 @@ export default function MoovieListReports() {
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
                     <h4 className="text-lg font-semibold">
-                      <a href={`/list/${ml.id}`} className="text-blue-600 hover:underline">
+                      <a href={process.env.PUBLIC_URL + `/list/${ml.id}`} className="text-blue-600 hover:underline">
                         {ml.name}
                       </a>
                       <span className="text-gray-600 text-sm ml-2">
                         {t('listHeader.by')}{' '}
-                        <a href={`/profile/${ml.createdBy}`} className="text-blue-600 font-bold hover:underline">
+                        <a href={process.env.PUBLIC_URL + `/profile/${ml.createdBy}`} className="text-blue-600 font-bold hover:underline">
                           {ml.createdBy}
                         </a>
                       </span>
@@ -124,20 +129,20 @@ export default function MoovieListReports() {
 
                 <div className="text-right">
                   <div className="text-sm text-gray-600 flex flex-col items-end space-y-1">
-                    <span className="flex items-center" title={t('reports.total')}>
+                    <span className="flex items-center" title={t('reports.totalReports')}>
                       <i className="bi bi-flag mr-1"></i>{ml.totalReports}
                     </span>
                     <div className="flex space-x-3">
-                      <span className="flex items-center" title={t('reports.spam')}>
+                      <span className="flex items-center" title={t('reports.spamReports')}>
                         <i className="bi bi-envelope-exclamation mr-1"></i>{ml.spamReports}
                       </span>
-                      <span className="flex items-center" title={t('reports.hate')}>
+                      <span className="flex items-center" title={t('reports.hateReports')}>
                         <i className="bi bi-emoji-angry mr-1"></i>{ml.hateReports}
                       </span>
-                      <span className="flex items-center" title={t('reports.abuse')}>
+                      <span className="flex items-center" title={t('reports.abuseReports')}>
                         <i className="bi bi-slash-circle mr-1"></i>{ml.abuseReports}
                       </span>
-                      <span className="flex items-center" title={t('reports.privacy')}>
+                      <span className="flex items-center" title={t('reports.privacyReports')}>
                         <i className="bi bi-incognito mr-1"></i>{ml.privacyReports}
                       </span>
                     </div>
@@ -192,14 +197,14 @@ export default function MoovieListReports() {
       {selectedAction && (
         <ConfirmationModal
           title={
-            selectedAction.type === 'delete' ? 'Confirm List Deletion' :
-            selectedAction.type === 'ban' ? 'Confirm User Ban' : 
-            'Resolve Report'
+            selectedAction.type === 'delete' ? t('reports.confirmListDeletionTitle') :
+            selectedAction.type === 'ban' ? t('reports.confirmUserBanTitle') :
+            t('reports.resolveReport')
           }
           message={
-            selectedAction.type === 'delete' ? 'Are you sure you want to delete this list?' :
-            selectedAction.type === 'ban' ? 'Are you sure you want to ban this user?' :
-            'Are you sure you want to mark this report as resolved?'
+            selectedAction.type === 'delete' ? t('reports.confirmListDeletionMessage') :
+            selectedAction.type === 'ban' ? t('reports.confirmUserBanMessage') :
+            t('reports.confirmResolveReportMessage')
           }
           onConfirm={async () => {
             if (selectedAction.type === 'delete') await handleDelete(selectedAction.item);

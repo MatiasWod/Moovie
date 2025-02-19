@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.ConflictException;
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.Reports.*;
 import ar.edu.itba.paw.models.User.User;
@@ -89,8 +90,8 @@ public class ReportController {
                 CommentReport response = reportService.reportComment(
                         commentId,
                         currentUser.getUserId(),
-                        reportDTO.getType(),
-                        reportDTO.getContent()
+                        reportDTO.getType()
+
                 );
                 return Response.ok(ReportDTO.fromCommentReport(response, uriInfo)).build();
             } else if (moovieListId != null) {
@@ -98,8 +99,8 @@ public class ReportController {
                 MoovieListReport response = reportService.reportMoovieList(
                         moovieListId,
                         currentUser.getUserId(),
-                        reportDTO.getType(),
-                        reportDTO.getContent()
+                        reportDTO.getType()
+
                 );
                 return Response.ok(ReportDTO.fromMoovieListReport(response, uriInfo)).build();
             } else if (moovieListReviewId != null) {
@@ -107,8 +108,7 @@ public class ReportController {
                 MoovieListReviewReport response = reportService.reportMoovieListReview(
                         moovieListReviewId,
                         currentUser.getUserId(),
-                        reportDTO.getType(),
-                        reportDTO.getContent()
+                        reportDTO.getType()
                 );
                 return Response.ok(ReportDTO.fromMoovieListReviewReport(response, uriInfo)).build();
             } else if (reviewId != null) {
@@ -116,8 +116,7 @@ public class ReportController {
                 ReviewReport response = reportService.reportReview(
                         reviewId,
                         currentUser.getUserId(),
-                        reportDTO.getType(),
-                        reportDTO.getContent()
+                        reportDTO.getType()
                 );
                 return Response.ok(ReportDTO.fromReviewReport(response, uriInfo)).build();
             } else {
@@ -127,6 +126,9 @@ public class ReportController {
             return new UnableToFindUserEM().toResponse(e);
         }  catch (IllegalArgumentException e) {
             throw new BadRequestException(e.getMessage(), e);
+        }
+        catch (ConflictException e) {
+            throw new ConflictException(e.getMessage(), e);
         }
         catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage(), e);
