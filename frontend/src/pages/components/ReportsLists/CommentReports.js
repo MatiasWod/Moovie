@@ -7,6 +7,7 @@ import commentApi from '../../../api/CommentApi';
 import {useTranslation} from "react-i18next";
 import ReportTypes from '../../../api/values/ReportTypes';
 import { Tooltip } from "react-tooltip";
+import mediaApi from '../../../api/MediaApi';
 
 export default function CommentReports() {
   const [comments, setComments] = useState([]);
@@ -30,36 +31,41 @@ export default function CommentReports() {
     const commentResponses = await Promise.all(commentPromises);
     const comments = commentResponses.map(response => response.data);
     
-    // Fetch all report counts in parallel
-    const reportCountPromises = comments.flatMap(comment => {
+    // Fetch all report counts, reviews, and media details in parallel
+    const allPromises = comments.flatMap(comment => {
       const params = { contentType: 'comment', resourceId: comment.id };
-      return [
+      const promises = [
         reportApi.getReportCounts({ ...params, reportType: ReportTypes['Abuse & Harassment'] }),
         reportApi.getReportCounts({ ...params, reportType: ReportTypes.Hate }),
         reportApi.getReportCounts({ ...params, reportType: ReportTypes.Spam }),
-        reportApi.getReportCounts({ ...params, reportType: ReportTypes.Privacy })
+        reportApi.getReportCounts({ ...params, reportType: ReportTypes.Privacy }),
+        api.get(comment.reviewUrl),
+        mediaApi.getMediaById(comment.mediaId)
       ];
+      return promises;
     });
     
-    const reportCounts = await Promise.all(reportCountPromises);
+    const allResults = await Promise.all(allPromises);
     
-    // Add report counts to comments
-    const commentsWithReports = comments.map((comment, index) => {
-      const baseIndex = index * 4;
+    // Add report counts, review, and media details to comments
+    const commentsWithDetails = comments.map((comment, index) => {
+      const baseIndex = index * 6; // 4 report types + review + media
       return {
         ...comment,
-        abuseReports: reportCounts[baseIndex].data.count,
-        hateReports: reportCounts[baseIndex + 1].data.count,
-        spamReports: reportCounts[baseIndex + 2].data.count,
-        privacyReports: reportCounts[baseIndex + 3].data.count,
-        totalReports: reportCounts[baseIndex].data.count + 
-                     reportCounts[baseIndex + 1].data.count + 
-                     reportCounts[baseIndex + 2].data.count + 
-                     reportCounts[baseIndex + 3].data.count
+        abuseReports: allResults[baseIndex].data.count,
+        hateReports: allResults[baseIndex + 1].data.count,
+        spamReports: allResults[baseIndex + 2].data.count,
+        privacyReports: allResults[baseIndex + 3].data.count,
+        totalReports: allResults[baseIndex].data.count + 
+                     allResults[baseIndex + 1].data.count + 
+                     allResults[baseIndex + 2].data.count + 
+                     allResults[baseIndex + 3].data.count,
+        reviewDetails: allResults[baseIndex + 4].data,
+        mediaDetails: allResults[baseIndex + 5].data
       };
     });
 
-    setComments(commentsWithReports);
+    setComments(commentsWithDetails);
   };
 
   const handleDelete = async (comment) => {
@@ -81,55 +87,96 @@ export default function CommentReports() {
   };
 
   return (
-    <div>
+    <div className="container-fluid">
       <h3 className="text-xl font-semibold mb-4">{t('commentReports.commentReports')}</h3>
       {comments.length === 0 ? (
         <div className="text-center text-gray-500">{t('commentReports.noCommentReports')}</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-4">
           {comments.map((comment, index) => (
-            <div key={index} className="bg-white p-4 rounded shadow">
-              <div className="flex justify-between items-center mb-2">
-                <a href={comment.userUrl} className="text-blue-600 font-bold hover:underline">
-                  {comment.userUrl?.split('/').pop()}
-                </a>
-                <div className="text-sm text-gray-600 flex space-x-2">
-                  <span className="flex items-center" data-tooltip-id="total-reports-tooltip"><i className="bi bi-flag mr-1"></i>{comment.totalReports}</span>
-                  <span className="flex items-center" data-tooltip-id="spam-reports-tooltip"><i className="bi bi-envelope-exclamation mr-1"></i>{comment.spamReports}</span>
-                  <span className="flex items-center" data-tooltip-id="hate-reports-tooltip"><i className="bi bi-emoji-angry mr-1"></i>{comment.hateReports}</span>
-                  <span className="flex items-center" data-tooltip-id="abuse-reports-tooltip"><i className="bi bi-slash-circle mr-1"></i>{comment.abuseReports}</span>
-                  <Tooltip id="total-reports-tooltip" place="bottom" effect="solid">
-                    {t('commentReports.totalReports')}
-                  </Tooltip>
-                  <Tooltip id="spam-reports-tooltip" place="bottom" effect="solid">
-                    {t('commentReports.spamReports')}
-                  </Tooltip>
-                  <Tooltip id="hate-reports-tooltip" place="bottom" effect="solid">
-                    {t('commentReports.hateReports')}
-                  </Tooltip>
-                  <Tooltip id="abuse-reports-tooltip" place="bottom" effect="solid">
-                    {t('commentReports.abuseReports')}
-                  </Tooltip>
+            <div key={index} className="bg-white rounded-lg shadow-md p-6">
+              <div className="flex justify-between items-start mb-4">
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <a href={comment.userUrl} className="text-blue-600 font-bold hover:underline">
+                      {comment.username}
+                    </a>
+                    <span className="text-gray-500">
+                      {t('reviews.onMedia')}
+                    </span>
+                    <a href={`/details/${comment.mediaDetails?.id}`} className="text-blue-600 hover:underline">
+                      {comment.mediaDetails?.name}
+                    </a>
+                  </div>
+                  
+                  <div className="text-sm text-gray-600">
+                    {t('reviews.onMedia')} {t('reviews.reviews')}:
+                    <span className="ml-2 text-gray-700 italic">
+                      "{comment.reviewDetails?.reviewContent?.length > 50 
+                        ? `${comment.reviewDetails.reviewContent.substring(0, 50)}...`
+                        : comment.reviewDetails?.reviewContent}"
+                    </span>
+                  </div>
+
+                  <div className="flex items-center space-x-4 text-sm text-gray-600">
+                    <span className="flex items-center">
+                      <i className="bi bi-hand-thumbs-up mr-1"></i>
+                      {comment.commentLikes}
+                    </span>
+                    <span className="flex items-center">
+                      <i className="bi bi-hand-thumbs-down mr-1"></i>
+                      {comment.commentDislikes}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="text-right">
+                  <div className="text-sm text-gray-600 flex flex-col items-end space-y-1">
+                    <span className="flex items-center" title={t('reports.total')}>
+                      <i className="bi bi-flag mr-1"></i>{comment.totalReports}
+                    </span>
+                    <div className="flex space-x-3">
+                      <span className="flex items-center" title={t('reports.spam')}>
+                        <i className="bi bi-envelope-exclamation mr-1"></i>{comment.spamReports}
+                      </span>
+                      <span className="flex items-center" title={t('reports.hate')}>
+                        <i className="bi bi-emoji-angry mr-1"></i>{comment.hateReports}
+                      </span>
+                      <span className="flex items-center" title={t('reports.abuse')}>
+                        <i className="bi bi-slash-circle mr-1"></i>{comment.abuseReports}
+                      </span>
+                      <span className="flex items-center" title={t('reports.privacy')}>
+                        <i className="bi bi-incognito mr-1"></i>{comment.privacyReports}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <p className="mb-4 text-gray-700">{comment.content}</p>
-              <div className="flex justify-evenly">
+
+              <div className="bg-gray-50 rounded p-4 my-4">
+                <p className="text-gray-700">{comment.content}</p>
+              </div>
+
+              <div className="flex justify-end space-x-3">
                 <button
                   onClick={() => setSelectedAction({type:'delete', item:comment})}
-                  className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+                  className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition-colors"
                 >
+                  <i className="bi bi-trash mr-2"></i>
                   {t('commentReports.delete')}
                 </button>
                 <button
                   onClick={() => setSelectedAction({type:'ban', item:comment})}
-                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
                 >
+                  <i className="bi bi-person-x mr-2"></i>
                   {t('commentReports.banUser')}
                 </button>
                 <button
                   onClick={() => setSelectedAction({type:'resolve', item:comment})}
-                  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
                 >
+                  <i className="bi bi-check2-circle mr-2"></i>
                   {t('commentReports.resolve')}
                 </button>
               </div>

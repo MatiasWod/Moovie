@@ -307,8 +307,6 @@
   "resetPassword.passwordLabel": "Nueva contraseña",
   "resetPassword.repeatPasswordLabel": "Repetir nueva contraseña",
   "resetPassword.submit": "Establecer nueva contraseña",
-  "resetPassword.passwordMismatch": "Las contraseñas no coinciden."
-
-
-
+  "resetPassword.passwordMismatch": "Las contraseñas no coinciden.",
+  "reviews.reviews": "review"
 }
