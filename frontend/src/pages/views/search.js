@@ -157,7 +157,6 @@ function Healthcheck() {
     }, [search]);
 
 
-    //TODO ponerle un orderby
     useEffect(() => {
         async function getData() {
             try {

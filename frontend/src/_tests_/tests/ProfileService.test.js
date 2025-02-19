@@ -3,7 +3,6 @@ import profileApi from '../../api/ProfileApi';
 import { parsePaginatedResponse } from '../../utils/ResponseUtils';
 
 
-//TODO: Fix this test
 jest.mock('../../api/ProfileApi'); // Mock the entire ProfileApi module
 
 describe('ProfileService', () => {

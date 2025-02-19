@@ -42,12 +42,12 @@ const CreateListForm = ({
             <Card.Body>
                 {showError && (
                     <Alert variant="danger" dismissible onClose={() => setShowError(false)}>
-                        {t("createListForm.error")}
+                        {t('createListForm.errorMessage')}
                     </Alert>
                 )}
                 {showSuccess && (
                     <Alert variant="success" dismissible onClose={() => setShowSuccess(false)}>
-                        {t("createListForm.success")} <Link to={'/list/' + listId}>{t("createListForm.link")}</Link>
+                        {t('createListForm.successMessage')} <Link to={'/list/' + listId}>{t('createListForm.link')}</Link>
                     </Alert>
                 )}
                 <div className={'d-flex flex-row justify-content-between align-items-center'}>

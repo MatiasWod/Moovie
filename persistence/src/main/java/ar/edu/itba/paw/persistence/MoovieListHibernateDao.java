@@ -300,9 +300,7 @@ public class MoovieListHibernateDao implements MoovieListDao{
                 "WHERE mlc.moovieList.moovieListId = :moovieListId " +
                 "ORDER BY ";
 
-        /*
-            TODO DONT KNOW IF THIS IS CORRECT
-         */
+
         if (orderBy==null) {
             orderBy = "customOrder";
         }

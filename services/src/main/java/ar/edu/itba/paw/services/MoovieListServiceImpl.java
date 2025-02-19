@@ -86,7 +86,6 @@ public class MoovieListServiceImpl implements MoovieListService{
         List<Media> medias = moovieListDao.getMoovieListContent(moovieListId, userid , setOrderMediaBy(orderBy) , setSortOrder(sortOrder) ,size, pageNumber-1);
         List<OrderedMedia> toRet = new ArrayList<>();
         for(Media media : medias){
-            //TODO optimize this
             toRet.add(new OrderedMedia(media, isMediaInMoovieList(media.getMediaId(), moovieListId)));
         }
         return toRet;

@@ -38,7 +38,6 @@ describe('ReviewService', () => {
         expect(result).toEqual(mockReviews);
     });
 
-    //TODO: Fix this test
     test('should fetch movie reviews from user', async () => {
         // Mock the response that comes from the API
         const mockReviews = { data: [{ id: 1, rating: 5, reviewContent: 'Great movie!' }], links: null };
