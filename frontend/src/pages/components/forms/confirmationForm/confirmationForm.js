@@ -18,15 +18,15 @@ const ConfirmationForm = ({
         try {
             const response = await service(...serviceParams);
             if (response.status === 200) {
-                setPostResponse("Acción completada exitosamente.");
+                setPostResponse(t('confirmationForm.successMessage'));
                 setResponseColor("green");
                 onConfirm?.();
             } else {
-                setPostResponse(response.data.message || "Error al completar la acción.");
+                setPostResponse(response.data.message || t('confirmationForm.errorMessage'));
                 setResponseColor("red");
             }
         } catch (error) {
-            setPostResponse("Error al realizar la solicitud.");
+            setPostResponse(t('confirmationForm.requestError'));
             setResponseColor("red");
         }
         setFinished(true);

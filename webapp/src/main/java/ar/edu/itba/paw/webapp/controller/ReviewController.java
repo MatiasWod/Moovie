@@ -187,7 +187,7 @@ public class ReviewController {
     }
 
     @DELETE
-    @PreAuthorize("@accessValidator.isUserReviewAuthor(#reviewId)")
+    @PreAuthorize("@accessValidator.isUserReviewAuthor(#reviewId) or @accessValidator.isUserAdmin()")
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteReviewById(@PathParam("id") final int reviewId) {
