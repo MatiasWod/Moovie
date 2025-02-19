@@ -12,15 +12,15 @@ const FilterList = ({ searchValue, onSearchChange, items, selectedItems, onToggl
         {items
             .filter((item) => item.name.toLowerCase().includes(searchValue.toLowerCase()))
             .map((item, index) => (
-                <div key={index} className="form-check">
+                <div key={index+item.name} className="form-check">
                     <input
                         type="checkbox"
                         className="form-check-input"
-                        id={`item-${index}`}
+                        id={`item-${index+item.name}`}
                         checked={selectedItems.some(selectedItem => selectedItem.id === item.id)? true : false}
                         onClick={() => onToggleItem(item)}
                     />
-                    <label className="form-check-label" htmlFor={`item-${index}`}>
+                    <label className="form-check-label" htmlFor={`item-${index+item.name}`}>
                         {item.name}
                     </label>
                 </div>
