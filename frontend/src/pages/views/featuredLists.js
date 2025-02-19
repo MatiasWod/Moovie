@@ -16,12 +16,14 @@ import MediaService from "../../services/MediaService";
 import pagingSizes from "../../api/values/PagingSizes";
 import {useTranslation} from "react-i18next";
 import {Spinner} from "react-bootstrap";
+import useErrorStatus from "../../hooks/useErrorStatus";
 
 
 function FeaturedLists() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const { t } = useTranslation();
+    const { setErrorStatus } = useErrorStatus();
 
     //GET VALUES FOR FEATURED MEDIA
     const {type} = useParams();
@@ -78,10 +80,7 @@ function FeaturedLists() {
             break;
 
         default:
-            featuredListTypeName = null
-            mediaType = null;
-            orderBy = null;
-            typeSubtext = "";
+            setErrorStatus(404);
     }
 
     const handlePageChange = (newPage) => {
@@ -112,12 +111,13 @@ function FeaturedLists() {
                 setFeaturedMediaLoading(false);
             } catch (error) {
                 setFeaturedMediaError(error);
+                setErrorStatus(error.response.status);
                 setFeaturedMediaLoading(false);
             }
         }
 
         getData();
-    }, [type, page]);
+    }, [type, page, setErrorStatus]);
 
     if (featuredMediaLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
 

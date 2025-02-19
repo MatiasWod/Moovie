@@ -7,6 +7,7 @@ import ReviewForm from "../forms/reviewForm/ReviewForm";
 import EditListForm from "../forms/editListForm/editListForm";
 import {useTranslation} from "react-i18next";
 import profileService from "../../../services/ProfileService";
+import MoovieListTypes from "../../../api/values/MoovieListTypes";
 
 const ListHeader = ({ 
     list, 
@@ -102,12 +103,14 @@ const ListHeader = ({
                 <div className="list-header-actions">
                     {isLoggedIn && (
                         <>
-                            <button 
-                                className="report-button"
-                                onClick={() => setShowReportForm(true)}
-                            >
-                                <i className="bi bi-flag"></i>
-                            </button>
+                            {(user.username !== list.createdBy) && (
+                                <button
+                                    className="report-button"
+                                    onClick={() => setShowReportForm(true)}
+                                >
+                                    <i className="bi bi-flag"></i>
+                                </button>
+                            )}
                             {user.username === list.createdBy && (
                                 <>
                                     <button 
@@ -127,19 +130,25 @@ const ListHeader = ({
                 <h1 className="list-header-title">{list.name}</h1>
                 <p className="list-header-description">{list.description}</p>
                 <span className="list-header-username">{t('listHeader.by')} <div style={{ cursor: "pointer", color: "aliceblue"}} onClick={() => navigate(`/profile/${list.createdBy}`)}>{list.createdBy}</div></span>
-                <div className="list-header-buttons">
+                    <div className="list-header-buttons">
+                    { (list.type !== MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.type &&
+                            list.type !== MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.type)
+                        && (
                     <button
                         className={`like-button ${hasLikedAndFollowed.liked ? t('listHeader.liked') : ""}`}
                         onClick={handleLike}
                     >
                         {hasLikedAndFollowed.liked ? t('listHeader.dislike') : t('listHeader.like')}
-                    </button>
+                    </button>)}
+                    { (list.type !== MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.type &&
+                            list.type !== MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.type)
+                        && (
                     <button
                         className={`follow-button ${hasLikedAndFollowed.followed ? t('listHeader.followed') : ""}`}
                         onClick={handleFollow}
                     >
                         {hasLikedAndFollowed.followed ? t('listHeader.unfollow') : t('listHeader.follow')}
-                    </button>
+                    </button>)}
                 </div>
             </div>
             {editList && (

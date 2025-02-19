@@ -12,7 +12,7 @@ const ListService = (() => {
 
     const getListById = async (id) => {
         const res = await listApi.getListById(id);
-        return res;
+        return parsePaginatedResponse(res);
     }
 
     const getListByIdList = async (idList) => {
