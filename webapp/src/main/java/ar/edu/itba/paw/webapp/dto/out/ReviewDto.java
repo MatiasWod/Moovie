@@ -53,8 +53,8 @@ public class ReviewDto {
 
 
         reviewDto.url = uriInfo.getBaseUriBuilder().path("/review/{id}").build(review.getReviewId()).toString();
-        reviewDto.userUrl = uriInfo.getBaseUriBuilder().path("/users/username/{username}").build(review.getUser().getUsername()).toString();
-        reviewDto.mediaUrl = uriInfo.getBaseUriBuilder().path("/media/{id}").build(review.getMediaId()).toString();
+        reviewDto.userUrl = uriInfo.getBaseUriBuilder().path("/users/{username}").build(review.getUser().getUsername()).toString();
+        reviewDto.mediaUrl = uriInfo.getBaseUriBuilder().path("/medias/{id}").build(review.getMediaId()).toString();
 
         reviewDto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
                 .queryParam("contentType", "review")

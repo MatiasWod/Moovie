@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Genre.Genre;
 import ar.edu.itba.paw.models.Provider.Provider;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
@@ -30,5 +31,16 @@ public class ProviderHibernateDao implements ProviderDao{
                         "SELECT p FROM Provider p JOIN p.medias m WHERE m.id = :mediaId GROUP BY p.providerId, p.providerName, p.logoPath", Provider.class)
                 .setParameter("mediaId", mediaId)
                 .getResultList();
+    }
+
+    @Override
+    public Provider getProviderById(int providerId) {
+        List<Provider> results = em.createQuery(
+                        "SELECT p FROM Provider p WHERE p.providerId = :providerId", Provider.class
+                )
+                .setParameter("providerId", providerId)
+                .getResultList();
+
+        return results.isEmpty() ? null : results.get(0);
     }
 }

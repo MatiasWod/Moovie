@@ -124,6 +124,9 @@ public class VndType {
     // Tipo de medio para una lista de proveedores "
     public static final String APPLICATION_PROVIDER_LIST = "application/vnd.provider-list.v1+json";
 
+    // Tipo para providers
+    public static final String APPLICATION_PROVIDER = "application/vnd.provider.v1+json";
+
     // Tipo de medio para una lista de reportes
     public static final String APPLICATION_REPORT_LIST = "application/vnd.report-list.v1+json";
 

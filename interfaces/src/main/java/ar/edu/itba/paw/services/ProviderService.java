@@ -7,4 +7,6 @@ import java.util.List;
 public interface ProviderService {
     List<Provider> getAllProviders();
     List<Provider> getProvidersForMedia(final int mediaId);
+    Provider getProviderById(final int id);
+
 }
