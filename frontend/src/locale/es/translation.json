@@ -167,6 +167,7 @@
   "mpl.reviewsCount": "Reseñas",
   "mpl.points": "Puntos",
   "mpl.userListIsEmpty": "Lista de Usuarios vacía",
+  "mpl.pointsTooltip": "Cantidad de likes que recibieron sus reseñas, comentarios y listas.",
   "navBar.discover": "Descubrir",
   "navBar.browseLists": "Explorar Listas",
   "navBar.createList": "Crear una lista",

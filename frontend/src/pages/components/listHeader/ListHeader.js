@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./listHeader.css";
 import listService from "../../../services/ListService";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import ReviewForm from "../forms/reviewForm/ReviewForm";
 import EditListForm from "../forms/editListForm/editListForm";
 import {useTranslation} from "react-i18next";
@@ -120,7 +120,7 @@ const ListHeader = ({
                 </div>
                 <h1 className="list-header-title">{list.name}</h1>
                 <p className="list-header-description">{list.description}</p>
-                <span className="list-header-username">{t('listHeader.by')} {list.createdBy}</span>
+                <span className="list-header-username">{t('listHeader.by')} <div style={{ cursor: "pointer", color: "aliceblue"}} onClick={() => navigate(`/profile/${list.createdBy}`)}>{list.createdBy}</div></span>
                 <div className="list-header-buttons">
                     <button
                         className={`like-button ${hasLikedAndFollowed.liked ? t('listHeader.liked') : ""}`}

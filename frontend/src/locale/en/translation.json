@@ -164,6 +164,7 @@
   "mpl.reviewsCount": "Reviews",
   "mpl.points": "Points",
   "mpl.userListIsEmpty": "User List is empty",
+  "mpl.pointsTooltip": "Amount of likes it received in its reviews, lists and comments",
   "navBar.discover": "Discover",
   "navBar.browseLists": "Browse Lists",
   "navBar.createList": "Create a list",
