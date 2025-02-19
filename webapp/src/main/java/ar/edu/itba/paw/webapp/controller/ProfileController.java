@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
+import ar.edu.itba.paw.exceptions.NoFileException;
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.Comments.Comment;
 import ar.edu.itba.paw.models.Media.Media;
@@ -126,10 +127,11 @@ public class ProfileController {
             LOGGER.info("Method: getProfileImage, Path: /users/{username}/image, Username: {}", username);
             final byte[] image = userService.getProfilePicture(username);
             return Response.ok(image).build();
-        }catch (UnableToFindUserException e) {
+        }catch (NoFileException | UnableToFindUserException e) {
             LOGGER.error("Error retrieving profile image: {}", e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (RuntimeException e) {
+        }
+        catch (RuntimeException e) {
             LOGGER.error("Error retrieving profile image: {}", e.getMessage());
             return Response.serverError().entity(e.getMessage()).build();
         }
