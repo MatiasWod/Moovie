@@ -24,9 +24,7 @@ export default function BannedUsers() {
   const fetchBannedUsers = async () => {
     try {
       const response = await userApi.listUsers({ role: UserRoles.BANNED });
-      const response2 = await userApi.listUsers({ role: UserRoles.BANNED_NOT_REGISTERED }).catch(() => ({ data: [] }));
       const bannedUsers = response.data || [];
-      bannedUsers.append(response2.data);
 
 
 
