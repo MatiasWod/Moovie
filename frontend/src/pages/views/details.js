@@ -285,12 +285,23 @@ function Details() {
                         </h1>
                     </div>
 
-                    <div className="d-flex flex-row align-items-center" style={{marginBottom: '10px'}}>
-                        {providers.length > 0 ? providers.map((provider) => <MediaTag link={`providers`}
-                                                                                      text={provider.providerName}
-                                                                                      image={provider.logoPath}
-                                                                                      id={provider.providerId}/>) :
-                            <MediaTag text={t('details.noProvidersAvailable')}/>}
+                    <div style={{
+                        overflowX: providers.length > 5 ? 'auto' : 'visible',
+                        whiteSpace: 'nowrap',
+                        display: 'flex',
+                        width:'500px'
+                    }}>
+                        {providers.length > 0 ? (
+                            providers.map((provider) => (
+                                <MediaTag
+                                    key={provider.providerId}
+                                    link={`providers`}
+                                    text={provider.providerName}
+                                    image={provider.logoPath}
+                                    id={provider.providerId}
+                                />
+                            ))
+                        ) : null}
                     </div>
 
                     <div className="d-flex flex-row align-items-center ">
