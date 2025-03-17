@@ -18,7 +18,6 @@ import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.ArrayList;
@@ -164,6 +163,9 @@ public class MediaController {
                 Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaDto>>(mediaDtoList) {});
                 final PagingUtils<Media> toReturnMediaList = new PagingUtils<>(mediaList, page - 1, pageSizeQuery, mediaCount);
                 ResponseUtils.setPaginationLinks(res, toReturnMediaList, uriInfo);
+
+                ResponseUtils.setMaxAgeCache(res);
+
                 return res.build();
             }
         } catch (Exception e) {
@@ -187,9 +189,15 @@ public class MediaController {
             }
 
             if(media.isType()){
-                return Response.ok(TVSerieDto.fromTVSerie(mediaService.getTvById(id), uriInfo)).build();
+                Response.ResponseBuilder res= Response.ok(TVSerieDto.fromTVSerie(mediaService.getTvById(id), uriInfo));
+                ResponseUtils.setMaxAgeCache(res);
+
+                return res.build();
             }
-            return Response.ok(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo)).build();
+            Response.ResponseBuilder res= Response.ok(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo));
+            ResponseUtils.setMaxAgeCache(res);
+            return res.build();
+
         }catch (MediaNotFoundException e){
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("Media with ID: " + id + " not found.")

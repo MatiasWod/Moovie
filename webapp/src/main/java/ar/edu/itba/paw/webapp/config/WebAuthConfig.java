@@ -160,8 +160,6 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     .authenticationEntryPoint(new UnauthorizedRequestHandler())
                     .accessDeniedHandler(new ForbiddenRequestHandler())
                 .and()
-                .headers().cacheControl().disable()
-                .and()
                 .authorizeRequests()
                 .accessDecisionManager(accessDecisionManager())
                 .antMatchers(HttpMethod.GET, "/login", "/register").anonymous()
@@ -188,6 +186,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .cors()
+                .and()
+                .headers().cacheControl().disable()
                 .and()
                 .csrf().disable()
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)

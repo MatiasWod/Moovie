@@ -37,39 +37,57 @@
     <!--    <url-pattern>/*</url-pattern>-->
     <!--  </filter-mapping>-->
 
+    <context-param>
+        <param-name>contextClass</param-name>
+        <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+    </context-param>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            ar.edu.itba.paw.webapp.config.WebConfig,
+            ar.edu.itba.paw.webapp.config.WebAuthConfig,
+            ar.edu.itba.paw.webapp.config.EmailConfig,
+        </param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+
+
     <filter>
-        <filter-name>UnconditionalCacheFilter</filter-name>
-        <filter-class>ar.edu.itba.paw.webapp.config.UnconditionalCacheFilter</filter-class>
+        <filter-name>encoding-filter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>FALSE</param-value>
+        </init-param>
     </filter>
-
     <filter-mapping>
-        <filter-name>UnconditionalCacheFilter</filter-name>
-        <url-pattern>/medias/*</url-pattern>
+        <filter-name>encoding-filter</filter-name>
+        <url-pattern>/api/*</url-pattern>
     </filter-mapping>
 
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
     <filter-mapping>
-        <filter-name>UnconditionalCacheFilter</filter-name>
-        <url-pattern>/providers/*</url-pattern>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/api/*</url-pattern>
     </filter-mapping>
-
+    <filter>
+        <filter-name>openEntityManagerInViewFilter</filter-name>
+        <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+    </filter>
     <filter-mapping>
-        <filter-name>UnconditionalCacheFilter</filter-name>
-        <url-pattern>/genres/*</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>UnconditionalCacheFilter</filter-name>
-        <url-pattern>/directors/*</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>UnconditionalCacheFilter</filter-name>
-        <url-pattern>/actors/*</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>UnconditionalCacheFilter</filter-name>
-        <url-pattern>/tvCreators/*</url-pattern>
+        <filter-name>openEntityManagerInViewFilter</filter-name>
+        <url-pattern>/api/*</url-pattern>
     </filter-mapping>
 
     <servlet>
@@ -81,11 +99,11 @@
             <param-value>
                 ar.edu.itba.paw.webapp.config,
                 ar.edu.itba.paw.webapp.controller,
-                ar.edu.itba.paw.webapp.mappers
+                ar.edu.itba.paw.webapp.mappers,
+                ar.edu.itba.paw.webapp.filter
             </param-value>
         </init-param>
 
-        <!--https://stackoverflow.com/questions/30653012/multipart-form-data-no-injection-source-found-for-a-parameter-of-type-public-ja-->
         <init-param>
             <param-name>jersey.config.server.provider.classnames</param-name>
             <param-value>org.glassfish.jersey.media.multipart.MultiPartFeature</param-value>
@@ -104,6 +122,17 @@
         <servlet-name>jersey-servlet</servlet-name>
         <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
+
+    <filter>
+        <filter-name>UnconditionalCacheFilter</filter-name>
+        <filter-class>ar.edu.itba.paw.webapp.filter.UnconditionalCacheFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>UnconditionalCacheFilter</filter-name>
+        <url-pattern>/static/*</url-pattern>
+    </filter-mapping>
+
 
     <servlet-mapping>
         <servlet-name>default</servlet-name>
@@ -144,63 +173,5 @@
     <!--    <servlet-name>default</servlet-name>-->
     <!--    <url-pattern>/resources/*</url-pattern>-->
     <!--  </servlet-mapping>-->
-    <filter>
-        <filter-name>springSecurityFilterChain</filter-name>
-        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>springSecurityFilterChain</filter-name>
-        <url-pattern>/api/*</url-pattern>
-    </filter-mapping>
-    <filter>
-        <filter-name>openEntityManagerInViewFilter</filter-name>
-        <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>openEntityManagerInViewFilter</filter-name>
-        <url-pattern>/api/*</url-pattern>
-    </filter-mapping>
-    <filter>
-        <filter-name>encoding-filter</filter-name>
-        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-        <init-param>
-            <param-name>encoding</param-name>
-            <param-value>UTF-8</param-value>
-        </init-param>
-        <init-param>
-            <param-name>forceEncoding</param-name>
-            <param-value>FALSE</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>encoding-filter</filter-name>
-        <url-pattern>/api/*</url-pattern>
-    </filter-mapping>
-    <context-param>
-        <param-name>contextClass</param-name>
-        <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
-    </context-param>
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>
-            ar.edu.itba.paw.webapp.config.WebConfig,
-            ar.edu.itba.paw.webapp.config.WebAuthConfig,
-            ar.edu.itba.paw.webapp.config.EmailConfig,
-        </param-value>
-    </context-param>
-    <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
-    <error-page>
-        <error-code>404</error-code>
-        <location>/WEB-INF/jsp/errors/404.jsp</location>
-    </error-page>
-    <error-page>
-        <error-code>403</error-code>
-        <location>/WEB-INF/jsp/errors/403.jsp</location>
-    </error-page>
-    <error-page>
-        <error-code>500</error-code>
-        <location>/WEB-INF/jsp/errors/500.jsp</location>
-    </error-page>
+
 </web-app>
