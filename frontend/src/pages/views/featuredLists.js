@@ -129,7 +129,7 @@ function FeaturedLists() {
             <h1>{t('featuredLists.featuredList')}</h1>
             <h3>{typeSubtext}</h3>
 
-            <ListContent listContent={featuredMedia?.data || []} isLoggedIn={isLoggedIn} editMode={false} />
+            <ListContent listContent={featuredMedia?.data || []} isLoggedIn={isLoggedIn} editMode={false} username={isLoggedIn ? user.username : null} />
             <div className="flex justify-center pt-4">
                 {featuredMedia?.data?.length > 0 && featuredMedia.links?.last?.page > 1 && (
                     <PaginationButton
