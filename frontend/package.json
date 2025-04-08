@@ -44,7 +44,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build-tomcat": "react-scripts build && echo '<%@ page session=\"false\" %>' | cat - ./dist/index.html > temp && mv temp ./dist/index.html"
   },
   "eslintConfig": {
     "extends": [
