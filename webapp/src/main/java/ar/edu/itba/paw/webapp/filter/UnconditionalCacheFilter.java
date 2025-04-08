@@ -17,7 +17,7 @@ public class UnconditionalCacheFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         if (HttpMethod.GET.matches(request.getMethod())) {
-            response.setHeader(HttpHeaders.CACHE_CONTROL, String.format("public, max-age=%d, immutable", STATIC_FILES_MAX_AGE));
+            response.setHeader(HttpHeaders.CACHE_CONTROL, String.format("public, max-age=%d, inmutable", STATIC_FILES_MAX_AGE));
         }
         filterChain.doFilter(request, response);
     }
