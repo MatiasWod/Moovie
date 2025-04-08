@@ -12,6 +12,7 @@ const ResetPassword = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (success) {
@@ -20,7 +21,6 @@ const ResetPassword = () => {
     }, [navigate, success]);
 
     const { t } = useTranslation();
-    const navigate = useNavigate();
     const location = useLocation();
     const [searchParams] = useSearchParams();
 
