@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Container, Form, Button, Alert, Col } from 'react-bootstrap';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
@@ -13,6 +13,12 @@ const ResetPassword = () => {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
 
+    useEffect(() => {
+        if (success) {
+            navigate('/login');
+        }
+    }, [navigate, success]);
+
     const { t } = useTranslation();
     const navigate = useNavigate();
     const location = useLocation();
@@ -24,6 +30,8 @@ const ResetPassword = () => {
         navigate('/login');
         return;
     }
+
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
