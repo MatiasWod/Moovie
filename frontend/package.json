@@ -45,7 +45,8 @@
     "build": "react-scripts build",
     "build-tomcat": "react-scripts build && node prepend-jsp.js",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build-tomcat": "react-scripts build && echo '<%@ page session=\"false\" %>' | cat - ./dist/index.html > temp && mv temp ./dist/index.html"
   },
   "eslintConfig": {
     "extends": [
