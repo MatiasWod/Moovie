@@ -1,18 +1,26 @@
 package ar.edu.itba.paw.webapp.auth;
 
+import ar.edu.itba.paw.exceptions.UserVerifiedException;
+import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.models.User.UserRoles;
 import ar.edu.itba.paw.services.UserService;
+import ar.edu.itba.paw.services.VerificationTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -21,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 @Component
 public class BasicAuthenticationFilter extends OncePerRequestFilter{
@@ -36,6 +45,10 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter{
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
     private UserService userService;
+    @Autowired
+    private VerificationTokenService verificationTokenService;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
@@ -47,14 +60,34 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter{
 
         try {
             String[] credentials = extractAndDecodeHeader(header);
-
-            final Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(credentials[USR_IDX], credentials[PWD_IDX])
-            );
-
             User user = userService.findUserByUsername(credentials[USR_IDX]);
-            response.setHeader(HttpHeaders.AUTHORIZATION, jwtTokenProvider.createToken(user));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            Optional<Token> potentialToken = verificationTokenService.getToken(credentials[PWD_IDX]);
+
+            if (potentialToken.isPresent()) {
+                final Token token = potentialToken.get();
+                if (token.getUserId() != user.getUserId()) {
+                    throw new BadCredentialsException("Invalid token");
+                }
+                userService.confirmRegister(token);
+                final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+                final UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+            else if (user.getRole() == UserRoles.NOT_AUTHENTICATED.getRole()) {
+                throw new UserVerifiedException("User not verified");
+            }
+            else {
+                final Authentication authentication = authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(credentials[USR_IDX], credentials[PWD_IDX])
+                );
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+
+            final ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromContextPath(request);
+            response.setHeader("Moovie-AuthToken", jwtTokenProvider.createAccessToken(builder,user));
+            response.setHeader("Moovie-RefreshToken", jwtTokenProvider.createRefreshToken(builder,user));
+
         } catch (AuthenticationException failed) {
             SecurityContextHolder.clearContext();
             authenticationEntryPoint.commence(request, response, failed);

@@ -15,7 +15,7 @@ export const loginUser = createAsyncThunk("auth/loginUser", async ({ username, p
 });
 
 export const attemptReconnect = createAsyncThunk("auth/attemptReconnect", async (_, { dispatch }) => {
-    const token = localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken");
+    const token = localStorage.getItem("jwt") || sessionStorage.getItem("jwt");
     const username = localStorage.getItem("username") || sessionStorage.getItem("username");
 
     if (token && username) {
@@ -47,9 +47,9 @@ const authSlice = createSlice({
         logout(state) {
             state.isLoggedIn = false;
             state.user = null;
-            sessionStorage.removeItem("jwtToken");
+            sessionStorage.removeItem("jwt");
             sessionStorage.removeItem("username");
-            localStorage.removeItem("jwtToken");
+            localStorage.removeItem("jwt");
             localStorage.removeItem("username");
         },
     },
@@ -81,9 +81,9 @@ const authSlice = createSlice({
             .addCase(refreshUserData.rejected, (state) => {
                 state.isLoggedIn = false;
                 state.user = null;
-                sessionStorage.removeItem("jwtToken");
+                sessionStorage.removeItem("jwt");
                 sessionStorage.removeItem("username");
-                localStorage.removeItem("jwtToken");
+                localStorage.removeItem("jwt");
                 localStorage.removeItem("username");
             });
     },

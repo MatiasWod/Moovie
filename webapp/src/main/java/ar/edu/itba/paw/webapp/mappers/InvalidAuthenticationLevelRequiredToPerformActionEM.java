@@ -14,6 +14,6 @@ import javax.ws.rs.ext.Provider;
 public class InvalidAuthenticationLevelRequiredToPerformActionEM implements ExceptionMapper<InvalidAuthenticationLevelRequiredToPerformActionException> {
     @Override
     public Response toResponse(InvalidAuthenticationLevelRequiredToPerformActionException e) {
-        return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
+        return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
     }
 }

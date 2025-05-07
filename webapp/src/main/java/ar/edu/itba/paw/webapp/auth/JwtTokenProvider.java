@@ -2,9 +2,9 @@ package ar.edu.itba.paw.webapp.auth;
 
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.User.UserRoles;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +12,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.crypto.SecretKey;
 import java.io.IOException;
@@ -23,11 +24,9 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    @Autowired
-    UserDetailsServiceImpl userDetailsService;
-
-    private static final int EXPIRY_TIME = 7 * 24 * 60 * 60 * 1000; // 1 week (in millis)
-    private final Key jwtKey;
+    private static final int AUTHENTICATION_EXPIRATION_TIME = 10 * 60 * 1000; // 10 minutes
+    private static final int REFRESH_EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000; // 1 week
+    private final SecretKey jwtKey;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenProvider.class);
 
@@ -39,53 +38,83 @@ public class JwtTokenProvider {
         LOGGER.debug("JwtTokenProvider initialized with key from resource: {}", jwtKeyResource.getFilename());
     }
 
-    /**
-     * jws: Json Web Signature (https://datatracker.ietf.org/doc/html/rfc7515)
-     */
-    public UserDetails parseToken(String jws) {
-        LOGGER.debug("Parsing token: {}", jws);
+    public JwtTokenDetails validate(String token) {
         try {
-            final Claims claims = Jwts.parser()
-                    .verifyWith((SecretKey) jwtKey)
-                    .build()
-                    .parseSignedClaims(jws).getPayload();
+            final Jws<Claims> parsed = Jwts.parser().verifyWith(jwtKey).build().parseSignedClaims(token);
+            final Claims claims = parsed.getPayload();
 
-            Date expiration = claims.getExpiration();
-            LOGGER.debug("Token expiration date: {}", expiration);
-
-            if (new Date(System.currentTimeMillis()).after(expiration)) {
-                LOGGER.warn("Token is expired");
-                return null;
+            if (claims.getExpiration().before(new Date(System.currentTimeMillis()))) {
+                throw new ExpiredJwtException(parsed.getHeader(), claims, "JWT token expired");
             }
 
-            final String username = claims.getSubject();
-            LOGGER.debug("Token subject (username): {}", username);
+            return new JwtTokenDetails.Builder()
+                    .setId(claims.getId())
+                    .setToken(token)
+                    .setEmail(claims.getSubject())
+                    .setIssuedDate(claims.getIssuedAt())
+                    .setExpirationDate(claims.getExpiration())
+                    .setTokenType(JwtTokenType.fromCode((claims.get("tokenType").toString())))
+                    .build();
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (userDetails == null) {
-                LOGGER.warn("UserDetails is null for username: {}", username);
-            } else {
-                LOGGER.debug("UserDetails loaded for username: {}", username);
-            }
-            return userDetails;
-        } catch (Exception e) {
-            LOGGER.error("Error parsing token: {}", jws, e);
-            return null;
+        } catch (SignatureException ex) {
+            LOGGER.warn("Invalid JWT signature - {}", ex.getMessage());
+        } catch (MalformedJwtException ex) {
+            LOGGER.warn("Invalid JWT token - {}", ex.getMessage());
+        } catch (ExpiredJwtException ex) {
+            LOGGER.warn("Expired JWT token - {}", ex.getMessage());
+        } catch (UnsupportedJwtException ex) {
+            LOGGER.warn("Unsupported JWT token - {}", ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            LOGGER.warn("JWT claims string is empty - {}", ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warn("JWT claims {}", ex.getMessage());
         }
+        return null;
     }
 
-    public String createToken(User user) {
+    public String createToken(ServletUriComponentsBuilder uriBuilder, User user, JwtTokenType type, int expirationTime) {
         LOGGER.debug("Creating token for user: {}", user.getUsername());
 
         String token = Jwts.builder()
                 .setSubject(user.getUsername())
-                .claim("authorization", UserRoles.getRoleFromInt(user.getRole()).name())
+                .setClaims(buildClaims(uriBuilder, user, type))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRY_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(jwtKey)
                 .compact();
 
         LOGGER.debug("Token created: {}", token);
-        return "Bearer " + token;
+        return token;
     }
+
+    private Claims buildClaims(ServletUriComponentsBuilder uriBuilder, User user, JwtTokenType type) {
+        final Claims claims = Jwts.claims().build();
+        claims.put("tokenType", type);
+
+        if (!type.isRefreshToken()) {
+            claims.put("name", user.getUsername());
+
+            if (user.getRole() != UserRoles.NOT_AUTHENTICATED.getRole()) {
+                claims.put("role", user.getRole());
+            }
+
+            final String selfUrl = uriBuilder
+                    .path("/users" + "/")
+                    .path(String.valueOf(user.getUsername()))
+                    .build().toString();
+
+            claims.put("selfUrl", selfUrl);
+        }
+        return claims;
+    }
+
+    public String createAccessToken(ServletUriComponentsBuilder uriBuilder, User user) {
+        return createToken(uriBuilder, user, JwtTokenType.ACCESS, AUTHENTICATION_EXPIRATION_TIME);
+    }
+
+    public String createRefreshToken(ServletUriComponentsBuilder uriBuilder, User user) {
+        return createToken(uriBuilder, user, JwtTokenType.REFRESH, REFRESH_EXPIRATION_TIME);
+    }
+
+
 }

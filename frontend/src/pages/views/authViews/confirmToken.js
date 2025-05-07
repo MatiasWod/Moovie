@@ -38,7 +38,7 @@ export default function ConfirmToken() {
                     throw new Error('No token received');
                 }
 
-                sessionStorage.setItem('jwtToken', jwtToken);
+                sessionStorage.setItem('jwt', jwtToken);
                 sessionStorage.setItem('username', username);
 
                 await new Promise((resolve) => setTimeout(resolve, 10));

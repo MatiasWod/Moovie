@@ -41,7 +41,19 @@ public class Token {
         return expirationDate;
     }
 
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     public void setExpirationDate(LocalDateTime expirationDate) {
         this.expirationDate = expirationDate;
+    }
+
+    public boolean isFresh() {
+        return expirationDate.isAfter(LocalDateTime.now());
+    }
+
+    public boolean isExpired() {
+        return !isFresh();
     }
 }

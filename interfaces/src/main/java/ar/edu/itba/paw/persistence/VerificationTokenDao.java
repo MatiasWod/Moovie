@@ -7,7 +7,11 @@ import java.util.Date;
 import java.util.Optional;
 
 public interface VerificationTokenDao {
-    void createVerificationToken(int userId, String token, LocalDateTime expirationDate);
+    Token createVerificationToken(int userId, String token, LocalDateTime expirationDate);
+
+    Token refreshVerificationToken(String oldToken, String newToken, LocalDateTime expirationDate);
+
+    Optional<Token> getTokenByUserId(int userId);
 
     Optional<Token> getToken(String token);
 

@@ -37,10 +37,10 @@ const Login = () => {
             .unwrap()
             .then(() => {
                 if (rememberMe) {
-                    const token = sessionStorage.getItem("jwtToken");
-                    const user = sessionStorage.getItem("username");
-                    localStorage.setItem("jwtToken", token);
-                    localStorage.setItem("username", user);
+                    const jwt = sessionStorage.getItem("jwt");
+                    const refreshToken = sessionStorage.getItem("refreshtoken");
+                    localStorage.setItem("jwt", jwt);
+                    localStorage.setItem("refreshToken", refreshToken);
                 }
                 navigate(from, { replace: true });
             })

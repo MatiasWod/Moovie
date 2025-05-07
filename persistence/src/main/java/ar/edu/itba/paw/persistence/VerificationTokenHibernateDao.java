@@ -20,9 +20,26 @@ public class VerificationTokenHibernateDao implements VerificationTokenDao{
     private EntityManager entityManager;
 
     @Override
-    public void createVerificationToken(int userId, String token, LocalDateTime expirationDate) {
+    public Token createVerificationToken(int userId, String token, LocalDateTime expirationDate) {
         final Token toCreateToken = new Token(userId,token,expirationDate);
         entityManager.persist(toCreateToken);
+        return toCreateToken;
+    }
+
+    @Override
+    public Token refreshVerificationToken(String oldToken, String newToken, LocalDateTime expirationDate) {
+        final Token token = getToken(oldToken).orElseThrow(() -> new IllegalArgumentException("Token not found"));
+        token.setExpirationDate(expirationDate);
+        token.setToken(newToken);
+        entityManager.merge(token);
+        return token;
+    }
+
+    @Override
+    public Optional<Token> getTokenByUserId(int userId) {
+        final TypedQuery<Token> query = entityManager.createQuery("from Token where userId = :userId", Token.class);
+        query.setParameter("userId",userId);
+        return query.getResultList().stream().findFirst();
     }
 
     @Override

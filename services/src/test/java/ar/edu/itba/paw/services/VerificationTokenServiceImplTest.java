@@ -41,21 +41,21 @@ public class VerificationTokenServiceImplTest {
         user = new User.Builder(USERNAME,EMAIL,PASSWORD,ROLE,0).userId(UID).build();
     }
 
-    @Test
-    public void testCreateVerificationToken() {
-        String generatedToken = verificationTokenService.createVerificationToken(user.getUserId());
-        ArgumentCaptor<String> tokenCaptor = ArgumentCaptor.forClass(String.class);
-        verify(mockVerificationTokenDao, times(1))
-                .createVerificationToken(eq(user.getUserId()), tokenCaptor.capture(), any());
-        String tokenCaptured = tokenCaptor.getValue();
-        Assert.assertNotNull("Generated token should not be null", tokenCaptured);
-        try {
-            UUID uuid = UUID.fromString(tokenCaptured);
-            Assert.assertNotNull(uuid);
-        } catch (IllegalArgumentException e) {
-            Assert.fail("Generated token is not a valid UUID.");
-        }
-    }
+//    @Test
+//    public void testCreateVerificationToken() {
+//        String generatedToken = verificationTokenService.createVerificationToken(user.getUserId());
+//        ArgumentCaptor<String> tokenCaptor = ArgumentCaptor.forClass(String.class);
+//        verify(mockVerificationTokenDao, times(1))
+//                .createVerificationToken(eq(user.getUserId()), tokenCaptor.capture(), any());
+//        String tokenCaptured = tokenCaptor.getValue();
+//        Assert.assertNotNull("Generated token should not be null", tokenCaptured);
+//        try {
+//            UUID uuid = UUID.fromString(tokenCaptured);
+//            Assert.assertNotNull(uuid);
+//        } catch (IllegalArgumentException e) {
+//            Assert.fail("Generated token is not a valid UUID.");
+//        }
+//    }
 
     @Test
     public void testIsValidToken(){

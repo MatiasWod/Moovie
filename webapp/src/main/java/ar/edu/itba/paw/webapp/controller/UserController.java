@@ -161,7 +161,7 @@ public class UserController {
                 Token token = tok.get();
                 if (userService.confirmRegister(token)) {
                     User user = userService.findUserById(token.getUserId());
-                    String jwt = jwtTokenProvider.createToken(user);
+                    String jwt = verificationTokenService.getTokenByUserId(user.getUserId()).get().getToken();
                     return Response.ok(UserDto.fromUser(user, uriInfo)).header(HttpHeaders.AUTHORIZATION, jwt).build();
                 }
                 LOGGER.info("Token validation failed. Returning INTERNAL_SERVER_ERROR.");

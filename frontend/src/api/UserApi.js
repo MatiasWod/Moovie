@@ -13,12 +13,9 @@ const userApi = (() => {
                     'Authorization': `Basic ${credentials}`,
                 }
             });
-            const token = response.headers.get('Authorization');
-            if (token) {
-                sessionStorage.setItem('jwtToken', token);
-                sessionStorage.setItem('username', username);
-            } else {
-                throw new Error(response.data.message);
+            if(response.headers["moovie-authtoken"] && response.headers["moovie-refreshtoken"]) {
+                sessionStorage.setItem('jwt', response.headers["moovie-authtoken"]);
+                sessionStorage.setItem('refreshtoken', response.headers["moovie-refreshtoken"]);
             }
             return response;
         } catch (error) {
@@ -54,10 +51,9 @@ const userApi = (() => {
                 }
             }
         );
-        const jwtToken = response.headers['authorization'];
-        if (jwtToken) {
-            sessionStorage.setItem('jwtToken', jwtToken);
-            localStorage.setItem('jwtToken', jwtToken);
+        if(response.headers["moovie-authtoken"] && response.headers["moovie-refreshtoken"]) {
+            sessionStorage.setItem('jwt', response.headers["moovie-authtoken"]);
+            sessionStorage.setItem('refreshtoken', response.headers["moovie-refreshtoken"]);
         }
         return response;
     };

@@ -14,6 +14,6 @@ import javax.ws.rs.ext.Provider;
 public class UnableToChangeRoleEM implements ExceptionMapper<UnableToChangeRoleException> {
     @Override
     public Response toResponse(UnableToChangeRoleException e) {
-        return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
+        return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
     }
 }

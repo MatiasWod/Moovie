@@ -72,10 +72,10 @@ public class UserServiceImpl implements UserService {
         if (aux.isPresent()) {
             if (aux.get().getRole() == UserRoles.UNREGISTERED.getRole()) {
                 User user = createUserFromUnregistered(username, email, password);
-                String token = verificationTokenService.createVerificationToken(user.getUserId());
-                emailService.sendVerificationEmail(user, token, LocaleContextHolder.getLocale());
+                Token token = verificationTokenService.manageUserToken(user);
+                emailService.sendVerificationEmail(user, token.getToken(), LocaleContextHolder.getLocale());
                 LOGGER.info("Succesfuly created user with username: {}", username);
-                return token;
+                return token.getToken();
             } else {
                 throw new UnableToCreateUserException("email_taken");
             }
@@ -83,9 +83,9 @@ public class UserServiceImpl implements UserService {
         try {
             User user = userDao.createUser(username, email, passwordEncoder.encode(password));
             LOGGER.info("Succesfuly created user with username: {}", username);
-            String token = verificationTokenService.createVerificationToken(user.getUserId());
-            emailService.sendVerificationEmail(user, token, LocaleContextHolder.getLocale());
-            return token;
+            Token token = verificationTokenService.manageUserToken(user);
+            emailService.sendVerificationEmail(user, token.getToken(), LocaleContextHolder.getLocale());
+            return token.getToken();
         } catch (Exception e) {
             throw new UnableToCreateUserException("Unable to create user");
         }

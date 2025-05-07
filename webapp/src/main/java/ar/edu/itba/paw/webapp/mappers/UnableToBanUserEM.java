@@ -14,7 +14,7 @@ import javax.ws.rs.ext.Provider;
 public class UnableToBanUserEM implements ExceptionMapper<UnableToBanUserException> {
     @Override
     public Response toResponse(UnableToBanUserException e) {
-        return Response.status(Response.Status.UNAUTHORIZED)
+        return Response.status(Response.Status.FORBIDDEN)
                 .entity(e.getMessage())
                 .build();
     }
