@@ -9,8 +9,10 @@ export const useAuthInterceptor = () => {
     const [refreshToken, setRefreshToken] = useState(getTokenFromStorage("refreshToken"));
     const [isAuthenticated, setIsAuthenticated] = useState(jwt !== null);
 
+
     useEffect(() => {
         const requestInterceptor = api.interceptors.request.use(
+
             (config) => {
                 if (isAuthenticated && !config.retried) {
                     config.headers["Authorization"] = `Bearer ${jwt}`;
@@ -69,5 +71,5 @@ export const useAuthInterceptor = () => {
         };
     }, [isAuthenticated, jwt, refreshToken]);
 
-    return { jwt, refreshToken, isAuthenticated, jwtParamSetter };
+    return { jwt, refreshToken, isAuthenticated };
 };

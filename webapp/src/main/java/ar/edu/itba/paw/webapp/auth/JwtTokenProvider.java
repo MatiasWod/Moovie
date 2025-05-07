@@ -75,38 +75,37 @@ public class JwtTokenProvider {
     public String createToken(ServletUriComponentsBuilder uriBuilder, User user, JwtTokenType type, int expirationTime) {
         LOGGER.debug("Creating token for user: {}", user.getUsername());
 
-        String token = Jwts.builder()
-                .setSubject(user.getUsername())
-                .setClaims(buildClaims(uriBuilder, user, type))
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
-                .signWith(jwtKey)
-                .compact();
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + expirationTime);
 
-        LOGGER.debug("Token created: {}", token);
-        return token;
-    }
-
-    private Claims buildClaims(ServletUriComponentsBuilder uriBuilder, User user, JwtTokenType type) {
-        final Claims claims = Jwts.claims().build();
-        claims.put("tokenType", type);
+        JwtBuilder builder = Jwts.builder()
+                .subject(user.getUsername())
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .claim("tokenType", type);
 
         if (!type.isRefreshToken()) {
-            claims.put("name", user.getUsername());
+            builder.claim("name", user.getUsername());
 
             if (user.getRole() != UserRoles.NOT_AUTHENTICATED.getRole()) {
-                claims.put("role", user.getRole());
+                builder.claim("role", user.getRole());
             }
 
             final String selfUrl = uriBuilder
-                    .path("/users" + "/")
-                    .path(String.valueOf(user.getUsername()))
-                    .build().toString();
+                    .path("/users/")
+                    .path(user.getUsername())
+                    .build()
+                    .toString();
 
-            claims.put("selfUrl", selfUrl);
+            builder.claim("selfUrl", selfUrl);
         }
-        return claims;
+
+        return builder
+                .signWith(jwtKey)
+                .compact();
     }
+
+
 
     public String createAccessToken(ServletUriComponentsBuilder uriBuilder, User user) {
         return createToken(uriBuilder, user, JwtTokenType.ACCESS, AUTHENTICATION_EXPIRATION_TIME);

@@ -60,6 +60,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         if (jwtTokenDetails == null) {
             LOGGER.debug("UserDetails is null after parsing token");
+            filterChain.doFilter(request, response);
+            return;
         } else {
             LOGGER.debug("UserDetails parsed: {}", jwtTokenDetails.getId());
         }

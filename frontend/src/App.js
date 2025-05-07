@@ -10,6 +10,7 @@ import LoggedGate from "./pages/components/permissions/LoggedGate";
 import RoleGate from "./pages/components/permissions/RoleGate";
 import UserRoles from "./api/values/UserRoles";
 import ContextProviderWrapper from "./store/contextProviderWrapper";
+import {useAuthInterceptor} from "./api/useAuthInterceptor";
 
 const views = './pages/views';
 
@@ -41,6 +42,7 @@ export default function App() {
     const helmetContext = {};
     const dispatch = useDispatch();
     const [isInitialized, setIsInitialized] = useState(false);
+    useAuthInterceptor();
 
     useEffect(() => {
         dispatch(attemptReconnect())
