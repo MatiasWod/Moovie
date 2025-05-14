@@ -6,6 +6,7 @@ import ar.edu.itba.paw.services.ProviderService;
 import ar.edu.itba.paw.webapp.dto.out.GenreDto;
 import ar.edu.itba.paw.webapp.dto.out.ProviderDto;
 import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
+import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -43,8 +44,10 @@ public class ProviderController {
             final List<ProviderDto> providerDtoList = ProviderDto.fromProviderList(providerList, uriInfo);
 
             // Devolver la respuesta con la lista de DTOs
-            return Response.ok(new GenericEntity<List<ProviderDto>>(providerDtoList) {
-            }).build();
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ProviderDto>>(providerDtoList) {
+            });
+            ResponseUtils.setMaxAgeCache(res);
+            return res.build();
         } catch (RuntimeException e) {
             // Manejar errores
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -58,6 +61,8 @@ public class ProviderController {
     @Produces(VndType.APPLICATION_PROVIDER)
     public Response getGenre(@PathParam("providerId") final Integer providerId) {
         Provider genre = providerService.getProviderById(providerId);
-        return Response.ok(ProviderDto.fromProvider(genre, uriInfo)).build();
+        Response.ResponseBuilder res = Response.ok(ProviderDto.fromProvider(genre, uriInfo));
+        ResponseUtils.setMaxAgeCache(res);
+        return res.build();
     }
 }

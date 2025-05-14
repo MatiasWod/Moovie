@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.Cast.Actor;
 import ar.edu.itba.paw.services.ActorService;
 import ar.edu.itba.paw.webapp.dto.out.ActorDto;
+import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -38,7 +39,10 @@ public class ActorsController {
             if (mediaId != null) {
                 // Buscar actores por mediaId
                 final List<ActorDto> actorDtoList = ActorDto.fromActorList(actorService.getAllActorsForMedia(mediaId), uriInfo);
-                return Response.ok(new GenericEntity<List<ActorDto>>(actorDtoList) {}).build();
+                Response.ResponseBuilder res= Response.ok(new GenericEntity<List<ActorDto>>(actorDtoList) {});
+                ResponseUtils.setMaxAgeCache(res);
+                return res.build();
+
             } else if (search != null && !search.isEmpty()) {
                 // Buscar actores por consulta de texto
                 List<Actor> actorList = actorService.getActorsForQuery(search);
@@ -64,7 +68,9 @@ public class ActorsController {
     public Response getActor(@PathParam("id") @NotNull final int id) {
         try {
             Actor actor=actorService.getActorById(id);
-            return Response.ok(ActorDto.fromActor(actor, uriInfo)).build();
+            Response.ResponseBuilder res= Response.ok(ActorDto.fromActor(actor, uriInfo));
+            ResponseUtils.setMaxAgeCache(res);
+            return res.build();
         }catch (NoResultException e){
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("Actor not found.")

@@ -4,6 +4,7 @@ import ar.edu.itba.paw.exceptions.ResourceNotFoundException;
 import ar.edu.itba.paw.models.Cast.Director;
 import ar.edu.itba.paw.services.DirectorService;
 import ar.edu.itba.paw.webapp.dto.out.DirectorDto;
+import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -59,7 +60,9 @@ public class DirectorController {
     public Response getDirectorById(@PathParam("id") @NotNull final int directorId) {
         try {
             Director director = directorService.getDirectorById(directorId);
-            return Response.ok(DirectorDto.fromDirector(director, uriInfo)).build();
+            Response.ResponseBuilder res = Response.ok(DirectorDto.fromDirector(director, uriInfo));
+            ResponseUtils.setMaxAgeCache(res);
+            return res.build();
         }catch (NoResultException e){
             throw new ResourceNotFoundException("Director not found");
         }

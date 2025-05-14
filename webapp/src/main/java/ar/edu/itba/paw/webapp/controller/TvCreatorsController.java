@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.TV.TVCreators;
 import ar.edu.itba.paw.services.TVCreatorsService;
 import ar.edu.itba.paw.webapp.dto.out.TvCreatorsDto;
+import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,7 +46,9 @@ public class TvCreatorsController {
                 // Lógica para obtener creadores de TV por ID de medio
                 List<TVCreators> tvCreators = tvCreatorsService.getTvCreatorsByMediaId(mediaId);
                 List<TvCreatorsDto> tvCreatorsDtos = TvCreatorsDto.fromTvCreatorList(tvCreators, uriInfo);
-                return Response.ok(new GenericEntity<List<TvCreatorsDto>>(tvCreatorsDtos) {}).build();
+                Response.ResponseBuilder res = Response.ok(new GenericEntity<List<TvCreatorsDto>>(tvCreatorsDtos) {});
+                ResponseUtils.setMaxAgeCache(res);
+                return res.build();
             }
 
             // Si no se proporcionan parámetros válidos
@@ -66,7 +69,9 @@ public class TvCreatorsController {
     public Response getTvCreatorById(@PathParam("id") @NotNull final int tvCreatorId) {
         try {
             TVCreators tvCreators=tvCreatorsService.getTvCreatorById(tvCreatorId);
-            return Response.ok(TvCreatorsDto.fromTvCreator(tvCreators,uriInfo)).build();
+            Response.ResponseBuilder res = Response.ok(TvCreatorsDto.fromTvCreator(tvCreators,uriInfo));
+            ResponseUtils.setMaxAgeCache(res);
+            return res.build();
         }catch (NoResultException e){
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("TV Creator with id " + tvCreatorId + " not found.")

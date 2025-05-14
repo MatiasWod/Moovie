@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.utils;
 import ar.edu.itba.paw.models.PagingUtils;
 
 import javax.ws.rs.core.*;
+import java.util.function.Supplier;
 
 public class ResponseUtils {
 
@@ -26,12 +27,29 @@ public class ResponseUtils {
 
 
     public static void setMaxAgeCache(Response.ResponseBuilder responseBuilder) {
-        setConditionalCache(responseBuilder, MAX_AGE);
+        setConditionalCache(responseBuilder,MAX_AGE);
     }
 
-    public static void setConditionalCache(Response.ResponseBuilder responseBuilder, int maxAge) {
+
+    public static void setConditionalCache(Response.ResponseBuilder responseBuilder,int maxAge) {
         final CacheControl cacheControl = new CacheControl();
         cacheControl.setMaxAge(maxAge);
         responseBuilder.cacheControl(cacheControl);
     }
+
+    public static <T> Response setConditionalCacheHash(Request request, Supplier<T> dto, int hashCode) {
+        final CacheControl cacheControl = new CacheControl();
+        cacheControl.setNoCache(true);
+
+        final EntityTag eTag = new EntityTag(String.valueOf(hashCode));
+        Response.ResponseBuilder response = request.evaluatePreconditions(eTag);
+
+        if (response != null) {
+            response = Response.ok(dto.get()).tag(eTag);
+            cacheControl.setNoStore(false);
+        }
+
+        return response.header(HttpHeaders.VARY, "Accept, Content-Type").cacheControl(cacheControl).build();
+    }
+
 }
