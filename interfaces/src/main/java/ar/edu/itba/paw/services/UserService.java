@@ -59,11 +59,6 @@ public interface UserService {
 
     boolean isUsernameMe(String username);
 
-    //Profile picture functions
-    void setProfilePicture(byte[] imageBytes, String extension);
-
-    byte[] getProfilePicture(String username);
-
     //Verification mail methods
     void resendVerificationEmail(Token token);
 }

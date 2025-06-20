@@ -119,47 +119,7 @@ public class ProfileController {
         }
     }
 
-    @GET
-    @Path("/{username}/image")
-    @Produces("image/png")
-    public Response getProfileImage(@PathParam("username") final String username) {
-        try {
-            LOGGER.info("Method: getProfileImage, Path: /users/{username}/image, Username: {}", username);
-            final byte[] image = userService.getProfilePicture(username);
-            return Response.ok(image).build();
-        }catch (NoFileException | UnableToFindUserException e) {
-            LOGGER.error("Error retrieving profile image: {}", e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        }
-        catch (RuntimeException e) {
-            LOGGER.error("Error retrieving profile image: {}", e.getMessage());
-            return Response.serverError().entity(e.getMessage()).build();
-        }
-    }
 
-    @PUT
-    @Path("/{username}/image")
-    @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updateProfileImage(@PathParam("username") String username,
-                                       @FormDataParam("image") final FormDataBodyPart image,
-                                       @Size(max = 1024 * 1024 * 2) @FormDataParam("image") byte[] imageBytes) {
-        try {
-            LOGGER.info("Method: setProfileImage, Path: /users/{username}/image, Username: {}", username);
-
-            userService.setProfilePicture(imageBytes, image.getMediaType().getSubtype());
-
-            LOGGER.info("Profile image updated for username: {}", username);
-            return Response.ok().build();
-        } catch (UnableToFindUserException e) {
-            LOGGER.error("Error updating profile image: {}", e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (RuntimeException e) {
-            LOGGER.error("Error updating profile image: {}", e.getMessage());
-            return Response.serverError().entity(e.getMessage()).build();
-        }
-    }
 
 
     /***

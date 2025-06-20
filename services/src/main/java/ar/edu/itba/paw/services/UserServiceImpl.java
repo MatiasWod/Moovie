@@ -44,9 +44,7 @@ public class UserServiceImpl implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    final static int MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
-
-    //REGSITRATION
+    //REGISTRATION
 
     @Transactional(readOnly = true)
     @Override
@@ -253,41 +251,6 @@ public class UserServiceImpl implements UserService {
             return true;
         }
         throw new InvalidAccessToResourceException("Username provided doesnt match with current user.");
-    }
-
-
-    //PROFILE PICTURES
-
-
-    @Transactional
-    @Override
-    public void setProfilePicture(byte[] image, String extension) {
-        int uid = getInfoOfMyUser().getUserId();
-
-        if (image.length > 0) {
-            if (image.length > MAX_IMAGE_SIZE) {
-                throw new InvalidTypeException("File is too big (Max is 5MB).");
-            }
-
-            if (extension != null || extension.equals("png") || extension.equals("jpg")
-                    || extension.equals("jpeg") || extension.equals("gif")) {
-                if (userDao.hasProfilePicture(uid)) {
-                    userDao.updateProfilePicture(getInfoOfMyUser().getUserId(), image);
-                    return;
-                }
-                userDao.setProfilePicture(getInfoOfMyUser().getUserId(), image);
-            } else {
-                throw new InvalidTypeException("File is not of type image");
-            }
-        } else {
-            throw new NoFileException("No file was selected");
-        }
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public byte[] getProfilePicture(String username) {
-        return userDao.getProfilePicture(findUserByUsername(username).getUserId()).orElseThrow(() -> new NoFileException("Profile picture not found")).getImage();
     }
 
     @Async

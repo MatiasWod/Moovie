@@ -44,7 +44,7 @@ public class ResponseUtils {
         final EntityTag eTag = new EntityTag(String.valueOf(hashCode));
         Response.ResponseBuilder response = request.evaluatePreconditions(eTag);
 
-        if (response != null) {
+        if (response == null) {
             response = Response.ok(dto.get()).tag(eTag);
             cacheControl.setNoStore(false);
         }

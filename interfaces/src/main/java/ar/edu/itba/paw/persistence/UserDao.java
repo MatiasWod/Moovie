@@ -38,13 +38,6 @@ public interface UserDao {
 
     List<Profile> getMilkyPointsLeaders(int size, int pageNumber);
 
-    void setProfilePicture(int userId, byte[] image);
-
-    void updateProfilePicture(int userId, byte[] image);
-
-    Optional<Image> getProfilePicture(int id);
-
-    boolean hasProfilePicture(int userId);
 
 
     void changeUserRole(int userId, int role);

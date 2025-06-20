@@ -5,8 +5,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "userimages", uniqueConstraints = @UniqueConstraint(columnNames = {"userId"}))
 public class Image {
-    @Id
     private int userId;
+    @Id
+    @Column(name = "imageId")
+    private int imageId;
     @Column(name = "image")
     private byte[] image;
 
@@ -14,13 +16,18 @@ public class Image {
 
     }
 
-    public Image(int userId, byte[] image) {
+    public Image(int userId, int imageId, byte[] image) {
         this.userId = userId;
+        this.imageId = imageId;
         this.image = image;
     }
 
     public int getUserId() {
         return userId;
+    }
+
+    public int getImageId() {
+        return imageId;
     }
 
     public byte[] getImage() {

@@ -114,45 +114,7 @@ public class UserHibernateDao implements UserDao {
         return ((Number) entityManager.createQuery("SELECT COUNT(*) FROM User").getSingleResult()).intValue();
     }
 
-    @Override
-    public Optional<Profile> getProfileByUsername(String username) {
-        final TypedQuery<Profile> query = entityManager.createQuery("FROM Profile where LOWER(username) LIKE :username", Profile.class);
-        query.setParameter("username", username.toLowerCase());
-        return query.getResultList().stream().findFirst();
-    }
 
-
-    @Override
-    public void setProfilePicture(int userId, byte[] image) {
-        final Image toInsertImage = new Image(userId, image);
-        entityManager.persist(toInsertImage);
-    }
-
-    @Override
-    public boolean hasProfilePicture(int userId) {
-        int aux = entityManager.createQuery("FROM Image WHERE userId = :userId")
-                .setParameter("userId", userId)
-                .getResultList().size();
-        if (aux >= 1) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void updateProfilePicture(int userId, byte[] image) {
-        entityManager.createNativeQuery("UPDATE userImages SET image = :image WHERE userId = :userId")
-                .setParameter("image", image)
-                .setParameter("userId", userId)
-                .executeUpdate();
-    }
-
-    @Override
-    public Optional<Image> getProfilePicture(int userId) {
-        final TypedQuery<Image> query = entityManager.createQuery("from Image where userId = :userId", Image.class);
-        query.setParameter("userId", userId);
-        return query.getResultList().stream().findFirst();
-    }
 
 
     /**
