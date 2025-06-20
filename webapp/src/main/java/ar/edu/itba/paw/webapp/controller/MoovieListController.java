@@ -95,7 +95,11 @@ public class MoovieListController {
                     }
                 }
 
-                return Response.ok(new GenericEntity<List<MoovieListDto>>(mlList) {}).build();
+                Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(mlList) {});
+                final PagingUtils<MoovieListDto> toReturnMoovieListCardList = new PagingUtils<>(mlList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), mlList.size());
+                ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);
+
+                return res.build();
             }
             // Buscar por otros criterios si no se proporcionan IDs
             else {

@@ -15,13 +15,13 @@ public class ResponseUtils {
 
     public static <T> void setPaginationLinks(Response.ResponseBuilder res, PagingUtils<T> pagingUtils, UriInfo uriInfo){
         if(pagingUtils.hasPreviousPage()){
-            res.link(uriInfo.getRequestUriBuilder().replaceQueryParam("page",pagingUtils.getCurrentPage() - 1).build().toString(),"previous");
+            res.link(uriInfo.getRequestUriBuilder().replaceQueryParam("pageNumber",pagingUtils.getCurrentPage()).build().toString(),"previous");
         }
         if(pagingUtils.hasNextPage()){
-            res.link(uriInfo.getRequestUriBuilder().replaceQueryParam("page",pagingUtils.getCurrentPage() + 1).build().toString(),"next");
+            res.link(uriInfo.getRequestUriBuilder().replaceQueryParam("pageNumber",pagingUtils.getCurrentPage() + 2).build().toString(),"next");
         }
-        res.link(uriInfo.getRequestUriBuilder().replaceQueryParam("page",pagingUtils.getFirstPage()).build().toString(),"first");
-        res.link(uriInfo.getRequestUriBuilder().replaceQueryParam("page",pagingUtils.getLastPage()).build().toString(),"last");
+        res.link(uriInfo.getRequestUriBuilder().replaceQueryParam("pageNumber",pagingUtils.getFirstPage()).build().toString(),"first");
+        res.link(uriInfo.getRequestUriBuilder().replaceQueryParam("pageNumber",pagingUtils.getLastPage()).build().toString(),"last");
         res.header("Total-Elements",pagingUtils.getTotalCount());
     }
 
