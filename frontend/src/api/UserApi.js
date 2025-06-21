@@ -1,5 +1,5 @@
-import api from "./api.js";
-import VndType from "../enums/VndType";
+import api from './api.js';
+import VndType from '../enums/VndType';
 
 const userApi = (() => {
   // AUTHENTICATION STUFF
@@ -13,19 +13,19 @@ const userApi = (() => {
         },
       });
       console.log(response.headers);
-      const authToken = response.headers["moovie-authtoken"];
-      const refreshToken = response.headers["moovie-refreshtoken"];
+      const authToken = response.headers['moovie-authtoken'];
+      const refreshToken = response.headers['moovie-refreshtoken'];
       if (authToken && refreshToken) {
-        console.log("saving in storage", authToken, refreshToken, username);
-        sessionStorage.setItem("username", username);
-        sessionStorage.setItem("jwt", authToken);
-        sessionStorage.setItem("refreshToken", refreshToken);
+        console.log('saving in storage', authToken, refreshToken, username);
+        sessionStorage.setItem('username', username);
+        sessionStorage.setItem('jwt', authToken);
+        sessionStorage.setItem('refreshToken', refreshToken);
       }
       console.log(
-        "sessionStorage",
-        sessionStorage.getItem("username"),
-        sessionStorage.getItem("jwt"),
-        sessionStorage.getItem("refreshToken")
+        'sessionStorage',
+        sessionStorage.getItem('username'),
+        sessionStorage.getItem('jwt'),
+        sessionStorage.getItem('refreshToken')
       );
       return response;
     } catch (error) {
@@ -37,7 +37,7 @@ const userApi = (() => {
   const register = async ({ email, username, password }) => {
     try {
       return await api.post(
-        "/users",
+        '/users',
         {
           email,
           username,
@@ -45,7 +45,7 @@ const userApi = (() => {
         },
         {
           headers: {
-            "Content-Type": VndType.APPLICATION_USER_FORM,
+            'Content-Type': VndType.APPLICATION_USER_FORM,
           },
         }
       );
@@ -62,19 +62,13 @@ const userApi = (() => {
       },
       {
         headers: {
-          "Content-Type": VndType.APPLICATION_USER_TOKEN_FORM,
+          'Content-Type': VndType.APPLICATION_USER_TOKEN_FORM,
         },
       }
     );
-    if (
-      response.headers["moovie-authtoken"] &&
-      response.headers["moovie-refreshtoken"]
-    ) {
-      sessionStorage.setItem("jwt", response.headers["moovie-authtoken"]);
-      sessionStorage.setItem(
-        "refreshToken",
-        response.headers["moovie-refreshtoken"]
-      );
+    if (response.headers['moovie-authtoken'] && response.headers['moovie-refreshtoken']) {
+      sessionStorage.setItem('jwt', response.headers['moovie-authtoken']);
+      sessionStorage.setItem('refreshToken', response.headers['moovie-refreshtoken']);
     }
     return response;
   };
@@ -82,11 +76,11 @@ const userApi = (() => {
   const resendVerificationEmail = async (token) => {
     try {
       return await api.post(
-        "users/",
+        'users/',
         { token },
         {
           headers: {
-            "Content-Type": VndType.APPLICATION_RESEND_TOKEN_FORM,
+            'Content-Type': VndType.APPLICATION_RESEND_TOKEN_FORM,
           },
         }
       );
@@ -98,11 +92,11 @@ const userApi = (() => {
   const forgotPassword = async (email) => {
     try {
       return await api.post(
-        "/users/",
+        '/users/',
         { email: email },
         {
           headers: {
-            "Content-Type": VndType.APPLICATION_PASSWORD_TOKEN_FORM,
+            'Content-Type': VndType.APPLICATION_PASSWORD_TOKEN_FORM,
           },
         }
       );
@@ -121,7 +115,7 @@ const userApi = (() => {
         },
         {
           headers: {
-            "Content-Type": VndType.APPLICATION_USER_PASSWORD,
+            'Content-Type': VndType.APPLICATION_USER_PASSWORD,
           },
         }
       );
@@ -131,52 +125,52 @@ const userApi = (() => {
   };
 
   const listUsers = ({ role }) => {
-    return api.get("/users", { params: { role } });
+    return api.get('/users', { params: { role } });
   };
 
   const getBanMessage = (username) => {
     try {
       return api.get(`/users/${username}/banMessage`);
     } catch (error) {
-      return " ";
+      return ' ';
     }
   };
 
   const authTest = async () => {
     try {
-      const response = await api.get("/users/authtest");
+      const response = await api.get('/users/authtest');
       return response.status === 200;
     } catch (error) {
-      console.error("Auth test error:", error);
+      console.error('Auth test error:', error);
       return false;
     }
   };
 
   const getUsersCount = () => {
-    return api.get("users/count");
+    return api.get('users/count');
   };
 
   // MODERATION STUFF
 
   const banUser = (username) => {
     const banUserDTO = {
-      modAction: "BAN",
-      banMessage: "User banned by moderator",
+      modAction: 'BAN',
+      banMessage: 'User banned by moderator',
     };
     return api.put(`/users/${username}`, banUserDTO, {
       headers: {
-        "Content-Type": VndType.APPLICATION_USER_BAN_FORM,
+        'Content-Type': VndType.APPLICATION_USER_BAN_FORM,
       },
     });
   };
 
   const unbanUser = (username) => {
     const banUserDTO = {
-      modAction: "UNBAN",
+      modAction: 'UNBAN',
     };
     return api.put(`/users/${username}`, banUserDTO, {
       headers: {
-        "Content-Type": VndType.APPLICATION_USER_BAN_FORM,
+        'Content-Type': VndType.APPLICATION_USER_BAN_FORM,
       },
     });
   };

@@ -3,11 +3,11 @@ import userApi from '../../../api/UserApi';
 import profileApi from '../../../api/ProfileApi';
 import UserRoles from '../../../api/values/UserRoles';
 import ConfirmationModal from '../../components/forms/confirmationForm/confirmationModal';
-import {useTranslation} from "react-i18next";
-import defaultProfilePicture from "../../../images/defaultProfilePicture.png"
-import ProfileImage from "../profileImage/ProfileImage";
-import {useNavigate} from "react-router-dom";
-import {Spinner} from "react-bootstrap";
+import { useTranslation } from 'react-i18next';
+import defaultProfilePicture from '../../../images/defaultProfilePicture.png';
+import ProfileImage from '../profileImage/ProfileImage';
+import { useNavigate } from 'react-router-dom';
+import { Spinner } from 'react-bootstrap';
 
 export default function BannedUsers() {
   const [users, setUsers] = useState([]);
@@ -26,25 +26,21 @@ export default function BannedUsers() {
       const response = await userApi.listUsers({ role: UserRoles.BANNED });
       const bannedUsers = response.data || [];
 
-
-
-
       // Fetch ban messages and profile info in parallel for all users
-      const detailPromises = bannedUsers.flatMap(user => [
-          userApi.getBanMessage(user.username).catch(() => ({ data: {} })),
-        profileApi.getProfileByUsername(user.username)
+      const detailPromises = bannedUsers.flatMap((user) => [
+        userApi.getBanMessage(user.username).catch(() => ({ data: {} })),
+        profileApi.getProfileByUsername(user.username),
       ]);
 
-
       const detailResponses = await Promise.all(detailPromises);
-      
+
       // Combine the results with the user data
       const usersWithDetails = bannedUsers.map((user, index) => {
         const baseIndex = index * 2; // 2 promises per user
         return {
           ...user,
           banInfo: detailResponses[baseIndex].data,
-          profile: detailResponses[baseIndex + 1].data
+          profile: detailResponses[baseIndex + 1].data,
         };
       });
       setUsers(usersWithDetails);
@@ -67,10 +63,14 @@ export default function BannedUsers() {
 
   const handleProfilePictureClick = (username) => {
     navigate(`/profile/${username}`);
-  }
+  };
 
-  if (usersLoading) return <div className={'mt-6 d-flex justify-content-center'}><Spinner/></div>
-
+  if (usersLoading)
+    return (
+      <div className={'mt-6 d-flex justify-content-center'}>
+        <Spinner />
+      </div>
+    );
 
   return (
     <div>
@@ -84,13 +84,17 @@ export default function BannedUsers() {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center space-x-4">
                   <ProfileImage
-                      username = {user.username}
-                      size="60px"
-                      defaultProfilePicture="https://example.com/default-profile.jpg"
-                      onClick={() => handleProfilePictureClick(user.username)}
+                    username={user.username}
+                    size="60px"
+                    defaultProfilePicture="https://example.com/default-profile.jpg"
+                    onClick={() => handleProfilePictureClick(user.username)}
                   />
                   <div>
-                    <div className="font-bold"><a href={ process.env.PUBLIC_URL + `/profile/${user.username}`}>{user.username}</a></div>
+                    <div className="font-bold">
+                      <a href={process.env.PUBLIC_URL + `/profile/${user.username}`}>
+                        {user.username}
+                      </a>
+                    </div>
                     <div className="text-sm text-gray-600">{user.banInfo?.banMessage}</div>
                     <div className="text-sm text-gray-500">{user.email}</div>
                   </div>
@@ -109,7 +113,9 @@ export default function BannedUsers() {
       {showUnbanModal && (
         <ConfirmationModal
           title={t('profile.unbanUser')}
-          message={t('confirmationForm.prompt', { actionName: t('profile.unbanUser').toLowerCase() })}
+          message={t('confirmationForm.prompt', {
+            actionName: t('profile.unbanUser').toLowerCase(),
+          })}
           onConfirm={() => handleUnban(showUnbanModal)}
           onCancel={() => setShowUnbanModal(false)}
         />

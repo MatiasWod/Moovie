@@ -1,59 +1,51 @@
-import { Helmet, HelmetProvider } from "react-helmet-async";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import React, { lazy, Suspense, useEffect, useState, useCallback } from "react";
-import Loader from "./pages/Loader";
-import Nav from "./pages/components/navBar/navbar";
-import { useDispatch, useSelector } from "react-redux";
-import { attemptReconnect, refreshUserData } from "./features/authSlice";
-import "bootstrap/dist/css/bootstrap.min.css";
-import LoggedGate from "./pages/components/permissions/LoggedGate";
-import RoleGate from "./pages/components/permissions/RoleGate";
-import UserRoles from "./api/values/UserRoles";
-import ContextProviderWrapper from "./store/contextProviderWrapper";
-import { useTranslation } from "react-i18next";
+import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import React, { lazy, Suspense, useEffect, useState, useCallback } from 'react';
+import Loader from './pages/Loader';
+import Nav from './pages/components/navBar/navbar';
+import { useDispatch, useSelector } from 'react-redux';
+import { attemptReconnect, refreshUserData } from './features/authSlice';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import LoggedGate from './pages/components/permissions/LoggedGate';
+import RoleGate from './pages/components/permissions/RoleGate';
+import UserRoles from './api/values/UserRoles';
+import ContextProviderWrapper from './store/contextProviderWrapper';
+import { useTranslation } from 'react-i18next';
 
-const views = "./pages/views";
+const views = './pages/views';
 
-const Home = lazy(() => import(views + "/home"));
-const Login = lazy(() => import(views + "/authViews/login"));
-const Register = lazy(() => import(views + "/authViews/register"));
-const Details = lazy(() => import(views + "/details"));
-const List = lazy(() => import(views + "/list"));
-const CreateList = lazy(() => import(views + "/createListView/createListView"));
-const BrowseLists = lazy(() => import(views + "/browseLists"));
-const Discover = lazy(() => import(views + "/discover"));
-const FeaturedLists = lazy(() => import(views + "/featuredLists"));
-const MilkyLeaderboard = lazy(() => import(views + "/milkyLeaderboard"));
-const Search = lazy(() => import(views + "/search"));
-const Profile = lazy(() => import(views + "/profile"));
-const Cast = lazy(() => import(views + "/cast"));
-const Healthcheck = lazy(() => import(views + "/healthcheck"));
-const Error404 = lazy(() => import(views + "/errorViews/error404"));
-const AuthTest = lazy(() => import(views + "/AuthTest")); // Import AuthTest
-const ReportsDashboard = lazy(() =>
-  import(views + "/reportsDashboard/ReportsDashboard")
-);
-const ConfirmToken = lazy(() => import(views + "/authViews/confirmToken"));
-const AwaitEmailValidation = lazy(() =>
-  import(views + "/authViews/awaitEmailValidation")
-);
-const ForgotPassword = lazy(() =>
-  import(views + "/authViews/forgotPasswordView")
-);
-const ResetPassword = lazy(() =>
-  import(views + "/authViews/resetPasswordView")
-);
-const ErrorBanned = lazy(() => import(views + "/errorViews/errorBanned"));
+const Home = lazy(() => import(views + '/home'));
+const Login = lazy(() => import(views + '/authViews/login'));
+const Register = lazy(() => import(views + '/authViews/register'));
+const Details = lazy(() => import(views + '/details'));
+const List = lazy(() => import(views + '/list'));
+const CreateList = lazy(() => import(views + '/createListView/createListView'));
+const BrowseLists = lazy(() => import(views + '/browseLists'));
+const Discover = lazy(() => import(views + '/discover'));
+const FeaturedLists = lazy(() => import(views + '/featuredLists'));
+const MilkyLeaderboard = lazy(() => import(views + '/milkyLeaderboard'));
+const Search = lazy(() => import(views + '/search'));
+const Profile = lazy(() => import(views + '/profile'));
+const Cast = lazy(() => import(views + '/cast'));
+const Healthcheck = lazy(() => import(views + '/healthcheck'));
+const Error404 = lazy(() => import(views + '/errorViews/error404'));
+const AuthTest = lazy(() => import(views + '/AuthTest')); // Import AuthTest
+const ReportsDashboard = lazy(() => import(views + '/reportsDashboard/ReportsDashboard'));
+const ConfirmToken = lazy(() => import(views + '/authViews/confirmToken'));
+const AwaitEmailValidation = lazy(() => import(views + '/authViews/awaitEmailValidation'));
+const ForgotPassword = lazy(() => import(views + '/authViews/forgotPasswordView'));
+const ResetPassword = lazy(() => import(views + '/authViews/resetPasswordView'));
+const ErrorBanned = lazy(() => import(views + '/errorViews/errorBanned'));
 
 export default function App() {
   const helmetContext = {};
   const dispatch = useDispatch();
   const { isLoggedIn, authInitialized } = useSelector((state) => state.auth);
   const { t } = useTranslation();
-  console.log("App");
+  console.log('App');
 
   useEffect(() => {
-    console.log("attempting reconnect");
+    console.log('attempting reconnect');
     dispatch(attemptReconnect());
   }, [dispatch]);
 
@@ -64,7 +56,7 @@ export default function App() {
       if (authInitialized && isLoggedIn) {
         dispatch(refreshUserData()).catch((error) => {
           // Log the error but don't let it propagate to avoid clearing storage
-          console.error("Failed to refresh user data:", error);
+          console.error('Failed to refresh user data:', error);
         });
       }
     },
@@ -76,11 +68,9 @@ export default function App() {
       <div className="d-flex justify-content-center align-items-center vh-100">
         <div className="text-center">
           <div className="spinner-border text-primary mb-3" role="status">
-            <span className="visually-hidden">
-              {t("loader.authInitializing")}
-            </span>
+            <span className="visually-hidden">{t('loader.authInitializing')}</span>
           </div>
-          <p className="text-muted">{t("loader.authInitializing")}</p>
+          <p className="text-muted">{t('loader.authInitializing')}</p>
         </div>
       </div>
     );

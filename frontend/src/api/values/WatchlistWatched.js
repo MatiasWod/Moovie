@@ -1,6 +1,6 @@
 const WatchlistWatched = {
-    Watchlist: "watchlist",
-    Watched: "watched"
-}
+  Watchlist: 'watchlist',
+  Watched: 'watched',
+};
 
 export default WatchlistWatched;

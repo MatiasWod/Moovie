@@ -6,10 +6,10 @@
  */
 
 const ReportTypes = {
-    "Hate": 0,
-    "Abuse & Harassment": 1,
-    "Privacy": 2,
-    "Spam": 3
-}
+  Hate: 0,
+  'Abuse & Harassment': 1,
+  Privacy: 2,
+  Spam: 3,
+};
 
 export default ReportTypes;

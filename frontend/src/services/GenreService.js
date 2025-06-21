@@ -1,19 +1,18 @@
-import genreApi from "../api/GenreApi";
+import genreApi from '../api/GenreApi';
 
 const GenreService = (() => {
+  const getAllGenres = async () => {
+    return await genreApi.getAllGenres();
+  };
 
-    const getAllGenres = async () => {
-        return await genreApi.getAllGenres();
-    }
+  const getGenresForMedia = async (id) => {
+    return await genreApi.getGenresForMedia(id);
+  };
 
-    const getGenresForMedia = async (id) =>{
-        return await genreApi.getGenresForMedia(id);
-    }
-
-    return{
-        getAllGenres,
-        getGenresForMedia
-    }
+  return {
+    getAllGenres,
+    getGenresForMedia,
+  };
 })();
 
 export default GenreService;

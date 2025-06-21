@@ -5,11 +5,12 @@ import {
   EnvelopeExclamationIcon,
   FaceAngryIcon,
   SlashCircleIcon,
-  IncognitoIcon
+  IncognitoIcon,
 } from './icons';
 
 const StatsBar = ({ stats }) => {
-  const { totalReports, totalBanned, spamReports, hateReports, abuseReports, privacyReports } = stats;
+  const { totalReports, totalBanned, spamReports, hateReports, abuseReports, privacyReports } =
+    stats;
 
   // Stats are displayed in a responsive flex container
   return (

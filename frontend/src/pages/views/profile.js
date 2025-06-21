@@ -1,32 +1,32 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import userApi from "../../api/UserApi";
-import ProfileHeader from "../components/profileHeader/ProfileHeader";
-import ProfileTabNavigation from "../components/profileTabNavigation/profileTabNavigation";
-import Reviews from "../components/ReviewsSection/Reviews";
-import ProfileTabMediaLists from "../components/profileTab/ProfileTabMediaLists";
-import ProfileTabMoovieLists from "../components/profileTab/ProfileTabMoovieLists";
-import profileApi from "../../api/ProfileApi";
-import ConfirmationModal from "../components/forms/confirmationForm/confirmationModal";
-import { useTranslation } from "react-i18next";
-import {useSelector} from "react-redux";
-import useErrorStatus from "../../hooks/useErrorStatus";
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import userApi from '../../api/UserApi';
+import ProfileHeader from '../components/profileHeader/ProfileHeader';
+import ProfileTabNavigation from '../components/profileTabNavigation/profileTabNavigation';
+import Reviews from '../components/ReviewsSection/Reviews';
+import ProfileTabMediaLists from '../components/profileTab/ProfileTabMediaLists';
+import ProfileTabMoovieLists from '../components/profileTab/ProfileTabMoovieLists';
+import profileApi from '../../api/ProfileApi';
+import ConfirmationModal from '../components/forms/confirmationForm/confirmationModal';
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import useErrorStatus from '../../hooks/useErrorStatus';
 
 function ProfileTab({ selectedTab, profile }) {
   switch (selectedTab.toLowerCase()) {
-    case "watched":
+    case 'watched':
       return <ProfileTabMediaLists username={profile.username} type="watched" />;
-    case "watchlist":
+    case 'watchlist':
       return <ProfileTabMediaLists username={profile.username} type="watchlist" />;
-    case "public-lists":
+    case 'public-lists':
       return <ProfileTabMoovieLists username={profile.username} type="public-lists" />;
-    case "private-lists":
+    case 'private-lists':
       return <ProfileTabMoovieLists username={profile.username} type="private-lists" />;
-    case "liked-lists":
+    case 'liked-lists':
       return <ProfileTabMoovieLists username={profile.username} type="liked-lists" />;
-    case "followed-lists":
+    case 'followed-lists':
       return <ProfileTabMoovieLists username={profile.username} type="followed-lists" />;
-    case "reviews":
+    case 'reviews':
       return <Reviews username={profile.username} source="user" />;
     default:
       return <div className="text-center p-4">{selectedTab}</div>;
@@ -35,7 +35,7 @@ function ProfileTab({ selectedTab, profile }) {
 
 function Profile() {
   const { username } = useParams();
-  const {isLoggedIn, user} = useSelector(state => state.auth);
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
   const { setErrorStatus } = useErrorStatus();
   const isMe = isLoggedIn && user.username === username;
 
@@ -53,7 +53,7 @@ function Profile() {
       setProfile(response.data);
       setProfileError(null);
     } catch (err) {
-      console.error("Error fetching profile:", err);
+      console.error('Error fetching profile:', err);
       setProfileError(err);
       setErrorStatus(err.response.status);
     } finally {
@@ -78,7 +78,7 @@ function Profile() {
       await userApi.banUser(username);
       fetchProfile();
     } catch (err) {
-      console.error("Error banning user:", err);
+      console.error('Error banning user:', err);
     } finally {
       setShowBanModal(false);
     }
@@ -89,7 +89,7 @@ function Profile() {
       await userApi.unbanUser(username);
       fetchProfile();
     } catch (err) {
-      console.error("Error unbanning user:", err);
+      console.error('Error unbanning user:', err);
     } finally {
       setShowUnbanModal(false);
     }
@@ -100,7 +100,7 @@ function Profile() {
       await userApi.makeUserModerator(username);
       fetchProfile();
     } catch (err) {
-      console.error("Error making user moderator:", err);
+      console.error('Error making user moderator:', err);
     } finally {
       setShowMakeModModal(false);
     }
@@ -108,9 +108,9 @@ function Profile() {
 
   useEffect(() => {
     fetchProfile();
-  }, [username,setErrorStatus]);
+  }, [username, setErrorStatus]);
 
-  const [selectedTab, setSelectedTab] = useState("public-lists");
+  const [selectedTab, setSelectedTab] = useState('public-lists');
   const handleTabSelect = (tab) => {
     setSelectedTab(tab);
   };
@@ -145,7 +145,12 @@ function Profile() {
           handleMakeModerator={handleMakeModerator}
         />
         <div className="border-t">
-          <ProfileTabNavigation selectedTab={selectedTab} onTabSelect={handleTabSelect} isLoggedIn={isLoggedIn} isMe={isMe}/>
+          <ProfileTabNavigation
+            selectedTab={selectedTab}
+            onTabSelect={handleTabSelect}
+            isLoggedIn={isLoggedIn}
+            isMe={isMe}
+          />
         </div>
         <div className="p-4">
           <ProfileTab selectedTab={selectedTab} profile={profile} />
@@ -164,7 +169,9 @@ function Profile() {
       {showUnbanModal && (
         <ConfirmationModal
           title={t('profile.unbanUser')}
-          message={t('confirmationForm.prompt', { actionName: t('profile.unbanUser').toLowerCase() })}
+          message={t('confirmationForm.prompt', {
+            actionName: t('profile.unbanUser').toLowerCase(),
+          })}
           onConfirm={confirmUnbanUser}
           onCancel={() => setShowUnbanModal(false)}
         />
@@ -173,7 +180,9 @@ function Profile() {
       {showMakeModModal && (
         <ConfirmationModal
           title={t('profile.makeUserModerator')}
-          message={t('confirmationForm.prompt', { actionName: t('profile.makeUserModerator').toLowerCase() })}
+          message={t('confirmationForm.prompt', {
+            actionName: t('profile.makeUserModerator').toLowerCase(),
+          })}
           onConfirm={confirmMakeModerator}
           onCancel={() => setShowMakeModModal(false)}
         />
