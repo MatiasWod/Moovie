@@ -144,6 +144,7 @@
   "listHeader.unfollow": "Unfollow",
   "listHeader.followers": "Followers",
   "loader.loading": "Loading...",
+  "loader.authInitializing": "Initializing authentication...",
   "login.title": "Moovie - Login!",
   "login.banned": "Account was banned",
   "login.emailVerificationPending": "Email Verification Pending",

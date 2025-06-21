@@ -146,6 +146,7 @@
   "listHeader.unfollow": "Dejar de seguir",
   "listHeader.followers": "Seguidores",
   "loader.loading": "Cargando...",
+  "loader.authInitializing": "Inicializando autenticación...",
   "login.title": "¡Moovie - Iniciar sesión!",
   "login.banned": "Cuenta bloqueada",
   "login.emailVerificationPending": "Verificación de correo electrónico pendiente",
