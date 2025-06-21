@@ -42,7 +42,7 @@ public class ImageController {
     public Response getProfileImage(@PathParam("id") final int id) {
         try {
             LOGGER.info("Method: getProfileImage, Path: /images/{id}, Id: {}", id);
-            if (imageService.getImageById(id).isPresent()) {
+            if (!imageService.getImageById(id).isPresent()) {
                 throw new NoFileException("No image found for the given ID.");
             }
             final byte[] image = imageService.getImageById(id).get().getImage();
