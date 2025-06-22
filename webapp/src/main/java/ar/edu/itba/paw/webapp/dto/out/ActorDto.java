@@ -12,6 +12,7 @@ public class ActorDto {
     private String actorName;
     private String profilePath;
     private String url;
+    private String mediasUrl;
 
     public static ActorDto fromActor(Actor actor, UriInfo uriInfo) {
         ActorDto dto = new ActorDto();
@@ -19,6 +20,7 @@ public class ActorDto {
         dto.actorName = actor.getActorName();
         dto.profilePath = actor.getProfilePath();
         dto.url = uriInfo.getBaseUriBuilder().path("actors/{actorId}").build(actor.getActorId()).toString();
+        dto.mediasUrl = uriInfo.getBaseUriBuilder().path("medias").queryParam("actorId", actor.getActorId()).build().toString();
         return dto;
     }
 
@@ -56,5 +58,13 @@ public class ActorDto {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getMediasUrl() {
+        return mediasUrl;
+    }
+
+    public void setMediasUrl(String mediasUrl) {
+        this.mediasUrl = mediasUrl;
     }
 }

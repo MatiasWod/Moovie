@@ -14,6 +14,8 @@ public class TVSerieDto extends MediaDto{
 
     private int numberOfSeasons;
 
+    private String creatorsUrl;
+
     public static TVSerieDto fromTVSerie(TVSerie tvserie, UriInfo uri) {
         TVSerieDto tvSerieDTO = new TVSerieDto();
         MediaDto.setFromMediaChild(tvSerieDTO, tvserie, uri);
@@ -21,6 +23,7 @@ public class TVSerieDto extends MediaDto{
         tvSerieDTO.numberOfEpisodes = tvserie.getNumberOfEpisodes();
         tvSerieDTO.numberOfEpisodes = tvserie.getNumberOfEpisodes();
         tvSerieDTO.numberOfSeasons = tvserie.getNumberOfSeasons();
+        tvSerieDTO.creatorsUrl = uri.getBaseUriBuilder().path("tvCreators").queryParam("mediaId", tvserie.getMediaId()).build().toString();
 
         return tvSerieDTO;
     }
@@ -55,5 +58,13 @@ public class TVSerieDto extends MediaDto{
 
     public void setNumberOfSeasons(int numberOfSeasons) {
         this.numberOfSeasons = numberOfSeasons;
+    }
+
+    public String getCreatorsUrl() {
+        return creatorsUrl;
+    }
+
+    public void setCreatorsUrl(String creatorsUrl) {
+        this.creatorsUrl = creatorsUrl;
     }
 }

@@ -70,4 +70,12 @@ public class UserDto {
     public void setUrl(String url) {
         this.url = url;
     }
+
+    public String getProfileUrl() {
+        return profileUrl;
+    }
+
+    public void setProfileUrl(String profileUrl) {
+        this.profileUrl = profileUrl;
+    }
 }

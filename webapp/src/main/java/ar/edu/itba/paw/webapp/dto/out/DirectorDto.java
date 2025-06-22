@@ -10,6 +10,7 @@ public class DirectorDto {
     private String name;
     private long totalMedia;
     private String url;
+    private String mediasUrl;
 
     public static DirectorDto fromDirector(final Director director, final UriInfo uriInfo){
         final DirectorDto dto = new DirectorDto();
@@ -17,6 +18,7 @@ public class DirectorDto {
         dto.name = director.getName();
         dto.totalMedia = director.getTotalMedia();
         dto.url = uriInfo.getBaseUriBuilder().path("directors/{id}").build(director.getDirectorId()).toString();
+        dto.mediasUrl = uriInfo.getBaseUriBuilder().path("medias").queryParam("directorId", director.getDirectorId()).build().toString();
         return dto;
     }
 
@@ -54,5 +56,13 @@ public class DirectorDto {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getMediasUrl() {
+        return mediasUrl;
+    }
+
+    public void setMediasUrl(String mediasUrl) {
+        this.mediasUrl = mediasUrl;
     }
 }

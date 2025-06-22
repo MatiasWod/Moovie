@@ -10,12 +10,14 @@ public class GenreDto {
     private int genreId;
     private String genreName;
     private String url;
+    private String mediasUrl;
 
     public static GenreDto fromGenre(Genre genre, UriInfo uriInfo){
         GenreDto genreDto = new GenreDto();
         genreDto.genreId = genre.getId();
         genreDto.genreName = genre.getGenre();
         genreDto.url = uriInfo.getBaseUriBuilder().path("genres/{genreId}").build(genre.getId()).toString();
+        genreDto.mediasUrl = uriInfo.getBaseUriBuilder().path("medias").queryParam("genres", genre.getId()).build().toString();
         return genreDto;
     }
 
@@ -45,5 +47,13 @@ public class GenreDto {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getMediasUrl() {
+        return mediasUrl;
+    }
+
+    public void setMediasUrl(String mediasUrl) {
+        this.mediasUrl = mediasUrl;
     }
 }

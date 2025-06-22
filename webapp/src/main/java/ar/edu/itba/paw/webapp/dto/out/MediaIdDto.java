@@ -17,7 +17,7 @@ public class MediaIdDto {
         this.mediaId = mediaId;
         this.username = username;
         this.mediaUrl = uriInfo.getBaseUriBuilder().path("medias/{mediaId}").build(mediaId).toString();
-        this.userUrl = uriInfo.getBaseUriBuilder().path("username/{username}").build(username).toString();
+        this.userUrl = uriInfo.getBaseUriBuilder().path("users/{username}").build(username).toString();
     }
 
     public MediaIdDto fromUserMedia(Media obj, String username, UriInfo uriInfo){
@@ -25,7 +25,7 @@ public class MediaIdDto {
         dto.mediaId = obj.getMediaId();
         dto.username = username;
         dto.mediaUrl = uriInfo.getBaseUriBuilder().path("medias/{mediaId}").build(mediaId).toString();
-        dto.userUrl = uriInfo.getBaseUriBuilder().path("username/{username}").build(username).toString();
+        dto.userUrl = uriInfo.getBaseUriBuilder().path("users/{username}").build(username).toString();
         return dto;
     }
 

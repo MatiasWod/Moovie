@@ -25,14 +25,13 @@ public class TVCreators {
     )
     private List<Media> medias;
 
-    /* Just for Hibernate*/
-    TVCreators(){
-
-    }
-
     public TVCreators(int creatorId, String creatorName) {
         this.creatorId = creatorId;
         this.creatorName = creatorName;
+    }
+
+    public TVCreators() {
+
     }
 
     public int getCreatorId() {

@@ -13,6 +13,7 @@ public class ProviderDto {
     private String providerName;
     private String logoPath;
     private String url;
+    private String mediasUrl;
 
     public static ProviderDto fromProvider(Provider p, UriInfo uriInfo) {
         ProviderDto dto = new ProviderDto();
@@ -20,6 +21,7 @@ public class ProviderDto {
         dto.providerName = p.getProviderName();
         dto.logoPath = p.getLogoPath();
         dto.url = uriInfo.getBaseUriBuilder().path("providers/{providerId}").build(p.getProviderId()).toString();
+        dto.mediasUrl = uriInfo.getBaseUriBuilder().path("medias").queryParam("providers", p.getProviderId()).build().toString();
         return dto;
     }
 
@@ -57,5 +59,13 @@ public class ProviderDto {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getMediasUrl() {
+        return mediasUrl;
+    }
+
+    public void setMediasUrl(String mediasUrl) {
+        this.mediasUrl = mediasUrl;
     }
 }

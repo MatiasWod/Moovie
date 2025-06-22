@@ -63,8 +63,8 @@ public class MediaDto {
         mediaDTO.totalRating = media.getTotalRating();
         mediaDTO.originalLanguage = media.getOriginalLanguage();
         mediaDTO.url = uriInfo.getBaseUriBuilder().path("medias/{mediaId}").build(media.getMediaId()).toString();
-        mediaDTO.providersUrl = uriInfo.getBaseUriBuilder().path("providers/{mediaId}").build(media.getMediaId()).toString();
-        mediaDTO.genresUrl = uriInfo.getBaseUriBuilder().path("genres/{mediaId}").build(media.getMediaId()).toString();
+        mediaDTO.providersUrl = uriInfo.getBaseUriBuilder().path("providers").queryParam("mediaId", media.getMediaId()).build().toString();
+        mediaDTO.genresUrl = uriInfo.getBaseUriBuilder().path("genres").queryParam("mediaId", media.getMediaId()).build().toString();
         return mediaDTO;
     }
 
@@ -83,9 +83,9 @@ public class MediaDto {
         mediaDTO.setStatus(media.getStatus());
         mediaDTO.setTotalRating(media.getTotalRating());
         mediaDTO.setOriginalLanguage(media.getOriginalLanguage());
-        mediaDTO.setUrl(uriInfo.getBaseUriBuilder().path("media/{mediaId}").build(media.getMediaId()).toString());
-        mediaDTO.providersUrl = uriInfo.getBaseUriBuilder().path("providers/{mediaId}").build(media.getMediaId()).toString();
-        mediaDTO.genresUrl = uriInfo.getBaseUriBuilder().path("genres/{mediaId}").build(media.getMediaId()).toString();
+        mediaDTO.setUrl(uriInfo.getBaseUriBuilder().path("medias/{mediaId}").build(media.getMediaId()).toString());
+        mediaDTO.providersUrl = uriInfo.getBaseUriBuilder().path("providers").queryParam("mediaId", media.getMediaId()).build().toString();
+        mediaDTO.genresUrl = uriInfo.getBaseUriBuilder().path("genres").queryParam("mediaId", media.getMediaId()).build().toString();
 
     }
 
