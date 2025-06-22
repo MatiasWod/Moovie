@@ -19,6 +19,7 @@ import profileService from '../../../services/ProfileService';
 import ReportForm from '../forms/reportForm/reportForm';
 import reportApi from '../../../api/ReportApi';
 import { Spinner } from 'react-bootstrap';
+import api from '../../../api/api';
 
 const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, reloadReviews }) => {
   const { t } = useTranslation();
@@ -243,7 +244,11 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
       <div className="review-content">{review.reviewContent}</div>
       {source === 'media' && (
         <>
-          <CommentList reviewId={review.id} reload={{ reloadComments }} />
+          <CommentList
+            reviewId={review.id}
+            reload={{ reloadComments }}
+            commentsUrl={review.commentsUrl}
+          />
           {isLoggedIn && (
             <CommentField
               onSubmit={(comment) => handleCommentSubmit(review.id, comment)}
@@ -299,7 +304,7 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
   );
 };
 
-function Reviews({ id, username, source, handleParentReload, parentReload }) {
+function Reviews({ id, username, source, handleParentReload, parentReload, reviewsUrl }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -321,7 +326,13 @@ function Reviews({ id, username, source, handleParentReload, parentReload }) {
       setError(null);
       try {
         let response;
-        if (source === 'media') {
+        if (reviewsUrl) {
+          response = await api.get(reviewsUrl, {
+            params: {
+              pageNumber: page,
+            },
+          });
+        } else if (source === 'media') {
           response = await reviewService.getReviewsByMediaId(id, page);
         } else if (source === 'list') {
           response = await moovieListReviewService.getMoovieListReviewsByListId(id, page);
@@ -338,7 +349,7 @@ function Reviews({ id, username, source, handleParentReload, parentReload }) {
       }
     };
     fetchReviews();
-  }, [id, page, reload, parentReload]);
+  }, [id, page, reload, parentReload, reviewsUrl]);
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);

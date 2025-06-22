@@ -24,8 +24,8 @@ const listApi = (() => {
     return api.get(`/lists?ids=${idListString}`);
   };
 
-  const getListContentById = ({ id, orderBy, sortOrder, pageNumber, pageSize }) => {
-    return api.get(`/lists/${id}/content`, {
+  const getListContent = ({ url, orderBy, sortOrder, pageNumber, pageSize }) => {
+    return api.get(url, {
       params: {
         orderBy: orderBy,
         sortOrder: sortOrder,
@@ -167,7 +167,7 @@ const listApi = (() => {
     getListById,
     getListByIdList,
     deleteList,
-    getListContentById,
+    getListContent,
     insertMediaIntoMoovieList,
     deleteMediaFromMoovieList,
     editMoovieList,

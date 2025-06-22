@@ -34,14 +34,14 @@ const MediaCard = ({ media, buttonCallbacks, onClick, isSelected }) => {
             <Card.Text>{formatDate(media.releaseDate)}</Card.Text>
           </div>
           <div id={'genres'} className={'d-flex justify-evenly flex-wrap'}>
-            {media.genres.data.slice(0, 2).map((genre, index) => (
+            {media.genres.slice(0, 2).map((genre, index) => (
               <span key={index} className={'mt-1 badge text-bg-dark'}>
                 {genre.genreName}
               </span>
             ))}
           </div>
           <div id={'providers'} className={'d-flex mt-3 justify-evenly flex-wrap'}>
-            {media.providers.data.slice(0, 2).map((provider, index) => (
+            {media.providers.slice(0, 2).map((provider, index) => (
               <span key={index} className={'mt-1 badge text-bg-light border border-black'}>
                 <img
                   src={provider.logoPath}

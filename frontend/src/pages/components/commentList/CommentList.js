@@ -13,8 +13,9 @@ import profileApi from '../../../api/ProfileApi';
 import CommentStatusEnum from '../../../api/values/CommentStatusEnum';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import './CommentList.css';
+import api from '../../../api/api';
 
-export default function CommentList({ reviewId, reload }) {
+export default function CommentList({ reviewId, reload, commentsUrl }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -33,11 +34,16 @@ export default function CommentList({ reviewId, reload }) {
 
   useEffect(() => {
     fetchComments();
-  }, [reviewId, refreshComments, reload?.reloadComments]);
+  }, [reviewId, refreshComments, reload?.reloadComments, commentsUrl]);
 
   const fetchComments = async () => {
     try {
-      const response = await commentApi.getReviewComments(reviewId, 1);
+      let response;
+      if (commentsUrl) {
+        response = await api.get(commentsUrl);
+      } else {
+        response = await commentApi.getReviewComments(reviewId, 1);
+      }
       setComments(response.data || []);
       setIsLoading(false);
     } catch (err) {

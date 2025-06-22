@@ -43,6 +43,9 @@ public class MediaDto {
 
     private String genresUrl;
 
+    private String reviewsUrl;
+
+    private String actorsUrl;
 
     private String url;
 
@@ -62,9 +65,14 @@ public class MediaDto {
         mediaDTO.status = media.getStatus();
         mediaDTO.totalRating = media.getTotalRating();
         mediaDTO.originalLanguage = media.getOriginalLanguage();
+
+        // URLs
         mediaDTO.url = uriInfo.getBaseUriBuilder().path("medias/{mediaId}").build(media.getMediaId()).toString();
         mediaDTO.providersUrl = uriInfo.getBaseUriBuilder().path("providers").queryParam("mediaId", media.getMediaId()).build().toString();
         mediaDTO.genresUrl = uriInfo.getBaseUriBuilder().path("genres").queryParam("mediaId", media.getMediaId()).build().toString();
+        mediaDTO.reviewsUrl = uriInfo.getBaseUriBuilder().path("reviews").queryParam("mediaId", media.getMediaId()).build().toString();
+        mediaDTO.actorsUrl = uriInfo.getBaseUriBuilder().path("actors").queryParam("mediaId", media.getMediaId()).build().toString();
+
         return mediaDTO;
     }
 
@@ -86,7 +94,8 @@ public class MediaDto {
         mediaDTO.setUrl(uriInfo.getBaseUriBuilder().path("medias/{mediaId}").build(media.getMediaId()).toString());
         mediaDTO.providersUrl = uriInfo.getBaseUriBuilder().path("providers").queryParam("mediaId", media.getMediaId()).build().toString();
         mediaDTO.genresUrl = uriInfo.getBaseUriBuilder().path("genres").queryParam("mediaId", media.getMediaId()).build().toString();
-
+        mediaDTO.setReviewsUrl(uriInfo.getBaseUriBuilder().path("reviews").queryParam("mediaId", media.getMediaId()).build().toString());
+        mediaDTO.setActorsUrl(uriInfo.getBaseUriBuilder().path("actors").queryParam("mediaId", media.getMediaId()).build().toString());
     }
 
     public static List<MediaDto> fromMediaList(List<Media> mediaList, UriInfo uriInfo) {
@@ -227,5 +236,21 @@ public class MediaDto {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getReviewsUrl() {
+        return reviewsUrl;
+    }
+
+    public void setReviewsUrl(String reviewsUrl) {
+        this.reviewsUrl = reviewsUrl;
+    }
+
+    public String getActorsUrl() {
+        return actorsUrl;
+    }
+
+    public void setActorsUrl(String actorsUrl) {
+        this.actorsUrl = actorsUrl;
     }
 }

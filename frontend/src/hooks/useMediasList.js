@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import MediaService from '../services/MediaService';
 import pagingSizes from '../api/values/PagingSizes';
-import ProviderService from '../services/ProviderService';
-import GenreService from '../services/GenreService';
+import api from '../api/api';
 
 const useMediaList = ({
   type,
@@ -35,32 +34,37 @@ const useMediaList = ({
         });
 
         const { data: medias, links } = mediasResponse;
-
-        const mediasWithProviders = await Promise.all(
+        console.log('medias', medias);
+        const mediasWithDetails = await Promise.all(
           medias.map(async (media) => {
             try {
-              const providers = await ProviderService.getProvidersForMedia(media.id);
-              return { ...media, providers };
+              // Fetch providers and genres data from their respective URLs
+              // The .catch(() => []) handles cases where the API call fails and returns empty array
+              // The .then((res) => res.data) extracts the data property from the response
+              const [providers, genres] = await Promise.all([
+                api
+                  .get(media.providersUrl)
+                  .catch(() => ({ data: [] })) // Return object with data property instead of just array
+                  .then((res) => res.data),
+                api
+                  .get(media.genresUrl)
+                  .catch(() => ({ data: [] })) // Return object with data property instead of just array
+                  .then((res) => res.data),
+              ]);
+              console.log('providers', providers);
+              console.log('genres', genres);
+              return { ...media, providers: providers, genres: genres };
             } catch {
-              return { ...media, providers: [] };
+              return { ...media, providers: [], genres: [] };
             }
           })
         );
+        console.log('mediasWithDetails', mediasWithDetails);
 
-        const mediasWithGenres = await Promise.all(
-          mediasWithProviders.map(async (media) => {
-            try {
-              const genres = await GenreService.getGenresForMedia(media.id);
-              return { ...media, genres };
-            } catch {
-              return { ...media, genres: [] };
-            }
-          })
-        );
-
-        setMedias({ links, data: mediasWithGenres });
+        setMedias({ links, data: mediasWithDetails });
       } catch (error) {
         console.error('Error fetching media data:', error);
+        setMedias({ data: [], links: {} });
         setMediasError(error);
       } finally {
         setMediasLoading(false);

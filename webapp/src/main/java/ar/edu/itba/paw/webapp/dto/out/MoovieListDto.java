@@ -48,6 +48,9 @@ public class MoovieListDto {
 
     private String privacyReportsUrl;
 
+    private String recommendedListsUrl;
+
+    private String reviewsUrl;
 
     public static MoovieListDto fromMoovieList(MoovieListCard moovieList, UriInfo uriInfo) {
         MoovieListDto dto = new MoovieListDto();
@@ -65,7 +68,8 @@ public class MoovieListDto {
         dto.url = uriInfo.getBaseUriBuilder().path("lists/{moovieListId}").build(moovieList.getMoovieListId()).toString();
         dto.contentUrl = uriInfo.getBaseUriBuilder().path("lists/{moovieListId}/content").build(moovieList.getMoovieListId()).toString();
         dto.creatorUrl = uriInfo.getBaseUriBuilder().path("users/{username}").build(moovieList.getUsername()).toString();
-
+        dto.recommendedListsUrl = uriInfo.getBaseUriBuilder().path("lists/{moovieListId}/recommendedLists").queryParam("id", moovieList.getMoovieListId()).build(moovieList.getMoovieListId()).toString();
+        dto.reviewsUrl = uriInfo.getBaseUriBuilder().path("moovieListReviews").queryParam("listId", moovieList.getMoovieListId()).build().toString();
 
         dto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
                 .queryParam("contentType", "moovieList")
@@ -259,6 +263,22 @@ public class MoovieListDto {
 
     public void setAbuseReportsUrl(String abuseReportsUrl) {
         this.abuseReportsUrl = abuseReportsUrl;
+    }
+
+    public String getRecommendedListsUrl() {
+        return recommendedListsUrl;
+    }
+
+    public void setRecommendedListsUrl(String recommendedListsUrl) {
+        this.recommendedListsUrl = recommendedListsUrl;
+    }
+
+    public String getReviewsUrl() {
+        return reviewsUrl;
+    }
+
+    public void setReviewsUrl(String reviewsUrl) {
+        this.reviewsUrl = reviewsUrl;
     }
 
 }

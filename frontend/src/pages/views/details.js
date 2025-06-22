@@ -20,6 +20,7 @@ import reviewService from '../../services/ReviewService';
 import castService from '../../services/CastService';
 import Error404 from './errorViews/error404';
 import useErrorStatus from '../../hooks/useErrorStatus';
+import api from '../../api/api';
 
 function Details() {
   const { t } = useTranslation();
@@ -81,7 +82,8 @@ function Details() {
 
   const fetchGenres = async () => {
     try {
-      const response = await GenreService.getGenresForMedia(id);
+      const response = await api.get(media.genresUrl);
+      // const response = await GenreService.getGenresForMedia(id);
       setGenres(response.data);
     } catch (err) {
       setGenreError(err);
@@ -92,7 +94,8 @@ function Details() {
 
   const fetchProviders = async () => {
     try {
-      const response = await ProviderService.getProvidersForMedia(id);
+      const response = await api.get(media.providersUrl);
+      // const response = await ProviderService.getProvidersForMedia(id);
       setProviders(response.data);
     } catch (err) {
       setProvidersError(err);
@@ -103,7 +106,8 @@ function Details() {
 
   const fetchTvCreators = async () => {
     try {
-      const response = await castService.getTvCreatorsByMediaId(id);
+      // const response = await castService.getTvCreatorsByMediaId(id);
+      const response = await api.get(media.creatorsUrl);
       setTvCreators(response.data);
     } catch (err) {
       setTvCreatorsError(err);
@@ -131,12 +135,12 @@ function Details() {
   }, [id, reload, setErrorStatus]);
 
   useEffect(() => {
-    if (media.type !== 'Movie') {
+    if (media.creatorsUrl) {
       fetchTvCreators();
     }
     fetchGenres();
     fetchProviders();
-  }, [id]);
+  }, [media.genresUrl, media.providersUrl, media.creatorsUrl]);
 
   const trailerLink = media.trailerLink === 'None' ? null : media.trailerLink;
   const releaseYear = new Date(media.releaseDate).getFullYear();
@@ -391,7 +395,7 @@ function Details() {
       <div className="row my-8">
         <h2>{t('details.cast')}</h2>
         <hr className="my-8" />
-        <ActorCardList mediaId={id} />
+        <ActorCardList actorsUrl={media.actorsUrl} />
       </div>
 
       {/* Pass reloadReviews as a key to force re-render */}
@@ -403,6 +407,7 @@ function Details() {
           id={id}
           handleParentReload={handleParentReload}
           source="media"
+          reviewsUrl={media.reviewsUrl}
         />
       </div>
     </div>

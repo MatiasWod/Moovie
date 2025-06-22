@@ -21,6 +21,7 @@ import reportApi from '../../api/ReportApi';
 import ReportForm from '../components/forms/reportForm/reportForm';
 import profileService from '../../services/ProfileService';
 import useErrorStatus from '../../hooks/useErrorStatus';
+import api from '../../api/api';
 
 function List() {
   const [error403, setError403] = useState(false);
@@ -99,22 +100,28 @@ function List() {
   useEffect(() => {
     async function getData() {
       try {
-        const data = await ListService.getListContentById({
-          id: id,
+        if (!list?.data.contentUrl) {
+          return;
+        }
+        console.log('list.data.contentUrl', list.data.contentUrl);
+        const data = await ListService.getListContent({
+          url: list.data.contentUrl,
           orderBy: currentOrderBy,
           sortOrder: currentSortOrder,
           pageNumber: page,
           pageSize: pagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT,
         });
+        console.log('getListContent response data', data);
         setListContent(data);
         setListContentLoading(false);
       } catch (error) {
+        console.error('Error getting list content:', error);
         setListContentError(error);
         setListContentLoading(false);
       }
     }
     getData();
-  }, [currentOrderBy, currentSortOrder, page, flag]);
+  }, [list?.data.contentUrl, currentOrderBy, currentSortOrder, page, flag]);
 
   const [watchedCount, setWatchedCount] = useState(0);
   useEffect(() => {
@@ -136,7 +143,12 @@ function List() {
   useEffect(() => {
     async function getData() {
       try {
-        const data = await ListService.getRecommendedLists(id);
+        if (!list?.data.recommendedListsUrl) {
+          return;
+        }
+        console.log('list.data.recommendedListsUrl', list.data.recommendedListsUrl);
+        const data = (await api.get(list.data.recommendedListsUrl)).data;
+        console.log('getRecommendedLists response data', data);
         setListRecommendations(data);
 
         setlistRecommendationsLoading(false);
@@ -146,7 +158,7 @@ function List() {
       }
     }
     getData();
-  }, [id]);
+  }, [list?.data.recommendedListsUrl]);
 
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewContent, setReviewContent] = useState('');
@@ -250,7 +262,7 @@ function List() {
         </div>
       )}
 
-      {listContentLoading ? (
+      {listContentLoading && !listContentError ? (
         <p>{t('list.loading')}</p>
       ) : (
         <ListContentPaginated
@@ -288,7 +300,7 @@ function List() {
             padding: '1rem',
           }}
         >
-          {listRecommendations?.data?.map((list) => (
+          {listRecommendations?.map((list) => (
             <div style={{ flex: '0 0 300px' }}>
               {' '}
               {/* Fixed width for each card */}
@@ -332,6 +344,7 @@ function List() {
         source={'list'}
         handleParentReload={() => setFlag(!flag)}
         parentReload={flag}
+        reviewsUrl={list?.data.reviewsUrl}
       />
     </div>
   );

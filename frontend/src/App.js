@@ -42,7 +42,6 @@ export default function App() {
   const dispatch = useDispatch();
   const { isLoggedIn, authInitialized } = useSelector((state) => state.auth);
   const { t } = useTranslation();
-  console.log('App');
 
   useEffect(() => {
     console.log('attempting reconnect');

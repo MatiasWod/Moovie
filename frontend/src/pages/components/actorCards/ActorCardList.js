@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import mediaService from '../../../services/MediaService';
 import ActorCard from './ActorCard';
 import { useTranslation } from 'react-i18next';
-import castService from '../../../services/CastService';
+import api from '../../../api/api';
 
-const ActorCardList = ({ mediaId }) => {
+const ActorCardList = ({ actorsUrl }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -20,7 +19,7 @@ const ActorCardList = ({ mediaId }) => {
   useEffect(() => {
     async function fetchActors() {
       try {
-        const response = await castService.getActorsByMediaId(mediaId);
+        const response = await api.get(actorsUrl);
         setActors(response.data);
       } catch (err) {
         setActorsError(err);
@@ -30,7 +29,7 @@ const ActorCardList = ({ mediaId }) => {
     }
 
     fetchActors();
-  }, [mediaId]);
+  }, [actorsUrl]);
 
   if (actorsLoading) {
     return <div>{t('actorCardList.loading')}</div>;

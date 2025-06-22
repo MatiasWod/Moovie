@@ -39,6 +39,8 @@ public class ReviewDto {
 
     private String mediaUrl;
 
+    private String commentsUrl;
+
 
     public static ReviewDto fromReview(final Review review, UriInfo uriInfo) {
         ReviewDto reviewDto = new ReviewDto();
@@ -89,6 +91,7 @@ public class ReviewDto {
                 .queryParam("type", ReportTypesEnum.abuse.getType())
                 .build()
                 .toString();
+        reviewDto.commentsUrl = uriInfo.getBaseUriBuilder().path("/comments").queryParam("reviewId", review.getReviewId()).build().toString();
 
 
         return reviewDto;
@@ -186,7 +189,13 @@ public class ReviewDto {
         this.abuseReportsUrl = abuseReportsUrl;
     }
 
+    public String getCommentsUrl(){
+        return commentsUrl;
+    }
 
+    public void setCommentsUrl(String commentsUrl){
+        this.commentsUrl = commentsUrl;
+    }
 
     public String getUrl() {
         return url;

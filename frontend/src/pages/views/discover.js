@@ -101,19 +101,9 @@ const Discover = () => {
 
         const { data: medias, links } = mediasResponse;
 
-        const mediasWithDetails = await Promise.all(
-          medias.map(async (media) => {
-            const [providers, genres] = await Promise.all([
-              ProviderService.getProvidersForMedia(media.id).catch(() => []),
-              GenreService.getGenresForMedia(media.id).catch(() => []),
-            ]);
-            return { ...media, providers, genres };
-          })
-        );
-
         setMedias({
           links,
-          data: mediasWithDetails,
+          data: medias,
         });
       } catch (error) {
         console.error('Error fetching media data:', error);

@@ -13,7 +13,6 @@ api.interceptors.request.use(
   (config) => {
     if (getTokenFromStorage('jwt') && !config.retried) {
       const jwt = getTokenFromStorage('jwt');
-      console.log('jwt', jwt);
       config.headers['Authorization'] = `Bearer ${jwt}`;
     }
     return config;

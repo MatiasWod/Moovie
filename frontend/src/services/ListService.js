@@ -2,6 +2,7 @@ import listApi from '../api/ListApi';
 import { parsePaginatedResponse } from '../utils/ResponseUtils';
 import mediaService from './MediaService';
 import profileApi from '../api/ProfileApi';
+import api from '../api/api';
 
 const ListService = (() => {
   const getLists = async ({
@@ -48,8 +49,8 @@ const ListService = (() => {
     return toRet.slice(0, -1); // Removes the last comma
   };
 
-  const getListContentById = async ({ id, orderBy, sortOrder, pageNumber, pageSize }) => {
-    const res = await listApi.getListContentById({ id, orderBy, sortOrder, pageNumber, pageSize });
+  const getListContent = async ({ url, orderBy, sortOrder, pageNumber, pageSize }) => {
+    const res = await listApi.getListContent({ url, orderBy, sortOrder, pageNumber, pageSize });
     const contentList = parsePaginatedResponse(res).data;
     const contentListLinks = parsePaginatedResponse(res).links;
 
@@ -60,14 +61,20 @@ const ListService = (() => {
       };
     }
 
-    const toRetMedia = await mediaService.getMediaByIdList(
-      mediaService.getIdMediaFromObjectList(contentList)
+    // Note: Promise.all maintains the order of the original array, so this will preserve the contentList order
+    const medias = await Promise.all(
+      contentList.map(async (content) => {
+        const res = await api.get(content.mediaUrl);
+        const media = res.data;
+        media.customOrder = content.customOrder;
+        return media;
+      })
     );
-    for (let i = 0; i < contentList.length; i++) {
-      toRetMedia.data[i].customOrder = contentList[i].customOrder;
-    }
-    toRetMedia.links = contentListLinks;
-    return toRetMedia;
+
+    return {
+      data: medias,
+      links: contentListLinks,
+    };
   };
 
   const createMoovieList = async ({ name, type, description }) => {
@@ -127,7 +134,7 @@ const ListService = (() => {
   return {
     getLists,
     getListById,
-    getListContentById,
+    getListContent,
     getListByIdList,
     getIdListFromObjectList,
     insertMediaIntoMoovieList,
