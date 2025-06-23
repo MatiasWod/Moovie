@@ -18,6 +18,7 @@ public interface ReviewService {
     List<MoovieListReview> getMoovieListReviewsByMoovieListId(int moovieListId, int size, int pageNumber) ;
     int getMoovieListReviewByMoovieListIdCount(int moovieListId);
     List<MoovieListReview> getMoovieListReviewsFromUser(int userId, int size, int pageNumber);
+    int getMoovieListReviewsFromUserCount(int userId);
 
 
     //The following work for both MoovieListsReviews and Reviews

@@ -288,7 +288,6 @@ public class ProfileController {
 
             List<Media> mediaList = moovieListService.getMoovieListContent(ml.getMoovieListId(),orderBy,order,PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber);
 
-//            TODO: create a proper service method for getting the correct Total-Count
             int mediaCount = ml.getSize();
             List<MediaIdDto> listToRet = new ArrayList<>();
 

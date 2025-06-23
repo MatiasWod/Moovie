@@ -79,13 +79,11 @@ public class MoovieListReviewController {
             } else if (userId != null) {
                 final List<MoovieListReview> moovieListReviews = reviewService.getMoovieListReviewsFromUser(
                         userId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
+                final int reviewCount = reviewService.getMoovieListReviewsFromUserCount(userId);
                 final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto.fromMoovieListReviewList(moovieListReviews, uriInfo);
                 
                 Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {});
-//                TODO: Create getMoovieListReviewsCount(userId, pageSize, pageNumber) service for correctly setting the Total-Count
-                // Note: Using a conservative approach with returned list size as total count
-                // since there's no specific count method for user's moovie list reviews
-                final PagingUtils<MoovieListReview> reviewPagingUtils = new PagingUtils<>(moovieListReviews, page, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), moovieListReviews.size());
+                final PagingUtils<MoovieListReview> reviewPagingUtils = new PagingUtils<>(moovieListReviews, page, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), reviewCount);
                 ResponseUtils.setPaginationLinks(res, reviewPagingUtils, uriInfo);
                 return res.build();
 

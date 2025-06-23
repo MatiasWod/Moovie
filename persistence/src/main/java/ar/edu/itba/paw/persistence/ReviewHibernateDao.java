@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -124,6 +125,15 @@ public class ReviewHibernateDao implements ReviewDao {
                 .setParameter("userId", userId).setParameter("currentUserId", currentUserId);
 
         return query.setFirstResult(pageNumber*size).setMaxResults(size).getResultList();
+    }
+
+    @Override
+    public int getMoovieListReviewsFromUserCount(int userId) {
+        final String jpql = "SELECT COUNT(r) FROM MoovieListReview r WHERE r.user.userId = :userId";
+
+        return ((BigInteger) em.createQuery(jpql)
+                .setParameter("userId", userId)
+                .getSingleResult()).intValue();
     }
 
 
