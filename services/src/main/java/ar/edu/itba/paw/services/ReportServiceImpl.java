@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -68,6 +69,49 @@ public class ReportServiceImpl implements ReportService {
         }
 
         return reports;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Object> getReports(String contentType, int pageSize, int pageNumber) {
+        List<Object> reports = new ArrayList<>();
+
+        if (contentType == null || contentType.isEmpty()) {
+            // If no content type specified, fetch all report content types
+            reports.addAll(reportDao.getReports(pageSize, pageNumber));
+        } else {
+            // Fetch reports based on the specified content type
+            switch (contentType.toLowerCase()) {
+                case "comment":
+                    reports.addAll(reportDao.getCommentReports(pageSize, pageNumber));
+                    break;
+                case "review":
+                    reports.addAll(reportDao.getReviewReports(pageSize, pageNumber));
+                    break;
+                case "moovielist":
+                    reports.addAll(reportDao.getMoovieListReports(pageSize, pageNumber));
+                    break;
+                case "moovielistreview":
+                    reports.addAll(reportDao.getMoovieListReviewReports(pageSize, pageNumber));
+                    break;
+                default:
+                    // Return empty list for invalid content types
+                    break;
+            }
+        }
+
+        return reports;
+    }
+
+    @Override
+    public int getReportsCount(String contentType) {
+
+        if (contentType == null || contentType.isEmpty()) {
+            // If no content type specified, fetch all report content types
+            return reportDao.getTotalReports();
+        } else {
+            return reportDao.getReportsCount(contentType);
+        }
     }
 
     @Transactional(readOnly = true)

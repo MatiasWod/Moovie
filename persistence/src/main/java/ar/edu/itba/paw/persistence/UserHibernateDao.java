@@ -115,6 +115,11 @@ public class UserHibernateDao implements UserDao {
     }
 
     @Override
+    public int getUserCount(UserRoles role) {
+        return ((Number) entityManager.createQuery("SELECT COUNT(*) FROM User u WHERE u.role = :userRole").setParameter("userRole", role.getRole()).getSingleResult()).intValue();
+    }
+
+    @Override
     public Optional<Profile> getProfileByUsername(String username) {
         final TypedQuery<Profile> query = entityManager.createQuery("FROM Profile where LOWER(username) LIKE :username", Profile.class);
         query.setParameter("username", username.toLowerCase());

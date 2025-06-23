@@ -347,6 +347,7 @@ public class MoovieListController {
             }
 
             List<OrderedMedia> mediaList = moovieListService.getMoovieListContentOrdered(id, orderBy, sortOrder, pageSizeQuery, pageNumber);
+//            TODO: implement a proper method to get the total-count for pagination. This method can also be used in Profile -> watched/watchlist
             final int mediaCount = moovieListService.getMoovieListCardById(id).getSize();
             List<MediaIdListIdDto> dtoList = MediaIdListIdDto.fromOrderedMediaList(mediaList, id, uriInfo);
             Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdListIdDto>>(dtoList) {

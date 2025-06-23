@@ -18,6 +18,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Primary
@@ -55,11 +57,107 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
+    public List<Object> getReports(int pageSize, int pageNumber) {
+
+        /* ------------------------------------------------------------------
+         * 1) Build a single native query that UNION-ALLs the four report
+         *    tables, keeps the primary-key (reportid) and a string flag
+         *    telling us which concrete entity it belongs to, orders everything
+         *    by report_date (newest first) and applies pagination with the
+         *    requested limit / offset.
+         * ------------------------------------------------------------------ */
+        final String sql =
+                "(SELECT reportid, 'REVIEW'       AS src, report_date FROM reportsreviews)              " +
+                        "UNION ALL                                                                                 " +
+                        "(SELECT reportid, 'MLREVIEW'    AS src, report_date FROM reportsmoovielistreviews)       " +
+                        "UNION ALL                                                                                 " +
+                        "(SELECT reportid, 'MOOVIELIST'  AS src, report_date FROM reportsmoovielists)             " +
+                        "UNION ALL                                                                                 " +
+                        "(SELECT reportid, 'COMMENT'     AS src, report_date FROM reportscomments)                " +
+                        "ORDER BY report_date DESC                                                                 " +
+                        "LIMIT :limit OFFSET :offset";
+
+        int offset = Math.max(pageNumber - 1, 0) * pageSize;
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> rows = em.createNativeQuery(sql)
+                .setParameter("limit",  pageSize)
+                .setParameter("offset", offset)
+                .getResultList();
+
+        /* ------------------------------------------------------------------
+         * 2) Translate every row to the proper JPA entity so the caller
+         *    receives a strongly-typed list it can safely cast/instanceof.
+         * ------------------------------------------------------------------ */
+        List<Object> reports = new ArrayList<>(rows.size());
+        for (Object[] row : rows) {
+            BigInteger id   = (BigInteger) row[0];
+            String     kind = ((String)  row[1]).toUpperCase();
+
+            switch (kind) {
+                case "REVIEW":
+                    reports.add(em.find(ReviewReport.class, id.intValue()));
+                    break;
+                case "MLREVIEW":
+                    reports.add(em.find(MoovieListReviewReport.class, id.intValue()));
+                    break;
+                case "MOOVIELIST":
+                    reports.add(em.find(MoovieListReport.class, id.intValue()));
+                    break;
+                case "COMMENT":
+                    reports.add(em.find(CommentReport.class, id.intValue()));
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return reports;
+    }
+
+    @Override
+    public int getReportsCount(String type) {
+        String selectClause;
+        switch (type.toLowerCase()){
+            case "review":
+                selectClause = "(SELECT COUNT(*) FROM reportsreviews)";
+                break;
+            case "comment":
+                selectClause = "(SELECT COUNT(*) FROM reportscomments)";
+                break;
+            case "moovielist":
+                selectClause = "(SELECT COUNT(*) FROM reportsmoovielists)";
+                break;
+            case "moovielistreview":
+                selectClause = "(SELECT COUNT(*) FROM reportsmoovielistreviews)";
+                break;
+            default:
+                selectClause = "SELECT 0";
+        }
+
+        BigInteger toReturn = (BigInteger) em.createNativeQuery(selectClause).getSingleResult();
+        return toReturn.intValue();
+    }
+
+
+    @Override
     public List<ReviewReport> getReviewReports() {
 
         String sql = "SELECT c FROM ReviewReport c";
 
         TypedQuery<ReviewReport> query = em.createQuery(sql, ReviewReport.class);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<ReviewReport> getReviewReports(int pageSize, int pageNumber) {
+
+        int offset = Math.max(pageNumber - 1, 0) * pageSize;
+
+        String sql = "SELECT c FROM ReviewReport c ORDER BY c.report_date DESC LIMIT :limit OFFSET :offset";
+
+        TypedQuery<ReviewReport> query = em.createQuery(sql, ReviewReport.class).setParameter("limit", pageSize).setParameter("offset", offset);
 
         return query.getResultList();
     }
@@ -127,6 +225,18 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
+    public List<MoovieListReviewReport> getMoovieListReviewReports(int pageSize, int pageNumber) {
+
+        int offset = Math.max(pageNumber - 1, 0) * pageSize;
+
+        String sql = "SELECT c FROM MoovieListReviewReport c ORDER BY c.report_date DESC LIMIT :limit OFFSET :offset";
+
+        TypedQuery<MoovieListReviewReport> query = em.createQuery(sql, MoovieListReviewReport.class).setParameter("limit", pageSize).setParameter("offset", offset);
+
+        return query.getResultList();
+    }
+
+    @Override
     public List<MoovieListReview> getReportedMoovieListReviews() {
 
         String sql = "SELECT r FROM MoovieListReview r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
@@ -184,6 +294,18 @@ public class ReportDaoImpl implements ReportDao {
         String sql = "SELECT c FROM MoovieListReport c";
 
         TypedQuery<MoovieListReport> query = em.createQuery(sql, MoovieListReport.class);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<MoovieListReport> getMoovieListReports(int pageSize, int pageNumber) {
+
+        int offset = Math.max(pageNumber - 1, 0) * pageSize;
+
+        String sql = "SELECT c FROM MoovieListReport c ORDER BY c.report_date DESC LIMIT :limit OFFSET :offset";
+
+        TypedQuery<MoovieListReport> query = em.createQuery(sql, MoovieListReport.class).setParameter("limit", pageSize).setParameter("offset", offset);
 
         return query.getResultList();
     }
@@ -248,6 +370,18 @@ public class ReportDaoImpl implements ReportDao {
 
         return query.getResultList();
 
+    }
+
+    @Override
+    public List<CommentReport> getCommentReports(int pageSize, int pageNumber) {
+
+        int offset = Math.max(pageNumber - 1, 0) * pageSize;
+
+        String sql = "SELECT c FROM CommentReport c ORDER BY c.report_date DESC LIMIT :limit OFFSET :offset";
+
+        TypedQuery<CommentReport> query = em.createQuery(sql, CommentReport.class).setParameter("limit", pageSize).setParameter("offset", offset);
+
+        return query.getResultList();
     }
 
     @Override

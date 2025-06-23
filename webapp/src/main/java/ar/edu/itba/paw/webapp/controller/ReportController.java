@@ -62,8 +62,8 @@ public class ReportController {
         }
 
         // Fetch reports based on filters using the ReportService
-        List<Object> reports = reportService.getReports(contentType);
-//        TODO: use the logic from the /reports/count endpoints to correctly get the Count-Total for the paginated response.
+        List<Object> reports = reportService.getReports(contentType, pageSizeQuery, pageNumber);
+        int totalCount = reportService.getReportsCount(contentType);
         // Map reports to DTOs
         List<ReportDTO> reportDTOs = reports.stream().map(report -> {
             if (report instanceof ReviewReport) {
@@ -79,8 +79,7 @@ public class ReportController {
         }).collect(Collectors.toList());
 
         Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ReportDTO>>(reportDTOs) {});
-        // Add pagination headers (using conservative count)
-        final PagingUtils<ReportDTO> pagingUtils = new PagingUtils<>(reportDTOs, pageNumber, pageSizeQuery, reportDTOs.size());
+        final PagingUtils<ReportDTO> pagingUtils = new PagingUtils<>(reportDTOs, pageNumber, pageSizeQuery, totalCount);
         ResponseUtils.setPaginationLinks(res, pagingUtils, uriInfo);
         return res.build();
     }
@@ -175,6 +174,7 @@ public class ReportController {
         }
     }
 
+//    TODO: KILL THIS ENDPOINT. These are not domain entities, therefore we should implement the query params into the root endpoint.
     @GET
     @Path("/count")
     @PreAuthorize("@accessValidator.isUserAdmin()")

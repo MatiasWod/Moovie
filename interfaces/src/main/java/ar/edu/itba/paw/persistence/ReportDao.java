@@ -18,9 +18,17 @@ public interface ReportDao {
 
     int getTypeReports(int type);
 
+    // GENERAL PURPOSE
+
+    List<Object> getReports(int pageSize, int pageNumber);
+
+    int getReportsCount(String type);
+
     // (Media) Reviews
 
     List<ReviewReport> getReviewReports();
+
+    List<ReviewReport> getReviewReports(int pageSize, int pageNumber);
 
     List<Review> getReportedReviews();
 
@@ -34,6 +42,8 @@ public interface ReportDao {
 
     List<MoovieListReviewReport> getMoovieListReviewReports();
 
+    List<MoovieListReviewReport> getMoovieListReviewReports(int pageSize, int pageNumber);
+
     List<MoovieListReview> getReportedMoovieListReviews();
 
     int getReportedMoovieListReviewsCount();
@@ -46,6 +56,8 @@ public interface ReportDao {
 
     List<MoovieListReport> getMoovieListReports();
 
+    List<MoovieListReport> getMoovieListReports(int pageSize, int pageNumber);
+
     List<MoovieList> getReportedMoovieLists();
 
     int getReportedMoovieListsCount();
@@ -57,6 +69,8 @@ public interface ReportDao {
     // (Review) Comments
 
     List<CommentReport> getCommentReports();
+
+    List<CommentReport> getCommentReports(int pageSize, int pageNumber);
 
     List<Comment> getReportedComments();
 

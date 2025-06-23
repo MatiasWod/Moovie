@@ -193,6 +193,12 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
+    public int getUserCount(UserRoles role) {
+        return userDao.getUserCount(role);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public Profile getProfileByUsername(String username) {
         return userDao.getProfileByUsername(username).orElseThrow(() -> new UnableToFindUserException("No user with username: " + username));
     }

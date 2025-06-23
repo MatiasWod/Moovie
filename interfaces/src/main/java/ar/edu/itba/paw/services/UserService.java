@@ -5,6 +5,7 @@ import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.models.User.UserRoles;
 
 import java.util.List;
 
@@ -44,6 +45,8 @@ public interface UserService {
 
     //returns total user count
     int getUserCount();
+
+    int getUserCount(UserRoles role);
 
     //Return the parameters needed to show in the profile page
     Profile getProfileByUsername(String username);

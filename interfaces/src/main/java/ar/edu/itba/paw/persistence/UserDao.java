@@ -3,6 +3,7 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.models.User.Image;
 import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.models.User.UserRoles;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +33,8 @@ public interface UserDao {
     int getLikedMoovieListCountForUser(String username);
 
     int getUserCount();
+
+    int getUserCount(UserRoles role);
 
 
     Optional<Profile> getProfileByUsername(String username);

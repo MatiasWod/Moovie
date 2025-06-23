@@ -19,6 +19,9 @@ public interface ReportService {
     //    GENERAL REPORTS
     List<Object> getReports(String contentType);
 
+    List<Object> getReports(String contentType, int pageSize, int pageNumber);
+
+    int getReportsCount(String contentType);
 
     // (Media) Reviews
 
