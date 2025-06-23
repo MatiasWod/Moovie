@@ -340,7 +340,7 @@ function Reviews({ id, username, source, handleParentReload, parentReload, revie
           response = await reviewService.getMovieReviewsFromUser(username, page);
         }
         setReviews(response.data);
-        setTotalPages(response.links?.last?.page || 1);
+        setTotalPages(response.links?.last?.pageNumber || 1);
       } catch (error) {
         console.error('Error fetching reviews:', error);
         setError(error);

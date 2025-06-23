@@ -2,6 +2,8 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.ResourceNotFoundException;
 import ar.edu.itba.paw.models.Cast.Director;
+import ar.edu.itba.paw.models.PagingSizes;
+import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.services.DirectorService;
 import ar.edu.itba.paw.webapp.dto.out.DirectorDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
@@ -32,14 +34,27 @@ public class DirectorController {
     @GET
     @Produces(VndType.APPLICATION_DIRECTOR_LIST)
     public Response getDirectors(
-            @QueryParam("search") final String search
+            @QueryParam("search") final String search,
+            @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber,
+            @QueryParam("pageSize") @DefaultValue("-1") final int pageSize
     ) {
         try {
+            // Determine page size
+            int pageSizeQuery = pageSize;
+            if (pageSize < 1 || pageSize > PagingSizes.DIRECTOR_DEFAULT_PAGE_SIZE.getSize()) {
+                pageSizeQuery = PagingSizes.DIRECTOR_DEFAULT_PAGE_SIZE.getSize();
+            }
+
             if (search != null && !search.isEmpty()) {
                 // Lógica para obtener directores por consulta de búsqueda
-                List<Director> directors = directorService.getDirectorsForQuery(search, 5);
+                List<Director> directors = directorService.getDirectorsForQuery(search, pageSizeQuery);
                 List<DirectorDto> directorDtos = DirectorDto.fromDirectorList(directors, uriInfo);
-                return Response.ok(new GenericEntity<List<DirectorDto>>(directorDtos) {}).build();
+                
+                Response.ResponseBuilder res = Response.ok(new GenericEntity<List<DirectorDto>>(directorDtos) {});
+                // Add pagination headers (using conservative count)
+                final PagingUtils<DirectorDto> pagingUtils = new PagingUtils<>(directorDtos, pageNumber, pageSizeQuery, directorDtos.size());
+                ResponseUtils.setPaginationLinks(res, pagingUtils, uriInfo);
+                return res.build();
             }
 
             // Si no se proporcionan parámetros válidos

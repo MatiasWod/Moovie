@@ -93,8 +93,12 @@ public class ProfileController {
                 pageSizeQuery = PagingSizes.MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE.getSize();
             }
             List<ProfileDto> leaderboards = ProfileDto.fromProfileList(userService.getMilkyPointsLeaders(pageSizeQuery, page), uriInfo);
-            return Response.ok(new GenericEntity<List<ProfileDto>>(leaderboards) {
-            }).build();
+            int totalCount = userService.getUserCount();
+            
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ProfileDto>>(leaderboards) {});
+            final PagingUtils<ProfileDto> pagingUtils = new PagingUtils<>(leaderboards, page, pageSizeQuery, totalCount);
+            ResponseUtils.setPaginationLinks(res, pagingUtils, uriInfo);
+            return res.build();
         } catch (RuntimeException e) {
             LOGGER.error("Error retrieving milky leaderboard: {}", e.getMessage());
             return Response.serverError().entity(e.getMessage()).build();
@@ -155,7 +159,7 @@ public class ProfileController {
             Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdDto>>(listToRet) {
             });
 
-            final PagingUtils<Media> toReturnMoovieListCardList = new PagingUtils<>(mediaList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), mediaCount);
+            final PagingUtils<Media> toReturnMoovieListCardList = new PagingUtils<>(mediaList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(), mediaCount);
             ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);
             return res.build();
         }
@@ -284,6 +288,7 @@ public class ProfileController {
 
             List<Media> mediaList = moovieListService.getMoovieListContent(ml.getMoovieListId(),orderBy,order,PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber);
 
+//            TODO: create a proper service method for getting the correct Total-Count
             int mediaCount = ml.getSize();
             List<MediaIdDto> listToRet = new ArrayList<>();
 
@@ -294,7 +299,7 @@ public class ProfileController {
             Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdDto>>(listToRet) {
             });
 
-            final PagingUtils<Media> toReturnMoovieListCardList = new PagingUtils<>(mediaList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), mediaCount);
+            final PagingUtils<Media> toReturnMoovieListCardList = new PagingUtils<>(mediaList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(), mediaCount);
             ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);
             return res.build();
         } catch (UnableToFindUserException e) {

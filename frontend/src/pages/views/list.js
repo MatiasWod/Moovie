@@ -268,7 +268,7 @@ function List() {
         <ListContentPaginated
           listContent={listContent}
           page={page}
-          lastPage={listContent?.links?.last?.page}
+          lastPage={listContent?.links?.last?.pageNumber}
           handlePageChange={handlePageChange}
           currentOrderBy={currentOrderBy}
           setOrderBy={setOrderBy}

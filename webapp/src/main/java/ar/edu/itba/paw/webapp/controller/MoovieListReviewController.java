@@ -80,8 +80,14 @@ public class MoovieListReviewController {
                 final List<MoovieListReview> moovieListReviews = reviewService.getMoovieListReviewsFromUser(
                         userId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
                 final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto.fromMoovieListReviewList(moovieListReviews, uriInfo);
-                return Response.ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {
-                }).build();
+                
+                Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {});
+//                TODO: Create getMoovieListReviewsCount(userId, pageSize, pageNumber) service for correctly setting the Total-Count
+                // Note: Using a conservative approach with returned list size as total count
+                // since there's no specific count method for user's moovie list reviews
+                final PagingUtils<MoovieListReview> reviewPagingUtils = new PagingUtils<>(moovieListReviews, page, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), moovieListReviews.size());
+                ResponseUtils.setPaginationLinks(res, reviewPagingUtils, uriInfo);
+                return res.build();
 
             } else {
                 return Response.status(Response.Status.BAD_REQUEST).entity("Either listId or userId must be provided.").build();

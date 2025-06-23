@@ -118,10 +118,10 @@ function BrowseLists() {
       </div>
 
       <div className="flex justify-center pt-4">
-        {mlcList?.data?.length > 0 && mlcList.links?.last?.page > 1 && (
+        {mlcList?.data?.length > 0 && mlcList.links?.last?.pageNumber > 1 && (
           <PaginationButton
             page={page}
-            lastPage={mlcList.links.last.page}
+            lastPage={mlcList.links.last.pageNumber}
             setPage={handlePageChange}
           />
         )}

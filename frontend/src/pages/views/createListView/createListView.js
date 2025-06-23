@@ -166,7 +166,7 @@ const CreateListView = () => {
               <Pagination
                 onChange={handlePaginationChange}
                 page={page}
-                count={medias.links.last.page}
+                count={medias.links.last.pageNumber}
               />
             )}
           </div>

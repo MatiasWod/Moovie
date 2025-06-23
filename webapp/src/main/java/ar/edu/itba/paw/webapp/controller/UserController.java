@@ -18,7 +18,10 @@ import ar.edu.itba.paw.webapp.dto.out.UserDto;
 
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
 import ar.edu.itba.paw.webapp.mappers.*;
+import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
+import ar.edu.itba.paw.models.PagingUtils;
+import ar.edu.itba.paw.models.PagingSizes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,18 +115,25 @@ public class UserController {
         // Listar usuarios paginados
         try {
             final List<User> all;
+            final int totalCount;
             if (role == null) {
                 all = userService.listAll(page);
+                totalCount = userService.getUserCount();
             } else {
                 all = userService.listAll(role, page);
+                totalCount = userService.getUserCount(UserRoles.getRoleFromInt(role));
             }
             if (all.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
 
             List<UserDto> dtoList = UserDto.fromUserList(all, uriInfo);
-            return Response.ok(new GenericEntity<List<UserDto>>(dtoList) {
-            }).build();
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserDto>>(dtoList) {});
+            
+            final PagingUtils<User> pagingUtils = new PagingUtils<>(all, page, PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), totalCount);
+            ResponseUtils.setPaginationLinks(res, pagingUtils, uriInfo);
+            
+            return res.build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }

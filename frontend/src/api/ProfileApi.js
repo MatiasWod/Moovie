@@ -1,5 +1,6 @@
 import api from './api';
 import VndType from '../enums/VndType';
+import { parsePaginatedResponse } from '../utils/ResponseUtils';
 
 const profileApi = (() => {
   const getProfileByUsername = (username) => {
@@ -26,10 +27,33 @@ const profileApi = (() => {
     });
   };
 
-  const getSpecialListFromUser = (username, type, orderBy, order, pageNumber = 1) => {
-    return api.get(
+  const getSpecialListFromUser = async (username, type, orderBy, order, pageNumber = 1) => {
+    const response = await api.get(
       `/profiles/${username}/${type}?orderBy=${orderBy}&order=${order}&pageNumber=${pageNumber}`
     );
+    const parsedResponse = parsePaginatedResponse(response);
+    const { links, data } = parsedResponse;
+
+    if (data.length === 0) {
+      return {
+        data: [],
+        links: links,
+      };
+    }
+
+    const medias = await Promise.all(
+      data.map(async (content) => {
+        const res = await api.get(content.mediaUrl);
+        const media = res.data;
+        media.customOrder = content.customOrder;
+        return media;
+      })
+    );
+
+    return {
+      data: medias,
+      links: links,
+    };
   };
 
   const setPfp = (username, pfp) => {

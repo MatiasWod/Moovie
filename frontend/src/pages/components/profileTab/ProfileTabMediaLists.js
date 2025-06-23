@@ -19,20 +19,15 @@ function ProfileTabMediaLists({ type, username }) {
   useEffect(() => {
     async function getData() {
       try {
-        const data = await profileApi.getSpecialListFromUser(
+        const response = await profileApi.getSpecialListFromUser(
           username,
           type,
           currentOrderBy,
           currentSortOrder,
           page
         );
-        setListPagination(data.data);
-        const idList = MediaService.getIdMediaFromObjectList(data.data);
-        if (idList.length > 0) {
-          setListContent(await MediaService.getMediaByIdList(idList));
-        } else {
-          setListContent([]);
-        }
+        setListPagination(response);
+        setListContent(response);
         setListContentLoading(false);
       } catch (error) {
         setListContentError(error);
@@ -48,12 +43,11 @@ function ProfileTabMediaLists({ type, username }) {
         <Spinner />
       </div>
     );
-
   return (
     <ListContentPaginated
       listContent={listContent}
       page={page}
-      lastPage={listPagination?.links?.last?.page}
+      lastPage={listPagination?.last?.pageNumber}
       handlePageChange={setPage}
       currentOrderBy={currentOrderBy}
       setOrderBy={setOrderBy}

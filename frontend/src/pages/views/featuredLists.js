@@ -139,10 +139,10 @@ function FeaturedLists() {
         username={isLoggedIn ? user.username : null}
       />
       <div className="flex justify-center pt-4">
-        {featuredMedia?.data?.length > 0 && featuredMedia.links?.last?.page > 1 && (
+        {featuredMedia?.data?.length > 0 && featuredMedia.links?.last?.pageNumber > 1 && (
           <PaginationButton
             page={page}
-            lastPage={featuredMedia.links.last.page}
+            lastPage={featuredMedia.links.last.pageNumber}
             setPage={handlePageChange}
           />
         )}

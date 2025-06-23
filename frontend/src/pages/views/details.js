@@ -82,9 +82,10 @@ function Details() {
 
   const fetchGenres = async () => {
     try {
-      const response = await api.get(media.genresUrl);
-      // const response = await GenreService.getGenresForMedia(id);
-      setGenres(response.data);
+      if (media.genresUrl) {
+        const response = await api.get(media.genresUrl);
+        setGenres(response.data);
+      }
     } catch (err) {
       setGenreError(err);
     } finally {
@@ -94,9 +95,10 @@ function Details() {
 
   const fetchProviders = async () => {
     try {
-      const response = await api.get(media.providersUrl);
-      // const response = await ProviderService.getProvidersForMedia(id);
-      setProviders(response.data);
+      if (media.providersUrl) {
+        const response = await api.get(media.providersUrl);
+        setProviders(response.data);
+      }
     } catch (err) {
       setProvidersError(err);
     } finally {
@@ -106,9 +108,10 @@ function Details() {
 
   const fetchTvCreators = async () => {
     try {
-      // const response = await castService.getTvCreatorsByMediaId(id);
-      const response = await api.get(media.creatorsUrl);
-      setTvCreators(response.data);
+      if (media.creatorsUrl) {
+        const response = await api.get(media.creatorsUrl);
+        setTvCreators(response.data);
+      }
     } catch (err) {
       setTvCreatorsError(err);
     } finally {
@@ -135,9 +138,7 @@ function Details() {
   }, [id, reload, setErrorStatus]);
 
   useEffect(() => {
-    if (media.creatorsUrl) {
-      fetchTvCreators();
-    }
+    fetchTvCreators();
     fetchGenres();
     fetchProviders();
   }, [media.genresUrl, media.providersUrl, media.creatorsUrl]);
@@ -261,12 +262,21 @@ function Details() {
     setReload(!reload);
   };
 
-  if (mediaLoading || genresLoading || providersLoading || tvCreatorsLoading || userReviewLoading)
+  if (mediaLoading || genresLoading || providersLoading || tvCreatorsLoading || userReviewLoading) {
+    console.log(
+      'Loading because of',
+      mediaLoading,
+      genresLoading,
+      providersLoading,
+      tvCreatorsLoading,
+      userReviewLoading
+    );
     return (
       <div className={'mt-6 d-flex justify-content-center'}>
         <Spinner />
       </div>
     );
+  }
 
   return (
     <div className="container my-1">

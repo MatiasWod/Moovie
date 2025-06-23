@@ -44,6 +44,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "lint:fix": "eslint --fix \"src/**/*.{js,jsx}\" --fix-type suggestion,layout,problem",
+    "lint": "eslint \"src/**/*.{js,jsx}\"",
+    "fix": "npm run lint:fix && npm run format",
     "build-tomcat": "react-scripts build && node prepend-jsp.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

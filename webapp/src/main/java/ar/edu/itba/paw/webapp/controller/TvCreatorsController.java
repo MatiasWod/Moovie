@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.models.PagingSizes;
+import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.TV.TVCreators;
 import ar.edu.itba.paw.services.TVCreatorsService;
 import ar.edu.itba.paw.webapp.dto.out.TvCreatorsDto;
@@ -34,19 +36,39 @@ public class TvCreatorsController {
     @Produces(VndType.APPLICATION_TVCREATOR_LIST)
     public Response getTVCreators(
             @QueryParam("search") final String search,
-            @QueryParam("mediaId") final Integer mediaId
+            @QueryParam("mediaId") final Integer mediaId,
+            @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber,
+            @QueryParam("pageSize") @DefaultValue("-1") final int pageSize
     ) {
         try {
+            // Determine page size
+            int pageSizeQuery = pageSize;
+            if (pageSize < 1 || pageSize > PagingSizes.TV_CREATOR_DEFAULT_PAGE_SIZE.getSize()) {
+                pageSizeQuery = PagingSizes.TV_CREATOR_DEFAULT_PAGE_SIZE.getSize();
+            }
+
+//            TODO: Must decide whether to paginate Director/TVCreator or not.
+//            TODO: If yes: then both are missing a proper method to get the Total-Count for the paginated responses.
+
             if (search != null && !search.isEmpty()) {
                 // Lógica para obtener creadores de TV por consulta de búsqueda
-                List<TVCreators> tvCreatorsList = tvCreatorsService.getTVCreatorsForQuery(search, 10);
+                List<TVCreators> tvCreatorsList = tvCreatorsService.getTVCreatorsForQuery(search, pageSizeQuery);
                 List<TvCreatorsDto> tvCreatorsDtoList = TvCreatorsDto.fromTvCreatorList(tvCreatorsList, uriInfo);
-                return Response.ok(new GenericEntity<List<TvCreatorsDto>>(tvCreatorsDtoList) {}).build();
+                
+                Response.ResponseBuilder res = Response.ok(new GenericEntity<List<TvCreatorsDto>>(tvCreatorsDtoList) {});
+                // Add pagination headers (using conservative count)
+                final PagingUtils<TvCreatorsDto> pagingUtils = new PagingUtils<>(tvCreatorsDtoList, pageNumber, pageSizeQuery, tvCreatorsDtoList.size());
+                ResponseUtils.setPaginationLinks(res, pagingUtils, uriInfo);
+                return res.build();
             } else if (mediaId != null) {
                 // Lógica para obtener creadores de TV por ID de medio
                 List<TVCreators> tvCreators = tvCreatorsService.getTvCreatorsByMediaId(mediaId);
                 List<TvCreatorsDto> tvCreatorsDtos = TvCreatorsDto.fromTvCreatorList(tvCreators, uriInfo);
+                
                 Response.ResponseBuilder res = Response.ok(new GenericEntity<List<TvCreatorsDto>>(tvCreatorsDtos) {});
+                // Add pagination headers (using conservative count)
+                final PagingUtils<TvCreatorsDto> pagingUtils = new PagingUtils<>(tvCreatorsDtos, pageNumber, pageSizeQuery, tvCreatorsDtos.size());
+                ResponseUtils.setPaginationLinks(res, pagingUtils, uriInfo);
                 ResponseUtils.setMaxAgeCache(res);
                 return res.build();
             }

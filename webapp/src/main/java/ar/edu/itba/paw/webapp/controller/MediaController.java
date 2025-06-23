@@ -104,6 +104,7 @@ public class MediaController {
 
             } else if (tvCreatorId != null) {
                 // Lógica para manejar el tvCreatorId
+//                TODO: Paginate this query. And add a new service method for the total-count
                 List<Media> mediaList = tvCreatorsService.getMediasForTVCreator(tvCreatorId);
 
                 if (mediaList == null || mediaList.isEmpty()) {
@@ -117,6 +118,7 @@ public class MediaController {
 
             } else if (directorId != null) {
                 // Lógica para manejar el directorId
+//                TODO: Paginate this query. Add a new service method for getting the Total-Count
                 List<Movie> mediaList = mediaService.getMediaForDirectorId(directorId);
 
                 if (mediaList == null || mediaList.isEmpty()) {
@@ -130,6 +132,7 @@ public class MediaController {
 
             } else if (actorId != null) {
                 // Lógica para manejar el actorId
+//                TODO: Paginate this query. Create a new service method to get the Total-Count
                 List<Media> mediaList = actorService.getMediaForActor(actorId);
 
                 if (mediaList == null || mediaList.isEmpty()) {

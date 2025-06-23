@@ -2,6 +2,8 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.ConflictException;
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
+import ar.edu.itba.paw.models.PagingSizes;
+import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.Reports.*;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
@@ -9,6 +11,7 @@ import ar.edu.itba.paw.webapp.dto.in.ReportCreateDTO;
 import ar.edu.itba.paw.webapp.dto.out.CountDto;
 import ar.edu.itba.paw.webapp.dto.out.ReportDTO;
 import ar.edu.itba.paw.webapp.mappers.UnableToFindUserEM;
+import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -45,14 +48,22 @@ public class ReportController {
 
     @GET
     @Produces(VndType.APPLICATION_REPORT_LIST)
-    public Response getReports(@QueryParam("contentType") @NotNull String contentType) {
+    public Response getReports(@QueryParam("contentType") @NotNull String contentType,
+                               @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber,
+                               @QueryParam("pageSize") @DefaultValue("-1") final int pageSize) {
         if(contentType!=null && !contentType.equalsIgnoreCase("comment") && !contentType.equalsIgnoreCase("moovieList") && !contentType.equalsIgnoreCase("moovieListReview") && !contentType.equalsIgnoreCase("review")){
             throw new IllegalArgumentException("The 'contentType' query parameter must be one of 'comment', 'moovieList', 'moovieListReview', or 'review'.");
         }
 
+        // Determine page size
+        int pageSizeQuery = pageSize;
+        if (pageSize < 1 || pageSize > PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize()) {
+            pageSizeQuery = PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize();
+        }
+
         // Fetch reports based on filters using the ReportService
         List<Object> reports = reportService.getReports(contentType);
-
+//        TODO: use the logic from the /reports/count endpoints to correctly get the Count-Total for the paginated response.
         // Map reports to DTOs
         List<ReportDTO> reportDTOs = reports.stream().map(report -> {
             if (report instanceof ReviewReport) {
@@ -67,8 +78,11 @@ public class ReportController {
             return null;
         }).collect(Collectors.toList());
 
-        return Response.ok(new GenericEntity<List<ReportDTO>>(reportDTOs) {
-        }).build();
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ReportDTO>>(reportDTOs) {});
+        // Add pagination headers (using conservative count)
+        final PagingUtils<ReportDTO> pagingUtils = new PagingUtils<>(reportDTOs, pageNumber, pageSizeQuery, reportDTOs.size());
+        ResponseUtils.setPaginationLinks(res, pagingUtils, uriInfo);
+        return res.build();
     }
 
 

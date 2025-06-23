@@ -88,7 +88,7 @@ const ListContentPaginated = ({
       />
 
       <div className="flex justify-center pt-4">
-        {listContent?.data?.length > 0 && listContent.links?.last?.page > 1 && (
+        {listContent?.data?.length > 0 && listContent.links?.last?.pageNumber > 1 && (
           <PaginationButton page={page} lastPage={lastPage} setPage={handlePageChange} />
         )}
       </div>

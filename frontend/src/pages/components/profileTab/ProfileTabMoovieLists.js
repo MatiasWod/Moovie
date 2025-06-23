@@ -114,7 +114,7 @@ function ProfileTabMediaLists({ type, username }) {
     <ListCardsPaginated
       mlcList={lists}
       page={page}
-      lastPage={lists?.links?.last?.page}
+      lastPage={lists?.links?.last?.pageNumber}
       handlePageChange={setPage}
       currentOrderBy={orderBy}
       setOrderBy={setOrderBy}

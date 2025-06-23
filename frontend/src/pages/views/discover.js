@@ -174,10 +174,10 @@ const Discover = () => {
           </div>
 
           <div className="m-1 d-flex justify-content-center">
-            {!mediasLoading && medias?.links?.last?.page > 1 && (
+            {!mediasLoading && medias?.links?.last?.pageNumber > 1 && (
               <Pagination
                 page={page}
-                count={medias.links.last.page}
+                count={medias.links.last.pageNumber}
                 onChange={handlePaginationChange}
               />
             )}
