@@ -225,14 +225,13 @@ public class UserController {
     }
 
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(VndType.APPLICATION_PASSWORD_TOKEN_FORM)
     public Response createPasswordResetToken(@Valid UserEmailDto userEmailDto) {
         LOGGER.info("Method: createPasswordResetToken, Path: /users, Email: {}", userEmailDto.getEmail());
         try {
             final User user = userService.findUserByEmail(userEmailDto.getEmail());
-            final String token = userService.forgotPassword(user);
-            return Response.created(uriInfo.getAbsolutePathBuilder().path(token).build()).build();
+            userService.forgotPassword(user);
+            return Response.noContent().build();
         } catch (RuntimeException e) {
             LOGGER.error("Error creating password reset token: {}", e.getMessage());
             return Response.serverError().entity(e.getMessage()).build();
