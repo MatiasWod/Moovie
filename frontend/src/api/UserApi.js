@@ -31,9 +31,40 @@ const userApi = (() => {
       return response;
     } catch (error) {
       console.log(error);
+      
+      // Map specific backend error messages to translation keys
+      let translationKey = 'login.loginFailed'; // default
+      
       if (error.response && error.response.data && error.response.data.message) {
-        const apiError = new Error(error.response.data.message);
-        apiError.status = error.response.status;
+        const errorMessage = error.response.data.message;
+        const status = error.response.status;
+        
+        // Map specific error messages to translation keys
+        if (status === 401) {
+          // 401 Unauthorized errors
+          if (errorMessage.includes('Username is incorrect')) {
+            translationKey = 'login.usernameIncorrect';
+          } else if (errorMessage.includes('Invalid token')) {
+            translationKey = 'login.invalidToken';
+          } else if (errorMessage.includes('Bad credentials') || errorMessage.includes('authentication token')) {
+            translationKey = 'login.badCredentials';
+          } else {
+            translationKey = 'login.badCredentials'; // default for 401
+          }
+        } else if (status === 403) {
+          // 403 Forbidden errors
+          if (errorMessage.includes('User not verified')) {
+            translationKey = 'login.userNotVerified';
+          } else if (errorMessage.includes('User is banned')) {
+            translationKey = 'login.userBanned';
+          } else {
+            translationKey = 'login.loginFailed'; // default for 403
+          }
+        }
+        
+        const apiError = new Error(translationKey);
+        apiError.status = status;
+        apiError.translationKey = translationKey;
         throw apiError;
       }
       throw error;

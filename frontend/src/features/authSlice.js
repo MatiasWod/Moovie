@@ -7,6 +7,7 @@ const initialState = {
   user: null,
   status: 'idle',
   error: null,
+  errorTranslationKey: null,
   authInitialized: false,
 };
 
@@ -17,8 +18,9 @@ export const loginUser = createAsyncThunk(
       const response = await userApi.login({ username, password });
       return response.data;
     } catch (error) {
-      // Pass the API error message to the UI
+      // Pass the translation key and status to the UI
       return rejectWithValue({
+        translationKey: error.translationKey || 'login.loginFailed',
         message: error.message || 'Login failed',
         status: error.status || 500
       });
@@ -90,6 +92,8 @@ const authSlice = createSlice({
     builder
       .addCase(loginUser.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
+        state.errorTranslationKey = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = 'succeeded';
@@ -101,8 +105,10 @@ const authSlice = createSlice({
         // Handle both rejectWithValue and regular errors
         if (action.payload) {
           state.error = action.payload.message;
+          state.errorTranslationKey = action.payload.translationKey;
         } else {
           state.error = action.error.message || 'Login failed';
+          state.errorTranslationKey = 'login.loginFailed';
         }
       })
       .addCase(attemptReconnect.fulfilled, (state, action) => {

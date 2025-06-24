@@ -16,7 +16,7 @@ const Login = () => {
   const location = useLocation();
   const [searchParams] = useSearchParams();
 
-  const { isLoggedIn, status, error } = useSelector((state) => state.auth);
+  const { isLoggedIn, status, error, errorTranslationKey } = useSelector((state) => state.auth);
 
   const from = location.state?.from || '/';
 
@@ -60,7 +60,11 @@ const Login = () => {
           <h2 className="text-center mb-3">{t('login.title')}</h2>
 
           {searchParams.get('error') && <Alert variant="danger">User already verified</Alert>}
-          {status === 'failed' && <Alert variant="danger">{error}</Alert>}
+          {status === 'failed' && (
+            <Alert variant="danger">
+              {errorTranslationKey ? t(errorTranslationKey) : error}
+            </Alert>
+          )}
 
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
