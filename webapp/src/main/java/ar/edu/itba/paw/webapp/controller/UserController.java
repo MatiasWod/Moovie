@@ -55,7 +55,8 @@ public class UserController {
 
     @Autowired
     public UserController(final UserService userService,
-                          VerificationTokenService verificationTokenService, JwtTokenProvider jwtTokenProvider, ModeratorService moderatorService, BannedService bannedService) {
+            VerificationTokenService verificationTokenService, JwtTokenProvider jwtTokenProvider,
+            ModeratorService moderatorService, BannedService bannedService) {
         this.userService = userService;
         this.verificationTokenService = verificationTokenService;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -71,14 +72,13 @@ public class UserController {
             @QueryParam("id") final Integer id,
             @QueryParam("role") final Integer role) {
 
-//        CHECK for invalid role
+        // CHECK for invalid role
         if (role != null) {
             UserRoles enumRole = UserRoles.getRoleFromInt(role);
             if (enumRole == null) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
         }
-
 
         // Si se proporciona un ID, buscar por ID
         if (id != null) {
@@ -128,17 +128,18 @@ public class UserController {
             }
 
             List<UserDto> dtoList = UserDto.fromUserList(all, uriInfo);
-            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserDto>>(dtoList) {});
-            
-            final PagingUtils<User> pagingUtils = new PagingUtils<>(all, page, PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), totalCount);
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserDto>>(dtoList) {
+            });
+
+            final PagingUtils<User> pagingUtils = new PagingUtils<>(all, page,
+                    PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), totalCount);
             ResponseUtils.setPaginationLinks(res, pagingUtils, uriInfo);
-            
+
             return res.build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
-
 
     @POST
     @Produces(VndType.APPLICATION_USER)
@@ -146,11 +147,14 @@ public class UserController {
     public Response createUser(@Valid final UserCreateDto userCreateDto) {
         LOGGER.info("Method: createUser, Path: /users, UserCreateDto: {}", userCreateDto);
         try {
-            LOGGER.info("Attempting to create user with username: {}, email: {}", userCreateDto.getUsername(), userCreateDto.getEmail());
+            LOGGER.info("Attempting to create user with username: {}, email: {}", userCreateDto.getUsername(),
+                    userCreateDto.getEmail());
             userService.createUser(userCreateDto.getUsername(), userCreateDto.getEmail(), userCreateDto.getPassword());
             final User user = userService.findUserByUsername(userCreateDto.getUsername());
-            return Response.created(uriInfo.getBaseUriBuilder().path("users").path(String.valueOf(user.getUserId())).build()).entity(UserDto.fromUser(user, uriInfo)).build();
-        }  catch (UnableToCreateUserException e) {
+            return Response
+                    .created(uriInfo.getBaseUriBuilder().path("users").path(user.getUsername()).build())
+                    .entity(UserDto.fromUser(user, uriInfo)).build();
+        } catch (UnableToCreateUserException e) {
             LOGGER.info("User already exists. Returning CONFLICT.");
             return Response.status(Response.Status.CONFLICT).entity("User already exists").build();
         } catch (RuntimeException e) {
@@ -213,10 +217,10 @@ public class UserController {
         } catch (UserVerifiedException e) {
             LOGGER.error("User is already verified. Returning CONFLICT.");
             return Response.status(Response.Status.CONFLICT).entity("User is already verified").build();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error("Error resending verification email: {}", e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to resend verification email").build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to resend verification email")
+                    .build();
         }
     }
 
@@ -271,7 +275,6 @@ public class UserController {
         }
     }
 
-
     @GET
     @Produces(VndType.APPLICATION_USER)
     @Path("/{username}")
@@ -285,8 +288,7 @@ public class UserController {
         return Response.ok(UserDto.fromUser(user, uriInfo)).build();
     }
 
-
-//    MODERATION
+    // MODERATION
 
     @GET
     @Path("/{username}/banMessage")
@@ -301,10 +303,9 @@ public class UserController {
             }
             LOGGER.info("RETURNING BAN MESSAGE: " + message.getMessage());
             return Response.ok(BanMessageDTO.fromBannedMessage(message, user.getUsername(), uriInfo)).build();
-        }catch (BannedMessageNotFoundException e) {
+        } catch (BannedMessageNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
@@ -316,7 +317,7 @@ public class UserController {
     @Consumes(VndType.APPLICATION_USER_BAN_FORM)
     @Produces(VndType.APPLICATION_USER)
     public Response banUser(@PathParam("username") final String username,
-                            @Valid @NotNull final BanUserDTO banUserDTO) {
+            @Valid @NotNull final BanUserDTO banUserDTO) {
         try {
             if (banUserDTO.getModAction().equals("UNBAN")) {
                 User toUnban = userService.findUserByUsername(username);
@@ -363,11 +364,10 @@ public class UserController {
         } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-//        Actualizar el modelo a devolver
-//        Llegar aqui implica un exito en la operacion
+        // Actualizar el modelo a devolver
+        // Llegar aqui implica un exito en la operacion
         user.setRole(UserRoles.MODERATOR.getRole());
         return Response.ok(UserDto.fromUser(user, uriInfo)).build();
     }
-
 
 }
