@@ -11,6 +11,7 @@ const userApi = (() => {
         headers: {
           Authorization: `Basic ${credentials}`,
         },
+        skipRetry: true,
       });
       console.log(response.headers);
       const authToken = response.headers['moovie-authtoken'];
@@ -30,6 +31,11 @@ const userApi = (() => {
       return response;
     } catch (error) {
       console.log(error);
+      if (error.response && error.response.data && error.response.data.message) {
+        const apiError = new Error(error.response.data.message);
+        apiError.status = error.response.status;
+        throw apiError;
+      }
       throw error;
     }
   };

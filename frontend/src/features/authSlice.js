@@ -10,16 +10,21 @@ const initialState = {
   authInitialized: false,
 };
 
-export const loginUser = createAsyncThunk('auth/loginUser', async ({ username, password }) => {
-  const response = await userApi.login({ username, password });
-  // console.log("loginUser success");
-  // if (response.status === 200) {
-  //     const state = getState();
-  //     state.auth.isLoggedIn = true;
-  //     state.auth.user = response.data;
-  // }
-  return response.data;
-});
+export const loginUser = createAsyncThunk(
+  'auth/loginUser', 
+  async ({ username, password }, { rejectWithValue }) => {
+    try {
+      const response = await userApi.login({ username, password });
+      return response.data;
+    } catch (error) {
+      // Pass the API error message to the UI
+      return rejectWithValue({
+        message: error.message || 'Login failed',
+        status: error.status || 500
+      });
+    }
+  }
+);
 
 export const attemptReconnect = createAsyncThunk(
   'auth/attemptReconnect',
@@ -93,7 +98,12 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        // Handle both rejectWithValue and regular errors
+        if (action.payload) {
+          state.error = action.payload.message;
+        } else {
+          state.error = action.error.message || 'Login failed';
+        }
       })
       .addCase(attemptReconnect.fulfilled, (state, action) => {
         state.status = 'succeeded';
