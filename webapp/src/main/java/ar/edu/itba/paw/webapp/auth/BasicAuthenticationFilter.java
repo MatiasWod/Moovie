@@ -1,12 +1,17 @@
 package ar.edu.itba.paw.webapp.auth;
 
+import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.exceptions.UserVerifiedException;
+import ar.edu.itba.paw.exceptions.authentication.UserBannedException;
+import ar.edu.itba.paw.exceptions.authentication.UserNotVerifiedException;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.User.UserRoles;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.services.VerificationTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -14,9 +19,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -37,6 +44,8 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter{
     private static final int USR_IDX = 0;
     private static final int PWD_IDX = 1;
 
+    @Autowired
+    private AccessDeniedHandler accessDeniedHandler;
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
@@ -60,7 +69,12 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter{
 
         try {
             String[] credentials = extractAndDecodeHeader(header);
-            User user = userService.findUserByUsername(credentials[USR_IDX]);
+            User user;
+            try{
+                user = userService.findUserByUsername(credentials[USR_IDX]);
+            } catch (UnableToFindUserException e) {
+                throw new UsernameNotFoundException("Username is incorrect");
+            }
             Optional<Token> potentialToken = verificationTokenService.getToken(credentials[PWD_IDX]);
 
             if (potentialToken.isPresent()) {
@@ -75,7 +89,9 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter{
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
             else if (user.getRole() == UserRoles.NOT_AUTHENTICATED.getRole()) {
-                throw new UserVerifiedException("User not verified");
+                throw new UserNotVerifiedException("User not verified");
+            } else if (user.getRole() == UserRoles.BANNED.getRole()){
+                throw new UserBannedException("User is banned");
             }
             else {
                 final Authentication authentication = authenticationManager.authenticate(
@@ -88,6 +104,10 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter{
             response.setHeader("Moovie-AuthToken", jwtTokenProvider.createAccessToken(builder,user));
             response.setHeader("Moovie-RefreshToken", jwtTokenProvider.createRefreshToken(builder,user));
 
+        } catch (AccessDeniedException denied) {
+            SecurityContextHolder.clearContext();
+            accessDeniedHandler.handle(request, response, denied);
+            return;
         } catch (AuthenticationException failed) {
             SecurityContextHolder.clearContext();
             authenticationEntryPoint.commence(request, response, failed);
