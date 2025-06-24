@@ -138,7 +138,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public ReviewReport reportReview(int reviewId, int userId, int type) {
         LOGGER.info("reportReview insert");
-        return reportDao.reportReview(reviewId, userId, type,null);
+        return reportDao.reportReview(reviewId, userId, type, null);
     }
 
     @Transactional
@@ -243,5 +243,17 @@ public class ReportServiceImpl implements ReportService {
     public void resolveCommentReport(int commentId) {
 
         reportDao.resolveCommentReport(commentId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Object> getReports(String contentType, Integer reportType, Integer resourceId, int pageSize,
+            int pageNumber) {
+        return reportDao.getReports(contentType, reportType, resourceId, pageSize, pageNumber);
+    }
+
+    @Override
+    public int getReportsCount(String contentType, Integer reportType, Integer resourceId) {
+        return reportDao.getReportsCount(contentType, reportType, resourceId);
     }
 }

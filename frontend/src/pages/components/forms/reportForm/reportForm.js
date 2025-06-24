@@ -8,17 +8,30 @@ const ReportForm = ({ onCancel, onReportSubmit }) => {
   const [error, setError] = useState(null);
   const [reportReason, setReportReason] = useState('');
 
-  const reportReasons = [
-    t('reportForm.hate'),
-    t('reportForm.abuseAndHarassment'),
-    t('reportForm.privacy'),
-    t('reportForm.spam'),
+  // Create mapping between translation keys and display text
+  const reportReasonMappings = [
+    { key: 'hate', displayText: t('reportForm.hate') },
+    { key: 'abuseAndHarassment', displayText: t('reportForm.abuseAndHarassment') },
+    { key: 'privacy', displayText: t('reportForm.privacy') },
+    { key: 'spam', displayText: t('reportForm.spam') },
   ];
+
+  // Map translation keys to ReportTypes keys
+  const getReportTypeKey = (translationKey) => {
+    const keyMapping = {
+      'hate': 'Hate',
+      'abuseAndHarassment': 'Abuse & Harassment',
+      'privacy': 'Privacy',
+      'spam': 'Spam',
+    };
+    return keyMapping[translationKey];
+  };
 
   const handleSubmit = async () => {
     try {
       console.log('About to report');
-      const reportType = ReportTypes[reportReason];
+      const reportTypeKey = getReportTypeKey(reportReason);
+      const reportType = ReportTypes[reportTypeKey];
       const response = await onReportSubmit?.(reportType);
       console.log('reported', response);
       if (response) {
@@ -41,17 +54,17 @@ const ReportForm = ({ onCancel, onReportSubmit }) => {
           <>
             <h2>{t('reportForm.report')}</h2>
             <div className="radio-group">
-              {reportReasons.map((reason) => (
-                <div key={reason} className="radio-option">
+              {reportReasonMappings.map((mapping) => (
+                <div key={mapping.key} className="radio-option">
                   <input
                     type="radio"
-                    id={reason}
+                    id={mapping.key}
                     name="reportReason"
-                    value={reason}
-                    checked={reportReason === reason}
+                    value={mapping.key}
+                    checked={reportReason === mapping.key}
                     onChange={(e) => setReportReason(e.target.value)}
                   />
-                  <label htmlFor={reason}>{reason}</label>
+                  <label htmlFor={mapping.key}>{mapping.displayText}</label>
                 </div>
               ))}
             </div>

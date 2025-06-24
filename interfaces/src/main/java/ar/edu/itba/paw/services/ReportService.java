@@ -16,12 +16,16 @@ public interface ReportService {
 
     int getTypeReports(int type);
 
-    //    GENERAL REPORTS
+    // GENERAL REPORTS
     List<Object> getReports(String contentType);
 
     List<Object> getReports(String contentType, int pageSize, int pageNumber);
 
+    List<Object> getReports(String contentType, Integer reportType, Integer resourceId, int pageSize, int pageNumber);
+
     int getReportsCount(String contentType);
+
+    int getReportsCount(String contentType, Integer reportType, Integer resourceId);
 
     // (Media) Reviews
 

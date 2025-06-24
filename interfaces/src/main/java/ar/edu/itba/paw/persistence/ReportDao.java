@@ -22,7 +22,11 @@ public interface ReportDao {
 
     List<Object> getReports(int pageSize, int pageNumber);
 
+    List<Object> getReports(String contentType, Integer reportType, Integer resourceId, int pageSize, int pageNumber);
+
     int getReportsCount(String type);
+
+    int getReportsCount(String contentType, Integer reportType, Integer resourceId);
 
     // (Media) Reviews
 
@@ -79,6 +83,5 @@ public interface ReportDao {
     CommentReport reportComment(int commentId, int userId, int type, String content);
 
     void resolveCommentReport(int commentId);
-
 
 }

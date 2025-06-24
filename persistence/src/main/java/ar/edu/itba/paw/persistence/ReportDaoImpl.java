@@ -21,6 +21,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Primary
 @Repository
@@ -28,6 +30,8 @@ public class ReportDaoImpl implements ReportDao {
 
     @PersistenceContext
     private EntityManager em;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReportDaoImpl.class);
 
     @Override
     public int getTotalReports() {
@@ -43,7 +47,7 @@ public class ReportDaoImpl implements ReportDao {
 
     @Override
     public int getTypeReports(int type) {
-        String sql = "SELECT " +
+        final String sql = "SELECT " +
                 "(SELECT COUNT(*) FROM reportsreviews r WHERE r.type = :type) + " +
                 "(SELECT COUNT(*) FROM reportsmoovielistreviews r WHERE r.type = :type) + " +
                 "(SELECT COUNT(*) FROM reportsmoovielists r WHERE r.type = :type) + " +
@@ -93,21 +97,22 @@ public class ReportDaoImpl implements ReportDao {
          */
         List<Object> reports = new ArrayList<>(rows.size());
         for (Object[] row : rows) {
-            BigInteger id = (BigInteger) row[0];
+            Number idNumber = (Number) row[0];
+            int id = idNumber.intValue();
             String kind = ((String) row[1]).toUpperCase();
 
             switch (kind) {
                 case "REVIEW":
-                    reports.add(em.find(ReviewReport.class, id.intValue()));
+                    reports.add(em.find(ReviewReport.class, id));
                     break;
                 case "MLREVIEW":
-                    reports.add(em.find(MoovieListReviewReport.class, id.intValue()));
+                    reports.add(em.find(MoovieListReviewReport.class, id));
                     break;
                 case "MOOVIELIST":
-                    reports.add(em.find(MoovieListReport.class, id.intValue()));
+                    reports.add(em.find(MoovieListReport.class, id));
                     break;
                 case "COMMENT":
-                    reports.add(em.find(CommentReport.class, id.intValue()));
+                    reports.add(em.find(CommentReport.class, id));
                     break;
                 default:
                     break;
@@ -444,5 +449,167 @@ public class ReportDaoImpl implements ReportDao {
         for (CommentReport report : toRemove) {
             em.remove(report);
         }
+    }
+
+    @Override
+    public List<Object> getReports(String contentType, Integer reportType, Integer resourceId, int pageSize,
+            int pageNumber) {
+
+        List<String> unionQueries = new ArrayList<>();
+
+        // Build individual queries for each content type with appropriate filtering
+        if (contentType == null || contentType.equalsIgnoreCase("review")) {
+            String reviewQuery = "SELECT reportid, 'REVIEW' AS src, report_date FROM reportsreviews WHERE 1=1";
+            if (reportType != null) {
+                reviewQuery += " AND type = " + reportType;
+            }
+            if (resourceId != null) {
+                reviewQuery += " AND reviewId = " + resourceId;
+            }
+            unionQueries.add("(" + reviewQuery + ")");
+        }
+
+        if (contentType == null || contentType.equalsIgnoreCase("moovieListReview")) {
+            String mlReviewQuery = "SELECT reportid, 'MLREVIEW' AS src, report_date FROM reportsMoovieListReviews WHERE 1=1";
+            if (reportType != null) {
+                mlReviewQuery += " AND type = " + reportType;
+            }
+            if (resourceId != null) {
+                mlReviewQuery += " AND moovieListReviewId = " + resourceId;
+            }
+            unionQueries.add("(" + mlReviewQuery + ")");
+        }
+
+        if (contentType == null || contentType.equalsIgnoreCase("moovieList")) {
+            String moovieListQuery = "SELECT reportid, 'MOOVIELIST' AS src, report_date FROM reportsmoovielists WHERE 1=1";
+            if (reportType != null) {
+                moovieListQuery += " AND type = " + reportType;
+            }
+            if (resourceId != null) {
+                moovieListQuery += " AND moovieListId = " + resourceId;
+            }
+            unionQueries.add("(" + moovieListQuery + ")");
+        }
+
+        if (contentType == null || contentType.equalsIgnoreCase("comment")) {
+            String commentQuery = "SELECT reportid, 'COMMENT' AS src, report_date FROM reportscomments WHERE 1=1";
+            if (reportType != null) {
+                commentQuery += " AND type = " + reportType;
+            }
+            if (resourceId != null) {
+                commentQuery += " AND commentId = " + resourceId;
+            }
+            unionQueries.add("(" + commentQuery + ")");
+        }
+
+        if (unionQueries.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        String sql = String.join(" UNION ALL ", unionQueries) +
+                " ORDER BY report_date DESC LIMIT :limit OFFSET :offset";
+
+        int offset = Math.max(pageNumber - 1, 0) * pageSize;
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> rows = em.createNativeQuery(sql)
+                .setParameter("limit", pageSize)
+                .setParameter("offset", offset)
+                .getResultList();
+
+        List<Object> reports = new ArrayList<>(rows.size());
+        for (Object[] row : rows) {
+            Number idNumber = (Number) row[0];
+            int id = idNumber.intValue();
+            String kind = ((String) row[1]).toUpperCase();
+
+            switch (kind) {
+                case "REVIEW":
+                    reports.add(em.find(ReviewReport.class, id));
+                    break;
+                case "MLREVIEW":
+                    reports.add(em.find(MoovieListReviewReport.class, id));
+                    break;
+                case "MOOVIELIST":
+                    reports.add(em.find(MoovieListReport.class, id));
+                    break;
+                case "COMMENT":
+                    reports.add(em.find(CommentReport.class, id));
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return reports;
+    }
+
+    @Override
+    public int getReportsCount(String contentType, Integer reportType, Integer resourceId) {
+        try {
+
+            List<String> countQueries = new ArrayList<>();
+
+            // Build individual count queries for each content type with appropriate
+            // filtering
+            if (contentType == null || contentType.equalsIgnoreCase("review")) {
+                String reviewCountQuery = "SELECT COUNT(*) FROM reportsreviews WHERE 1=1";
+                if (reportType != null) {
+                    reviewCountQuery += " AND type = " + reportType;
+                }
+                if (resourceId != null) {
+                    reviewCountQuery += " AND reviewId = " + resourceId;
+                }
+                countQueries.add("(" + reviewCountQuery + ")");
+            }
+
+            if (contentType == null || contentType.equalsIgnoreCase("moovieListReview")) {
+                String mlReviewCountQuery = "SELECT COUNT(*) FROM reportsMoovieListReviews WHERE 1=1";
+                if (reportType != null) {
+                    mlReviewCountQuery += " AND type = " + reportType;
+                }
+                if (resourceId != null) {
+                    mlReviewCountQuery += " AND moovieListReviewId = " + resourceId;
+                }
+                countQueries.add("(" + mlReviewCountQuery + ")");
+            }
+
+            if (contentType == null || contentType.equalsIgnoreCase("moovieList")) {
+                String moovieListCountQuery = "SELECT COUNT(*) FROM reportsmoovielists WHERE 1=1";
+                if (reportType != null) {
+                    moovieListCountQuery += " AND type = " + reportType;
+                }
+                if (resourceId != null) {
+                    moovieListCountQuery += " AND moovieListId = " + resourceId;
+                }
+                countQueries.add("(" + moovieListCountQuery + ")");
+            }
+
+            if (contentType == null || contentType.equalsIgnoreCase("comment")) {
+                String commentCountQuery = "SELECT COUNT(*) FROM reportscomments WHERE 1=1";
+                if (reportType != null) {
+                    commentCountQuery += " AND type = " + reportType;
+                }
+                if (resourceId != null) {
+                    commentCountQuery += " AND commentId = " + resourceId;
+                }
+                countQueries.add("(" + commentCountQuery + ")");
+            }
+
+            if (countQueries.isEmpty()) {
+                return 0;
+            }
+
+            String sql = "SELECT " + String.join(" + ", countQueries) + " AS total_count";
+
+            BigInteger result = (BigInteger) em.createNativeQuery(sql).getSingleResult();
+            return result.intValue();
+
+        } catch (Exception e) {
+
+            LOGGER.error("Error getting reports count", e);
+            throw new RuntimeException(e);
+        }
+
     }
 }

@@ -85,13 +85,43 @@ const reportApi = (() => {
   };
 
   const getReportCounts = async ({ contentType, reportType, resourceId } = {}) => {
-    const params = {};
-    if (contentType) params.contentType = contentType;
-    if (reportType) params.reportType = reportType;
-    if (resourceId) params.resourceId = resourceId;
+    const params = {
+      pageSize: 1, // Minimal page size since we only need the count from headers
+      pageNumber: 1
+    };
+    if (contentType !== null && contentType !== undefined) params.contentType = contentType;
+    if (reportType !== null && reportType !== undefined) params.reportType = reportType;
+    if (resourceId !== null && resourceId !== undefined) params.resourceId = resourceId;
 
-    const response = await api.get('/reports/count', { params });
-    return response;
+    try{
+    const response = await api.get('/reports', { params });
+    
+    // Extract count from headers - check both possible header names
+    const totalCount = response.headers['total-count'] || 
+                      response.headers['Total-Count'] ||
+                      response.headers['total-elements'] ||
+                      response.headers['Total-Elements'] ||
+                      '0';
+
+    // Return response object with count data in the same format as the old endpoint
+    return {
+      ...response,
+        data: { count: parseInt(totalCount, 10) }
+      };
+    } catch (error) {
+      console.log('----------ERROR REQUEST----------');
+      console.log('GET REPORT COUNTS contentType',contentType);
+      console.log('GET REPORT COUNTS reportType',reportType);
+      console.log('GET REPORT COUNTS resourceId',resourceId);
+      console.log('ERROR request', error.config.params);
+      console.log('ERROR status', error.response.status);
+      console.log('ERROR data', error.response.data);
+      console.log('ERROR headers', error.response.headers);
+      console.log('--------------------------------');
+      return {
+        data: { count: 0 }
+      };
+    }
   };
 
   // --------------- ACTIONS ---------------
