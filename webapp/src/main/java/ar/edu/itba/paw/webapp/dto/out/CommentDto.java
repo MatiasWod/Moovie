@@ -7,6 +7,8 @@ import ar.edu.itba.paw.models.Reports.ReportTypesEnum;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
+
+//TODO: Cambiar las URLs de Reports a las correctas (no existe mas /count)
 public class CommentDto {
 
     private int id;
@@ -23,7 +25,6 @@ public class CommentDto {
 
     private String username;
 
-    private String totalReportsUrl;
 
     private String spamReportsUrl;
 
@@ -50,12 +51,6 @@ public class CommentDto {
         commentDto.commentLikes = comment.getCommentLikes();
         commentDto.commentDislikes = comment.getCommentDislikes();
         commentDto.username = comment.getUsername();
-
-        commentDto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
-                .queryParam("contentType", "comment")
-                .queryParam("resourceId", commentDto.getId())
-                .build()
-                .toString();
 
         commentDto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
                 .queryParam("contentType", "comment")
@@ -84,7 +79,12 @@ public class CommentDto {
                 .queryParam("type", ReportTypesEnum.abuse.getType())
                 .build()
                 .toString();
-
+//        TODO: esta query anda?
+        commentDto.reportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
+                .queryParam("contentType", "comment")
+                .queryParam("resourceId", commentDto.getId())
+                .build()
+                .toString();
 
         commentDto.url = uriInfo.getBaseUriBuilder().path("/comments/{id}").build(comment.getCommentId()).toString();
         commentDto.reviewUrl = uriInfo.getBaseUriBuilder().path("/reviews/{id}").build(comment.getReviewId()).toString();
@@ -144,14 +144,6 @@ public class CommentDto {
 
     public void setCommentDislikes(int commentDislikes) {
         this.commentDislikes = commentDislikes;
-    }
-
-    public String getTotalReportsUrl() {
-        return totalReportsUrl;
-    }
-
-    public void setTotalReportsUrl(String totalReportsUrl) {
-        this.totalReportsUrl = totalReportsUrl;
     }
 
     public String getSpamReportsUrl() {

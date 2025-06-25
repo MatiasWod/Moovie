@@ -8,6 +8,7 @@ import javax.persistence.Transient;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
+//TODO: Modificar las URLs de reports
 public class MoovieListDto {
 
     private int id;

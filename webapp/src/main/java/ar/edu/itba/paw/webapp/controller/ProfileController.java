@@ -130,6 +130,8 @@ public class ProfileController {
      * Watched
      */
 
+//    TODO: Existen dos maneras de referenciar una watched/watchlist porque tienene un moovieListId por lo que se pueden acceder como /lists/{id}
+//    TODO: Por lo tanto no es una URN. (Sotuyo: Error conceptual grave.)
     @GET
     @Path("/{username}/watched")
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
@@ -239,6 +241,7 @@ public class ProfileController {
     }
 
 
+//    TODO: DELETE
     @GET
     @Path("/{username}/watched/count")
     @PreAuthorize("@accessValidator.checkIsUserMe(#username)")

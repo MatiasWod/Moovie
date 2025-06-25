@@ -5,11 +5,11 @@ import ar.edu.itba.paw.models.User.User;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
+//TODO: Faltan relaciones (comments, reviews, moovieLists, moovieListReviews, ...)
 public class UserDto {
 
     private int id;
     private String username;
-    private String email;
     private int role;
 
     private String url;
@@ -20,7 +20,6 @@ public class UserDto {
 
         dto.id=user.getUserId();
         dto.username = user.getUsername();
-        dto.email = user.getEmail();
         dto.role = user.getRole();
         dto.url = uriInfo.getBaseUriBuilder().path("/users/{username}").build(user.getUsername()).toString();
         dto.profileUrl = uriInfo.getBaseUriBuilder().path("/profiles/{username}").build(user.getUsername()).toString();
@@ -45,14 +44,6 @@ public class UserDto {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public int getRole() {

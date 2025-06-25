@@ -259,6 +259,7 @@ public class UserController {
 
     }
 
+//    TODO: DELETE
     @GET
     @Path("/count")
     @Produces(VndType.APPLICATION_USER_COUNT)

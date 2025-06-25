@@ -23,6 +23,8 @@ public class TvCreatorsDto {
         dto.id=tvCreator.getCreatorId();
         
         dto.url=uriInfo.getBaseUriBuilder().path("tvCreators/{id}").build(tvCreator.getCreatorId()).toString();
+//        TODO: Las requests con array de media son muy mal estilo cuando existe una query que las resuelve.
+//        TODO: medias?tvCreators={id}
         dto.mediasUrls = tvCreator.getMedias().stream()
                 .map(media -> uriInfo.getBaseUriBuilder()
                         .path("medias/{id}")

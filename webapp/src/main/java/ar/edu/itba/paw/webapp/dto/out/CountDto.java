@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.dto.out;
 
+//TODO: DELETE
 public class CountDto {
 
     private int count;

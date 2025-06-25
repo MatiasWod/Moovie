@@ -5,10 +5,10 @@ import ar.edu.itba.paw.models.User.Profile;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
+// TODO: Faltan URLs de relaciones (moovieLists, reviews(DELETE count), moovieListReviews, comments )
 public class ProfileDto {
     private int userId;
     private String username;
-    private String email;
     private int role;
     private int moovieListCount;
     private int reviewsCount;
@@ -22,7 +22,6 @@ public class ProfileDto {
 
         dto.userId = profile.getUserId();
         dto.username = profile.getUsername();
-        dto.email = profile.getEmail();
         dto.role = profile.getRole();
         dto.moovieListCount = profile.getMoovieListCount();
         dto.reviewsCount = profile.getReviewsCount();
@@ -54,14 +53,6 @@ public class ProfileDto {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public int getRole() {

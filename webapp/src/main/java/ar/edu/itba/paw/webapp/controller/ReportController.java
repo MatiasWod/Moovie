@@ -1,16 +1,11 @@
 package ar.edu.itba.paw.webapp.controller;
-
-import ar.edu.itba.paw.exceptions.ConflictException;
-import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.Reports.*;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.dto.in.ReportCreateDTO;
-import ar.edu.itba.paw.webapp.dto.out.CountDto;
 import ar.edu.itba.paw.webapp.dto.out.ReportDTO;
-import ar.edu.itba.paw.webapp.mappers.UnableToFindUserEM;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.slf4j.Logger;

@@ -1,5 +1,8 @@
 package ar.edu.itba.paw.webapp.dto.out;
 
+//TODO: Faltan URLs de relaciones (created_by, review)
+//TODO: Cual es la diferencia con Comment?
+//TODO: A mi me hace ruido como manejamos los likes. No deberian ser su propia entidad?
 public class UserCommentIdDto {
     private int commentId;
     private String username;

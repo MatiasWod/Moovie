@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Media.TVSerie;
 import javax.ws.rs.core.UriInfo;
 import java.util.Date;
 
+
 public class TVSerieDto extends MediaDto{
 
     private Date lastAirDate;

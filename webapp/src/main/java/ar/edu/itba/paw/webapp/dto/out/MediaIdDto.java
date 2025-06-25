@@ -5,6 +5,9 @@ import ar.edu.itba.paw.models.MoovieList.UserMoovieListId;
 
 import javax.ws.rs.core.UriInfo;
 
+
+//TODO: Los content deberian tener una referencia a la lista que los contiene y a la query que los forma.
+//TODO: este DTO solo existe para watched/watchlist?
 public class MediaIdDto {
     private int mediaId;
     private String mediaUrl;
