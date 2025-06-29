@@ -5,7 +5,6 @@ import ar.edu.itba.paw.models.User.Profile;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
-// TODO: Faltan URLs de relaciones (moovieLists, reviews(DELETE count), moovieListReviews, comments )
 public class ProfileDto {
     private int userId;
     private String username;
@@ -15,7 +14,13 @@ public class ProfileDto {
     private int milkyPoints;
     private boolean hasBadge;
     private String profilePictureUrl;
+
+    // URLs
     private String url;
+    private String userUrl;
+    private String moovieListsUrl;
+    private String moovieListReviewsUrl;
+    private String reviewsUrl;
 
     public static ProfileDto fromProfile(final Profile profile, final UriInfo uriInfo) {
         final ProfileDto dto = new ProfileDto();
@@ -29,9 +34,25 @@ public class ProfileDto {
         dto.hasBadge = profile.isHasBadge();
 
         if (profile.isHasPfp()) {
-            dto.profilePictureUrl = uriInfo.getBaseUriBuilder().path("profiles/{username}/image").build(profile.getUsername()).toString();
+            dto.profilePictureUrl = uriInfo.getBaseUriBuilder().path("profiles/{username}/image")
+                    .build(profile.getUsername()).toString();
         }
+
+        // URLs
         dto.url = uriInfo.getBaseUriBuilder().path("profiles/{username}").build(profile.getUsername()).toString();
+        dto.userUrl = uriInfo.getBaseUriBuilder().path("users/{username}").build(profile.getUsername()).toString();
+        dto.moovieListsUrl = uriInfo.getBaseUriBuilder().path("lists")
+                .queryParam("ownerUsername", profile.getUsername())
+                .build()
+                .toString();
+        dto.moovieListReviewsUrl = uriInfo.getBaseUriBuilder().path("moovieListReviews")
+                .queryParam("userId", profile.getUserId())
+                .build()
+                .toString();
+        dto.reviewsUrl = uriInfo.getBaseUriBuilder().path("reviews")
+                .queryParam("userId", profile.getUserId())
+                .build()
+                .toString();
         return dto;
     }
 

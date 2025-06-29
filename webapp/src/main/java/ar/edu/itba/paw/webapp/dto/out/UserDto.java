@@ -5,24 +5,41 @@ import ar.edu.itba.paw.models.User.User;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
-//TODO: Faltan relaciones (comments, reviews, moovieLists, moovieListReviews, ...)
 public class UserDto {
 
     private int id;
     private String username;
     private int role;
 
+    // URLs
     private String url;
     private String profileUrl;
+    private String reviewsUrl;
+    private String moovieListsUrl;
+    private String moovieListReviewsUrl;
 
     public static UserDto fromUser(final User user, final UriInfo uriInfo) {
         final UserDto dto = new UserDto();
 
-        dto.id=user.getUserId();
+        dto.id = user.getUserId();
         dto.username = user.getUsername();
         dto.role = user.getRole();
+
+        // URLs
         dto.url = uriInfo.getBaseUriBuilder().path("/users/{username}").build(user.getUsername()).toString();
         dto.profileUrl = uriInfo.getBaseUriBuilder().path("/profiles/{username}").build(user.getUsername()).toString();
+        dto.reviewsUrl = uriInfo.getBaseUriBuilder().path("/reviews")
+                .queryParam("userId", user.getUserId())
+                .build()
+                .toString();
+        dto.moovieListsUrl = uriInfo.getBaseUriBuilder().path("/lists")
+                .queryParam("ownerUsername", user.getUsername())
+                .build()
+                .toString();
+        dto.moovieListReviewsUrl = uriInfo.getBaseUriBuilder().path("/moovieListReviews")
+                .queryParam("userId", user.getUserId())
+                .build()
+                .toString();
         return dto;
     }
 
