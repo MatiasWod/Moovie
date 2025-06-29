@@ -63,46 +63,51 @@ public class MoovieListDto {
         dto.type = moovieList.getType();
         dto.likes = moovieList.getLikeCount();
         dto.followers = moovieList.getFollowerCount();
-        dto.mediaCount =  moovieList.getSize();
+        dto.mediaCount = moovieList.getSize();
         dto.movieCount = moovieList.getMoviesAmount();
-        dto.images =  moovieList.getImages();
-        dto.url = uriInfo.getBaseUriBuilder().path("lists/{moovieListId}").build(moovieList.getMoovieListId()).toString();
-        dto.contentUrl = uriInfo.getBaseUriBuilder().path("lists/{moovieListId}/content").build(moovieList.getMoovieListId()).toString();
-        dto.creatorUrl = uriInfo.getBaseUriBuilder().path("users/{username}").build(moovieList.getUsername()).toString();
-        dto.recommendedListsUrl = uriInfo.getBaseUriBuilder().path("lists/{moovieListId}/recommendedLists").queryParam("id", moovieList.getMoovieListId()).build(moovieList.getMoovieListId()).toString();
-        dto.reviewsUrl = uriInfo.getBaseUriBuilder().path("moovieListReviews").queryParam("listId", moovieList.getMoovieListId()).build().toString();
+        dto.images = moovieList.getImages();
+        dto.url = uriInfo.getBaseUriBuilder().path("lists/{moovieListId}").build(moovieList.getMoovieListId())
+                .toString();
+        dto.contentUrl = uriInfo.getBaseUriBuilder().path("lists/{moovieListId}/content")
+                .build(moovieList.getMoovieListId()).toString();
+        dto.creatorUrl = uriInfo.getBaseUriBuilder().path("users/{username}").build(moovieList.getUsername())
+                .toString();
+        dto.recommendedListsUrl = uriInfo.getBaseUriBuilder().path("lists/{moovieListId}/recommendedLists")
+                .queryParam("id", moovieList.getMoovieListId()).build(moovieList.getMoovieListId()).toString();
+        dto.reviewsUrl = uriInfo.getBaseUriBuilder().path("moovieListReviews")
+                .queryParam("listId", moovieList.getMoovieListId()).build().toString();
 
-        dto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+        dto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "moovieList")
                 .queryParam("resourceId", moovieList.getMoovieListId())
                 .build()
                 .toString();
 
-        dto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+        dto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "moovieList")
                 .queryParam("resourceId", moovieList.getMoovieListId())
-                .queryParam("type", ReportTypesEnum.spam.getType())
+                .queryParam("reportType", ReportTypesEnum.spam.getType())
                 .build()
                 .toString();
 
-        dto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+        dto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "moovieList")
                 .queryParam("resourceId", moovieList.getMoovieListId())
-                .queryParam("type", ReportTypesEnum.hatefulContent.getType())
+                .queryParam("reportType", ReportTypesEnum.hatefulContent.getType())
                 .build()
                 .toString();
 
-        dto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+        dto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "moovieList")
                 .queryParam("resourceId", moovieList.getMoovieListId())
-                .queryParam("type", ReportTypesEnum.privacy.getType())
+                .queryParam("reportType", ReportTypesEnum.privacy.getType())
                 .build()
                 .toString();
 
-        dto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+        dto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "moovieList")
                 .queryParam("resourceId", moovieList.getMoovieListId())
-                .queryParam("type", ReportTypesEnum.abuse.getType())
+                .queryParam("reportType", ReportTypesEnum.abuse.getType())
                 .build()
                 .toString();
 
@@ -224,7 +229,6 @@ public class MoovieListDto {
     public void setCreatorUrl(String creatorUrl) {
         this.creatorUrl = creatorUrl;
     }
-
 
     public String getTotalReportsUrl() {
         return totalReportsUrl;

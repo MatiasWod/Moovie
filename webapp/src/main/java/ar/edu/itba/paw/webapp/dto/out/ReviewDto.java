@@ -42,7 +42,6 @@ public class ReviewDto {
 
     private String commentsUrl;
 
-
     public static ReviewDto fromReview(final Review review, UriInfo uriInfo) {
         ReviewDto reviewDto = new ReviewDto();
         reviewDto.id = review.getReviewId();
@@ -53,47 +52,45 @@ public class ReviewDto {
         reviewDto.username = review.getUser().getUsername();
         reviewDto.lastModified = review.getLastModified();
 
-
-
         reviewDto.url = uriInfo.getBaseUriBuilder().path("/reviews/{id}").build(review.getReviewId()).toString();
-        reviewDto.userUrl = uriInfo.getBaseUriBuilder().path("/users/{username}").build(review.getUser().getUsername()).toString();
+        reviewDto.userUrl = uriInfo.getBaseUriBuilder().path("/users/{username}").build(review.getUser().getUsername())
+                .toString();
         reviewDto.mediaUrl = uriInfo.getBaseUriBuilder().path("/medias/{id}").build(review.getMediaId()).toString();
 
-        reviewDto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+        reviewDto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "review")
                 .queryParam("resourceId", review.getReviewId())
                 .build()
                 .toString();
 
-        reviewDto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+        reviewDto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "review")
                 .queryParam("resourceId", review.getReviewId())
-                .queryParam("type", ReportTypesEnum.spam.getType())
+                .queryParam("reportType", ReportTypesEnum.spam.getType())
                 .build()
                 .toString();
 
-        reviewDto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+        reviewDto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "review")
                 .queryParam("resourceId", review.getReviewId())
-                .queryParam("type", ReportTypesEnum.hatefulContent.getType())
+                .queryParam("reportType", ReportTypesEnum.hatefulContent.getType())
                 .build()
                 .toString();
 
-        reviewDto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+        reviewDto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "review")
                 .queryParam("resourceId", review.getReviewId())
-                .queryParam("type", ReportTypesEnum.privacy.getType())
+                .queryParam("reportType", ReportTypesEnum.privacy.getType())
                 .build()
                 .toString();
-        reviewDto.abuseReportsUrl = uriInfo.getBaseUriBuilder()
-                .path("/reports/count")
+        reviewDto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "review")
                 .queryParam("resourceId", review.getReviewId())
-                .queryParam("type", ReportTypesEnum.abuse.getType())
+                .queryParam("reportType", ReportTypesEnum.abuse.getType())
                 .build()
                 .toString();
-        reviewDto.commentsUrl = uriInfo.getBaseUriBuilder().path("/comments").queryParam("reviewId", review.getReviewId()).build().toString();
-
+        reviewDto.commentsUrl = uriInfo.getBaseUriBuilder().path("/comments")
+                .queryParam("reviewId", review.getReviewId()).build().toString();
 
         return reviewDto;
     }
@@ -190,11 +187,11 @@ public class ReviewDto {
         this.abuseReportsUrl = abuseReportsUrl;
     }
 
-    public String getCommentsUrl(){
+    public String getCommentsUrl() {
         return commentsUrl;
     }
 
-    public void setCommentsUrl(String commentsUrl){
+    public void setCommentsUrl(String commentsUrl) {
         this.commentsUrl = commentsUrl;
     }
 

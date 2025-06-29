@@ -36,65 +36,64 @@ public class MoovieListReviewDto {
 
     private String moovieListUrl;
 
-
-    public static MoovieListReviewDto fromMoovieListReview(final MoovieListReview moovieListReview, UriInfo uriInfo){
-        MoovieListReviewDto moovieListReviewDto= new MoovieListReviewDto();
-        moovieListReviewDto.id=moovieListReview.getMoovieListReviewId();
-        moovieListReviewDto.moovieListid=moovieListReview.getMoovieListId();
-        moovieListReviewDto.reviewLikes=moovieListReview.getReviewLikes();
-        moovieListReviewDto.reviewContent= moovieListReview.getReviewContent();
+    public static MoovieListReviewDto fromMoovieListReview(final MoovieListReview moovieListReview, UriInfo uriInfo) {
+        MoovieListReviewDto moovieListReviewDto = new MoovieListReviewDto();
+        moovieListReviewDto.id = moovieListReview.getMoovieListReviewId();
+        moovieListReviewDto.moovieListid = moovieListReview.getMoovieListId();
+        moovieListReviewDto.reviewLikes = moovieListReview.getReviewLikes();
+        moovieListReviewDto.reviewContent = moovieListReview.getReviewContent();
         moovieListReviewDto.username = moovieListReview.getUser().getUsername();
         moovieListReviewDto.lastModified = moovieListReview.getLastModified();
 
-        moovieListReviewDto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+        moovieListReviewDto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "moovieListReview")
                 .queryParam("resourceId", moovieListReview.getMoovieListReviewId())
                 .build()
                 .toString();
 
-        moovieListReviewDto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+        moovieListReviewDto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "moovieListReview")
                 .queryParam("resourceId", moovieListReview.getMoovieListReviewId())
-                .queryParam("type", ReportTypesEnum.spam.getType())
+                .queryParam("reportType", ReportTypesEnum.spam.getType())
                 .build()
                 .toString();
 
-        moovieListReviewDto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+        moovieListReviewDto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "moovieListReview")
                 .queryParam("resourceId", moovieListReview.getMoovieListReviewId())
-                .queryParam("type", ReportTypesEnum.hatefulContent.getType())
+                .queryParam("reportType", ReportTypesEnum.hatefulContent.getType())
                 .build()
                 .toString();
 
-        moovieListReviewDto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+        moovieListReviewDto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "moovieListReview")
                 .queryParam("resourceId", moovieListReview.getMoovieListReviewId())
-                .queryParam("type", ReportTypesEnum.privacy.getType())
+                .queryParam("reportType", ReportTypesEnum.privacy.getType())
                 .build()
                 .toString();
 
-        moovieListReviewDto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+        moovieListReviewDto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "moovieListReview")
                 .queryParam("resourceId", moovieListReview.getMoovieListReviewId())
-                .queryParam("type", ReportTypesEnum.abuse.getType())
+                .queryParam("reportType", ReportTypesEnum.abuse.getType())
                 .build()
                 .toString();
 
-
-
-
-        moovieListReviewDto.url= uriInfo.getBaseUriBuilder().path("/moovieListReviews/{id}").build(moovieListReview.getMoovieListReviewId()).toString();
-        moovieListReviewDto.userUrl=uriInfo.getBaseUriBuilder().path("/users/{username}").build(moovieListReview.getUser().getUsername()).toString();
-        moovieListReviewDto.moovieListUrl=uriInfo.getBaseUriBuilder().path("/lists/{id}").build(moovieListReview.getMoovieListId()).toString();
-
+        moovieListReviewDto.url = uriInfo.getBaseUriBuilder().path("/moovieListReviews/{id}")
+                .build(moovieListReview.getMoovieListReviewId()).toString();
+        moovieListReviewDto.userUrl = uriInfo.getBaseUriBuilder().path("/users/{username}")
+                .build(moovieListReview.getUser().getUsername()).toString();
+        moovieListReviewDto.moovieListUrl = uriInfo.getBaseUriBuilder().path("/lists/{id}")
+                .build(moovieListReview.getMoovieListId()).toString();
 
         return moovieListReviewDto;
     }
 
-    public static List<MoovieListReviewDto> fromMoovieListReviewList(final List<MoovieListReview> moovieListReviews,UriInfo uriInfo){
-        return moovieListReviews.stream().map(r->fromMoovieListReview(r,uriInfo)).collect(java.util.stream.Collectors.toList());
+    public static List<MoovieListReviewDto> fromMoovieListReviewList(final List<MoovieListReview> moovieListReviews,
+            UriInfo uriInfo) {
+        return moovieListReviews.stream().map(r -> fromMoovieListReview(r, uriInfo))
+                .collect(java.util.stream.Collectors.toList());
     }
-
 
     public int getId() {
         return id;
@@ -183,7 +182,6 @@ public class MoovieListReviewDto {
     public void setAbuseReportsUrl(String abuseReportsUrl) {
         this.abuseReportsUrl = abuseReportsUrl;
     }
-
 
     public String getUrl() {
         return url;

@@ -1,12 +1,10 @@
 package ar.edu.itba.paw.webapp.dto.out;
 
-
 import ar.edu.itba.paw.models.Comments.Comment;
 import ar.edu.itba.paw.models.Reports.ReportTypesEnum;
 
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
-
 
 //TODO: Cambiar las URLs de Reports a las correctas (no existe mas /count)
 public class CommentDto {
@@ -24,7 +22,6 @@ public class CommentDto {
     private int commentDislikes;
 
     private String username;
-
 
     private String spamReportsUrl;
 
@@ -52,34 +49,34 @@ public class CommentDto {
         commentDto.commentDislikes = comment.getCommentDislikes();
         commentDto.username = comment.getUsername();
 
-        commentDto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+        commentDto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "comment")
                 .queryParam("resourceId", commentDto.getId())
-                .queryParam("type", ReportTypesEnum.spam.getType())
+                .queryParam("reportType", ReportTypesEnum.spam.getType())
                 .build()
                 .toString();
 
-        commentDto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+        commentDto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "comment")
                 .queryParam("resourceId", commentDto.getId())
-                .queryParam("type", ReportTypesEnum.hatefulContent.getType())
+                .queryParam("reportType", ReportTypesEnum.hatefulContent.getType())
                 .build()
                 .toString();
 
-        commentDto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+        commentDto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "comment")
                 .queryParam("resourceId", commentDto.getId())
-                .queryParam("type", ReportTypesEnum.privacy.getType())
+                .queryParam("reportType", ReportTypesEnum.privacy.getType())
                 .build()
                 .toString();
 
-        commentDto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/reports/count")
+        commentDto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "comment")
                 .queryParam("resourceId", commentDto.getId())
-                .queryParam("type", ReportTypesEnum.abuse.getType())
+                .queryParam("reportType", ReportTypesEnum.abuse.getType())
                 .build()
                 .toString();
-//        TODO: esta query anda?
+
         commentDto.reportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "comment")
                 .queryParam("resourceId", commentDto.getId())
@@ -87,8 +84,10 @@ public class CommentDto {
                 .toString();
 
         commentDto.url = uriInfo.getBaseUriBuilder().path("/comments/{id}").build(comment.getCommentId()).toString();
-        commentDto.reviewUrl = uriInfo.getBaseUriBuilder().path("/reviews/{id}").build(comment.getReviewId()).toString();
-        commentDto.userUrl = uriInfo.getBaseUriBuilder().path("/users/{username}").build(comment.getUsername()).toString();
+        commentDto.reviewUrl = uriInfo.getBaseUriBuilder().path("/reviews/{id}").build(comment.getReviewId())
+                .toString();
+        commentDto.userUrl = uriInfo.getBaseUriBuilder().path("/users/{username}").build(comment.getUsername())
+                .toString();
 
         return commentDto;
 

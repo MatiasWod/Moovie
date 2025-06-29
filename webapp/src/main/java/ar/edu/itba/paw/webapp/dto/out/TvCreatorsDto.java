@@ -10,54 +10,49 @@ public class TvCreatorsDto {
     private int id;
 
     private String creatorName;
-    
-    
+
     private String url;
-    
-    private String [] mediasUrls;
+
+    private String mediasUrls;
 
     public static TvCreatorsDto fromTvCreator(final TVCreators tvCreator, final UriInfo uriInfo) {
         final TvCreatorsDto dto = new TvCreatorsDto();
-        
-        dto.creatorName=tvCreator.getCreatorName();
-        dto.id=tvCreator.getCreatorId();
-        
-        dto.url=uriInfo.getBaseUriBuilder().path("tvCreators/{id}").build(tvCreator.getCreatorId()).toString();
-//        TODO: Las requests con array de media son muy mal estilo cuando existe una query que las resuelve.
-//        TODO: medias?tvCreators={id}
-        dto.mediasUrls = tvCreator.getMedias().stream()
-                .map(media -> uriInfo.getBaseUriBuilder()
-                        .path("medias/{id}")
-                        .build(media.getMediaId())
-                        .toString())
-                .toArray(String[]::new);
+
+        dto.creatorName = tvCreator.getCreatorName();
+        dto.id = tvCreator.getCreatorId();
+
+        dto.url = uriInfo.getBaseUriBuilder().path("tvCreators/{id}").build(tvCreator.getCreatorId()).toString();
+        dto.mediasUrls = uriInfo.getBaseUriBuilder().path("medias")
+                .queryParam("tvCreatorId", tvCreator.getCreatorId())
+                .build()
+                .toString();
         return dto;
     }
-    
+
     public static List<TvCreatorsDto> fromTvCreatorList(final List<TVCreators> tvCreatorList, final UriInfo uriInfo) {
         return tvCreatorList.stream().map(m -> fromTvCreator(m, uriInfo)).collect(java.util.stream.Collectors.toList());
     }
-    
+
     public String getUrl() {
         return url;
     }
-    
+
     public void setUrl(String url) {
         this.url = url;
     }
 
-    public String[] getMediasUrls() {
+    public String getMediasUrls() {
         return mediasUrls;
     }
 
-    public void setMediasUrls(String[] mediasUrls) {
+    public void setMediasUrls(String mediasUrls) {
         this.mediasUrls = mediasUrls;
     }
-    
+
     public int getId() {
         return id;
     }
-    
+
     public void setId(int id) {
         this.id = id;
     }
@@ -65,11 +60,9 @@ public class TvCreatorsDto {
     public String getCreatorName() {
         return creatorName;
     }
-    
+
     public void setCreatorName(String creatorName) {
         this.creatorName = creatorName;
     }
-    
 
-    
 }
