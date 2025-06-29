@@ -7,7 +7,6 @@ import javax.ws.rs.core.UriInfo;
 import java.time.LocalDate;
 import java.util.List;
 
-//TODO: cambiar URLs de reports.
 public class ReviewDto {
 
     private int id;

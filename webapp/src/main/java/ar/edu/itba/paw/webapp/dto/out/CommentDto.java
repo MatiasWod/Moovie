@@ -6,7 +6,6 @@ import ar.edu.itba.paw.models.Reports.ReportTypesEnum;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
-//TODO: Cambiar las URLs de Reports a las correctas (no existe mas /count)
 public class CommentDto {
 
     private int id;

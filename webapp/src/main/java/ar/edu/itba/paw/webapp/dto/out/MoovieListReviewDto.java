@@ -6,7 +6,6 @@ import javax.ws.rs.core.UriInfo;
 import java.time.LocalDate;
 import java.util.List;
 
-//TODO: modificar las URLs de los reports
 public class MoovieListReviewDto {
 
     private int id;
