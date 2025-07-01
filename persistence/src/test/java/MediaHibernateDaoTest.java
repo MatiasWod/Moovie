@@ -64,7 +64,7 @@ public class MediaHibernateDaoTest {
     @Rollback
     @Test
     public void testGetMediaForDirectorId(){
-        List<Movie> mediaList = mediaHibernateDao.getMediaForDirectorId(DIRECTOR_ID, INVALID_USER_ID);
+        List<Movie> mediaList = mediaHibernateDao.getMediaForDirectorId(DIRECTOR_ID, 1, 25, INVALID_USER_ID);
 
         Assert.assertEquals(2, mediaList.size());
         
@@ -75,7 +75,7 @@ public class MediaHibernateDaoTest {
     @Rollback
     @Test
     public void testGetMediaForDirectorIdFailure(){
-        List<Movie> mediaList = mediaHibernateDao.getMediaForDirectorId(INVALID_DIRECTOR_ID, INVALID_USER_ID);
+        List<Movie> mediaList = mediaHibernateDao.getMediaForDirectorId(INVALID_DIRECTOR_ID, 1, 25, INVALID_USER_ID);
 
         Assert.assertEquals(0, mediaList.size());
     }

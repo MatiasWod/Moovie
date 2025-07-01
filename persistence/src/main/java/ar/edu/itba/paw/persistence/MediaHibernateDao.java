@@ -125,15 +125,27 @@ public class MediaHibernateDao implements MediaDao{
     }
 
     @Override
-    public List<Movie> getMediaForDirectorId(int directorId, int currentUser) {
+    public List<Movie> getMediaForDirectorId(int directorId, int pageNumber, int pageSize, int currentUser) {
 //
         String sql = "SELECT new ar.edu.itba.paw.models.Media.Movie(m,"+
                 "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId WHERE m.mediaId = mlc2.mediaId AND wl.name = 'Watched' AND wl.userId = :userid), " +
                 "(SELECT CASE WHEN COUNT(wl3) > 0 THEN true ELSE false END FROM MoovieList wl3 INNER JOIN MoovieListContent mlc3 ON wl3.moovieListId = mlc3.moovieList.moovieListId WHERE m.mediaId = mlc3.mediaId AND wl3.name = 'Watchlist' AND wl3.userId = :userid) ) "+
                 "FROM Movie m WHERE directorId = :directorId " +
                 "ORDER BY m.tmdbRating DESC";
-        final TypedQuery<Movie> query = em.createQuery(sql, Movie.class).setParameter("directorId", directorId).setParameter("userid", currentUser);
+
+        int offset = (pageNumber - 1) * pageSize;
+
+        final TypedQuery<Movie> query = em.createQuery(sql, Movie.class).setParameter("directorId", directorId).setParameter("userid", currentUser).setFirstResult(offset).setMaxResults(pageSize);
         return query.getResultList();
+    }
+
+    @Override
+    public int getMediaForDirectorIdCount(int directorId) {
+        String sql = "SELECT COUNT(*) " +
+                "FROM Movie m WHERE directorId = :directorId ";
+
+        final TypedQuery<Number> query = em.createQuery(sql, Number.class).setParameter("directorId", directorId);
+        return query.getSingleResult().intValue();
     }
 
     @Override

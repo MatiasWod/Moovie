@@ -79,8 +79,13 @@ public class ActorServiceImpl implements ActorService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<Media> getMediaForActor(int actorId) {
-        return actorDao.getMediaForActor(actorId, userService.tryToGetCurrentUserId());
+    public List<Media> getMediaForActor(int actorId, int pageNumber, int pageSize) {
+        return actorDao.getMediaForActor(actorId, pageNumber, pageSize, userService.tryToGetCurrentUserId());
+    }
+
+    @Override
+    public int getMediaForActorCount(int actorId) {
+        return actorDao.getMediaForActorCount(actorId);
     }
 
 }

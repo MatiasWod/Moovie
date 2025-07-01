@@ -47,8 +47,13 @@ public class TVCreatorsServiceImpl implements TVCreatorsService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<Media> getMediasForTVCreator(int creatorId) {
-        return tvCreatorsDao.getMediasForTVCreator(creatorId, userService.tryToGetCurrentUserId());
+    public List<Media> getMediasForTVCreator(int creatorId, int pageNumber, int pageSize) {
+        return tvCreatorsDao.getMediasForTVCreator(creatorId, pageNumber, pageSize, userService.tryToGetCurrentUserId());
+    }
+
+    @Override
+    public int getMediasForTVCreatorCount(int creatorId) {
+        return tvCreatorsDao.getMediasForTVCreatorCount(creatorId);
     }
 
     @Transactional(readOnly = true)

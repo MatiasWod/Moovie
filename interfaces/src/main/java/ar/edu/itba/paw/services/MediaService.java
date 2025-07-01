@@ -22,7 +22,8 @@ public interface MediaService {
     List<Media> getMediaInMoovieList(int moovieListId, int size, int pageNumber);
 
     //Returns a list of all media for a director
-    List<Movie> getMediaForDirectorId(int directorId);
+    List<Movie> getMediaForDirectorId(int directorId, int pageNumber, int pageSize);
+    int getMediaForDirectorIdCount(int directorId);
 
 
     //get watchlist/watched status for user

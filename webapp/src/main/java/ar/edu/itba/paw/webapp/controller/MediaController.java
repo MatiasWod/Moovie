@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.webapp.controller;
 
-
 import ar.edu.itba.paw.exceptions.MediaNotFoundException;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
@@ -15,6 +14,8 @@ import ar.edu.itba.paw.webapp.dto.out.TVSerieDto;
 
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,14 +37,15 @@ public class MediaController {
     UriInfo uriInfo;
 
     @Autowired
-    public MediaController(MediaService mediaService,TVCreatorsService tvCreatorsService, ActorService actorService, MoovieListService moovieListService) {
+    public MediaController(MediaService mediaService, TVCreatorsService tvCreatorsService, ActorService actorService,
+            MoovieListService moovieListService) {
         this.mediaService = mediaService;
-        this.tvCreatorsService= tvCreatorsService;
+        this.tvCreatorsService = tvCreatorsService;
         this.actorService = actorService;
         this.moovieListService = moovieListService;
     }
 
-
+    Logger logger = LoggerFactory.getLogger(MediaController.class);
 
 
     @GET
@@ -61,20 +63,25 @@ public class MediaController {
             @QueryParam("tvCreatorId") final Integer tvCreatorId,
             @QueryParam("directorId") final Integer directorId,
             @QueryParam("actorId") final Integer actorId,
-            @QueryParam("moovieListId") final Integer moovieListId
-    ) {
+            @QueryParam("moovieListId") final Integer moovieListId) {
+        int pageSizeQuery = pageSize;
+        if (pageSize < 1 || pageSize > PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize()) {
+            pageSizeQuery = PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize();
+        }
         try {
             if (moovieListId != null) {
                 // Obtener recomendaciones de medios para agregar a una lista de películas
                 List<MediaDto> mlcList = MediaDto.fromMediaList(
                         moovieListService.getRecommendedMediaToAdd(moovieListId, 5), uriInfo);
-                return Response.ok(new GenericEntity<List<MediaDto>>(mlcList) {}).build();
+                return Response.ok(new GenericEntity<List<MediaDto>>(mlcList) {
+                }).build();
             }
 
             if (ids != null && !ids.isEmpty()) {
                 // Lógica para manejar la lista de IDs
                 if (ids.length() > 100) {
-                    throw new IllegalArgumentException("Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
+                    throw new IllegalArgumentException(
+                            "Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
                 }
 
                 List<Integer> idList = new ArrayList<>();
@@ -83,12 +90,14 @@ public class MediaController {
                     try {
                         idList.add(Integer.parseInt(id.trim()));
                     } catch (NumberFormatException e) {
-                        throw new IllegalArgumentException("Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
+                        throw new IllegalArgumentException(
+                                "Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
                     }
                 }
 
                 if (idList.size() > 100 || idList.isEmpty()) {
-                    throw new IllegalArgumentException("Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
+                    throw new IllegalArgumentException(
+                            "Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
                 }
 
                 List<MediaDto> mediaList = new ArrayList<>();
@@ -100,60 +109,68 @@ public class MediaController {
                         mediaList.add(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo));
                     }
                 }
-                return Response.ok(new GenericEntity<List<MediaDto>>(mediaList) {}).build();
+                return Response.ok(new GenericEntity<List<MediaDto>>(mediaList) {
+                }).build();
 
             } else if (tvCreatorId != null) {
                 // Lógica para manejar el tvCreatorId
-//                TODO: Paginate this query. And add a new service method for the total-count
-                List<Media> mediaList = tvCreatorsService.getMediasForTVCreator(tvCreatorId);
+                List<Media> mediaList = tvCreatorsService.getMediasForTVCreator(tvCreatorId, page, pageSizeQuery);
+                int totalCount = tvCreatorsService.getMediasForTVCreatorCount(tvCreatorId);
 
                 if (mediaList == null || mediaList.isEmpty()) {
                     return Response.status(Response.Status.NOT_FOUND)
                             .entity("No media found for TV creator with ID: " + tvCreatorId)
                             .build();
                 }
-
                 List<MediaDto> mediaDtos = MediaDto.fromMediaList(mediaList, uriInfo);
-                return Response.ok(new GenericEntity<List<MediaDto>>(mediaDtos) {}).build();
+                Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaDto>>(mediaDtos) {
+                });
+                final PagingUtils<Media> mediaPagingUtils = new PagingUtils<>(mediaList, page, pageSizeQuery,
+                        totalCount);
+                ResponseUtils.setPaginationLinks(res, mediaPagingUtils, uriInfo);
+                return res.build();
 
             } else if (directorId != null) {
                 // Lógica para manejar el directorId
-//                TODO: Paginate this query. Add a new service method for getting the Total-Count
-                List<Movie> mediaList = mediaService.getMediaForDirectorId(directorId);
+                List<Movie> mediaList = mediaService.getMediaForDirectorId(directorId, page, pageSizeQuery);
+                int totalCount = mediaService.getMediaForDirectorIdCount(directorId);
 
                 if (mediaList == null || mediaList.isEmpty()) {
                     return Response.status(Response.Status.NOT_FOUND)
                             .entity("No media found for director with ID: " + directorId)
                             .build();
                 }
-
                 List<MovieDto> mediaDtos = MovieDto.fromMovieList(mediaList, uriInfo);
-                return Response.ok(new GenericEntity<List<MovieDto>>(mediaDtos) {}).build();
+                Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MovieDto>>(mediaDtos) {
+                });
+                final PagingUtils<Movie> mediaPagingUtils = new PagingUtils<>(mediaList, page, pageSizeQuery,
+                        totalCount);
+                ResponseUtils.setPaginationLinks(res, mediaPagingUtils, uriInfo);
+                return res.build();
 
             } else if (actorId != null) {
                 // Lógica para manejar el actorId
-//                TODO: Paginate this query. Create a new service method to get the Total-Count
-                List<Media> mediaList = actorService.getMediaForActor(actorId);
+                List<Media> mediaList = actorService.getMediaForActor(actorId, page, pageSizeQuery);
+                int totalCount = actorService.getMediaForActorCount(actorId);
 
                 if (mediaList == null || mediaList.isEmpty()) {
                     return Response.status(Response.Status.NOT_FOUND)
                             .entity("No media found for actor with ID: " + actorId)
                             .build();
                 }
-
                 List<MediaDto> mediaDtos = MediaDto.fromMediaList(mediaList, uriInfo);
-                return Response.ok(new GenericEntity<List<MediaDto>>(mediaDtos) {}).build();
+                Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaDto>>(mediaDtos) {
+                });
+                final PagingUtils<Media> mediaPagingUtils = new PagingUtils<>(mediaList, page, pageSizeQuery,
+                        totalCount);
+                ResponseUtils.setPaginationLinks(res, mediaPagingUtils, uriInfo);
+                return res.build();
 
             } else {
                 // Lógica para los parámetros tipo, búsqueda, paginación, etc.
                 int typeQuery = MediaTypes.TYPE_ALL.getType();
                 if (type == MediaTypes.TYPE_MOVIE.getType() || type == MediaTypes.TYPE_TVSERIE.getType()) {
                     typeQuery = type;
-                }
-
-                int pageSizeQuery = pageSize;
-                if (pageSize < 1 || pageSize > PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize()) {
-                    pageSizeQuery = PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize();
                 }
 
                 List<Media> mediaList = mediaService.getMedia(typeQuery, search, null,
@@ -163,8 +180,10 @@ public class MediaController {
                         genres, providers, null, null);
 
                 List<MediaDto> mediaDtoList = MediaDto.fromMediaList(mediaList, uriInfo);
-                Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaDto>>(mediaDtoList) {});
-                final PagingUtils<Media> toReturnMediaList = new PagingUtils<>(mediaList, page - 1, pageSizeQuery, mediaCount);
+                Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaDto>>(mediaDtoList) {
+                });
+                final PagingUtils<Media> toReturnMediaList = new PagingUtils<>(mediaList, page - 1, pageSizeQuery,
+                        mediaCount);
                 ResponseUtils.setPaginationLinks(res, toReturnMediaList, uriInfo);
 
                 ResponseUtils.setMaxAgeCache(res);
@@ -172,6 +191,7 @@ public class MediaController {
                 return res.build();
             }
         } catch (Exception e) {
+            logger.error("Error while getting media list", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An error occurred: " + e.getMessage())
                     .build();
@@ -191,29 +211,26 @@ public class MediaController {
                         .build();
             }
 
-            if(media.isType()){
-                Response.ResponseBuilder res= Response.ok(TVSerieDto.fromTVSerie(mediaService.getTvById(id), uriInfo));
+            if (media.isType()) {
+                Response.ResponseBuilder res = Response.ok(TVSerieDto.fromTVSerie(mediaService.getTvById(id), uriInfo));
                 ResponseUtils.setMaxAgeCache(res);
 
                 return res.build();
             }
-            Response.ResponseBuilder res= Response.ok(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo));
+            Response.ResponseBuilder res = Response.ok(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo));
             ResponseUtils.setMaxAgeCache(res);
             return res.build();
 
-        }catch (MediaNotFoundException e){
+        } catch (MediaNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("Media with ID: " + id + " not found.")
                     .build();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An error occurred: " + e.getMessage())
                     .build();
         }
 
-
     }
-
 
 }

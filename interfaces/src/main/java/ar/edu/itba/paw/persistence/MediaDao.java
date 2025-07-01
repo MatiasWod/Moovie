@@ -13,7 +13,8 @@ public interface MediaDao {
 
     List<Media> getMediaInMoovieList(int moovieListId, int size, int pageNumber);
 
-    List<Movie> getMediaForDirectorId(int directorId, int currentId);
+    List<Movie> getMediaForDirectorId(int directorId, int pageNumber, int pageSize, int currentId);
+    int getMediaForDirectorIdCount(int directorId);
 
     Optional<Media> getMediaById(int mediaId);
     Optional<Movie> getMovieById(int mediaId);

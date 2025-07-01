@@ -15,5 +15,6 @@ public interface ActorService {
     int getActorsForQueryCount(String query);
     List<Actor> getActorsForQuery(String query);
     List<Actor> getActorsForQuery(String query, int pageNumber, int pageSize);
-    List<Media> getMediaForActor(int actorId);
+    List<Media> getMediaForActor(int actorId, int PageNumber, int pageSize);
+    int getMediaForActorCount(int actorId);
 }

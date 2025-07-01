@@ -10,5 +10,6 @@ public interface TVCreatorsDao {
     List<TVCreators> getTvCreatorsByMediaId(int mediaId);
     Optional<TVCreators> getTvCreatorById(int creatorId);
     List<TVCreators> getTVCreatorsForQuery(String query, int size);
-    List<Media> getMediasForTVCreator(int creatorId, int currentUser);
+    List<Media> getMediasForTVCreator(int creatorId, int pageNumber, int pageSize, int currentUser);
+    int getMediasForTVCreatorCount(int creatorId);
 }

@@ -92,18 +92,34 @@ public class ActorHibernateDao implements ActorDao{
     }
 
     @Override
-    public List<Media> getMediaForActor(int actorId, int currentUser) {
+    public List<Media> getMediaForActor(int actorId, int pageNumber, int pageSize, int currentUser) {
         String sql = "SELECT new ar.edu.itba.paw.models.Media.Media(m,"+
                 "(SELECT CASE WHEN COUNT(wl) > 0 THEN true ELSE false END FROM MoovieList wl INNER JOIN MoovieListContent mlc2 ON wl.moovieListId = mlc2.moovieList.moovieListId WHERE m.mediaId = mlc2.mediaId AND wl.name = 'Watched' AND wl.userId = :userid), " +
                 "(SELECT CASE WHEN COUNT(wl3) > 0 THEN true ELSE false END FROM MoovieList wl3 INNER JOIN MoovieListContent mlc3 ON wl3.moovieListId = mlc3.moovieList.moovieListId WHERE m.mediaId = mlc3.mediaId AND wl3.name = 'Watchlist' AND wl3.userId = :userid) ) " +
                 "FROM Media m JOIN MediaActors ma ON m.mediaId = ma.media.mediaId WHERE ma.actor.actorId = :actorId" +
                 " ORDER BY m.tmdbRating DESC";
 
+        int offset = (pageNumber - 1) * pageSize;
+
         TypedQuery<Media> q = em.createQuery(sql, Media.class)
                 .setParameter("actorId", actorId)
-                .setParameter("userid", currentUser);
+                .setParameter("userid", currentUser)
+                .setFirstResult(offset)
+                .setMaxResults(pageSize);
 
         return q.getResultList();
+    }
+
+    @Override
+    public int getMediaForActorCount(int actorId) {
+        String sql = "SELECT COUNT(*) " +
+                "FROM Media m JOIN MediaActors ma ON m.mediaId = ma.media.mediaId WHERE ma.actor.actorId = :actorId";
+
+
+        TypedQuery<Number> q = em.createQuery(sql, Number.class)
+                .setParameter("actorId", actorId);
+
+        return q.getSingleResult().intValue();
     }
 
 }

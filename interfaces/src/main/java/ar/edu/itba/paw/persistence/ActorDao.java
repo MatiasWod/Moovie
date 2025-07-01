@@ -16,5 +16,6 @@ public interface ActorDao {
     int getActorsForQueryCount(String query);
     List<Actor> getActorsForQuery(String query);
     List<Actor> getActorsForQuery(String query, int pageNumber, int pageSize);
-    List<Media> getMediaForActor(int actorId, int currentUser);
+    List<Media> getMediaForActor(int actorId, int pageNumber, int pageSize, int currentUser);
+    int getMediaForActorCount(int actorId);
 }

@@ -83,8 +83,13 @@ public class MediaServiceImpl implements MediaService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<Movie> getMediaForDirectorId(int directorId) {
-        return mediaDao.getMediaForDirectorId(directorId, userService.tryToGetCurrentUserId());
+    public List<Movie> getMediaForDirectorId(int directorId, int pageNumber, int pageSize) {
+        return mediaDao.getMediaForDirectorId(directorId, pageNumber, pageSize, userService.tryToGetCurrentUserId());
+    }
+
+    @Override
+    public int getMediaForDirectorIdCount(int directorId) {
+        return mediaDao.getMediaForDirectorIdCount(directorId);
     }
 
     @Transactional(readOnly = true)
