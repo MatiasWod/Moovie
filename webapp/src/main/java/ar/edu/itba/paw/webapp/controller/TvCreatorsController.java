@@ -47,22 +47,22 @@ public class TvCreatorsController {
                 pageSizeQuery = PagingSizes.TV_CREATOR_DEFAULT_PAGE_SIZE.getSize();
             }
 
-//            TODO: Must decide whether to paginate Director/TVCreator or not.
 //            TODO: If yes: then both are missing a proper method to get the Total-Count for the paginated responses.
 
             if (search != null && !search.isEmpty()) {
                 // Lógica para obtener creadores de TV por consulta de búsqueda
-                List<TVCreators> tvCreatorsList = tvCreatorsService.getTVCreatorsForQuery(search, pageSizeQuery);
+                List<TVCreators> tvCreatorsList = tvCreatorsService.getTVCreatorsForQuery(search, pageNumber, pageSizeQuery);
+                int totalCount = tvCreatorsService.getTVCreatorsForQueryCount(search);
                 List<TvCreatorsDto> tvCreatorsDtoList = TvCreatorsDto.fromTvCreatorList(tvCreatorsList, uriInfo);
                 
                 Response.ResponseBuilder res = Response.ok(new GenericEntity<List<TvCreatorsDto>>(tvCreatorsDtoList) {});
-                // Add pagination headers (using conservative count)
-                final PagingUtils<TvCreatorsDto> pagingUtils = new PagingUtils<>(tvCreatorsDtoList, pageNumber, pageSizeQuery, tvCreatorsDtoList.size());
+                final PagingUtils<TvCreatorsDto> pagingUtils = new PagingUtils<>(tvCreatorsDtoList, pageNumber, pageSizeQuery, totalCount);
                 ResponseUtils.setPaginationLinks(res, pagingUtils, uriInfo);
                 return res.build();
             } else if (mediaId != null) {
                 // Lógica para obtener creadores de TV por ID de medio
-                List<TVCreators> tvCreators = tvCreatorsService.getTvCreatorsByMediaId(mediaId);
+                List<TVCreators> tvCreators = tvCreatorsService.getTvCreatorsByMediaId(mediaId, pageNumber, pageSizeQuery);
+                int totalCount = tvCreatorsService.getTvCreatorsByMediaIdCount(mediaId);
                 List<TvCreatorsDto> tvCreatorsDtos = TvCreatorsDto.fromTvCreatorList(tvCreators, uriInfo);
                 
                 Response.ResponseBuilder res = Response.ok(new GenericEntity<List<TvCreatorsDto>>(tvCreatorsDtos) {});

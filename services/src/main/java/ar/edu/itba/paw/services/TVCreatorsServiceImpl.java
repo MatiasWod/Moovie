@@ -24,8 +24,13 @@ public class TVCreatorsServiceImpl implements TVCreatorsService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<TVCreators> getTvCreatorsByMediaId(int mediaId) {
-        return tvCreatorsDao.getTvCreatorsByMediaId(mediaId);
+    public List<TVCreators> getTvCreatorsByMediaId(int mediaId, int pageNumber, int pageSize) {
+        return tvCreatorsDao.getTvCreatorsByMediaId(mediaId, pageNumber, pageSize);
+    }
+
+    @Override
+    public int getTvCreatorsByMediaIdCount(int mediaId) {
+        return tvCreatorsDao.getTvCreatorsByMediaIdCount(mediaId);
     }
 
     @Transactional(readOnly = true)
@@ -58,8 +63,8 @@ public class TVCreatorsServiceImpl implements TVCreatorsService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<TVCreators> getTVCreatorsForQuery(String query, int size) {
-        List<TVCreators> toReturn = tvCreatorsDao.getTVCreatorsForQuery(query, size);
+    public List<TVCreators> getTVCreatorsForQuery(String query, int pageNumber, int pageSize) {
+        List<TVCreators> toReturn = tvCreatorsDao.getTVCreatorsForQuery(query, pageNumber, pageSize);
 
         int currentUserId = userService.tryToGetCurrentUserId();
 
@@ -74,6 +79,11 @@ public class TVCreatorsServiceImpl implements TVCreatorsService{
 
 
         return toReturn;
+    }
+
+    @Override
+    public int getTVCreatorsForQueryCount(String query) {
+        return tvCreatorsDao.getTVCreatorsForQueryCount(query);
     }
 
 

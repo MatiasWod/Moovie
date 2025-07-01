@@ -19,10 +19,23 @@ public class TvCreatorsHibernateDao implements TVCreatorsDao{
     private EntityManager em;
 
     @Override
-    public List<TVCreators> getTvCreatorsByMediaId(int mediaId) {
-        return em.createQuery("SELECT c FROM TVCreators c JOIN c.medias m WHERE m.mediaId = :mediaId", TVCreators.class)
+    public List<TVCreators> getTvCreatorsByMediaId(int mediaId, int pageNumber, int pageSize) {
+        String sql = "SELECT c FROM TVCreators c JOIN c.medias m WHERE m.mediaId = :mediaId";
+
+        int offset = (pageNumber - 1) * pageSize;
+
+        return em.createQuery(sql, TVCreators.class)
                 .setParameter("mediaId", mediaId)
+                .setFirstResult(offset)
+                .setMaxResults(pageSize)
                 .getResultList();
+    }
+
+    @Override
+    public int getTvCreatorsByMediaIdCount(int mediaId) {
+        return em.createQuery("SELECT COUNT(*) FROM TVCreators c JOIN c.medias m WHERE m.mediaId = :mediaId", Number.class)
+                .setParameter("mediaId", mediaId)
+                .getSingleResult().intValue();
     }
 
 
@@ -66,16 +79,27 @@ public class TvCreatorsHibernateDao implements TVCreatorsDao{
 
 
     @Override
-    public List<TVCreators> getTVCreatorsForQuery(String query, int size) {
+    public List<TVCreators> getTVCreatorsForQuery(String query, int pageNumber, int pageSize) {
         String sql = "SELECT c FROM TVCreators c WHERE LOWER(c.creatorName) LIKE :query ORDER BY c.medias.size DESC";
 
+        int offset = (pageNumber - 1) * pageSize;
 
         TypedQuery<TVCreators> q = em.createQuery(sql, TVCreators.class)
-                .setParameter("query","%"+query+"%").setMaxResults(size)
-                ;
+                .setParameter("query","%"+query+"%")
+                .setFirstResult(offset)
+                .setMaxResults(pageSize);
 
-        List<TVCreators> toReturn = q.getResultList();
+        return q.getResultList();
+    }
 
-        return toReturn;
+    @Override
+    public int getTVCreatorsForQueryCount(String query) {
+        String sql = "SELECT COUNT(*) FROM TVCreators c WHERE LOWER(c.creatorName) LIKE :query";
+
+
+        TypedQuery<Number> q = em.createQuery(sql, Number.class)
+                .setParameter("query","%"+query+"%");
+
+        return q.getSingleResult().intValue();
     }
 }
