@@ -15,7 +15,7 @@ public class ResponseUtils {
 
     public static <T> void setPaginationLinks(Response.ResponseBuilder res, PagingUtils<T> pagingUtils, UriInfo uriInfo){
         if(pagingUtils.hasPreviousPage()){
-            res.link(uriInfo.getRequestUriBuilder().replaceQueryParam("pageNumber",pagingUtils.getCurrentPage()).build().toString(),"previous");
+            res.link(uriInfo.getRequestUriBuilder().replaceQueryParam("pageNumber",pagingUtils.getCurrentPage() - 1).build().toString(),"previous");
         }
         if(pagingUtils.hasNextPage()){
             res.link(uriInfo.getRequestUriBuilder().replaceQueryParam("pageNumber",pagingUtils.getCurrentPage() + 1).build().toString(),"next");
