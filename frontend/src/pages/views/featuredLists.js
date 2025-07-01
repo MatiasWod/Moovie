@@ -48,35 +48,35 @@ function FeaturedLists() {
       featuredListTypeName = 'topRatedMovies';
       mediaType = MediaTypes.TYPE_MOVIE;
       orderBy = OrderBy.TMDB_RATING;
-      typeSubtext = t('featuredLists.topRatedMedia');
+      typeSubtext = t('featuredLists.topRatedMovies');
       break;
 
     case 'topRatedSeries':
       featuredListTypeName = 'topRatedSeries';
       mediaType = MediaTypes.TYPE_TVSERIE;
       orderBy = OrderBy.TMDB_RATING;
-      typeSubtext = t('featuredLists.topRatedMedia');
+      typeSubtext = t('featuredLists.topRatedSeries');
       break;
 
     case 'mostPopularMedia':
       featuredListTypeName = 'mostPopularMedia';
       mediaType = MediaTypes.TYPE_ALL;
       orderBy = OrderBy.VOTE_COUNT;
-      typeSubtext = t('featuredLists.topRatedMedia');
+      typeSubtext = t('featuredLists.mostPopularMedia');
       break;
 
     case 'mostPopularMovies':
       featuredListTypeName = 'mostPopularMovies';
       mediaType = MediaTypes.TYPE_MOVIE;
       orderBy = OrderBy.VOTE_COUNT;
-      typeSubtext = t('featuredLists.topRatedMedia');
+      typeSubtext = t('featuredLists.mostPopularMovies');
       break;
 
     case 'mostPopularSeries':
       featuredListTypeName = 'mostPopularSeries';
       mediaType = MediaTypes.TYPE_TVSERIE;
       orderBy = OrderBy.VOTE_COUNT;
-      typeSubtext = t('featuredLists.topRatedMedia');
+      typeSubtext = t('featuredLists.mostPopularSeries');
       break;
 
     default:
