@@ -340,15 +340,14 @@ public class MoovieListController {
                                                         @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber,
                                                         @QueryParam("pageSize") @DefaultValue("-1") final int pageSize) {
         try {
-            moovieListService.getMoovieListCardById(id);
+            MoovieListCard mlc = moovieListService.getMoovieListCardById(id);
             int pageSizeQuery = pageSize;
             if (pageSize < 1 || pageSize > PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize()) {
                 pageSizeQuery = PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize();
             }
 
             List<OrderedMedia> mediaList = moovieListService.getMoovieListContentOrdered(id, orderBy, sortOrder, pageSizeQuery, pageNumber);
-//            TODO: implement a proper method to get the total-count for pagination. This method can also be used in Profile -> watched/watchlist
-            final int mediaCount = moovieListService.getMoovieListCardById(id).getSize();
+            final int mediaCount = mlc.getSize();
             List<MediaIdListIdDto> dtoList = MediaIdListIdDto.fromOrderedMediaList(mediaList, id, uriInfo);
             Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdListIdDto>>(dtoList) {
             });
