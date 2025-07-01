@@ -23,7 +23,12 @@ public class DirectorServiceImpl implements DirectorService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<Director> getDirectorsForQuery(String query, int size) {
-        return directorDao.getDirectorsForQuery(query, size);
+    public List<Director> getDirectorsForQuery(String query, int pageNumber, int size) {
+        return directorDao.getDirectorsForQuery(query, pageNumber, size);
+    }
+
+    @Override
+    public int getDirectorsForQueryCount(String query) {
+        return directorDao.getDirectorsForQueryCount(query);
     }
 }

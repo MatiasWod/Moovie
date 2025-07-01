@@ -8,6 +8,8 @@ import ar.edu.itba.paw.services.DirectorService;
 import ar.edu.itba.paw.webapp.dto.out.DirectorDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +33,8 @@ public class DirectorController {
         this.directorService = directorService;
     }
 
+    Logger logger = LoggerFactory.getLogger(DirectorController.class);
+
     @GET
     @Produces(VndType.APPLICATION_DIRECTOR_LIST)
     public Response getDirectors(
@@ -47,12 +51,12 @@ public class DirectorController {
 
             if (search != null && !search.isEmpty()) {
                 // Lógica para obtener directores por consulta de búsqueda
-                List<Director> directors = directorService.getDirectorsForQuery(search, pageSizeQuery);
+                List<Director> directors = directorService.getDirectorsForQuery(search, pageNumber, pageSizeQuery);
+                int totalCount = directorService.getDirectorsForQueryCount(search);
                 List<DirectorDto> directorDtos = DirectorDto.fromDirectorList(directors, uriInfo);
                 
                 Response.ResponseBuilder res = Response.ok(new GenericEntity<List<DirectorDto>>(directorDtos) {});
-                // Add pagination headers (using conservative count)
-                final PagingUtils<DirectorDto> pagingUtils = new PagingUtils<>(directorDtos, pageNumber, pageSizeQuery, directorDtos.size());
+                final PagingUtils<DirectorDto> pagingUtils = new PagingUtils<>(directorDtos, pageNumber, pageSizeQuery, totalCount);
                 ResponseUtils.setPaginationLinks(res, pagingUtils, uriInfo);
                 return res.build();
             }
@@ -62,6 +66,7 @@ public class DirectorController {
                     .entity("You must provide 'search' as query parameter.")
                     .build();
         }catch (Exception e) {
+            logger.error("Error getting directors", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An error occurred while processing the request.")
                     .build();

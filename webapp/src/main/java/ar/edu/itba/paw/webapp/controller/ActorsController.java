@@ -33,7 +33,7 @@ public class ActorsController {
         this.actorService = actorService;
     }
 
-    Logger logger = LoggerFactory.getLogger(ReportController.class);
+    Logger logger = LoggerFactory.getLogger(ActorsController.class);
 
     @GET
     @Produces(VndType.APPLICATION_ACTOR_LIST)

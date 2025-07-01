@@ -27,14 +27,30 @@ public class DirectorHibernateDao implements DirectorDao{
     }
 
     @Override
-    public List<Director> getDirectorsForQuery(String query, int size) {
+    public List<Director> getDirectorsForQuery(String query, int pageNumber, int size) {
         String sql = "SELECT new ar.edu.itba.paw.models.Cast.Director(d.directorId,d.director,(SELECT COUNT(m) FROM Movie m WHERE m.directorId = d.directorId)) FROM Movie d WHERE LOWER(d.director) LIKE LOWER(:query) GROUP BY d.directorId,d.director ORDER BY d.director DESC";
 
+        int offset = (pageNumber - 1) * size;
+
         TypedQuery<Director> q = em.createQuery(sql, Director.class)
-                .setParameter("query", "%" + query + "%").setMaxResults(size);
+                .setParameter("query", "%" + query + "%").setFirstResult(offset).setMaxResults(size);
 
         List<Director> toReturn = q.getResultList();
 
         return toReturn;
     }
+
+    @Override
+    public int getDirectorsForQueryCount(String query) {
+        final String sql =
+                "SELECT COUNT(DISTINCT d.directorId) " +
+                        "FROM Movie d " +
+                        "WHERE LOWER(d.director) LIKE LOWER(:query)";
+
+        Long count = em.createQuery(sql, Long.class)
+                .setParameter("query", "%" + query + "%")
+                .getSingleResult();
+        return count.intValue();
+    }
+
 }

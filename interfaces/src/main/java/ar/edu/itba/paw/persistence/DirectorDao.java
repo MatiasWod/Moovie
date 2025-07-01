@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface DirectorDao {
     Optional<Director> getDirectorById(int directorId);
-    List<Director> getDirectorsForQuery(String query, int size);
+    List<Director> getDirectorsForQuery(String query, int pageNumber, int size);
+    int getDirectorsForQueryCount(String query);
 }
