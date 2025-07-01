@@ -17,7 +17,7 @@ import ActorCard from '../components/actorCards/ActorCard';
 import MediaOrderBy from '../../api/values/MediaOrderBy';
 import CardsListOrderBy from '../../api/values/CardsListOrderBy';
 import { useTranslation } from 'react-i18next';
-import { Divider } from '@mui/material';
+import {Divider, Pagination} from '@mui/material';
 import './discover.css';
 import profileService from '../../services/ProfileService';
 import './search.css';
@@ -49,17 +49,11 @@ function Healthcheck() {
   const [userLoading, setUserLoading] = useState(true);
   const [userError, setUserError] = useState(null);
   const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
-
-  const handlePageChange = useCallback(
-    (newPage) => {
-      setPage(newPage);
-      navigate({
-        pathname: `/search/${search}`,
-        search: createSearchParams({ search, page: newPage.toString() }).toString(),
-      });
-    },
-    [navigate, search]
-  );
+  const [pageActors, setPageActors] = useState(Number(searchParams.get('pageActors')) || 1);
+  const [pageMedias, setPageMedias] = useState(Number(searchParams.get('pageMedias')) || 1);
+  const [pageLists, setPageLists] = useState(Number(searchParams.get('pageLists')) || 1);
+  const [pageDirectors, setPageDirectors] = useState(Number(searchParams.get('pageDirectors')) || 1);
+  const [pageUsers, setPageUsers] = useState(Number(searchParams.get('pageUsers')) || 1);
 
   const handleUserCardClick = (user) => {
     navigate(`/profile/${user.username}`);
@@ -86,10 +80,10 @@ function Healthcheck() {
       try {
         const data = await MediaService.getMedia({
           type: MediaTypes.TYPE_ALL,
-          page: page,
+          page: pageMedias,
           pageSize: pagingSizes.MEDIA_SEARCH_PAGE_SIZE,
-          sortOrder: SortOrder.DESC,
-          orderBy: mediaOrderBy.RELEASE_DATE,
+          sortOrder: SortOrder.ASC,
+          orderBy: mediaOrderBy.NAME,
           search: search,
         });
         setMedias(data);
@@ -101,7 +95,7 @@ function Healthcheck() {
     }
 
     getData();
-  }, [search, page]);
+  }, [search, pageMedias]);
 
   useEffect(() => {
     async function getData() {
@@ -109,7 +103,7 @@ function Healthcheck() {
         const data = await ListService.getLists({
           orderBy: cardsListOrderBy.LIKE_COUNT,
           ownerUsername: null,
-          pageNumber: page,
+          pageNumber: pageLists,
           pageSize: pagingSizes.MOOVIE_LIST_SEARCH_PAGE_SIZE,
           search: search,
           type: 1,
@@ -124,15 +118,16 @@ function Healthcheck() {
     }
 
     getData();
-  }, [search, page]);
+  }, [search, pageLists]);
 
   useEffect(() => {
     async function getData() {
       try {
         const data = await CastService.getActorsForQuery({
           search: search,
+          pageNumber: pageActors,
         });
-        setActors(data.data);
+        setActors(data);
         setActorLoading(false);
       } catch (error) {
         setActorError(error);
@@ -140,15 +135,16 @@ function Healthcheck() {
       }
     }
     getData();
-  }, [search]);
+  }, [search,pageActors]);
 
   useEffect(() => {
     async function getData() {
       try {
         const data = await CastService.getDirectorsForQuery({
           search: search,
+          pageNumber: pageDirectors,
         });
-        setDirectors(data.data);
+        setDirectors(data);
         setDirectorLoading(false);
       } catch (error) {
         setDirectorError(error);
@@ -156,7 +152,7 @@ function Healthcheck() {
       }
     }
     getData();
-  }, [search]);
+  }, [search, pageDirectors]);
 
   useEffect(() => {
     async function getData() {
@@ -164,8 +160,8 @@ function Healthcheck() {
         const data = await profileService.getSearchedUsers({
           username: search,
           orderBy: 'username',
-          sortOrder: SortOrder.DESC,
-          page: page,
+          sortOrder: SortOrder.ASC,
+          page: pageUsers,
         });
         setUsers(data);
         setUserLoading(false);
@@ -176,7 +172,7 @@ function Healthcheck() {
     }
 
     getData();
-  }, [search, page]);
+  }, [search, pageUsers]);
 
   if (mediaLoading || listLoading || actorLoading || directorLoading || userLoading)
     return (
@@ -207,6 +203,15 @@ function Healthcheck() {
                 </div>
               ))}
             </div>
+            <div className="m-1 d-flex justify-content-center">
+              {!mediaLoading && medias?.links?.last?.pageNumber > 1 && (
+                  <PaginationButton
+                      page={pageMedias}
+                      lastPage={medias.links.last.pageNumber}
+                      setPage={setPageMedias}
+                  />
+              )}
+            </div>
           </>
         ) : (
           <>
@@ -235,11 +240,20 @@ function Healthcheck() {
               }}
             />
             <div className="cards-container">
-              {lists.data.slice(0, 5).map((list) => (
+              {lists.data.map((list) => (
                 <div className="discover-media-card" key={list.id}>
                   <ListCard listCard={list} />
                 </div>
               ))}
+            </div>
+            <div className="m-1 d-flex justify-content-center">
+              {!listLoading && lists?.links?.last?.pageNumber > 1 && (
+                  <PaginationButton
+                      page={pageLists}
+                      lastPage={lists.links.last.pageNumber}
+                      setPage={setPageLists}
+                  />
+              )}
             </div>
           </>
         ) : (
@@ -255,7 +269,7 @@ function Healthcheck() {
         )}
       </>
 
-      {actors && actors.length > 0 ? (
+      {actors && actors.data?.length > 0 ? (
         <>
           <h3>{t('search.actorsFor', { search: search })}</h3>
           <Divider
@@ -265,7 +279,7 @@ function Healthcheck() {
             }}
           />
           <div className="cards-container">
-            {actors.slice(0, 5).map((actor) => (
+            {actors?.data?.map((actor) => (
               <div
                 key={actor.actorId}
                 onClick={() => handleActorCardClick(actor)}
@@ -276,6 +290,15 @@ function Healthcheck() {
                 </div>
               </div>
             ))}
+          </div>
+          <div className="m-1 d-flex justify-content-center">
+            {!actorLoading && actors?.links?.last?.pageNumber > 1 && (
+                <PaginationButton
+                    page={pageActors}
+                    lastPage={actors.links.last.pageNumber}
+                    setPage={setPageActors}
+                />
+            )}
           </div>
         </>
       ) : (
@@ -290,7 +313,7 @@ function Healthcheck() {
         </>
       )}
 
-      {directors && directors.length > 0 ? (
+      {directors && directors.data?.length > 0 ? (
         <>
           <h3>{t('search.directorsFor', { search: search })}</h3>
           <Divider
@@ -300,7 +323,7 @@ function Healthcheck() {
             }}
           />
           <div className="cards-container">
-            {directors.slice(0, 5).map((director) => (
+            {directors?.data?.map((director) => (
               <div
                 key={director.directorId}
                 onClick={() => handleDirectorCardClick(director)}
@@ -311,6 +334,15 @@ function Healthcheck() {
                 </div>
               </div>
             ))}
+          </div>
+          <div className="m-1 d-flex justify-content-center">
+            {!directorLoading && directors?.links?.last?.pageNumber > 1 && (
+                <PaginationButton
+                    page={pageDirectors}
+                    lastPage={directors.links.last.pageNumber}
+                    setPage={setPageDirectors}
+                />
+            )}
           </div>
         </>
       ) : (
@@ -336,7 +368,7 @@ function Healthcheck() {
               }}
             />
             <div className="cards-container">
-              {users.data.slice(0, 5).map((user) => (
+              {users.data.map((user) => (
                 <div
                   key={user.username}
                   onClick={() => handleUserCardClick(user)}
@@ -347,6 +379,15 @@ function Healthcheck() {
                   </div>
                 </div>
               ))}
+            </div>
+            <div className="m-1 d-flex justify-content-center">
+              {!userLoading && users?.links?.last?.pageNumber > 1 && (
+                  <PaginationButton
+                      page={pageUsers}
+                      lastPage={users.links.last.pageNumber}
+                      setPage={setPageUsers}
+                  />
+              )}
             </div>
           </>
         ) : (

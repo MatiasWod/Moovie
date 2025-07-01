@@ -28,7 +28,7 @@ public class DirectorHibernateDao implements DirectorDao{
 
     @Override
     public List<Director> getDirectorsForQuery(String query, int pageNumber, int size) {
-        String sql = "SELECT new ar.edu.itba.paw.models.Cast.Director(d.directorId,d.director,(SELECT COUNT(m) FROM Movie m WHERE m.directorId = d.directorId)) FROM Movie d WHERE LOWER(d.director) LIKE LOWER(:query) GROUP BY d.directorId,d.director ORDER BY d.director DESC";
+        String sql = "SELECT new ar.edu.itba.paw.models.Cast.Director(d.directorId,d.director,(SELECT COUNT(m) FROM Movie m WHERE m.directorId = d.directorId)) FROM Movie d WHERE LOWER(d.director) LIKE LOWER(:query) GROUP BY d.directorId,d.director ORDER BY d.director ASC";
 
         int offset = (pageNumber - 1) * size;
 

@@ -71,7 +71,7 @@ public class ActorHibernateDao implements ActorDao{
 
     @Override
     public List<Actor> getActorsForQuery(String query) {
-        String sql = "SELECT a FROM Actor a WHERE LOWER(a.actorName) LIKE :query ORDER BY a.medias.size DESC";
+        String sql = "SELECT a FROM Actor a WHERE LOWER(a.actorName) LIKE :query ORDER BY a.actorName ASC";
 
         TypedQuery<Actor> q = em.createQuery(sql, Actor.class)
                 .setParameter("query", "%"+query.toLowerCase()+"%");
@@ -81,7 +81,7 @@ public class ActorHibernateDao implements ActorDao{
 
     @Override
     public List<Actor> getActorsForQuery(String query, int pageNumber, int pageSize) {
-        String sql = "SELECT a FROM Actor a WHERE LOWER(a.actorName) LIKE :query ORDER BY a.medias.size DESC";
+        String sql = "SELECT a FROM Actor a WHERE LOWER(a.actorName) LIKE :query ORDER BY a.actorName ASC";
 
         TypedQuery<Actor> q = em.createQuery(sql, Actor.class)
                 .setParameter("query", "%"+query.toLowerCase()+"%");

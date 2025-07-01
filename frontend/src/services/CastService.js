@@ -2,8 +2,9 @@ import castApi from '../api/CastApi';
 import { parsePaginatedResponse } from '../utils/ResponseUtils';
 
 const CastService = (() => {
-  const getActorsForQuery = async (search) => {
-    return await castApi.getActorsForQuery(search);
+  const getActorsForQuery = async ({search,pageNumber}) => {
+    const res = await castApi.getActorsForQuery({search, pageNumber});
+    return parsePaginatedResponse(res);
   };
 
   const getActorsByMediaId = async (mediaId) => {
@@ -15,8 +16,9 @@ const CastService = (() => {
     return await castApi.getActorById(id);
   };
 
-  const getDirectorsForQuery = async (search) => {
-    return await castApi.getDirectorsForQuery(search);
+  const getDirectorsForQuery = async ({search,pageNumber}) => {
+    const res = await castApi.getDirectorsForQuery({search,pageNumber});
+    return parsePaginatedResponse(res);
   };
 
   const getTvCreatorById = async (id) => {

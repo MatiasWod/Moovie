@@ -1,10 +1,11 @@
 import api from './api';
 
 const castApi = (() => {
-  const getActorsForQuery = ({ search }) => {
+  const getActorsForQuery = ({ search, pageNumber }) => {
     return api.get('/actors', {
       params: {
         search: search,
+        pageNumber: pageNumber,
       },
     });
   };
@@ -21,10 +22,11 @@ const castApi = (() => {
     return api.get(`/actors/${id}`);
   };
 
-  const getDirectorsForQuery = ({ search }) => {
+  const getDirectorsForQuery = ({ search, pageNumber }) => {
     return api.get('/directors', {
       params: {
         search: search,
+        pageNumber: pageNumber,
       },
     });
   };
