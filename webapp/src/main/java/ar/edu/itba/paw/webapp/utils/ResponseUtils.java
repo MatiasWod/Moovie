@@ -18,7 +18,7 @@ public class ResponseUtils {
             res.link(uriInfo.getRequestUriBuilder().replaceQueryParam("pageNumber",pagingUtils.getCurrentPage()).build().toString(),"previous");
         }
         if(pagingUtils.hasNextPage()){
-            res.link(uriInfo.getRequestUriBuilder().replaceQueryParam("pageNumber",pagingUtils.getCurrentPage() + 2).build().toString(),"next");
+            res.link(uriInfo.getRequestUriBuilder().replaceQueryParam("pageNumber",pagingUtils.getCurrentPage() + 1).build().toString(),"next");
         }
         res.link(uriInfo.getRequestUriBuilder().replaceQueryParam("pageNumber",pagingUtils.getFirstPage()).build().toString(),"first");
         res.link(uriInfo.getRequestUriBuilder().replaceQueryParam("pageNumber",pagingUtils.getLastPage()).build().toString(),"last");

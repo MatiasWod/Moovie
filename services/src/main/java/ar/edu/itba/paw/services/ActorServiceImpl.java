@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -25,6 +26,16 @@ public class ActorServiceImpl implements ActorService{
     @Override
     public List<Actor> getAllActorsForMedia(int mediaId) {
         return actorDao.getAllActorsForMedia(mediaId);
+    }
+
+    @Override
+    public List<Actor> getAllActorsForMedia(int mediaId, int pageNumber, int pageSize) {
+        return actorDao.getAllActorsForMedia(mediaId, pageNumber, pageSize);
+    }
+
+    @Override
+    public int getAllActorsForMediaCount(int mediaId) {
+        return actorDao.getAllActorsForMediaCount(mediaId);
     }
 
     @Transactional(readOnly = true)
@@ -59,6 +70,11 @@ public class ActorServiceImpl implements ActorService{
     @Override
     public List<Actor> getActorsForQuery(String query) {
         return actorDao.getActorsForQuery(query);
+    }
+
+    @Override
+    public List<Actor> getActorsForQuery(String query, int pageNumber, int pageSize) {
+        return actorDao.getActorsForQuery(query, pageNumber, pageSize);
     }
 
     @Transactional(readOnly = true)

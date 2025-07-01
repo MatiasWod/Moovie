@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.math.BigInteger;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +30,30 @@ public class ActorHibernateDao implements ActorDao{
     }
 
     @Override
+    public List<Actor> getAllActorsForMedia(int mediaId, int pageNumber, int pageSize) {
+        String sql = "SELECT new Actor( a , (SELECT ma.characterName FROM MediaActors ma WHERE ma.media.mediaId = :mediaId AND ma.actor.actorId = a.actorId ) ) " +
+                " FROM MediaActors ma LEFT JOIN ma.actor a WHERE ma.media.mediaId = :mediaId";
+
+        int offset = (pageNumber - 1) * pageSize;
+
+        return em.createQuery(sql, Actor.class)
+                .setParameter("mediaId", mediaId)
+                .setFirstResult(offset)
+                .setMaxResults(pageSize)
+                .getResultList();
+    }
+
+    @Override
+    public int getAllActorsForMediaCount(int mediaId) {
+        String sql = "SELECT COUNT(*) " +
+                " FROM MediaActors ma LEFT JOIN ma.actor a WHERE ma.media.mediaId = :mediaId";
+
+        return ((Number)em.createQuery(sql)
+                .setParameter("mediaId", mediaId)
+                .getSingleResult()).intValue();
+    }
+
+    @Override
     public Optional<Actor> getActorById(int actorId) {
         final TypedQuery<Actor> query = em.createQuery("FROM Actor WHERE actorId = :actorId", Actor.class).setParameter("actorId", actorId);
         return Optional.ofNullable(query.getSingleResult());
@@ -35,7 +61,12 @@ public class ActorHibernateDao implements ActorDao{
 
     @Override
     public int getActorsForQueryCount(String query) {
-        return getActorsForQuery(query).size();
+        String sql = "SELECT COUNT(*) FROM Actor a WHERE LOWER(a.actorName) LIKE :query";
+
+        Number result = (Number) em.createQuery(sql)
+                .setParameter("query", "%"+query.toLowerCase()+"%").getSingleResult();
+
+        return result.intValue();
     }
 
     @Override
@@ -46,6 +77,18 @@ public class ActorHibernateDao implements ActorDao{
                 .setParameter("query", "%"+query.toLowerCase()+"%");
 
         return q.getResultList();
+    }
+
+    @Override
+    public List<Actor> getActorsForQuery(String query, int pageNumber, int pageSize) {
+        String sql = "SELECT a FROM Actor a WHERE LOWER(a.actorName) LIKE :query ORDER BY a.medias.size DESC";
+
+        TypedQuery<Actor> q = em.createQuery(sql, Actor.class)
+                .setParameter("query", "%"+query.toLowerCase()+"%");
+
+        int offset = (pageNumber - 1) * pageSize;
+
+        return q.setFirstResult(offset).setMaxResults(pageSize).getResultList();
     }
 
     @Override

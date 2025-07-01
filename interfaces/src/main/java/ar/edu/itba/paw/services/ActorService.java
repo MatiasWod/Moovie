@@ -8,9 +8,12 @@ import java.util.Optional;
 
 public interface ActorService {
     List<Actor> getAllActorsForMedia(int mediaId);//fijarse qué hacer con tvId y movieId
+    List<Actor> getAllActorsForMedia(int mediaId, int pageNumber, int pageSize);
+    int getAllActorsForMediaCount(int mediaId);
     Actor getActorById(int actorId);
 
     int getActorsForQueryCount(String query);
     List<Actor> getActorsForQuery(String query);
+    List<Actor> getActorsForQuery(String query, int pageNumber, int pageSize);
     List<Media> getMediaForActor(int actorId);
 }
