@@ -7,20 +7,25 @@ import userApi from '../../../api/UserApi';
 import { useTranslation } from 'react-i18next';
 import ReportTypes from '../../../api/values/ReportTypes';
 import { Spinner } from 'react-bootstrap';
+import {parsePaginatedResponse} from "../../../utils/ResponseUtils";
+import PaginationButton from "../paginationButton/PaginationButton";
 
 export default function MoovieListReports() {
-  const [lists, setLists] = useState([]);
+  const [page, setPage] = useState( 1);
+  const [lists, setLists] =  useState({ lists: [], links: {} });
   const [listsLoading, setListsLoading] = useState(true);
   const [selectedAction, setSelectedAction] = useState(null);
   const { t } = useTranslation();
 
   useEffect(() => {
+    setListsLoading(true)
     fetchLists();
-  }, []);
+  }, [page]);
 
   const fetchLists = async () => {
     try {
-      const response = await reportApi.getReports({ contentType: 'moovieList' });
+      const res = await reportApi.getReports({ contentType: 'moovieList' ,pageNumber: page});
+      const response=parsePaginatedResponse(res)
       const reportsData = response.data || [];
 
       // Get unique URLs
@@ -66,7 +71,11 @@ export default function MoovieListReports() {
             };
           });
 
-          setLists(listsWithReports);
+
+          setLists({
+            lists: listsWithReports,
+            links: response.links,
+          });
         } catch (error) {
           console.error('Error fetching report counts:', error);
           setLists(lists); // Set lists without report counts
@@ -122,13 +131,13 @@ export default function MoovieListReports() {
   return (
     <div className="container-fluid">
       <h3 className="text-xl font-semibold mb-4">{t('moovieListReports.moovieListReports')}</h3>
-      {lists.length === 0 ? (
+      {lists.lists.length === 0 ? (
         <div className="text-center text-gray-500">
           {t('moovieListReports.noMoovieListReports')}
         </div>
       ) : (
         <div className="space-y-4">
-          {lists.map((ml, index) => (
+          {lists.lists.map((ml, index) => (
             <div key={index} className="bg-white rounded-lg shadow-md p-6">
               <div className="flex justify-between items-start mb-4">
                 <div className="space-y-2">
@@ -269,6 +278,16 @@ export default function MoovieListReports() {
           onCancel={() => setSelectedAction(null)}
         />
       )}
+      {!listsLoading && lists?.links?.last?.pageNumber > 1 && (
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+            <PaginationButton
+                page={page}
+                lastPage={lists.links.last.pageNumber}
+                setPage={setPage}
+            />
+          </div>
+      )
+      }
     </div>
   );
 }

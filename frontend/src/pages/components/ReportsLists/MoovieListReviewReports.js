@@ -8,21 +8,27 @@ import { useTranslation } from 'react-i18next';
 import ReportTypes from '../../../api/values/ReportTypes';
 import moovieListApi from '../../../api/MoovieListApi';
 import { Spinner } from 'react-bootstrap';
+import {parsePaginatedResponse} from "../../../utils/ResponseUtils";
+import PaginationButton from "../paginationButton/PaginationButton";
 
 export default function MoovieListReviewReports() {
-  const [reviews, setReviews] = useState([]);
+  const [reviews, setReviews] = useState({ reviews: [], links: {} });
   const [reviewsLoading, setReviewsLoading] = useState(true);
   const [selectedAction, setSelectedAction] = useState(null);
   const [reviewsWithLists, setReviewsWithLists] = useState([]);
+  const [page, setPage] = useState( 1);
+
   const { t } = useTranslation();
 
   useEffect(() => {
+    setReviewsLoading(true)
     fetchReviews();
-  }, []);
+  }, [page]);
 
   const fetchReviews = async () => {
     try {
-      const response = await reportApi.getReports({ contentType: 'moovieListReview' });
+      const res = await reportApi.getReports({ contentType: 'moovieListReview' , pageNumber:page});
+      const response=parsePaginatedResponse(res)
       const reportsData = response.data || [];
 
       // Get unique URLs
@@ -71,7 +77,10 @@ export default function MoovieListReviewReports() {
             };
           });
 
-          setReviews(reviewsWithDetails);
+          setReviews({
+            reviews: reviewsWithDetails,
+            links: response.links,
+          });
         } catch (error) {
           console.error('Error fetching additional details:', error);
           setReviews(reviews);
@@ -129,13 +138,13 @@ export default function MoovieListReviewReports() {
       <h3 className="text-xl font-semibold mb-4">
         {t('moovieListReviewReports.moovieListReviewReports')}
       </h3>
-      {reviews.length === 0 ? (
+      {reviews.reviews.length === 0 ? (
         <div className="text-center text-gray-500">
           {t('moovieListReviewReports.noMoovieListReviewReports')}
         </div>
       ) : (
         <div className="space-y-4">
-          {reviews.map((review, index) => (
+          {reviews.reviews.map((review, index) => (
             <div key={index} className="bg-white rounded-lg shadow-md p-6">
               <div className="flex justify-between items-start mb-4">
                 <div className="space-y-2">
@@ -272,6 +281,16 @@ export default function MoovieListReviewReports() {
           onCancel={() => setSelectedAction(null)}
         />
       )}
+
+      {!reviewsLoading && reviews?.links?.last?.pageNumber > 1 && (
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+                <PaginationButton
+                    page={page}
+                    lastPage={reviews.links.last.pageNumber}
+                    setPage={setPage}
+                />
+              </div>
+          )}
     </div>
   );
 }

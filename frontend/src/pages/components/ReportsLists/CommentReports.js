@@ -9,21 +9,27 @@ import ReportTypes from '../../../api/values/ReportTypes';
 import { Tooltip } from 'react-tooltip';
 import mediaApi from '../../../api/MediaApi';
 import { Spinner } from 'react-bootstrap';
+import {useSearchParams} from "react-router-dom";
+import PaginationButton from "../paginationButton/PaginationButton";
+import {parsePaginatedResponse} from "../../../utils/ResponseUtils";
 
 export default function CommentReports() {
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState({ comments: [], links: {} });
   const [commentsLoading, setCommentsLoading] = useState(true);
   const [selectedAction, setSelectedAction] = useState(null);
+  const [page, setPage] = useState( 1);
   const { t } = useTranslation();
   // selectedAction = {type: 'delete'|'ban'|'resolve', item: comment}
 
   useEffect(() => {
+    setCommentsLoading(true)
     fetchComments();
-  }, []);
+  }, [page]);
 
   const fetchComments = async () => {
     try {
-      const response = await reportApi.getReports({ contentType: 'comment' });
+      const res = await reportApi.getReports({ contentType: 'comment' ,pageNumber: page});
+      const response=parsePaginatedResponse(res)
       const reportsData = response.data || [];
 
       // Get unique URLs
@@ -74,7 +80,10 @@ export default function CommentReports() {
             };
           });
 
-          setComments(commentsWithDetails);
+          setComments({
+            comments: commentsWithDetails,
+            links: response.links,
+          });
         } catch (error) {
           console.error('Error fetching additional details:', error);
           setComments(comments); // Set comments without additional details
@@ -130,11 +139,11 @@ export default function CommentReports() {
   return (
     <div className="container-fluid">
       <h3 className="text-xl font-semibold mb-4">{t('commentReports.commentReports')}</h3>
-      {comments.length === 0 ? (
+      {comments.comments.length === 0 ? (
         <div className="text-center text-gray-500">{t('commentReports.noCommentReports')}</div>
       ) : (
         <div className="space-y-4">
-          {comments.map((comment, index) => (
+          {comments.comments.map((comment, index) => (
             <div key={index} className="bg-white rounded-lg shadow-md p-6">
               <div className="flex justify-between items-start mb-4">
                 <div className="space-y-2">
@@ -261,6 +270,16 @@ export default function CommentReports() {
           onCancel={() => setSelectedAction(null)}
         />
       )}
+      {!commentsLoading && comments?.links?.last?.pageNumber > 1 && (
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+          <PaginationButton
+              page={page}
+              lastPage={comments.links.last.pageNumber}
+              setPage={setPage}
+          />
+          </div>
+      )
+      }
     </div>
-  );
-}
+  );}
+
