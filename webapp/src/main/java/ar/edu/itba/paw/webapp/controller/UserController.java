@@ -67,10 +67,17 @@ public class UserController {
     @GET
     @Produces(VndType.APPLICATION_USER_LIST)
     public Response getUsers(
-            @QueryParam("page") @DefaultValue("1") final int page,
+            @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber,
+            @QueryParam("pageSize") @DefaultValue("-1") final int pageSize,
             @QueryParam("email") final String email,
             @QueryParam("id") final Integer id,
             @QueryParam("role") final Integer role) {
+
+        int pageSizeQuery = pageSize;
+        if (pageSize < 1 || pageSize > PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize()) {
+            pageSizeQuery = PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize();
+        }
+
 
         // CHECK for invalid role
         if (role != null) {
@@ -108,7 +115,7 @@ public class UserController {
         }
 
         // Validar número de página
-        if (page < DEFAULT_PAGE_INT) {
+        if (pageNumber < DEFAULT_PAGE_INT) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
@@ -117,10 +124,10 @@ public class UserController {
             final List<User> all;
             final int totalCount;
             if (role == null) {
-                all = userService.listAll(page);
+                all = userService.listAll(pageSizeQuery,pageNumber);
                 totalCount = userService.getUserCount();
             } else {
-                all = userService.listAll(role, page);
+                all = userService.listAll(role, pageSizeQuery,pageNumber);
                 totalCount = userService.getUserCount(UserRoles.getRoleFromInt(role));
             }
             if (all.isEmpty()) {
@@ -131,8 +138,8 @@ public class UserController {
             Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserDto>>(dtoList) {
             });
 
-            final PagingUtils<User> pagingUtils = new PagingUtils<>(all, page,
-                    PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), totalCount);
+            final PagingUtils<User> pagingUtils = new PagingUtils<>(all, pageNumber -1 ,
+                    pageSizeQuery, totalCount);
             ResponseUtils.setPaginationLinks(res, pagingUtils, uriInfo);
 
             return res.build();

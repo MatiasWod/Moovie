@@ -48,14 +48,14 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<User> listAll(int page) {
-        return userDao.listAll(page);
+    public List<User> listAll(int size, int pageNumber) {
+        return userDao.listAll(size,pageNumber - 1);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<User> listAll(int role, int page) {
-        return userDao.listAll(role, page);
+    public List<User> listAll(int role, int size, int pageNumber) {
+        return userDao.listAll(role, size, pageNumber - 1);
     }
 
     @Transactional

@@ -10,9 +10,9 @@ import java.util.Optional;
 
 public interface UserDao {
 
-    List<User> listAll(int page);
+    List<User> listAll(int size, int pageNumber);
 
-    List<User> listAll(int role, int page);
+    List<User> listAll(int role, int size, int pageNumber);
 
     User createUser(String username, String email, String password);
 

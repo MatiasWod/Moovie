@@ -28,15 +28,17 @@ public class UserHibernateDao implements UserDao {
     private static final int INITIAL_MILKY_POINTS = 0;
 
     @Override
-    public List<User> listAll(int page) {
-        return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
+    public List<User> listAll(int size, int pageNumber) {
+        final TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u ORDER BY u.username" + " " + "ASC", User.class);
+        query.setFirstResult(pageNumber * size).setMaxResults(size);
+        return query.getResultList();
     }
 
     @Override
-    public List<User> listAll(int role, int page) {
-        return entityManager.createQuery("SELECT u FROM User u WHERE u.role = :role", User.class)
-                .setParameter("role", role)
-                .getResultList();
+    public List<User> listAll(int role, int size, int pageNumber) {
+        final TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u WHERE u.role = :role ORDER BY u.username" + " " + "ASC", User.class);
+        query.setParameter("role", role).setFirstResult(pageNumber * size).setMaxResults(size);
+        return query.getResultList();
     }
 
     //Revisar, está mal así

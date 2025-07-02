@@ -12,9 +12,9 @@ import java.util.List;
 public interface UserService {
 
     //API
-    List<User> listAll(int page);
+    List<User> listAll(int size, int pageNumber);
 
-    List<User> listAll(int role, int page);
+    List<User> listAll(int role,int size, int pageNumber);
 
     //Registration actions
     String createUser(String username, String email, String password);
