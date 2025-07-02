@@ -161,8 +161,8 @@ const userApi = (() => {
     }
   };
 
-  const listUsers = ({ role }) => {
-    return api.get('/users', { params: { role } });
+  const listUsers = ({ role ,pageNumber,pageSize}) => {
+    return api.get('/users', { params: { role: role,pageNumber: pageNumber,pageSize:pageSize } });
   };
 
   const getBanMessage = (username) => {

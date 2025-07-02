@@ -8,20 +8,26 @@ import { useTranslation } from 'react-i18next';
 import ReportTypes from '../../../api/values/ReportTypes';
 import mediaApi from '../../../api/MediaApi';
 import { Spinner } from 'react-bootstrap';
+import {parsePaginatedResponse} from "../../../utils/ResponseUtils";
+import PaginationButton from "../paginationButton/PaginationButton";
 
 export default function ReviewReports() {
-  const [reviews, setReviews] = useState([]);
+  const [reviews, setReviews] = useState({ reviews: [], links: {} });
   const [reviewsLoading, setReviewsLoading] = useState(true);
   const [selectedAction, setSelectedAction] = useState(null);
   const { t } = useTranslation();
+  const [page, setPage] = useState( 1);
+
 
   useEffect(() => {
+    setReviewsLoading(true);
     fetchReports();
-  }, []);
+  }, [page]);
 
   const fetchReports = async () => {
     try {
-      const response = await reportApi.getReports({ contentType: 'review' });
+      const res = await reportApi.getReports({ contentType: 'review' ,pageNumber:page});
+      const response=parsePaginatedResponse(res)
       const reportsData = response.data || [];
 
       // Get unique URLs
@@ -76,7 +82,10 @@ export default function ReviewReports() {
             };
           });
 
-          setReviews(reviewsWithReports);
+          setReviews({
+            reviews: reviewsWithReports,
+            links: response.links,
+          });
         } catch (error) {
           console.error('Error fetching additional details:', error);
           setReviews(reviews); // Set reviews without additional details
@@ -132,11 +141,11 @@ export default function ReviewReports() {
   return (
     <div className="container-fluid">
       <h3 className="text-xl font-semibold mb-4">{t('reviewReports.reviewReports')}</h3>
-      {reviews.length === 0 ? (
+      {reviews.reviews.length === 0 ? (
         <div className="text-center text-gray-500">{t('reviewReports.noReviewReports')}</div>
       ) : (
         <div className="space-y-4">
-          {reviews.map((review, index) => (
+          {reviews.reviews.map((review, index) => (
             <div key={index} className="review container-fluid bg-white my-3 p-4 rounded shadow">
               <div className="review-header d-flex align-items-center justify-between">
                 <div>
@@ -252,6 +261,16 @@ export default function ReviewReports() {
           }}
           onCancel={() => setSelectedAction(null)}
         />
+      )}
+
+      {!reviewsLoading && reviews?.links?.last?.pageNumber > 1 && (
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+            <PaginationButton
+                page={page}
+                lastPage={reviews.links.last.pageNumber}
+                setPage={setPage}
+            />
+          </div>
       )}
     </div>
   );

@@ -148,7 +148,7 @@ public class ReviewServiceImpl implements ReviewService{
 
         if (type.getType() == ReviewTypes.REVIEW_MEDIA.getType() && reviewDao.getReviewByMediaIdAndUsername(mediaId, user.getUserId()) != null)
             throw new ReviewAlreadyCreatedException("Review already created in media with id: " + mediaId);
-        else if (reviewDao.getMoovieListReviewByListIdAndUsername(mediaId, user.getUserId()) != null)
+        else if (type.getType() == ReviewTypes.REVIEW_MOOVIE_LIST.getType() && reviewDao.getMoovieListReviewByListIdAndUsername(mediaId, user.getUserId()) != null)
             throw new ReviewAlreadyCreatedException("Review already created in list with id: " + mediaId);
 
         reviewDao.createReview(user, mediaId, rating, reviewContent,type);

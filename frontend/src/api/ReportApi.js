@@ -79,8 +79,8 @@ const reportApi = (() => {
 
   // --------------- GET REPORTS ---------------
 
-  const getReports = async ({ contentType }) => {
-    const response = await api.get('/reports', { params: { contentType } });
+  const getReports = async ({ contentType,pageNumber }) => {
+    const response = await api.get('/reports', { params: { contentType ,pageNumber} });
     return response;
   };
 
