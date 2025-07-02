@@ -13,7 +13,7 @@ public class TvCreatorsDto {
 
     private String url;
 
-    private String mediasUrls;
+    private String mediasUrl;
 
     public static TvCreatorsDto fromTvCreator(final TVCreators tvCreator, final UriInfo uriInfo) {
         final TvCreatorsDto dto = new TvCreatorsDto();
@@ -22,7 +22,7 @@ public class TvCreatorsDto {
         dto.id = tvCreator.getCreatorId();
 
         dto.url = uriInfo.getBaseUriBuilder().path("tvCreators/{id}").build(tvCreator.getCreatorId()).toString();
-        dto.mediasUrls = uriInfo.getBaseUriBuilder().path("medias")
+        dto.mediasUrl = uriInfo.getBaseUriBuilder().path("medias")
                 .queryParam("tvCreatorId", tvCreator.getCreatorId())
                 .build()
                 .toString();
@@ -41,12 +41,12 @@ public class TvCreatorsDto {
         this.url = url;
     }
 
-    public String getMediasUrls() {
-        return mediasUrls;
+    public String getMediasUrl() {
+        return mediasUrl;
     }
 
-    public void setMediasUrls(String mediasUrls) {
-        this.mediasUrls = mediasUrls;
+    public void setMediasUrl(String mediasUrl) {
+        this.mediasUrl = mediasUrl;
     }
 
     public int getId() {

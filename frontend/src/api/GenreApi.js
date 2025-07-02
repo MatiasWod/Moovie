@@ -5,17 +5,13 @@ const genreApi = (() => {
     return api.get('/genres');
   };
 
-  const getGenresForMedia = (id) => {
-    return api.get(`/genres`, {
-      params: {
-        mediaId: id,
-      },
-    });
+  const getGenresFromUrl = (url) => {
+    return api.get(url);
   };
 
   return {
     getAllGenres,
-    getGenresForMedia,
+    getGenresFromUrl,
   };
 })();
 

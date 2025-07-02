@@ -30,15 +30,17 @@ function Cast() {
     async function getData() {
       try {
         let data;
+        let castData;
         if (isActor) {
-          data = await mediaService.getMediasForActor({ id });
-          const actorData = await castService.getActorById(id);
-          setActorObject(actorData.data);
+          castData = await castService.getActorById(id);
+          setActorObject(castData.data);
         } else if (isTvCreator) {
-          data = await mediaService.getMediasForTVCreator({ id });
+          castData = await castService.getTvCreatorById(id);
         } else if (isDirector) {
-          data = await mediaService.getMediasForDirector({ id });
+          castData = await castService.getDirectorById(id);
         }
+        console.log('Cast Data:', castData);
+        data = await mediaService.getMediasFromUrl(castData.data.mediasUrl);
         setActorMedias(data);
       } catch (error) {
         console.error('Error fetching actor media:', error);

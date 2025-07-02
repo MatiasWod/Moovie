@@ -53,6 +53,10 @@ const mediaApi = (() => {
     });
   };
 
+  const getMediasFromUrl = (url) => {
+    return api.get(url);
+  };
+
   return {
     getMedia,
     getProvidersForMedia,
@@ -61,6 +65,7 @@ const mediaApi = (() => {
     getMediasForTVCreator,
     getMediasForDirector,
     getMediasForActor,
+    getMediasFromUrl
   };
 })();
 

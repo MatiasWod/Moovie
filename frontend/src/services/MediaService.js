@@ -60,6 +60,10 @@ const MediaService = (() => {
     return await mediaApi.getMediasForActor(id);
   };
 
+  const getMediasFromUrl = async (url) => {
+    return await mediaApi.getMediasFromUrl(url);
+  };
+
   return {
     getMedia,
     getProvidersForMedia,
@@ -69,6 +73,7 @@ const MediaService = (() => {
     getMediasForTVCreator,
     getMediasForDirector,
     getMediasForActor,
+    getMediasFromUrl
   };
 })();
 

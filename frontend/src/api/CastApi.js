@@ -51,6 +51,10 @@ const castApi = (() => {
     });
   };
 
+  const getDirectorById = (id) => {
+    return api.get(`/directors/${id}`);
+  };
+
   return {
     getActorsForQuery,
     getActorsByMediaId,
@@ -59,6 +63,7 @@ const castApi = (() => {
     getTvCreatorById,
     getTvCreatorsSearch,
     getTvCreatorsByMediaId,
+    getDirectorById
   };
 })();
 
