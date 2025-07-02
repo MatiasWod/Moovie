@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import commentApi from '../../../api/CommentApi';
 import { useSelector } from 'react-redux';
 import reportApi from '../../../api/ReportApi';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate, useSearchParams} from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ReportForm from '../forms/reportForm/reportForm';
 import ConfirmationForm from '../forms/confirmationForm/confirmationForm';
@@ -14,9 +14,12 @@ import CommentStatusEnum from '../../../api/values/CommentStatusEnum';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import './CommentList.css';
 import api from '../../../api/api';
+import {parsePaginatedResponse} from "../../../utils/ResponseUtils";
+import PaginationButton from "../paginationButton/PaginationButton";
 
 export default function CommentList({ reviewId, reload, commentsUrl }) {
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { isLoggedIn, user } = useSelector((state) => state.auth);
   const [comments, setComments] = useState([]);
@@ -26,6 +29,7 @@ export default function CommentList({ reviewId, reload, commentsUrl }) {
     const stored = localStorage.getItem(`comment-expanded-${reviewId}`);
     return stored ? JSON.parse(stored) : false;
   });
+  const [pageComments, setPageComments] = useState(Number(searchParams.get('pageComments')) || 1);
 
   const [refreshComments, setRefreshComments] = useState(false);
   const handleRefreshComments = () => {
@@ -34,17 +38,18 @@ export default function CommentList({ reviewId, reload, commentsUrl }) {
 
   useEffect(() => {
     fetchComments();
-  }, [reviewId, refreshComments, reload?.reloadComments, commentsUrl]);
+  }, [reviewId, refreshComments, reload?.reloadComments, commentsUrl, pageComments]);
 
   const fetchComments = async () => {
     try {
       let response;
       if (commentsUrl) {
-        response = await api.get(commentsUrl);
+        response = await api.get(commentsUrl + `&pageNumber=${pageComments}`);
       } else {
-        response = await commentApi.getReviewComments(reviewId, 1);
+        response = await commentApi.getReviewComments(reviewId, pageComments);
       }
-      setComments(response.data || []);
+      const data = parsePaginatedResponse(response);
+      setComments(data);
       setIsLoading(false);
     } catch (err) {
       setError(err.message);
@@ -83,16 +88,18 @@ export default function CommentList({ reviewId, reload, commentsUrl }) {
 
   return (
     <div className="mt-4 space-y-2">
-      <CommentItem
-        comment={comments[0]}
-        isLoggedIn={isLoggedIn}
-        user={user}
-        onDelete={handleDeleteComment}
-        onReport={handleReportComment}
-        reload={handleRefreshComments}
-      />
+      {comments?.data?.length > 0 && (
+        <CommentItem
+          comment={comments.data[0]}
+          isLoggedIn={isLoggedIn}
+          user={user}
+          onDelete={handleDeleteComment}
+          onReport={handleReportComment}
+          reload={handleRefreshComments}
+        />
+      )}
 
-      {comments.length > 1 && (
+      {comments.data.length > 1 && (
         <div className="text-center">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
@@ -118,7 +125,7 @@ export default function CommentList({ reviewId, reload, commentsUrl }) {
               </>
             ) : (
               <>
-                <span>{t('commentList.showMore', { commentsQty: comments.length - 1 })}</span>
+                <span>{t('commentList.showMore')}</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-4 w-4"
@@ -141,7 +148,7 @@ export default function CommentList({ reviewId, reload, commentsUrl }) {
 
       {isExpanded && (
         <div className="space-y-2 animate-fadeIn">
-          {comments.slice(1).map((comment, index) => (
+          {comments?.data?.slice(1).map((comment, index) => (
             <CommentItem
               comment={comment}
               key={comment.id}
@@ -152,9 +159,22 @@ export default function CommentList({ reviewId, reload, commentsUrl }) {
               reload={handleRefreshComments}
             />
           ))}
+          <div className="m-1 d-flex justify-content-center">
+            {!isLoading && comments?.links?.last?.pageNumber > 1 && (
+                <PaginationButton
+                    page={pageComments}
+                    lastPage={comments.links.last.pageNumber}
+                    setPage={setPageComments}
+                />
+            )}
+          </div>
         </div>
-      )}
+
+      )
+      }
+
     </div>
+
   );
 }
 
@@ -188,7 +208,7 @@ function CommentItem({ comment, isLoggedIn, user, onDelete, reload, onReport }) 
       if (!isLoggedIn || !user) return;
 
       try {
-        const feedback = await profileService.currentUserCommentFeedback(comment.id, user.username);
+        const feedback = await profileService.currentUserCommentFeedback(comment?.id, user.username);
         setCurrentLikeStatus(feedback === CommentStatusEnum.LIKE);
         setCurrentDislikeStatus(feedback === CommentStatusEnum.DISLIKE);
       } catch (e) {
@@ -197,10 +217,10 @@ function CommentItem({ comment, isLoggedIn, user, onDelete, reload, onReport }) 
     };
 
     fetchFeedbackStatus();
-  }, [comment.id, user?.username, isLoggedIn, refreshLikeStatus]);
+  }, [comment?.id, user?.username, isLoggedIn, refreshLikeStatus]);
 
-  const [localLikes, setLocalLikes] = useState(comment.commentLikes);
-  const [localDislikes, setLocalDislikes] = useState(comment.commentDislikes);
+  const [localLikes, setLocalLikes] = useState(comment?.commentLikes);
+  const [localDislikes, setLocalDislikes] = useState(comment?.commentDislikes);
 
   const handleLikeComment = async () => {
     try {
@@ -217,14 +237,14 @@ function CommentItem({ comment, isLoggedIn, user, onDelete, reload, onReport }) 
       setRefreshLikeStatus(!refreshLikeStatus);
     } catch (e) {
       // Revert to original counts if the API call fails
-      setLocalLikes(comment.commentLikes);
-      setLocalDislikes(comment.commentDislikes);
+      setLocalLikes(comment?.commentLikes);
+      setLocalDislikes(comment?.commentDislikes);
     }
   };
 
   const handleDislikeComment = async () => {
     try {
-      await commentApi.commentFeedback(comment.id, 'DISLIKE');
+      await commentApi.commentFeedback(comment?.id, 'DISLIKE');
       // Update counts based on previous state
       if (currentDislikeStatus) {
         setLocalDislikes((prev) => prev - 1);
@@ -237,24 +257,24 @@ function CommentItem({ comment, isLoggedIn, user, onDelete, reload, onReport }) 
       setRefreshLikeStatus(!refreshLikeStatus);
     } catch (e) {
       // Revert to original counts if the API call fails
-      setLocalLikes(comment.commentLikes);
-      setLocalDislikes(comment.commentDislikes);
+      setLocalLikes(comment?.commentLikes);
+      setLocalDislikes(comment?.commentDislikes);
     }
   };
 
   // Update local counts when comment prop changes
   useEffect(() => {
-    setLocalLikes(comment.commentLikes);
-    setLocalDislikes(comment.commentDislikes);
-  }, [comment.commentLikes, comment.commentDislikes]);
+    setLocalLikes(comment?.commentLikes);
+    setLocalDislikes(comment?.commentDislikes);
+  }, [comment?.commentLikes, comment?.commentDislikes]);
 
   return (
     <div className="bg-gray-50 p-3 rounded-lg">
       <div className="flex justify-between items-start">
         <div className="flex-grow">
-          <p className="text-sm text-gray-700">{comment.content}</p>
+          <p className="text-sm text-gray-700">{comment?.content}</p>
           <span className="text-xs text-gray-500">
-            {t('commentList.by')} {comment.userUrl.split('/').pop()}
+            {t('commentList.by')} {comment?.userUrl.split('/').pop()}
           </span>
         </div>
         <div className="flex items-center gap-2">
@@ -314,7 +334,7 @@ function CommentItem({ comment, isLoggedIn, user, onDelete, reload, onReport }) 
                 {t('comment.report')}
               </NavDropdown.Item>
 
-              {user.username === comment.username && (
+              {user.username === comment?.username && (
                 <NavDropdown.Item
                   onClick={handleToggleDelete}
                   className="text-red-600 hover:text-red-700"
