@@ -23,6 +23,7 @@ import ar.edu.itba.paw.webapp.mappers.UnableToChangeRoleEM;
 import ar.edu.itba.paw.webapp.mappers.UnableToFindUserEM;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Api(value = "/users")
 @Path("/users")
 @Component
 public class UserController {
