@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import userApi from '../../api/UserApi';
 import PagingSizes from '../../api/values/PagingSizes';
 import '../components/mainStyle.css';
 import './milkyLeaderboard.css';
@@ -7,7 +6,7 @@ import ProfileImage from '../components/profileImage/ProfileImage';
 import logo from '../../images/logo.png';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import profileApi from '../../api/ProfileApi';
+import userApi from '../../api/UserApi';
 import { Spinner } from 'react-bootstrap';
 import { FaInfoCircle } from 'react-icons/fa';
 
@@ -19,7 +18,7 @@ function MilkyLeaderboard() {
 
   const fetchMilkyLeaderboard = async () => {
     try {
-      const response = await profileApi.getMilkyLeaderboard({
+      const response = await userApi.getMilkyLeaderboard({
         page: 1,
         pageSize: PagingSizes.MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE,
       });

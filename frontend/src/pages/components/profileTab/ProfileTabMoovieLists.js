@@ -9,7 +9,6 @@ import CardsListOrderBy from '../../../api/values/CardsListOrderBy';
 import MoovieListTypes from '../../../api/values/MoovieListTypes';
 import ListCardsPaginated from '../ListCardsPaginated/ListCardsPaginated';
 import UserService from '../../../services/UserService';
-import ProfileService from '../../../services/ProfileService';
 import { Spinner } from 'react-bootstrap';
 
 function ProfileTabMediaLists({ type, username }) {
@@ -66,7 +65,7 @@ function ProfileTabMediaLists({ type, username }) {
           };
           data = await ListService.getLists(params);
         } else {
-          const initialData = await ProfileService.getLikedOrFollowedListFromUser(
+          const initialData = await UserService.getLikedOrFollowedListFromUser(
             username,
             typeString,
             orderBy,

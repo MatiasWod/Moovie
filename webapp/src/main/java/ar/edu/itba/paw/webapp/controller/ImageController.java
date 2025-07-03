@@ -28,7 +28,7 @@ public class ImageController {
     private final UserService userService;
     private final ImageService imageService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     public ImageController(final UserService userService, final ImageService imageService) {

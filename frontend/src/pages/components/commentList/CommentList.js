@@ -8,14 +8,14 @@ import ReportForm from '../forms/reportForm/reportForm';
 import ConfirmationForm from '../forms/confirmationForm/confirmationForm';
 import reviewService from '../../../services/ReviewService';
 import ConfirmationModal from '../forms/confirmationForm/confirmationModal';
-import profileService from '../../../services/ProfileService';
-import profileApi from '../../../api/ProfileApi';
+import userApi from '../../../api/UserApi';
 import CommentStatusEnum from '../../../api/values/CommentStatusEnum';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import './CommentList.css';
 import api from '../../../api/api';
 import {parsePaginatedResponse} from "../../../utils/ResponseUtils";
 import PaginationButton from "../paginationButton/PaginationButton";
+import UserService from "../../../services/UserService";
 
 export default function CommentList({ reviewId, reload, commentsUrl }) {
   const { t } = useTranslation();
@@ -208,7 +208,7 @@ function CommentItem({ comment, isLoggedIn, user, onDelete, reload, onReport }) 
       if (!isLoggedIn || !user) return;
 
       try {
-        const feedback = await profileService.currentUserCommentFeedback(comment?.id, user.username);
+        const feedback = await UserService.currentUserCommentFeedback(comment?.id, user.username);
         setCurrentLikeStatus(feedback === CommentStatusEnum.LIKE);
         setCurrentDislikeStatus(feedback === CommentStatusEnum.DISLIKE);
       } catch (e) {

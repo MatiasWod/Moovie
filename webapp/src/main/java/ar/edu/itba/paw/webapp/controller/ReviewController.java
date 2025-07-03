@@ -84,10 +84,10 @@ public class ReviewController {
             return res.build();
         } else if (username != null) {
             try {
-                final List<Review> reviews = reviewService.getMovieReviewsFromUser(userService.getProfileByUsername(username).getUserId(),
+                final List<Review> reviews = reviewService.getMovieReviewsFromUser(userService.findUserByUsername(username).getUserId(),
                         PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
                 final List<ReviewDto> reviewDtos = ReviewDto.fromReviewList(reviews, uriInfo);
-                final int reviewCount = userService.getProfileByUsername(username).getReviewsCount();
+                final int reviewCount = userService.findUserByUsername(username).getReviewsCount();
 
                 Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ReviewDto>>(reviewDtos) {
                 });

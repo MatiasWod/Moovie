@@ -133,7 +133,7 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Transactional(readOnly = true)
     @Override
     public List<MoovieListCard> getLikedMoovieListCards(String username,int type, int size, int pageNumber){
-        return moovieListDao.getLikedMoovieListCards(userService.getProfileByUsername(username).getUserId(), type, size, pageNumber, userService.tryToGetCurrentUserId());
+        return moovieListDao.getLikedMoovieListCards(userService.findUserByUsername(username).getUserId(), type, size, pageNumber, userService.tryToGetCurrentUserId());
     }
 
     @Transactional(readOnly = true)
