@@ -61,6 +61,8 @@
   "confirmationForm.requestError": "Error al realizar la solicitud.",
   "details.budget": "Presupuesto",
   "details.cast": "Elenco",
+  "details.creators": "Creadores:",
+  "details.creator": "Creador:",
   "details.director": "Director",
   "details.episodes": "Episodios",
   "details.genres": "Géneros",

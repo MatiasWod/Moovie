@@ -16,6 +16,10 @@ const CastService = (() => {
     return await castApi.getActorById(id);
   };
 
+  const getActorsFromUrl = async (url) => {
+    return await castApi.getActorsFromUrl(url);
+  }
+
   const getDirectorsForQuery = async ({search,pageNumber}) => {
     const res = await castApi.getDirectorsForQuery({search,pageNumber});
     return parsePaginatedResponse(res);
@@ -34,6 +38,10 @@ const CastService = (() => {
     return parsePaginatedResponse(res);
   };
 
+  const getTvCreatorsFromUrl = async (url) => {
+    return await castApi.getTvCreatorsFromUrl(url);
+  }
+
   const getDirectorById = async (id) => {
     return await castApi.getDirectorById(id);
   }
@@ -42,10 +50,12 @@ const CastService = (() => {
     getActorsForQuery,
     getActorById,
     getActorsByMediaId,
+    getActorsFromUrl,
     getDirectorsForQuery,
     getTvCreatorById,
     getTvCreatorsSearch,
     getTvCreatorsByMediaId,
+    getTvCreatorsFromUrl,
     getDirectorById
   };
 })();

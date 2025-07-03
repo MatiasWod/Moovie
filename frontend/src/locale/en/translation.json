@@ -62,6 +62,8 @@
   "createListForm.link": "Link",
   "details.budget": "Budget",
   "details.cast": "Cast",
+  "details.creators": "Creators:",
+  "details.creator": "Creator:",
   "details.director": "Director",
   "details.episodes": "Episodes",
   "details.genres": "Genres",

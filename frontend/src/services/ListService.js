@@ -31,6 +31,10 @@ const ListService = (() => {
     return parsePaginatedResponse(res);
   };
 
+  const getListsFromUrl = async (url) => {
+    return await listApi.getListsFromUrl(url);
+  }
+
   const getListByIdList = async (idList) => {
     const res = await listApi.getListByIdList(idList);
     return res;
@@ -134,6 +138,7 @@ const ListService = (() => {
   return {
     getLists,
     getListById,
+    getListsFromUrl,
     getListContent,
     getListByIdList,
     getIdListFromObjectList,

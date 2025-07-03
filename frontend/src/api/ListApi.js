@@ -20,6 +20,10 @@ const listApi = (() => {
     return api.get(`/lists/${id}`);
   };
 
+  const getListsFromUrl = (url) => {
+    return api.get(url);
+  }
+
   const getListByIdList = (idListString) => {
     return api.get(`/lists?ids=${idListString}`);
   };
@@ -165,6 +169,7 @@ const listApi = (() => {
   return {
     getLists,
     getListById,
+    getListsFromUrl,
     getListByIdList,
     deleteList,
     getListContent,

@@ -5,13 +5,13 @@ const ProviderService = (() => {
     return await providerApi.getAllProviders();
   };
 
-  const getProvidersForMedia = async (id) => {
-    return await providerApi.getProvidersForMedia(id);
+  const getProvidersFromUrl = async (url) => {
+    return await providerApi.getProvidersFromUrl(url);
   };
 
   return {
     getAllProviders,
-    getProvidersForMedia,
+    getProvidersFromUrl,
   };
 })();
 

@@ -22,6 +22,7 @@ import ReportForm from '../components/forms/reportForm/reportForm';
 import profileService from '../../services/ProfileService';
 import useErrorStatus from '../../hooks/useErrorStatus';
 import api from '../../api/api';
+import listService from "../../services/ListService";
 
 function List() {
   const [error403, setError403] = useState(false);
@@ -123,6 +124,8 @@ function List() {
     getData();
   }, [list?.data.contentUrl, currentOrderBy, currentSortOrder, page, flag]);
 
+
+  //TODO: ver si esto está ok
   const [watchedCount, setWatchedCount] = useState(0);
   useEffect(() => {
     async function getWatchedCount() {
@@ -146,9 +149,7 @@ function List() {
         if (!list?.data.recommendedListsUrl) {
           return;
         }
-        console.log('list.data.recommendedListsUrl', list.data.recommendedListsUrl);
-        const data = (await api.get(list.data.recommendedListsUrl)).data;
-        console.log('getRecommendedLists response data', data);
+        const data = listService.getListsFromUrl(list.data.recommendedListsUrl).data;
         setListRecommendations(data);
 
         setlistRecommendationsLoading(false);

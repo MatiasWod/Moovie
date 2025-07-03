@@ -70,51 +70,25 @@ function Details() {
 
   const fetchMedia = async () => {
     try {
-      const response = await MediaService.getMediaById(id);
-      setMedia(response.data);
+      const responseMedia = await MediaService.getMediaById(id);
+      const responseGenres = await GenreService.getGenresFromUrl(responseMedia.data.genresUrl);
+      if (responseMedia.data.providersUrl) {
+        const responseProviders = await ProviderService.getProvidersFromUrl(responseMedia.data.providersUrl);
+        setProviders(responseProviders.data);
+      }
+      if (responseMedia.data.creatorsUrl) {
+        const responseCreators = await castService.getTvCreatorsFromUrl(responseMedia.data.creatorsUrl);
+        setTvCreators(responseCreators.data);
+      }
+      setMedia(responseMedia.data);
+      setGenres(responseGenres.data);
+
     } catch (err) {
       setErrorStatus(err.response.status);
-      setMediaError(err);
     } finally {
       setMediaLoading(false);
-    }
-  };
-
-  const fetchGenres = async () => {
-    try {
-      if (media.genresUrl) {
-        const response = await api.get(media.genresUrl);
-        setGenres(response.data);
-      }
-    } catch (err) {
-      setGenreError(err);
-    } finally {
       setGenresLoading(false);
-    }
-  };
-
-  const fetchProviders = async () => {
-    try {
-      if (media.providersUrl) {
-        const response = await api.get(media.providersUrl);
-        setProviders(response.data);
-      }
-    } catch (err) {
-      setProvidersError(err);
-    } finally {
       setProvidersLoading(false);
-    }
-  };
-
-  const fetchTvCreators = async () => {
-    try {
-      if (media.creatorsUrl) {
-        const response = await api.get(media.creatorsUrl);
-        setTvCreators(response.data);
-      }
-    } catch (err) {
-      setTvCreatorsError(err);
-    } finally {
       setTvCreatorsLoading(false);
     }
   };
@@ -136,12 +110,6 @@ function Details() {
     fetchMedia();
     fetchUserReview();
   }, [id, reload, setErrorStatus]);
-
-  useEffect(() => {
-    fetchTvCreators();
-    fetchGenres();
-    fetchProviders();
-  }, [media.genresUrl, media.providersUrl, media.creatorsUrl]);
 
   const trailerLink = media.trailerLink === 'None' ? null : media.trailerLink;
   const releaseYear = new Date(media.releaseDate).getFullYear();
@@ -200,7 +168,7 @@ function Details() {
         <div className="d-flex flex-row align-items-center">
           {tvCreators.length > 0 && (
             <>
-              <h5>{tvCreators.length > 1 ? 'Creators:' : 'Creator:'}</h5>
+              <h5>{tvCreators.length > 1 ? t('details.creators') : t('details.creator')}</h5>
               {tvCreators.map((creator) => (
                 <MediaTag
                   link="tvcreators"

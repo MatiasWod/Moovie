@@ -5,17 +5,13 @@ const providerApi = (() => {
     return api.get('/providers');
   };
 
-  const getProvidersForMedia = (id) => {
-    return api.get(`/providers`, {
-      params: {
-        mediaId: id,
-      },
-    });
+  const getProvidersFromUrl = (url) => {
+    return api.get(url);
   };
 
   return {
     getAllProviders,
-    getProvidersForMedia,
+    getProvidersFromUrl,
   };
 })();
 

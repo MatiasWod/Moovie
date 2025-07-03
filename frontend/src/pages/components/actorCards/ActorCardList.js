@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import ActorCard from './ActorCard';
 import { useTranslation } from 'react-i18next';
 import api from '../../../api/api';
+import castService from "../../../services/CastService";
 
 const ActorCardList = ({ actorsUrl }) => {
   const { t } = useTranslation();
@@ -19,7 +20,7 @@ const ActorCardList = ({ actorsUrl }) => {
   useEffect(() => {
     async function fetchActors() {
       try {
-        const response = await api.get(actorsUrl);
+        const response = await castService.getActorsFromUrl(actorsUrl);
         setActors(response.data);
       } catch (err) {
         setActorsError(err);
