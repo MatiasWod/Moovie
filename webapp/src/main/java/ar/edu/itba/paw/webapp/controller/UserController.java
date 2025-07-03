@@ -22,6 +22,7 @@ import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.PagingSizes;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
 import java.util.Optional;
-
+@Api(value = "/users")
 @Path("users")
 @Component
 public class UserController {

@@ -18,6 +18,7 @@ import ar.edu.itba.paw.webapp.dto.in.JustIdDto;
 import ar.edu.itba.paw.webapp.dto.out.*;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
+import io.swagger.annotations.Api;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
@@ -35,6 +36,7 @@ import javax.ws.rs.core.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Api(value = "/profiles")
 @Path("/profiles")
 @Component
 public class ProfileController {

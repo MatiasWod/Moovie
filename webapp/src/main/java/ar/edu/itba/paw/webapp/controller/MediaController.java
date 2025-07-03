@@ -14,6 +14,7 @@ import ar.edu.itba.paw.webapp.dto.out.TVSerieDto;
 
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.ArrayList;
 import java.util.List;
-
+@Api(value = "/medias")
 @Path("medias")
 @Component
 public class MediaController {

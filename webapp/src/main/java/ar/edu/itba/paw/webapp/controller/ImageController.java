@@ -5,6 +5,7 @@ import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
+import io.swagger.annotations.Api;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
+@Api(value = "/images" )
 @Path("images")
 @Component
 public class ImageController {

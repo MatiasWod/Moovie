@@ -8,6 +8,7 @@ import ar.edu.itba.paw.webapp.dto.out.ProviderDto;
 import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
 
+@Api(value = "/providers")
 @Path("providers")
 @Component
 public class ProviderController {

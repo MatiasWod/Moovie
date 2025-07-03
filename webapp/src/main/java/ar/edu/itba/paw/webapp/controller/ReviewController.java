@@ -13,6 +13,7 @@ import ar.edu.itba.paw.webapp.dto.in.ReviewCreateDto;
 import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,7 @@ import java.util.List;
 //import com.sun.org.slf4j.internal.Logger;
 //import com.sun.org.slf4j.internal.LoggerFactory;
 
-
+@Api(value = "/reviews")
 @Path("reviews")
 @Component
 public class ReviewController {

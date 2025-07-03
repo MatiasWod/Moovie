@@ -106,7 +106,11 @@
 
         <init-param>
             <param-name>jersey.config.server.provider.classnames</param-name>
-            <param-value>org.glassfish.jersey.media.multipart.MultiPartFeature</param-value>
+            <param-value>
+                org.glassfish.jersey.media.multipart.MultiPartFeature,
+                io.swagger.jaxrs.listing.ApiListingResource,
+                io.swagger.jaxrs.listing.SwaggerSerializers
+            </param-value>
         </init-param>
 
         <!--  Don't send HTML on error https://stackoverflow.com/questions/25420697/jersey-2-exception-handing -->

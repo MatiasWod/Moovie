@@ -23,6 +23,7 @@ import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,6 +36,7 @@ import javax.ws.rs.core.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Api(value = "/lists")
 @Path("lists")
 @Component
 public class MoovieListController {
