@@ -66,10 +66,10 @@ export const VndType = {
   APPLICATION_MOOVIELIST_REVIEW_FORM: 'application/vnd.moovielist-review-form.v1+json',
 
   // Tipo de medio para un perfil individual
-  APPLICATION_PROFILE: 'application/vnd.profile.v1+json',
+  APPLICATION_USER: 'application/vnd.user.v1+json',
 
   // Tipo de medio para una lista de perfiles
-  APPLICATION_PROFILE_LIST: 'application/vnd.profile-list.v1+json',
+  APPLICATION_USER_LIST: 'application/vnd.user-list.v1+json',
 
   // Tipo de medio para la lista de "Watched"
   APPLICATION_WATCHED_LIST: 'application/vnd.watched-list.v1+json',
@@ -122,13 +122,8 @@ export const VndType = {
   // Tipo de medio para una lista de tvcreators
   APPLICATION_TVCREATOR_LIST: 'application/vnd.tvcreator-list.v1+json',
 
-  // Tipo de medio para un user individual
-  APPLICATION_USER: 'application/vnd.user.v1+json',
-
   APPLICATION_USER_PASSWORD: 'application/vnd.user_password.v1+json',
 
-  // Tipo de medio para una lista de users
-  APPLICATION_USER_LIST: 'application/vnd.user-list.v1+json',
 
   // Tipo de medio para operaciones de creación/edición de un user
   APPLICATION_USER_FORM: 'application/vnd.user-form.v1+json',

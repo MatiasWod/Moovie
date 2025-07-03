@@ -19,10 +19,10 @@ import ConfirmationModal from '../components/forms/confirmationForm/confirmation
 import moovieListReviewApi from '../../api/MoovieListReviewApi';
 import reportApi from '../../api/ReportApi';
 import ReportForm from '../components/forms/reportForm/reportForm';
-import profileService from '../../services/ProfileService';
 import useErrorStatus from '../../hooks/useErrorStatus';
 import api from '../../api/api';
 import listService from "../../services/ListService";
+import UserService from "../../services/UserService";
 
 function List() {
   const [error403, setError403] = useState(false);
@@ -130,7 +130,7 @@ function List() {
   useEffect(() => {
     async function getWatchedCount() {
       try {
-        const data = await profileService.getWatchedCountFromMovieListId(id, user.username);
+        const data = await UserService.getWatchedCountFromMovieListId(id, user.username);
         setWatchedCount(data.data.count);
       } catch (e) {
         setWatchedCount(0);

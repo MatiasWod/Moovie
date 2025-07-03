@@ -2,7 +2,6 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
-import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.User.UserRoles;
@@ -169,7 +168,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Profile> searchUsers(String username, String orderBy, String sortOrder, int size, int pageNumber) {
+    public List<User> searchUsers(String username, String orderBy, String sortOrder, int size, int pageNumber) {
         return userDao.searchUsers(username, setOrderBy(orderBy), setSortOrder(sortOrder), size, pageNumber - 1);
     }
 
@@ -199,13 +198,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public Profile getProfileByUsername(String username) {
-        return userDao.getProfileByUsername(username).orElseThrow(() -> new UnableToFindUserException("No user with username: " + username));
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<Profile> getMilkyPointsLeaders(int size, int pageNumber) {
+    public List<User> getMilkyPointsLeaders(int size, int pageNumber) {
         return userDao.getMilkyPointsLeaders(size, pageNumber - 1);
     }
 

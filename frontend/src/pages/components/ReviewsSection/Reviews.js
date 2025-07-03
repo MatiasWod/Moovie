@@ -15,11 +15,11 @@ import mediaService from '../../../services/MediaService';
 import ReviewForm from '../forms/reviewForm/ReviewForm';
 import ConfirmationForm from '../forms/confirmationForm/confirmationForm';
 import ConfirmationModal from '../forms/confirmationForm/confirmationModal';
-import profileService from '../../../services/ProfileService';
 import ReportForm from '../forms/reportForm/reportForm';
 import reportApi from '../../../api/ReportApi';
 import { Spinner } from 'react-bootstrap';
 import api from '../../../api/api';
+import UserService from "../../../services/UserService";
 
 const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, reloadReviews }) => {
   const { t } = useTranslation();
@@ -106,11 +106,11 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
     try {
       if (source === 'list') {
         setCurrentLikeStatus(
-          await profileService.currentUserHasLikedMoovieListReview(review.id, currentUser.username)
+          await UserService.currentUserHasLikedMoovieListReview(review.id, currentUser.username)
         );
       } else {
         setCurrentLikeStatus(
-          await profileService.currentUserHasLikedReview(review.id, currentUser.username)
+          await UserService.currentUserHasLikedReview(review.id, currentUser.username)
         );
       }
     } catch (e) {}

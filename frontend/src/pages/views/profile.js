@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import userApi from '../../api/UserApi';
 import ProfileHeader from '../components/profileHeader/ProfileHeader';
 import ProfileTabNavigation from '../components/profileTabNavigation/profileTabNavigation';
 import Reviews from '../components/ReviewsSection/Reviews';
 import ProfileTabMediaLists from '../components/profileTab/ProfileTabMediaLists';
 import ProfileTabMoovieLists from '../components/profileTab/ProfileTabMoovieLists';
-import profileApi from '../../api/ProfileApi';
+import userApi from '../../api/UserApi';
 import ConfirmationModal from '../components/forms/confirmationForm/confirmationModal';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
@@ -49,7 +48,7 @@ function Profile() {
 
   const fetchProfile = async () => {
     try {
-      const response = await profileApi.getProfileByUsername(username);
+      const response = await userApi.getUserByUsername(username);
       setProfile(response.data);
       setProfileError(null);
     } catch (err) {

@@ -12,16 +12,15 @@ import cardsListOrderBy from '../../api/values/CardsListOrderBy';
 import sortOrder from '../../api/values/SortOrder';
 import ListCard from '../components/listCard/ListCard';
 import CastService from '../../services/CastService';
-import userService from '../../services/UserService';
 import ActorCard from '../components/actorCards/ActorCard';
 import MediaOrderBy from '../../api/values/MediaOrderBy';
 import CardsListOrderBy from '../../api/values/CardsListOrderBy';
 import { useTranslation } from 'react-i18next';
 import {Divider, Pagination} from '@mui/material';
 import './discover.css';
-import profileService from '../../services/ProfileService';
 import './search.css';
 import { Spinner } from 'react-bootstrap';
+import UserService from "../../services/UserService";
 
 function Healthcheck() {
   const { t } = useTranslation();
@@ -157,7 +156,7 @@ function Healthcheck() {
   useEffect(() => {
     async function getData() {
       try {
-        const data = await profileService.getSearchedUsers({
+        const data = await UserService.getSearchedUsers({
           username: search,
           orderBy: 'username',
           sortOrder: SortOrder.ASC,

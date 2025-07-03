@@ -8,8 +8,8 @@ import PagingSizes from '../../../api/values/PagingSizes';
 import listService from '../../../services/ListService';
 import Button from 'react-bootstrap/Button';
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
-import profileService from '../../../services/ProfileService';
 import WatchlistWatched from '../../../api/values/WatchlistWatched';
+import UserService from "../../../services/UserService";
 
 const MediaRow = ({
   position,
@@ -67,7 +67,7 @@ const MediaRow = ({
   const [refreshWatched, setRefreshWatched] = useState(false);
   useEffect(async () => {
     try {
-      const data = await profileService.currentUserWWStatus(media.id, username);
+      const data = await UserService.currentUserWWStatus(media.id, username);
       setWW(data);
     } catch (e) {}
   }, [media, refreshWatched]);
@@ -75,9 +75,9 @@ const MediaRow = ({
   const handleWatched = async () => {
     try {
       if (ww.watched) {
-        await profileService.removeMediaFromWW(WatchlistWatched.Watched, media.id, username);
+        await UserService.removeMediaFromWW(WatchlistWatched.Watched, media.id, username);
       } else {
-        await profileService.insertMediaIntoWW(WatchlistWatched.Watched, media.id, username);
+        await UserService.insertMediaIntoWW(WatchlistWatched.Watched, media.id, username);
       }
       setRefreshWatched(!refreshWatched);
     } catch (e) {}

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import '../buttonStyles.css';
 import listService from '../../../../services/ListService';
-import profileService from '../../../../services/ProfileService';
 import MoovieListTypes from '../../../../api/values/MoovieListTypes';
 import CardsListOrderBy from '../../../../api/values/CardsListOrderBy';
 import SortOrder from '../../../../api/values/SortOrder';
@@ -14,6 +13,7 @@ import { addIfNotExists, toggleMediaSelection } from '../../../../features/creat
 import WatchlistWatched from '../../../../api/values/WatchlistWatched';
 import listApi from '../../../../api/ListApi';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import UserService from "../../../../services/UserService";
 
 const AddMediaToListButton = ({ currentId, media }) => {
   const { t } = useTranslation();
@@ -39,6 +39,7 @@ const AddMediaToListButton = ({ currentId, media }) => {
 
   const fetchCurrentUserLists = async () => {
     try {
+
       const response0 = await listService.getLists({
         search: null,
         ownerUsername: user.username,
@@ -57,6 +58,7 @@ const AddMediaToListButton = ({ currentId, media }) => {
         pageNumber: 1,
         pageSize: 10,
       });
+
       const response2 = await listService.getLists({
         search: null,
         ownerUsername: user.username,
@@ -136,13 +138,13 @@ const AddMediaToListButton = ({ currentId, media }) => {
     try {
       let response;
       if (option.name === 'Watchlist') {
-        response = await profileService.insertMediaIntoWW(
+        response = await UserService.insertMediaIntoWW(
           WatchlistWatched.Watchlist,
           Number(currentId),
           user.username
         );
       } else if (option.name === 'Watched') {
-        response = await profileService.insertMediaIntoWW(
+        response = await UserService.insertMediaIntoWW(
           WatchlistWatched.Watched,
           Number(currentId),
           user.username

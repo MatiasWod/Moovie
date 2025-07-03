@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
 import java.io.IOException;
-import java.util.Optional;
 
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {

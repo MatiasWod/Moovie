@@ -1,7 +1,7 @@
 import listApi from '../api/ListApi';
 import { parsePaginatedResponse } from '../utils/ResponseUtils';
 import mediaService from './MediaService';
-import profileApi from '../api/ProfileApi';
+import userApi from '../api/UserApi';
 import api from '../api/api';
 
 const ListService = (() => {

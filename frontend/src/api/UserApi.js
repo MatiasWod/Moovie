@@ -1,8 +1,141 @@
-import api from './api.js';
+import api from './api';
 import VndType from '../enums/VndType';
+import { parsePaginatedResponse } from '../utils/ResponseUtils';
 
 const userApi = (() => {
-  // AUTHENTICATION STUFF
+  const getUserByUsername = (username) => {
+    return api.get(`/users/${username}`);
+  };
+
+  const getMilkyLeaderboard = ({ page, pageSize }) => {
+    return api.get('/users/milkyLeaderboard', {
+      params: {
+        page: page,
+        pageSize: pageSize,
+      },
+    });
+  };
+
+  const getSearchedUsers = ({ username, orderBy, sortOrder, page }) => {
+    return api.get(`/users`, {
+      params: {
+        username: username,
+        orderBy: orderBy,
+        sortOrder: sortOrder,
+        pageNumber: page,
+      },
+    });
+  };
+
+  const getSpecialListFromUser = async (username, type, orderBy, order, pageNumber = 1) => {
+    const response = await api.get(
+      `/users/${username}/${type}?orderBy=${orderBy}&order=${order}&pageNumber=${pageNumber}`
+    );
+    const parsedResponse = parsePaginatedResponse(response);
+    const { links, data } = parsedResponse;
+
+    if (data.length === 0) {
+      return {
+        data: [],
+        links: links,
+      };
+    }
+
+    const medias = await Promise.all(
+      data.map(async (content) => {
+        const res = await api.get(content.mediaUrl);
+        const media = res.data;
+        media.customOrder = content.customOrder;
+        return media;
+      })
+    );
+
+    return {
+      data: medias,
+      links: links,
+    };
+  };
+
+  const setPfp = (username, pfp) => {
+    return api.put(`/users/${username}/image`, pfp);
+  };
+
+  const getPfp = (username) => {
+    return process.env.REACT_APP_API_URL + `/users/${username}/image`;
+  };
+
+  /*
+    LIKES AND FOLLOWED
+    */
+  const getLikedOrFollowedListFromUser = (username, type, orderBy, sortOrder, pageNumber = 1) => {
+    if (type !== 'followed' && type !== 'liked') {
+      throw new Error(`Invalid type: ${type}. Expected "followed" or "liked".`);
+    }
+    const endpoint = type === 'followed' ? 'listLikes' : 'listFollows';
+    return api.get(`/users/${username}/${endpoint}`, {
+      params: {
+        username,
+        orderBy,
+        sortOrder,
+        pageNumber,
+      },
+    });
+  };
+
+  const currentUserHasLikedList = (moovieListId, username) => {
+    return api.get(`/users/${username}/listLikes/${moovieListId}`);
+  };
+
+  const currentUserHasFollowedList = (moovieListId, username) => {
+    return api.get(`/users/${username}/listFollows/${moovieListId}`);
+  };
+
+  //WATCHED AND WATCHLIST (WW)
+  const currentUserWW = (ww, username, mediaId) => {
+    return api.get(`/users/${username}/${ww}/${mediaId}`);
+  };
+
+  const insertMediaIntoWW = (ww, mediaId, username) => {
+    let contentType = 'application/json';
+
+    if (ww === 'watched') {
+      contentType = VndType.APPLICATION_WATCHED_MEDIA_FORM;
+    } else {
+      contentType = VndType.APPLICATION_WATCHLIST_MEDIA_FORM;
+    }
+
+    return api.post(
+      `/users/${username}/${ww}`,
+
+      { id: mediaId },
+      {
+        headers: {
+          'Content-Type': contentType,
+        },
+      }
+    );
+  };
+
+  const removeMediaFromWW = (ww, username, mediaId) => {
+    return api.delete(`/users/${username}/${ww}/${mediaId}`);
+  };
+
+  const currentUserHasLikedReview = (reviewId, username) => {
+    return api.get(`/users/${username}/reviewLikes/${reviewId}`);
+  };
+
+  const currentUserHasLikedMoovieListReview = (reviewId, username) => {
+    return api.get(`/users/${username}/moovieListsReviewsLikes/${reviewId}`);
+  };
+
+  const currentUserCommentFeedback = (commentId, username) => {
+    return api.get(`/users/${username}/commentsFeedback/${commentId}`);
+  };
+
+  const getWatchedCountFromMovieListId = (movieListId, username) => {
+    return api.get(`/users/${username}/watched/count?listId=${movieListId}`);
+  };
+
 
   const login = async ({ username, password }) => {
     const credentials = btoa(`${username}:${password}`);
@@ -23,22 +156,22 @@ const userApi = (() => {
         sessionStorage.setItem('refreshToken', refreshToken);
       }
       console.log(
-        'sessionStorage',
-        sessionStorage.getItem('username'),
-        sessionStorage.getItem('jwt'),
-        sessionStorage.getItem('refreshToken')
+          'sessionStorage',
+          sessionStorage.getItem('username'),
+          sessionStorage.getItem('jwt'),
+          sessionStorage.getItem('refreshToken')
       );
       return response;
     } catch (error) {
       console.log(error);
-      
+
       // Map specific backend error messages to translation keys
       let translationKey = 'login.loginFailed'; // default
-      
+
       if (error.response && error.response.data && error.response.data.message) {
         const errorMessage = error.response.data.message;
         const status = error.response.status;
-        
+
         // Map specific error messages to translation keys
         if (status === 401) {
           // 401 Unauthorized errors
@@ -61,7 +194,7 @@ const userApi = (() => {
             translationKey = 'login.loginFailed'; // default for 403
           }
         }
-        
+
         const apiError = new Error(translationKey);
         apiError.status = status;
         apiError.translationKey = translationKey;
@@ -74,17 +207,17 @@ const userApi = (() => {
   const register = async ({ email, username, password }) => {
     try {
       return await api.post(
-        '/users',
-        {
-          email,
-          username,
-          password,
-        },
-        {
-          headers: {
-            'Content-Type': VndType.APPLICATION_USER_FORM,
+          '/users',
+          {
+            email,
+            username,
+            password,
           },
-        }
+          {
+            headers: {
+              'Content-Type': VndType.APPLICATION_USER_FORM,
+            },
+          }
       );
     } catch (error) {
       throw error;
@@ -93,15 +226,15 @@ const userApi = (() => {
 
   const confirmToken = async (token) => {
     const response = await api.put(
-      `users/`,
-      {
-        token: token,
-      },
-      {
-        headers: {
-          'Content-Type': VndType.APPLICATION_USER_TOKEN_FORM,
+        `users/`,
+        {
+          token: token,
         },
-      }
+        {
+          headers: {
+            'Content-Type': VndType.APPLICATION_USER_TOKEN_FORM,
+          },
+        }
     );
     if (response.headers['moovie-authtoken'] && response.headers['moovie-refreshtoken']) {
       sessionStorage.setItem('jwt', response.headers['moovie-authtoken']);
@@ -113,13 +246,13 @@ const userApi = (() => {
   const resendVerificationEmail = async (token) => {
     try {
       return await api.post(
-        'users/',
-        { token },
-        {
-          headers: {
-            'Content-Type': VndType.APPLICATION_RESEND_TOKEN_FORM,
-          },
-        }
+          'users/',
+          { token },
+          {
+            headers: {
+              'Content-Type': VndType.APPLICATION_RESEND_TOKEN_FORM,
+            },
+          }
       );
     } catch (error) {
       throw error;
@@ -129,13 +262,13 @@ const userApi = (() => {
   const forgotPassword = async (email) => {
     try {
       return await api.post(
-        '/users/',
-        { email: email },
-        {
-          headers: {
-            'Content-Type': VndType.APPLICATION_PASSWORD_TOKEN_FORM,
-          },
-        }
+          '/users/',
+          { email: email },
+          {
+            headers: {
+              'Content-Type': VndType.APPLICATION_PASSWORD_TOKEN_FORM,
+            },
+          }
       );
     } catch (error) {
       throw error;
@@ -145,16 +278,16 @@ const userApi = (() => {
   const resetPassword = async (token, password) => {
     try {
       return await api.put(
-        `users/`,
-        {
-          password: password,
-          token: token,
-        },
-        {
-          headers: {
-            'Content-Type': VndType.APPLICATION_USER_PASSWORD,
+          `users/`,
+          {
+            password: password,
+            token: token,
           },
-        }
+          {
+            headers: {
+              'Content-Type': VndType.APPLICATION_USER_PASSWORD,
+            },
+          }
       );
     } catch (error) {
       throw error;
@@ -216,7 +349,24 @@ const userApi = (() => {
     return api.put(`/users/${username}`, {});
   };
 
+
   return {
+    getPfp,
+    getUserByUsername,
+    getMilkyLeaderboard,
+    getSpecialListFromUser,
+    getSearchedUsers,
+    setPfp,
+    currentUserHasLikedList,
+    getLikedOrFollowedListFromUser,
+    currentUserHasFollowedList,
+    currentUserWW,
+    insertMediaIntoWW,
+    removeMediaFromWW,
+    currentUserHasLikedReview,
+    currentUserHasLikedMoovieListReview,
+    currentUserCommentFeedback,
+    getWatchedCountFromMovieListId,
     login,
     register,
     listUsers,

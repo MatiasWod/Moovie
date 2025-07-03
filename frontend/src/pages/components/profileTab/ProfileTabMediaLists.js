@@ -3,7 +3,7 @@ import SortOrder from '../../../api/values/SortOrder';
 import OrderBy from '../../../api/values/MediaOrderBy';
 import ListContentPaginated from '../listContentPaginated/ListContentPaginated';
 import MediaService from '../../../services/MediaService';
-import profileApi from '../../../api/ProfileApi';
+import userApi from '../../../api/UserApi';
 import { Spinner } from 'react-bootstrap';
 
 function ProfileTabMediaLists({ type, username }) {
@@ -19,7 +19,7 @@ function ProfileTabMediaLists({ type, username }) {
   useEffect(() => {
     async function getData() {
       try {
-        const response = await profileApi.getSpecialListFromUser(
+        const response = await userApi.getSpecialListFromUser(
           username,
           type,
           currentOrderBy,

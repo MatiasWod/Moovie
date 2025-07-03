@@ -6,8 +6,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import ReviewForm from '../forms/reviewForm/ReviewForm';
 import EditListForm from '../forms/editListForm/editListForm';
 import { useTranslation } from 'react-i18next';
-import profileService from '../../../services/ProfileService';
 import MoovieListTypes from '../../../api/values/MoovieListTypes';
+import UserService from "../../../services/UserService";
 
 const ListHeader = ({
   list,
@@ -33,7 +33,7 @@ const ListHeader = ({
   useEffect(() => {
     const fetchHasLikedAndFollowed = async () => {
       try {
-        const likedAndFollowed = await profileService.currentUserLikeFollowStatus(
+        const likedAndFollowed = await UserService.currentUserLikeFollowStatus(
           list.id,
           user.username
         );

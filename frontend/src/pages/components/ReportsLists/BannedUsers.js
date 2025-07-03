@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import userApi from '../../../api/UserApi';
-import profileApi from '../../../api/ProfileApi';
 import UserRoles from '../../../api/values/UserRoles';
 import ConfirmationModal from '../../components/forms/confirmationForm/confirmationModal';
 import { useTranslation } from 'react-i18next';
@@ -34,7 +33,7 @@ export default function BannedUsers() {
       // Fetch ban messages and profile info in parallel for all users
       const detailPromises = bannedUsers.flatMap((user) => [
         userApi.getBanMessage(user.username).catch(() => ({ data: {} })),
-        profileApi.getProfileByUsername(user.username),
+        userApi.getUserByUsername(user.username),
       ]);
 
       const detailResponses = await Promise.all(detailPromises);

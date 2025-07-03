@@ -6,7 +6,7 @@ import ProfileImage from '../profileImage/ProfileImage';
 import listService from '../../../services/ListService';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import profileService from '../../../services/ProfileService';
+import UserService from "../../../services/UserService";
 
 const ListCard = ({ listCard }) => {
   const { t } = useTranslation();
@@ -21,7 +21,7 @@ const ListCard = ({ listCard }) => {
   useEffect(() => {
     const fetchHasLikedAndFollowed = async () => {
       try {
-        const likedAndFollowed = await profileService.currentUserLikeFollowStatus(
+        const likedAndFollowed = await UserService.currentUserLikeFollowStatus(
           listCard.id,
           user.username
         );

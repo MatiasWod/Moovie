@@ -2,7 +2,6 @@ package ar.edu.itba.paw.services;
 
 
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
-import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.User.UserRoles;
@@ -35,7 +34,7 @@ public interface UserService {
     User findUserByUsername(String username) throws UnableToFindUserException;
 
     //Search user (recomeneded only for the searchbar)
-    List<Profile> searchUsers(String username, String orderBy, String sortOrder, int size, int pageNumber);
+    List<User> searchUsers(String username, String orderBy, String sortOrder, int size, int pageNumber);
 
     //Search user count for pagination in searchUsers cases
     int getSearchCount(String username);
@@ -48,11 +47,8 @@ public interface UserService {
 
     int getUserCount(UserRoles role);
 
-    //Return the parameters needed to show in the profile page
-    Profile getProfileByUsername(String username);
-
     //Returns a list of the users with most milkyPoints
-    List<Profile> getMilkyPointsLeaders(int size, int pageNumber);
+    List<User> getMilkyPointsLeaders(int size, int pageNumber);
 
     //Auth info of users
     User getInfoOfMyUser();

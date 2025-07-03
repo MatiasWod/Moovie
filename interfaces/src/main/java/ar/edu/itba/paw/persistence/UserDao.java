@@ -1,7 +1,5 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.User.Image;
-import ar.edu.itba.paw.models.User.Profile;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.User.UserRoles;
 
@@ -26,7 +24,7 @@ public interface UserDao {
 
     Optional<User> findUserByUsername(String username);
 
-    List<Profile> searchUsers(String username, String orderBy, String sortOrder, int size, int pageNumber);
+    List<User> searchUsers(String username, String orderBy, String sortOrder, int size, int pageNumber);
 
     int getSearchCount(String username);
 
@@ -36,10 +34,7 @@ public interface UserDao {
 
     int getUserCount(UserRoles role);
 
-
-    Optional<Profile> getProfileByUsername(String username);
-
-    List<Profile> getMilkyPointsLeaders(int size, int pageNumber);
+    List<User> getMilkyPointsLeaders(int size, int pageNumber);
 
 
 

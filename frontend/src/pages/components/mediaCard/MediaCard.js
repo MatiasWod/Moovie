@@ -7,8 +7,8 @@ import { useSelector } from 'react-redux';
 import WatchlistWatched from '../../../api/values/WatchlistWatched';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 import { useTranslation } from 'react-i18next';
-import profileService from '../../../services/ProfileService';
 import { BsEye, BsEyeSlash, BsBookmark, BsBookmarkDash } from 'react-icons/bs';
+import UserService from "../../../services/UserService";
 
 const MediaCard = ({ media, size = 'normal', showWWButtons = true, disableOnClick = false }) => {
   const releaseDate = new Date(media.releaseDate).getFullYear();
@@ -21,7 +21,7 @@ const MediaCard = ({ media, size = 'normal', showWWButtons = true, disableOnClic
   useEffect(() => {
     const fetchWW = async () => {
       try {
-        const WW = await profileService.currentUserWWStatus(media.id, user.username);
+        const WW = await UserService.currentUserWWStatus(media.id, user.username);
         setWW(WW);
       } catch (error) {}
     };
@@ -54,9 +54,9 @@ const MediaCard = ({ media, size = 'normal', showWWButtons = true, disableOnClic
       }
 
       if (ww.watched) {
-        await profileService.removeMediaFromWW(WatchlistWatched.Watched, media.id, user.username);
+        await UserService.removeMediaFromWW(WatchlistWatched.Watched, media.id, user.username);
       } else {
-        await profileService.insertMediaIntoWW(WatchlistWatched.Watched, media.id, user.username);
+        await UserService.insertMediaIntoWW(WatchlistWatched.Watched, media.id, user.username);
       }
       setPing(!ping);
     } catch (error) {}
@@ -70,9 +70,9 @@ const MediaCard = ({ media, size = 'normal', showWWButtons = true, disableOnClic
       }
 
       if (ww.watchlist) {
-        await profileService.removeMediaFromWW(WatchlistWatched.Watchlist, media.id, user.username);
+        await UserService.removeMediaFromWW(WatchlistWatched.Watchlist, media.id, user.username);
       } else {
-        await profileService.insertMediaIntoWW(WatchlistWatched.Watchlist, media.id, user.username);
+        await UserService.insertMediaIntoWW(WatchlistWatched.Watchlist, media.id, user.username);
       }
       setPing(!ping);
     } catch (error) {}

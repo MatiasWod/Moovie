@@ -27,6 +27,13 @@ public class User {
     @Formula("(SELECT CASE WHEN EXISTS (SELECT 1 FROM userimages ui WHERE ui.userid = userId) THEN 1 ELSE 0 END) ")
     private boolean hasPfp;
 
+    @Formula("(SELECT COUNT(*) FROM moovieLists ml WHERE ml.userId = userId AND ml.type = 1)")
+    private int moovieListCount;
+
+    //ReviewsCount is the sum of reviews + moovielistreviews + comments
+    @Formula("(SELECT COUNT(*) FROM reviews r WHERE r.userId = userId)")
+    private int reviewsCount;
+
     @Formula("(SELECT " +
             "(SELECT COUNT(rl.reviewid) FROM reviewslikes rl LEFT OUTER JOIN reviews r ON r.reviewid = rl.reviewid WHERE r.userid = userId) + " +
             "(SELECT COUNT(mlrl.moovielistreviewid) FROM moovielistsreviewslikes mlrl LEFT OUTER JOIN moovielistsreviews mlr ON mlr.moovielistreviewid = mlrl.moovielistreviewid WHERE mlr.userid = userId) + " +
@@ -48,13 +55,16 @@ public class User {
 
     }
 
-    public User(int userId, String username, String email, String password, int role, int milkyPoints) {
+    public User(int userId, String username, String email, String password, int role, int milkyPoints, int moovieListCount, int reviewsCount, boolean hasPfp) {
         this.userId = userId;
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
         this.milkyPoints = milkyPoints;
+        this.moovieListCount = moovieListCount;
+        this.reviewsCount = reviewsCount;
+        this.hasPfp = hasPfp;
     }
 
     public User(Builder builder) {
@@ -102,10 +112,18 @@ public class User {
         this.role = role;
     }
 
-    public boolean getHasPfp(){ return hasPfp; }
+    public boolean isHasPfp(){ return hasPfp; }
 
     public int getMilkyPoints() {
         return milkyPoints;
+    }
+
+    public int getMoovieListCount() {
+        return moovieListCount;
+    }
+
+    public int getReviewsCount() {
+        return reviewsCount;
     }
 
     public static class Builder {

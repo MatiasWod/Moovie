@@ -91,8 +91,8 @@ public class UserHibernateDao implements UserDao {
     }
 
     @Override
-    public List<Profile> searchUsers(String username, String orderBy, String sortOrder, int size, int pageNumber) {
-        final TypedQuery<Profile> query = entityManager.createQuery("FROM Profile WHERE LOWER(username) LIKE :username ORDER BY " + orderBy + " " + sortOrder, Profile.class);
+    public List<User> searchUsers(String username, String orderBy, String sortOrder, int size, int pageNumber) {
+        final TypedQuery<User> query = entityManager.createQuery("FROM User WHERE LOWER(username) LIKE :username ORDER BY " + orderBy + " " + sortOrder, User.class);
         query.setParameter("username", '%' + username.toLowerCase() + '%').setFirstResult(pageNumber * size).setMaxResults(size);
         return query.getResultList();
     }
@@ -121,14 +121,6 @@ public class UserHibernateDao implements UserDao {
         return ((Number) entityManager.createQuery("SELECT COUNT(*) FROM User u WHERE u.role = :userRole").setParameter("userRole", role.getRole()).getSingleResult()).intValue();
     }
 
-    @Override
-    public Optional<Profile> getProfileByUsername(String username) {
-        final TypedQuery<Profile> query = entityManager.createQuery("FROM Profile where LOWER(username) LIKE :username", Profile.class);
-        query.setParameter("username", username.toLowerCase());
-        return query.getResultList().stream().findFirst();
-    }
-
-
     /**
      * USER STATUS
      */
@@ -143,8 +135,8 @@ public class UserHibernateDao implements UserDao {
 
 
     @Override
-    public List<Profile> getMilkyPointsLeaders(int size, int pageNumber) {
-        TypedQuery<Profile> query = entityManager.createQuery("FROM Profile p ORDER BY p.milkyPoints DESC", Profile.class);
+    public List<User> getMilkyPointsLeaders(int size, int pageNumber) {
+        TypedQuery<User> query = entityManager.createQuery("FROM User p ORDER BY p.milkyPoints DESC", User.class);
         return query.setMaxResults(size).setFirstResult(pageNumber * size).getResultList();
     }
 
