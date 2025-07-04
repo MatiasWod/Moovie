@@ -24,16 +24,14 @@ const moovieListReviewApi = (() => {
     });
   };
 
-  const editReview = (id, reviewContent) => {
+  const editReview = (id,listId, reviewContent) => {
     return api.put(
-      `/moovieListReviews`,
+      `/moovieListReviews/${id}`,
       {
         reviewContent: reviewContent,
+        listId: listId,
       },
       {
-        params: {
-          listId: id,
-        },
         headers: {
           'Content-Type': VndType.APPLICATION_MOOVIELIST_REVIEW_FORM,
         },
@@ -46,11 +44,9 @@ const moovieListReviewApi = (() => {
       `/moovieListReviews`,
       {
         reviewContent: reviewContent,
+        listId: id,
       },
       {
-        params: {
-          listId: id,
-        },
         headers: {
           'Content-Type': VndType.APPLICATION_MOOVIELIST_REVIEW_FORM,
         },

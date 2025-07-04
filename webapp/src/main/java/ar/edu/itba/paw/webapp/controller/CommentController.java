@@ -87,14 +87,14 @@ public class CommentController {
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes({VndType.APPLICATION_COMMENT_FORM})
-    public Response createComment(@QueryParam("reviewId") @NotNull final int reviewId, @Valid @NotNull final CommentCreateDto commentDto) {
+    public Response createComment( @Valid @NotNull final CommentCreateDto commentDto) {
         try {
             commentService.createComment(
-                    reviewId,
+                    commentDto.getReviewId(),
                     commentDto.getCommentContent()
             );
             return Response.status(Response.Status.CREATED)
-                    .entity("Comment successfully created to review with id:" + reviewId)
+                    .entity("Comment successfully created to review with id:" + commentDto.getReviewId())
                     .build();
         } catch (UserNotLoggedException e) {
             return Response.status(Response.Status.UNAUTHORIZED)

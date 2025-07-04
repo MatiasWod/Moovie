@@ -6,6 +6,9 @@ import javax.validation.constraints.Size;
 public class MoovieListReviewCreateDto {
 
     @NotNull
+    private int listId;
+
+    @NotNull
     @Size(min=1,max=500)
     private String reviewContent;
 
@@ -15,5 +18,13 @@ public class MoovieListReviewCreateDto {
 
     public void setReviewContent(String reviewContent) {
         this.reviewContent = reviewContent;
+    }
+
+    public int getListId() {
+        return listId;
+    }
+
+    public void setListId(int listId) {
+        this.listId = listId;
     }
 }
