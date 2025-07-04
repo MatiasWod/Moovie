@@ -40,16 +40,18 @@ public class ResponseUtils {
     public static <T> Response setConditionalCacheHash(Request request, Supplier<T> dto, int hashCode) {
         final CacheControl cacheControl = new CacheControl();
         cacheControl.setNoCache(true);
+        cacheControl.setNoStore(false);
 
         final EntityTag eTag = new EntityTag(String.valueOf(hashCode));
-        Response.ResponseBuilder response = request.evaluatePreconditions(eTag);
-
-        if (response == null) {
-            response = Response.ok(dto.get()).tag(eTag);
-            cacheControl.setNoStore(false);
+        Response.ResponseBuilder responseBuilder = request.evaluatePreconditions(eTag);
+        if (responseBuilder == null) {
+            responseBuilder = Response.ok(dto.get()).tag(eTag);
         }
-
-        return response.header(HttpHeaders.VARY, "Accept, Content-Type").cacheControl(cacheControl).build();
+        return responseBuilder
+                .header(HttpHeaders.VARY, "Accept, Content-Type")
+                .cacheControl(cacheControl)
+                .build();
     }
+
 
 }

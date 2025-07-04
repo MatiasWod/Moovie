@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.User.User;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 
 @Entity
@@ -104,5 +105,10 @@ public class MoovieListReviewReport implements Serializable {
 
     public Boolean getResolved() {
         return resolved;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash( reportId, reportedBy, resolved, type, content, report_date, moovieListReview );
     }
 }

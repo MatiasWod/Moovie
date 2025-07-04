@@ -3,6 +3,7 @@ package ar.edu.itba.paw.models.User;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "users",uniqueConstraints = {@UniqueConstraint(columnNames = {"username"}), @UniqueConstraint(columnNames = {"email"})})
@@ -156,5 +157,9 @@ public class User {
         return milkyPoints >= BadgeLimits.POINTS_FOR_SIMPLE_BADGE.getLimit();
     }
 
-
+    @Override
+    public int hashCode(){
+        // TODO add image id
+        return Objects.hash(username, role, milkyPoints, userId, email, reviewsCount);
+    }
 }

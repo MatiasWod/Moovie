@@ -20,6 +20,7 @@ import ar.edu.itba.paw.webapp.dto.in.*;
 import ar.edu.itba.paw.webapp.dto.out.MediaIdListIdDto;
 import ar.edu.itba.paw.webapp.dto.out.MoovieListDto;
 import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
+import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
@@ -34,6 +35,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 @Path("lists")
 @Component
@@ -162,10 +164,11 @@ public class MoovieListController {
     @GET
     @Path("/{id}")
     @Produces(VndType.APPLICATION_MOOVIELIST)
-    public Response getMoovieListById(@PathParam("id") final int id) {
+    public Response getMoovieListById(@PathParam("id") final int id, @Context Request request) {
         try {
-            MoovieListCard list=moovieListService.getMoovieListCardById(id);
-            return Response.ok(MoovieListDto.fromMoovieList(list, uriInfo)).build();
+            final MoovieListCard list = moovieListService.getMoovieListCardById(id);
+            final Supplier<MoovieListDto> dtoSupplier = () -> MoovieListDto.fromMoovieList(list, uriInfo);
+            return ResponseUtils.setConditionalCacheHash(request, dtoSupplier, list.hashCode());
         }catch (InvalidAccessToResourceException e){
             return Response.status(Response.Status.FORBIDDEN).entity(new ResponseMessage("You do not have access to this resource.")).build();
         } catch (MoovieListNotFoundException e) {

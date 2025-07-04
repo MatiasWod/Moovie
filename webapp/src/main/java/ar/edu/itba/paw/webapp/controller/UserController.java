@@ -246,7 +246,7 @@ public class UserController {
     @GET
     @Path("/{username}")
     @Produces(VndType.APPLICATION_USER)
-    public Response getUserByUsername(@PathParam("username") final String username) {
+    public Response getUserByUsername(@PathParam("username") final String username, @Context Request request) {
         LOGGER.info("Method: getUserByUsername, Path: /users/user/{username}, Username: {}", username);
         try {
             final User user = userService.findUserByUsername(username);
