@@ -51,28 +51,28 @@ public class CommentDto {
         commentDto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "comment")
                 .queryParam("resourceId", commentDto.getId())
-                .queryParam("reportType", ReportTypesEnum.spam.getType())
+                .queryParam("reportType", ReportTypesEnum.SPAM.getType())
                 .build()
                 .toString();
 
         commentDto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "comment")
                 .queryParam("resourceId", commentDto.getId())
-                .queryParam("reportType", ReportTypesEnum.hatefulContent.getType())
+                .queryParam("reportType", ReportTypesEnum.HATEFUL_CONTENT.getType())
                 .build()
                 .toString();
 
         commentDto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "comment")
                 .queryParam("resourceId", commentDto.getId())
-                .queryParam("reportType", ReportTypesEnum.privacy.getType())
+                .queryParam("reportType", ReportTypesEnum.PRIVACY.getType())
                 .build()
                 .toString();
 
         commentDto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "comment")
                 .queryParam("resourceId", commentDto.getId())
-                .queryParam("reportType", ReportTypesEnum.abuse.getType())
+                .queryParam("reportType", ReportTypesEnum.ABUSE.getType())
                 .build()
                 .toString();
 

@@ -4,7 +4,6 @@ import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.Reports.ReportTypesEnum;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 
-import javax.persistence.Transient;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
@@ -85,28 +84,28 @@ public class MoovieListDto {
         dto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "moovieList")
                 .queryParam("resourceId", moovieList.getMoovieListId())
-                .queryParam("reportType", ReportTypesEnum.spam.getType())
+                .queryParam("reportType", ReportTypesEnum.SPAM.getType())
                 .build()
                 .toString();
 
         dto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "moovieList")
                 .queryParam("resourceId", moovieList.getMoovieListId())
-                .queryParam("reportType", ReportTypesEnum.hatefulContent.getType())
+                .queryParam("reportType", ReportTypesEnum.HATEFUL_CONTENT.getType())
                 .build()
                 .toString();
 
         dto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "moovieList")
                 .queryParam("resourceId", moovieList.getMoovieListId())
-                .queryParam("reportType", ReportTypesEnum.privacy.getType())
+                .queryParam("reportType", ReportTypesEnum.PRIVACY.getType())
                 .build()
                 .toString();
 
         dto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "moovieList")
                 .queryParam("resourceId", moovieList.getMoovieListId())
-                .queryParam("reportType", ReportTypesEnum.abuse.getType())
+                .queryParam("reportType", ReportTypesEnum.ABUSE.getType())
                 .build()
                 .toString();
 

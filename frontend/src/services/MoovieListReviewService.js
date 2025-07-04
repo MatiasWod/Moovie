@@ -17,8 +17,8 @@ const MoovieListReviewService = (() => {
     return res;
   };
 
-  const editReview = async (id, reviewContent) => {
-    const res = await moovieListReviewApi.editReview(id, reviewContent);
+  const editReview = async (id,listId, reviewContent) => {
+    const res = await moovieListReviewApi.editReview(id,listId, reviewContent);
     return res;
   };
 

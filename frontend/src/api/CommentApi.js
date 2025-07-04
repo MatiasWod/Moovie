@@ -7,11 +7,9 @@ const commentApi = (() => {
       '/comments/',
       {
         commentContent: comment,
+        reviewId: reviewId,
       },
       {
-        params: {
-          reviewId: reviewId,
-        },
         headers: {
           'Content-Type': VndType.APPLICATION_COMMENT_FORM,
         },

@@ -104,61 +104,23 @@ public class MoovieListReviewController {
         }
     }
 
-    @PUT
-    @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Consumes({VndType.APPLICATION_MOOVIELIST_REVIEW_FORM})
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response editReview(@QueryParam("listId") @NotNull int listId,
-                               @Valid @NotNull final MoovieListReviewCreateDto moovieListReviewDto) {
-        try {
-            moovieListService.getMoovieListById(listId);
-            reviewService.editReview(
-                    listId,
-                    0,
-                    moovieListReviewDto.getReviewContent(),
-                    ReviewTypes.REVIEW_MOOVIE_LIST
-            );
-            return Response.ok()
-                    .entity("MoovieList review successfully updated for MoovieList with ID: " + listId)
-                    .build();
-        }catch (MoovieListNotFoundException e){
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"MoovieList not found.\"}")
-                    .build();
-        }catch (ReviewNotFoundException e){
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"Review not found.\"}")
-                    .build();
-        } catch (ForbiddenException e){
-            return Response.status(Response.Status.FORBIDDEN)
-                    .entity("{\"error\":\"You do not have permission, list is private.\"}")
-                    .build();
-        }
-        catch (RuntimeException e){
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
-        }
-    }
-
     @POST
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Consumes({VndType.APPLICATION_MOOVIELIST_REVIEW_FORM})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createMoovieListReview(@QueryParam("listId") @NotNull int listId,
-                                                            @Valid @NotNull final MoovieListReviewCreateDto moovieListReviewDto) {
+    public Response createMoovieListReview(@Valid @NotNull final MoovieListReviewCreateDto moovieListReviewDto) {
         try {
-            moovieListService.getMoovieListById(listId);
+            moovieListService.getMoovieListById(moovieListReviewDto.getListId());
 
             reviewService.createReview(
-                    listId,
+                    moovieListReviewDto.getListId(),
                     0,
                     moovieListReviewDto.getReviewContent(),
                     ReviewTypes.REVIEW_MOOVIE_LIST
             );
 
             return Response.status(Response.Status.CREATED)
-                    .entity("MoovieList review successfully created to the list with ID: " + listId)
+                    .entity("MoovieList review successfully created to the list with ID: " +  moovieListReviewDto.getListId())
                     .build();
         }catch (ForbiddenException e){
             return Response.status(Response.Status.FORBIDDEN)
@@ -172,6 +134,45 @@ public class MoovieListReviewController {
         }catch (ReviewAlreadyCreatedException e){
             return Response.status(Response.Status.CONFLICT)
                     .entity("{\"error\":\"Review already created for this MoovieList.\"}")
+                    .build();
+        }
+        catch (RuntimeException e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .build();
+        }
+    }
+
+
+    @PUT
+    @Path("/{id}")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
+    @Consumes({VndType.APPLICATION_MOOVIELIST_REVIEW_FORM})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response editReview(@PathParam("id") @NotNull final int id,
+                               @Valid @NotNull final MoovieListReviewCreateDto moovieListReviewDto) {
+        try {
+            moovieListService.getMoovieListById(moovieListReviewDto.getListId());
+            reviewService.editReview(
+                    moovieListReviewDto.getListId(),
+                    0,
+                    moovieListReviewDto.getReviewContent(),
+                    ReviewTypes.REVIEW_MOOVIE_LIST
+            );
+            return Response.ok()
+                    .entity("MoovieList review successfully updated for MoovieList with ID: " + moovieListReviewDto.getListId())
+                    .build();
+        }catch (MoovieListNotFoundException e){
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\":\"MoovieList not found.\"}")
+                    .build();
+        }catch (ReviewNotFoundException e){
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\":\"Review not found.\"}")
+                    .build();
+        } catch (ForbiddenException e){
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity("{\"error\":\"You do not have permission, list is private.\"}")
                     .build();
         }
         catch (RuntimeException e){
