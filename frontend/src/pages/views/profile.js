@@ -10,6 +10,7 @@ import ConfirmationModal from '../components/forms/confirmationForm/confirmation
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import useErrorStatus from '../../hooks/useErrorStatus';
+import userService from "../../services/UserService";
 
 function ProfileTab({ selectedTab, profile }) {
   switch (selectedTab.toLowerCase()) {
@@ -74,7 +75,7 @@ function Profile() {
 
   const confirmBanUser = async () => {
     try {
-      await userApi.banUser(username);
+      await userService.banUser(username);
       fetchProfile();
     } catch (err) {
       console.error('Error banning user:', err);
@@ -85,7 +86,7 @@ function Profile() {
 
   const confirmUnbanUser = async () => {
     try {
-      await userApi.unbanUser(username);
+      await userService.unbanUser(username);
       fetchProfile();
     } catch (err) {
       console.error('Error unbanning user:', err);
@@ -96,7 +97,7 @@ function Profile() {
 
   const confirmMakeModerator = async () => {
     try {
-      await userApi.makeUserModerator(username);
+      await userService.makeUserModerator(username);
       fetchProfile();
     } catch (err) {
       console.error('Error making user moderator:', err);

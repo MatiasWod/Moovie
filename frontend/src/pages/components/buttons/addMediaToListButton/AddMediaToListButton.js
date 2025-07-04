@@ -39,35 +39,9 @@ const AddMediaToListButton = ({ currentId, media }) => {
 
   const fetchCurrentUserLists = async () => {
     try {
-
-      const response0 = await listService.getLists({
-        search: null,
-        ownerUsername: user.username,
-        type: MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.type,
-        orderBy: CardsListOrderBy.MOOVIE_LIST_ID,
-        order: SortOrder.DESC,
-        pageNumber: 1,
-        pageSize: 3,
-      });
-      const response1 = await listService.getLists({
-        search: null,
-        ownerUsername: user.username,
-        type: MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.type,
-        orderBy: CardsListOrderBy.MOOVIE_LIST_ID,
-        order: SortOrder.DESC,
-        pageNumber: 1,
-        pageSize: 10,
-      });
-
-      const response2 = await listService.getLists({
-        search: null,
-        ownerUsername: user.username,
-        type: MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.type,
-        orderBy: CardsListOrderBy.MOOVIE_LIST_ID,
-        order: SortOrder.DESC,
-        pageNumber: 1,
-        pageSize: 10,
-      });
+      const response0 = await listService.getListsFromUrl({url: user.defaultPrivateMoovieListsUrl,pageNumber: 1, pageSize: 3});
+      const response1 = await listService.getListsFromUrl({url: user.privateMoovieListsUrl, pageNumber: 1, pageSize: 10});
+      const response2 = await listService.getListsFromUrl({url: user.publicMoovieListsUrl,pageNumber: 1, pageSize: 10});
 
       const combinedLists = [...response0.data, ...response1.data, ...response2.data];
       setLists(combinedLists);

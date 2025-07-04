@@ -20,8 +20,7 @@ public class UserDto {
 
     // Moovie Lists URLs
     private String moovieListsUrl;
-    private String watchedMoovieListsUrl;
-    private String watchlistMoovieListsUrl;
+    private String defaultPrivateMoovieListsUrl;
     private String publicMoovieListsUrl;
     private String privateMoovieListsUrl;
 
@@ -51,12 +50,7 @@ public class UserDto {
                 .queryParam("ownerUsername", user.getUsername())
                 .build()
                 .toString();
-        dto.watchedMoovieListsUrl = uriInfo.getBaseUriBuilder().path("lists")
-                .queryParam("ownerUsername", user.getUsername())
-                .queryParam("type", MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType())
-                .build()
-                .toString();
-        dto.watchlistMoovieListsUrl = uriInfo.getBaseUriBuilder().path("lists")
+        dto.defaultPrivateMoovieListsUrl = uriInfo.getBaseUriBuilder().path("lists")
                 .queryParam("ownerUsername", user.getUsername())
                 .queryParam("type", MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType())
                 .build()
@@ -151,20 +145,12 @@ public class UserDto {
         this.profilePictureUrl = profilePictureUrl;
     }
 
-    public String getWatchedMoovieListsUrl() {
-        return watchedMoovieListsUrl;
+    public String getDefaultPrivateMoovieListsUrl() {
+        return defaultPrivateMoovieListsUrl;
     }
 
-    public void setWatchedMoovieListsUrl(String watchedMoovieListsUrl) {
-        this.watchedMoovieListsUrl = watchedMoovieListsUrl;
-    }
-
-    public String getWatchlistMoovieListsUrl() {
-        return watchlistMoovieListsUrl;
-    }
-
-    public void setWatchlistMoovieListsUrl(String watchlistMoovieListsUrl) {
-        this.watchlistMoovieListsUrl = watchlistMoovieListsUrl;
+    public void setDefaultPrivateMoovieListsUrl(String defaultPrivateMoovieListsUrl) {
+        this.defaultPrivateMoovieListsUrl = defaultPrivateMoovieListsUrl;
     }
 
     public String getPublicMoovieListsUrl() {
