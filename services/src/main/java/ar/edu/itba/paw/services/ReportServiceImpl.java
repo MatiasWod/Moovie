@@ -123,6 +123,24 @@ public class ReportServiceImpl implements ReportService {
 
     @Transactional(readOnly = true)
     @Override
+    public List<ReviewReport> getReviewReports(int pageSize, int pageNumber) {
+        return reportDao.getReviewReports(pageSize, pageNumber);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ReviewReport> getReviewReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber){
+        return reportDao.getReviewReports(reportType, resourceId, pageSize, pageNumber);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public ReviewReport getReviewReport(int reportId) {
+        return reportDao.getReviewReport(reportId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public List<Review> getReportedReviews() {
 
         return reportDao.getReportedReviews();
@@ -154,6 +172,29 @@ public class ReportServiceImpl implements ReportService {
 
         return reportDao.getMoovieListReviewReports();
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<MoovieListReviewReport> getMoovieListReviewReports(int pageSize, int pageNumber){
+        return reportDao.getMoovieListReviewReports(pageSize, pageNumber);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<MoovieListReviewReport> getMoovieListReviewReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber){
+        if (reportType == null && resourceId == null) {
+            return reportDao.getMoovieListReviewReports(pageSize, pageNumber);
+        } else {
+            return reportDao.getMoovieListReviewReports(reportType, resourceId, pageSize, pageNumber);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public MoovieListReviewReport getMoovieListReviewReport(int reportId){
+        return reportDao.getMoovieListReviewReport(reportId);
+    }
+
 
     @Transactional(readOnly = true)
     @Override
@@ -224,6 +265,50 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public List<Comment> getReportedComments() {
         return reportDao.getReportedComments();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<CommentReport> getCommentReports(int pageSize, int pageNumber){
+        return reportDao.getCommentReports(pageSize, pageNumber);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<CommentReport> getCommentReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber){
+        if (reportType == null && resourceId == null) {
+            return reportDao.getCommentReports(pageSize, pageNumber);
+        } else {
+            return reportDao.getCommentReports(reportType, resourceId, pageSize, pageNumber);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<MoovieListReport> getMoovieListReports(int pageSize, int pageNumber){
+        return reportDao.getMoovieListReports(pageSize, pageNumber);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<MoovieListReport> getMoovieListReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber){
+        if (reportType == null && resourceId == null) {
+            return reportDao.getMoovieListReports(pageSize, pageNumber);
+        } else {
+            return reportDao.getMoovieListReports(reportType, resourceId, pageSize, pageNumber);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public MoovieListReport getMoovieListReport(int reportId){
+        return reportDao.getMoovieListReport(reportId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public CommentReport getCommentReport(int reportId){
+        return reportDao.getCommentReport(reportId);
     }
 
     @Transactional(readOnly = true)

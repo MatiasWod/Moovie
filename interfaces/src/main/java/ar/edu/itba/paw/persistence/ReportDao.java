@@ -32,7 +32,11 @@ public interface ReportDao {
 
     List<ReviewReport> getReviewReports();
 
+    List<ReviewReport> getReviewReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber);
+
     List<ReviewReport> getReviewReports(int pageSize, int pageNumber);
+
+    ReviewReport getReviewReport(int reportId);
 
     List<Review> getReportedReviews();
 
@@ -48,6 +52,10 @@ public interface ReportDao {
 
     List<MoovieListReviewReport> getMoovieListReviewReports(int pageSize, int pageNumber);
 
+    List<MoovieListReviewReport> getMoovieListReviewReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber);
+
+    MoovieListReviewReport getMoovieListReviewReport(int reportId);
+
     List<MoovieListReview> getReportedMoovieListReviews();
 
     int getReportedMoovieListReviewsCount();
@@ -62,6 +70,13 @@ public interface ReportDao {
 
     List<MoovieListReport> getMoovieListReports(int pageSize, int pageNumber);
 
+
+    List<MoovieListReport> getMoovieListReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber);
+
+    MoovieListReport getMoovieListReport(int reportId);
+
+
+
     List<MoovieList> getReportedMoovieLists();
 
     int getReportedMoovieListsCount();
@@ -75,6 +90,10 @@ public interface ReportDao {
     List<CommentReport> getCommentReports();
 
     List<CommentReport> getCommentReports(int pageSize, int pageNumber);
+
+    List<CommentReport> getCommentReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber);
+
+    CommentReport getCommentReport(int reportId);
 
     List<Comment> getReportedComments();
 

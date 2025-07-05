@@ -38,7 +38,7 @@ public class ReviewReportDto {
     }
 
     public static List<ReviewReportDto> fromReviewReportList(List<ReviewReport> reviewReports, UriInfo uriInfo) {
-        return reviewReports.stream().map(mlc -> fromReviewReport(mlc, uriInfo)).collect(java.util.stream.Collectors.toList());
+        return reviewReports.stream().map(reviewReport -> fromReviewReport(reviewReport, uriInfo)).collect(java.util.stream.Collectors.toList());
     }
 
     public String getUrl() {

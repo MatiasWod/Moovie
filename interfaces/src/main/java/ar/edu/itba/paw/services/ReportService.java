@@ -31,17 +31,30 @@ public interface ReportService {
 
     List<ReviewReport> getReviewReports();
 
+    List<ReviewReport> getReviewReports(int pageSize, int pageNumber);
+
+    List<ReviewReport> getReviewReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber);
+
     List<Review> getReportedReviews();
 
     int getReportedReviewsCount();
 
     ReviewReport reportReview(int reviewId, int userId, int type);
 
+    ReviewReport getReviewReport(int reportId);
+
     void resolveReviewReport(int reviewId);
 
     // MoovieListReviews
 
     List<MoovieListReviewReport> getMoovieListReviewReports();
+
+    List<MoovieListReviewReport> getMoovieListReviewReports(int pageSize, int pageNumber);
+
+    List<MoovieListReviewReport> getMoovieListReviewReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber);
+
+    MoovieListReviewReport getMoovieListReviewReport(int reportId);
+
 
     List<MoovieListReview> getReportedMoovieListReviews();
 
@@ -55,7 +68,14 @@ public interface ReportService {
 
     List<MoovieListReport> getMoovieListReports();
 
+    List<MoovieListReport> getMoovieListReports(int pageSize, int pageNumber);
+
+    List<MoovieListReport> getMoovieListReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber);
+
+    MoovieListReport getMoovieListReport(int reportId);
+
     List<MoovieList> getReportedMoovieLists();
+
 
     int getReportedMoovieListsCount();
 
@@ -66,6 +86,12 @@ public interface ReportService {
     // (Review) Comments
 
     List<CommentReport> getCommentReports();
+
+    List<CommentReport> getCommentReports(int pageSize, int pageNumber);
+
+    List<CommentReport> getCommentReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber);
+
+    CommentReport getCommentReport(int reportId);
 
     List<Comment> getReportedComments();
 
