@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Provider.Provider;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "tv")
@@ -51,5 +52,10 @@ public class TVSerie extends Media{
 
     public int getNumberOfSeasons() {
         return numberOfSeasons;
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(super.hashCode(), lastAirDate, nextEpisodeToAir, numberOfEpisodes, numberOfSeasons);
     }
 }

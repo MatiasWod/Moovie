@@ -5,11 +5,13 @@ import ar.edu.itba.paw.models.Comments.Comment;
 import ar.edu.itba.paw.models.Comments.CommentFeedbackType;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
+import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.services.CommentService;
 import ar.edu.itba.paw.services.ReviewService;
 import ar.edu.itba.paw.webapp.dto.in.CommentCreateDto;
 import ar.edu.itba.paw.webapp.dto.in.CommentFeedbackDto;
 import ar.edu.itba.paw.webapp.dto.out.CommentDto;
+import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
+import java.util.function.Supplier;
 
 @Path("comments")
 @Component
@@ -64,7 +67,7 @@ public class CommentController {
     @GET
     @Path("/{id}")
     @Produces(VndType.APPLICATION_COMMENT)
-    public Response getCommentById(@PathParam("id") @NotNull int id) {
+    public Response getCommentById(@PathParam("id") @NotNull int id, @Context Request request) {
         try {
             final Comment comment = commentService.getCommentById(id);
             if (comment == null) {
@@ -72,8 +75,8 @@ public class CommentController {
                         .entity("Comment not found")
                         .build();
             }
-            final CommentDto commentDto = CommentDto.fromComment(comment, uriInfo);
-            return Response.ok(commentDto).build();
+            final Supplier<CommentDto> dtoSupplier = () -> CommentDto.fromComment(comment, uriInfo);
+            return ResponseUtils.setConditionalCacheHash(request, dtoSupplier, comment.hashCode());
         }
         catch (RuntimeException e) {
             return Response.serverError().entity(e.getMessage()).build();

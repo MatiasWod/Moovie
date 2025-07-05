@@ -90,8 +90,7 @@ function MilkyLeaderboardProfile({ profile }) {
         <ProfileImage
           style={{ cursor: 'pointer' }}
           onClick={() => handleUsernameClick(profile.username)}
-          image={profile.pictureUrl}
-          username={profile.username}
+          image={profile.imageUrl}
           size={75}
         />
       </td>

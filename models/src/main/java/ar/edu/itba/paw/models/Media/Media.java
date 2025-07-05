@@ -164,11 +164,6 @@ public class Media {
         return mediaId == that.mediaId;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(mediaId);
-    }
-
     public void setMediaId(int mediaId) {
         this.mediaId = mediaId;
     }
@@ -319,5 +314,10 @@ public class Media {
 
     public void setWatchlist(boolean watchlist) {
         this.watchlist = watchlist;
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(mediaId,  type,  name,  originalLanguage,  adult,  releaseDate,  overview,  backdropPath,  posterPath,  trailerLink,  tmdbRating,  totalRating, voteCount, status);
     }
 }

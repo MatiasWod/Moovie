@@ -52,7 +52,6 @@ public class ReviewController {
     public Response getReviewById(@PathParam("id") final int id, @Context Request request) {
         final Review review = reviewService.getReviewById(id);
         final Supplier<ReviewDto> dtoSupplier = () -> ReviewDto.fromReview(review, uriInfo);
-
         return ResponseUtils.setConditionalCacheHash(request, dtoSupplier, review.hashCode());
     }
 

@@ -91,7 +91,7 @@ export default function BannedUsers() {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center space-x-4">
                   <ProfileImage
-                    username={user.username}
+                    image={user.imageUrl}
                     size="60px"
                     defaultProfilePicture="https://example.com/default-profile.jpg"
                     onClick={() => handleProfilePictureClick(user.username)}
