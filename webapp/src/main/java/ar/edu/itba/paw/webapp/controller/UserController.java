@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-@Path("/users")
+@Path("users")
 @Component
 public class UserController {
 
