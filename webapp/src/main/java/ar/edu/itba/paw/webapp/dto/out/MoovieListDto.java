@@ -49,6 +49,10 @@ public class MoovieListDto {
 
     private String recommendedListsUrl;
 
+    private String likesUrl;
+
+    private String followersUrl;
+
     private String reviewsUrl;
 
     public static MoovieListDto fromMoovieList(MoovieListCard moovieList, UriInfo uriInfo) {
@@ -107,6 +111,14 @@ public class MoovieListDto {
                 .queryParam("resourceId", moovieList.getMoovieListId())
                 .queryParam("reportType", ReportTypesEnum.ABUSE.getType())
                 .build()
+                .toString();
+
+        dto.likesUrl = uriInfo.getBaseUriBuilder().path("/lists/{listId}/likes")
+                .build(moovieList.getMoovieListId())
+                .toString();
+
+        dto.followersUrl = uriInfo.getBaseUriBuilder().path("/lists/{listId}/followers")
+                .build(moovieList.getMoovieListId())
                 .toString();
 
         return dto;
@@ -254,6 +266,22 @@ public class MoovieListDto {
 
     public String getAbuseReportsUrl() {
         return abuseReportsUrl;
+    }
+
+    public String getLikesUrl() {
+        return likesUrl;
+    }
+
+    public void setLikesUrl(String likesUrl) {
+        this.likesUrl = likesUrl;
+    }
+
+    public String getFollowersUrl() {
+        return followersUrl;
+    }
+
+    public void setFollowersUrl(String followersUrl) {
+        this.followersUrl = followersUrl;
     }
 
     public String getPrivacyReportsUrl() {

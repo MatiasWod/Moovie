@@ -360,7 +360,29 @@ public class MoovieListServiceImpl implements MoovieListService{
         return false;
     }
 
+    @Transactional
+    @Override
+    public List<User> usersLikesMoovieList(int moovieListId, int pageNumber, int pageSize){
+        return moovieListDao.usersLikesMoovieList(moovieListId, pageNumber, pageSize);
+    }
 
+    @Transactional
+    @Override
+    public boolean userLikesMoovieList(int moovieListId, String username){
+        return moovieListDao.userLikesMoovieList(moovieListId, username);
+    }
+
+    @Transactional
+    @Override
+    public List<User> usersFollowsMoovieList(int moovieListId, int pageNumber, int pageSize){
+        return moovieListDao.usersFollowsMoovieList(moovieListId, pageNumber, pageSize);
+    }
+
+    @Transactional
+    @Override
+    public boolean userFollowsMoovieList(int moovieListId, String username){
+        return moovieListDao.userFollowsMoovieList(moovieListId, username);
+    }
 
     @Transactional
     @Override

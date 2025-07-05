@@ -56,4 +56,10 @@ public interface MoovieListDao {
 
     void deleteListReview(int moovieListReviewId);
 
+    List<User> usersLikesMoovieList(int moovieListId, int pageNumber, int pageSize);
+    boolean userLikesMoovieList(int moovieListId, String username);
+
+    List<User> usersFollowsMoovieList(int moovieListId, int pageNumber, int pageSize);
+    boolean userFollowsMoovieList(int moovieListId, String username);
+
     }
