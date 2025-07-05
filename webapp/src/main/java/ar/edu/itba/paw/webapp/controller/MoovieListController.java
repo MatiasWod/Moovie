@@ -1,13 +1,12 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.exceptions.ForbiddenException;
-import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
-import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
-import ar.edu.itba.paw.exceptions.UnableToInsertIntoDatabase;
 import ar.edu.itba.paw.models.Media.OrderedMedia;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
+import ar.edu.itba.paw.models.MoovieList.UserMoovieListId;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
 
@@ -17,10 +16,7 @@ import ar.edu.itba.paw.services.MoovieListService;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.dto.in.*;
 
-import ar.edu.itba.paw.webapp.dto.out.MediaIdListIdDto;
-import ar.edu.itba.paw.webapp.dto.out.MoovieListDto;
-import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
-import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
+import ar.edu.itba.paw.webapp.dto.out.*;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
@@ -64,6 +60,8 @@ public class MoovieListController {
             @QueryParam("type") @DefaultValue("-1") int type,
             @QueryParam("orderBy") String orderBy,
             @QueryParam("order") String order,
+            @QueryParam("likedByUser") String likedBy,
+            @QueryParam("followedByUser") String followedBy,
             @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber
     ) {
         try {
@@ -99,7 +97,28 @@ public class MoovieListController {
 
                 return Response.ok(new GenericEntity<List<MoovieListDto>>(mlList) {}).build();
             }
-            // Buscar por otros criterios si no se proporcionan IDs
+            else if (likedBy != null || followedBy != null){
+                List<MoovieListCard> mlcList = new ArrayList<>();
+                int listCount = 0;
+                if(followedBy != null ){
+                    int userid = userService.findUserByUsername(followedBy).getUserId();
+                    mlcList = moovieListService.getFollowedMoovieListCards(userid, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
+                            PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1);
+                    listCount = moovieListService.getFollowedMoovieListCardsCount(userid, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
+                }
+                if(likedBy != null){
+                    int userid = userService.findUserByUsername(likedBy).getUserId();
+                    mlcList = moovieListService.getLikedMoovieListCards(likedBy, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
+                            PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1);
+                    listCount = moovieListService.getFollowedMoovieListCardsCount(userid, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
+                }
+                Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(MoovieListDto.fromMoovieListList(mlcList, uriInfo)) {});
+                final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), listCount);
+                ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);
+                return res.build();
+            }
+
+            // Buscar por otros criterios si no se proporcionan IDs ni liked by ni followed o liked por usuario.
             else {
                 if (type < 1 || type > 4) {
                     type = MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType();
@@ -119,9 +138,6 @@ public class MoovieListController {
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
-        catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
     }
 
     @POST
@@ -130,8 +146,6 @@ public class MoovieListController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createMoovieList(@Valid final MoovieListCreateDto listDto) {
         try {
-
-
 
             MoovieListTypes moovieListType = MoovieListTypes.fromType(listDto.getType());
 
@@ -145,7 +159,6 @@ public class MoovieListController {
             return Response.created(uriBuilder.build())
                     .entity("{\"message\":\"Movie list created successfully.\", \"url\": \"" + uriBuilder.build().toString() + "\"}")
                     .build();
-
 
         }
         catch (UnableToInsertIntoDatabase | DuplicateKeyException e) {
@@ -188,7 +201,6 @@ public class MoovieListController {
                                    @Valid @NotNull final EditListDTO editListForm) {
         try {
             moovieListService.editMoovieList(listId, editListForm.getListName(), editListForm.getListDescription());
-
             return Response.ok()
                     .entity("MoovieList successfully edited for MoovieList with ID: " + listId)
                     .build();
@@ -205,90 +217,6 @@ public class MoovieListController {
 
     }
 
-    @PUT
-    @Path("/{id}")
-    @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Consumes(VndType.APPLICATION_MOOVIELIST_FEEDBACK_FORM)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response moovieListFeedback(@PathParam("id") int id,
-                                       @Valid MoovieListFeedbackDto moovieListFeedbackDto) {
-        try {
-            userService.isUsernameMe(moovieListFeedbackDto.getUsername());
-            if(moovieListFeedbackDto.getFeedbackType().equals("LIKE")) {
-                boolean like = moovieListService.likeMoovieList(id);
-                if (like) {
-                    return Response.ok()
-                            .entity("{\"message\":\"Succesfully liked list.\"}").build();
-                }
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("{\"message\":\"List is already liked.\"}").build();
-            } else if(moovieListFeedbackDto.getFeedbackType().equals("UNLIKE")) {
-                boolean unlike = moovieListService.removeLikeMoovieList(id);
-                if (unlike) {
-                    return Response.ok()
-                            .entity("{\"message\":\"Succesfully unliked list.\"}").build();
-                }
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("{\"message\":\"List is not liked.\"}").build();
-            }
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("{\"message\":\"Invalid feedback type.\"}")
-                    .build();
-        }
-        catch (ForbiddenException e) {
-            return Response.status(Response.Status.FORBIDDEN)
-                    .entity(e.getMessage())
-                    .build();
-        }
-        catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"message\":\"An unexpected error occurred.\"}")
-                    .build();
-        }
-    }
-
-    @PUT
-    @Path("/{id}")
-    @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Consumes(VndType.APPLICATION_MOOVIELIST_FOLLOW_FORM)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response followMoovieList(@PathParam("id") int id,
-                                     @Valid @NotNull FollowMoovieListDto followMoovieListDto) {
-        try {
-
-            userService.isUsernameMe(followMoovieListDto.getUsername());
-            if (followMoovieListDto.getActionType().equals("FOLLOW")) {
-                boolean followed = moovieListService.followMoovieList(id);
-                if (followed) {
-                    return Response.ok()
-                            .entity("{\"message\":\"Succesfully followed list.\"}").build();
-                }
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("{\"message\":\"List is already followed.\"}").build();
-            } else if (followMoovieListDto.getActionType().equals("UNFOLLOW")) {
-                boolean unfollowed = moovieListService.removeFollowMoovieList(id);
-                if (unfollowed) {
-                    moovieListService.removeFollowMoovieList(id);
-                    return Response.ok()
-                            .entity("{\"message\":\"Succesfully unfollowed list.\"}").build();
-                }
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("{\"message\":\"List is not followed.\"}").build();
-            }
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("{\"message\":\"Invalid action type.\"}")
-                    .build();
-        }catch (ForbiddenException e) {
-            return Response.status(Response.Status.FORBIDDEN)
-                    .entity(e.getMessage())
-                    .build();
-        }
-        catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"message\":\"An unexpected error occurred.\"}")
-                    .build();
-        }
-    }
 
     @DELETE
     @Path("/{id}")
@@ -298,24 +226,90 @@ public class MoovieListController {
         try {
             moovieListService.deleteMoovieList(id);
             return Response.ok().build();
-        }
-        catch (MoovieListNotFoundException e) {
+        } catch (MoovieListNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("MoovieList not found.")
                     .build();
-        }
-        catch (InvalidAccessToResourceException e) {
+        } catch (InvalidAccessToResourceException e) {
             return Response.status(Response.Status.FORBIDDEN)
                     .entity("You do not have access to this resource.")
                     .build();
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An unexpected error occurred: " + e.getMessage())
                     .build();
         }
-
     }
+
+    // Likes
+
+    @POST
+    @Path("/{id}/likes")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createMoovieListLike(@PathParam("id") int id) {
+        boolean liked = moovieListService.likeMoovieList(id);
+        if (liked)
+            return Response.ok("{\"message\":\"Successfully liked list.\"}").build();
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity("{\"message\":\"List is already liked.\"}").build();
+    }
+
+    @DELETE
+    @Path("/{id}/likes")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteMoovieListLike(@PathParam("id") int id) {
+        boolean removed = moovieListService.removeLikeMoovieList(id);
+        if (removed)
+            return Response.noContent().build();
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity("{\"message\":\"List is not liked.\"}").build();
+    }
+
+    // Returns like status for a specific list
+    @GET
+    @Path("/{listId}/listLikes/{username}")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
+    @Produces(VndType.APPLICATION_LIST_LIKE)
+    public Response getUserLikedListById(@PathParam("listId") final int listId,
+                                         @PathParam("username") final String username) {
+        UserMoovieListId userMoovieListId = moovieListService.currentUserHasLiked(listId);
+        if (userMoovieListId != null && userMoovieListId.getUsername().equals(username)) {
+            return Response.ok(UserListIdDto.fromUserMoovieList(userMoovieListId, username)).build();
+        }
+        return Response.noContent().build();
+    }
+
+
+
+    // Follows
+
+    @POST
+    @Path("/{id}/followers")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response followMoovieList(@PathParam("id") int id) {
+        boolean followed = moovieListService.followMoovieList(id);
+        if (followed)
+            return Response.ok("{\"message\":\"Successfully followed list.\"}").build();
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity("{\"message\":\"List is already followed.\"}").build();
+    }
+
+    @DELETE
+    @Path("/{id}/followers")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response unfollowMoovieList(@PathParam("id") int id) {
+        boolean unfollowed = moovieListService.removeFollowMoovieList(id);
+        if (unfollowed)
+            return Response.noContent().build();
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity("{\"message\":\"List is not followed.\"}").build();
+    }
+
+
 
 
     @GET
