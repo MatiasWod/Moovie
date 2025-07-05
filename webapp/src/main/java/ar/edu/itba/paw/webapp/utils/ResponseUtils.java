@@ -27,11 +27,10 @@ public class ResponseUtils {
 
 
     public static void setMaxAgeCache(Response.ResponseBuilder responseBuilder) {
-        setConditionalCache(responseBuilder,MAX_AGE);
+        setUnconditionalCache(responseBuilder,MAX_AGE);
     }
 
-
-    public static void setConditionalCache(Response.ResponseBuilder responseBuilder,int maxAge) {
+    public static void setUnconditionalCache(Response.ResponseBuilder responseBuilder, int maxAge) {
         final CacheControl cacheControl = new CacheControl();
         cacheControl.setMaxAge(maxAge);
         responseBuilder.cacheControl(cacheControl);
