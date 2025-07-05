@@ -190,8 +190,6 @@ public class MediaController {
                         mediaCount);
                 ResponseUtils.setPaginationLinks(res, toReturnMediaList, uriInfo);
 
-                ResponseUtils.setMaxAgeCache(res);
-
                 return res.build();
             }
         } catch (Exception e) {

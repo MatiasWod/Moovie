@@ -75,6 +75,6 @@ public class Movie extends Media{
 
     @Override
     public int hashCode(){
-        return Objects.hash( super.hashCode(), runtime,  budget,  revenue,  directorId,  director);
+        return Objects.hash( super.hashCode(), runtime,  budget,  revenue,  directorId);
     }
 }
