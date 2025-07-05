@@ -10,6 +10,7 @@ import ar.edu.itba.paw.webapp.dto.out.MoovieListReviewReportDto;
 import ar.edu.itba.paw.webapp.dto.out.ReviewReportDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,8 @@ import javax.ws.rs.core.*;
 import java.util.List;
 import java.util.function.Supplier;
 
-@Path("/reviewReports")
+@Api(value = "/reviewReports")
+@Path("reviewReports")
 @Component
 public class ReviewReportController {
     private final ReportService reportService;

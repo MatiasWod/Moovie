@@ -41,7 +41,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 @Api(value = "/users")
-@Path("/users")
+@Path("users")
 @Component
 public class UserController {
 
