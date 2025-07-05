@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import reportApi from '../../../api/ReportApi';
-import ConfirmationModal from '../../components/forms/confirmationForm/confirmationModal';
-import api from '../../../api/api';
-import userApi from '../../../api/UserApi';
-import commentApi from '../../../api/CommentApi';
-import { useTranslation } from 'react-i18next';
-import ReportTypes from '../../../api/values/ReportTypes';
-import { Tooltip } from 'react-tooltip';
-import mediaApi from '../../../api/MediaApi';
 import { Spinner } from 'react-bootstrap';
-import { useSearchParams } from "react-router-dom";
-import PaginationButton from "../paginationButton/PaginationButton";
+import { useTranslation } from 'react-i18next';
+import api from '../../../api/api';
+import commentApi from '../../../api/CommentApi';
+import reportApi from '../../../api/ReportApi';
+import userApi from '../../../api/UserApi';
 import { parsePaginatedResponse } from "../../../utils/ResponseUtils";
+import ConfirmationModal from '../../components/forms/confirmationForm/confirmationModal';
+import PaginationButton from "../paginationButton/PaginationButton";
 
 export default function CommentReports() {
   const [comments, setComments] = useState({ comments: [], links: {} });
@@ -44,17 +40,13 @@ export default function CommentReports() {
         try {
           // Fetch all report counts, reviews, and media details in parallel
           const allPromises = comments.flatMap((comment) => {
-            const params = { contentType: 'comment', resourceId: comment.id };
             const promises = [
-              reportApi.getReportCounts({
-                ...params,
-                reportType: ReportTypes['Abuse & Harassment'],
-              }),
-              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Hate }),
-              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Spam }),
-              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Privacy }),
+              reportApi.getCountFromUrl(comment.spamReportsUrl),
+              reportApi.getCountFromUrl(comment.hateReportsUrl),
+              reportApi.getCountFromUrl(comment.abuseReportsUrl),
+              reportApi.getCountFromUrl(comment.privacyReportsUrl),
               api.get(comment.reviewUrl),
-              mediaApi.getMediaById(comment.mediaId),
+              api.get(comment.mediaUrl)
             ];
             return promises;
           });
