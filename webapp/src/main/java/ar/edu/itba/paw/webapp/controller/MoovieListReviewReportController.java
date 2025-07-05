@@ -3,11 +3,13 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.Reports.*;
+import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.ReportService;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.dto.in.ReportCreateDto;
 import ar.edu.itba.paw.webapp.dto.out.MoovieListReviewReportDto;
+import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.slf4j.Logger;
@@ -20,6 +22,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
+import java.util.function.Supplier;
 
 @Path("/moovieListReviewReports")
 public class MoovieListReviewReportController {
@@ -108,10 +111,11 @@ public class MoovieListReviewReportController {
     @Path("/{id}")
     @PreAuthorize("@accessValidator.isUserAdmin()")
     @Produces(VndType.APPLICATION_REPORT)
-    public Response getReport(@PathParam("id") @NotNull int id) {
+    public Response getReport(@PathParam("id") @NotNull int id, @Context Request request) {
         try {
             MoovieListReviewReport report = reportService.getMoovieListReviewReport(id);
-            return Response.ok(MoovieListReviewReportDto.fromMoovieListReviewReport(report, uriInfo)).build();
+            final Supplier<MoovieListReviewReportDto> dtoSupplier = () -> MoovieListReviewReportDto.fromMoovieListReviewReport(report, uriInfo);
+            return ResponseUtils.setConditionalCacheHash(request, dtoSupplier, report.hashCode());
         } catch (IllegalArgumentException e) {
             throw new BadRequestException(e.getMessage(), e);
         } catch (Exception e) {

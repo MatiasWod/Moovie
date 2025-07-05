@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.Reports.CommentReport;
+import ar.edu.itba.paw.models.Reports.MoovieListReviewReport;
 import ar.edu.itba.paw.models.Reports.ReportTypesEnum;
 import ar.edu.itba.paw.models.Reports.ResourceTypesEnum;
 import ar.edu.itba.paw.models.User.User;
@@ -10,6 +11,7 @@ import ar.edu.itba.paw.services.ReportService;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.dto.in.ReportCreateDto;
 import ar.edu.itba.paw.webapp.dto.out.CommentReportDto;
+import ar.edu.itba.paw.webapp.dto.out.MoovieListReviewReportDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.slf4j.Logger;
@@ -22,6 +24,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
+import java.util.function.Supplier;
 
 @Path("/commentsReports")
 public class CommentReportController {
@@ -110,10 +113,11 @@ public class CommentReportController {
     @Path("/{id}")
     @PreAuthorize("@accessValidator.isUserAdmin()")
     @Produces(VndType.APPLICATION_REPORT)
-    public Response getReport(@PathParam("id") @NotNull int id) {
+    public Response getReport(@PathParam("id") @NotNull int id, @Context Request request) {
         try {
             CommentReport report = reportService.getCommentReport(id);
-            return Response.ok(CommentReportDto.fromCommentReport(report, uriInfo)).build();
+            final Supplier<CommentReportDto> dtoSupplier = () -> CommentReportDto.fromCommentReport(report, uriInfo);
+            return ResponseUtils.setConditionalCacheHash(request, dtoSupplier, report.hashCode());
         } catch (IllegalArgumentException e) {
             throw new BadRequestException(e.getMessage(), e);
         } catch (Exception e) {
