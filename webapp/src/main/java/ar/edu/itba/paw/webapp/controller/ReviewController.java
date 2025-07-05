@@ -8,6 +8,7 @@ import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.Review.ReviewTypes;
+import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.services.*;
 import ar.edu.itba.paw.webapp.dto.in.ReviewCreateDto;
 import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
@@ -60,13 +61,14 @@ public class ReviewController {
     @Produces(VndType.APPLICATION_REVIEW_LIST)
     public Response getReviewsByQueryParams(
             @QueryParam("mediaId") final Integer mediaId,
-            @QueryParam("userId") final Integer userId,
             @QueryParam("username") final String username,
             @QueryParam("pageNumber") @DefaultValue("1") final int page
     ) {
-        if (mediaId != null && userId != null) {
+        if (mediaId != null && username != null) {
             // Caso: buscar una reseña específica por mediaId y userId
-            final Review review = reviewService.getReviewByMediaIdAndUsername(mediaId, userId);
+            final int userId;
+            User user= userService.findUserByUsername(username);
+            final Review review = reviewService.getReviewByMediaIdAndUsername(mediaId, user.getUserId());
             if (review == null) {
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("Review not found.")
@@ -107,48 +109,50 @@ public class ReviewController {
         }
     }
 
-    @PUT
-    @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Consumes(VndType.APPLICATION_REVIEW_FORM)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response editReview(@QueryParam("mediaId") int mediaId,@Valid final ReviewCreateDto reviewDto) {
-        try {
-            reviewService.editReview(
-                    mediaId,
-                    reviewDto.getRating(),
-                    reviewDto.getReviewContent(),
-                    ReviewTypes.REVIEW_MEDIA
-            );
-
-            return Response.ok()
-                    .entity("Review successfully updated for media with ID: " + mediaId)
-                    .build();
-        } catch (ReviewNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND)
-                .entity("{\"error\":\"Review not found.\"}")
-                .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
-        }
-    }
-
     @POST
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_REVIEW_FORM)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createReview(@QueryParam("mediaId") int mediaId,@Valid final ReviewCreateDto reviewDto) {
+    public Response createReview(@Valid final ReviewCreateDto reviewDto) {
         reviewService.createReview(
-                mediaId,
+                reviewDto.getMediaId(),
                 reviewDto.getRating(),
                 reviewDto.getReviewContent(),
                 ReviewTypes.REVIEW_MEDIA
         );
 
         return Response.status(Response.Status.CREATED)
-                .entity("Review successfully created to the media with ID: " + mediaId)
+                .entity("Review successfully created to the media with ID: " + reviewDto.getMediaId())
                 .build();
+    }
+
+    @PUT
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
+    @Path("/{id}")
+    @Consumes(VndType.APPLICATION_REVIEW_FORM)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response editReview(@PathParam("id") final int id, @Valid final ReviewCreateDto reviewDto) {
+        try {
+            reviewService.getReviewById(id);
+            reviewService.editReview(
+                    reviewDto.getMediaId(),
+                    reviewDto.getRating(),
+                    reviewDto.getReviewContent(),
+                    ReviewTypes.REVIEW_MEDIA
+            );
+
+            return Response.ok()
+                    .entity("Review successfully updated for media with ID: " + reviewDto.getMediaId())
+                    .build();
+        } catch (ReviewNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\":\"Review not found.\"}")
+                    .build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .build();
+        }
     }
 
     @PUT

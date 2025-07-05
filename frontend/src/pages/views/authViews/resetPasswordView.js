@@ -25,6 +25,7 @@ const ResetPassword = () => {
   const [searchParams] = useSearchParams();
 
   const token = searchParams.get('token');
+  const username = searchParams.get('username');
 
   if (!token) {
     navigate('/login');
@@ -40,7 +41,7 @@ const ResetPassword = () => {
 
     try {
       setLoading(true);
-      await userApi.resetPassword(token, password);
+      await userApi.resetPassword(username,token, password);
       setError('');
       setSuccess(true);
     } catch (error) {
