@@ -41,7 +41,7 @@ public class CommentReportController {
 
     @GET
     @PreAuthorize("@accessValidator.isUserAdmin()")
-    @Produces(VndType.APPLICATION_REPORT_LIST)
+    @Produces(VndType.APPLICATION_COMMENT_REPORT_LIST)
     public Response getReports(
             @QueryParam("reportType") Integer reportType,
             @QueryParam("commentId") Integer commentId,
@@ -91,7 +91,7 @@ public class CommentReportController {
     @POST
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_REPORT_FORM)
-    @Produces(VndType.APPLICATION_REPORT)
+    @Produces(VndType.APPLICATION_COMMENT_REPORT)
     public Response report(
             @Valid final ReportCreateDto reportDto) {
         try {
@@ -109,7 +109,7 @@ public class CommentReportController {
     @GET
     @Path("/{id}")
     @PreAuthorize("@accessValidator.isUserAdmin()")
-    @Produces(VndType.APPLICATION_REPORT)
+    @Produces(VndType.APPLICATION_COMMENT_REPORT)
     public Response getReport(@PathParam("id") @NotNull int id) {
         try {
             CommentReport report = reportService.getCommentReport(id);

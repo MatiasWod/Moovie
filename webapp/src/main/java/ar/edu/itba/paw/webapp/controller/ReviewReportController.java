@@ -40,7 +40,7 @@ public class ReviewReportController {
 
     @GET
     @PreAuthorize("@accessValidator.isUserAdmin()")
-    @Produces(VndType.APPLICATION_REPORT_LIST)
+    @Produces(VndType.APPLICATION_REVIEW_REPORT_LIST)
     public Response getReports(
             @QueryParam("reportType") Integer reportType,
             @QueryParam("reviewId") Integer reviewId,
@@ -90,7 +90,7 @@ public class ReviewReportController {
     @POST
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_REPORT_FORM)
-    @Produces(VndType.APPLICATION_REPORT)
+    @Produces(VndType.APPLICATION_REVIEW_REPORT)
     public Response report(
             @Valid final ReportCreateDto reportDto) {
         try {
@@ -108,7 +108,7 @@ public class ReviewReportController {
     @GET
     @Path("/{id}")
     @PreAuthorize("@accessValidator.isUserAdmin()")
-    @Produces(VndType.APPLICATION_REPORT)
+    @Produces(VndType.APPLICATION_REVIEW_REPORT)
     public Response getReport(@PathParam("id") @NotNull int id) {
         try {
             ReviewReport report = reportService.getReviewReport(id);

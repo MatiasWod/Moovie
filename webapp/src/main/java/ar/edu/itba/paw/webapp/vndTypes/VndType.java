@@ -127,17 +127,25 @@ public class VndType {
     // Tipo para providers
     public static final String APPLICATION_PROVIDER = "application/vnd.provider.v1+json";
 
-    // Tipo de medio para una lista de reportes
-    public static final String APPLICATION_REPORT_LIST = "application/vnd.report-list.v1+json";
 
-    // Tipo de medio para un reporte individual
-    public static final String APPLICATION_REPORT = "application/vnd.report.v1+json";
+    public static final String APPLICATION_COMMENT_REPORT = "application/vnd.comment-report.v1+json";
+
+    public static final String APPLICATION_COMMENT_REPORT_LIST= "application/vnd.comment-report-list.v1+json";
+
+    public static final String APPLICATION_MOOVIELIST_REPORT= "application/vnd.moovielist-report.v1+json";
+
+    public static final String APPLICATION_MOOVIELIST_REPORT_LIST= "application/vnd.moovielist-report-list.v1+json";
+
+    public static final String APPLICATION_MOOVIELIST_REVIEW_REPORT = "application/vnd.moovielist-review-report.v1+json";
+
+    public static final String APPLICATION_MOOVIELIST_REVIEW_REPORT_LIST= "application/vnd.moovielist-review-report-list.v1+json";
+
+    public static final String APPLICATION_REVIEW_REPORT = "application/vnd.review-report.v1+json";
+
+    public static final String APPLICATION_REVIEW_REPORT_LIST = "application/vnd.review-report-list.v1+json";
 
     // Tipo de medio para operaciones de creación de reportes
     public static final String APPLICATION_REPORT_FORM = "application/vnd.report-form.v1+json";
-
-    // Tipo de medio para operaciones de creación de reportes
-    public static final String APPLICATION_REPORT_COUNT = "application/vnd.report-count.v1+json";
 
     // Tipo de medio para una reseña individual
     public static final String APPLICATION_REVIEW = "application/vnd.review.v1+json";

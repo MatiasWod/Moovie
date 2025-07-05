@@ -9,8 +9,6 @@ public class ReportCreateDto {
     @NotNull
     private int resourceId;
 
-    @NotNull
-    private int resourceType;
 
     public int getType() {
         return type;
@@ -28,11 +26,4 @@ public class ReportCreateDto {
         this.resourceId = resourceId;
     }
 
-    public int getResourceType() {
-        return resourceType;
-    }
-
-    public void setResourceType(int resourceType) {
-        this.resourceType = resourceType;
-    }
 }

@@ -39,7 +39,7 @@ public class MoovieListReviewReportController {
 
     @GET
     @PreAuthorize("@accessValidator.isUserAdmin()")
-    @Produces(VndType.APPLICATION_REPORT_LIST)
+    @Produces(VndType.APPLICATION_MOOVIELIST_REVIEW_REPORT_LIST)
     public Response getReports(
             @QueryParam("reportType") Integer reportType,
             @QueryParam("moovieListReviewId") Integer moovieListReviewId,
@@ -89,7 +89,7 @@ public class MoovieListReviewReportController {
     @POST
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_REPORT_FORM)
-    @Produces(VndType.APPLICATION_REPORT)
+    @Produces(VndType.APPLICATION_MOOVIELIST_REVIEW_REPORT)
     public Response report(
             @Valid final ReportCreateDto reportDto) {
         try {
@@ -107,7 +107,7 @@ public class MoovieListReviewReportController {
     @GET
     @Path("/{id}")
     @PreAuthorize("@accessValidator.isUserAdmin()")
-    @Produces(VndType.APPLICATION_REPORT)
+    @Produces(VndType.APPLICATION_MOOVIELIST_REVIEW_REPORT)
     public Response getReport(@PathParam("id") @NotNull int id) {
         try {
             MoovieListReviewReport report = reportService.getMoovieListReviewReport(id);
