@@ -13,7 +13,7 @@ public class UserDto {
     private int reviewsCount;
     private int milkyPoints;
     private boolean hasBadge;
-    private String profilePictureUrl;
+    private String imageUrl;
 
     // URLs
     private String url;
@@ -38,8 +38,11 @@ public class UserDto {
         dto.hasBadge = user.isHasBadge();
 
         if (user.isHasPfp()) {
-            dto.profilePictureUrl = uriInfo.getBaseUriBuilder().path("users/{username}/image")
-                    .build(user.getUsername()).toString();
+            dto.imageUrl = uriInfo.getBaseUriBuilder()
+                    .path("images")
+                    .path("{id}")
+                    .build(user.getImageId())
+                    .toString();
         }
 
         // URLs
@@ -137,12 +140,12 @@ public class UserDto {
         this.url = url;
     }
 
-    public String getPictureUrl() {
-        return profilePictureUrl;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setPictureUrl(String profilePictureUrl) {
-        this.profilePictureUrl = profilePictureUrl;
+    public void setImageUrl(String imageTrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getDefaultPrivateMoovieListsUrl() {
