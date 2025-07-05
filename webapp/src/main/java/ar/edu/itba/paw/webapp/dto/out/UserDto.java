@@ -24,6 +24,9 @@ public class UserDto {
     private String publicMoovieListsUrl;
     private String privateMoovieListsUrl;
 
+    private String likedMoovieListsUrl;
+    private String followedMoovieListsUrl;
+
     private String moovieListReviewsUrl;
     private String reviewsUrl;
 
@@ -66,6 +69,15 @@ public class UserDto {
         dto.privateMoovieListsUrl = uriInfo.getBaseUriBuilder().path("lists")
                 .queryParam("ownerUsername", user.getUsername())
                 .queryParam("type", MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.getType())
+                .build()
+                .toString();
+
+        dto.likedMoovieListsUrl = uriInfo.getBaseUriBuilder().path("lists")
+                .queryParam("likedByUser", user.getUsername())
+                .build()
+                .toString();
+        dto.followedMoovieListsUrl = uriInfo.getBaseUriBuilder().path("lists")
+                .queryParam("followedByUser", user.getUsername())
                 .build()
                 .toString();
 
@@ -144,7 +156,7 @@ public class UserDto {
         return imageUrl;
     }
 
-    public void setImageUrl(String imageTrl) {
+    public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 
@@ -154,6 +166,46 @@ public class UserDto {
 
     public void setDefaultPrivateMoovieListsUrl(String defaultPrivateMoovieListsUrl) {
         this.defaultPrivateMoovieListsUrl = defaultPrivateMoovieListsUrl;
+    }
+
+    public void setReviewsUrl(String reviewsUrl) {
+        this.reviewsUrl = reviewsUrl;
+    }
+
+    public void setMoovieListReviewsUrl(String moovieListReviewsUrl) {
+        this.moovieListReviewsUrl = moovieListReviewsUrl;
+    }
+
+    public void setFollowedMoovieListsUrl(String followedMoovieListsUrl) {
+        this.followedMoovieListsUrl = followedMoovieListsUrl;
+    }
+
+    public void setLikedMoovieListsUrl(String likedMoovieListsUrl) {
+        this.likedMoovieListsUrl = likedMoovieListsUrl;
+    }
+
+    public void setMoovieListsUrl(String moovieListsUrl) {
+        this.moovieListsUrl = moovieListsUrl;
+    }
+
+    public String getMoovieListsUrl() {
+        return moovieListsUrl;
+    }
+
+    public String getLikedMoovieListsUrl() {
+        return likedMoovieListsUrl;
+    }
+
+    public String getFollowedMoovieListsUrl() {
+        return followedMoovieListsUrl;
+    }
+
+    public String getMoovieListReviewsUrl() {
+        return moovieListReviewsUrl;
+    }
+
+    public String getReviewsUrl() {
+        return reviewsUrl;
     }
 
     public String getPublicMoovieListsUrl() {
