@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name="moovielists")
@@ -181,7 +182,6 @@ public class MoovieListCard {
         this.type = type;
     }
 
-
     public void setLikeCount(int likeCount) {
         this.likeCount = likeCount;
     }
@@ -222,5 +222,10 @@ public class MoovieListCard {
 
     public boolean isHasBadge() {
         return user.isHasBadge();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(moovieListId, name, user.getUsername(), description, type, likeCount, followerCount, size, moviesAmount, images );
     }
 }

@@ -57,12 +57,9 @@ const userApi = (() => {
   };
 
   const setPfp = (username, pfp) => {
-    return api.put(`/users/${username}/image`, pfp);
+    return api.post(`/images`, pfp);
   };
 
-  const getPfp = (username) => {
-    return process.env.REACT_APP_API_URL + `/users/${username}/image`;
-  };
 
   /*
     LIKES AND FOLLOWED
@@ -351,7 +348,6 @@ const userApi = (() => {
 
 
   return {
-    getPfp,
     getUserByUsername,
     getMilkyLeaderboard,
     getSpecialListFromUser,

@@ -7,11 +7,9 @@ const commentApi = (() => {
       '/comments/',
       {
         commentContent: comment,
+        reviewId: reviewId,
       },
       {
-        params: {
-          reviewId: reviewId,
-        },
         headers: {
           'Content-Type': VndType.APPLICATION_COMMENT_FORM,
         },
@@ -50,11 +48,21 @@ const commentApi = (() => {
     return response;
   };
 
+
+  const getCommentsFromUrl = async (url, pageNumber, pageSize ) => {
+    return api.get(url, {
+      params: {
+        ...(pageNumber && { 'pageNumber': pageNumber }),
+        ...(pageSize && { 'pageSize': pageSize }),
+      },
+    });
+  }
   return {
     deleteComment,
     createReviewComment,
     commentFeedback,
     getReviewComments,
+    getCommentsFromUrl
   };
 })();
 

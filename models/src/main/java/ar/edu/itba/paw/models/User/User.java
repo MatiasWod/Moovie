@@ -3,6 +3,7 @@ package ar.edu.itba.paw.models.User;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "users",uniqueConstraints = {@UniqueConstraint(columnNames = {"username"}), @UniqueConstraint(columnNames = {"email"})})
@@ -24,8 +25,8 @@ public class User {
     @Column(nullable = false)
     private int role;
 
-    @Formula("(SELECT CASE WHEN EXISTS (SELECT 1 FROM userimages ui WHERE ui.userid = userId) THEN 1 ELSE 0 END) ")
-    private boolean hasPfp;
+    @Formula("(SELECT ui.imageid FROM userimages ui WHERE ui.userid = userId)")
+    private Integer imageId;
 
     @Formula("(SELECT COUNT(*) FROM moovieLists ml WHERE ml.userId = userId AND ml.type = 1)")
     private int moovieListCount;
@@ -55,7 +56,7 @@ public class User {
 
     }
 
-    public User(int userId, String username, String email, String password, int role, int milkyPoints, int moovieListCount, int reviewsCount, boolean hasPfp) {
+    public User(int userId, String username, String email, String password, int role, int milkyPoints, int moovieListCount, int reviewsCount, int imageId) {
         this.userId = userId;
         this.username = username;
         this.email = email;
@@ -64,7 +65,7 @@ public class User {
         this.milkyPoints = milkyPoints;
         this.moovieListCount = moovieListCount;
         this.reviewsCount = reviewsCount;
-        this.hasPfp = hasPfp;
+        this.imageId = imageId;
     }
 
     public User(Builder builder) {
@@ -112,7 +113,7 @@ public class User {
         this.role = role;
     }
 
-    public boolean isHasPfp(){ return hasPfp; }
+    public boolean isHasPfp(){ return imageId != null; }
 
     public int getMilkyPoints() {
         return milkyPoints;
@@ -124,6 +125,10 @@ public class User {
 
     public int getReviewsCount() {
         return reviewsCount;
+    }
+
+    public Integer getImageId() {
+        return imageId;
     }
 
     public static class Builder {
@@ -156,5 +161,9 @@ public class User {
         return milkyPoints >= BadgeLimits.POINTS_FOR_SIMPLE_BADGE.getLimit();
     }
 
-
+    @Override
+    public int hashCode(){
+        // TODO add image id
+        return Objects.hash(username, role, milkyPoints, userId, email, reviewsCount, imageId);
+    }
 }

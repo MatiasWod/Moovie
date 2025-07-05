@@ -13,15 +13,14 @@ public class UserDto {
     private int reviewsCount;
     private int milkyPoints;
     private boolean hasBadge;
-    private String profilePictureUrl;
+    private String imageUrl;
 
     // URLs
     private String url;
 
     // Moovie Lists URLs
     private String moovieListsUrl;
-    private String watchedMoovieListsUrl;
-    private String watchlistMoovieListsUrl;
+    private String defaultPrivateMoovieListsUrl;
     private String publicMoovieListsUrl;
     private String privateMoovieListsUrl;
 
@@ -39,8 +38,11 @@ public class UserDto {
         dto.hasBadge = user.isHasBadge();
 
         if (user.isHasPfp()) {
-            dto.profilePictureUrl = uriInfo.getBaseUriBuilder().path("users/{username}/image")
-                    .build(user.getUsername()).toString();
+            dto.imageUrl = uriInfo.getBaseUriBuilder()
+                    .path("images")
+                    .path("{id}")
+                    .build(user.getImageId())
+                    .toString();
         }
 
         // URLs
@@ -51,12 +53,7 @@ public class UserDto {
                 .queryParam("ownerUsername", user.getUsername())
                 .build()
                 .toString();
-        dto.watchedMoovieListsUrl = uriInfo.getBaseUriBuilder().path("lists")
-                .queryParam("ownerUsername", user.getUsername())
-                .queryParam("type", MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType())
-                .build()
-                .toString();
-        dto.watchlistMoovieListsUrl = uriInfo.getBaseUriBuilder().path("lists")
+        dto.defaultPrivateMoovieListsUrl = uriInfo.getBaseUriBuilder().path("lists")
                 .queryParam("ownerUsername", user.getUsername())
                 .queryParam("type", MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType())
                 .build()
@@ -143,28 +140,20 @@ public class UserDto {
         this.url = url;
     }
 
-    public String getPictureUrl() {
-        return profilePictureUrl;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setPictureUrl(String profilePictureUrl) {
-        this.profilePictureUrl = profilePictureUrl;
+    public void setImageUrl(String imageTrl) {
+        this.imageUrl = imageUrl;
     }
 
-    public String getWatchedMoovieListsUrl() {
-        return watchedMoovieListsUrl;
+    public String getDefaultPrivateMoovieListsUrl() {
+        return defaultPrivateMoovieListsUrl;
     }
 
-    public void setWatchedMoovieListsUrl(String watchedMoovieListsUrl) {
-        this.watchedMoovieListsUrl = watchedMoovieListsUrl;
-    }
-
-    public String getWatchlistMoovieListsUrl() {
-        return watchlistMoovieListsUrl;
-    }
-
-    public void setWatchlistMoovieListsUrl(String watchlistMoovieListsUrl) {
-        this.watchlistMoovieListsUrl = watchlistMoovieListsUrl;
+    public void setDefaultPrivateMoovieListsUrl(String defaultPrivateMoovieListsUrl) {
+        this.defaultPrivateMoovieListsUrl = defaultPrivateMoovieListsUrl;
     }
 
     public String getPublicMoovieListsUrl() {

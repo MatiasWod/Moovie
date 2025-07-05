@@ -38,6 +38,7 @@ import javax.ws.rs.core.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @Api(value = "/users")
 @Path("/users")
@@ -248,11 +249,12 @@ public class UserController {
     @GET
     @Path("/{username}")
     @Produces(VndType.APPLICATION_USER)
-    public Response getUserByUsername(@PathParam("username") final String username) {
+    public Response getUserByUsername(@PathParam("username") final String username, @Context Request request) {
         LOGGER.info("Method: getUserByUsername, Path: /users/user/{username}, Username: {}", username);
         try {
             final User user = userService.findUserByUsername(username);
-            return Response.ok(UserDto.fromUser(user, uriInfo)).build();
+            final Supplier<UserDto> dtoSupplier = () ->UserDto.fromUser(user, uriInfo);
+            return ResponseUtils.setConditionalCacheHash(request, dtoSupplier, user.hashCode());
         } catch (UnableToFindUserException e) {
             LOGGER.error("Error retrieving user: {}", e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();

@@ -16,6 +16,7 @@ import api from '../../../api/api';
 import {parsePaginatedResponse} from "../../../utils/ResponseUtils";
 import PaginationButton from "../paginationButton/PaginationButton";
 import UserService from "../../../services/UserService";
+import CommentService from "../../../services/CommentService";
 
 export default function CommentList({ reviewId, reload, commentsUrl }) {
   const { t } = useTranslation();
@@ -43,13 +44,8 @@ export default function CommentList({ reviewId, reload, commentsUrl }) {
   const fetchComments = async () => {
     try {
       let response;
-      if (commentsUrl) {
-        response = await api.get(commentsUrl + `&pageNumber=${pageComments}`);
-      } else {
-        response = await commentApi.getReviewComments(reviewId, pageComments);
-      }
-      const data = parsePaginatedResponse(response);
-      setComments(data);
+      response = await CommentService.getCommentsFromUrl({ url: commentsUrl , pageNumber: pageComments });
+      setComments(response);
       setIsLoading(false);
     } catch (err) {
       setError(err.message);
@@ -99,7 +95,7 @@ export default function CommentList({ reviewId, reload, commentsUrl }) {
         />
       )}
 
-      {comments.data.length > 1 && (
+      {comments?.data?.length > 1 && (
         <div className="text-center">
           <button
             onClick={() => setIsExpanded(!isExpanded)}

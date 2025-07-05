@@ -6,9 +6,9 @@ import ProfileImage from '../components/profileImage/ProfileImage';
 import logo from '../../images/logo.png';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import userApi from '../../api/UserApi';
 import { Spinner } from 'react-bootstrap';
 import { FaInfoCircle } from 'react-icons/fa';
+import userService from "../../services/UserService";
 
 function MilkyLeaderboard() {
   const [milkyLeaderboard, setMilkyLeaderboard] = useState([]);
@@ -18,7 +18,7 @@ function MilkyLeaderboard() {
 
   const fetchMilkyLeaderboard = async () => {
     try {
-      const response = await userApi.getMilkyLeaderboard({
+      const response = await userService.getMilkyLeaderboard({
         page: 1,
         pageSize: PagingSizes.MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE,
       });
@@ -90,8 +90,7 @@ function MilkyLeaderboardProfile({ profile }) {
         <ProfileImage
           style={{ cursor: 'pointer' }}
           onClick={() => handleUsernameClick(profile.username)}
-          image={profile.pictureUrl}
-          username={profile.username}
+          image={profile.imageUrl}
           size={75}
         />
       </td>

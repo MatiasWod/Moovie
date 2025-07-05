@@ -57,7 +57,7 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
   const handleEdit = async () => {
     try {
       if (source !== 'media' && source !== 'lists') {
-        await moovieListReviewService.editReview(review.moovieListid, reviewContent);
+        await moovieListReviewService.editReview(review.id,review.moovieListid, reviewContent);
       }
       handleToggleEdit();
       reloadReviews();

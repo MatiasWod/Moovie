@@ -122,11 +122,6 @@ public class MoovieList {
         return moovieListId == that.moovieListId;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(moovieListId);
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -134,5 +129,6 @@ public class MoovieList {
     public void setDescription(String description) {
         this.description = description;
     }
-}
 
+
+}

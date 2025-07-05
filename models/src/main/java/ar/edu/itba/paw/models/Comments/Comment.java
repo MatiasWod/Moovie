@@ -8,6 +8,7 @@ import org.hibernate.annotations.Formula;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "comments")
@@ -208,4 +209,8 @@ public class Comment implements Serializable {
         return user.isHasBadge();
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(commentId, user.getUsername(), reviewId, content, totalReports, commentDislikes, commentLikes );
+    }
 }

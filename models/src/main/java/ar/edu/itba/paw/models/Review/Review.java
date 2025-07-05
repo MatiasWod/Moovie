@@ -9,6 +9,7 @@ import org.hibernate.annotations.Formula;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "reviews",uniqueConstraints = @UniqueConstraint(columnNames = {"userid", "mediaid"}))
@@ -227,5 +228,10 @@ public class Review {
 
     public User getUser() {
         return user;
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(reviewContent, reviewId, getUsername(), reviewLikes, commentCount, rating, lastModified);
     }
 }

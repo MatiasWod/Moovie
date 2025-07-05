@@ -157,6 +157,40 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
+    public List<ReviewReport> getReviewReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber) {
+        int offset = Math.max(pageNumber - 1, 0) * pageSize;
+
+        StringBuilder sql = new StringBuilder("SELECT c FROM ReviewReport c WHERE 1=1");
+
+        if (reportType != null) {
+            sql.append(" AND c.type = :reportType");
+        }
+        if (resourceId != null) {
+            sql.append(" AND c.review.reviewId = :resourceId");
+        }
+
+        sql.append(" ORDER BY c.report_date DESC");
+
+        TypedQuery<ReviewReport> query = em.createQuery(sql.toString(), ReviewReport.class)
+                .setMaxResults(pageSize)
+                .setFirstResult(offset);
+
+        if (reportType != null) {
+            query.setParameter("reportType", reportType);
+        }
+        if (resourceId != null) {
+            query.setParameter("resourceId", resourceId);
+        }
+
+        return query.getResultList();
+    }
+
+    @Override
+    public ReviewReport getReviewReport(int reportId) {
+        return em.find(ReviewReport.class, reportId);
+    }
+
+    @Override
     public List<ReviewReport> getReviewReports(int pageSize, int pageNumber) {
 
         int offset = Math.max(pageNumber - 1, 0) * pageSize;
@@ -246,6 +280,40 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
+    public List<MoovieListReviewReport> getMoovieListReviewReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber){
+        int offset = Math.max(pageNumber - 1, 0) * pageSize;
+
+        StringBuilder sql = new StringBuilder("SELECT c FROM MoovieListReviewReport c WHERE 1=1");
+
+        if (reportType != null) {
+            sql.append(" AND c.type = :reportType");
+        }
+        if (resourceId != null) {
+            sql.append(" AND c.moovieListReview.moovieListReviewId = :resourceId");
+        }
+
+        sql.append(" ORDER BY c.report_date DESC");
+
+        TypedQuery<MoovieListReviewReport> query = em.createQuery(sql.toString(), MoovieListReviewReport.class)
+                .setMaxResults(pageSize)
+                .setFirstResult(offset);
+
+        if (reportType != null) {
+            query.setParameter("reportType", reportType);
+        }
+        if (resourceId != null) {
+            query.setParameter("resourceId", resourceId);
+        }
+
+        return query.getResultList();
+    }
+
+    @Override
+    public MoovieListReviewReport getMoovieListReviewReport(int reportId){
+        return em.find(MoovieListReviewReport.class, reportId);
+    }
+
+    @Override
     public List<MoovieListReview> getReportedMoovieListReviews() {
 
         String sql = "SELECT r FROM MoovieListReview r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
@@ -308,6 +376,40 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
+    public List<MoovieListReport> getMoovieListReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber){
+        int offset = Math.max(pageNumber - 1, 0) * pageSize;
+
+        StringBuilder sql = new StringBuilder("SELECT c FROM MoovieListReport c WHERE 1=1");
+
+        if (reportType != null) {
+            sql.append(" AND c.type = :reportType");
+        }
+        if (resourceId != null) {
+            sql.append(" AND c.moovieList.moovieListId = :resourceId");
+        }
+
+        sql.append(" ORDER BY c.report_date DESC");
+
+        TypedQuery<MoovieListReport> query = em.createQuery(sql.toString(), MoovieListReport.class)
+                .setMaxResults(pageSize)
+                .setFirstResult(offset);
+
+        if (reportType != null) {
+            query.setParameter("reportType", reportType);
+        }
+        if (resourceId != null) {
+            query.setParameter("resourceId", resourceId);
+        }
+
+        return query.getResultList();
+    }
+
+    @Override
+    public MoovieListReport getMoovieListReport(int reportId){
+        return em.find(MoovieListReport.class, reportId);
+    }
+
+    @Override
     public List<MoovieListReport> getMoovieListReports(int pageSize, int pageNumber) {
 
         int offset = Math.max(pageNumber - 1, 0) * pageSize;
@@ -320,6 +422,8 @@ public class ReportDaoImpl implements ReportDao {
 
         return query.getResultList();
     }
+
+
 
     @Override
     public List<MoovieList> getReportedMoovieLists() {
@@ -397,6 +501,41 @@ public class ReportDaoImpl implements ReportDao {
                 .setFirstResult(offset);
 
         return query.getResultList();
+    }
+
+    @Override
+    public List<CommentReport> getCommentReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber) {
+        int offset = Math.max(pageNumber - 1, 0) * pageSize;
+
+        StringBuilder sql = new StringBuilder("SELECT c FROM CommentReport c WHERE 1=1");
+
+        if (reportType != null) {
+            sql.append(" AND c.type = :reportType");
+        }
+        if (resourceId != null) {
+            sql.append(" AND c.comment.commentId = :resourceId");
+        }
+
+        sql.append(" ORDER BY c.report_date DESC");
+
+        TypedQuery<CommentReport> query = em.createQuery(sql.toString(), CommentReport.class)
+                .setMaxResults(pageSize)
+                .setFirstResult(offset);
+
+        if (reportType != null) {
+            query.setParameter("reportType", reportType);
+        }
+        if (resourceId != null) {
+            query.setParameter("resourceId", resourceId);
+        }
+
+        return query.getResultList();
+    }
+
+
+    @Override
+    public CommentReport getCommentReport(int reportId) {
+        return em.find(CommentReport.class, reportId);
     }
 
     @Override

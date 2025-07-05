@@ -1,7 +1,5 @@
 package ar.edu.itba.paw.models.Reports;
 
-import ar.edu.itba.paw.models.MoovieList.FeaturedMoovieListEnum;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -10,10 +8,10 @@ import static java.util.stream.Collectors.toMap;
 
 public enum ReportTypesEnum {
 
-    hatefulContent(0, "Hate"),
-    abuse(1,"Abuse & Harassment"),
-    privacy(2,"Privacy"),
-    spam(3,"Spam");
+    HATEFUL_CONTENT(0, "Hate"),
+    ABUSE(1,"Abuse & Harassment"),
+    PRIVACY(2,"Privacy"),
+    SPAM(3,"Spam");
 
     final private int type;
     final private String description;

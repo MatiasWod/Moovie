@@ -40,7 +40,7 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser, handleMakeMode
           style={{ cursor: 'pointer' }}
           onClick={handleShowPfpPopup}
         >
-          <ProfileImage username={profile.username} image={profile.pictureUrl} />
+          <ProfileImage image={profile.imageUrl} />
         </div>
         <div>
           <h1 className="profile-header-username">

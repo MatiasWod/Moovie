@@ -7,6 +7,7 @@ import ar.edu.itba.paw.models.User.User;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "reportscomments", uniqueConstraints = @UniqueConstraint(columnNames = {"commentId", "reportedBy"}))
@@ -103,5 +104,10 @@ public class CommentReport implements Serializable {
 
     public void setResolved(Boolean resolved) {
         this.resolved = resolved;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash( reportId, reportedBy, resolved, type, content, report_date, comment );
     }
 }

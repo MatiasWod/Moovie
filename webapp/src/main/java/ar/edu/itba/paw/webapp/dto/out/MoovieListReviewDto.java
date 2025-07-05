@@ -53,28 +53,28 @@ public class MoovieListReviewDto {
         moovieListReviewDto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "moovieListReview")
                 .queryParam("resourceId", moovieListReview.getMoovieListReviewId())
-                .queryParam("reportType", ReportTypesEnum.spam.getType())
+                .queryParam("reportType", ReportTypesEnum.SPAM.getType())
                 .build()
                 .toString();
 
         moovieListReviewDto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "moovieListReview")
                 .queryParam("resourceId", moovieListReview.getMoovieListReviewId())
-                .queryParam("reportType", ReportTypesEnum.hatefulContent.getType())
+                .queryParam("reportType", ReportTypesEnum.HATEFUL_CONTENT.getType())
                 .build()
                 .toString();
 
         moovieListReviewDto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "moovieListReview")
                 .queryParam("resourceId", moovieListReview.getMoovieListReviewId())
-                .queryParam("reportType", ReportTypesEnum.privacy.getType())
+                .queryParam("reportType", ReportTypesEnum.PRIVACY.getType())
                 .build()
                 .toString();
 
         moovieListReviewDto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
                 .queryParam("contentType", "moovieListReview")
                 .queryParam("resourceId", moovieListReview.getMoovieListReviewId())
-                .queryParam("reportType", ReportTypesEnum.abuse.getType())
+                .queryParam("reportType", ReportTypesEnum.ABUSE.getType())
                 .build()
                 .toString();
 
