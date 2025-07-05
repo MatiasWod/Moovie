@@ -186,6 +186,7 @@ public class UserController {
 
 
     @POST
+    @Path("reset-tokens")
     @Consumes(VndType.APPLICATION_PASSWORD_TOKEN_FORM)
     public Response createPasswordResetToken(@Valid UserEmailDto userEmailDto) {
         LOGGER.info("Method: createPasswordResetToken, Path: /users, Email: {}", userEmailDto.getEmail());
