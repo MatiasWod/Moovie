@@ -8,6 +8,9 @@ import javax.validation.constraints.Size;
 public class ReviewCreateDto {
 
     @NotNull
+    private int mediaId;
+
+    @NotNull
     @Min(1)
     @Max(5)
     private int rating;
@@ -31,4 +34,11 @@ public class ReviewCreateDto {
         this.rating = rating;
     }
 
+    public int getMediaId() {
+        return mediaId;
+    }
+
+    public void setMediaId(int mediaId) {
+        this.mediaId = mediaId;
+    }
 }

@@ -173,7 +173,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/users").permitAll()
                 .antMatchers(HttpMethod.POST, "/users/*").authenticated()
-                .antMatchers(HttpMethod.PUT, "/users/*").authenticated()
+                .antMatchers(HttpMethod.PUT, "/users/*").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/users/*").authenticated()
                 .antMatchers(HttpMethod.POST, "/comments/*").authenticated()
                 .antMatchers(HttpMethod.PUT, "/comments/*").authenticated()

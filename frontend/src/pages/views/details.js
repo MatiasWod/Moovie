@@ -96,7 +96,7 @@ function Details() {
   const fetchUserReview = async () => {
     try {
       if (isLoggedIn) {
-        const response = await reviewService.getReviewsByMediaIdandUserId(id, user.id);
+        const response = await reviewService.getReviewsByMediaIdandUsername(id, user.username);
         setUserReview(response.data);
       }
     } catch (err) {

@@ -19,7 +19,7 @@ const userApi = (() => {
   const getSearchedUsers = ({ username, orderBy, sortOrder, page }) => {
     return api.get(`/users`, {
       params: {
-        username: username,
+        search: username,
         orderBy: orderBy,
         sortOrder: sortOrder,
         pageNumber: page,
@@ -29,7 +29,7 @@ const userApi = (() => {
 
   const getSpecialListFromUser = async (username, type, orderBy, order, pageNumber = 1) => {
     const response = await api.get(
-      `/users/${username}/${type}?orderBy=${orderBy}&order=${order}&pageNumber=${pageNumber}`
+      `/lists?ownerUsername=${username}&type=${type}&orderBy=${orderBy}&order=${order}&pageNumber=${pageNumber}`
     );
     const parsedResponse = parsePaginatedResponse(response);
     const { links, data } = parsedResponse;
@@ -88,10 +88,12 @@ const userApi = (() => {
   };
 
   //WATCHED AND WATCHLIST (WW)
+  //TODO CAMBIAR A USAR URL.
   const currentUserWW = (ww, username, mediaId) => {
-    return api.get(`/users/${username}/${ww}/${mediaId}`);
+    return api.get(`/lists?${username}%${ww}/${mediaId}`);
   };
 
+  //TODO CAMBIAR A USAR URL.
   const insertMediaIntoWW = (ww, mediaId, username) => {
     let contentType = 'application/json';
 
@@ -113,22 +115,25 @@ const userApi = (() => {
     );
   };
 
+  //TODO CAMBIAR A USAR URL.
   const removeMediaFromWW = (ww, username, mediaId) => {
     return api.delete(`/users/${username}/${ww}/${mediaId}`);
   };
 
+  //TODO CAMBIAR A USAR URL.
   const currentUserHasLikedReview = (reviewId, username) => {
     return api.get(`/users/${username}/reviewLikes/${reviewId}`);
   };
 
+  //TODO CAMBIAR A USAR URL.
   const currentUserHasLikedMoovieListReview = (reviewId, username) => {
     return api.get(`/users/${username}/moovieListsReviewsLikes/${reviewId}`);
   };
-
+  //TODO CAMBIAR A USAR URL.
   const currentUserCommentFeedback = (commentId, username) => {
     return api.get(`/users/${username}/commentsFeedback/${commentId}`);
   };
-
+  //TODO CAMBIAR A USAR URL.
   const getWatchedCountFromMovieListId = (movieListId, username) => {
     return api.get(`/users/${username}/watched/count?listId=${movieListId}`);
   };
@@ -221,9 +226,9 @@ const userApi = (() => {
     }
   };
 
-  const confirmToken = async (token) => {
+  const confirmToken = async (username,token) => {
     const response = await api.put(
-        `users/`,
+        `users/${username}`,
         {
           token: token,
         },
@@ -269,13 +274,14 @@ const userApi = (() => {
       );
     } catch (error) {
       throw error;
+      throw error;
     }
   };
 
-  const resetPassword = async (token, password) => {
+  const resetPassword = async (username,token, password) => {
     try {
       return await api.put(
-          `users/`,
+          `users/${username}`,
           {
             password: password,
             token: token,
@@ -311,10 +317,6 @@ const userApi = (() => {
       console.error('Auth test error:', error);
       return false;
     }
-  };
-
-  const getUsersCount = () => {
-    return api.get('users/count');
   };
 
   // MODERATION STUFF
@@ -367,7 +369,6 @@ const userApi = (() => {
     register,
     listUsers,
     authTest,
-    getUsersCount,
     banUser,
     unbanUser,
     makeUserModerator,

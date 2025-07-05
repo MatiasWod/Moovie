@@ -81,7 +81,7 @@ describe('userApi', () => {
 
     Storage.prototype.setItem = jest.fn();
 
-    const response = await userApi.confirmToken(token);
+    const response = await userApi.confirmToken(username,token);
 
     expect(api.post).toHaveBeenCalledWith(
       `users/`,

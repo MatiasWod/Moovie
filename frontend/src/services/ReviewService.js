@@ -14,8 +14,8 @@ const ReviewService = (() => {
     return parsePaginatedResponse(res);
   };
 
-  const getReviewsByMediaIdandUserId = async (mediaId, userId) => {
-    const res = await reviewApi.getReviewsByMediaIdandUserId(mediaId, userId);
+  const getReviewsByMediaIdandUsername = async (mediaId, username) => {
+    const res = await reviewApi.getReviewsByMediaIdandUsername(mediaId, username);
     return res;
   };
 
@@ -24,8 +24,8 @@ const ReviewService = (() => {
     return parsePaginatedResponse(res);
   };
 
-  const editReview = async (mediaId, rating, reviewContent) => {
-    const res = await reviewApi.editReview({ mediaId, rating, reviewContent });
+  const editReview = async (mediaId, rating, reviewContent,reviewId) => {
+    const res = await reviewApi.editReview({ mediaId, rating, reviewContent,reviewId });
     return res;
   };
 
@@ -47,7 +47,7 @@ const ReviewService = (() => {
   return {
     getReviewById,
     getReviewsByMediaId,
-    getReviewsByMediaIdandUserId,
+    getReviewsByMediaIdandUsername,
     getMovieReviewsFromUser,
     editReview,
     createReview,

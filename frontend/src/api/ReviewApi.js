@@ -15,11 +15,11 @@ const reviewApi = (() => {
     });
   };
 
-  const getReviewsByMediaIdandUserId = (mediaId, userId) => {
+  const getReviewsByMediaIdandUsername = (mediaId, username) => {
     return api.get(`/reviews`, {
       params: {
         mediaId: mediaId,
-        userId: userId,
+        username: username,
       },
     });
   };
@@ -33,14 +33,11 @@ const reviewApi = (() => {
     });
   };
 
-  const editReview = ({ mediaId, rating, reviewContent }) => {
+  const editReview = ({ mediaId, rating, reviewContent, reviewId }) => {
     return api.put(
-      `/reviews`,
-      { rating: Number(rating), reviewContent: reviewContent },
+      `/reviews/${reviewId}`,
+      { mediaId: mediaId, rating: Number(rating), reviewContent: reviewContent },
       {
-        params: {
-          mediaId: mediaId,
-        },
         headers: {
           'Content-Type': VndType.APPLICATION_REVIEW_FORM,
         },
@@ -51,11 +48,8 @@ const reviewApi = (() => {
   const createReview = ({ mediaId, rating, reviewContent }) => {
     return api.post(
       `/reviews`,
-      { rating: Number(rating), reviewContent: reviewContent },
+      { mediaId: mediaId, rating: Number(rating), reviewContent: reviewContent },
       {
-        params: {
-          mediaId: mediaId,
-        },
         headers: {
           'Content-Type': VndType.APPLICATION_REVIEW_FORM,
         },
@@ -82,7 +76,7 @@ const reviewApi = (() => {
   return {
     getReviewById,
     getReviewsByMediaId,
-    getReviewsByMediaIdandUserId,
+    getReviewsByMediaIdandUsername,
     getMovieReviewsFromUser,
     editReview,
     createReview,

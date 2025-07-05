@@ -7,12 +7,12 @@ import userApi from '../../../api/UserApi';
 import { useTranslation } from 'react-i18next';
 import ReportTypes from '../../../api/values/ReportTypes';
 import { Spinner } from 'react-bootstrap';
-import {parsePaginatedResponse} from "../../../utils/ResponseUtils";
+import { parsePaginatedResponse } from "../../../utils/ResponseUtils";
 import PaginationButton from "../paginationButton/PaginationButton";
 
 export default function MoovieListReports() {
-  const [page, setPage] = useState( 1);
-  const [lists, setLists] =  useState({ lists: [], links: {} });
+  const [page, setPage] = useState(1);
+  const [lists, setLists] = useState({ lists: [], links: {} });
   const [listsLoading, setListsLoading] = useState(true);
   const [selectedAction, setSelectedAction] = useState(null);
   const { t } = useTranslation();
@@ -24,16 +24,16 @@ export default function MoovieListReports() {
 
   const fetchLists = async () => {
     try {
-      const res = await reportApi.getReports({ contentType: 'moovieList' ,pageNumber: page});
-      const response=parsePaginatedResponse(res)
+      const res = await reportApi.getReports({ contentType: 'moovieList', pageNumber: page });
+      const response = parsePaginatedResponse(res)
       const reportsData = response.data || [];
 
-      // Get unique URLs
-      const uniqueUrls = [...new Set(reportsData.map((report) => report.url))];
+      // Get unique moovie list URLs from the reports
+      const uniqueMoovieListUrls = [...new Set(reportsData.map((report) => report.moovieListUrl))];
 
       try {
         // Fetch all lists in parallel
-        const listPromises = uniqueUrls.map((url) => api.get(url));
+        const listPromises = uniqueMoovieListUrls.map((url) => api.get(url));
         const listResponses = await Promise.all(listPromises);
         const lists = listResponses.map((response) => response.data);
 
@@ -57,8 +57,14 @@ export default function MoovieListReports() {
           // Add report counts to lists
           const listsWithReports = lists.map((list, index) => {
             const baseIndex = index * 4;
+
+            // Find all reports for this list
+            const listReports = reportsData.filter(report => report.moovieListUrl === list.url);
+            const reportIds = listReports.map(report => report.reportId);
+
             return {
               ...list,
+              reportIds: reportIds, // Store report IDs for resolution
               abuseReports: reportCounts[baseIndex].data.count,
               hateReports: reportCounts[baseIndex + 1].data.count,
               spamReports: reportCounts[baseIndex + 2].data.count,
@@ -114,7 +120,12 @@ export default function MoovieListReports() {
 
   const handleResolve = async (ml) => {
     try {
-      await reportApi.resolveMoovieListReport(ml.id);
+      // Resolve all reports for this list
+      if (ml.reportIds && ml.reportIds.length > 0) {
+        await Promise.all(ml.reportIds.map(reportId =>
+          reportApi.moovieListReports.resolveReport(reportId)
+        ));
+      }
       await fetchLists();
     } catch (error) {
       console.error('Error resolving report:', error);
@@ -279,13 +290,13 @@ export default function MoovieListReports() {
         />
       )}
       {!listsLoading && lists?.links?.last?.pageNumber > 1 && (
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
-            <PaginationButton
-                page={page}
-                lastPage={lists.links.last.pageNumber}
-                setPage={setPage}
-            />
-          </div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+          <PaginationButton
+            page={page}
+            lastPage={lists.links.last.pageNumber}
+            setPage={setPage}
+          />
+        </div>
       )
       }
     </div>

@@ -14,6 +14,7 @@ import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.User.UserRoles;
 import ar.edu.itba.paw.services.*;
+import ar.edu.itba.paw.webapp.auth.JwtTokenProvider;
 import ar.edu.itba.paw.webapp.dto.in.*;
 import ar.edu.itba.paw.webapp.dto.out.*;
 import ar.edu.itba.paw.webapp.exceptions.VerificationTokenNotFoundException;
@@ -23,7 +24,6 @@ import ar.edu.itba.paw.webapp.mappers.UnableToChangeRoleEM;
 import ar.edu.itba.paw.webapp.mappers.UnableToFindUserEM;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
-import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-@Api(value = "/users")
 @Path("users")
 @Component
 public class UserController {
@@ -54,7 +53,7 @@ public class UserController {
     private final VerificationTokenService verificationTokenService;
     private final BannedService bannedService;
     private final ModeratorService moderatorService;
-
+    private final JwtTokenProvider jwtTokenProvider;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
@@ -63,7 +62,7 @@ public class UserController {
     private UriInfo uriInfo;
 
     @Autowired
-    public UserController(UserService userService, MoovieListService moovieListService, MediaService mediaService, ReviewService reviewService, CommentService commentService, VerificationTokenService verificationTokenService, BannedService bannedService, ModeratorService moderatorService) {
+    public UserController(UserService userService, MoovieListService moovieListService, MediaService mediaService, ReviewService reviewService, CommentService commentService, VerificationTokenService verificationTokenService, BannedService bannedService, ModeratorService moderatorService, JwtTokenProvider jwtTokenProvider) {
         this.userService = userService;
         this.moovieListService = moovieListService;
         this.mediaService = mediaService;
@@ -72,14 +71,14 @@ public class UserController {
         this.verificationTokenService = verificationTokenService;
         this.bannedService=bannedService;
         this.moderatorService= moderatorService;
-
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
 
 
     @GET
     @Produces(VndType.APPLICATION_USER_LIST)
-    public Response searchUsers(@QueryParam("username") final String username,
+    public Response searchUsers(@QueryParam("search") final String search,
                                 @QueryParam("role") final Integer role,
                                 @QueryParam("orderBy") final String orderBy,
                                 @QueryParam("sortOrder") final String sortOrder,
@@ -100,9 +99,9 @@ public class UserController {
         try {
             final List<User> all;
             final int totalCount;
-            if (username!= null){
-                all = userService.searchUsers(username, orderBy, sortOrder, pageSizeQuery, pageNumber);
-                totalCount = userService.getSearchCount(username);
+            if (search!= null){
+                all = userService.searchUsers(search, orderBy, sortOrder, pageSizeQuery, pageNumber);
+                totalCount = userService.getSearchCount(search);
             } else if (role != null) {
                 UserRoles enumRole = UserRoles.getRoleFromInt(role);
                 if (enumRole == null) {
@@ -188,6 +187,7 @@ public class UserController {
 
 
     @POST
+    @Path("reset-tokens")
     @Consumes(VndType.APPLICATION_PASSWORD_TOKEN_FORM)
     public Response createPasswordResetToken(@Valid UserEmailDto userEmailDto) {
         LOGGER.info("Method: createPasswordResetToken, Path: /users, Email: {}", userEmailDto.getEmail());
@@ -203,8 +203,36 @@ public class UserController {
     }
 
     @PUT
+    @Path("/{username}")
+    @Consumes(VndType.APPLICATION_USER_TOKEN_FORM)
+    @Produces(VndType.APPLICATION_USER_TOKEN)
+    public Response verifyUser(@PathParam("username") final String username,@Valid @NotNull final TokenDto tokenDto) {
+        String tokenString = tokenDto.getToken();
+        LOGGER.info("Method: verifyUser, Path: users, Token: {}", tokenString);
+        try {
+            final Optional<Token> tok = verificationTokenService.getToken(tokenString);
+            if (tok.isPresent()) {
+                Token token = tok.get();
+                if (userService.confirmRegister(token)) {
+                    User user = userService.findUserById(token.getUserId());
+                    return Response.ok(UserDto.fromUser(user, uriInfo))
+                            .build();
+                }
+                LOGGER.info("Token validation failed. Returning INTERNAL_SERVER_ERROR.");
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            }
+            LOGGER.info("Token not found. Returning BAD_REQUEST.");
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        } catch (VerificationTokenNotFoundException e) {
+            LOGGER.error("Verification token not found: {}", e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    @PUT
+    @Path("/{username}")
     @Consumes(VndType.APPLICATION_USER_PASSWORD)
-    public Response resetPassword(@Valid UserResetPasswordDto userResetPasswordDto) {
+    public Response resetPassword(@PathParam("username") final String username,@Valid UserResetPasswordDto userResetPasswordDto) {
         LOGGER.info("Method: resetPassword, Path: /users, Token: {}", userResetPasswordDto.getToken());
         try {
             final Optional<Token> tokenOptional = verificationTokenService.getToken(userResetPasswordDto.getToken());
@@ -235,7 +263,7 @@ public class UserController {
             }
             List<UserDto> leaderboards = UserDto.fromUserList(userService.getMilkyPointsLeaders(pageSizeQuery, page), uriInfo);
             int totalCount = userService.getUserCount();
-
+            
             Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserDto>>(leaderboards) {});
             final PagingUtils<UserDto> pagingUtils = new PagingUtils<>(leaderboards, page, pageSizeQuery, totalCount);
             ResponseUtils.setPaginationLinks(res, pagingUtils, uriInfo);
@@ -350,255 +378,6 @@ public class UserController {
 
 
     /***
-     * Watched
-     */
-
-//    TODO: Existen dos maneras de referenciar una watched/watchlist porque tienene un moovieListId por lo que se pueden acceder como /lists/{id}
-//    TODO: Por lo tanto no es una URN. (Sotuyo: Error conceptual grave.)
-    @GET
-    @Path("/{username}/watched")
-    @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Produces(VndType.APPLICATION_WATCHED_LIST)
-    public Response getWatched(@PathParam("username") final String username,
-                               @QueryParam("orderBy") String orderBy,
-                               @QueryParam("order") String order,
-                               @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
-
-
-        try {
-            userService.findUserByUsername(username);
-
-            MoovieListCard ml = moovieListService.getMoovieListCards("Watched", username,
-                    MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),
-                    null, null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 1).get(0);
-
-            List<Media> mediaList = moovieListService.getMoovieListContent(ml.getMoovieListId(),orderBy,order,PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber);
-
-            int mediaCount = ml.getSize();
-            List<MediaIdDto> listToRet = new ArrayList<>();
-
-            for ( Media media : mediaList){
-                listToRet.add(new MediaIdDto(media.getMediaId(), username, uriInfo));
-            }
-
-            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdDto>>(listToRet) {
-            });
-
-            final PagingUtils<Media> toReturnMoovieListCardList = new PagingUtils<>(mediaList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(), mediaCount);
-            ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);
-            return res.build();
-        }
-        catch (UnableToFindUserException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        }
-        catch (InvalidAccessToResourceException e) {
-            return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
-        }
-        catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-
-    }
-
-    @POST
-    @Path("/{username}/watched")
-    @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Consumes(VndType.APPLICATION_WATCHED_MEDIA_FORM)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response insertIntoWatched(@PathParam("username") final String username,
-                                      @Valid final JustIdDto justIdDto){
-        try {
-            moovieListService.addMediaToWatched(justIdDto.getId(), username);
-            return Response.ok().build();
-        } catch (UnableToFindUserException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (InvalidAccessToResourceException e) {
-            return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-
-    }
-
-
-    @GET
-    @Path("/{username}/watched/{mediaId}")
-    @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
-    @Produces(VndType.APPLICATION_WATCHED_MEDIA)
-    public Response getWatchedMediaByMediaId(@PathParam("username") final String username,
-                                             @PathParam("mediaId") final int mediaId) {
-        try {
-            userService.isUsernameMe(username);
-            boolean watched = mediaService.getMediaById(mediaId).isWatched();
-            if(watched){
-                return Response.ok(new MediaIdDto(mediaId, username, uriInfo)).build();
-            }
-            return Response.noContent().build();
-        } catch (UnableToFindUserException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (InvalidAccessToResourceException e) {
-            return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-
-    }
-
-    @DELETE
-    @Path("/{username}/watched/{mediaId}")
-    @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteFromWatched(@PathParam("username") final String username,
-                                      @PathParam("mediaId") final int mediaId){
-        try {
-            moovieListService.removeMediaFromWatched(mediaId, username);
-            return Response.ok().build();
-        } catch (UnableToFindUserException | NoResultException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (InvalidAccessToResourceException e) {
-            return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-
-    }
-
-
-//    TODO: DELETE
-    @GET
-    @Path("/{username}/watched/count")
-    @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
-    @Produces(VndType.APPLICATION_WATCHLIST_COUNT)
-    public Response getWatchedAmountMediaByListId(@PathParam("username") final String username,
-                                             @QueryParam("listId") @NotNull final int listId) {
-        try {
-
-            MoovieListCard card = moovieListService.getMoovieListCardById(listId);
-            if (card == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("List not found").build();
-            }
-            int count = card.getCurrentUserWatchAmount();
-            return Response.ok(CountDto.fromCount(count)).build();
-        }
-        catch (UnableToFindUserException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        }
-        catch (InvalidAccessToResourceException e) {
-            return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
-        }
-        catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-
-    }
-
-    /***
-     * Watchlist
-     */
-    @GET
-    @Path("/{username}/watchlist")
-    @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
-    @Produces(VndType.APPLICATION_WATCHLIST_LIST)
-    public Response getWatchlist(@PathParam("username") final String username,
-                                 @QueryParam("orderBy") String orderBy,
-                                 @QueryParam("order") String order,
-                                 @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
-
-        try {
-
-            userService.findUserByUsername(username);
-
-            MoovieListCard ml = moovieListService.getMoovieListCards("Watchlist", username,
-                    MoovieListTypes.MOOVIE_LIST_TYPE_DEFAULT_PRIVATE.getType(),
-                    null, null, PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(), 1).get(0);
-
-            List<Media> mediaList = moovieListService.getMoovieListContent(ml.getMoovieListId(),orderBy,order,PagingSizes.MEDIA_DEFAULT_PAGE_SIZE.getSize(),pageNumber);
-
-            int mediaCount = ml.getSize();
-            List<MediaIdDto> listToRet = new ArrayList<>();
-
-            for ( Media media : mediaList){
-                listToRet.add(new MediaIdDto(media.getMediaId(), username, uriInfo));
-            }
-
-            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MediaIdDto>>(listToRet) {
-            });
-
-            final PagingUtils<Media> toReturnMoovieListCardList = new PagingUtils<>(mediaList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT.getSize(), mediaCount);
-            ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);
-            return res.build();
-        } catch (UnableToFindUserException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (InvalidAccessToResourceException e) {
-            return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-
-    }
-
-    @POST
-    @Path("/{username}/watchlist")
-    @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
-    @Consumes(VndType.APPLICATION_WATCHLIST_MEDIA_FORM)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response insertIntoWatchlist(@PathParam("username") final String username,
-                                        @Valid  final JustIdDto justIdDto){
-        try {
-            moovieListService.addMediaToWatchlist(justIdDto.getId(), username);
-            return Response.ok().build();
-        } catch (UnableToFindUserException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (InvalidAccessToResourceException e) {
-            return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-
-    }
-
-    @GET
-    @Path("/{username}/watchlist/{mediaId}")
-    @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
-    @Produces(VndType.APPLICATION_WATCHLIST_MEDIA)
-    public Response getWatchlistMediaByMediaId(@PathParam("username") final String username,
-                                               @PathParam("mediaId") final int mediaId) {
-        try {
-            userService.isUsernameMe(username);
-            boolean watchlist = mediaService.getMediaById(mediaId).isWatchlist();
-            if(watchlist){
-                return Response.ok(new MediaIdDto(mediaId, username, uriInfo)).build();
-            }
-            return Response.noContent().build();
-        } catch (UnableToFindUserException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (InvalidAccessToResourceException e) {
-            return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-
-    }
-
-    @DELETE
-    @Path("/{username}/watchlist/{mediaId}")
-    @PreAuthorize("@accessValidator.checkIsUserMe(#username)")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteFromWatchlist(@PathParam("username") final String username,
-                                        @PathParam("mediaId") final int mediaId){
-        try {
-            moovieListService.removeMediaFromWatchlist(mediaId, username);
-            return Response.ok().build();
-        } catch (UnableToFindUserException | NoResultException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (InvalidAccessToResourceException e) {
-            return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-    }
-
-    /***
      * FOLLOWS
      */
 
@@ -657,63 +436,6 @@ public class UserController {
     /***
      * LIKES
      */
-
-    // Returns a list of likes
-    @GET
-    @Path("/{username}/listLikes")
-    @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Produces(VndType.APPLICATION_LIST_LIKE_LISTS)
-    public Response getLikedLists(@PathParam("username") final String username,
-                                  @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
-        try {
-            int userid = userService.findUserByUsername(username).getUserId();
-
-            List<MoovieListCard> mlcList = moovieListService.getLikedMoovieListCards(username, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
-                    PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1);
-
-
-
-            int listCount = userService.getLikedMoovieListCountForUser(username);
-
-            List<UserListIdDto> listToRet = new ArrayList<UserListIdDto>();
-            for ( MoovieListCard mlc : mlcList){
-                listToRet.add(new UserListIdDto(mlc.getMoovieListId(), username));
-            }
-
-            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserListIdDto>>(listToRet) {
-            });
-            final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), listCount);
-            ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);
-            return res.build();
-        } catch (UnableToFindUserException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-
-    }
-
-    // Returns like status for a specific media
-    @GET
-    @Path("/{username}/listLikes/{listId}")
-    @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Produces(VndType.APPLICATION_LIST_LIKE)
-    public Response getUserLikedListById(@PathParam("listId") final int listId,
-                                         @PathParam("username") final String username) {
-        try {
-            UserMoovieListId userMoovieListId = moovieListService.currentUserHasLiked(listId);
-            if (userMoovieListId != null && userMoovieListId.getUsername().equals(username)) {
-                return Response.ok(UserListIdDto.fromUserMoovieList(userMoovieListId, username)).build();
-            }
-            return Response.noContent().build();
-        } catch (UnableToFindUserException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-
-    }
-
 
     @GET
     @Path("/{username}/reviewLikes/{reviewId}")
