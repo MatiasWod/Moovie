@@ -23,7 +23,7 @@ import javax.ws.rs.core.*;
 import java.util.List;
 import java.util.function.Supplier;
 
-@Path("/reviewReports")
+@Path("reviewReports")
 @Component
 public class ReviewReportController {
     private final ReportService reportService;

@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-@Path("/users")
+@Path("users")
 @Component
 public class UserController {
 
@@ -187,6 +187,7 @@ public class UserController {
 
 
     @POST
+    @Path("reset-tokens")
     @Consumes(VndType.APPLICATION_PASSWORD_TOKEN_FORM)
     public Response createPasswordResetToken(@Valid UserEmailDto userEmailDto) {
         LOGGER.info("Method: createPasswordResetToken, Path: /users, Email: {}", userEmailDto.getEmail());
@@ -375,6 +376,7 @@ public class UserController {
         return Response.ok(UserDto.fromUser(user, uriInfo)).build();
     }
 
+
     /***
      * FOLLOWS
      */
@@ -434,63 +436,6 @@ public class UserController {
     /***
      * LIKES
      */
-
-    // Returns a list of likes
-    @GET
-    @Path("/{username}/listLikes")
-    @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Produces(VndType.APPLICATION_LIST_LIKE_LISTS)
-    public Response getLikedLists(@PathParam("username") final String username,
-                                  @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber) {
-        try {
-            int userid = userService.findUserByUsername(username).getUserId();
-
-            List<MoovieListCard> mlcList = moovieListService.getLikedMoovieListCards(username, MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
-                    PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1);
-
-
-
-            int listCount = userService.getLikedMoovieListCountForUser(username);
-
-            List<UserListIdDto> listToRet = new ArrayList<UserListIdDto>();
-            for ( MoovieListCard mlc : mlcList){
-                listToRet.add(new UserListIdDto(mlc.getMoovieListId(), username));
-            }
-
-            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserListIdDto>>(listToRet) {
-            });
-            final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(mlcList, pageNumber, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), listCount);
-            ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);
-            return res.build();
-        } catch (UnableToFindUserException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-
-    }
-
-    // Returns like status for a specific media
-    @GET
-    @Path("/{username}/listLikes/{listId}")
-    @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Produces(VndType.APPLICATION_LIST_LIKE)
-    public Response getUserLikedListById(@PathParam("listId") final int listId,
-                                         @PathParam("username") final String username) {
-        try {
-            UserMoovieListId userMoovieListId = moovieListService.currentUserHasLiked(listId);
-            if (userMoovieListId != null && userMoovieListId.getUsername().equals(username)) {
-                return Response.ok(UserListIdDto.fromUserMoovieList(userMoovieListId, username)).build();
-            }
-            return Response.noContent().build();
-        } catch (UnableToFindUserException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-
-    }
-
 
     @GET
     @Path("/{username}/reviewLikes/{reviewId}")

@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.exceptions.*;
+import ar.edu.itba.paw.exceptions.authentication.UserNotVerifiedException;
 import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
@@ -127,11 +128,17 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public String forgotPassword(User user) {
-        String token = verificationTokenService.createVerificationToken(user.getUserId());
-        if (verificationTokenService.getToken(token).isPresent()) {
-            emailService.sendResetPasswordEmail(user, token, LocaleContextHolder.getLocale());
+        if (user.getRole() > UserRoles.UNREGISTERED.getRole()){
+            verificationTokenService.getTokenByUserId(user.getUserId()).ifPresent(token -> verificationTokenService.deleteToken(token));
+            String newToken = verificationTokenService.createVerificationToken(user.getUserId());
+            if (verificationTokenService.getToken(newToken).isPresent()) {
+                emailService.sendResetPasswordEmail(user, newToken, LocaleContextHolder.getLocale());
+            }
+            return newToken;
+        } else{
+            throw new UserNotVerifiedException("User is banned or unregistered");
         }
-        return token;
+
     }
 
     @Transactional

@@ -26,7 +26,7 @@ import javax.ws.rs.core.*;
 import java.util.List;
 import java.util.function.Supplier;
 
-@Path("/commentsReports")
+@Path("commentsReports")
 public class CommentReportController {
     private final ReportService reportService;
     private final UserService userService;

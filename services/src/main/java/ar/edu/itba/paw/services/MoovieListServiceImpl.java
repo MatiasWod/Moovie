@@ -133,12 +133,18 @@ public class MoovieListServiceImpl implements MoovieListService{
     @Transactional(readOnly = true)
     @Override
     public List<MoovieListCard> getLikedMoovieListCards(String username,int type, int size, int pageNumber){
+        if(userService.findUserByUsername(username).getUserId() != userService.tryToGetCurrentUserId() ){
+            throw new InvalidAccessToResourceException();
+        }
         return moovieListDao.getLikedMoovieListCards(userService.findUserByUsername(username).getUserId(), type, size, pageNumber, userService.tryToGetCurrentUserId());
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber){
+        if(userId != userService.tryToGetCurrentUserId() ){
+            throw new InvalidAccessToResourceException();
+        }
         return moovieListDao.getFollowedMoovieListCards(userId, type, size, pageNumber, userService.tryToGetCurrentUserId());
     }
 

@@ -26,7 +26,7 @@ import javax.ws.rs.core.*;
 import java.util.List;
 import java.util.function.Supplier;
 
-@Path("/listReports")
+@Path("listReports")
 public class MoovieListReportController {
     private final ReportService reportService;
     private final UserService userService;

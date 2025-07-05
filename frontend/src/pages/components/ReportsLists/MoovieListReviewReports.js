@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import ReportTypes from '../../../api/values/ReportTypes';
 import moovieListApi from '../../../api/MoovieListApi';
 import { Spinner } from 'react-bootstrap';
-import {parsePaginatedResponse} from "../../../utils/ResponseUtils";
+import { parsePaginatedResponse } from "../../../utils/ResponseUtils";
 import PaginationButton from "../paginationButton/PaginationButton";
 
 export default function MoovieListReviewReports() {
@@ -16,7 +16,7 @@ export default function MoovieListReviewReports() {
   const [reviewsLoading, setReviewsLoading] = useState(true);
   const [selectedAction, setSelectedAction] = useState(null);
   const [reviewsWithLists, setReviewsWithLists] = useState([]);
-  const [page, setPage] = useState( 1);
+  const [page, setPage] = useState(1);
 
   const { t } = useTranslation();
 
@@ -27,16 +27,16 @@ export default function MoovieListReviewReports() {
 
   const fetchReviews = async () => {
     try {
-      const res = await reportApi.getReports({ contentType: 'moovieListReview' , pageNumber:page});
-      const response=parsePaginatedResponse(res)
+      const res = await reportApi.getReports({ contentType: 'moovieListReview', pageNumber: page });
+      const response = parsePaginatedResponse(res)
       const reportsData = response.data || [];
 
-      // Get unique URLs
-      const uniqueUrls = [...new Set(reportsData.map((report) => report.url))];
+      // Get unique moovie list review URLs from the reports
+      const uniqueMoovieListReviewUrls = [...new Set(reportsData.map((report) => report.moovieListReviewUrl))];
 
       try {
         // Fetch all reviews in parallel
-        const reviewPromises = uniqueUrls.map((url) => api.get(url));
+        const reviewPromises = uniqueMoovieListReviewUrls.map((url) => api.get(url));
         const reviewResponses = await Promise.all(reviewPromises);
         const reviews = reviewResponses.map((response) => response.data);
 
@@ -62,8 +62,14 @@ export default function MoovieListReviewReports() {
           // Add report counts and list details to reviews
           const reviewsWithDetails = reviews.map((review, index) => {
             const baseIndex = index * 5;
+
+            // Find all reports for this review
+            const reviewReports = reportsData.filter(report => report.moovieListReviewUrl === review.url);
+            const reportIds = reviewReports.map(report => report.reportId);
+
             return {
               ...review,
+              reportIds: reportIds, // Store report IDs for resolution
               abuseReports: allResults[baseIndex].data.count,
               hateReports: allResults[baseIndex + 1].data.count,
               spamReports: allResults[baseIndex + 2].data.count,
@@ -119,7 +125,12 @@ export default function MoovieListReviewReports() {
 
   const handleResolve = async (review) => {
     try {
-      await reportApi.resolveMoovieListReviewReport(review.id);
+      // Resolve all reports for this review
+      if (review.reportIds && review.reportIds.length > 0) {
+        await Promise.all(review.reportIds.map(reportId =>
+          reportApi.moovieListReviewReports.resolveReport(reportId)
+        ));
+      }
       await fetchReviews();
     } catch (error) {
       console.error('Error resolving report:', error);
@@ -283,14 +294,14 @@ export default function MoovieListReviewReports() {
       )}
 
       {!reviewsLoading && reviews?.links?.last?.pageNumber > 1 && (
-              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
-                <PaginationButton
-                    page={page}
-                    lastPage={reviews.links.last.pageNumber}
-                    setPage={setPage}
-                />
-              </div>
-          )}
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+          <PaginationButton
+            page={page}
+            lastPage={reviews.links.last.pageNumber}
+            setPage={setPage}
+          />
+        </div>
+      )}
     </div>
   );
 }

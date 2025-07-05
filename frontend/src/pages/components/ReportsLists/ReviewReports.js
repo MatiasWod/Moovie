@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import ReportTypes from '../../../api/values/ReportTypes';
 import mediaApi from '../../../api/MediaApi';
 import { Spinner } from 'react-bootstrap';
-import {parsePaginatedResponse} from "../../../utils/ResponseUtils";
+import { parsePaginatedResponse } from "../../../utils/ResponseUtils";
 import PaginationButton from "../paginationButton/PaginationButton";
 
 export default function ReviewReports() {
@@ -16,7 +16,7 @@ export default function ReviewReports() {
   const [reviewsLoading, setReviewsLoading] = useState(true);
   const [selectedAction, setSelectedAction] = useState(null);
   const { t } = useTranslation();
-  const [page, setPage] = useState( 1);
+  const [page, setPage] = useState(1);
 
 
   useEffect(() => {
@@ -26,16 +26,16 @@ export default function ReviewReports() {
 
   const fetchReports = async () => {
     try {
-      const res = await reportApi.getReports({ contentType: 'review' ,pageNumber:page});
-      const response=parsePaginatedResponse(res)
+      const res = await reportApi.getReports({ contentType: 'review', pageNumber: page });
+      const response = parsePaginatedResponse(res)
       const reportsData = response.data || [];
 
-      // Get unique URLs
-      const uniqueUrls = [...new Set(reportsData.map((report) => report.url))];
+      // Get unique review URLs from the reports
+      const uniqueReviewUrls = [...new Set(reportsData.map((report) => report.reviewUrl))];
 
       try {
         // Fetch all reviews in parallel
-        const reviewPromises = uniqueUrls.map((url) => api.get(url));
+        const reviewPromises = uniqueReviewUrls.map((url) => api.get(url));
         const reviewResponses = await Promise.all(reviewPromises);
         const reviews = reviewResponses.map((response) => response.data);
 
@@ -67,8 +67,14 @@ export default function ReviewReports() {
           // Add report counts and media details to reviews
           const reviewsWithReports = reviews.map((review, index) => {
             const baseIndex = index * 5;
+
+            // Find all reports for this review
+            const reviewReports = reportsData.filter(report => report.reviewUrl === review.url);
+            const reportIds = reviewReports.map(report => report.reportId);
+
             return {
               ...review,
+              reportIds: reportIds, // Store report IDs for resolution
               abuseReports: allResults[baseIndex].data.count,
               hateReports: allResults[baseIndex + 1].data.count,
               spamReports: allResults[baseIndex + 2].data.count,
@@ -124,7 +130,12 @@ export default function ReviewReports() {
 
   const handleResolve = async (review) => {
     try {
-      await reportApi.resolveReviewReport(review.id);
+      // Resolve all reports for this review
+      if (review.reportIds && review.reportIds.length > 0) {
+        await Promise.all(review.reportIds.map(reportId =>
+          reportApi.reviewReports.resolveReport(reportId)
+        ));
+      }
       await fetchReports();
     } catch (error) {
       console.error('Error resolving report:', error);
@@ -264,13 +275,13 @@ export default function ReviewReports() {
       )}
 
       {!reviewsLoading && reviews?.links?.last?.pageNumber > 1 && (
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
-            <PaginationButton
-                page={page}
-                lastPage={reviews.links.last.pageNumber}
-                setPage={setPage}
-            />
-          </div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+          <PaginationButton
+            page={page}
+            lastPage={reviews.links.last.pageNumber}
+            setPage={setPage}
+          />
+        </div>
       )}
     </div>
   );

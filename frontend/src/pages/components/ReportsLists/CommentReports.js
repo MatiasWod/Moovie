@@ -9,15 +9,15 @@ import ReportTypes from '../../../api/values/ReportTypes';
 import { Tooltip } from 'react-tooltip';
 import mediaApi from '../../../api/MediaApi';
 import { Spinner } from 'react-bootstrap';
-import {useSearchParams} from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import PaginationButton from "../paginationButton/PaginationButton";
-import {parsePaginatedResponse} from "../../../utils/ResponseUtils";
+import { parsePaginatedResponse } from "../../../utils/ResponseUtils";
 
 export default function CommentReports() {
   const [comments, setComments] = useState({ comments: [], links: {} });
   const [commentsLoading, setCommentsLoading] = useState(true);
   const [selectedAction, setSelectedAction] = useState(null);
-  const [page, setPage] = useState( 1);
+  const [page, setPage] = useState(1);
   const { t } = useTranslation();
   // selectedAction = {type: 'delete'|'ban'|'resolve', item: comment}
 
@@ -28,16 +28,16 @@ export default function CommentReports() {
 
   const fetchComments = async () => {
     try {
-      const res = await reportApi.getReports({ contentType: 'comment' ,pageNumber: page});
-      const response=parsePaginatedResponse(res)
+      const res = await reportApi.getReports({ contentType: 'comment', pageNumber: page });
+      const response = parsePaginatedResponse(res)
       const reportsData = response.data || [];
 
-      // Get unique URLs
-      const uniqueUrls = [...new Set(reportsData.map((report) => report.url))];
+      // Get unique comment URLs from the reports
+      const uniqueCommentUrls = [...new Set(reportsData.map((report) => report.commentUrl))];
 
       try {
         // Fetch all comments in parallel
-        const commentPromises = uniqueUrls.map((url) => api.get(url));
+        const commentPromises = uniqueCommentUrls.map((url) => api.get(url));
         const commentResponses = await Promise.all(commentPromises);
         const comments = commentResponses.map((response) => response.data);
 
@@ -64,8 +64,14 @@ export default function CommentReports() {
           // Add report counts, review, and media details to comments
           const commentsWithDetails = comments.map((comment, index) => {
             const baseIndex = index * 6;
+
+            // Find all reports for this comment
+            const commentReports = reportsData.filter(report => report.commentUrl === comment.url);
+            const reportIds = commentReports.map(report => report.reportId);
+
             return {
               ...comment,
+              reportIds: reportIds, // Store report IDs for resolution
               abuseReports: allResults[baseIndex].data.count,
               hateReports: allResults[baseIndex + 1].data.count,
               spamReports: allResults[baseIndex + 2].data.count,
@@ -122,7 +128,12 @@ export default function CommentReports() {
 
   const handleResolve = async (comment) => {
     try {
-      await reportApi.resolveCommentReport(comment.id);
+      // Resolve all reports for this comment
+      if (comment.reportIds && comment.reportIds.length > 0) {
+        await Promise.all(comment.reportIds.map(reportId =>
+          reportApi.commentReports.resolveReport(reportId)
+        ));
+      }
       await fetchComments();
     } catch (error) {
       console.error('Error resolving report:', error);
@@ -271,15 +282,16 @@ export default function CommentReports() {
         />
       )}
       {!commentsLoading && comments?.links?.last?.pageNumber > 1 && (
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
           <PaginationButton
-              page={page}
-              lastPage={comments.links.last.pageNumber}
-              setPage={setPage}
+            page={page}
+            lastPage={comments.links.last.pageNumber}
+            setPage={setPage}
           />
-          </div>
+        </div>
       )
       }
     </div>
-  );}
+  );
+}
 
