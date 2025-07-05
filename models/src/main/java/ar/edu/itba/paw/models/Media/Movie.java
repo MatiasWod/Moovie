@@ -9,6 +9,7 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -70,5 +71,10 @@ public class Movie extends Media{
 
     public String getDirector() {
         return director;
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash( super.hashCode(), runtime,  budget,  revenue,  directorId,  director);
     }
 }

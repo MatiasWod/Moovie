@@ -4,12 +4,15 @@ import ar.edu.itba.paw.exceptions.MediaNotFoundException;
 import ar.edu.itba.paw.models.Media.Media;
 import ar.edu.itba.paw.models.Media.MediaTypes;
 import ar.edu.itba.paw.models.Media.Movie;
+import ar.edu.itba.paw.models.Media.TVSerie;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
+import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.services.*;
 
 import ar.edu.itba.paw.webapp.dto.out.MediaDto;
 import ar.edu.itba.paw.webapp.dto.out.MovieDto;
+import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
 import ar.edu.itba.paw.webapp.dto.out.TVSerieDto;
 
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
@@ -23,6 +26,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 @Path("medias")
 @Component
@@ -201,7 +205,7 @@ public class MediaController {
     @GET
     @Path("/{id}")
     @Produces(VndType.APPLICATION_MEDIA)
-    public Response getMediaById(@PathParam("id") final int id) {
+    public Response getMediaById(@PathParam("id") final int id, @Context Request request) {
         try {
             Media media = mediaService.getMediaById(id);
 
@@ -212,14 +216,14 @@ public class MediaController {
             }
 
             if (media.isType()) {
-                Response.ResponseBuilder res = Response.ok(TVSerieDto.fromTVSerie(mediaService.getTvById(id), uriInfo));
-                ResponseUtils.setMaxAgeCache(res);
-
-                return res.build();
+                final TVSerie tvSerie = mediaService.getTvById(id);
+                final Supplier<TVSerieDto> dtoSupplier = () -> TVSerieDto.fromTVSerie(tvSerie, uriInfo);
+                return ResponseUtils.setConditionalCacheHash(request, dtoSupplier, tvSerie.hashCode());
             }
-            Response.ResponseBuilder res = Response.ok(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo));
-            ResponseUtils.setMaxAgeCache(res);
-            return res.build();
+
+            final Movie movie = mediaService.getMovieById(id);
+            final Supplier<MovieDto> dtoSupplier = () -> MovieDto.fromMovie(movie, uriInfo);
+            return ResponseUtils.setConditionalCacheHash(request, dtoSupplier, movie.hashCode());
 
         } catch (MediaNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
