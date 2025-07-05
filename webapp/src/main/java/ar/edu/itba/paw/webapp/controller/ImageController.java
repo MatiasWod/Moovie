@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.NoFileException;
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
+import ar.edu.itba.paw.models.User.Image;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
@@ -19,6 +20,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.Optional;
 
 @Path("images")
 @Component
@@ -28,7 +30,10 @@ public class ImageController {
     private final UserService userService;
     private final ImageService imageService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImageController.class);
+    private final static int DEFAULT_IMAGE_SIZE = 102;
+    private final static String DEFAULT_IMAGE_SIZE_STRING = "102";
+    private static final int MAX_IMAGE_SIZE = 1024 * 1024 * 2;
 
     @Autowired
     public ImageController(final UserService userService, final ImageService imageService) {
@@ -39,14 +44,13 @@ public class ImageController {
     @GET
     @Path("/{id}")
     @Produces("image/png")
-    public Response getProfileImage(@PathParam("id") final int id) {
+    public Response getProfileImage(@PathParam("id") final int id,
+                                    @QueryParam("size")@DefaultValue(DEFAULT_IMAGE_SIZE_STRING) int size) {
         try {
             LOGGER.info("Method: getProfileImage, Path: /images/{id}, Id: {}", id);
-            if (!imageService.getImageById(id).isPresent()) {
-                throw new NoFileException("No image found for the given ID.");
-            }
-            final byte[] image = imageService.getImageById(id).get().getImage();
-            Response.ResponseBuilder res = Response.ok(image);
+            Image image = imageService.getImageById(id, size);
+            final byte[] imageBytes = image.getImage();
+            Response.ResponseBuilder res = Response.ok(imageBytes);
             ResponseUtils.setMaxAgeCache(res);
             return res.build();
         }catch (NoFileException | UnableToFindUserException e) {
@@ -64,7 +68,7 @@ public class ImageController {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateProfileImage(@FormDataParam("image") final FormDataBodyPart image,
-                                       @Size(max = 1024 * 1024 * 2) @FormDataParam("image") byte[] imageBytes) {
+                                       @Size(max = MAX_IMAGE_SIZE) @FormDataParam("image") byte[] imageBytes) {
         try {
             final int userId = userService.tryToGetCurrentUserId();
             imageService.setUserImage(userId, imageBytes, image.getMediaType().getSubtype());
