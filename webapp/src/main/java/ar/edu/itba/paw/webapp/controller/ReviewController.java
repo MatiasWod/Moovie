@@ -21,6 +21,7 @@ import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
+import java.util.function.Supplier;
 
 
 //import com.sun.org.slf4j.internal.Logger;
@@ -48,10 +49,11 @@ public class ReviewController {
     @GET
     @Path("/{id}")
     @Produces(VndType.APPLICATION_REVIEW)
-    public Response getReviewById(@PathParam("id") final int id) {
+    public Response getReviewById(@PathParam("id") final int id, @Context Request request) {
         final Review review = reviewService.getReviewById(id);
-        final ReviewDto reviewDto = ReviewDto.fromReview(review, uriInfo);
-        return Response.ok(reviewDto).build();
+        final Supplier<ReviewDto> dtoSupplier = () -> ReviewDto.fromReview(review, uriInfo);
+
+        return ResponseUtils.setConditionalCacheHash(request, dtoSupplier, review.hashCode());
     }
 
 

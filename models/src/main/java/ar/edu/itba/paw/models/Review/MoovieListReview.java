@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "moovieListsReviews", uniqueConstraints = @UniqueConstraint(columnNames = {"userId", "moovieListId"}))
@@ -249,4 +250,8 @@ public class MoovieListReview {
         return user.isHasBadge();
     }
 
+    @Override
+    public int hashCode(){
+        return Objects.hash(moovieListId, moovieListReviewId, reviewLikes, reviewContent, moovieListImages, user.getUsername(), lastModified);
+    }
 }

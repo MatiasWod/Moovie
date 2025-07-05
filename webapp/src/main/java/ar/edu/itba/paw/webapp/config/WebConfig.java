@@ -81,9 +81,9 @@ public class WebConfig {
     private DatabasePopulator databasePopulator(){
         final ResourceDatabasePopulator dbp =  new ResourceDatabasePopulator();
         // TODO UNCOMMENT THIS
-        //dbp.addScript(schemaSql);
-        //dbp.addScript(mediaSql);
-        //dbp.addScript(featuredLists);
+        // dbp.addScript(schemaSql);
+        // dbp.addScript(mediaSql);
+        // dbp.addScript(featuredLists);
         // UNTIL HERE 
         return dbp;
     }
