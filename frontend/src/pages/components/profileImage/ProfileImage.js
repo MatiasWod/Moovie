@@ -34,7 +34,7 @@ const ProfileImage = ({ image, username, size, onClick }) => {
             id="profile-image"
             className="profileImage"
             style={{ height: size, width: size, cursor: 'pointer' }}
-            src={imageSrc + "?size=1000"}
+            src={imageSrc + "?size=100"}
             alt="Profile"
             onClick={onClick}
             onError={(e) => {
