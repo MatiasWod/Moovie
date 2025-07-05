@@ -57,7 +57,7 @@ const userApi = (() => {
   };
 
   const setPfp = (username, pfp) => {
-    return api.put(`/users/${username}/image`, pfp);
+    return api.post(`/images`, pfp);
   };
 
 
