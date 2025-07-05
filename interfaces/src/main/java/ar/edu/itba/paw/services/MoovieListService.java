@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.MoovieList.MoovieList;
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.MoovieList.MoovieListDetails;
 import ar.edu.itba.paw.models.MoovieList.UserMoovieListId;
+import ar.edu.itba.paw.models.User.User;
 import org.hibernate.criterion.Order;
 
 import java.util.List;
@@ -79,4 +80,10 @@ public interface MoovieListService {
     void addMediaToWatched(int movieId, String username);
     void removeMediaFromWatched(int movieId, String username);
 
+
+    List<User> usersLikesMoovieList(int moovieListId, int pageNumber, int pageSize);
+    boolean userLikesMoovieList(int moovieListId, String username);
+
+    List<User> usersFollowsMoovieList(int moovieListId, int pageNumber, int pageSize);
+    boolean userFollowsMoovieList(int moovieListId, String username);
 }

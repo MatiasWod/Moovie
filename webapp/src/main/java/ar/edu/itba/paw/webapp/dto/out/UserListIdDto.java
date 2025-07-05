@@ -5,17 +5,26 @@ import ar.edu.itba.paw.models.MoovieList.UserMoovieListId;
 public class UserListIdDto {
     private int mlId;
     private String username;
+    private String url;
 
     public UserListIdDto() {}
 
-    public UserListIdDto(int mlId, String username) {
+    public UserListIdDto(int mlId, String username, String url) {
         this.mlId = mlId;
         this.username = username;
+        this.url = url;
     }
 
     public static UserListIdDto fromUserMoovieList(UserMoovieListId obj, String username){
         UserListIdDto dto = new UserListIdDto();
         dto.mlId = obj.getMlId();
+        dto.username = username;
+        return dto;
+    }
+
+    public static UserListIdDto fromUserMoovieListIdAndUsername(int mlId, String username){
+        UserListIdDto dto = new UserListIdDto();
+        dto.mlId = mlId;
         dto.username = username;
         return dto;
     }
@@ -35,5 +44,7 @@ public class UserListIdDto {
     public void setUsername(String username) {
         this.username = username;
     }
+
+
 }
 
