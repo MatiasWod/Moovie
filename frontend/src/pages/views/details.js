@@ -46,6 +46,11 @@ function Details() {
   const [tvCreatorsLoading, setTvCreatorsLoading] = useState(true);
   const [tvCreatorsError, setTvCreatorsError] = useState(null);
 
+  //GET VALUES FOR DIRECTOR
+  const [director, setDirector] = useState([]);
+  const [directorLoading, setDirectorLoading] = useState(true);
+  const [directorError, setDirectorError] = useState(null);
+
   //GET CURRENT USER REVIEW
   const [userReview, setUserReview] = useState({});
   const [userReviewLoading, setUserReviewLoading] = useState(true);
@@ -84,6 +89,12 @@ function Details() {
         );
         setTvCreators(responseCreators.data);
       }
+      if (responseMedia.data.directorUrl) {
+        const responseDirector = await castService.getDirectorFromUrl(
+            responseMedia.data.directorUrl
+        );
+        setDirector(responseDirector.data);
+      }
       setMedia(responseMedia.data);
       setGenres(responseGenres.data);
     } catch (err) {
@@ -93,13 +104,14 @@ function Details() {
       setGenresLoading(false);
       setProvidersLoading(false);
       setTvCreatorsLoading(false);
+      setDirectorLoading(false);
     }
   };
 
   const fetchUserReview = async () => {
     try {
       if (isLoggedIn) {
-        const response = await reviewService.getReviewsByMediaIdandUsername(id, user.username);
+        const response = await reviewService.getReviewsByMediaIdandUrl(user.reviewsUrl, id);
         setUserReview(response.data);
       }
     } catch (err) {
@@ -129,7 +141,7 @@ function Details() {
       <span>
         <div className="d-flex flex-row align-items-center ">
           <h5>{t('details.director')}</h5>
-          <MediaTag link={'cast/director'} text={media.director} id={media.directorId} />
+          <MediaTag link={'cast/director'} text={director.name} id={director.directorId} />
         </div>
 
         {media.budget > 0 && (
@@ -233,13 +245,14 @@ function Details() {
     setReload(!reload);
   };
 
-  if (mediaLoading || genresLoading || providersLoading || tvCreatorsLoading || userReviewLoading) {
+  if (mediaLoading || genresLoading || providersLoading || tvCreatorsLoading || directorLoading || userReviewLoading) {
     console.log(
       'Loading because of',
       mediaLoading,
       genresLoading,
       providersLoading,
       tvCreatorsLoading,
+      directorLoading,
       userReviewLoading
     );
     return (

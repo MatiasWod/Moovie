@@ -7,11 +7,6 @@ const MoovieListReviewService = (() => {
     return res;
   };
 
-  const getMoovieListReviewsByListId = async (id, pageNumber) => {
-    const res = await moovieListReviewApi.getMoovieListReviewsByListId(id, pageNumber);
-    return res;
-  };
-
   const getMoovieListReviewsFromUserId = async (userId, pageNumber) => {
     const res = await moovieListReviewApi.getMoovieListReviewsFromUserId(userId, pageNumber);
     return res;
@@ -44,7 +39,6 @@ const MoovieListReviewService = (() => {
 
   return {
     getMoovieListReview,
-    getMoovieListReviewsByListId,
     getMoovieListReviewsFromUserId,
     editReview,
     createMoovieListReview,

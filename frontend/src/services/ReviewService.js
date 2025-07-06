@@ -9,23 +9,13 @@ const ReviewService = (() => {
     return response;
   };
 
-  const getReviewsByMediaId = async (mediaId, page = 1) => {
-    const res = await reviewApi.getReviewsByMediaId(mediaId);
-    return parsePaginatedResponse(res);
-  };
-
-  const getReviewsByMediaIdandUsername = async (mediaId, username) => {
-    const res = await reviewApi.getReviewsByMediaIdandUsername(mediaId, username);
+  const getReviewsByMediaIdandUrl = async (url, mediaId) => {
+    const res = await reviewApi.getReviewsByMediaIdandUrl(url, mediaId);
     return res;
   };
 
-  const getMovieReviewsFromUser = async (username, page = 1) => {
-    const res = await reviewApi.getMovieReviewsFromUser(username, page);
-    return parsePaginatedResponse(res);
-  };
-
-  const editReview = async (mediaId, rating, reviewContent, reviewId) => {
-    const res = await reviewApi.editReview({ mediaId, rating, reviewContent, reviewId });
+  const editReview = async (url, mediaId, rating, reviewContent) => {
+    const res = await reviewApi.editReview({ url, mediaId, rating, reviewContent });
     return res;
   };
 
@@ -34,8 +24,8 @@ const ReviewService = (() => {
     return res;
   };
 
-  const deleteReviewById = async (id) => {
-    const response = await reviewApi.deleteReviewById(id);
+  const deleteReviewByUrl = async (url) => {
+    const response = await reviewApi.deleteReviewByUrl(url);
     return response;
   };
 
@@ -52,12 +42,10 @@ const ReviewService = (() => {
 
   return {
     getReviewById,
-    getReviewsByMediaId,
-    getReviewsByMediaIdandUsername,
-    getMovieReviewsFromUser,
+    getReviewsByMediaIdandUrl,
     editReview,
     createReview,
-    deleteReviewById,
+    deleteReviewByUrl,
     likeReview,
     deleteLikeFromReview
   };

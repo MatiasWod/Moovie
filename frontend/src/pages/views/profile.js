@@ -27,7 +27,7 @@ function ProfileTab({ selectedTab, profile }) {
     case 'followed-lists':
       return <ProfileTabMoovieLists user={profile} search="followed-lists" />;
     case 'reviews':
-      return <Reviews username={profile.username} source="user" />;
+      return <Reviews username={profile?.username} reviewsUrl={profile?.reviewsUrl} source="user" />;
     default:
       return <div className="text-center p-4">{selectedTab}</div>;
   }

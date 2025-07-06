@@ -39,7 +39,7 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
   const handleDelete = async () => {
     try {
       if (source === 'media' || source === 'user') {
-        await reviewService.deleteReviewById(review.id);
+        await reviewService.deleteReviewByUrl(review.url);
         setShowDeleteReview(!showDeleteReview);
       } else {
         await moovieListReviewService.deleteMoovieListReview(review.id);
@@ -342,12 +342,6 @@ function Reviews({ id, username, source, handleParentReload, parentReload, revie
               pageNumber: page,
             },
           });
-        } else if (source === 'media') {
-          response = await reviewService.getReviewsByMediaId(id, page);
-        } else if (source === 'list') {
-          response = await moovieListReviewService.getMoovieListReviewsByListId(id, page);
-        } else if (source === 'user') {
-          response = await reviewService.getMovieReviewsFromUser(username, page);
         }
         setReviews(response.data);
         setTotalPages(response.links?.last?.pageNumber || 1);

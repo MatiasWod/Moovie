@@ -6,15 +6,6 @@ const moovieListReviewApi = (() => {
     return api.get(`/moovieListReviews/${id}`);
   };
 
-  const getMoovieListReviewsByListId = (id, page = 1) => {
-    return api.get(`/moovieListReviews`, {
-      params: {
-        listId: id,
-        pageNumber: page,
-      },
-    });
-  };
-
   const getMoovieListReviewsFromUserId = (userId, page = 1) => {
     return api.get(`/moovieListReviews`, {
       params: {
@@ -68,7 +59,6 @@ const moovieListReviewApi = (() => {
 
   return {
     getMoovieListReviewById,
-    getMoovieListReviewsByListId,
     getMoovieListReviewsFromUserId,
     editReview,
     createMoovieListReview,
