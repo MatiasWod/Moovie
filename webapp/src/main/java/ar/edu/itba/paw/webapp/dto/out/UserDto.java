@@ -271,6 +271,8 @@ public class UserDto {
     }
     public void setBanMessageUrl(String banMessageUrl) {
         this.banMessageUrl = banMessageUrl;
+    }
+
     public String getCommentFeedbackUrl() {
         return commentFeedbackUrl;
     }
