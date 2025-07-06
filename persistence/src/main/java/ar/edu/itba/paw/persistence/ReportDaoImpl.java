@@ -1,8 +1,22 @@
 package ar.edu.itba.paw.persistence;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
+
 import ar.edu.itba.paw.exceptions.ConflictException;
 import ar.edu.itba.paw.models.Comments.Comment;
 import ar.edu.itba.paw.models.MoovieList.MoovieList;
+import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.Reports.CommentReport;
 import ar.edu.itba.paw.models.Reports.MoovieListReport;
 import ar.edu.itba.paw.models.Reports.MoovieListReviewReport;
@@ -10,19 +24,6 @@ import ar.edu.itba.paw.models.Reports.ReviewReport;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.User.User;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Repository;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Primary
 @Repository
@@ -205,21 +206,26 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
-    public List<Review> getReportedReviews() {
+    public List<Review> getReportedReviews(int pageSize, int pageNumber) {
         String sql = "SELECT r FROM Review r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
+
+        int offset = Math.max(pageNumber - 1, 0) * pageSize;
 
         TypedQuery<Review> query = em.createQuery(sql, Review.class);
 
-        return query.getResultList();
+        return query
+                .setFirstResult(offset)
+                .setMaxResults(pageSize)
+                .getResultList();
     }
 
     @Override
     public int getReportedReviewsCount() {
-        String sql = "SELECT r FROM Review r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
+        String sql = "SELECT COUNT(*) FROM Review r WHERE COALESCE(r.totalReports, 0) > 0";
 
-        TypedQuery<Review> query = em.createQuery(sql, Review.class);
+        TypedQuery<Number> query = em.createQuery(sql, Number.class);
 
-        return query.getResultList().size();
+        return query.getSingleResult().intValue();
     }
 
     @Override
@@ -280,7 +286,8 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
-    public List<MoovieListReviewReport> getMoovieListReviewReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber){
+    public List<MoovieListReviewReport> getMoovieListReviewReports(Integer reportType, Integer resourceId, int pageSize,
+            int pageNumber) {
         int offset = Math.max(pageNumber - 1, 0) * pageSize;
 
         StringBuilder sql = new StringBuilder("SELECT c FROM MoovieListReviewReport c WHERE 1=1");
@@ -309,27 +316,31 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
-    public MoovieListReviewReport getMoovieListReviewReport(int reportId){
+    public MoovieListReviewReport getMoovieListReviewReport(int reportId) {
         return em.find(MoovieListReviewReport.class, reportId);
     }
 
     @Override
-    public List<MoovieListReview> getReportedMoovieListReviews() {
-
+    public List<MoovieListReview> getReportedMoovieListReviews(int pageSize, int pageNumber) {
         String sql = "SELECT r FROM MoovieListReview r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
+
+        int offset = Math.max(pageNumber - 1, 0) * pageSize;
 
         TypedQuery<MoovieListReview> query = em.createQuery(sql, MoovieListReview.class);
 
-        return query.getResultList();
+        return query
+                .setFirstResult(offset)
+                .setMaxResults(pageSize)
+                .getResultList();
     }
 
     @Override
     public int getReportedMoovieListReviewsCount() {
-        String sql = "SELECT r FROM MoovieListReview r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
+        String sql = "SELECT COUNT(*) FROM MoovieListReview r WHERE COALESCE(r.totalReports, 0) > 0";
 
-        TypedQuery<MoovieListReview> query = em.createQuery(sql, MoovieListReview.class);
+        TypedQuery<Number> query = em.createQuery(sql, Number.class);
 
-        return query.getResultList().size();
+        return query.getSingleResult().intValue();
     }
 
     @Override
@@ -376,7 +387,8 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
-    public List<MoovieListReport> getMoovieListReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber){
+    public List<MoovieListReport> getMoovieListReports(Integer reportType, Integer resourceId, int pageSize,
+            int pageNumber) {
         int offset = Math.max(pageNumber - 1, 0) * pageSize;
 
         StringBuilder sql = new StringBuilder("SELECT c FROM MoovieListReport c WHERE 1=1");
@@ -405,7 +417,7 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
-    public MoovieListReport getMoovieListReport(int reportId){
+    public MoovieListReport getMoovieListReport(int reportId) {
         return em.find(MoovieListReport.class, reportId);
     }
 
@@ -423,21 +435,55 @@ public class ReportDaoImpl implements ReportDao {
         return query.getResultList();
     }
 
-
-
     @Override
-    public List<MoovieList> getReportedMoovieLists() {
+    public List<MoovieListCard> getReportedMoovieLists(int pageSize, int pageNumber, int currentUserId) {
+        String jpql = "SELECT mlc, " +
+                "  (SELECT COUNT(mlc2) " +
+                "     FROM MoovieListContent mlc2 " +
+                "    WHERE mlc2.moovieList.moovieListId = mlc.id " +
+                "      AND mlc2.moovieList.name = 'Watched' " +
+                "      AND mlc2.moovieList.userId = :currentUserId" +
+                "  ), " +
+                "  CASE WHEN (SELECT COUNT(mll2) " +
+                "               FROM MoovieListLikes mll2 " +
+                "              WHERE mll2.moovieList.moovieListId = mlc.id " +
+                "                AND mll2.user.userId = :currentUserId" +
+                "            ) > 0 THEN true ELSE false END, " +
+                "  CASE WHEN (SELECT COUNT(mlf2) " +
+                "               FROM MoovieListFollowers mlf2 " +
+                "              WHERE mlf2.moovieList.moovieListId = mlc.id " +
+                "                AND mlf2.user.userId = :currentUserId" +
+                "            ) > 0 THEN true ELSE false END " +
+                "FROM MoovieListCard mlc, MoovieList r " +
+                "WHERE mlc.moovieListId = r.moovieListId " +
+                "  AND COALESCE(r.totalReports,0) > 0 " +
+                "ORDER BY r.totalReports DESC";
 
-        String sql = "SELECT r FROM MoovieList r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
+        TypedQuery<Object[]> query = em.createQuery(jpql, Object[].class)
+                .setParameter("currentUserId", currentUserId);
 
-        TypedQuery<MoovieList> query = em.createQuery(sql, MoovieList.class);
+        int offset = Math.max(pageNumber - 1, 0) * pageSize;
+        List<Object[]> rows = query
+                .setFirstResult(offset)
+                .setMaxResults(pageSize)
+                .getResultList();
 
-        return query.getResultList();
+        List<MoovieListCard> cards = new ArrayList<>(rows.size());
+        for (Object[] row : rows) {
+            MoovieListCard mlc = (MoovieListCard) row[0];
+            int watchedCount = ((Long) row[1]).intValue();
+            boolean liked = (Boolean) row[2];
+            boolean followed = (Boolean) row[3];
+            mlc.setUserStatus(watchedCount, liked, followed);
+            cards.add(mlc);
+        }
+
+        return cards;
     }
 
     @Override
     public int getReportedMoovieListsCount() {
-        String sql = "SELECT r FROM MoovieList r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
+        String sql = "SELECT r FROM MoovieList r WHERE COALESCE(r.totalReports, 0) > 0";
 
         TypedQuery<MoovieList> query = em.createQuery(sql, MoovieList.class);
 
@@ -518,6 +564,8 @@ public class ReportDaoImpl implements ReportDao {
 
         sql.append(" ORDER BY c.report_date DESC");
 
+        LOGGER.info(sql.toString(), reportType, resourceId);
+
         TypedQuery<CommentReport> query = em.createQuery(sql.toString(), CommentReport.class)
                 .setMaxResults(pageSize)
                 .setFirstResult(offset);
@@ -532,29 +580,33 @@ public class ReportDaoImpl implements ReportDao {
         return query.getResultList();
     }
 
-
     @Override
     public CommentReport getCommentReport(int reportId) {
         return em.find(CommentReport.class, reportId);
     }
 
     @Override
-    public List<Comment> getReportedComments() {
+    public List<Comment> getReportedComments(int pageSize, int pageNumber) {
 
         String sql = "SELECT r FROM Comment r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
 
+        int offset = Math.max(pageNumber - 1, 0) * pageSize;
+
         TypedQuery<Comment> query = em.createQuery(sql, Comment.class);
 
-        return query.getResultList();
+        return query
+                .setMaxResults(pageSize)
+                .setFirstResult(offset)
+                .getResultList();
     }
 
     @Override
     public int getReportedCommentsCount() {
-        String sql = "SELECT r FROM Comment r WHERE COALESCE(r.totalReports, 0) > 0 ORDER BY r.totalReports DESC";
+        String sql = "SELECT COUNT(r) FROM Comment r WHERE COALESCE(r.totalReports, 0) > 0";
 
-        TypedQuery<Comment> query = em.createQuery(sql, Comment.class);
+        TypedQuery<Number> query = em.createQuery(sql, Number.class);
 
-        return query.getResultList().size();
+        return query.getSingleResult().intValue();
     }
 
     @Override

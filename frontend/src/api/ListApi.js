@@ -1,5 +1,5 @@
-import api from './api';
 import VndType from '../enums/VndType';
+import api from './api';
 
 const listApi = (() => {
   const getLists = ({ search, ownerUsername, type, orderBy, order, pageNumber, pageSize }) => {
@@ -16,18 +16,27 @@ const listApi = (() => {
     });
   };
 
+  const getReportedLists = (pageNumber = 1) => {
+    return api.get('/lists', {
+      params: {
+        isReported: true,
+        pageNumber: pageNumber,
+      },
+    });
+  };
+
   const getListById = (id) => {
     return api.get(`/lists/${id}`);
   };
 
-  const getListsFromUrl = (url,pageNumber,pageSize) => {
+  const getListsFromUrl = (url, pageNumber, pageSize) => {
     return api.get(url, {
-        params: {
-          ...(pageNumber && { 'pageNumber': pageNumber }),
-          ...(pageSize && { 'pageSize': pageSize }),
-        }
+      params: {
+        ...(pageNumber && { pageNumber: pageNumber }),
+        ...(pageSize && { pageSize: pageSize }),
+      },
     });
-  }
+  };
 
   const getListByIdList = (idListString) => {
     return api.get(`/lists?ids=${idListString}`);
@@ -44,13 +53,17 @@ const listApi = (() => {
     });
   };
 
+  const getListContentByMediaId = (url, mediaId) => {
+    return api.get(url + `/${mediaId}`);
+  };
+
   const deleteList = (id) => {
     return api.delete(`/lists/${id}`);
   };
 
-  const insertMediaIntoMoovieList = ({ id, mediaIds }) => {
+  const insertMediaIntoMoovieList = (url, mediaIds) => {
     return api.post(
-      `/lists/${id}/content`,
+      url,
       { mediaIdList: mediaIds }, // Rename `mediaIds` to `mediaIdList`
       {
         headers: {
@@ -60,8 +73,8 @@ const listApi = (() => {
     );
   };
 
-  const deleteMediaFromMoovieList = ({ id, mediaId }) => {
-    return api.delete(`/lists/${id}/content/${mediaId}`);
+  const deleteMediaFromMoovieList = ({ url, mediaId }) => {
+    return api.delete(url + `/${mediaId}`);
   };
 
   //PUT
@@ -176,8 +189,10 @@ const listApi = (() => {
     getListById,
     getListsFromUrl,
     getListByIdList,
+    getReportedLists,
     deleteList,
     getListContent,
+    getListContentByMediaId,
     insertMediaIntoMoovieList,
     deleteMediaFromMoovieList,
     editMoovieList,

@@ -27,6 +27,9 @@ public class UserDto {
     private String likedMoovieListsUrl;
     private String followedMoovieListsUrl;
 
+    private String likedMoovieListsReviewsUrl;
+    private String likedReviewsUrl;
+
     private String moovieListReviewsUrl;
     private String reviewsUrl;
 
@@ -82,13 +85,24 @@ public class UserDto {
                 .toString();
 
         dto.moovieListReviewsUrl = uriInfo.getBaseUriBuilder().path("moovieListReviews")
-                .queryParam("userId", user.getUserId())
+                .queryParam("username", user.getUsername())
                 .build()
                 .toString();
         dto.reviewsUrl = uriInfo.getBaseUriBuilder().path("reviews")
-                .queryParam("userId", user.getUserId())
+                .queryParam("username", user.getUsername())
                 .build()
                 .toString();
+
+        dto.likedMoovieListsReviewsUrl = uriInfo.getBaseUriBuilder().path("moovieListReviews")
+                .queryParam("likedByUser", user.getUsername())
+                .build()
+                .toString();
+        dto.likedReviewsUrl = uriInfo.getBaseUriBuilder().path("reviews")
+                .queryParam("likedByUser", user.getUsername())
+                .build()
+                .toString();
+
+
         return dto;
     }
 
@@ -142,6 +156,22 @@ public class UserDto {
 
     public void setHasBadge(boolean hasBadge) {
         this.hasBadge = hasBadge;
+    }
+
+    public String getLikedMoovieListsReviewsUrl() {
+        return likedMoovieListsReviewsUrl;
+    }
+
+    public void setLikedMoovieListsReviewsUrl(String likedMoovieListsReviewsUrl) {
+        this.likedMoovieListsReviewsUrl = likedMoovieListsReviewsUrl;
+    }
+
+    public String getLikedReviewsUrl() {
+        return likedReviewsUrl;
+    }
+
+    public void setLikedReviewsUrl(String likedReviewsUrl) {
+        this.likedReviewsUrl = likedReviewsUrl;
     }
 
     public String getUrl() {

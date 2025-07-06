@@ -1,12 +1,15 @@
 package ar.edu.itba.paw.services;
 
+import java.util.List;
+
 import ar.edu.itba.paw.models.Comments.Comment;
-import ar.edu.itba.paw.models.MoovieList.MoovieList;
-import ar.edu.itba.paw.models.Reports.*;
+import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
+import ar.edu.itba.paw.models.Reports.CommentReport;
+import ar.edu.itba.paw.models.Reports.MoovieListReport;
+import ar.edu.itba.paw.models.Reports.MoovieListReviewReport;
+import ar.edu.itba.paw.models.Reports.ReviewReport;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
 import ar.edu.itba.paw.models.Review.Review;
-
-import java.util.List;
 
 public interface ReportService {
 
@@ -35,7 +38,7 @@ public interface ReportService {
 
     List<ReviewReport> getReviewReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber);
 
-    List<Review> getReportedReviews();
+    List<Review> getReportedReviews(int pageSize, int pageNumber);
 
     int getReportedReviewsCount();
 
@@ -51,12 +54,12 @@ public interface ReportService {
 
     List<MoovieListReviewReport> getMoovieListReviewReports(int pageSize, int pageNumber);
 
-    List<MoovieListReviewReport> getMoovieListReviewReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber);
+    List<MoovieListReviewReport> getMoovieListReviewReports(Integer reportType, Integer resourceId, int pageSize,
+            int pageNumber);
 
     MoovieListReviewReport getMoovieListReviewReport(int reportId);
 
-
-    List<MoovieListReview> getReportedMoovieListReviews();
+    List<MoovieListReview> getReportedMoovieListReviews(int pageSize, int pageNumber);
 
     int getReportedMoovieListReviewsCount();
 
@@ -74,8 +77,7 @@ public interface ReportService {
 
     MoovieListReport getMoovieListReport(int reportId);
 
-    List<MoovieList> getReportedMoovieLists();
-
+    List<MoovieListCard> getReportedMoovieLists(int pageSize, int pageNumber, int userId);
 
     int getReportedMoovieListsCount();
 
@@ -93,7 +95,7 @@ public interface ReportService {
 
     CommentReport getCommentReport(int reportId);
 
-    List<Comment> getReportedComments();
+    List<Comment> getReportedComments(int pageSize, int pageNumber);
 
     int getReportedCommentsCount();
 

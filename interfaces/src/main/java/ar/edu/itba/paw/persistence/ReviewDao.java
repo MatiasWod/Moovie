@@ -30,4 +30,12 @@ public interface ReviewDao {
     Review getReviewByMediaIdAndUsername(int mediaId, int userId);
     MoovieListReview getMoovieListReviewByListIdAndUsername(int listId, int userId);
 
+    List<User> usersLikesReview(int reviewId, int pageNumber, int pageSize, ReviewTypes type);
+    boolean userLikesReview(int reviewId, String username, ReviewTypes type);
+
+    List<MoovieListReview> getLikedMoovieListReviewsByUser(String username, int size, int pageNumber);
+    int getLikedMoovieListReviewsCountByUser(String username);
+    List<Review>getLikedReviewsByUser(String username, int size, int pageNumber);
+    int getLikedReviewsCountByUser(String username);
+
     }

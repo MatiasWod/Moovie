@@ -72,8 +72,13 @@ public class CommentReportController {
                 reports = reportService.getCommentReports(reportType, commentId, pageSizeQuery, pageNumber);
                 totalCount = reportService.getReportsCount(ResourceTypesEnum.COMMENT.getDescription(), reportType, commentId);
             } else {
-                reports = reportService.getCommentReports(pageSizeQuery, pageNumber);
-                totalCount = reportService.getReportsCount(ResourceTypesEnum.COMMENT.getDescription());
+                if (commentId != null) {
+                    reports = reportService.getCommentReports(null, commentId, pageSizeQuery, pageNumber);
+                    totalCount = reportService.getReportsCount(ResourceTypesEnum.COMMENT.getDescription(), null, commentId);
+                } else{
+                    reports = reportService.getCommentReports(pageSizeQuery, pageNumber);
+                    totalCount = reportService.getReportsCount(ResourceTypesEnum.COMMENT.getDescription());
+                }
             }
 
             List<CommentReportDto> reportDTOs = CommentReportDto.fromCommentReportList(reports, uriInfo);

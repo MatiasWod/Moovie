@@ -1,5 +1,5 @@
-import api from './api.js';
 import VndType from '../enums/VndType';
+import api from './api.js';
 
 const commentApi = (() => {
   const createReviewComment = async (reviewId, comment) => {
@@ -48,21 +48,30 @@ const commentApi = (() => {
     return response;
   };
 
-
-  const getCommentsFromUrl = async (url, pageNumber, pageSize ) => {
+  const getCommentsFromUrl = async (url, pageNumber, pageSize) => {
     return api.get(url, {
       params: {
-        ...(pageNumber && { 'pageNumber': pageNumber }),
-        ...(pageSize && { 'pageSize': pageSize }),
+        ...(pageNumber && { pageNumber: pageNumber }),
+        ...(pageSize && { pageSize: pageSize }),
       },
     });
-  }
+  };
+
+  const getReportedComments = async (pageNumber = 1) => {
+    return api.get('/comments', {
+      params: {
+        isReported: true,
+        pageNumber: pageNumber,
+      },
+    });
+  };
   return {
     deleteComment,
     createReviewComment,
     commentFeedback,
     getReviewComments,
-    getCommentsFromUrl
+    getCommentsFromUrl,
+    getReportedComments,
   };
 })();
 

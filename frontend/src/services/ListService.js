@@ -31,17 +31,17 @@ const ListService = (() => {
     return parsePaginatedResponse(res);
   };
 
-  const getListsFromUrl = async ({url,pageNumber,pageSize}) => {
+  const getListsFromUrl = async ({ url, pageNumber, pageSize }) => {
     return await listApi.getListsFromUrl(url, pageNumber, pageSize);
-  }
+  };
 
   const getListByIdList = async (idList) => {
     const res = await listApi.getListByIdList(idList);
     return res;
   };
 
-  const editMoovieList = async ({ id, name, description }) => {
-    const res = await listApi.editMoovieList(id, name.trim(), description.trim());
+  const editMoovieList = async ({ url, name, description }) => {
+    const res = await listApi.editMoovieList(url, name.trim(), description.trim());
     return res;
   };
 
@@ -81,6 +81,10 @@ const ListService = (() => {
     };
   };
 
+  const getListContentByMediaId = async ({ url, mediaId }) => {
+    return await listApi.getListContentByMediaId(url, mediaId);
+  };
+
   const createMoovieList = async ({ name, type, description }) => {
     return await listApi.createMoovieList(name, type, description);
   };
@@ -89,13 +93,13 @@ const ListService = (() => {
     return listApi.editListContent(listId, mediaId, customOrder);
   };
 
-  const insertMediaIntoMoovieList = async ({ id, mediaIds }) => {
-    const res = await listApi.insertMediaIntoMoovieList({ id, mediaIds });
+  const insertMediaIntoMoovieList = async ({ url, mediaIds }) => {
+    const res = await listApi.insertMediaIntoMoovieList(url, mediaIds);
     return res;
   };
 
-  const deleteMediaFromMoovieList = async ({ id, mediaId }) => {
-    const res = await listApi.deleteMediaFromMoovieList({ id, mediaId });
+  const deleteMediaFromMoovieList = async ({ url, mediaId }) => {
+    const res = await listApi.deleteMediaFromMoovieList({ url, mediaId });
     return res;
   };
 
@@ -140,6 +144,7 @@ const ListService = (() => {
     getListById,
     getListsFromUrl,
     getListContent,
+    getListContentByMediaId,
     getListByIdList,
     getIdListFromObjectList,
     insertMediaIntoMoovieList,

@@ -1,11 +1,12 @@
 package ar.edu.itba.paw.webapp.dto.out;
 
+import java.util.List;
+
+import javax.ws.rs.core.UriInfo;
+
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.Reports.ReportTypesEnum;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
-
-import javax.ws.rs.core.UriInfo;
-import java.util.List;
 
 public class MoovieListDto {
 
@@ -37,7 +38,7 @@ public class MoovieListDto {
 
     private String creatorUrl;
 
-    private String totalReportsUrl;
+    private String reportsUrl;
 
     private String spamReportsUrl;
 
@@ -48,6 +49,10 @@ public class MoovieListDto {
     private String privacyReportsUrl;
 
     private String recommendedListsUrl;
+
+    private String likesUrl;
+
+    private String followersUrl;
 
     private String reviewsUrl;
 
@@ -75,38 +80,41 @@ public class MoovieListDto {
         dto.reviewsUrl = uriInfo.getBaseUriBuilder().path("moovieListReviews")
                 .queryParam("listId", moovieList.getMoovieListId()).build().toString();
 
-        dto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
-                .queryParam("contentType", "moovieList")
-                .queryParam("resourceId", moovieList.getMoovieListId())
+        dto.reportsUrl = uriInfo.getBaseUriBuilder().path("/listReports")
+                .queryParam("moovieListId", moovieList.getMoovieListId())
                 .build()
                 .toString();
 
-        dto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
-                .queryParam("contentType", "moovieList")
-                .queryParam("resourceId", moovieList.getMoovieListId())
+        dto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/listReports")
+                .queryParam("moovieListId", moovieList.getMoovieListId())
                 .queryParam("reportType", ReportTypesEnum.SPAM.getType())
                 .build()
                 .toString();
 
-        dto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
-                .queryParam("contentType", "moovieList")
-                .queryParam("resourceId", moovieList.getMoovieListId())
+        dto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/listReports")
+                .queryParam("moovieListId", moovieList.getMoovieListId())
                 .queryParam("reportType", ReportTypesEnum.HATEFUL_CONTENT.getType())
                 .build()
                 .toString();
 
-        dto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
-                .queryParam("contentType", "moovieList")
-                .queryParam("resourceId", moovieList.getMoovieListId())
+        dto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/listReports")
+                .queryParam("moovieListId", moovieList.getMoovieListId())
                 .queryParam("reportType", ReportTypesEnum.PRIVACY.getType())
                 .build()
                 .toString();
 
-        dto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
-                .queryParam("contentType", "moovieList")
-                .queryParam("resourceId", moovieList.getMoovieListId())
+        dto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/listReports")
+                .queryParam("moovieListId", moovieList.getMoovieListId())
                 .queryParam("reportType", ReportTypesEnum.ABUSE.getType())
                 .build()
+                .toString();
+
+        dto.likesUrl = uriInfo.getBaseUriBuilder().path("/lists/{listId}/likes")
+                .build(moovieList.getMoovieListId())
+                .toString();
+
+        dto.followersUrl = uriInfo.getBaseUriBuilder().path("/lists/{listId}/followers")
+                .build(moovieList.getMoovieListId())
                 .toString();
 
         return dto;
@@ -228,12 +236,12 @@ public class MoovieListDto {
         this.creatorUrl = creatorUrl;
     }
 
-    public String getTotalReportsUrl() {
-        return totalReportsUrl;
+    public String getReportsUrl() {
+        return reportsUrl;
     }
 
-    public void setTotalReportsUrl(String totalReportsUrl) {
-        this.totalReportsUrl = totalReportsUrl;
+    public void setReportsUrl(String reportsUrl) {
+        this.reportsUrl = reportsUrl;
     }
 
     public String getSpamReportsUrl() {
@@ -254,6 +262,22 @@ public class MoovieListDto {
 
     public String getAbuseReportsUrl() {
         return abuseReportsUrl;
+    }
+
+    public String getLikesUrl() {
+        return likesUrl;
+    }
+
+    public void setLikesUrl(String likesUrl) {
+        this.likesUrl = likesUrl;
+    }
+
+    public String getFollowersUrl() {
+        return followersUrl;
+    }
+
+    public void setFollowersUrl(String followersUrl) {
+        this.followersUrl = followersUrl;
     }
 
     public String getPrivacyReportsUrl() {

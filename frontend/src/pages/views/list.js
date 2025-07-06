@@ -21,8 +21,8 @@ import reportApi from '../../api/ReportApi';
 import ReportForm from '../components/forms/reportForm/reportForm';
 import useErrorStatus from '../../hooks/useErrorStatus';
 import api from '../../api/api';
-import listService from "../../services/ListService";
-import UserService from "../../services/UserService";
+import listService from '../../services/ListService';
+import UserService from '../../services/UserService';
 
 function List() {
   const [error403, setError403] = useState(false);
@@ -104,7 +104,6 @@ function List() {
         if (!list?.data.contentUrl) {
           return;
         }
-        console.log('list.data.contentUrl', list.data.contentUrl);
         const data = await ListService.getListContent({
           url: list.data.contentUrl,
           orderBy: currentOrderBy,
@@ -112,7 +111,7 @@ function List() {
           pageNumber: page,
           pageSize: pagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT,
         });
-        console.log('getListContent response data', data);
+        console.log('List content data:', data);
         setListContent(data);
         setListContentLoading(false);
       } catch (error) {
@@ -123,7 +122,6 @@ function List() {
     }
     getData();
   }, [list?.data.contentUrl, currentOrderBy, currentSortOrder, page, flag]);
-
 
   //TODO: ver si esto está ok
   const [watchedCount, setWatchedCount] = useState(0);
@@ -277,7 +275,7 @@ function List() {
           setSortOrder={setSortOrder}
           setListContent={setListContent}
           isOwner={isLoggedIn === true && list?.data.createdBy === user.username}
-          listId={id}
+          listContentUrl={list.data.contentUrl}
           Refresh={Refresh}
         />
       )}

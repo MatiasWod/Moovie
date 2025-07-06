@@ -131,7 +131,7 @@ public class ReviewHibernateDao implements ReviewDao {
     public int getMoovieListReviewsFromUserCount(int userId) {
         final String jpql = "SELECT COUNT(r) FROM MoovieListReview r WHERE r.user.userId = :userId";
 
-        return ((BigInteger) em.createQuery(jpql)
+        return ((Number) em.createQuery(jpql)
                 .setParameter("userId", userId)
                 .getSingleResult()).intValue();
     }
@@ -244,4 +244,88 @@ public class ReviewHibernateDao implements ReviewDao {
             return null;
         }
     }
+
+    @Override
+    public List<User> usersLikesReview(int reviewId, int pageNumber, int pageSize, ReviewTypes type) {
+        if (type == ReviewTypes.REVIEW_MEDIA) {
+            return em.createQuery("SELECT rl.user FROM ReviewsLikes rl WHERE rl.review.reviewId = :reviewId", User.class)
+                    .setParameter("reviewId", reviewId)
+                    .setFirstResult(pageNumber * pageSize)
+                    .setMaxResults(pageSize)
+                    .getResultList();
+        } else if (type == ReviewTypes.REVIEW_MOOVIE_LIST) {
+            return em.createQuery("SELECT mlrl.user FROM MoovieListsReviewsLikes mlrl WHERE mlrl.moovieListReview.moovieListReviewId = :reviewId", User.class)
+                    .setParameter("reviewId", reviewId)
+                    .setFirstResult(pageNumber * pageSize)
+                    .setMaxResults(pageSize)
+                    .getResultList();
+        } else {
+            throw new IllegalArgumentException("Invalid ReviewType provided for usersLikesReview: " + type);
+        }
+    }
+
+    @Override
+    public boolean userLikesReview(int reviewId, String username, ReviewTypes type) {
+        Long count = 0L;
+        if (type == ReviewTypes.REVIEW_MEDIA) {
+            count = em.createQuery("SELECT COUNT(rl) FROM ReviewsLikes rl WHERE rl.review.reviewId = :reviewId AND rl.user.username = :username", Long.class)
+                    .setParameter("reviewId", reviewId)
+                    .setParameter("username", username)
+                    .getSingleResult();
+        } else if (type == ReviewTypes.REVIEW_MOOVIE_LIST) {
+            count = em.createQuery("SELECT COUNT(mlrl) FROM MoovieListsReviewsLikes mlrl WHERE mlrl.moovieListReview.moovieListReviewId = :reviewId AND mlrl.user.username = :username", Long.class)
+                    .setParameter("reviewId", reviewId)
+                    .setParameter("username", username)
+                    .getSingleResult();
+        } else {
+            throw new IllegalArgumentException("Invalid ReviewType provided for userLikesReview: " + type);
+        }
+        return count > 0;
+    }
+
+
+    @Override
+    public List<MoovieListReview> getLikedMoovieListReviewsByUser(String username, int size, int pageNumber) {
+        final TypedQuery<MoovieListReview> query = em.createQuery(
+                "SELECT mlrl.moovieListReview FROM MoovieListsReviewsLikes mlrl WHERE mlrl.user.username = :username",
+                MoovieListReview.class
+        );
+        query.setParameter("username", username);
+        query.setFirstResult(pageNumber * size);
+        query.setMaxResults(size);
+        return query.getResultList();
+    }
+
+    @Override
+    public int getLikedMoovieListReviewsCountByUser(String username) {
+        final TypedQuery<Long> query = em.createQuery(
+                "SELECT COUNT(mlrl) FROM MoovieListsReviewsLikes mlrl WHERE mlrl.user.username = :username",
+                Long.class
+        );
+        query.setParameter("username", username);
+        return query.getSingleResult().intValue();
+    }
+
+    @Override
+    public List<Review> getLikedReviewsByUser(String username, int size, int pageNumber) {
+        final TypedQuery<Review> query = em.createQuery(
+                "SELECT rl.review FROM ReviewsLikes rl WHERE rl.user.username = :username",
+                Review.class
+        );
+        query.setParameter("username", username);
+        query.setFirstResult(pageNumber * size);
+        query.setMaxResults(size);
+        return query.getResultList();
+    }
+
+    @Override
+    public int getLikedReviewsCountByUser(String username) {
+        final TypedQuery<Long> query = em.createQuery(
+                "SELECT COUNT(rl) FROM ReviewsLikes rl WHERE rl.user.username = :username",
+                Long.class
+        );
+        query.setParameter("username", username);
+        return query.getSingleResult().intValue();
+    }
+
 }

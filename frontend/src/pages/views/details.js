@@ -73,16 +73,19 @@ function Details() {
       const responseMedia = await MediaService.getMediaById(id);
       const responseGenres = await GenreService.getGenresFromUrl(responseMedia.data.genresUrl);
       if (responseMedia.data.providersUrl) {
-        const responseProviders = await ProviderService.getProvidersFromUrl(responseMedia.data.providersUrl);
+        const responseProviders = await ProviderService.getProvidersFromUrl(
+          responseMedia.data.providersUrl
+        );
         setProviders(responseProviders.data);
       }
       if (responseMedia.data.creatorsUrl) {
-        const responseCreators = await castService.getTvCreatorsFromUrl(responseMedia.data.creatorsUrl);
+        const responseCreators = await castService.getTvCreatorsFromUrl(
+          responseMedia.data.creatorsUrl
+        );
         setTvCreators(responseCreators.data);
       }
       setMedia(responseMedia.data);
       setGenres(responseGenres.data);
-
     } catch (err) {
       setErrorStatus(err.response.status);
     } finally {

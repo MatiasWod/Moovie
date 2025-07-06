@@ -10,9 +10,10 @@ import MoovieListTypes from '../../../api/values/MoovieListTypes';
 import ListCardsPaginated from '../ListCardsPaginated/ListCardsPaginated';
 import UserService from '../../../services/UserService';
 import { Spinner } from 'react-bootstrap';
+import userApi from '../../../api/UserApi';
+import { parsePaginatedResponse } from '../../../utils/ResponseUtils';
 
-function ProfileTabMediaLists({ type, username }) {
-  const [search, setSearch] = useState(null);
+function ProfileTabMoovieLists({ user, search }) {
   const [orderBy, setOrderBy] = useState(CardsListOrderBy.LIKE_COUNT);
   const [sortOrder, setSortOrder] = useState(SortOrder.DESC);
   const [page, setPage] = useState(1);
@@ -21,65 +22,44 @@ function ProfileTabMediaLists({ type, username }) {
   const [listsLoading, setListsLoading] = useState(true);
   const [listError, setListError] = useState(false);
 
-  let typeQuery = MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.type;
-  let typeString = 'null';
-
-  switch (type) {
-    case 'public-lists':
-      typeQuery = MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.type;
-      break;
-    case 'private-lists':
-      typeQuery = MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PRIVATE.type;
-      break;
-    case 'followed-lists':
-      typeQuery = 0;
-      typeString = 'followed';
-      break;
-    case 'liked-lists':
-      typeQuery = 0;
-      typeString = 'liked';
-      break;
-    default:
-      typeQuery = -1;
-  }
-
   useEffect(() => {
     async function getData() {
       try {
+        console.log('ProfileTabMoovieLists', user, search);
         setListsLoading(true);
-        if (typeQuery === -1) {
-          setListError(true);
-          setListsLoading(false);
-          return;
-        }
-        let data;
-        if (typeQuery !== 0) {
-          const params = {
-            orderBy,
-            ownerUsername: username,
-            pageNumber: page,
-            pageSize: pagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS,
-            search,
-            type: typeQuery,
-            order: sortOrder,
-          };
-          data = await ListService.getLists(params);
-        } else {
-          const initialData = await UserService.getLikedOrFollowedListFromUser(
-            username,
-            typeString,
+        let initialData, data;
+        if (search === 'public-lists') {
+          initialData = await userApi.getProfileListsFromUser(
+            user.publicMoovieListsUrl,
             orderBy,
             sortOrder,
             page
           );
-          if (initialData.data && initialData.data.length > 0) {
-            data = await ListService.getListByIdList(
-              ListService.getIdListFromObjectList(initialData.data)
-            );
-          } else {
-            data = initialData;
-          }
+          console.log('Public lists data:', data);
+        } else if (search === 'private-lists') {
+          initialData = await userApi.getProfileListsFromUser(
+            user.privateMoovieListsUrl,
+            orderBy,
+            sortOrder,
+            page
+          );
+        } else if (search === 'liked-lists') {
+          initialData = await userApi.getProfileListsFromUser(
+            user.likedMoovieListsUrl,
+            orderBy,
+            sortOrder,
+            page
+          );
+        } else if (search === 'followed-lists') {
+          initialData = await userApi.getProfileListsFromUser(
+            user.followedMoovieListsUrl,
+            orderBy,
+            sortOrder,
+            page
+          );
         }
+        data = parsePaginatedResponse(initialData);
+        console.log('Fetched lists:', initialData);
         setLists(data);
         setListError(false);
       } catch (error) {
@@ -91,16 +71,7 @@ function ProfileTabMediaLists({ type, username }) {
       }
     }
     getData();
-  }, [
-    orderBy,
-    sortOrder,
-    page,
-    typeQuery,
-    typeString,
-    username,
-    search,
-    pagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS,
-  ]);
+  }, [orderBy, sortOrder, page, user, search, pagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS]);
 
   if (listsLoading)
     return (
@@ -123,4 +94,4 @@ function ProfileTabMediaLists({ type, username }) {
   );
 }
 
-export default ProfileTabMediaLists;
+export default ProfileTabMoovieLists;

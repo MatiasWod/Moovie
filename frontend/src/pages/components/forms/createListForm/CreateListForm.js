@@ -27,6 +27,7 @@ const CreateListForm = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { success, listId } = await onSubmitCallback();
+    console.log('CreateListForm handleSubmit', success, listId);
     setShowSuccess(success);
     setShowError(!success);
     setListId(listId);

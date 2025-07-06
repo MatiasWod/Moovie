@@ -65,7 +65,7 @@ const mediaApi = (() => {
     getMediasForTVCreator,
     getMediasForDirector,
     getMediasForActor,
-    getMediasFromUrl
+    getMediasFromUrl,
   };
 })();
 

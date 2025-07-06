@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import commentApi from '../../../api/CommentApi';
 import { useSelector } from 'react-redux';
 import reportApi from '../../../api/ReportApi';
-import {useNavigate, useSearchParams} from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ReportForm from '../forms/reportForm/reportForm';
 import ConfirmationForm from '../forms/confirmationForm/confirmationForm';
@@ -13,10 +13,10 @@ import CommentStatusEnum from '../../../api/values/CommentStatusEnum';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import './CommentList.css';
 import api from '../../../api/api';
-import {parsePaginatedResponse} from "../../../utils/ResponseUtils";
-import PaginationButton from "../paginationButton/PaginationButton";
-import UserService from "../../../services/UserService";
-import CommentService from "../../../services/CommentService";
+import { parsePaginatedResponse } from '../../../utils/ResponseUtils';
+import PaginationButton from '../paginationButton/PaginationButton';
+import UserService from '../../../services/UserService';
+import CommentService from '../../../services/CommentService';
 
 export default function CommentList({ reviewId, reload, commentsUrl }) {
   const { t } = useTranslation();
@@ -44,7 +44,10 @@ export default function CommentList({ reviewId, reload, commentsUrl }) {
   const fetchComments = async () => {
     try {
       let response;
-      response = await CommentService.getCommentsFromUrl({ url: commentsUrl , pageNumber: pageComments });
+      response = await CommentService.getCommentsFromUrl({
+        url: commentsUrl,
+        pageNumber: pageComments,
+      });
       setComments(response);
       setIsLoading(false);
     } catch (err) {
@@ -157,20 +160,16 @@ export default function CommentList({ reviewId, reload, commentsUrl }) {
           ))}
           <div className="m-1 d-flex justify-content-center">
             {!isLoading && comments?.links?.last?.pageNumber > 1 && (
-                <PaginationButton
-                    page={pageComments}
-                    lastPage={comments.links.last.pageNumber}
-                    setPage={setPageComments}
-                />
+              <PaginationButton
+                page={pageComments}
+                lastPage={comments.links.last.pageNumber}
+                setPage={setPageComments}
+              />
             )}
           </div>
         </div>
-
-      )
-      }
-
+      )}
     </div>
-
   );
 }
 

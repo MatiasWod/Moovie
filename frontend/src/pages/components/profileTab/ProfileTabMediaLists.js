@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import SortOrder from '../../../api/values/SortOrder';
 import OrderBy from '../../../api/values/MediaOrderBy';
 import ListContentPaginated from '../listContentPaginated/ListContentPaginated';
-import MediaService from '../../../services/MediaService';
 import userApi from '../../../api/UserApi';
 import { Spinner } from 'react-bootstrap';
 
-function ProfileTabMediaLists({ type, username }) {
+function ProfileTabMediaLists({ user, search }) {
   const [currentOrderBy, setOrderBy] = useState(OrderBy.CUSTOM_ORDER);
   const [currentSortOrder, setSortOrder] = useState(SortOrder.DESC);
   const [page, setPage] = useState(1);
@@ -19,13 +18,16 @@ function ProfileTabMediaLists({ type, username }) {
   useEffect(() => {
     async function getData() {
       try {
-        const response = await userApi.getSpecialListFromUser(
-          username,
-          type,
-          currentOrderBy,
-          currentSortOrder,
-          page
-        );
+        let response;
+        if (search === 'watched' || search === 'watchlist') {
+          response = await userApi.getSpecialListFromUser(
+            user.defaultPrivateMoovieListsUrl,
+            currentOrderBy,
+            currentSortOrder,
+            page,
+            search
+          );
+        }
         setListPagination(response);
         setListContent(response);
         setListContentLoading(false);
@@ -35,7 +37,7 @@ function ProfileTabMediaLists({ type, username }) {
       }
     }
     getData();
-  }, [type, username, currentOrderBy, currentSortOrder, page]);
+  }, [search, user, currentOrderBy, currentSortOrder, page]);
 
   if (listContentLoading)
     return (

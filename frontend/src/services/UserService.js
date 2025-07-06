@@ -23,20 +23,9 @@ const UserService = (() => {
     return parsePaginatedResponse(res);
   };
 
-  const getLikedOrFollowedListFromUser = async (username, type, orderBy, sortOrder, pageNumber) => {
-    const res = await userApi.getLikedOrFollowedListFromUser(
-      username,
-      type,
-      orderBy,
-      sortOrder,
-      pageNumber
-    );
-    return parsePaginatedResponse(res);
-  };
-
-  const currentUserHasLiked = async (moovieListId, username) => {
+  const currentUserHasLiked = async (url, username) => {
     try {
-      const res = await userApi.currentUserHasLikedList(moovieListId, username);
+      const res = await userApi.currentUserHasLikedList(url, username);
       const parsedResponse = parsePaginatedResponse(res);
       if (!parsedResponse || res.status === 204) {
         return false;
@@ -47,9 +36,9 @@ const UserService = (() => {
     }
   };
 
-  const currentUserHasFollowed = async (moovieListId, username) => {
+  const currentUserHasFollowed = async (url, username) => {
     try {
-      const res = await userApi.currentUserHasFollowedList(moovieListId, username);
+      const res = await userApi.currentUserHasFollowedList(url, username);
       const parsedResponse = parsePaginatedResponse(res);
       if (!parsedResponse || res.status === 204) {
         return false;
@@ -60,9 +49,9 @@ const UserService = (() => {
     }
   };
 
-  const userWWStatus = async (ww, mediaId, username) => {
+  const userWWStatus = async (url, mediaId, search) => {
     try {
-      const res = await userApi.currentUserWW(ww, username, mediaId);
+      const res = await userApi.getMediaStatusFromWW(url, mediaId, search);
       const parsedResponse = parsePaginatedResponse(res);
       if (!parsedResponse || res.status === 204) {
         return false;
@@ -81,19 +70,19 @@ const UserService = (() => {
     }
   };
 
-  const removeMediaFromWW = async (ww, mediaId, username) => {
+  const removeMediaFromWW = async (url, mediaId, search) => {
     try {
-      return await userApi.removeMediaFromWW(ww, username, mediaId);
+      return await userApi.removeMediaFromWW(url, mediaId, search);
     } catch (error) {
       return null;
     }
   };
 
-  const currentUserLikeFollowStatus = async (moovieListId, username) => {
+  const currentUserLikeFollowStatus = async (likesUrl, followersUrl, username) => {
     try {
       const [likedStatus, followedStatus] = await Promise.all([
-        currentUserHasLiked(moovieListId, username),
-        currentUserHasFollowed(moovieListId, username),
+        currentUserHasLiked(likesUrl, username),
+        currentUserHasFollowed(followersUrl, username),
       ]);
 
       return {
@@ -108,11 +97,11 @@ const UserService = (() => {
     }
   };
 
-  const currentUserWWStatus = async (mediaId, username) => {
+  const currentUserWWStatus = async (mediaId, url) => {
     try {
       const [watchedStatus, watchlistStatus] = await Promise.all([
-        userWWStatus(WatchlistWatched.Watched, mediaId, username),
-        userWWStatus(WatchlistWatched.Watchlist, mediaId, username),
+        userWWStatus(url, mediaId, WatchlistWatched.Watched),
+        userWWStatus(url, mediaId, WatchlistWatched.Watchlist),
       ]);
 
       return {
@@ -186,7 +175,6 @@ const UserService = (() => {
     getSearchedUsers,
     setPfp,
     getSpecialListFromUser,
-    getLikedOrFollowedListFromUser,
     currentUserHasLiked,
     currentUserHasFollowed,
     userWWStatus,

@@ -24,7 +24,7 @@ const moovieListReviewApi = (() => {
     });
   };
 
-  const editReview = (id,listId, reviewContent) => {
+  const editReview = (id, listId, reviewContent) => {
     return api.put(
       `/moovieListReviews/${id}`,
       {

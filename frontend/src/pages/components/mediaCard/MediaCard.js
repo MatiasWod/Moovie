@@ -8,7 +8,7 @@ import WatchlistWatched from '../../../api/values/WatchlistWatched';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 import { useTranslation } from 'react-i18next';
 import { BsEye, BsEyeSlash, BsBookmark, BsBookmarkDash } from 'react-icons/bs';
-import UserService from "../../../services/UserService";
+import UserService from '../../../services/UserService';
 
 const MediaCard = ({ media, size = 'normal', showWWButtons = true, disableOnClick = false }) => {
   const releaseDate = new Date(media.releaseDate).getFullYear();
@@ -21,7 +21,10 @@ const MediaCard = ({ media, size = 'normal', showWWButtons = true, disableOnClic
   useEffect(() => {
     const fetchWW = async () => {
       try {
-        const WW = await UserService.currentUserWWStatus(media.id, user.username);
+        const WW = await UserService.currentUserWWStatus(
+          media.id,
+          user.defaultPrivateMoovieListsUrl
+        );
         setWW(WW);
       } catch (error) {}
     };
@@ -54,9 +57,17 @@ const MediaCard = ({ media, size = 'normal', showWWButtons = true, disableOnClic
       }
 
       if (ww.watched) {
-        await UserService.removeMediaFromWW(WatchlistWatched.Watched, media.id, user.username);
+        await UserService.removeMediaFromWW(
+          user.defaultPrivateMoovieListsUrl,
+          media.id,
+          WatchlistWatched.Watched
+        );
       } else {
-        await UserService.insertMediaIntoWW(WatchlistWatched.Watched, media.id, user.username);
+        await UserService.insertMediaIntoWW(
+          user.defaultPrivateMoovieListsUrl,
+          media.id,
+          WatchlistWatched.Watched
+        );
       }
       setPing(!ping);
     } catch (error) {}
@@ -70,9 +81,17 @@ const MediaCard = ({ media, size = 'normal', showWWButtons = true, disableOnClic
       }
 
       if (ww.watchlist) {
-        await UserService.removeMediaFromWW(WatchlistWatched.Watchlist, media.id, user.username);
+        await UserService.removeMediaFromWW(
+          user.defaultPrivateMoovieListsUrl,
+          media.id,
+          WatchlistWatched.Watchlist
+        );
       } else {
-        await UserService.insertMediaIntoWW(WatchlistWatched.Watchlist, media.id, user.username);
+        await UserService.insertMediaIntoWW(
+          user.defaultPrivateMoovieListsUrl,
+          media.id,
+          WatchlistWatched.Watchlist
+        );
       }
       setPing(!ping);
     } catch (error) {}

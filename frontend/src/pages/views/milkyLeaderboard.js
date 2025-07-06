@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Spinner } from 'react-bootstrap';
 import { FaInfoCircle } from 'react-icons/fa';
-import userService from "../../services/UserService";
+import userService from '../../services/UserService';
 
 function MilkyLeaderboard() {
   const [milkyLeaderboard, setMilkyLeaderboard] = useState([]);

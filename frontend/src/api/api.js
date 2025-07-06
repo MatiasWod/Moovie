@@ -24,7 +24,11 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const previousRequest = error?.config;
-    if (error?.response?.status === 401 && !previousRequest?.retried && !previousRequest?.skipRetry) {
+    if (
+      error?.response?.status === 401 &&
+      !previousRequest?.retried &&
+      !previousRequest?.skipRetry
+    ) {
       previousRequest.retried = true;
       const refreshToken = getTokenFromStorage('refreshToken');
       previousRequest.headers['Authorization'] = `Bearer ${refreshToken}`;

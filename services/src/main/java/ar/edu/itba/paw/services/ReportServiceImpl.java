@@ -1,20 +1,24 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.Comments.Comment;
-import ar.edu.itba.paw.models.MoovieList.MoovieList;
-import ar.edu.itba.paw.models.Reports.*;
-import ar.edu.itba.paw.models.Review.MoovieListReview;
-import ar.edu.itba.paw.models.Review.Review;
-import ar.edu.itba.paw.persistence.ReportDao;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import ar.edu.itba.paw.models.Comments.Comment;
+import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
+import ar.edu.itba.paw.models.Reports.CommentReport;
+import ar.edu.itba.paw.models.Reports.MoovieListReport;
+import ar.edu.itba.paw.models.Reports.MoovieListReviewReport;
+import ar.edu.itba.paw.models.Reports.ReviewReport;
+import ar.edu.itba.paw.models.Review.MoovieListReview;
+import ar.edu.itba.paw.models.Review.Review;
+import ar.edu.itba.paw.persistence.ReportDao;
 
 @Service
 public class ReportServiceImpl implements ReportService {
@@ -129,7 +133,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ReviewReport> getReviewReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber){
+    public List<ReviewReport> getReviewReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber) {
         return reportDao.getReviewReports(reportType, resourceId, pageSize, pageNumber);
     }
 
@@ -141,9 +145,9 @@ public class ReportServiceImpl implements ReportService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Review> getReportedReviews() {
+    public List<Review> getReportedReviews(int pageSize, int pageNumber) {
 
-        return reportDao.getReportedReviews();
+        return reportDao.getReportedReviews(pageSize, pageNumber);
     }
 
     @Transactional(readOnly = true)
@@ -175,13 +179,14 @@ public class ReportServiceImpl implements ReportService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<MoovieListReviewReport> getMoovieListReviewReports(int pageSize, int pageNumber){
+    public List<MoovieListReviewReport> getMoovieListReviewReports(int pageSize, int pageNumber) {
         return reportDao.getMoovieListReviewReports(pageSize, pageNumber);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<MoovieListReviewReport> getMoovieListReviewReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber){
+    public List<MoovieListReviewReport> getMoovieListReviewReports(Integer reportType, Integer resourceId, int pageSize,
+            int pageNumber) {
         if (reportType == null && resourceId == null) {
             return reportDao.getMoovieListReviewReports(pageSize, pageNumber);
         } else {
@@ -191,16 +196,14 @@ public class ReportServiceImpl implements ReportService {
 
     @Transactional(readOnly = true)
     @Override
-    public MoovieListReviewReport getMoovieListReviewReport(int reportId){
+    public MoovieListReviewReport getMoovieListReviewReport(int reportId) {
         return reportDao.getMoovieListReviewReport(reportId);
     }
 
-
     @Transactional(readOnly = true)
     @Override
-    public List<MoovieListReview> getReportedMoovieListReviews() {
-
-        return reportDao.getReportedMoovieListReviews();
+    public List<MoovieListReview> getReportedMoovieListReviews(int pageSize, int pageNumber) {
+        return reportDao.getReportedMoovieListReviews(pageSize, pageNumber);
     }
 
     @Transactional(readOnly = true)
@@ -231,8 +234,8 @@ public class ReportServiceImpl implements ReportService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<MoovieList> getReportedMoovieLists() {
-        return reportDao.getReportedMoovieLists();
+    public List<MoovieListCard> getReportedMoovieLists(int pageSize, int pageNumber, int userId) {
+        return reportDao.getReportedMoovieLists(pageSize, pageNumber, userId);
     }
 
     @Transactional(readOnly = true)
@@ -263,19 +266,19 @@ public class ReportServiceImpl implements ReportService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Comment> getReportedComments() {
-        return reportDao.getReportedComments();
+    public List<Comment> getReportedComments(int pageSize, int pageNumber) {
+        return reportDao.getReportedComments(pageSize, pageNumber);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<CommentReport> getCommentReports(int pageSize, int pageNumber){
+    public List<CommentReport> getCommentReports(int pageSize, int pageNumber) {
         return reportDao.getCommentReports(pageSize, pageNumber);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<CommentReport> getCommentReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber){
+    public List<CommentReport> getCommentReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber) {
         if (reportType == null && resourceId == null) {
             return reportDao.getCommentReports(pageSize, pageNumber);
         } else {
@@ -285,13 +288,14 @@ public class ReportServiceImpl implements ReportService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<MoovieListReport> getMoovieListReports(int pageSize, int pageNumber){
+    public List<MoovieListReport> getMoovieListReports(int pageSize, int pageNumber) {
         return reportDao.getMoovieListReports(pageSize, pageNumber);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<MoovieListReport> getMoovieListReports(Integer reportType, Integer resourceId, int pageSize, int pageNumber){
+    public List<MoovieListReport> getMoovieListReports(Integer reportType, Integer resourceId, int pageSize,
+            int pageNumber) {
         if (reportType == null && resourceId == null) {
             return reportDao.getMoovieListReports(pageSize, pageNumber);
         } else {
@@ -301,13 +305,13 @@ public class ReportServiceImpl implements ReportService {
 
     @Transactional(readOnly = true)
     @Override
-    public MoovieListReport getMoovieListReport(int reportId){
+    public MoovieListReport getMoovieListReport(int reportId) {
         return reportDao.getMoovieListReport(reportId);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public CommentReport getCommentReport(int reportId){
+    public CommentReport getCommentReport(int reportId) {
         return reportDao.getCommentReport(reportId);
     }
 

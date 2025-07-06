@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import reportApi from '../../../api/ReportApi';
-import ConfirmationModal from '../../components/forms/confirmationForm/confirmationModal';
-import api from '../../../api/api';
-import ListApi from '../../../api/ListApi';
-import userApi from '../../../api/UserApi';
 import { useTranslation } from 'react-i18next';
-import ReportTypes from '../../../api/values/ReportTypes';
-import { Spinner } from 'react-bootstrap';
-import { parsePaginatedResponse } from "../../../utils/ResponseUtils";
-import PaginationButton from "../paginationButton/PaginationButton";
+import api from '../../../api/api';
+import { default as listApi } from '../../../api/ListApi';
+import reportApi from '../../../api/ReportApi';
+import userApi from '../../../api/UserApi';
+import { parsePaginatedResponse } from '../../../utils/ResponseUtils';
+import ConfirmationModal from '../../components/forms/confirmationForm/confirmationModal';
+import PaginationButton from '../paginationButton/PaginationButton';
+import EmptyState from './EmptyState';
+import LoadingState from './LoadingState';
+import ReportActionsButtons from './ReportActionsButtons';
+import ReportCountsCard from './ReportCountsCard';
 
 export default function MoovieListReports() {
   const [page, setPage] = useState(1);
@@ -18,65 +20,45 @@ export default function MoovieListReports() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    setListsLoading(true)
     fetchLists();
   }, [page]);
 
   const fetchLists = async () => {
+    setListsLoading(true);
     try {
-      const res = await reportApi.getReports({ contentType: 'moovieList', pageNumber: page });
-      const response = parsePaginatedResponse(res)
-      const reportsData = response.data || [];
-
-      // Get unique moovie list URLs from the reports
-      const uniqueMoovieListUrls = [...new Set(reportsData.map((report) => report.moovieListUrl))];
+      const res = await listApi.getReportedLists(page);
+      const response = parsePaginatedResponse(res);
+      const lists = response.data || [];
 
       try {
-        // Fetch all lists in parallel
-        const listPromises = uniqueMoovieListUrls.map((url) => api.get(url));
-        const listResponses = await Promise.all(listPromises);
-        const lists = listResponses.map((response) => response.data);
-
         try {
-          // Fetch all report counts in parallel
           const reportCountPromises = lists.flatMap((list) => {
-            const params = { contentType: 'moovieList', resourceId: list.id };
             return [
-              reportApi.getReportCounts({
-                ...params,
-                reportType: ReportTypes['Abuse & Harassment'],
-              }),
-              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Hate }),
-              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Spam }),
-              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Privacy }),
+              reportApi.getCountFromUrl(list.abuseReportsUrl),
+              reportApi.getCountFromUrl(list.hateReportsUrl),
+              reportApi.getCountFromUrl(list.spamReportsUrl),
+              reportApi.getCountFromUrl(list.privacyReportsUrl),
             ];
           });
 
           const reportCounts = await Promise.all(reportCountPromises);
 
-          // Add report counts to lists
           const listsWithReports = lists.map((list, index) => {
             const baseIndex = index * 4;
 
-            // Find all reports for this list
-            const listReports = reportsData.filter(report => report.moovieListUrl === list.url);
-            const reportIds = listReports.map(report => report.reportId);
-
             return {
               ...list,
-              reportIds: reportIds, // Store report IDs for resolution
-              abuseReports: reportCounts[baseIndex].data.count,
-              hateReports: reportCounts[baseIndex + 1].data.count,
-              spamReports: reportCounts[baseIndex + 2].data.count,
-              privacyReports: reportCounts[baseIndex + 3].data.count,
+              abuseReports: reportCounts[baseIndex] || 0,
+              hateReports: reportCounts[baseIndex + 1] || 0,
+              spamReports: reportCounts[baseIndex + 2] || 0,
+              privacyReports: reportCounts[baseIndex + 3] || 0,
               totalReports:
-                reportCounts[baseIndex].data.count +
-                reportCounts[baseIndex + 1].data.count +
-                reportCounts[baseIndex + 2].data.count +
-                reportCounts[baseIndex + 3].data.count,
+                (Number(reportCounts[baseIndex]) || 0) +
+                (Number(reportCounts[baseIndex + 1]) || 0) +
+                (Number(reportCounts[baseIndex + 2]) || 0) +
+                (Number(reportCounts[baseIndex + 3]) || 0),
             };
           });
-
 
           setLists({
             lists: listsWithReports,
@@ -84,7 +66,7 @@ export default function MoovieListReports() {
           });
         } catch (error) {
           console.error('Error fetching report counts:', error);
-          setLists(lists); // Set lists without report counts
+          setLists(lists);
         }
       } catch (error) {
         console.error('Error fetching lists:', error);
@@ -100,7 +82,7 @@ export default function MoovieListReports() {
 
   const handleDelete = async (ml) => {
     try {
-      await ListApi.deleteList(ml.id);
+      await api.delete(ml.url);
       await fetchLists();
     } catch (error) {
       console.error('Error deleting list:', error);
@@ -120,150 +102,146 @@ export default function MoovieListReports() {
 
   const handleResolve = async (ml) => {
     try {
-      // Resolve all reports for this list
-      if (ml.reportIds && ml.reportIds.length > 0) {
-        await Promise.all(ml.reportIds.map(reportId =>
-          reportApi.moovieListReports.resolveReport(reportId)
-        ));
-      }
+      await reportApi.resolveReports(ml.reportsUrl);
       await fetchLists();
     } catch (error) {
       console.error('Error resolving report:', error);
     }
   };
 
-  if (listsLoading)
-    return (
-      <div className={'mt-6 d-flex justify-content-center'}>
-        <Spinner />
-      </div>
-    );
-
   return (
-    <div className="container-fluid">
-      <h3 className="text-xl font-semibold mb-4">{t('moovieListReports.moovieListReports')}</h3>
-      {lists.lists.length === 0 ? (
-        <div className="text-center text-gray-500">
-          {t('moovieListReports.noMoovieListReports')}
+    <div className="w-full">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="p-2 bg-purple-100 rounded-lg">
+          <i className="bi bi-collection text-purple-600 text-xl"></i>
         </div>
+        <h2 className="text-2xl font-bold text-gray-800">
+          {t('moovieListReports.moovieListReports')}
+        </h2>
+      </div>
+
+      {listsLoading ? (
+        <LoadingState message={t('reports.loading.lists')} />
+      ) : lists.lists.length === 0 ? (
+        <EmptyState
+          title={t('reports.empty.lists')}
+          message={t('moovieListReports.noMoovieListReports')}
+        />
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {lists.lists.map((ml, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <h4 className="text-lg font-semibold">
-                      <a
-                        href={process.env.PUBLIC_URL + `/list/${ml.id}`}
-                        className="text-blue-600 hover:underline"
-                      >
-                        {ml.name}
-                      </a>
-                      <span className="text-gray-600 text-sm ml-2">
-                        {t('listHeader.by')}{' '}
-                        <a
-                          href={process.env.PUBLIC_URL + `/profile/${ml.createdBy}`}
-                          className="text-blue-600 font-bold hover:underline"
-                        >
-                          {ml.createdBy}
-                        </a>
-                      </span>
-                    </h4>
-                  </div>
+            <div
+              key={index}
+              className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
+            >
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-6">
+                  <div className="flex-1 space-y-3">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i className="bi bi-collection text-purple-600"></i>
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold">
+                          <a
+                            href={process.env.PUBLIC_URL + `/list/${ml.id}`}
+                            className="text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                          >
+                            {ml.name}
+                          </a>
+                        </h3>
+                        <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
+                          <span>{t('listHeader.by')}</span>
+                          <a
+                            href={process.env.PUBLIC_URL + `/profile/${ml.createdBy}`}
+                            className="font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                          >
+                            {ml.createdBy}
+                          </a>
+                        </div>
+                      </div>
+                    </div>
 
-                  <div className="flex items-center space-x-4 text-sm text-gray-600">
-                    <span className="flex items-center">
-                      <i className="bi bi-film mr-1"></i>
-                      {ml.movieCount} {t('listCard.movies')}
-                    </span>
-                    <span className="flex items-center">
-                      <i className="bi bi-tv mr-1"></i>
-                      {ml.mediaCount - ml.movieCount} {t('listCard.series')}
-                    </span>
-                    <span className="flex items-center">
-                      <i className="bi bi-people mr-1"></i>
-                      {ml.followers} {t('listHeader.followers')}
-                    </span>
-                    <span className="flex items-center">
-                      <i className="bi bi-hand-thumbs-up mr-1"></i>
-                      {ml.likes}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="text-right">
-                  <div className="text-sm text-gray-600 flex flex-col items-end space-y-1">
-                    <span className="flex items-center" title={t('reports.totalReports')}>
-                      <i className="bi bi-flag mr-1"></i>
-                      {ml.totalReports}
-                    </span>
-                    <div className="flex space-x-3">
-                      <span className="flex items-center" title={t('reports.spamReports')}>
-                        <i className="bi bi-envelope-exclamation mr-1"></i>
-                        {ml.spamReports}
-                      </span>
-                      <span className="flex items-center" title={t('reports.hateReports')}>
-                        <i className="bi bi-emoji-angry mr-1"></i>
-                        {ml.hateReports}
-                      </span>
-                      <span className="flex items-center" title={t('reports.abuseReports')}>
-                        <i className="bi bi-slash-circle mr-1"></i>
-                        {ml.abuseReports}
-                      </span>
-                      <span className="flex items-center" title={t('reports.privacyReports')}>
-                        <i className="bi bi-incognito mr-1"></i>
-                        {ml.privacyReports}
-                      </span>
+                    <div className="flex items-center gap-6 text-sm text-gray-600 bg-gray-50 rounded-lg p-3">
+                      <div className="flex items-center gap-2">
+                        <i className="bi bi-film text-blue-500"></i>
+                        <span className="font-medium">{ml.movieCount}</span>
+                        <span>{t('listCard.movies')}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <i className="bi bi-tv text-green-500"></i>
+                        <span className="font-medium">{ml.mediaCount - ml.movieCount}</span>
+                        <span>{t('listCard.series')}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <i className="bi bi-people text-purple-500"></i>
+                        <span className="font-medium">{ml.followers}</span>
+                        <span>{t('listHeader.followers')}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <i className="bi bi-hand-thumbs-up text-red-500"></i>
+                        <span className="font-medium">{ml.likes}</span>
+                        <span>{t('reports.text.likes')}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
 
-              {ml.images && ml.images.length > 0 && (
-                <div className="flex space-x-2 mb-4 overflow-x-auto py-2">
-                  {ml.images.slice(0, 4).map((image, imgIndex) => (
-                    <img
-                      key={imgIndex}
-                      src={image}
-                      alt={`List preview ${imgIndex + 1}`}
-                      className="h-20 w-36 object-cover rounded-md shadow-sm"
+                  <div className="ml-6 text-right">
+                    <ReportCountsCard
+                      totalReports={ml.totalReports}
+                      spamReports={ml.spamReports}
+                      hateReports={ml.hateReports}
+                      abuseReports={ml.abuseReports}
+                      privacyReports={ml.privacyReports}
                     />
-                  ))}
+                  </div>
                 </div>
-              )}
 
-              <div className="bg-gray-50 rounded p-4 my-4">
-                <p className="text-gray-700">{ml.description}</p>
-              </div>
+                {ml.images && ml.images.length > 0 && (
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <i className="bi bi-images text-gray-500"></i>
+                      <span className="text-sm font-medium text-gray-600">
+                        {t('reports.content.previewImages')}
+                      </span>
+                    </div>
+                    <div className="flex gap-3 overflow-x-auto py-2">
+                      {ml.images.slice(0, 4).map((image, imgIndex) => (
+                        <img
+                          key={imgIndex}
+                          src={image}
+                          alt={`List preview ${imgIndex + 1}`}
+                          className="h-24 w-40 object-cover rounded-lg shadow-sm border border-gray-200 flex-shrink-0"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-              <div className="flex justify-end space-x-3">
-                <button
-                  onClick={() => setSelectedAction({ type: 'delete', item: ml })}
-                  className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition-colors"
-                >
-                  <i className="bi bi-trash mr-2"></i>
-                  {t('moovieListReports.delete')}
-                </button>
-                <button
-                  onClick={() => setSelectedAction({ type: 'ban', item: ml })}
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
-                >
-                  <i className="bi bi-person-x mr-2"></i>
-                  {t('moovieListReports.banUser')}
-                </button>
-                <button
-                  onClick={() => setSelectedAction({ type: 'resolve', item: ml })}
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-                >
-                  <i className="bi bi-check2-circle mr-2"></i>
-                  {t('moovieListReports.resolve')}
-                </button>
+                <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-4 mb-4 border-l-4 border-purple-300">
+                  <div className="flex items-center gap-2 mb-2">
+                    <i className="bi bi-text-paragraph text-gray-500"></i>
+                    <span className="text-sm font-medium text-gray-600">
+                      {t('reports.content.description')}
+                    </span>
+                  </div>
+                  <p className="text-gray-800 leading-relaxed">{ml.description}</p>
+                </div>
+
+                <ReportActionsButtons
+                  onResolve={() => setSelectedAction({ type: 'resolve', item: ml })}
+                  onDelete={() => setSelectedAction({ type: 'delete', item: ml })}
+                  onBan={() => setSelectedAction({ type: 'ban', item: ml })}
+                  resolveKey="moovieListReports.resolve"
+                  deleteKey="moovieListReports.delete"
+                  banKey="moovieListReports.banUser"
+                />
               </div>
             </div>
           ))}
         </div>
       )}
+
       {selectedAction && (
         <ConfirmationModal
           title={
@@ -289,16 +267,12 @@ export default function MoovieListReports() {
           onCancel={() => setSelectedAction(null)}
         />
       )}
+
       {!listsLoading && lists?.links?.last?.pageNumber > 1 && (
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
-          <PaginationButton
-            page={page}
-            lastPage={lists.links.last.pageNumber}
-            setPage={setPage}
-          />
+        <div className="flex justify-center mt-8">
+          <PaginationButton page={page} lastPage={lists.links.last.pageNumber} setPage={setPage} />
         </div>
-      )
-      }
+      )}
     </div>
   );
 }

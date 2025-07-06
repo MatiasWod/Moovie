@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import ActorCard from './ActorCard';
 import { useTranslation } from 'react-i18next';
 import api from '../../../api/api';
-import castService from "../../../services/CastService";
+import castService from '../../../services/CastService';
 
 const ActorCardList = ({ actorsUrl }) => {
   const { t } = useTranslation();

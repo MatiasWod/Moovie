@@ -7,7 +7,7 @@ import ReviewForm from '../forms/reviewForm/ReviewForm';
 import EditListForm from '../forms/editListForm/editListForm';
 import { useTranslation } from 'react-i18next';
 import MoovieListTypes from '../../../api/values/MoovieListTypes';
-import UserService from "../../../services/UserService";
+import UserService from '../../../services/UserService';
 
 const ListHeader = ({
   list,
@@ -158,7 +158,7 @@ const ListHeader = ({
         <div className="overlay">
           <EditListForm
             listName={list.name}
-            listId={list.id}
+            listId={list.url}
             listDescription={list.description}
             closeEdit={handleCloseEdit}
             closeEditSuccess={handleCloseEditSucccess}

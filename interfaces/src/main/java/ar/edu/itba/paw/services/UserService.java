@@ -1,21 +1,21 @@
 package ar.edu.itba.paw.services;
 
+import java.util.List;
 
 import ar.edu.itba.paw.exceptions.UnableToFindUserException;
+import ar.edu.itba.paw.exceptions.UserNotLoggedException;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.User.UserRoles;
 
-import java.util.List;
-
 public interface UserService {
 
-    //API
+    // API
     List<User> listAll(int size, int pageNumber);
 
-    List<User> listAll(int role,int size, int pageNumber);
+    List<User> listAll(int role, int size, int pageNumber);
 
-    //Registration actions
+    // Registration actions
     String createUser(String username, String email, String password);
 
     User createUserFromUnregistered(String username, String email, String password);
@@ -26,38 +26,38 @@ public interface UserService {
 
     boolean resetPassword(Token token, String newPassword);
 
-    //User finders
+    // User finders
     User findUserById(int userId);
 
     User findUserByEmail(String mail);
 
     User findUserByUsername(String username) throws UnableToFindUserException;
 
-    //Search user (recomeneded only for the searchbar)
+    // Search user (recomeneded only for the searchbar)
     List<User> searchUsers(String username, String orderBy, String sortOrder, int size, int pageNumber);
 
-    //Search user count for pagination in searchUsers cases
+    // Search user count for pagination in searchUsers cases
     int getSearchCount(String username);
 
-    //Liked amount lof list for a user
+    // Liked amount lof list for a user
     int getLikedMoovieListCountForUser(String username);
 
-    //returns total user count
+    // returns total user count
     int getUserCount();
 
     int getUserCount(UserRoles role);
 
-    //Returns a list of the users with most milkyPoints
+    // Returns a list of the users with most milkyPoints
     List<User> getMilkyPointsLeaders(int size, int pageNumber);
 
-    //Auth info of users
-    User getInfoOfMyUser();
+    // Auth info of users
+    User getInfoOfMyUser() throws UserNotLoggedException;
 
-    //Returns -1 if not authenticated
+    // Returns -1 if not authenticated
     int tryToGetCurrentUserId();
 
     boolean isUsernameMe(String username);
 
-    //Verification mail methods
+    // Verification mail methods
     void resendVerificationEmail(Token token);
 }

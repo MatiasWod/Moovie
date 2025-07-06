@@ -6,7 +6,7 @@ import ProfileImage from '../profileImage/ProfileImage';
 import listService from '../../../services/ListService';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import UserService from "../../../services/UserService";
+import UserService from '../../../services/UserService';
 
 const ListCard = ({ listCard }) => {
   const { t } = useTranslation();
@@ -22,7 +22,8 @@ const ListCard = ({ listCard }) => {
     const fetchHasLikedAndFollowed = async () => {
       try {
         const likedAndFollowed = await UserService.currentUserLikeFollowStatus(
-          listCard.id,
+          listCard.likesUrl,
+          listCard.followersUrl,
           user.username
         );
         setHasLikedAndFollowed(likedAndFollowed);
@@ -30,7 +31,7 @@ const ListCard = ({ listCard }) => {
     };
 
     fetchHasLikedAndFollowed();
-  }, [listCard.id]);
+  }, [listCard.likesUrl, listCard.followersUrl]);
 
   return (
     <div className="list-card">
@@ -55,7 +56,7 @@ const ListCard = ({ listCard }) => {
           </div>
           <div className="list-card-footer">
             <span>
-              {t('listCard.by')} {listCard.createdBy} <ProfileImage username={listCard.createdBy} />
+              {t('listCard.by')} {listCard.createdBy} <ProfileImage userUrl={listCard.creatorUrl} />
             </span>
             <span className="list-card-likes">
               👍 {listCard.likes} {hasLikedAndFollowed.liked ? t('listCard.youLikedThis') : ''}

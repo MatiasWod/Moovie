@@ -12,7 +12,7 @@ const initialState = {
 };
 
 export const loginUser = createAsyncThunk(
-  'auth/loginUser', 
+  'auth/loginUser',
   async ({ username, password }, { rejectWithValue }) => {
     try {
       const response = await userApi.login({ username, password });
@@ -22,7 +22,7 @@ export const loginUser = createAsyncThunk(
       return rejectWithValue({
         translationKey: error.translationKey || 'login.loginFailed',
         message: error.message || 'Login failed',
-        status: error.status || 500
+        status: error.status || 500,
       });
     }
   }
