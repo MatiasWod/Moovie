@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import reportApi from '../../../api/ReportApi';
-import ConfirmationModal from '../../components/forms/confirmationForm/confirmationModal';
-import api from '../../../api/api';
-import userApi from '../../../api/UserApi';
-import commentApi from '../../../api/CommentApi';
 import { useTranslation } from 'react-i18next';
-import ReportTypes from '../../../api/values/ReportTypes';
-import { Tooltip } from 'react-tooltip';
-import mediaApi from '../../../api/MediaApi';
-import { Spinner } from 'react-bootstrap';
-import { useSearchParams } from "react-router-dom";
-import PaginationButton from "../paginationButton/PaginationButton";
+import api from '../../../api/api';
+import commentApi from '../../../api/CommentApi';
+import reportApi from '../../../api/ReportApi';
+import userApi from '../../../api/UserApi';
 import { parsePaginatedResponse } from "../../../utils/ResponseUtils";
+import ConfirmationModal from '../../components/forms/confirmationForm/confirmationModal';
+import PaginationButton from "../paginationButton/PaginationButton";
+import EmptyState from './EmptyState';
+import LoadingState from './LoadingState';
+import ReportActionsButtons from './ReportActionsButtons';
+import ReportCountsCard from './ReportCountsCard';
 
 export default function CommentReports() {
   const [comments, setComments] = useState({ comments: [], links: {} });
@@ -19,72 +18,66 @@ export default function CommentReports() {
   const [selectedAction, setSelectedAction] = useState(null);
   const [page, setPage] = useState(1);
   const { t } = useTranslation();
-  // selectedAction = {type: 'delete'|'ban'|'resolve', item: comment}
 
   useEffect(() => {
-    setCommentsLoading(true)
     fetchComments();
   }, [page]);
 
   const fetchComments = async () => {
+    setCommentsLoading(true);
     try {
       const res = await reportApi.getReports({ contentType: 'comment', pageNumber: page });
       const response = parsePaginatedResponse(res)
       const reportsData = response.data || [];
 
-      // Get unique comment URLs from the reports
       const uniqueCommentUrls = [...new Set(reportsData.map((report) => report.commentUrl))];
 
       try {
-        // Fetch all comments in parallel
         const commentPromises = uniqueCommentUrls.map((url) => api.get(url));
         const commentResponses = await Promise.all(commentPromises);
         const comments = commentResponses.map((response) => response.data);
 
         try {
-          // Fetch all report counts, reviews, and media details in parallel
           const allPromises = comments.flatMap((comment) => {
-            const params = { contentType: 'comment', resourceId: comment.id };
+            console.log('comment', comment);
             const promises = [
-              reportApi.getReportCounts({
-                ...params,
-                reportType: ReportTypes['Abuse & Harassment'],
-              }),
-              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Hate }),
-              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Spam }),
-              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Privacy }),
+              reportApi.getCountFromUrl(comment.spamReportsUrl),
+              reportApi.getCountFromUrl(comment.hateReportsUrl),
+              reportApi.getCountFromUrl(comment.abuseReportsUrl),
+              reportApi.getCountFromUrl(comment.privacyReportsUrl),
               api.get(comment.reviewUrl),
-              mediaApi.getMediaById(comment.mediaId),
             ];
             return promises;
           });
 
           const allResults = await Promise.all(allPromises);
+          console.log('allResults', allResults);
 
-          // Add report counts, review, and media details to comments
-          const commentsWithDetails = comments.map((comment, index) => {
-            const baseIndex = index * 6;
+          const commentsWithDetails = await Promise.all(comments.map(async (comment, index) => {
+            const baseIndex = index * 5;
 
-            // Find all reports for this comment
             const commentReports = reportsData.filter(report => report.commentUrl === comment.url);
             const reportIds = commentReports.map(report => report.reportId);
 
+            const media = allResults[baseIndex + 4]?.data?.mediaId ? await api.get(allResults[baseIndex + 4]?.data?.mediaUrl) : null;
+
+            console.log(allResults[baseIndex + 4]?.data);
             return {
               ...comment,
-              reportIds: reportIds, // Store report IDs for resolution
-              abuseReports: allResults[baseIndex].data.count,
-              hateReports: allResults[baseIndex + 1].data.count,
-              spamReports: allResults[baseIndex + 2].data.count,
-              privacyReports: allResults[baseIndex + 3].data.count,
+              reportIds: reportIds,
+              abuseReports: allResults[baseIndex] || 0,
+              hateReports: allResults[baseIndex + 1] || 0,
+              spamReports: allResults[baseIndex + 2] || 0,
+              privacyReports: allResults[baseIndex + 3] || 0,
               totalReports:
-                allResults[baseIndex].data.count +
-                allResults[baseIndex + 1].data.count +
-                allResults[baseIndex + 2].data.count +
-                allResults[baseIndex + 3].data.count,
-              reviewDetails: allResults[baseIndex + 4].data,
-              mediaDetails: allResults[baseIndex + 5].data,
+                (Number(allResults[baseIndex]) || 0) +
+                (Number(allResults[baseIndex + 1]) || 0) +
+                (Number(allResults[baseIndex + 2]) || 0) +
+                (Number(allResults[baseIndex + 3]) || 0),
+              reviewDetails: allResults[baseIndex + 4]?.data,
+              mediaDetails: media?.data,
             };
-          });
+          }));
 
           setComments({
             comments: commentsWithDetails,
@@ -92,7 +85,7 @@ export default function CommentReports() {
           });
         } catch (error) {
           console.error('Error fetching additional details:', error);
-          setComments(comments); // Set comments without additional details
+          setComments(comments);
         }
       } catch (error) {
         console.error('Error fetching comments:', error);
@@ -128,7 +121,6 @@ export default function CommentReports() {
 
   const handleResolve = async (comment) => {
     try {
-      // Resolve all reports for this comment
       if (comment.reportIds && comment.reportIds.length > 0) {
         await Promise.all(comment.reportIds.map(reportId =>
           reportApi.commentReports.resolveReport(reportId)
@@ -140,122 +132,108 @@ export default function CommentReports() {
     }
   };
 
-  if (commentsLoading)
-    return (
-      <div className={'mt-6 d-flex justify-content-center'}>
-        <Spinner />
-      </div>
-    );
-
   return (
-    <div className="container-fluid">
-      <h3 className="text-xl font-semibold mb-4">{t('commentReports.commentReports')}</h3>
-      {comments.comments.length === 0 ? (
-        <div className="text-center text-gray-500">{t('commentReports.noCommentReports')}</div>
+    <div className="w-full">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="p-2 bg-blue-100 rounded-lg">
+          <i className="bi bi-chat-dots text-blue-600 text-xl"></i>
+        </div>
+        <h2 className="text-2xl font-bold text-gray-800">{t('commentReports.commentReports')}</h2>
+      </div>
+      
+      {commentsLoading ? (
+        <LoadingState message={t('reports.loading.comments')} />
+      ) : comments?.comments?.length === 0 ? (
+        <EmptyState 
+          title={t('reports.empty.comments')} 
+          message={t('commentReports.noCommentReports')} 
+        />
       ) : (
-        <div className="space-y-4">
-          {comments.comments.map((comment, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <a
-                      href={process.env.PUBLIC_URL + `/profile/${comment.username}`}
-                      className="text-blue-600 font-bold hover:underline"
-                    >
-                      {comment.username}
-                    </a>
-                    <span className="text-gray-500">{t('reviews.onMedia')}</span>
-                    <a
-                      href={process.env.PUBLIC_URL + `/details/${comment.mediaDetails?.id}`}
-                      className="text-blue-600 hover:underline"
-                    >
-                      {comment.mediaDetails?.name}
-                    </a>
-                  </div>
+        <div className="space-y-6">
+          {comments?.comments?.map((comment, index) => (
+            <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex-1 space-y-3">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                          <i className="bi bi-person text-blue-600 text-sm"></i>
+                        </div>
+                        <a
+                          href={process.env.PUBLIC_URL + `/profile/${comment.username}`}
+                          className="font-semibold text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                        >
+                          {comment.username}
+                        </a>
+                      </div>
+                      <span className="text-gray-400">•</span>
+                      <span className="text-gray-600 text-sm">{t('reviews.onMedia')}</span>
+                      <a
+                        href={process.env.PUBLIC_URL + `/details/${comment.mediaDetails?.id}`}
+                        className="font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                      >
+                        {comment.mediaDetails?.name}
+                      </a>
+                    </div>
 
-                  <div className="text-sm text-gray-600">
-                    {t('reviews.onMedia')} {t('reviews.reviews')}:
-                    <span className="ml-2 text-gray-700 italic">
-                      "
-                      {comment.reviewDetails?.reviewContent?.length > 50
-                        ? `${comment.reviewDetails.reviewContent.substring(0, 50)}...`
-                        : comment.reviewDetails?.reviewContent}
-                      "
-                    </span>
-                  </div>
+                    <div className="bg-gray-50 rounded-lg p-3 border-l-4 border-blue-200">
+                      <div className="text-xs text-gray-500 mb-1 flex items-center gap-1">
+                        <i className="bi bi-quote"></i>
+                        {t('reviews.onMedia')} {t('reviews.reviews')}:
+                      </div>
+                      <p className="text-sm text-gray-700 italic">
+                        "{comment.reviewDetails?.reviewContent?.length > 50
+                          ? `${comment.reviewDetails.reviewContent.substring(0, 50)}...`
+                          : comment.reviewDetails?.reviewContent}"
+                      </p>
+                    </div>
 
-                  <div className="flex items-center space-x-4 text-sm text-gray-600">
-                    <span className="flex items-center">
-                      <i className="bi bi-hand-thumbs-up mr-1"></i>
-                      {comment.commentLikes}
-                    </span>
-                    <span className="flex items-center">
-                      <i className="bi bi-hand-thumbs-down mr-1"></i>
-                      {comment.commentDislikes}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="text-right">
-                  <div className="text-sm text-gray-600 flex flex-col items-end space-y-1">
-                    <span className="flex items-center" title={t('reports.totalReports')}>
-                      <i className="bi bi-flag mr-1"></i>
-                      {comment.totalReports}
-                    </span>
-                    <div className="flex space-x-3">
-                      <span className="flex items-center" title={t('reports.spamReports')}>
-                        <i className="bi bi-envelope-exclamation mr-1"></i>
-                        {comment.spamReports}
-                      </span>
-                      <span className="flex items-center" title={t('reports.hateReports')}>
-                        <i className="bi bi-emoji-angry mr-1"></i>
-                        {comment.hateReports}
-                      </span>
-                      <span className="flex items-center" title={t('reports.abuseReports')}>
-                        <i className="bi bi-slash-circle mr-1"></i>
-                        {comment.abuseReports}
-                      </span>
-                      <span className="flex items-center" title={t('reports.privacyReports')}>
-                        <i className="bi bi-incognito mr-1"></i>
-                        {comment.privacyReports}
-                      </span>
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <div className="flex items-center gap-1">
+                        <i className="bi bi-hand-thumbs-up text-green-500"></i>
+                        <span>{comment.commentLikes}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <i className="bi bi-hand-thumbs-down text-red-500"></i>
+                        <span>{comment.commentDislikes}</span>
+                      </div>
                     </div>
                   </div>
+
+                  <div className="ml-6 text-right">
+                    <ReportCountsCard
+                      totalReports={comment.totalReports}
+                      spamReports={comment.spamReports}
+                      hateReports={comment.hateReports}
+                      abuseReports={comment.abuseReports}
+                      privacyReports={comment.privacyReports}
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="bg-gray-50 rounded p-4 my-4">
-                <p className="text-gray-700">{comment.content}</p>
-              </div>
+                <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-4 mb-4 border-l-4 border-gray-300">
+                  <div className="flex items-center gap-2 mb-2">
+                    <i className="bi bi-chat-dots text-gray-500"></i>
+                    <span className="text-sm font-medium text-gray-600">{t('reports.content.reportedComment')}</span>
+                  </div>
+                  <p className="text-gray-800 leading-relaxed">{comment.content}</p>
+                </div>
 
-              <div className="flex justify-end space-x-3">
-                <button
-                  onClick={() => setSelectedAction({ type: 'delete', item: comment })}
-                  className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition-colors"
-                >
-                  <i className="bi bi-trash mr-2"></i>
-                  {t('commentReports.delete')}
-                </button>
-                <button
-                  onClick={() => setSelectedAction({ type: 'ban', item: comment })}
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
-                >
-                  <i className="bi bi-person-x mr-2"></i>
-                  {t('commentReports.banUser')}
-                </button>
-                <button
-                  onClick={() => setSelectedAction({ type: 'resolve', item: comment })}
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-                >
-                  <i className="bi bi-check2-circle mr-2"></i>
-                  {t('commentReports.resolve')}
-                </button>
+                <ReportActionsButtons
+                  onResolve={() => setSelectedAction({ type: 'resolve', item: comment })}
+                  onDelete={() => setSelectedAction({ type: 'delete', item: comment })}
+                  onBan={() => setSelectedAction({ type: 'ban', item: comment })}
+                  resolveKey="commentReports.resolve"
+                  deleteKey="commentReports.delete"
+                  banKey="commentReports.banUser"
+                />
               </div>
             </div>
           ))}
         </div>
       )}
+
       {selectedAction && (
         <ConfirmationModal
           title={
@@ -281,16 +259,16 @@ export default function CommentReports() {
           onCancel={() => setSelectedAction(null)}
         />
       )}
+
       {!commentsLoading && comments?.links?.last?.pageNumber > 1 && (
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+        <div className="flex justify-center mt-8">
           <PaginationButton
             page={page}
             lastPage={comments.links.last.pageNumber}
             setPage={setPage}
           />
         </div>
-      )
-      }
+      )}
     </div>
   );
 }

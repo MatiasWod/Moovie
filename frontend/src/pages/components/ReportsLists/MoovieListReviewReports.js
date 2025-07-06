@@ -1,85 +1,72 @@
 import React, { useEffect, useState } from 'react';
-import reportApi from '../../../api/ReportApi';
-import ConfirmationModal from '../../components/forms/confirmationForm/confirmationModal';
-import api from '../../../api/api';
-import moovieListReviewApi from '../../../api/MoovieListReviewApi';
-import userApi from '../../../api/UserApi';
 import { useTranslation } from 'react-i18next';
-import ReportTypes from '../../../api/values/ReportTypes';
-import moovieListApi from '../../../api/MoovieListApi';
-import { Spinner } from 'react-bootstrap';
+import api from '../../../api/api';
+import reportApi from '../../../api/ReportApi';
+import reviewApi from '../../../api/ReviewApi';
+import userApi from '../../../api/UserApi';
 import { parsePaginatedResponse } from "../../../utils/ResponseUtils";
+import ConfirmationModal from '../../components/forms/confirmationForm/confirmationModal';
 import PaginationButton from "../paginationButton/PaginationButton";
+import EmptyState from './EmptyState';
+import LoadingState from './LoadingState';
+import ReportActionsButtons from './ReportActionsButtons';
+import ReportCountsCard from './ReportCountsCard';
 
 export default function MoovieListReviewReports() {
+  const [page, setPage] = useState(1);
   const [reviews, setReviews] = useState({ reviews: [], links: {} });
   const [reviewsLoading, setReviewsLoading] = useState(true);
   const [selectedAction, setSelectedAction] = useState(null);
-  const [reviewsWithLists, setReviewsWithLists] = useState([]);
-  const [page, setPage] = useState(1);
-
   const { t } = useTranslation();
 
   useEffect(() => {
-    setReviewsLoading(true)
     fetchReviews();
   }, [page]);
 
   const fetchReviews = async () => {
+    setReviewsLoading(true);
     try {
       const res = await reportApi.getReports({ contentType: 'moovieListReview', pageNumber: page });
       const response = parsePaginatedResponse(res)
       const reportsData = response.data || [];
 
-      // Get unique moovie list review URLs from the reports
-      const uniqueMoovieListReviewUrls = [...new Set(reportsData.map((report) => report.moovieListReviewUrl))];
+      const uniqueReviewUrls = [...new Set(reportsData.map((report) => report.moovieListReviewUrl))];
 
       try {
-        // Fetch all reviews in parallel
-        const reviewPromises = uniqueMoovieListReviewUrls.map((url) => api.get(url));
+        const reviewPromises = uniqueReviewUrls.map((url) => api.get(url));
         const reviewResponses = await Promise.all(reviewPromises);
         const reviews = reviewResponses.map((response) => response.data);
 
         try {
-          // Fetch all report counts and moovie lists in parallel
-          const allPromises = reviews.flatMap((review) => {
-            const params = { contentType: 'moovieListReview', resourceId: review.id };
-            const promises = [
-              reportApi.getReportCounts({
-                ...params,
-                reportType: ReportTypes['Abuse & Harassment'],
-              }),
-              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Hate }),
-              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Spam }),
-              reportApi.getReportCounts({ ...params, reportType: ReportTypes.Privacy }),
-              api.get(review.moovieListUrl).catch(() => ({ data: { removed: true } })),
-            ];
-            return promises;
-          });
+          const allPromises = reviews.flatMap((review) => [
+            reportApi.getCountFromUrl(review.abuseReportsUrl),
+            reportApi.getCountFromUrl(review.hateReportsUrl),
+            reportApi.getCountFromUrl(review.spamReportsUrl),
+            reportApi.getCountFromUrl(review.privacyReportsUrl),
+            api.get(review.moovieListUrl),
+          ]);
 
           const allResults = await Promise.all(allPromises);
 
-          // Add report counts and list details to reviews
           const reviewsWithDetails = reviews.map((review, index) => {
             const baseIndex = index * 5;
 
-            // Find all reports for this review
             const reviewReports = reportsData.filter(report => report.moovieListReviewUrl === review.url);
             const reportIds = reviewReports.map(report => report.reportId);
 
             return {
               ...review,
-              reportIds: reportIds, // Store report IDs for resolution
-              abuseReports: allResults[baseIndex].data.count,
-              hateReports: allResults[baseIndex + 1].data.count,
-              spamReports: allResults[baseIndex + 2].data.count,
-              privacyReports: allResults[baseIndex + 3].data.count,
+              reportIds: reportIds,
+              abuseReports: allResults[baseIndex] || 0,
+              hateReports: allResults[baseIndex + 1] || 0,
+              spamReports: allResults[baseIndex + 2] || 0,
+              privacyReports: allResults[baseIndex + 3] || 0,
               totalReports:
-                allResults[baseIndex].data.count +
-                allResults[baseIndex + 1].data.count +
-                allResults[baseIndex + 2].data.count +
-                allResults[baseIndex + 3].data.count,
-              listDetails: allResults[baseIndex + 4].data,
+                (Number(allResults[baseIndex]) || 0) +
+                (Number(allResults[baseIndex + 1]) || 0) +
+                (Number(allResults[baseIndex + 2]) || 0) +
+                (Number(allResults[baseIndex + 3]) || 0),
+              moovieListDetails: allResults[baseIndex + 4]?.data,
             };
           });
 
@@ -105,7 +92,7 @@ export default function MoovieListReviewReports() {
 
   const handleDelete = async (review) => {
     try {
-      await moovieListReviewApi.deleteMoovieListReviewById(review.id);
+      await reviewApi.deleteReview(review.id);
       await fetchReviews();
     } catch (error) {
       console.error('Error deleting review:', error);
@@ -114,7 +101,7 @@ export default function MoovieListReviewReports() {
 
   const handleBan = async (review) => {
     try {
-      const response = await api.get(review.creatorUrl);
+      const response = await api.get(review.userUrl);
       const user = response.data;
       await userApi.banUser(user.username);
       await fetchReviews();
@@ -125,7 +112,6 @@ export default function MoovieListReviewReports() {
 
   const handleResolve = async (review) => {
     try {
-      // Resolve all reports for this review
       if (review.reportIds && review.reportIds.length > 0) {
         await Promise.all(review.reportIds.map(reportId =>
           reportApi.moovieListReviewReports.resolveReport(reportId)
@@ -137,151 +123,128 @@ export default function MoovieListReviewReports() {
     }
   };
 
-  if (reviewsLoading)
-    return (
-      <div className={'mt-6 d-flex justify-content-center'}>
-        <Spinner />
-      </div>
-    );
-
   return (
-    <div className="container-fluid">
-      <h3 className="text-xl font-semibold mb-4">
-        {t('moovieListReviewReports.moovieListReviewReports')}
-      </h3>
-      {reviews.reviews.length === 0 ? (
-        <div className="text-center text-gray-500">
-          {t('moovieListReviewReports.noMoovieListReviewReports')}
+    <div className="w-full">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="p-2 bg-yellow-100 rounded-lg">
+          <i className="bi bi-star text-yellow-600 text-xl"></i>
         </div>
+        <h2 className="text-2xl font-bold text-gray-800">{t('moovieListReviewReports.moovieListReviewReports')}</h2>
+      </div>
+      
+      {reviewsLoading ? (
+        <LoadingState message={t('reports.loading.reviews')} />
+      ) : reviews.reviews.length === 0 ? (
+        <EmptyState 
+          title={t('reports.empty.reviews')} 
+          message={t('moovieListReviewReports.noMoovieListReviewReports')} 
+        />
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {reviews.reviews.map((review, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <a
-                      href={process.env.PUBLIC_URL + `/profile/${review.username}`}
-                      className="text-blue-600 font-bold hover:underline"
-                    >
-                      {review.username}
-                    </a>
-                    <span className="text-gray-500">{t('reviews.onMedia')}</span>
-                    {review.listDetails?.removed ? (
-                      <span className="text-gray-600">{t('list.removed')}</span>
-                    ) : (
-                      <a
-                        href={process.env.PUBLIC_URL + `/list/${review.listDetails?.id}`}
-                        className="text-blue-600 hover:underline"
-                      >
-                        {review.listDetails?.name}
-                      </a>
-                    )}
-                  </div>
+            <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex-1 space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+                        <i className="bi bi-star text-yellow-600"></i>
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={process.env.PUBLIC_URL + `/profile/${review.username}`}
+                            className="font-semibold text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                          >
+                            {review.username}
+                          </a>
+                          <span className="text-gray-400">•</span>
+                          <span className="text-gray-600 text-sm">{t('reviews.onMedia')}</span>
+                          <a
+                            href={process.env.PUBLIC_URL + `/list/${review.moovieListDetails?.id}`}
+                            className="font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                          >
+                            {review.moovieListDetails?.name}
+                          </a>
+                        </div>
+                      </div>
+                    </div>
 
-                  <div className="flex items-center space-x-4 text-sm text-gray-600">
-                    <span className="flex items-center">
-                      <i className="bi bi-film mr-1"></i>
-                      {review.listDetails?.movieCount} {t('listCard.movies')}
-                    </span>
-                    <span className="flex items-center">
-                      <i className="bi bi-tv mr-1"></i>
-                      {review.listDetails?.seriesCount || 0} {t('listCard.series')}
-                    </span>
-                    <span className="flex items-center">
-                      <i className="bi bi-hand-thumbs-up mr-1"></i>
-                      {review.reviewLikes}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="text-right">
-                  <div className="text-sm text-gray-600 flex flex-col items-end space-y-1">
-                    <span className="flex items-center" title={t('reports.totalReports')}>
-                      <i className="bi bi-flag mr-1"></i>
-                      {review.totalReports}
-                    </span>
-                    <div className="flex space-x-3">
-                      <span className="flex items-center" title={t('reports.spamReports')}>
-                        <i className="bi bi-envelope-exclamation mr-1"></i>
-                        {review.spamReports}
-                      </span>
-                      <span className="flex items-center" title={t('reports.hateReports')}>
-                        <i className="bi bi-emoji-angry mr-1"></i>
-                        {review.hateReports}
-                      </span>
-                      <span className="flex items-center" title={t('reports.abuseReports')}>
-                        <i className="bi bi-slash-circle mr-1"></i>
-                        {review.abuseReports}
-                      </span>
-                      <span className="flex items-center" title={t('reports.privacyReports')}>
-                        <i className="bi bi-incognito mr-1"></i>
-                        {review.privacyReports}
-                      </span>
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <div className="flex items-center gap-1">
+                        <i className="bi bi-hand-thumbs-up text-green-500"></i>
+                        <span>{review.reviewLikes}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
 
-              {review.listDetails?.images && review.listDetails.images.length > 0 && (
-                <div className="flex space-x-2 mb-4 overflow-x-auto py-2">
-                  {review.listDetails.images.slice(0, 4).map((image, imgIndex) => (
-                    <img
-                      key={imgIndex}
-                      src={image}
-                      alt={`List preview ${imgIndex + 1}`}
-                      className="h-20 w-36 object-cover rounded-md shadow-sm"
+                  <div className="ml-6 text-right">
+                    <ReportCountsCard
+                      totalReports={review.totalReports}
+                      spamReports={review.spamReports}
+                      hateReports={review.hateReports}
+                      abuseReports={review.abuseReports}
+                      privacyReports={review.privacyReports}
                     />
-                  ))}
+                  </div>
                 </div>
-              )}
 
-              <div className="bg-gray-50 rounded p-4 my-4">
-                <p className="text-gray-700">{review.reviewContent}</p>
-              </div>
+                {review.moovieListDetails?.images && review.moovieListDetails.images.length > 0 && (
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <i className="bi bi-collection text-gray-500"></i>
+                      <span className="text-sm font-medium text-gray-600">{t('reports.content.listPreview')}</span>
+                    </div>
+                    <div className="flex gap-3 overflow-x-auto py-2">
+                      {review.moovieListDetails.images.slice(0, 3).map((image, imgIndex) => (
+                        <img
+                          key={imgIndex}
+                          src={image}
+                          alt={`List preview ${imgIndex + 1}`}
+                          className="h-20 w-32 object-cover rounded-lg shadow-sm border border-gray-200 flex-shrink-0"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-              <div className="flex justify-end space-x-3">
-                <button
-                  onClick={() => setSelectedAction({ type: 'delete', item: review })}
-                  className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition-colors"
-                >
-                  <i className="bi bi-trash mr-2"></i>
-                  {t('moovieListReviewReports.delete')}
-                </button>
-                <button
-                  onClick={() => setSelectedAction({ type: 'ban', item: review })}
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
-                >
-                  <i className="bi bi-person-x mr-2"></i>
-                  {t('moovieListReviewReports.banUser')}
-                </button>
-                <button
-                  onClick={() => setSelectedAction({ type: 'resolve', item: review })}
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-                >
-                  <i className="bi bi-check2-circle mr-2"></i>
-                  {t('moovieListReviewReports.resolve')}
-                </button>
+                <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-4 mb-4 border-l-4 border-yellow-300">
+                  <div className="flex items-center gap-2 mb-2">
+                    <i className="bi bi-star text-gray-500"></i>
+                    <span className="text-sm font-medium text-gray-600">{t('reports.content.reportedReview')}</span>
+                  </div>
+                  <p className="text-gray-800 leading-relaxed">{review.reviewContent}</p>
+                </div>
+
+                <ReportActionsButtons
+                  onResolve={() => setSelectedAction({ type: 'resolve', item: review })}
+                  onDelete={() => setSelectedAction({ type: 'delete', item: review })}
+                  onBan={() => setSelectedAction({ type: 'ban', item: review })}
+                  resolveKey="moovieListReviewReports.resolve"
+                  deleteKey="moovieListReviewReports.delete"
+                  banKey="moovieListReviewReports.banUser"
+                />
               </div>
             </div>
           ))}
         </div>
       )}
+
       {selectedAction && (
         <ConfirmationModal
           title={
             selectedAction.type === 'delete'
-              ? t('reports.confirmReviewDeletionTitle')
+              ? t('reviewReports.confirmReviewDeletionTitle')
               : selectedAction.type === 'ban'
-                ? t('reports.confirmUserBanTitle')
-                : t('reports.resolveReport')
+                ? t('reviewReports.confirmUserBanTitle')
+                : t('reviewReports.resolveReport')
           }
           message={
             selectedAction.type === 'delete'
-              ? t('reports.confirmReviewDeletionMessage')
+              ? t('reviewReports.confirmReviewDeletionMessage')
               : selectedAction.type === 'ban'
-                ? t('reports.confirmUserBanMessage')
-                : t('reports.confirmResolveReportMessage')
+                ? t('reviewReports.confirmUserBanMessage')
+                : t('reviewReports.confirmResolveReportMessage')
           }
           onConfirm={async () => {
             if (selectedAction.type === 'delete') await handleDelete(selectedAction.item);
@@ -294,7 +257,7 @@ export default function MoovieListReviewReports() {
       )}
 
       {!reviewsLoading && reviews?.links?.last?.pageNumber > 1 && (
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+        <div className="flex justify-center mt-8">
           <PaginationButton
             page={page}
             lastPage={reviews.links.last.pageNumber}

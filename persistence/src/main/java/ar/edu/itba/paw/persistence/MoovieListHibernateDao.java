@@ -612,4 +612,40 @@ public class MoovieListHibernateDao implements MoovieListDao{
         MoovieListReview toRemove = em.find(MoovieListReview.class, moovieListReviewId);
         em.remove(toRemove);
     }
+
+    @Override
+    public List<User> usersLikesMoovieList(int moovieListId, int pageNumber, int pageSize) {
+        return em.createQuery("SELECT mll.user FROM MoovieListLikes mll WHERE mll.moovieList.moovieListId = :moovieListId", User.class)
+                .setParameter("moovieListId", moovieListId)
+                .setFirstResult(pageNumber * pageSize)
+                .setMaxResults(pageSize)
+                .getResultList();
+    }
+
+    @Override
+    public boolean userLikesMoovieList(int moovieListId, String username) {
+        Long count = em.createQuery("SELECT COUNT(mll) FROM MoovieListLikes mll WHERE mll.moovieList.moovieListId = :moovieListId AND mll.user.username = :username", Long.class)
+                .setParameter("moovieListId", moovieListId)
+                .setParameter("username", username)
+                .getSingleResult();
+        return count > 0;
+    }
+
+    @Override
+    public List<User> usersFollowsMoovieList(int moovieListId, int pageNumber, int pageSize) {
+        return em.createQuery("SELECT mlf.user FROM MoovieListFollowers mlf WHERE mlf.moovieList.moovieListId = :moovieListId", User.class)
+                .setParameter("moovieListId", moovieListId)
+                .setFirstResult(pageNumber * pageSize)
+                .setMaxResults(pageSize)
+                .getResultList();
+    }
+
+    @Override
+    public boolean userFollowsMoovieList(int moovieListId, String username) {
+        Long count = em.createQuery("SELECT COUNT(mlf) FROM MoovieListFollowers mlf WHERE mlf.moovieList.moovieListId = :moovieListId AND mlf.user.username = :username", Long.class)
+                .setParameter("moovieListId", moovieListId)
+                .setParameter("username", username)
+                .getSingleResult();
+        return count > 0;
+    }
 }

@@ -1,9 +1,8 @@
 import api from './api.js';
-import VndType from '../enums/VndType';
 import commentReportApi from './CommentReportApi.js';
-import reviewReportApi from './ReviewReportApi.js';
 import moovieListReportApi from './MoovieListReportApi.js';
 import moovieListReviewReportApi from './MoovieListReviewReportApi.js';
+import reviewReportApi from './ReviewReportApi.js';
 
 const reportApi = (() => {
   // --------------- REPORTING ---------------
@@ -42,22 +41,32 @@ const reportApi = (() => {
     }
   };
 
-  const getReportCounts = async ({ contentType, reportType, resourceId } = {}) => {
+  const getReportCounts = async ({ contentType, reportType, resourceId, resourceUrl } = {}) => {
     // Map the old contentType parameter to the appropriate API
     switch (contentType) {
       case 'comment':
-        return commentReportApi.getReportCounts({ reportType, commentId: resourceId });
+        return commentReportApi.getReportCounts({ reportType, commentId: resourceId, commentUrl: resourceUrl });
       case 'review':
-        return reviewReportApi.getReportCounts({ reportType, reviewId: resourceId });
+        return reviewReportApi.getReportCounts({ reportType, reviewId: resourceId, reviewUrl: resourceUrl });
       case 'moovieList':
-        return moovieListReportApi.getReportCounts({ reportType, moovieListId: resourceId });
+        return moovieListReportApi.getReportCounts({ reportType, moovieListId: resourceId, moovieListUrl: resourceUrl });
       case 'moovieListReview':
-        return moovieListReviewReportApi.getReportCounts({ reportType, moovieListReviewId: resourceId });
+        return moovieListReviewReportApi.getReportCounts({ reportType, moovieListReviewId: resourceId, moovieListReviewUrl: resourceUrl });
       default:
         // Return 0 count for unknown content types
         return {
           data: { count: 0 }
         };
+    }
+  };
+
+  const getCountFromUrl = async (url) => {
+    try {
+      const response = await api.get(url, { params: { pageSize: 1, pageNumber: 1 } });
+      return response.headers['total-count'] || response.headers['Total-Count'] || response.headers['Total-Elements'] || response.headers['total-elements'] || 0;
+    } catch (error) {
+      console.error('Error getting count from URL:', error);
+      return 0;
     }
   };
 
@@ -108,6 +117,7 @@ const reportApi = (() => {
     reportMoovieListReview,
     getReports,
     getReportCounts,
+    getCountFromUrl,
     resolveReviewReport,
     resolveCommentReport,
     resolveMoovieListReport,
