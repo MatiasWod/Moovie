@@ -2,14 +2,8 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.BannedMessage.BannedMessage;
-import ar.edu.itba.paw.models.Media.Media;
-import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
-import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
-import ar.edu.itba.paw.models.MoovieList.UserMoovieListId;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
-import ar.edu.itba.paw.models.Review.MoovieListReview;
-import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.User.UserRoles;
@@ -382,34 +376,5 @@ public class UserController {
         // Llegar aqui implica un exito en la operacion
         user.setRole(UserRoles.MODERATOR.getRole());
         return Response.ok(UserDto.fromUser(user, uriInfo)).build();
-    }
-
-
-    /***
-     * LIKES
-     */
-
-    @GET
-    @Path("/{username}/commentsFeedback/{commentId}")
-    @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Produces(VndType.APPLICATION_COMMENT_LIKE)
-    public Response getFeedbackedCommentById(@PathParam("username") final String username,
-                                                  @PathParam("commentId") final int commentId) {
-        try {
-            int uid = userService.findUserByUsername(username).getUserId();
-            boolean liked= commentService.userHasLiked(commentId, uid);
-            boolean disliked=commentService.userHasDisliked(commentId, uid);
-
-            if(liked || disliked){
-                return Response.ok(UserCommentIdDto.fromUserCommentId(commentId,username,liked,disliked)).build();
-            }
-            return Response.noContent().build();
-
-        } catch (UnableToFindUserException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-
     }
 }

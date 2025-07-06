@@ -163,7 +163,6 @@ public class User {
 
     @Override
     public int hashCode(){
-        // TODO add image id
         return Objects.hash(username, role, milkyPoints, userId, email, reviewsCount, imageId);
     }
 }
