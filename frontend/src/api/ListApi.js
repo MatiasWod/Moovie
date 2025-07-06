@@ -104,14 +104,13 @@ const listApi = (() => {
     return api.get(`/lists/${listId}/content/${mediaId}`);
   };
 
-  const editListContent = (listId, mediaId, customOrder) => {
+  const editListContent = (url, mediaId, customOrder) => {
     const input = {
       mediaId: mediaId,
-      moovieListId: listId,
       customOrder: customOrder,
     };
 
-    const response = api.put(`lists/${listId}/content/${mediaId}`, input, {
+    const response = api.put(url + `/${mediaId}`, input, {
       headers: {
         'Content-Type': VndType.APPLICATION_MOOVIELIST_MEDIA_FORM,
       },

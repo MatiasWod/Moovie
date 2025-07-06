@@ -54,7 +54,7 @@ export default function BannedUsers() {
 
   const handleUnban = async (user) => {
     try {
-      await userApi.unbanUser(user.username);
+      await userApi.unbanUser(user.url);
       await fetchUsers();
     } catch (error) {
       console.error('Error unbanning user:', error);

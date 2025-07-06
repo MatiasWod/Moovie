@@ -63,11 +63,11 @@ const MediaRow = ({
   const [menuOpen, setMenuOpen] = useState(false);
   const { t } = useTranslation();
 
-  const [ww, setWW] = useState({ watched: false, watchlist: false });
+  const [ww, setWW] = useState({ watched: false });
   const [refreshWatched, setRefreshWatched] = useState(false);
   useEffect(async () => {
     try {
-      const data = await UserService.currentUserWWStatus(
+      const data = await UserService.currentUserWatchedStatus(
         media.id,
         user.defaultPrivateMoovieListsUrl
       );
@@ -209,14 +209,14 @@ const ListContent = ({
   const pageChange = async (to, mId) => {
     if (to === 1) {
       await ListService.editListContent({
+        url: listContentUrl,
         mediaId: mId,
-        listId: listId,
         customOrder: currentPage * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT + 1,
       });
     } else if (to === -1) {
       await ListService.editListContent({
+        url: listContentUrl,
         mediaId: mId,
-        listId: listId,
         customOrder: (currentPage - 1) * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT,
       });
     }
@@ -225,7 +225,6 @@ const ListContent = ({
   };
 
   const removeFromList = async (mediaId) => {
-    console.log(listContentUrl);
     await listService.deleteMediaFromMoovieList({
       url: listContentUrl,
       mediaId: mediaId,
@@ -235,9 +234,10 @@ const ListContent = ({
 
   const moveItem = async (mediaId, fromOrder, toOrder) => {
     try {
+      console.log(listContentUrl)
       await ListService.editListContent({
+        url: listContentUrl,
         mediaId: mediaId,
-        listId: listId,
         customOrder: toOrder,
       });
       Refresh();

@@ -1,5 +1,6 @@
 import api from './api.js';
 import VndType from '../enums/VndType';
+import * as url from "url";
 
 const reviewApi = (() => {
   const getReviewById = (id) => {
@@ -57,16 +58,12 @@ const reviewApi = (() => {
     );
   };
 
-  const likeReview = (username, id) => {
-    return api.put(
-      `/reviews/${id}`,
-      { username: username, feedbackType: 'LIKE' },
-      {
-        headers: {
-          'Content-Type': VndType.APPLICATION_MOOVIELIST_FEEDBACK_FORM,
-        },
-      }
-    );
+  const likeReview = (url) => {
+    return api.post(url);
+  };
+
+  const deleteLikeFromReview = (url) => {
+    return api.delete(url);
   };
 
   const deleteReviewById = (id) => {
@@ -81,6 +78,7 @@ const reviewApi = (() => {
     editReview,
     createReview,
     deleteReviewById,
+    deleteLikeFromReview,
     likeReview,
   };
 })();

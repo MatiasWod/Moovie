@@ -58,17 +58,13 @@ const moovieListReviewApi = (() => {
     return api.delete(`/moovieListReviews/${id}`);
   };
 
-  const likeMoovieListReview = (username, id) => {
-    return api.put(
-      `/moovieListReviews/${id}`,
-      { username: username, feedbackType: 'LIKE' },
-      {
-        headers: {
-          'Content-Type': VndType.APPLICATION_MOOVIELIST_FEEDBACK_FORM,
-        },
-      }
-    );
+  const likeMoovieListReview = (url, username) => {
+    return api.post(url + `/${username}`);
   };
+
+  const deleteLikeFromMoovieListReview = (url, username) => {
+    return api.delete(url + `/${username}`);
+  }
 
   return {
     getMoovieListReviewById,
@@ -78,6 +74,7 @@ const moovieListReviewApi = (() => {
     createMoovieListReview,
     deleteMoovieListReviewById,
     likeMoovieListReview,
+    deleteLikeFromMoovieListReview
   };
 })();
 

@@ -29,7 +29,6 @@ const Profile = lazy(() => import(views + '/profile'));
 const Cast = lazy(() => import(views + '/cast'));
 const Healthcheck = lazy(() => import(views + '/healthcheck'));
 const Error404 = lazy(() => import(views + '/errorViews/error404'));
-const AuthTest = lazy(() => import(views + '/AuthTest')); // Import AuthTest
 const ReportsDashboard = lazy(() => import(views + '/reportsDashboard/ReportsDashboard'));
 const ConfirmToken = lazy(() => import(views + '/authViews/confirmToken'));
 const AwaitEmailValidation = lazy(() => import(views + '/authViews/awaitEmailValidation'));
@@ -244,14 +243,6 @@ export default function App() {
                 element={
                   <RoleGate>
                     <Healthcheck />
-                  </RoleGate>
-                }
-              />
-              <Route
-                path="/authtest"
-                element={
-                  <RoleGate>
-                    <AuthTest />
                   </RoleGate>
                 }
               />

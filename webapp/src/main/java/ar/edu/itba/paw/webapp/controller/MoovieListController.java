@@ -23,6 +23,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import ar.edu.itba.paw.webapp.dto.in.EditListContentDto;
 import ar.edu.itba.paw.webapp.dto.out.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -525,11 +526,11 @@ public class MoovieListController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response editMoovieListMediaByMediaId(@PathParam("id") final int id,
             @PathParam("mediaId") final int mediaId,
-            final MediaIdListIdDto input) {
+            final EditListContentDto input) {
         try {
             moovieListService.getMoovieListCardById(id);
 
-            moovieListService.updateMoovieListOrder(input.getMoovieListId(), input.getMediaId(),
+            moovieListService.updateMoovieListOrder(id, input.getMediaId(),
                     input.getCustomOrder());
             return Response.ok()
                     .entity("MoovieList order succesfully modified.").build();

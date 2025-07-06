@@ -75,7 +75,7 @@ function Profile() {
 
   const confirmBanUser = async () => {
     try {
-      await userService.banUser(username);
+      await userService.banUser(profile.url);
       fetchProfile();
     } catch (err) {
       console.error('Error banning user:', err);
@@ -86,7 +86,7 @@ function Profile() {
 
   const confirmUnbanUser = async () => {
     try {
-      await userService.unbanUser(username);
+      await userService.unbanUser(profile.url);
       fetchProfile();
     } catch (err) {
       console.error('Error unbanning user:', err);
@@ -97,7 +97,7 @@ function Profile() {
 
   const confirmMakeModerator = async () => {
     try {
-      await userService.makeUserModerator(username);
+      await userService.makeUserModerator(profile.url);
       fetchProfile();
     } catch (err) {
       console.error('Error making user moderator:', err);

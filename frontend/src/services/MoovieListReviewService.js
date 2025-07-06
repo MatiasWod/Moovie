@@ -32,8 +32,13 @@ const MoovieListReviewService = (() => {
     return res;
   };
 
-  const likeMoovieListReview = async (username, id) => {
-    const res = await moovieListReviewApi.likeMoovieListReview(username, id);
+  const likeMoovieListReview = async (url, username) => {
+    const res = await moovieListReviewApi.likeMoovieListReview(url, username);
+    return res;
+  };
+
+  const deleteLikeFromMoovieListReview = async (url, username) => {
+    const res = await moovieListReviewApi.likeMoovieListReview(url, username);
     return res;
   };
 
@@ -45,6 +50,7 @@ const MoovieListReviewService = (() => {
     createMoovieListReview,
     deleteMoovieListReview,
     likeMoovieListReview,
+    deleteLikeFromMoovieListReview
   };
 })();
 
