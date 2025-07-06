@@ -1,45 +1,71 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.exceptions.*;
+import java.util.List;
+import java.util.function.Supplier;
 
-import ar.edu.itba.paw.exceptions.ForbiddenException;
-import ar.edu.itba.paw.models.PagingSizes;
-import ar.edu.itba.paw.models.PagingUtils;
-import ar.edu.itba.paw.models.Review.MoovieListReview;
-import ar.edu.itba.paw.models.Review.Review;
-import ar.edu.itba.paw.models.Review.ReviewTypes;
-import ar.edu.itba.paw.services.MoovieListService;
-import ar.edu.itba.paw.services.ReviewService;
-import ar.edu.itba.paw.webapp.dto.in.MoovieListReviewCreateDto;
-import ar.edu.itba.paw.webapp.dto.out.MoovieListDto;
-import ar.edu.itba.paw.webapp.dto.out.MoovieListReviewDto;
-import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
-import ar.edu.itba.paw.webapp.utils.ResponseUtils;
-import ar.edu.itba.paw.webapp.vndTypes.VndType;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import java.util.List;
-import java.util.function.Supplier;
+import ar.edu.itba.paw.exceptions.ForbiddenException;
+import ar.edu.itba.paw.exceptions.InvalidAccessToResourceException;
+import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
+import ar.edu.itba.paw.exceptions.ReviewAlreadyCreatedException;
+import ar.edu.itba.paw.exceptions.ReviewNotFoundException;
+import ar.edu.itba.paw.exceptions.UnableToFindUserException;
+import ar.edu.itba.paw.exceptions.UserNotLoggedException;
+import ar.edu.itba.paw.models.PagingSizes;
+import ar.edu.itba.paw.models.PagingUtils;
+import ar.edu.itba.paw.models.Review.MoovieListReview;
+import ar.edu.itba.paw.models.Review.ReviewTypes;
+import ar.edu.itba.paw.models.User.User;
+import ar.edu.itba.paw.models.User.UserRoles;
+import ar.edu.itba.paw.services.MoovieListService;
+import ar.edu.itba.paw.services.ReportService;
+import ar.edu.itba.paw.services.ReviewService;
+import ar.edu.itba.paw.services.UserService;
+import ar.edu.itba.paw.webapp.dto.in.MoovieListReviewCreateDto;
+import ar.edu.itba.paw.webapp.dto.out.MoovieListReviewDto;
+import ar.edu.itba.paw.webapp.utils.ResponseUtils;
+import ar.edu.itba.paw.webapp.vndTypes.VndType;
 
 @Path("moovieListReviews")
 @Component
 public class MoovieListReviewController {
     private final ReviewService reviewService;
     private final MoovieListService moovieListService;
+    private final ReportService reportService;
+    private final UserService userService;
 
     @Context
     UriInfo uriInfo;
 
     @Autowired
-    public MoovieListReviewController(ReviewService reviewService, MoovieListService moovieListService) {
+    public MoovieListReviewController(ReviewService reviewService, MoovieListService moovieListService,
+            ReportService reportService, UserService userService) {
         this.reviewService = reviewService;
         this.moovieListService = moovieListService;
+        this.reportService = reportService;
+        this.userService = userService;
     }
 
     @GET
@@ -48,7 +74,8 @@ public class MoovieListReviewController {
     public Response getMoovieListReviewById(@PathParam("id") @NotNull int id, @Context Request request) {
         try {
             final MoovieListReview moovieListReview = reviewService.getMoovieListReviewById(id);
-            final Supplier<MoovieListReviewDto> dtoSupplier = () -> MoovieListReviewDto.fromMoovieListReview(moovieListReview, uriInfo);
+            final Supplier<MoovieListReviewDto> dtoSupplier = () -> MoovieListReviewDto
+                    .fromMoovieListReview(moovieListReview, uriInfo);
             return ResponseUtils.setConditionalCacheHash(request, dtoSupplier, moovieListReview.hashCode());
         } catch (MoovieListNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -64,19 +91,47 @@ public class MoovieListReviewController {
     public Response getMoovieListReviewsFromQueryParams(
             @QueryParam("listId") final Integer listId,
             @QueryParam("userId") final Integer userId,
+            @QueryParam("isReported") final boolean isReported,
             @QueryParam("pageNumber") @DefaultValue("1") final int page) {
-
         try {
+            if (isReported) {
+                try {
+                    User user = userService.getInfoOfMyUser();
+                    if (user.getRole() < UserRoles.MODERATOR.getRole()) {
+                        return Response.status(Response.Status.FORBIDDEN)
+                                .entity("User is not moderator")
+                                .build();
+                    }
+                    final List<MoovieListReview> moovieListReviews = reportService
+                            .getReportedMoovieListReviews(PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize(), page);
+                    final int moovieListReviewsCount = reportService.getReportedMoovieListReviewsCount();
+                    final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto
+                            .fromMoovieListReviewList(moovieListReviews, uriInfo);
+                    Response.ResponseBuilder res = Response
+                            .ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {
+                            });
+                    final PagingUtils<MoovieListReview> toReturnMoovieListReviews = new PagingUtils<>(moovieListReviews,
+                            page - 1, PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize(), moovieListReviewsCount);
+                    ResponseUtils.setPaginationLinks(res, toReturnMoovieListReviews, uriInfo);
+                    return res.build();
+                } catch (UserNotLoggedException e) {
+                    return Response.status(Response.Status.UNAUTHORIZED)
+                            .entity(e.getMessage())
+                            .build();
+                }
+            }
             if (listId != null) {
                 // Get MoovieList if it exists
-                moovieListService.getMoovieListById(listId);
                 final List<MoovieListReview> moovieListReviews = reviewService.getMoovieListReviewsByMoovieListId(
                         listId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
                 final int moovieListReviewsCount = reviewService.getMoovieListReviewByMoovieListIdCount(listId);
-                final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto.fromMoovieListReviewList(moovieListReviews, uriInfo);
-                Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {
-                });
-                final PagingUtils<MoovieListReview> toReturnMoovieListReviews = new PagingUtils<>(moovieListReviews, page - 1, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), moovieListReviewsCount);
+                final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto
+                        .fromMoovieListReviewList(moovieListReviews, uriInfo);
+                Response.ResponseBuilder res = Response
+                        .ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {
+                        });
+                final PagingUtils<MoovieListReview> toReturnMoovieListReviews = new PagingUtils<>(moovieListReviews,
+                        page - 1, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), moovieListReviewsCount);
                 ResponseUtils.setPaginationLinks(res, toReturnMoovieListReviews, uriInfo);
                 return res.build();
 
@@ -84,25 +139,27 @@ public class MoovieListReviewController {
                 final List<MoovieListReview> moovieListReviews = reviewService.getMoovieListReviewsFromUser(
                         userId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
                 final int reviewCount = reviewService.getMoovieListReviewsFromUserCount(userId);
-                final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto.fromMoovieListReviewList(moovieListReviews, uriInfo);
-                
-                Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {});
-                final PagingUtils<MoovieListReview> reviewPagingUtils = new PagingUtils<>(moovieListReviews, page, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), reviewCount);
+                final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto
+                        .fromMoovieListReviewList(moovieListReviews, uriInfo);
+
+                Response.ResponseBuilder res = Response
+                        .ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {
+                        });
+                final PagingUtils<MoovieListReview> reviewPagingUtils = new PagingUtils<>(moovieListReviews, page,
+                        PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), reviewCount);
                 ResponseUtils.setPaginationLinks(res, reviewPagingUtils, uriInfo);
                 return res.build();
 
             } else {
-                return Response.status(Response.Status.BAD_REQUEST).entity("Either listId or userId must be provided.").build();
+                return Response.status(Response.Status.BAD_REQUEST).entity("Either listId or userId must be provided.")
+                        .build();
             }
         } catch (MoovieListNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("{\"error\":\"MoovieList not found.\"}")
                     .build();
-        }
-        catch (UnableToFindUserException e) {
-            return Response.status(Response.Status.NOT_FOUND).
-                    entity("{\"error\":\"User not found.\"}").
-                    build();
+        } catch (UnableToFindUserException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity("{\"error\":\"User not found.\"}").build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
@@ -110,7 +167,7 @@ public class MoovieListReviewController {
 
     @POST
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Consumes({VndType.APPLICATION_MOOVIELIST_REVIEW_FORM})
+    @Consumes({ VndType.APPLICATION_MOOVIELIST_REVIEW_FORM })
     @Produces(MediaType.APPLICATION_JSON)
     public Response createMoovieListReview(@Valid @NotNull final MoovieListReviewCreateDto moovieListReviewDto) {
         try {
@@ -120,72 +177,67 @@ public class MoovieListReviewController {
                     moovieListReviewDto.getListId(),
                     0,
                     moovieListReviewDto.getReviewContent(),
-                    ReviewTypes.REVIEW_MOOVIE_LIST
-            );
+                    ReviewTypes.REVIEW_MOOVIE_LIST);
 
             return Response.status(Response.Status.CREATED)
-                    .entity("MoovieList review successfully created to the list with ID: " +  moovieListReviewDto.getListId())
+                    .entity("MoovieList review successfully created to the list with ID: "
+                            + moovieListReviewDto.getListId())
                     .build();
-        }catch (ForbiddenException e){
+        } catch (ForbiddenException e) {
             return Response.status(Response.Status.FORBIDDEN)
                     .entity("{\"error\":\"You do not have permission to create a review for this MoovieList.\"}")
                     .build();
-        }
-        catch (MoovieListNotFoundException e) {
+        } catch (MoovieListNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("{\"error\":\"MoovieList not found.\"}")
                     .build();
-        }catch (ReviewAlreadyCreatedException e){
+        } catch (ReviewAlreadyCreatedException e) {
             return Response.status(Response.Status.CONFLICT)
                     .entity("{\"error\":\"Review already created for this MoovieList.\"}")
                     .build();
-        }
-        catch (RuntimeException e){
+        } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An unexpected error occurred: " + e.getMessage())
                     .build();
         }
     }
 
-
     @PUT
     @Path("/{id}")
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Consumes({VndType.APPLICATION_MOOVIELIST_REVIEW_FORM})
+    @Consumes({ VndType.APPLICATION_MOOVIELIST_REVIEW_FORM })
     @Produces(MediaType.APPLICATION_JSON)
     public Response editReview(@PathParam("id") @NotNull final int id,
-                               @Valid @NotNull final MoovieListReviewCreateDto moovieListReviewDto) {
+            @Valid @NotNull final MoovieListReviewCreateDto moovieListReviewDto) {
         try {
             moovieListService.getMoovieListById(moovieListReviewDto.getListId());
             reviewService.editReview(
                     moovieListReviewDto.getListId(),
                     0,
                     moovieListReviewDto.getReviewContent(),
-                    ReviewTypes.REVIEW_MOOVIE_LIST
-            );
+                    ReviewTypes.REVIEW_MOOVIE_LIST);
             return Response.ok()
-                    .entity("MoovieList review successfully updated for MoovieList with ID: " + moovieListReviewDto.getListId())
+                    .entity("MoovieList review successfully updated for MoovieList with ID: "
+                            + moovieListReviewDto.getListId())
                     .build();
-        }catch (MoovieListNotFoundException e){
+        } catch (MoovieListNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("{\"error\":\"MoovieList not found.\"}")
                     .build();
-        }catch (ReviewNotFoundException e){
+        } catch (ReviewNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("{\"error\":\"Review not found.\"}")
                     .build();
-        } catch (ForbiddenException e){
+        } catch (ForbiddenException e) {
             return Response.status(Response.Status.FORBIDDEN)
                     .entity("{\"error\":\"You do not have permission, list is private.\"}")
                     .build();
-        }
-        catch (RuntimeException e){
+        } catch (RuntimeException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An unexpected error occurred: " + e.getMessage())
                     .build();
         }
     }
-
 
     @PUT
     @Path("/{id}")
@@ -193,15 +245,15 @@ public class MoovieListReviewController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response feedbackMoovieListReview(@PathParam("id") @NotNull final int id) {
         try {
-            boolean liked_status=reviewService.likeReview(id, ReviewTypes.REVIEW_MOOVIE_LIST);
+            boolean liked_status = reviewService.likeReview(id, ReviewTypes.REVIEW_MOOVIE_LIST);
 
-            if(liked_status){
+            if (liked_status) {
                 return Response.ok()
-                    .entity("MoovieList review feedback status successfully changed to liked.")
-                    .build();
-            }else{
+                        .entity("MoovieList review feedback status successfully changed to liked.")
+                        .build();
+            } else {
                 return Response.ok()
-                    .entity("MoovieList review feedback status successfully changed to unliked.")
+                        .entity("MoovieList review feedback status successfully changed to unliked.")
                         .build();
             }
 
@@ -248,20 +300,11 @@ public class MoovieListReviewController {
             return Response.status(Response.Status.FORBIDDEN)
                     .entity("{\"error\":\"You do not have permission to delete this review.\"}")
                     .build();
-        }catch (Exception e) {
+        } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("An unexpected error occurred: " + e.getMessage())
                     .build();
         }
     }
 
-
-
-
 }
-
-
-
-
-
-
