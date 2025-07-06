@@ -28,8 +28,6 @@ public class MoovieListDto {
 
     private int movieCount;
 
-    private List<MoovieListReview> reviews;
-
     private List<String> images;
 
     private String url;
@@ -186,14 +184,6 @@ public class MoovieListDto {
 
     public void setMediaCount(int mediaCount) {
         this.mediaCount = mediaCount;
-    }
-
-    public List<MoovieListReview> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<MoovieListReview> reviews) {
-        this.reviews = reviews;
     }
 
     public String getUrl() {
