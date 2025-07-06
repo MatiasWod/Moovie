@@ -2,22 +2,10 @@ import api from './api.js';
 import VndType from '../enums/VndType';
 
 const moovieListReviewApi = (() => {
-  const getMoovieListReviewById = (id) => {
-    return api.get(`/moovieListReviews/${id}`);
-  };
 
-  const getMoovieListReviewsFromUserId = (userId, page = 1) => {
-    return api.get(`/moovieListReviews`, {
-      params: {
-        userId: userId,
-        pageNumber: page,
-      },
-    });
-  };
-
-  const editReview = (id, listId, reviewContent) => {
+  const editReview = (url, listId, reviewContent) => {
     return api.put(
-      `/moovieListReviews/${id}`,
+      url,
       {
         reviewContent: reviewContent,
         listId: listId,
@@ -58,8 +46,6 @@ const moovieListReviewApi = (() => {
   }
 
   return {
-    getMoovieListReviewById,
-    getMoovieListReviewsFromUserId,
     editReview,
     createMoovieListReview,
     deleteMoovieListReviewById,

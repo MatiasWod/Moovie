@@ -4,10 +4,6 @@ import mediaApi from '../api/MediaApi';
 import userApi from '../api/UserApi';
 
 const ReviewService = (() => {
-  const getReviewById = async (id) => {
-    const response = await reviewApi.getReviewById(id);
-    return response;
-  };
 
   const getReviewsByMediaIdandUrl = async (url, mediaId) => {
     const res = await reviewApi.getReviewsByMediaIdandUrl(url, mediaId);
@@ -41,7 +37,6 @@ const ReviewService = (() => {
   }
 
   return {
-    getReviewById,
     getReviewsByMediaIdandUrl,
     editReview,
     createReview,

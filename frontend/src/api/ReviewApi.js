@@ -3,9 +3,6 @@ import VndType from '../enums/VndType';
 import * as url from "url";
 
 const reviewApi = (() => {
-  const getReviewById = (id) => {
-    return api.get(`/reviews/${id}`);
-  };
 
   const getReviewsByMediaIdandUrl = (url, mediaId) => {
     return api.get(url, {
@@ -52,7 +49,6 @@ const reviewApi = (() => {
   };
 
   return {
-    getReviewById,
     getReviewsByMediaIdandUrl,
     editReview,
     createReview,

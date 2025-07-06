@@ -2,18 +2,9 @@ import moovieListReviewApi from '../api/MoovieListReviewApi';
 import reviewApi from '../api/ReviewApi';
 
 const MoovieListReviewService = (() => {
-  const getMoovieListReview = async (id) => {
-    const res = await moovieListReviewApi.getMoovieListReviewById(id);
-    return res;
-  };
 
-  const getMoovieListReviewsFromUserId = async (userId, pageNumber) => {
-    const res = await moovieListReviewApi.getMoovieListReviewsFromUserId(userId, pageNumber);
-    return res;
-  };
-
-  const editReview = async (id, listId, reviewContent) => {
-    const res = await moovieListReviewApi.editReview(id, listId, reviewContent);
+  const editReview = async (url, listId, reviewContent) => {
+    const res = await moovieListReviewApi.editReview(url, listId, reviewContent);
     return res;
   };
 
@@ -38,8 +29,6 @@ const MoovieListReviewService = (() => {
   };
 
   return {
-    getMoovieListReview,
-    getMoovieListReviewsFromUserId,
     editReview,
     createMoovieListReview,
     deleteMoovieListReview,
