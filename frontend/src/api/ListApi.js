@@ -79,12 +79,12 @@ const listApi = (() => {
 
   //PUT
 
-  const editMoovieList = async (mlId, name, description) => {
+  const editMoovieList = async (url, name, description) => {
     const form = {
       listName: name,
       listDescription: description,
     };
-    const response = await api.put('/lists/' + mlId, form, {
+    const response = await api.put(url, form, {
       headers: {
         'Content-Type': VndType.APPLICATION_MOOVIELIST_FORM,
       },
