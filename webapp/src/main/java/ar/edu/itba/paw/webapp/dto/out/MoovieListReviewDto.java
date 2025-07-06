@@ -1,10 +1,12 @@
 package ar.edu.itba.paw.webapp.dto.out;
 
-import ar.edu.itba.paw.models.Reports.ReportTypesEnum;
-import ar.edu.itba.paw.models.Review.MoovieListReview;
-import javax.ws.rs.core.UriInfo;
 import java.time.LocalDate;
 import java.util.List;
+
+import javax.ws.rs.core.UriInfo;
+
+import ar.edu.itba.paw.models.Reports.ReportTypesEnum;
+import ar.edu.itba.paw.models.Review.MoovieListReview;
 
 public class MoovieListReviewDto {
 
@@ -44,36 +46,31 @@ public class MoovieListReviewDto {
         moovieListReviewDto.username = moovieListReview.getUser().getUsername();
         moovieListReviewDto.lastModified = moovieListReview.getLastModified();
 
-        moovieListReviewDto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
-                .queryParam("contentType", "moovieListReview")
-                .queryParam("resourceId", moovieListReview.getMoovieListReviewId())
+        moovieListReviewDto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/moovieListReviewReports")
+                .queryParam("moovieListReviewId", moovieListReview.getMoovieListReviewId())
                 .build()
                 .toString();
 
-        moovieListReviewDto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
-                .queryParam("contentType", "moovieListReview")
-                .queryParam("resourceId", moovieListReview.getMoovieListReviewId())
+        moovieListReviewDto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/moovieListReviewReports")
+                .queryParam("moovieListReviewId", moovieListReview.getMoovieListReviewId())
                 .queryParam("reportType", ReportTypesEnum.SPAM.getType())
                 .build()
                 .toString();
 
-        moovieListReviewDto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
-                .queryParam("contentType", "moovieListReview")
-                .queryParam("resourceId", moovieListReview.getMoovieListReviewId())
+        moovieListReviewDto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/moovieListReviewReports")
+                .queryParam("moovieListReviewId", moovieListReview.getMoovieListReviewId())
                 .queryParam("reportType", ReportTypesEnum.HATEFUL_CONTENT.getType())
                 .build()
                 .toString();
 
-        moovieListReviewDto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
-                .queryParam("contentType", "moovieListReview")
-                .queryParam("resourceId", moovieListReview.getMoovieListReviewId())
+        moovieListReviewDto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/moovieListReviewReports")
+                .queryParam("moovieListReviewId", moovieListReview.getMoovieListReviewId())
                 .queryParam("reportType", ReportTypesEnum.PRIVACY.getType())
                 .build()
                 .toString();
 
-        moovieListReviewDto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
-                .queryParam("contentType", "moovieListReview")
-                .queryParam("resourceId", moovieListReview.getMoovieListReviewId())
+        moovieListReviewDto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/moovieListReviewReports")
+                .queryParam("moovieListReviewId", moovieListReview.getMoovieListReviewId())
                 .queryParam("reportType", ReportTypesEnum.ABUSE.getType())
                 .build()
                 .toString();

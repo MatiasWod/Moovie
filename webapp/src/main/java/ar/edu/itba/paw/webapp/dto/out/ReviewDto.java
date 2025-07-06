@@ -1,11 +1,12 @@
 package ar.edu.itba.paw.webapp.dto.out;
 
-import ar.edu.itba.paw.models.Reports.ReportTypesEnum;
-import ar.edu.itba.paw.models.Review.Review;
-
-import javax.ws.rs.core.UriInfo;
 import java.time.LocalDate;
 import java.util.List;
+
+import javax.ws.rs.core.UriInfo;
+
+import ar.edu.itba.paw.models.Reports.ReportTypesEnum;
+import ar.edu.itba.paw.models.Review.Review;
 
 public class ReviewDto {
 
@@ -56,35 +57,30 @@ public class ReviewDto {
                 .toString();
         reviewDto.mediaUrl = uriInfo.getBaseUriBuilder().path("/medias/{id}").build(review.getMediaId()).toString();
 
-        reviewDto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
-                .queryParam("contentType", "review")
-                .queryParam("resourceId", review.getReviewId())
+        reviewDto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reviewReports")
+                .queryParam("reviewId", review.getReviewId())
                 .build()
                 .toString();
 
-        reviewDto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
-                .queryParam("contentType", "review")
-                .queryParam("resourceId", review.getReviewId())
+        reviewDto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reviewReports")
+                .queryParam("reviewId", review.getReviewId())
                 .queryParam("reportType", ReportTypesEnum.SPAM.getType())
                 .build()
                 .toString();
 
-        reviewDto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
-                .queryParam("contentType", "review")
-                .queryParam("resourceId", review.getReviewId())
+        reviewDto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/reviewReports")
+                .queryParam("reviewId", review.getReviewId())
                 .queryParam("reportType", ReportTypesEnum.HATEFUL_CONTENT.getType())
                 .build()
                 .toString();
 
-        reviewDto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
-                .queryParam("contentType", "review")
-                .queryParam("resourceId", review.getReviewId())
+        reviewDto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/reviewReports")
+                .queryParam("reviewId", review.getReviewId())
                 .queryParam("reportType", ReportTypesEnum.PRIVACY.getType())
                 .build()
                 .toString();
-        reviewDto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
-                .queryParam("contentType", "review")
-                .queryParam("resourceId", review.getReviewId())
+        reviewDto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/reviewReports")
+                .queryParam("reviewId", review.getReviewId())
                 .queryParam("reportType", ReportTypesEnum.ABUSE.getType())
                 .build()
                 .toString();

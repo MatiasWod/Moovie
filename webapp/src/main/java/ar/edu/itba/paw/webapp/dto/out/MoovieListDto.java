@@ -1,11 +1,12 @@
 package ar.edu.itba.paw.webapp.dto.out;
 
+import java.util.List;
+
+import javax.ws.rs.core.UriInfo;
+
 import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
 import ar.edu.itba.paw.models.Reports.ReportTypesEnum;
 import ar.edu.itba.paw.models.Review.MoovieListReview;
-
-import javax.ws.rs.core.UriInfo;
-import java.util.List;
 
 public class MoovieListDto {
 
@@ -79,36 +80,31 @@ public class MoovieListDto {
         dto.reviewsUrl = uriInfo.getBaseUriBuilder().path("moovieListReviews")
                 .queryParam("listId", moovieList.getMoovieListId()).build().toString();
 
-        dto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
-                .queryParam("contentType", "moovieList")
-                .queryParam("resourceId", moovieList.getMoovieListId())
+        dto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/listReports")
+                .queryParam("moovieListId", moovieList.getMoovieListId())
                 .build()
                 .toString();
 
-        dto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
-                .queryParam("contentType", "moovieList")
-                .queryParam("resourceId", moovieList.getMoovieListId())
+        dto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/listReports")
+                .queryParam("moovieListId", moovieList.getMoovieListId())
                 .queryParam("reportType", ReportTypesEnum.SPAM.getType())
                 .build()
                 .toString();
 
-        dto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
-                .queryParam("contentType", "moovieList")
-                .queryParam("resourceId", moovieList.getMoovieListId())
+        dto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/listReports")
+                .queryParam("moovieListId", moovieList.getMoovieListId())
                 .queryParam("reportType", ReportTypesEnum.HATEFUL_CONTENT.getType())
                 .build()
                 .toString();
 
-        dto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
-                .queryParam("contentType", "moovieList")
-                .queryParam("resourceId", moovieList.getMoovieListId())
+        dto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/listReports")
+                .queryParam("moovieListId", moovieList.getMoovieListId())
                 .queryParam("reportType", ReportTypesEnum.PRIVACY.getType())
                 .build()
                 .toString();
 
-        dto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/reports")
-                .queryParam("contentType", "moovieList")
-                .queryParam("resourceId", moovieList.getMoovieListId())
+        dto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/listReports")
+                .queryParam("moovieListId", moovieList.getMoovieListId())
                 .queryParam("reportType", ReportTypesEnum.ABUSE.getType())
                 .build()
                 .toString();
