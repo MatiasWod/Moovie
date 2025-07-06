@@ -1,7 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-export default function ReportCountsCard({ totalReports, spamReports, hateReports, abuseReports, privacyReports }) {
+export default function ReportCountsCard({
+  totalReports,
+  spamReports,
+  hateReports,
+  abuseReports,
+  privacyReports,
+}) {
   const { t } = useTranslation();
 
   return (
@@ -31,4 +37,4 @@ export default function ReportCountsCard({ totalReports, spamReports, hateReport
       </div>
     </div>
   );
-} 
+}

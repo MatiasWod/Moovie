@@ -19,10 +19,10 @@ const ReportForm = ({ onCancel, onReportSubmit }) => {
   // Map translation keys to ReportTypes keys
   const getReportTypeKey = (translationKey) => {
     const keyMapping = {
-      'hate': 'Hate',
-      'abuseAndHarassment': 'Abuse & Harassment',
-      'privacy': 'Privacy',
-      'spam': 'Spam',
+      hate: 'Hate',
+      abuseAndHarassment: 'Abuse & Harassment',
+      privacy: 'Privacy',
+      spam: 'Spam',
     };
     return keyMapping[translationKey];
   };

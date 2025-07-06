@@ -2,8 +2,8 @@ import castApi from '../api/CastApi';
 import { parsePaginatedResponse } from '../utils/ResponseUtils';
 
 const CastService = (() => {
-  const getActorsForQuery = async ({search,pageNumber}) => {
-    const res = await castApi.getActorsForQuery({search, pageNumber});
+  const getActorsForQuery = async ({ search, pageNumber }) => {
+    const res = await castApi.getActorsForQuery({ search, pageNumber });
     return parsePaginatedResponse(res);
   };
 
@@ -18,10 +18,10 @@ const CastService = (() => {
 
   const getActorsFromUrl = async (url) => {
     return await castApi.getActorsFromUrl(url);
-  }
+  };
 
-  const getDirectorsForQuery = async ({search,pageNumber}) => {
-    const res = await castApi.getDirectorsForQuery({search,pageNumber});
+  const getDirectorsForQuery = async ({ search, pageNumber }) => {
+    const res = await castApi.getDirectorsForQuery({ search, pageNumber });
     return parsePaginatedResponse(res);
   };
 
@@ -40,11 +40,11 @@ const CastService = (() => {
 
   const getTvCreatorsFromUrl = async (url) => {
     return await castApi.getTvCreatorsFromUrl(url);
-  }
+  };
 
   const getDirectorById = async (id) => {
     return await castApi.getDirectorById(id);
-  }
+  };
 
   return {
     getActorsForQuery,
@@ -56,7 +56,7 @@ const CastService = (() => {
     getTvCreatorsSearch,
     getTvCreatorsByMediaId,
     getTvCreatorsFromUrl,
-    getDirectorById
+    getDirectorById,
   };
 })();
 

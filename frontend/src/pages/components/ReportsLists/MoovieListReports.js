@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '../../../api/api';
-import { default as ListApi, default as listApi } from '../../../api/ListApi';
+import { default as listApi } from '../../../api/ListApi';
 import reportApi from '../../../api/ReportApi';
 import userApi from '../../../api/UserApi';
-import { parsePaginatedResponse } from "../../../utils/ResponseUtils";
+import { parsePaginatedResponse } from '../../../utils/ResponseUtils';
 import ConfirmationModal from '../../components/forms/confirmationForm/confirmationModal';
-import PaginationButton from "../paginationButton/PaginationButton";
+import PaginationButton from '../paginationButton/PaginationButton';
 import EmptyState from './EmptyState';
 import LoadingState from './LoadingState';
 import ReportActionsButtons from './ReportActionsButtons';
@@ -27,7 +27,7 @@ export default function MoovieListReports() {
     setListsLoading(true);
     try {
       const res = await listApi.getReportedLists(page);
-      const response = parsePaginatedResponse(res)
+      const response = parsePaginatedResponse(res);
       const lists = response.data || [];
 
       try {
@@ -82,7 +82,7 @@ export default function MoovieListReports() {
 
   const handleDelete = async (ml) => {
     try {
-      await ListApi.deleteList(ml.id);
+      await api.delete(ml.url);
       await fetchLists();
     } catch (error) {
       console.error('Error deleting list:', error);
@@ -102,11 +102,7 @@ export default function MoovieListReports() {
 
   const handleResolve = async (ml) => {
     try {
-      if (ml.reportIds && ml.reportIds.length > 0) {
-        await Promise.all(ml.reportIds.map(reportId =>
-          reportApi.moovieListReports.resolveReport(reportId)
-        ));
-      }
+      await reportApi.resolveReports(ml.reportsUrl);
       await fetchLists();
     } catch (error) {
       console.error('Error resolving report:', error);
@@ -119,20 +115,25 @@ export default function MoovieListReports() {
         <div className="p-2 bg-purple-100 rounded-lg">
           <i className="bi bi-collection text-purple-600 text-xl"></i>
         </div>
-        <h2 className="text-2xl font-bold text-gray-800">{t('moovieListReports.moovieListReports')}</h2>
+        <h2 className="text-2xl font-bold text-gray-800">
+          {t('moovieListReports.moovieListReports')}
+        </h2>
       </div>
-      
+
       {listsLoading ? (
         <LoadingState message={t('reports.loading.lists')} />
       ) : lists.lists.length === 0 ? (
-        <EmptyState 
-          title={t('reports.empty.lists')} 
-          message={t('moovieListReports.noMoovieListReports')} 
+        <EmptyState
+          title={t('reports.empty.lists')}
+          message={t('moovieListReports.noMoovieListReports')}
         />
       ) : (
         <div className="space-y-6">
           {lists.lists.map((ml, index) => (
-            <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+            <div
+              key={index}
+              className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
+            >
               <div className="p-6">
                 <div className="flex justify-between items-start mb-6">
                   <div className="flex-1 space-y-3">
@@ -200,7 +201,9 @@ export default function MoovieListReports() {
                   <div className="mb-4">
                     <div className="flex items-center gap-2 mb-3">
                       <i className="bi bi-images text-gray-500"></i>
-                      <span className="text-sm font-medium text-gray-600">{t('reports.content.previewImages')}</span>
+                      <span className="text-sm font-medium text-gray-600">
+                        {t('reports.content.previewImages')}
+                      </span>
                     </div>
                     <div className="flex gap-3 overflow-x-auto py-2">
                       {ml.images.slice(0, 4).map((image, imgIndex) => (
@@ -218,7 +221,9 @@ export default function MoovieListReports() {
                 <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-4 mb-4 border-l-4 border-purple-300">
                   <div className="flex items-center gap-2 mb-2">
                     <i className="bi bi-text-paragraph text-gray-500"></i>
-                    <span className="text-sm font-medium text-gray-600">{t('reports.content.description')}</span>
+                    <span className="text-sm font-medium text-gray-600">
+                      {t('reports.content.description')}
+                    </span>
                   </div>
                   <p className="text-gray-800 leading-relaxed">{ml.description}</p>
                 </div>
@@ -265,11 +270,7 @@ export default function MoovieListReports() {
 
       {!listsLoading && lists?.links?.last?.pageNumber > 1 && (
         <div className="flex justify-center mt-8">
-          <PaginationButton
-            page={page}
-            lastPage={lists.links.last.pageNumber}
-            setPage={setPage}
-          />
+          <PaginationButton page={page} lastPage={lists.links.last.pageNumber} setPage={setPage} />
         </div>
       )}
     </div>

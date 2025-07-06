@@ -3,11 +3,10 @@ import { useTranslation } from 'react-i18next';
 import api from '../../../api/api';
 import mediaApi from '../../../api/MediaApi';
 import reportApi from '../../../api/ReportApi';
-import reviewApi from '../../../api/ReviewApi';
 import userApi from '../../../api/UserApi';
-import { parsePaginatedResponse } from "../../../utils/ResponseUtils";
+import { parsePaginatedResponse } from '../../../utils/ResponseUtils';
 import ConfirmationModal from '../../components/forms/confirmationForm/confirmationModal';
-import PaginationButton from "../paginationButton/PaginationButton";
+import PaginationButton from '../paginationButton/PaginationButton';
 import EmptyState from './EmptyState';
 import LoadingState from './LoadingState';
 import ReportActionsButtons from './ReportActionsButtons';
@@ -33,51 +32,51 @@ export default function ReviewReports() {
           pageNumber: page,
         },
       });
-      const response = parsePaginatedResponse(res)
+      const response = parsePaginatedResponse(res);
       const reviews = response.data || [];
 
       try {
-          const allPromises = reviews.flatMap((review) => {
-            const promises = [
-              reportApi.getCountFromUrl(review.abuseReportsUrl),
-              reportApi.getCountFromUrl(review.hateReportsUrl),
-              reportApi.getCountFromUrl(review.spamReportsUrl),
-              reportApi.getCountFromUrl(review.privacyReportsUrl),
-            ];
+        const allPromises = reviews.flatMap((review) => {
+          const promises = [
+            reportApi.getCountFromUrl(review.abuseReportsUrl),
+            reportApi.getCountFromUrl(review.hateReportsUrl),
+            reportApi.getCountFromUrl(review.spamReportsUrl),
+            reportApi.getCountFromUrl(review.privacyReportsUrl),
+          ];
 
-            if (review.mediaId) {
-              promises.push(mediaApi.getMediaById(review.mediaId));
-            } else {
-              promises.push(Promise.resolve({ data: null }));
-            }
+          if (review.mediaId) {
+            promises.push(mediaApi.getMediaById(review.mediaId));
+          } else {
+            promises.push(Promise.resolve({ data: null }));
+          }
 
-            return promises;
-          });
+          return promises;
+        });
 
-          const allResults = await Promise.all(allPromises);
+        const allResults = await Promise.all(allPromises);
 
-          const reviewsWithReports = reviews.map((review, index) => {
-            const baseIndex = index * 5;
+        const reviewsWithReports = reviews.map((review, index) => {
+          const baseIndex = index * 5;
 
-            return {
-              ...review,
-              abuseReports: allResults[baseIndex] || 0,
-              hateReports: allResults[baseIndex + 1] || 0,
-              spamReports: allResults[baseIndex + 2] || 0,
-              privacyReports: allResults[baseIndex + 3] || 0,
-              totalReports:
-                (Number(allResults[baseIndex]) || 0) +
-                (Number(allResults[baseIndex + 1]) || 0) +
-                (Number(allResults[baseIndex + 2]) || 0) +
-                (Number(allResults[baseIndex + 3]) || 0),
-              mediaDetails: allResults[baseIndex + 4].data,
-            };
-          });
+          return {
+            ...review,
+            abuseReports: allResults[baseIndex] || 0,
+            hateReports: allResults[baseIndex + 1] || 0,
+            spamReports: allResults[baseIndex + 2] || 0,
+            privacyReports: allResults[baseIndex + 3] || 0,
+            totalReports:
+              (Number(allResults[baseIndex]) || 0) +
+              (Number(allResults[baseIndex + 1]) || 0) +
+              (Number(allResults[baseIndex + 2]) || 0) +
+              (Number(allResults[baseIndex + 3]) || 0),
+            mediaDetails: allResults[baseIndex + 4].data,
+          };
+        });
 
-          setReviews({
-            reviews: reviewsWithReports,
-            links: response.links,
-          });
+        setReviews({
+          reviews: reviewsWithReports,
+          links: response.links,
+        });
       } catch (error) {
         console.error('Error fetching reviews:', error);
         setReviews([]);
@@ -92,7 +91,7 @@ export default function ReviewReports() {
 
   const handleDelete = async (review) => {
     try {
-      await reviewApi.deleteReviewById(review.id);
+      await api.delete(review.url);
       await fetchReports();
     } catch (error) {
       console.error('Error deleting review:', error);
@@ -112,11 +111,7 @@ export default function ReviewReports() {
 
   const handleResolve = async (review) => {
     try {
-      if (review.reportIds && review.reportIds.length > 0) {
-        await Promise.all(review.reportIds.map(reportId =>
-          reportApi.reviewReports.resolveReport(reportId)
-        ));
-      }
+      await reportApi.resolveReports(review.reportsUrl);
       await fetchReports();
     } catch (error) {
       console.error('Error resolving report:', error);
@@ -131,18 +126,21 @@ export default function ReviewReports() {
         </div>
         <h2 className="text-2xl font-bold text-gray-800">{t('reviewReports.reviewReports')}</h2>
       </div>
-      
+
       {reviewsLoading ? (
         <LoadingState message={t('reports.loading.reviews')} />
       ) : reviews.reviews.length === 0 ? (
-        <EmptyState 
-          title={t('reports.empty.reviews')} 
-          message={t('reviewReports.noReviewReports')} 
+        <EmptyState
+          title={t('reports.empty.reviews')}
+          message={t('reviewReports.noReviewReports')}
         />
       ) : (
         <div className="space-y-6">
           {reviews.reviews.map((review, index) => (
-            <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+            <div
+              key={index}
+              className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
+            >
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1 space-y-3">
@@ -219,7 +217,9 @@ export default function ReviewReports() {
                 <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-4 mb-4 border-l-4 border-indigo-300">
                   <div className="flex items-center gap-2 mb-2">
                     <i className="bi bi-chat-square-text text-gray-500"></i>
-                    <span className="text-sm font-medium text-gray-600">{t('reports.content.reportedReview')}</span>
+                    <span className="text-sm font-medium text-gray-600">
+                      {t('reports.content.reportedReview')}
+                    </span>
                   </div>
                   <p className="text-gray-800 leading-relaxed">{review.reviewContent}</p>
                 </div>

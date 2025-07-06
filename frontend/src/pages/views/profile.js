@@ -10,7 +10,7 @@ import ConfirmationModal from '../components/forms/confirmationForm/confirmation
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import useErrorStatus from '../../hooks/useErrorStatus';
-import userService from "../../services/UserService";
+import userService from '../../services/UserService';
 
 function ProfileTab({ selectedTab, profile }) {
   switch (selectedTab.toLowerCase()) {

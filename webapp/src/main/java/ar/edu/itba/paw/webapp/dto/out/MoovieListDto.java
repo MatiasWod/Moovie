@@ -38,7 +38,7 @@ public class MoovieListDto {
 
     private String creatorUrl;
 
-    private String totalReportsUrl;
+    private String reportsUrl;
 
     private String spamReportsUrl;
 
@@ -80,7 +80,7 @@ public class MoovieListDto {
         dto.reviewsUrl = uriInfo.getBaseUriBuilder().path("moovieListReviews")
                 .queryParam("listId", moovieList.getMoovieListId()).build().toString();
 
-        dto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/listReports")
+        dto.reportsUrl = uriInfo.getBaseUriBuilder().path("/listReports")
                 .queryParam("moovieListId", moovieList.getMoovieListId())
                 .build()
                 .toString();
@@ -236,12 +236,12 @@ public class MoovieListDto {
         this.creatorUrl = creatorUrl;
     }
 
-    public String getTotalReportsUrl() {
-        return totalReportsUrl;
+    public String getReportsUrl() {
+        return reportsUrl;
     }
 
-    public void setTotalReportsUrl(String totalReportsUrl) {
-        this.totalReportsUrl = totalReportsUrl;
+    public void setReportsUrl(String reportsUrl) {
+        this.reportsUrl = reportsUrl;
     }
 
     public String getSpamReportsUrl() {

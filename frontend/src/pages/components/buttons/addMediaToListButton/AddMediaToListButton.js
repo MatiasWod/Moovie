@@ -13,7 +13,7 @@ import { addIfNotExists, toggleMediaSelection } from '../../../../features/creat
 import WatchlistWatched from '../../../../api/values/WatchlistWatched';
 import listApi from '../../../../api/ListApi';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import UserService from "../../../../services/UserService";
+import UserService from '../../../../services/UserService';
 
 const AddMediaToListButton = ({ currentId, media }) => {
   const { t } = useTranslation();
@@ -39,9 +39,21 @@ const AddMediaToListButton = ({ currentId, media }) => {
 
   const fetchCurrentUserLists = async () => {
     try {
-      const response0 = await listService.getListsFromUrl({url: user.defaultPrivateMoovieListsUrl,pageNumber: 1, pageSize: 3});
-      const response1 = await listService.getListsFromUrl({url: user.privateMoovieListsUrl, pageNumber: 1, pageSize: 10});
-      const response2 = await listService.getListsFromUrl({url: user.publicMoovieListsUrl,pageNumber: 1, pageSize: 10});
+      const response0 = await listService.getListsFromUrl({
+        url: user.defaultPrivateMoovieListsUrl,
+        pageNumber: 1,
+        pageSize: 3,
+      });
+      const response1 = await listService.getListsFromUrl({
+        url: user.privateMoovieListsUrl,
+        pageNumber: 1,
+        pageSize: 10,
+      });
+      const response2 = await listService.getListsFromUrl({
+        url: user.publicMoovieListsUrl,
+        pageNumber: 1,
+        pageSize: 10,
+      });
 
       const combinedLists = [...response0.data, ...response1.data, ...response2.data];
       setLists(combinedLists);
@@ -111,10 +123,10 @@ const AddMediaToListButton = ({ currentId, media }) => {
     setPopupType('loading');
 
     try {
-        const response = await listService.insertMediaIntoMoovieList({
-          url: option.listContentUrl,
-          mediaIds: [Number(currentId)],
-        });
+      const response = await listService.insertMediaIntoMoovieList({
+        url: option.listContentUrl,
+        mediaIds: [Number(currentId)],
+      });
       if (response.status === 200) {
         setPopupType('success');
         setPopupMessage(t('addMediaToListButton.successfullyAddedToList'));

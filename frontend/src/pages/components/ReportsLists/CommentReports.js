@@ -4,9 +4,9 @@ import api from '../../../api/api';
 import commentApi from '../../../api/CommentApi';
 import reportApi from '../../../api/ReportApi';
 import userApi from '../../../api/UserApi';
-import { parsePaginatedResponse } from "../../../utils/ResponseUtils";
+import { parsePaginatedResponse } from '../../../utils/ResponseUtils';
 import ConfirmationModal from '../../components/forms/confirmationForm/confirmationModal';
-import PaginationButton from "../paginationButton/PaginationButton";
+import PaginationButton from '../paginationButton/PaginationButton';
 import EmptyState from './EmptyState';
 import LoadingState from './LoadingState';
 import ReportActionsButtons from './ReportActionsButtons';
@@ -27,7 +27,7 @@ export default function CommentReports() {
     setCommentsLoading(true);
     try {
       const res = await commentApi.getReportedComments(page);
-      const response = parsePaginatedResponse(res)
+      const response = parsePaginatedResponse(res);
       const comments = response.data || [];
 
       try {
@@ -46,26 +46,30 @@ export default function CommentReports() {
 
           const allResults = await Promise.all(allPromises);
 
-          const commentsWithDetails = await Promise.all(comments.map(async (comment, index) => {
-            const baseIndex = index * 5;
+          const commentsWithDetails = await Promise.all(
+            comments.map(async (comment, index) => {
+              const baseIndex = index * 5;
 
-            const media = allResults[baseIndex + 4]?.data?.mediaId ? await api.get(allResults[baseIndex + 4]?.data?.mediaUrl) : null;
+              const media = allResults[baseIndex + 4]?.data?.mediaId
+                ? await api.get(allResults[baseIndex + 4]?.data?.mediaUrl)
+                : null;
 
-            return {
-              ...comment,
-              abuseReports: allResults[baseIndex] || 0,
-              hateReports: allResults[baseIndex + 1] || 0,
-              spamReports: allResults[baseIndex + 2] || 0,
-              privacyReports: allResults[baseIndex + 3] || 0,
-              totalReports:
-                (Number(allResults[baseIndex]) || 0) +
-                (Number(allResults[baseIndex + 1]) || 0) +
-                (Number(allResults[baseIndex + 2]) || 0) +
-                (Number(allResults[baseIndex + 3]) || 0),
-              reviewDetails: allResults[baseIndex + 4]?.data,
-              mediaDetails: media?.data,
-            };
-          }));
+              return {
+                ...comment,
+                abuseReports: allResults[baseIndex] || 0,
+                hateReports: allResults[baseIndex + 1] || 0,
+                spamReports: allResults[baseIndex + 2] || 0,
+                privacyReports: allResults[baseIndex + 3] || 0,
+                totalReports:
+                  (Number(allResults[baseIndex]) || 0) +
+                  (Number(allResults[baseIndex + 1]) || 0) +
+                  (Number(allResults[baseIndex + 2]) || 0) +
+                  (Number(allResults[baseIndex + 3]) || 0),
+                reviewDetails: allResults[baseIndex + 4]?.data,
+                mediaDetails: media?.data,
+              };
+            })
+          );
 
           setComments({
             comments: commentsWithDetails,
@@ -89,7 +93,7 @@ export default function CommentReports() {
 
   const handleDelete = async (comment) => {
     try {
-      await commentApi.deleteComment(comment.id);
+      await api.delete(comment.url);
       await fetchComments();
     } catch (error) {
       console.error('Error deleting comment:', error);
@@ -109,11 +113,7 @@ export default function CommentReports() {
 
   const handleResolve = async (comment) => {
     try {
-      if (comment.reportIds && comment.reportIds.length > 0) {
-        await Promise.all(comment.reportIds.map(reportId =>
-          reportApi.commentReports.resolveReport(reportId)
-        ));
-      }
+      await reportApi.resolveReports(comment.reportsUrl);
       await fetchComments();
     } catch (error) {
       console.error('Error resolving report:', error);
@@ -128,18 +128,21 @@ export default function CommentReports() {
         </div>
         <h2 className="text-2xl font-bold text-gray-800">{t('commentReports.commentReports')}</h2>
       </div>
-      
+
       {commentsLoading ? (
         <LoadingState message={t('reports.loading.comments')} />
       ) : comments?.comments?.length === 0 ? (
-        <EmptyState 
-          title={t('reports.empty.comments')} 
-          message={t('commentReports.noCommentReports')} 
+        <EmptyState
+          title={t('reports.empty.comments')}
+          message={t('commentReports.noCommentReports')}
         />
       ) : (
         <div className="space-y-6">
           {comments?.comments?.map((comment, index) => (
-            <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+            <div
+              key={index}
+              className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
+            >
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1 space-y-3">
@@ -171,9 +174,11 @@ export default function CommentReports() {
                         {t('reviews.onMedia')} {t('reviews.reviews')}:
                       </div>
                       <p className="text-sm text-gray-700 italic">
-                        "{comment.reviewDetails?.reviewContent?.length > 50
+                        "
+                        {comment.reviewDetails?.reviewContent?.length > 50
                           ? `${comment.reviewDetails.reviewContent.substring(0, 50)}...`
-                          : comment.reviewDetails?.reviewContent}"
+                          : comment.reviewDetails?.reviewContent}
+                        "
                       </p>
                     </div>
 
@@ -203,7 +208,9 @@ export default function CommentReports() {
                 <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-4 mb-4 border-l-4 border-gray-300">
                   <div className="flex items-center gap-2 mb-2">
                     <i className="bi bi-chat-dots text-gray-500"></i>
-                    <span className="text-sm font-medium text-gray-600">{t('reports.content.reportedComment')}</span>
+                    <span className="text-sm font-medium text-gray-600">
+                      {t('reports.content.reportedComment')}
+                    </span>
                   </div>
                   <p className="text-gray-800 leading-relaxed">{comment.content}</p>
                 </div>
@@ -260,4 +267,3 @@ export default function CommentReports() {
     </div>
   );
 }
-

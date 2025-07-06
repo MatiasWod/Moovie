@@ -31,7 +31,6 @@ const ListContentPaginated = ({
 
   const { isLoggedIn, user } = useSelector((state) => state.auth);
 
-
   const handleEditMode = () => {
     setEditMode(!editMode);
     setOrderBy(MediaOrderBy.CUSTOM_ORDER);

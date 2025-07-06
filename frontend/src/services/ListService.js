@@ -31,9 +31,9 @@ const ListService = (() => {
     return parsePaginatedResponse(res);
   };
 
-  const getListsFromUrl = async ({url,pageNumber,pageSize}) => {
+  const getListsFromUrl = async ({ url, pageNumber, pageSize }) => {
     return await listApi.getListsFromUrl(url, pageNumber, pageSize);
-  }
+  };
 
   const getListByIdList = async (idList) => {
     const res = await listApi.getListByIdList(idList);
@@ -81,9 +81,9 @@ const ListService = (() => {
     };
   };
 
-  const getListContentByMediaId = async ({url,mediaId})=>{
-    return await listApi.getListContentByMediaId(url,mediaId);
-  }
+  const getListContentByMediaId = async ({ url, mediaId }) => {
+    return await listApi.getListContentByMediaId(url, mediaId);
+  };
 
   const createMoovieList = async ({ name, type, description }) => {
     return await listApi.createMoovieList(name, type, description);

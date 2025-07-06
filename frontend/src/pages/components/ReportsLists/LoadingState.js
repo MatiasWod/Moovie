@@ -10,4 +10,4 @@ export default function LoadingState({ message }) {
       </div>
     </div>
   );
-} 
+}

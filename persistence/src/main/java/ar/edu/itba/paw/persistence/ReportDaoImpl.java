@@ -564,6 +564,8 @@ public class ReportDaoImpl implements ReportDao {
 
         sql.append(" ORDER BY c.report_date DESC");
 
+        LOGGER.info(sql.toString(), reportType, resourceId);
+
         TypedQuery<CommentReport> query = em.createQuery(sql.toString(), CommentReport.class)
                 .setMaxResults(pageSize)
                 .setFirstResult(offset);

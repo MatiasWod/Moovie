@@ -24,7 +24,7 @@ public class ReviewDto {
 
     private LocalDate lastModified;
 
-    private String totalReportsUrl;
+    private String reportsUrl;
 
     private String spamReportsUrl;
 
@@ -57,7 +57,7 @@ public class ReviewDto {
                 .toString();
         reviewDto.mediaUrl = uriInfo.getBaseUriBuilder().path("/medias/{id}").build(review.getMediaId()).toString();
 
-        reviewDto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/reviewReports")
+        reviewDto.reportsUrl = uriInfo.getBaseUriBuilder().path("/reviewReports")
                 .queryParam("reviewId", review.getReviewId())
                 .build()
                 .toString();
@@ -142,12 +142,12 @@ public class ReviewDto {
         this.username = username;
     }
 
-    public String getTotalReportsUrl() {
-        return totalReportsUrl;
+    public String getReportsUrl() {
+        return reportsUrl;
     }
 
-    public void setTotalReportsUrl(String totalReportsUrl) {
-        this.totalReportsUrl = totalReportsUrl;
+    public void setReportsUrl(String reportsUrl) {
+        this.reportsUrl = reportsUrl;
     }
 
     public String getSpamReportsUrl() {

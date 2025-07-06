@@ -68,8 +68,14 @@ public class ReviewReportController {
                 reports = reportService.getReviewReports(reportType, reviewId, pageSizeQuery, pageNumber);
                 totalCount = reportService.getReportsCount(ResourceTypesEnum.REVIEW.getDescription(), reportType, reviewId);
             } else {
-                reports = reportService.getReviewReports(pageSizeQuery, pageNumber);
-                totalCount = reportService.getReportsCount(ResourceTypesEnum.REVIEW.getDescription());
+                if (reviewId != null) {
+                    reports = reportService.getReviewReports(null, reviewId, pageSizeQuery, pageNumber);
+                    totalCount = reportService.getReportsCount(ResourceTypesEnum.REVIEW.getDescription(), null, reviewId);
+                }else{
+                    reports = reportService.getReviewReports(pageSizeQuery, pageNumber);
+                    totalCount = reportService.getReportsCount(ResourceTypesEnum.REVIEW.getDescription());
+                }
+
             }
 
             List<ReviewReportDto> reportDTOs = ReviewReportDto.fromReviewReportList(reports, uriInfo);

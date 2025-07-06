@@ -91,7 +91,7 @@ const CreateListView = () => {
         throw new Error(t('createList.failed_extract_id'));
       }
 
-      console.log(response)
+      console.log(response);
       if (selectedMedia.length > 0) {
         const mediaIds = selectedMedia.map((media) => media.id);
         console.log('Inserting media into list:', mediaIds);

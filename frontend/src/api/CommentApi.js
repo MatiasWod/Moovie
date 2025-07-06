@@ -48,15 +48,14 @@ const commentApi = (() => {
     return response;
   };
 
-
-  const getCommentsFromUrl = async (url, pageNumber, pageSize ) => {
+  const getCommentsFromUrl = async (url, pageNumber, pageSize) => {
     return api.get(url, {
       params: {
-        ...(pageNumber && { 'pageNumber': pageNumber }),
-        ...(pageSize && { 'pageSize': pageSize }),
+        ...(pageNumber && { pageNumber: pageNumber }),
+        ...(pageSize && { pageSize: pageSize }),
       },
     });
-  }
+  };
 
   const getReportedComments = async (pageNumber = 1) => {
     return api.get('/comments', {
@@ -72,7 +71,7 @@ const commentApi = (() => {
     commentFeedback,
     getReviewComments,
     getCommentsFromUrl,
-    getReportedComments
+    getReportedComments,
   };
 })();
 
