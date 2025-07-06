@@ -382,53 +382,6 @@ public class UserController {
      */
 
     @GET
-    @Path("/{username}/reviewLikes/{reviewId}")
-    @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Produces(VndType.APPLICATION_REVIEW_LIKE)
-    public Response getLikedReviewById(@PathParam("username") final String username,
-                                       @PathParam("reviewId") final int reviewId) {
-        try {
-            Review review = reviewService.getReviewById(reviewId);
-            boolean liked=review.isCurrentUserHasLiked();
-
-            if(liked){
-                return Response.ok(UserReviewIdDto.fromUserReviewId(reviewId,username)).build();
-            }
-
-            return Response.noContent().build();
-        } catch (UnableToFindUserException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-
-    }
-
-
-    @GET
-    @Path("/{username}/moovieListsReviewsLikes/{moovieListReviewId}")
-    @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Produces(VndType.APPLICATION_MOOVIELIST_REVIEW_LIKE)
-    public Response getLikedMoovieListsReviewById(@PathParam("username") final String username,
-                                       @PathParam("moovieListReviewId") final int moovieListReviewId) {
-        try {
-            MoovieListReview review = reviewService.getMoovieListReviewById(moovieListReviewId);
-            boolean liked=review.isCurrentUserHasLiked();
-
-            if(liked){
-                return Response.ok(UserReviewIdDto.fromUserReviewId(moovieListReviewId,username)).build();
-            }
-            return Response.noContent().build();
-        } catch (UnableToFindUserException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-
-    }
-
-
-    @GET
     @Path("/{username}/commentsFeedback/{commentId}")
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(VndType.APPLICATION_COMMENT_LIKE)

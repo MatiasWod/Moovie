@@ -42,6 +42,8 @@ public class ReviewDto {
 
     private String commentsUrl;
 
+    private String likesUrl;
+
     public static ReviewDto fromReview(final Review review, UriInfo uriInfo) {
         ReviewDto reviewDto = new ReviewDto();
         reviewDto.id = review.getReviewId();
@@ -86,6 +88,10 @@ public class ReviewDto {
                 .toString();
         reviewDto.commentsUrl = uriInfo.getBaseUriBuilder().path("/comments")
                 .queryParam("reviewId", review.getReviewId()).build().toString();
+
+        reviewDto.likesUrl = uriInfo.getBaseUriBuilder().path("/reviews/{listId}/likes")
+                .build(review.getReviewId())
+                .toString();
 
         return reviewDto;
     }
@@ -168,6 +174,14 @@ public class ReviewDto {
 
     public String getAbuseReportsUrl() {
         return abuseReportsUrl;
+    }
+
+    public String getLikesUrl() {
+        return likesUrl;
+    }
+
+    public void setLikesUrl(String likesUrl) {
+        this.likesUrl = likesUrl;
     }
 
     public String getPrivacyReportsUrl() {

@@ -107,14 +107,12 @@ public class ReviewServiceImpl implements ReviewService{
         if (type.getType()==ReviewTypes.REVIEW_MEDIA.getType()) {
             Review review = reviewDao.getReviewById(userService.tryToGetCurrentUserId(), reviewId).orElseThrow(() -> new ReviewNotFoundException("Review not found for id: " + reviewId));
             if(review.isCurrentUserHasLiked()){
-                removeLikeReview(reviewId, type);
                 return false;
             }
         }
         else {
             MoovieListReview review = reviewDao.getMoovieListReviewById(userService.tryToGetCurrentUserId(),reviewId).orElseThrow(() -> new ReviewNotFoundException("MoovieListReview not found for id: " + reviewId));
             if(review.isCurrentUserHasLiked()){
-                removeLikeReview(reviewId, type);
                 return false;
             }
         }
@@ -126,15 +124,20 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Transactional
     @Override
-    public void removeLikeReview(int reviewId, ReviewTypes type) {
+    public boolean removeLikeReview(int reviewId, ReviewTypes type) {
         if (type.getType()==ReviewTypes.REVIEW_MEDIA.getType()) {
             Review review = reviewDao.getReviewById(userService.tryToGetCurrentUserId(), reviewId).orElseThrow(() -> new ReviewNotFoundException("Review not found for id: " + reviewId));
+            if (!review.isCurrentUserHasLiked()){
+                return false;
+            }
         }
         else {
             MoovieListReview review = reviewDao.getMoovieListReviewById(userService.tryToGetCurrentUserId(),reviewId).orElseThrow(() -> new ReviewNotFoundException("MoovieListReview not found for id: " + reviewId));
-            }
+            return false;
+        }
         reviewDao.removeLikeReview(userService.getInfoOfMyUser().getUserId(),reviewId,type);
         LOGGER.info("Succesfully removed like in review: {}, user: {}.", reviewId, userService.getInfoOfMyUser().getUserId());
+        return true;
     }
 
     @Transactional
@@ -207,6 +210,43 @@ public class ReviewServiceImpl implements ReviewService{
     @Override
     public MoovieListReview getMoovieListReviewByListIdAndUsername(int listId, int userId) {
         return reviewDao.getMoovieListReviewByListIdAndUsername(listId, userId);
+    }
+
+
+    @Transactional
+    @Override
+    public List<User> usersLikesReview(int reviewId, int pageNumber, int pageSize, ReviewTypes type){
+        return reviewDao.usersLikesReview(reviewId, pageNumber, pageSize, type);
+    }
+
+    @Transactional
+    @Override
+    public boolean userLikesReview(int reviewId, String username, ReviewTypes type){
+        return reviewDao.userLikesReview(reviewId, username, type);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<MoovieListReview> getLikedMoovieListReviewsByUser(String username, int size, int pageNumber) {
+        return reviewDao.getLikedMoovieListReviewsByUser(username, size, pageNumber);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public int getLikedMoovieListReviewsCountByUser(String username) {
+        return reviewDao.getLikedMoovieListReviewsCountByUser(username);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Review> getLikedReviewsByUser(String username, int size, int pageNumber) {
+        return reviewDao.getLikedReviewsByUser(username, size, pageNumber);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public int getLikedReviewsCountByUser(String username) {
+        return reviewDao.getLikedReviewsCountByUser(username);
     }
 
 }
