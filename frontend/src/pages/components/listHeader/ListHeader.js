@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import './listHeader.css';
-import listService from '../../../services/ListService';
-import { useSelector } from 'react-redux';
-import { NavLink, useNavigate } from 'react-router-dom';
-import ReviewForm from '../forms/reviewForm/ReviewForm';
-import EditListForm from '../forms/editListForm/editListForm';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import api from '../../../api/api';
 import MoovieListTypes from '../../../api/values/MoovieListTypes';
-import UserService from '../../../services/UserService';
+import EditListForm from '../forms/editListForm/editListForm';
+import './listHeader.css';
 
 const ListHeader = ({
   list,
@@ -33,13 +31,19 @@ const ListHeader = ({
   useEffect(() => {
     const fetchHasLikedAndFollowed = async () => {
       try {
-        const likedAndFollowed = await UserService.currentUserLikeFollowStatus(
-          list.id,
-          user.username
-        );
-        setHasLikedAndFollowed(likedAndFollowed);
+        const [liked, followed] = await Promise.all([
+          api.get(list.likesUrl + '/' + user.username),
+          api.get(list.followersUrl + '/' + user.username),
+        ]);
+        setHasLikedAndFollowed({
+          liked: liked.status === 200,
+          followed: followed.status === 200,
+        });
       } catch (error) {
-        // Handle error
+        setHasLikedAndFollowed({
+          liked: false,
+          followed: false,
+        });
       }
     };
 
@@ -52,9 +56,9 @@ const ListHeader = ({
         navigate('/login');
       }
       if (hasLikedAndFollowed.liked) {
-        await listService.unlikeList(list.id, user.username);
+        await api.delete(list.likesUrl);
       } else {
-        await listService.likeList(list.id, user.username);
+        await api.post(list.likesUrl);
       }
       setPing(!ping);
     } catch (error) {
@@ -68,9 +72,9 @@ const ListHeader = ({
         navigate('/login');
       }
       if (hasLikedAndFollowed.followed) {
-        await listService.unfollowList(list.id, user.username);
+        await api.delete(list.followersUrl);
       } else {
-        await listService.followList(list.id, user.username);
+        await api.post(list.followersUrl);
       }
       setPing(!ping);
     } catch (error) {

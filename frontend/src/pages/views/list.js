@@ -1,28 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { createSearchParams, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import ListHeader from '../components/listHeader/ListHeader';
-import OrderBy from '../../api/values/MediaOrderBy';
-import SortOrder from '../../api/values/SortOrder';
-import '../components/mainStyle.css';
-import ListService from '../../services/ListService';
-import pagingSizes from '../../api/values/PagingSizes';
-import ListContentPaginated from '../components/listContentPaginated/ListContentPaginated';
-import Reviews from '../components/ReviewsSection/Reviews';
-import ListCard from '../components/listCard/ListCard';
 import { ProgressBar, Spinner } from 'react-bootstrap';
-import ListApi from '../../api/ListApi';
-import Error403 from './errorViews/error403';
-import { parsePaginatedResponse } from '../../utils/ResponseUtils';
-import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import ConfirmationModal from '../components/forms/confirmationForm/confirmationModal';
+import { useSelector } from 'react-redux';
+import { createSearchParams, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import api from '../../api/api';
+import ListApi from '../../api/ListApi';
 import moovieListReviewApi from '../../api/MoovieListReviewApi';
 import reportApi from '../../api/ReportApi';
-import ReportForm from '../components/forms/reportForm/reportForm';
+import OrderBy from '../../api/values/MediaOrderBy';
+import pagingSizes from '../../api/values/PagingSizes';
+import SortOrder from '../../api/values/SortOrder';
 import useErrorStatus from '../../hooks/useErrorStatus';
-import api from '../../api/api';
-import listService from '../../services/ListService';
+import { default as ListService } from '../../services/ListService';
 import UserService from '../../services/UserService';
+import ConfirmationModal from '../components/forms/confirmationForm/confirmationModal';
+import ReportForm from '../components/forms/reportForm/reportForm';
+import ListCard from '../components/listCard/ListCard';
+import ListContentPaginated from '../components/listContentPaginated/ListContentPaginated';
+import ListHeader from '../components/listHeader/ListHeader';
+import '../components/mainStyle.css';
+import Reviews from '../components/ReviewsSection/Reviews';
+import Error403 from './errorViews/error403';
 
 function List() {
   const [error403, setError403] = useState(false);
@@ -111,11 +109,9 @@ function List() {
           pageNumber: page,
           pageSize: pagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT,
         });
-        console.log('List content data:', data);
         setListContent(data);
         setListContentLoading(false);
       } catch (error) {
-        console.error('Error getting list content:', error);
         setListContentError(error);
         setListContentLoading(false);
       }
@@ -123,19 +119,44 @@ function List() {
     getData();
   }, [list?.data.contentUrl, currentOrderBy, currentSortOrder, page, flag]);
 
-  //TODO: ver si esto está ok
   const [watchedCount, setWatchedCount] = useState(0);
   useEffect(() => {
     async function getWatchedCount() {
+      if (!listContent) {
+        return;
+      }
+      // Go through all the media in the paginated list content. Promise.all the WW status of each media.
       try {
-        const data = await UserService.getWatchedCountFromMovieListId(id, user.username);
-        setWatchedCount(data.data.count);
+        // Get all media content
+        const allMedia = new Set();
+
+        listContent.data.forEach((media) => {
+          allMedia.add(media);
+        });
+
+        while (listContent.links.next) {
+          const nextPage = await api.get(listContent.links.next);
+          nextPage.data.forEach((media) => {
+            allMedia.add(media);
+          });
+          listContent = nextPage.data;
+        }
+
+        // Get status
+        const allWW = await Promise.all(Array.from(allMedia).map(async (media) => {
+          const WW = await UserService.currentUserWWStatus(
+            media.id,
+            user.defaultPrivateMoovieListsUrl
+          );
+          return WW;
+        }));
+        setWatchedCount(allWW.filter((ww) => ww.watched).length);
       } catch (e) {
         setWatchedCount(0);
       }
     }
     getWatchedCount();
-  }, [id]);
+  }, [listContent]);
 
   const [listRecommendations, setListRecommendations] = useState(undefined);
   const [listRecommendationsLoading, setlistRecommendationsLoading] = useState(true);
@@ -144,10 +165,10 @@ function List() {
   useEffect(() => {
     async function getData() {
       try {
-        if (!list?.data.recommendedListsUrl) {
+        if (!list?.data?.recommendedListsUrl) {
           return;
         }
-        const data = listService.getListsFromUrl(list.data.recommendedListsUrl).data;
+        const data = (await api.get(list.data.recommendedListsUrl)).data;
         setListRecommendations(data);
 
         setlistRecommendationsLoading(false);
@@ -157,7 +178,7 @@ function List() {
       }
     }
     getData();
-  }, [list?.data.recommendedListsUrl]);
+  }, [list?.data?.recommendedListsUrl]);
 
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewContent, setReviewContent] = useState('');
@@ -246,19 +267,21 @@ function List() {
         <ReportForm onReportSubmit={handleReportList} onCancel={() => setShowReportForm(false)} />
       )}
 
-      {isLoggedIn && list && list.data && (
+      {isLoggedIn && list && list?.data && (
+        <>
         <div style={{ marginTop: '5px' }}>
           <ProgressBar
-            now={list.data.mediaCount === 0 ? 100 : (watchedCount / list.data.mediaCount) * 100}
+            now={list?.data?.mediaCount === 0 ? 100 : (watchedCount / list?.data?.mediaCount) * 100}
             label={
               t('profile.watched') +
               ': ' +
               `${Math.round(
-                list.data.mediaCount === 0 ? 100 : (watchedCount / list.data.mediaCount) * 100
+                list?.data?.mediaCount === 0 ? 100 : (watchedCount / list?.data?.mediaCount) * 100
               )}%`
             }
-          />
-        </div>
+            />
+          </div>
+        </>
       )}
 
       {listContentLoading && !listContentError ? (
