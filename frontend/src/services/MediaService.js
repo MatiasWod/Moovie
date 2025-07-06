@@ -73,7 +73,7 @@ const MediaService = (() => {
     getMediasForTVCreator,
     getMediasForDirector,
     getMediasForActor,
-    getMediasFromUrl
+    getMediasFromUrl,
   };
 })();
 

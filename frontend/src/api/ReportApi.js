@@ -1,3 +1,4 @@
+import { parsePaginatedResponse } from '../utils/ResponseUtils.js';
 import api from './api.js';
 import commentReportApi from './CommentReportApi.js';
 import moovieListReportApi from './MoovieListReportApi.js';
@@ -45,17 +46,33 @@ const reportApi = (() => {
     // Map the old contentType parameter to the appropriate API
     switch (contentType) {
       case 'comment':
-        return commentReportApi.getReportCounts({ reportType, commentId: resourceId, commentUrl: resourceUrl });
+        return commentReportApi.getReportCounts({
+          reportType,
+          commentId: resourceId,
+          commentUrl: resourceUrl,
+        });
       case 'review':
-        return reviewReportApi.getReportCounts({ reportType, reviewId: resourceId, reviewUrl: resourceUrl });
+        return reviewReportApi.getReportCounts({
+          reportType,
+          reviewId: resourceId,
+          reviewUrl: resourceUrl,
+        });
       case 'moovieList':
-        return moovieListReportApi.getReportCounts({ reportType, moovieListId: resourceId, moovieListUrl: resourceUrl });
+        return moovieListReportApi.getReportCounts({
+          reportType,
+          moovieListId: resourceId,
+          moovieListUrl: resourceUrl,
+        });
       case 'moovieListReview':
-        return moovieListReviewReportApi.getReportCounts({ reportType, moovieListReviewId: resourceId, moovieListReviewUrl: resourceUrl });
+        return moovieListReviewReportApi.getReportCounts({
+          reportType,
+          moovieListReviewId: resourceId,
+          moovieListReviewUrl: resourceUrl,
+        });
       default:
         // Return 0 count for unknown content types
         return {
-          data: { count: 0 }
+          data: { count: 0 },
         };
     }
   };
@@ -63,7 +80,13 @@ const reportApi = (() => {
   const getCountFromUrl = async (url) => {
     try {
       const response = await api.get(url, { params: { pageSize: 1, pageNumber: 1 } });
-      return response.headers['total-count'] || response.headers['Total-Count'] || response.headers['Total-Elements'] || response.headers['total-elements'] || 0;
+      return (
+        response.headers['total-count'] ||
+        response.headers['Total-Count'] ||
+        response.headers['Total-Elements'] ||
+        response.headers['total-elements'] ||
+        0
+      );
     } catch (error) {
       console.error('Error getting count from URL:', error);
       return 0;
@@ -71,6 +94,30 @@ const reportApi = (() => {
   };
 
   // --------------- ACTIONS ---------------
+
+  const resolveReports = async (url) => {
+    try {
+      // api.delete(report.url) for ALL reports from the paginated response.
+      console.log('Resolving reports from:', url);
+      const request = await api.get(url);
+      const response = parsePaginatedResponse(request);
+      console.log('Paginated Response:', response);
+
+      const allReportUrls = new Set(response.data.map((report) => report.url));
+      while (response.hasNextPage) {
+        console.log('Next page:', response.nextPage);
+        const nextPage = await api.get(response.nextPage);
+        const nextResponse = parsePaginatedResponse(nextPage);
+        nextResponse.data.forEach((report) => allReportUrls.add(report.url));
+      }
+      console.log('Found', allReportUrls.size, 'reports to resolve');
+      const reportUrlsArray = Array.from(allReportUrls);
+      console.log('Report URLs:', reportUrlsArray);
+      await Promise.all(reportUrlsArray.map((reportUrl) => api.delete(reportUrl)));
+    } catch (error) {
+      console.error('Error resolving reports:', error);
+    }
+  };
 
   const resolveReviewReport = async (reviewId) => {
     // For backward compatibility, we need to get the report ID first
@@ -122,7 +169,7 @@ const reportApi = (() => {
     resolveCommentReport,
     resolveMoovieListReport,
     resolveMoovieListReviewReport,
-
+    resolveReports,
     // New specialized APIs for direct access
     commentReports: commentReportApi,
     reviewReports: reviewReportApi,

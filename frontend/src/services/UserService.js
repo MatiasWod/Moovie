@@ -23,7 +23,6 @@ const UserService = (() => {
     return parsePaginatedResponse(res);
   };
 
-
   const currentUserHasLiked = async (url, username) => {
     try {
       const res = await userApi.currentUserHasLikedList(url, username);

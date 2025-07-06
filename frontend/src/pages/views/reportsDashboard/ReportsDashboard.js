@@ -11,14 +11,39 @@ export default function ReportsDashboard() {
   const { t } = useTranslation();
 
   const tabs = [
-    { id: 'comments', label: t('reportsDashboard.comments'), component: CommentReports, icon: 'bi-chat-dots' },
-    { id: 'ml', label: t('reportsDashboard.moovieLists'), component: MoovieListReports, icon: 'bi-collection' },
-    { id: 'mlReviews', label: t('reportsDashboard.moovieListReviews'), component: MoovieListReviewReports, icon: 'bi-star' },
-    { id: 'reviews', label: t('reportsDashboard.reviews'), component: ReviewReports, icon: 'bi-chat-square-text' },
-    { id: 'banned', label: t('reportsDashboard.bannedUsers'), component: BannedUsers, icon: 'bi-person-x' },
+    {
+      id: 'comments',
+      label: t('reportsDashboard.comments'),
+      component: CommentReports,
+      icon: 'bi-chat-dots',
+    },
+    {
+      id: 'ml',
+      label: t('reportsDashboard.moovieLists'),
+      component: MoovieListReports,
+      icon: 'bi-collection',
+    },
+    {
+      id: 'mlReviews',
+      label: t('reportsDashboard.moovieListReviews'),
+      component: MoovieListReviewReports,
+      icon: 'bi-star',
+    },
+    {
+      id: 'reviews',
+      label: t('reportsDashboard.reviews'),
+      component: ReviewReports,
+      icon: 'bi-chat-square-text',
+    },
+    {
+      id: 'banned',
+      label: t('reportsDashboard.bannedUsers'),
+      component: BannedUsers,
+      icon: 'bi-person-x',
+    },
   ];
 
-  const ActiveComponent = tabs.find(tab => tab.id === selectedType)?.component;
+  const ActiveComponent = tabs.find((tab) => tab.id === selectedType)?.component;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -42,9 +67,10 @@ export default function ReportsDashboard() {
                   onClick={() => setSelectedType(tab.id)}
                   className={`
                     flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105
-                    ${selectedType === tab.id 
-                      ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/25' 
-                      : 'bg-gray-50 text-gray-700 hover:bg-gray-100 hover:text-gray-900 border border-gray-200'
+                    ${
+                      selectedType === tab.id
+                        ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/25'
+                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100 hover:text-gray-900 border border-gray-200'
                     }
                   `}
                 >

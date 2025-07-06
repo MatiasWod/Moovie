@@ -124,7 +124,6 @@ export const VndType = {
 
   APPLICATION_USER_PASSWORD: 'application/vnd.user_password.v1+json',
 
-
   // Tipo de medio para operaciones de creación/edición de un user
   APPLICATION_USER_FORM: 'application/vnd.user-form.v1+json',
 

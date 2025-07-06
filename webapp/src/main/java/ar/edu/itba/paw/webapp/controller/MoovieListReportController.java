@@ -70,8 +70,14 @@ public class MoovieListReportController {
                 reports = reportService.getMoovieListReports(reportType, moovieListId, pageSizeQuery, pageNumber);
                 totalCount = reportService.getReportsCount(ResourceTypesEnum.MOOVIELIST.getDescription(), reportType, moovieListId);
             } else {
-                reports = reportService.getMoovieListReports(pageSizeQuery, pageNumber);
-                totalCount = reportService.getReportsCount(ResourceTypesEnum.MOOVIELIST.getDescription());
+                if (moovieListId != null) {
+                    reports = reportService.getMoovieListReports(null, moovieListId, pageSizeQuery, pageNumber);
+                    totalCount = reportService.getReportsCount(ResourceTypesEnum.MOOVIELIST.getDescription(), null, moovieListId);
+                } else{
+                    reports = reportService.getMoovieListReports(pageSizeQuery, pageNumber);
+                    totalCount = reportService.getReportsCount(ResourceTypesEnum.MOOVIELIST.getDescription());
+                }
+
             }
 
             List<MoovieListReportDto> reportDTOs = MoovieListReportDto.fromMoovieListReportList(reports, uriInfo);

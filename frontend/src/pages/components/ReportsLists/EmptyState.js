@@ -10,4 +10,4 @@ export default function EmptyState({ title, message }) {
       <p className="text-gray-500">{message}</p>
     </div>
   );
-} 
+}

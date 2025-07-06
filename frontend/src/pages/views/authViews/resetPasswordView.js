@@ -41,7 +41,7 @@ const ResetPassword = () => {
 
     try {
       setLoading(true);
-      await userApi.resetPassword(username,token, password);
+      await userApi.resetPassword(username, token, password);
       setError('');
       setSuccess(true);
     } catch (error) {

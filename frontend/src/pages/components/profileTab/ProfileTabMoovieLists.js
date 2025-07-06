@@ -10,8 +10,8 @@ import MoovieListTypes from '../../../api/values/MoovieListTypes';
 import ListCardsPaginated from '../ListCardsPaginated/ListCardsPaginated';
 import UserService from '../../../services/UserService';
 import { Spinner } from 'react-bootstrap';
-import userApi from "../../../api/UserApi";
-import {parsePaginatedResponse} from "../../../utils/ResponseUtils";
+import userApi from '../../../api/UserApi';
+import { parsePaginatedResponse } from '../../../utils/ResponseUtils';
 
 function ProfileTabMoovieLists({ user, search }) {
   const [orderBy, setOrderBy] = useState(CardsListOrderBy.LIKE_COUNT);
@@ -21,7 +21,6 @@ function ProfileTabMoovieLists({ user, search }) {
   const [lists, setLists] = useState(undefined);
   const [listsLoading, setListsLoading] = useState(true);
   const [listError, setListError] = useState(false);
-
 
   useEffect(() => {
     async function getData() {
@@ -37,37 +36,33 @@ function ProfileTabMoovieLists({ user, search }) {
             page
           );
           console.log('Public lists data:', data);
-        }
-        else if (search === 'private-lists') {
+        } else if (search === 'private-lists') {
           initialData = await userApi.getProfileListsFromUser(
-          user.privateMoovieListsUrl,
-              orderBy,
-              sortOrder,
-          page
+            user.privateMoovieListsUrl,
+            orderBy,
+            sortOrder,
+            page
           );
-        }
-        else if (search === 'liked-lists') {
+        } else if (search === 'liked-lists') {
           initialData = await userApi.getProfileListsFromUser(
-          user.likedMoovieListsUrl,
-              orderBy,
-              sortOrder,
-          page
+            user.likedMoovieListsUrl,
+            orderBy,
+            sortOrder,
+            page
           );
-        }
-        else if (search === 'followed-lists') {
+        } else if (search === 'followed-lists') {
           initialData = await userApi.getProfileListsFromUser(
-          user.followedMoovieListsUrl,
-              orderBy,
-              sortOrder,
-          page
+            user.followedMoovieListsUrl,
+            orderBy,
+            sortOrder,
+            page
           );
         }
         data = parsePaginatedResponse(initialData);
         console.log('Fetched lists:', initialData);
         setLists(data);
         setListError(false);
-
-      }catch (error) {
+      } catch (error) {
         console.error('Error fetching data:', error);
         setLists(null);
         setListError(true);
@@ -76,14 +71,7 @@ function ProfileTabMoovieLists({ user, search }) {
       }
     }
     getData();
-  }, [
-    orderBy,
-    sortOrder,
-    page,
-    user,
-    search,
-    pagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS,
-  ]);
+  }, [orderBy, sortOrder, page, user, search, pagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS]);
 
   if (listsLoading)
     return (

@@ -20,7 +20,7 @@ public class MoovieListReviewDto {
 
     private String reviewContent;
 
-    private String totalReportsUrl;
+    private String reportsUrl;
 
     private String spamReportsUrl;
 
@@ -48,7 +48,7 @@ public class MoovieListReviewDto {
         moovieListReviewDto.username = moovieListReview.getUser().getUsername();
         moovieListReviewDto.lastModified = moovieListReview.getLastModified();
 
-        moovieListReviewDto.totalReportsUrl = uriInfo.getBaseUriBuilder().path("/moovieListReviewReports")
+        moovieListReviewDto.reportsUrl = uriInfo.getBaseUriBuilder().path("/moovieListReviewReports")
                 .queryParam("moovieListReviewId", moovieListReview.getMoovieListReviewId())
                 .build()
                 .toString();
@@ -145,12 +145,12 @@ public class MoovieListReviewDto {
         this.username = username;
     }
 
-    public String getTotalReportsUrl() {
-        return totalReportsUrl;
+    public String getReportsUrl() {
+        return reportsUrl;
     }
 
-    public void setTotalReportsUrl(String totalReportsUrl) {
-        this.totalReportsUrl = totalReportsUrl;
+    public void setReportsUrl(String reportsUrl) {
+        this.reportsUrl = reportsUrl;
     }
 
     public String getSpamReportsUrl() {

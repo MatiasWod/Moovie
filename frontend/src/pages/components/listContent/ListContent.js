@@ -9,8 +9,8 @@ import listService from '../../../services/ListService';
 import Button from 'react-bootstrap/Button';
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
 import WatchlistWatched from '../../../api/values/WatchlistWatched';
-import UserService from "../../../services/UserService";
-import {useSelector} from "react-redux";
+import UserService from '../../../services/UserService';
+import { useSelector } from 'react-redux';
 
 const MediaRow = ({
   position,
@@ -69,7 +69,10 @@ const MediaRow = ({
   const [refreshWatched, setRefreshWatched] = useState(false);
   useEffect(async () => {
     try {
-      const data = await UserService.currentUserWWStatus(media.id, user.defaultPrivateMoovieListsUrl);
+      const data = await UserService.currentUserWWStatus(
+        media.id,
+        user.defaultPrivateMoovieListsUrl
+      );
       setWW(data);
     } catch (e) {}
   }, [media, refreshWatched]);
@@ -77,9 +80,17 @@ const MediaRow = ({
   const handleWatched = async () => {
     try {
       if (ww.watched) {
-        await UserService.removeMediaFromWW(user.defaultPrivateMoovieListsUrl, media.id, WatchlistWatched.Watched);
+        await UserService.removeMediaFromWW(
+          user.defaultPrivateMoovieListsUrl,
+          media.id,
+          WatchlistWatched.Watched
+        );
       } else {
-        await UserService.insertMediaIntoWW(user.defaultPrivateMoovieListsUrl, media.id, WatchlistWatched.Watched);
+        await UserService.insertMediaIntoWW(
+          user.defaultPrivateMoovieListsUrl,
+          media.id,
+          WatchlistWatched.Watched
+        );
       }
       setRefreshWatched(!refreshWatched);
     } catch (e) {}
@@ -181,7 +192,7 @@ const ListContent = ({
   Refresh,
   isLoggedIn,
   username,
-  listContentUrl
+  listContentUrl,
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();

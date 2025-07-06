@@ -1,7 +1,14 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-export default function ReportActionsButtons({ onResolve, onDelete, onBan, resolveKey = 'resolve', deleteKey = 'delete', banKey = 'banUser' }) {
+export default function ReportActionsButtons({
+  onResolve,
+  onDelete,
+  onBan,
+  resolveKey = 'resolve',
+  deleteKey = 'delete',
+  banKey = 'banUser',
+}) {
   const { t } = useTranslation();
 
   return (
@@ -29,4 +36,4 @@ export default function ReportActionsButtons({ onResolve, onDelete, onBan, resol
       </button>
     </div>
   );
-} 
+}

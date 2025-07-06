@@ -29,14 +29,14 @@ const listApi = (() => {
     return api.get(`/lists/${id}`);
   };
 
-  const getListsFromUrl = (url,pageNumber,pageSize) => {
+  const getListsFromUrl = (url, pageNumber, pageSize) => {
     return api.get(url, {
-        params: {
-          ...(pageNumber && { 'pageNumber': pageNumber }),
-          ...(pageSize && { 'pageSize': pageSize }),
-        }
+      params: {
+        ...(pageNumber && { pageNumber: pageNumber }),
+        ...(pageSize && { pageSize: pageSize }),
+      },
     });
-  }
+  };
 
   const getListByIdList = (idListString) => {
     return api.get(`/lists?ids=${idListString}`);
@@ -55,13 +55,13 @@ const listApi = (() => {
 
   const getListContentByMediaId = (url, mediaId) => {
     return api.get(url + `/${mediaId}`);
-  }
+  };
 
   const deleteList = (id) => {
     return api.delete(`/lists/${id}`);
   };
 
-  const insertMediaIntoMoovieList = ( url, mediaIds) => {
+  const insertMediaIntoMoovieList = (url, mediaIds) => {
     return api.post(
       url,
       { mediaIdList: mediaIds }, // Rename `mediaIds` to `mediaIdList`

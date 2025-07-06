@@ -16,11 +16,11 @@ import ActorCard from '../components/actorCards/ActorCard';
 import MediaOrderBy from '../../api/values/MediaOrderBy';
 import CardsListOrderBy from '../../api/values/CardsListOrderBy';
 import { useTranslation } from 'react-i18next';
-import {Divider, Pagination} from '@mui/material';
+import { Divider, Pagination } from '@mui/material';
 import './discover.css';
 import './search.css';
 import { Spinner } from 'react-bootstrap';
-import UserService from "../../services/UserService";
+import UserService from '../../services/UserService';
 
 function Healthcheck() {
   const { t } = useTranslation();
@@ -51,7 +51,9 @@ function Healthcheck() {
   const [pageActors, setPageActors] = useState(Number(searchParams.get('pageActors')) || 1);
   const [pageMedias, setPageMedias] = useState(Number(searchParams.get('pageMedias')) || 1);
   const [pageLists, setPageLists] = useState(Number(searchParams.get('pageLists')) || 1);
-  const [pageDirectors, setPageDirectors] = useState(Number(searchParams.get('pageDirectors')) || 1);
+  const [pageDirectors, setPageDirectors] = useState(
+    Number(searchParams.get('pageDirectors')) || 1
+  );
   const [pageUsers, setPageUsers] = useState(Number(searchParams.get('pageUsers')) || 1);
 
   const handleUserCardClick = (user) => {
@@ -134,7 +136,7 @@ function Healthcheck() {
       }
     }
     getData();
-  }, [search,pageActors]);
+  }, [search, pageActors]);
 
   useEffect(() => {
     async function getData() {
@@ -204,11 +206,11 @@ function Healthcheck() {
             </div>
             <div className="m-1 d-flex justify-content-center">
               {!mediaLoading && medias?.links?.last?.pageNumber > 1 && (
-                  <PaginationButton
-                      page={pageMedias}
-                      lastPage={medias.links.last.pageNumber}
-                      setPage={setPageMedias}
-                  />
+                <PaginationButton
+                  page={pageMedias}
+                  lastPage={medias.links.last.pageNumber}
+                  setPage={setPageMedias}
+                />
               )}
             </div>
           </>
@@ -247,11 +249,11 @@ function Healthcheck() {
             </div>
             <div className="m-1 d-flex justify-content-center">
               {!listLoading && lists?.links?.last?.pageNumber > 1 && (
-                  <PaginationButton
-                      page={pageLists}
-                      lastPage={lists.links.last.pageNumber}
-                      setPage={setPageLists}
-                  />
+                <PaginationButton
+                  page={pageLists}
+                  lastPage={lists.links.last.pageNumber}
+                  setPage={setPageLists}
+                />
               )}
             </div>
           </>
@@ -292,11 +294,11 @@ function Healthcheck() {
           </div>
           <div className="m-1 d-flex justify-content-center">
             {!actorLoading && actors?.links?.last?.pageNumber > 1 && (
-                <PaginationButton
-                    page={pageActors}
-                    lastPage={actors.links.last.pageNumber}
-                    setPage={setPageActors}
-                />
+              <PaginationButton
+                page={pageActors}
+                lastPage={actors.links.last.pageNumber}
+                setPage={setPageActors}
+              />
             )}
           </div>
         </>
@@ -336,11 +338,11 @@ function Healthcheck() {
           </div>
           <div className="m-1 d-flex justify-content-center">
             {!directorLoading && directors?.links?.last?.pageNumber > 1 && (
-                <PaginationButton
-                    page={pageDirectors}
-                    lastPage={directors.links.last.pageNumber}
-                    setPage={setPageDirectors}
-                />
+              <PaginationButton
+                page={pageDirectors}
+                lastPage={directors.links.last.pageNumber}
+                setPage={setPageDirectors}
+              />
             )}
           </div>
         </>
@@ -381,11 +383,11 @@ function Healthcheck() {
             </div>
             <div className="m-1 d-flex justify-content-center">
               {!userLoading && users?.links?.last?.pageNumber > 1 && (
-                  <PaginationButton
-                      page={pageUsers}
-                      lastPage={users.links.last.pageNumber}
-                      setPage={setPageUsers}
-                  />
+                <PaginationButton
+                  page={pageUsers}
+                  lastPage={users.links.last.pageNumber}
+                  setPage={setPageUsers}
+                />
               )}
             </div>
           </>

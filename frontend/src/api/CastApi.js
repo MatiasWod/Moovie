@@ -24,7 +24,7 @@ const castApi = (() => {
 
   const getActorsFromUrl = (url) => {
     return api.get(url);
-  }
+  };
 
   const getDirectorsForQuery = ({ search, pageNumber }) => {
     return api.get('/directors', {
@@ -57,7 +57,7 @@ const castApi = (() => {
 
   const getTvCreatorsFromUrl = (url) => {
     return api.get(url);
-  }
+  };
 
   const getDirectorById = (id) => {
     return api.get(`/directors/${id}`);
@@ -73,7 +73,7 @@ const castApi = (() => {
     getTvCreatorsSearch,
     getTvCreatorsByMediaId,
     getTvCreatorsFromUrl,
-    getDirectorById
+    getDirectorById,
   };
 })();
 

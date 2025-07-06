@@ -24,8 +24,8 @@ const ReviewService = (() => {
     return parsePaginatedResponse(res);
   };
 
-  const editReview = async (mediaId, rating, reviewContent,reviewId) => {
-    const res = await reviewApi.editReview({ mediaId, rating, reviewContent,reviewId });
+  const editReview = async (mediaId, rating, reviewContent, reviewId) => {
+    const res = await reviewApi.editReview({ mediaId, rating, reviewContent, reviewId });
     return res;
   };
 

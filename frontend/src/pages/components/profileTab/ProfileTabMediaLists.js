@@ -5,7 +5,7 @@ import ListContentPaginated from '../listContentPaginated/ListContentPaginated';
 import userApi from '../../../api/UserApi';
 import { Spinner } from 'react-bootstrap';
 
-function ProfileTabMediaLists({ user, search  }) {
+function ProfileTabMediaLists({ user, search }) {
   const [currentOrderBy, setOrderBy] = useState(OrderBy.CUSTOM_ORDER);
   const [currentSortOrder, setSortOrder] = useState(SortOrder.DESC);
   const [page, setPage] = useState(1);
@@ -19,8 +19,8 @@ function ProfileTabMediaLists({ user, search  }) {
     async function getData() {
       try {
         let response;
-        if(search === 'watched' || search === 'watchlist') {
-            response = await userApi.getSpecialListFromUser(
+        if (search === 'watched' || search === 'watchlist') {
+          response = await userApi.getSpecialListFromUser(
             user.defaultPrivateMoovieListsUrl,
             currentOrderBy,
             currentSortOrder,

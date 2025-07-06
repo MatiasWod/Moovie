@@ -19,7 +19,7 @@ import ReportForm from '../forms/reportForm/reportForm';
 import reportApi from '../../../api/ReportApi';
 import { Spinner } from 'react-bootstrap';
 import api from '../../../api/api';
-import UserService from "../../../services/UserService";
+import UserService from '../../../services/UserService';
 
 const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, reloadReviews }) => {
   const { t } = useTranslation();
@@ -57,7 +57,7 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
   const handleEdit = async () => {
     try {
       if (source !== 'media' && source !== 'lists') {
-        await moovieListReviewService.editReview(review.id,review.moovieListid, reviewContent);
+        await moovieListReviewService.editReview(review.id, review.moovieListid, reviewContent);
       }
       handleToggleEdit();
       reloadReviews();

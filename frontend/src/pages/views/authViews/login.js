@@ -61,9 +61,7 @@ const Login = () => {
 
           {searchParams.get('error') && <Alert variant="danger">User already verified</Alert>}
           {status === 'failed' && (
-            <Alert variant="danger">
-              {errorTranslationKey ? t(errorTranslationKey) : error}
-            </Alert>
+            <Alert variant="danger">{errorTranslationKey ? t(errorTranslationKey) : error}</Alert>
           )}
 
           <Form onSubmit={handleSubmit}>

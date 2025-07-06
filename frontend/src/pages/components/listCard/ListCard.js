@@ -6,7 +6,7 @@ import ProfileImage from '../profileImage/ProfileImage';
 import listService from '../../../services/ListService';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import UserService from "../../../services/UserService";
+import UserService from '../../../services/UserService';
 
 const ListCard = ({ listCard }) => {
   const { t } = useTranslation();
