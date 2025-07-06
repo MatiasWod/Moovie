@@ -73,8 +73,8 @@ public class MoovieListDto {
                 .build(moovieList.getMoovieListId()).toString();
         dto.creatorUrl = uriInfo.getBaseUriBuilder().path("users/{username}").build(moovieList.getUsername())
                 .toString();
-        dto.recommendedListsUrl = uriInfo.getBaseUriBuilder().path("lists/{moovieListId}/recommendedLists")
-                .queryParam("id", moovieList.getMoovieListId()).build(moovieList.getMoovieListId()).toString();
+        dto.recommendedListsUrl = uriInfo.getBaseUriBuilder().path("lists/")
+                .queryParam("getRecommendedOfListId", moovieList.getMoovieListId()).build(moovieList.getMoovieListId()).toString();
         dto.reviewsUrl = uriInfo.getBaseUriBuilder().path("moovieListReviews")
                 .queryParam("listId", moovieList.getMoovieListId()).build().toString();
 
