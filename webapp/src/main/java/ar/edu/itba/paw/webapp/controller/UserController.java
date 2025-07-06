@@ -169,7 +169,7 @@ public class UserController {
             }
             userService.resendVerificationEmail(token);
 
-            LOGGER.info("Verification email resent successfully for user ID: {}", token.getUserId());
+            LOGGER.info("Verification email resent successfully for user");
             return Response.ok().entity("Verification email resent successfully").build();
 
         } catch (VerificationTokenNotFoundException e) {

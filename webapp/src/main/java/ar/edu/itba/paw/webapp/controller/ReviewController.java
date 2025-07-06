@@ -121,8 +121,7 @@ public class ReviewController {
             return  res.build();
         }
         if (mediaId != null && username != null) {
-            // Caso: buscar una reseña específica por mediaId y userId
-            final int userId;
+            // Caso: buscar una reseña específica por mediaId y username
             User user = userService.findUserByUsername(username);
             final Review review = reviewService.getReviewByMediaIdAndUsername(mediaId, user.getUserId());
             if (review == null) {
