@@ -325,10 +325,10 @@ public class MoovieListController {
 
     // Returns like status for a specific list
     @GET
-    @Path("/{listId}/likes/{username}")
+    @Path("/{id}/likes/{username}")
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(VndType.APPLICATION_LIST_LIKE)
-    public Response getUserLikedListById(@PathParam("listId") final int listId,
+    public Response getUserLikedListById(@PathParam("id") final int listId,
             @PathParam("username") final String username) {
         if (moovieListService.userLikesMoovieList(listId, username)) {
             final String uri = uriInfo.getBaseUriBuilder()
@@ -344,10 +344,10 @@ public class MoovieListController {
 
     // Return all likes for a list
     @GET
-    @Path("/{listId}/likes")
+    @Path("/{id}/likes")
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(VndType.APPLICATION_LIST_LIKE_LISTS) // Asumiendo un VndType para listas de usuarios
-    public Response getUsersWhoLikedList(@PathParam("listId") final int listId,
+    public Response getUsersWhoLikedList(@PathParam("id") final int listId,
             @QueryParam("page") @DefaultValue("0") final int page) {
 
         List<User> likedUsers = moovieListService.usersLikesMoovieList(listId, page,
@@ -398,9 +398,9 @@ public class MoovieListController {
     // Returns like follow for a specific list
     @GET
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Path("/{listId}/followers/{username}")
+    @Path("/{id}/followers/{username}")
     @Produces(VndType.APPLICATION_FOLLOWED_LISTS_USER_LIST)
-    public Response getUserFollowsListById(@PathParam("listId") final int listId,
+    public Response getUserFollowsListById(@PathParam("id") final int listId,
             @PathParam("username") final String username) {
         if (moovieListService.userFollowsMoovieList(listId, username)) {
             final String uri = uriInfo.getBaseUriBuilder()
@@ -417,9 +417,9 @@ public class MoovieListController {
     // Return all follows for a list
     @GET
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Path("/{listId}/followers")
+    @Path("/{id}/followers")
     @Produces(VndType.APPLICATION_FOLLOWED_LISTS)
-    public Response getUsersWhoFollowList(@PathParam("listId") final int listId,
+    public Response getUsersWhoFollowList(@PathParam("id") final int listId,
             @QueryParam("page") @DefaultValue("0") final int page) {
 
         List<User> followedUsers = moovieListService.usersFollowsMoovieList(listId, page,
