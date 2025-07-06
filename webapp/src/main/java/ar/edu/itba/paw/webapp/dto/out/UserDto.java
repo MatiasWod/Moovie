@@ -259,4 +259,11 @@ public class UserDto {
     public void setPrivateMoovieListsUrl(String privateMoovieListsUrl) {
         this.privateMoovieListsUrl = privateMoovieListsUrl;
     }
+
+    public String getBanMessageUrl() {
+        return banMessageUrl;
+    }
+    public void setBanMessageUrl(String banMessageUrl) {
+        this.banMessageUrl = banMessageUrl;
+    }
 }

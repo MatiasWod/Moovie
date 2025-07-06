@@ -29,7 +29,7 @@ export default function BannedUsers() {
 
       const userPromises = usersData.map(async (user) => {
         try {
-          const banMessage = await api.get(user.url + '/banMessage');
+          const banMessage = await api.get(user.banMessageUrl);
           return { ...user, banMessage: banMessage.data };
         } catch (error) {
           console.error('Error fetching ban message for user:', user.username, error);
