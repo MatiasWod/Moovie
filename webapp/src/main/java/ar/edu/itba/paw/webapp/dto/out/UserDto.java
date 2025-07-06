@@ -85,15 +85,15 @@ public class UserDto {
                 .toString();
 
         dto.moovieListReviewsUrl = uriInfo.getBaseUriBuilder().path("moovieListReviews")
-                .queryParam("userId", user.getUserId())
+                .queryParam("username", user.getUsername())
                 .build()
                 .toString();
         dto.reviewsUrl = uriInfo.getBaseUriBuilder().path("reviews")
-                .queryParam("userId", user.getUserId())
+                .queryParam("username", user.getUsername())
                 .build()
                 .toString();
 
-        dto.likedMoovieListsReviewsUrl = uriInfo.getBaseUriBuilder().path("moovieListsReviews")
+        dto.likedMoovieListsReviewsUrl = uriInfo.getBaseUriBuilder().path("moovieListReviews")
                 .queryParam("likedByUser", user.getUsername())
                 .build()
                 .toString();

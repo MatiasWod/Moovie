@@ -112,7 +112,7 @@ public class ReviewController {
         }
         // Damos todos los likes para un usuario
         if(likedByUser != null){
-            final List<Review> reviews = reviewService.getLikedReviewsByUser(likedByUser, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page);
+            final List<Review> reviews = reviewService.getLikedReviewsByUser(likedByUser, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page-1);
             final int reviewCount = reviewService.getLikedReviewsCountByUser(likedByUser);
             final List<ReviewDto> reviewDtos = ReviewDto.fromReviewList(reviews, uriInfo);
             Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ReviewDto>>(reviewDtos) {});

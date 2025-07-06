@@ -131,7 +131,7 @@ public class ReviewHibernateDao implements ReviewDao {
     public int getMoovieListReviewsFromUserCount(int userId) {
         final String jpql = "SELECT COUNT(r) FROM MoovieListReview r WHERE r.user.userId = :userId";
 
-        return ((BigInteger) em.createQuery(jpql)
+        return ((Number) em.createQuery(jpql)
                 .setParameter("userId", userId)
                 .getSingleResult()).intValue();
     }
@@ -254,7 +254,7 @@ public class ReviewHibernateDao implements ReviewDao {
                     .setMaxResults(pageSize)
                     .getResultList();
         } else if (type == ReviewTypes.REVIEW_MOOVIE_LIST) {
-            return em.createQuery("SELECT mlrl.user FROM MoovieListsReviewsLikes mlrl WHERE mlrl.moovieListReviewId = :reviewId", User.class)
+            return em.createQuery("SELECT mlrl.user FROM MoovieListsReviewsLikes mlrl WHERE mlrl.moovieListReview.moovieListReviewId = :reviewId", User.class)
                     .setParameter("reviewId", reviewId)
                     .setFirstResult(pageNumber * pageSize)
                     .setMaxResults(pageSize)

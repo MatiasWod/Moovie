@@ -93,7 +93,7 @@ public class MoovieListReviewController {
     @Produces(VndType.APPLICATION_MOOVIELIST_REVIEW_LIST)
     public Response getMoovieListReviewsFromQueryParams(
             @QueryParam("listId") final Integer listId,
-            @QueryParam("userId") final Integer userId,
+            @QueryParam("username") final String username,
             @QueryParam("isReported") final boolean isReported,
             @QueryParam("likedByUser") final String likedByUser,
             @QueryParam("pageNumber") @DefaultValue("1") final int page) {
@@ -149,10 +149,11 @@ public class MoovieListReviewController {
                 ResponseUtils.setPaginationLinks(res, toReturnMoovieListReviews, uriInfo);
                 return res.build();
 
-            } else if (userId != null) {
+            } else if (username != null) {
+                User user = userService.findUserByUsername(username);
                 final List<MoovieListReview> moovieListReviews = reviewService.getMoovieListReviewsFromUser(
-                        userId, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
-                final int reviewCount = reviewService.getMoovieListReviewsFromUserCount(userId);
+                        user.getUserId(), PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page - 1);
+                final int reviewCount = reviewService.getMoovieListReviewsFromUserCount(user.getUserId());
                 final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto
                         .fromMoovieListReviewList(moovieListReviews, uriInfo);
 
