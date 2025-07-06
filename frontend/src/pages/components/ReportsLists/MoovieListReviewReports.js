@@ -26,18 +26,16 @@ export default function MoovieListReviewReports() {
   const fetchReviews = async () => {
     setReviewsLoading(true);
     try {
-      const res = await reportApi.getReports({ contentType: 'moovieListReview', pageNumber: page });
+      const res = await api.get('/moovieListReviews', {
+        params: {
+          isReported: true,
+          pageNumber: page,
+        },
+      });
       const response = parsePaginatedResponse(res)
-      const reportsData = response.data || [];
-
-      const uniqueReviewUrls = [...new Set(reportsData.map((report) => report.moovieListReviewUrl))];
+      const reviews = response.data || [];
 
       try {
-        const reviewPromises = uniqueReviewUrls.map((url) => api.get(url));
-        const reviewResponses = await Promise.all(reviewPromises);
-        const reviews = reviewResponses.map((response) => response.data);
-
-        try {
           const allPromises = reviews.flatMap((review) => [
             reportApi.getCountFromUrl(review.abuseReportsUrl),
             reportApi.getCountFromUrl(review.hateReportsUrl),
@@ -51,12 +49,8 @@ export default function MoovieListReviewReports() {
           const reviewsWithDetails = reviews.map((review, index) => {
             const baseIndex = index * 5;
 
-            const reviewReports = reportsData.filter(report => report.moovieListReviewUrl === review.url);
-            const reportIds = reviewReports.map(report => report.reportId);
-
             return {
               ...review,
-              reportIds: reportIds,
               abuseReports: allResults[baseIndex] || 0,
               hateReports: allResults[baseIndex + 1] || 0,
               spamReports: allResults[baseIndex + 2] || 0,
@@ -74,10 +68,6 @@ export default function MoovieListReviewReports() {
             reviews: reviewsWithDetails,
             links: response.links,
           });
-        } catch (error) {
-          console.error('Error fetching additional details:', error);
-          setReviews(reviews);
-        }
       } catch (error) {
         console.error('Error fetching reviews:', error);
         setReviews([]);

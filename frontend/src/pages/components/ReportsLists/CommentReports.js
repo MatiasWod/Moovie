@@ -26,17 +26,11 @@ export default function CommentReports() {
   const fetchComments = async () => {
     setCommentsLoading(true);
     try {
-      const res = await reportApi.getReports({ contentType: 'comment', pageNumber: page });
+      const res = await commentApi.getReportedComments(page);
       const response = parsePaginatedResponse(res)
-      const reportsData = response.data || [];
-
-      const uniqueCommentUrls = [...new Set(reportsData.map((report) => report.commentUrl))];
+      const comments = response.data || [];
 
       try {
-        const commentPromises = uniqueCommentUrls.map((url) => api.get(url));
-        const commentResponses = await Promise.all(commentPromises);
-        const comments = commentResponses.map((response) => response.data);
-
         try {
           const allPromises = comments.flatMap((comment) => {
             console.log('comment', comment);
@@ -51,20 +45,14 @@ export default function CommentReports() {
           });
 
           const allResults = await Promise.all(allPromises);
-          console.log('allResults', allResults);
 
           const commentsWithDetails = await Promise.all(comments.map(async (comment, index) => {
             const baseIndex = index * 5;
 
-            const commentReports = reportsData.filter(report => report.commentUrl === comment.url);
-            const reportIds = commentReports.map(report => report.reportId);
-
             const media = allResults[baseIndex + 4]?.data?.mediaId ? await api.get(allResults[baseIndex + 4]?.data?.mediaUrl) : null;
 
-            console.log(allResults[baseIndex + 4]?.data);
             return {
               ...comment,
-              reportIds: reportIds,
               abuseReports: allResults[baseIndex] || 0,
               hateReports: allResults[baseIndex + 1] || 0,
               spamReports: allResults[baseIndex + 2] || 0,

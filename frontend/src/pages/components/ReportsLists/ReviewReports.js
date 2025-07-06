@@ -27,18 +27,16 @@ export default function ReviewReports() {
   const fetchReports = async () => {
     setReviewsLoading(true);
     try {
-      const res = await reportApi.getReports({ contentType: 'review', pageNumber: page });
+      const res = await api.get('/reviews', {
+        params: {
+          isReported: true,
+          pageNumber: page,
+        },
+      });
       const response = parsePaginatedResponse(res)
-      const reportsData = response.data || [];
-
-      const uniqueReviewUrls = [...new Set(reportsData.map((report) => report.reviewUrl))];
+      const reviews = response.data || [];
 
       try {
-        const reviewPromises = uniqueReviewUrls.map((url) => api.get(url));
-        const reviewResponses = await Promise.all(reviewPromises);
-        const reviews = reviewResponses.map((response) => response.data);
-
-        try {
           const allPromises = reviews.flatMap((review) => {
             const promises = [
               reportApi.getCountFromUrl(review.abuseReportsUrl),
@@ -61,12 +59,8 @@ export default function ReviewReports() {
           const reviewsWithReports = reviews.map((review, index) => {
             const baseIndex = index * 5;
 
-            const reviewReports = reportsData.filter(report => report.reviewUrl === review.url);
-            const reportIds = reviewReports.map(report => report.reportId);
-
             return {
               ...review,
-              reportIds: reportIds,
               abuseReports: allResults[baseIndex] || 0,
               hateReports: allResults[baseIndex + 1] || 0,
               spamReports: allResults[baseIndex + 2] || 0,
@@ -84,10 +78,6 @@ export default function ReviewReports() {
             reviews: reviewsWithReports,
             links: response.links,
           });
-        } catch (error) {
-          console.error('Error fetching additional details:', error);
-          setReviews(reviews);
-        }
       } catch (error) {
         console.error('Error fetching reviews:', error);
         setReviews([]);

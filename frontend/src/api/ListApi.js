@@ -1,5 +1,5 @@
-import api from './api';
 import VndType from '../enums/VndType';
+import api from './api';
 
 const listApi = (() => {
   const getLists = ({ search, ownerUsername, type, orderBy, order, pageNumber, pageSize }) => {
@@ -12,6 +12,15 @@ const listApi = (() => {
         order: order,
         pageNumber: pageNumber,
         pageSize: pageSize,
+      },
+    });
+  };
+
+  const getReportedLists = (pageNumber = 1) => {
+    return api.get('/lists', {
+      params: {
+        isReported: true,
+        pageNumber: pageNumber,
       },
     });
   };
@@ -180,6 +189,7 @@ const listApi = (() => {
     getListById,
     getListsFromUrl,
     getListByIdList,
+    getReportedLists,
     deleteList,
     getListContent,
     getListContentByMediaId,

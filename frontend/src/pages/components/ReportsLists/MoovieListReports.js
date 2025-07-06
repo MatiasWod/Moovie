@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '../../../api/api';
-import ListApi from '../../../api/ListApi';
+import { default as ListApi, default as listApi } from '../../../api/ListApi';
 import reportApi from '../../../api/ReportApi';
 import userApi from '../../../api/UserApi';
 import { parsePaginatedResponse } from "../../../utils/ResponseUtils";
@@ -26,17 +26,11 @@ export default function MoovieListReports() {
   const fetchLists = async () => {
     setListsLoading(true);
     try {
-      const res = await reportApi.getReports({ contentType: 'moovieList', pageNumber: page });
+      const res = await listApi.getReportedLists(page);
       const response = parsePaginatedResponse(res)
-      const reportsData = response.data || [];
-
-      const uniqueMoovieListUrls = [...new Set(reportsData.map((report) => report.moovieListUrl))];
+      const lists = response.data || [];
 
       try {
-        const listPromises = uniqueMoovieListUrls.map((url) => api.get(url));
-        const listResponses = await Promise.all(listPromises);
-        const lists = listResponses.map((response) => response.data);
-
         try {
           const reportCountPromises = lists.flatMap((list) => {
             return [
@@ -52,12 +46,8 @@ export default function MoovieListReports() {
           const listsWithReports = lists.map((list, index) => {
             const baseIndex = index * 4;
 
-            const listReports = reportsData.filter(report => report.moovieListUrl === list.url);
-            const reportIds = listReports.map(report => report.reportId);
-
             return {
               ...list,
-              reportIds: reportIds,
               abuseReports: reportCounts[baseIndex] || 0,
               hateReports: reportCounts[baseIndex + 1] || 0,
               spamReports: reportCounts[baseIndex + 2] || 0,
