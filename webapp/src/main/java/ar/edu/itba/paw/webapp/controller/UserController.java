@@ -29,8 +29,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.persistence.NoResultException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
@@ -206,7 +208,7 @@ public class UserController {
     @Path("/{username}")
     @Consumes(VndType.APPLICATION_USER_TOKEN_FORM)
     @Produces(VndType.APPLICATION_USER_TOKEN)
-    public Response verifyUser(@PathParam("username") final String username,@Valid @NotNull final TokenDto tokenDto) {
+    public Response verifyUser(@PathParam("username") final String username, @Valid @NotNull final TokenDto tokenDto, @Context HttpServletRequest request) {
         String tokenString = tokenDto.getToken();
         LOGGER.info("Method: verifyUser, Path: users, Token: {}", tokenString);
         try {
@@ -215,7 +217,13 @@ public class UserController {
                 Token token = tok.get();
                 if (userService.confirmRegister(token)) {
                     User user = userService.findUserById(token.getUserId());
+                    // No es un recuest de tipo Basic, por ende no manda token. Se pone manualmente
+                    ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromContextPath(request);
+                    String jwt = jwtTokenProvider.createAccessToken(builder, user);
+                    String refreshToken = jwtTokenProvider.createRefreshToken(builder, user);
                     return Response.ok(UserDto.fromUser(user, uriInfo))
+                            .header("Moovie-AuthToken", jwt)
+                            .header("Moovie-RefreshToken", refreshToken)
                             .build();
                 }
                 LOGGER.info("Token validation failed. Returning INTERNAL_SERVER_ERROR.");
