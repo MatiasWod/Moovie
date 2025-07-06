@@ -1,25 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
-import PaginationButton from '../paginationButton/PaginationButton';
-import ProfileImage from '../profileImage/ProfileImage';
 import { Divider, Pagination } from '@mui/material';
-import reviewService from '../../../services/ReviewService';
-import moovieListReviewService from '../../../services/MoovieListReviewService';
+import React, { useEffect, useState } from 'react';
+import { Spinner } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom';
+import api from '../../../api/api';
 import commentApi from '../../../api/CommentApi';
 import moovieListReviewApi from '../../../api/MoovieListReviewApi';
-import CommentList from '../commentList/CommentList';
-import CommentField from '../commentField/CommentField';
+import reportApi from '../../../api/ReportApi';
 import mediaService from '../../../services/MediaService';
-import ReviewForm from '../forms/reviewForm/ReviewForm';
-import ConfirmationForm from '../forms/confirmationForm/confirmationForm';
+import moovieListReviewService from '../../../services/MoovieListReviewService';
+import reviewService from '../../../services/ReviewService';
+import CommentField from '../commentField/CommentField';
+import CommentList from '../commentList/CommentList';
 import ConfirmationModal from '../forms/confirmationForm/confirmationModal';
 import ReportForm from '../forms/reportForm/reportForm';
-import reportApi from '../../../api/ReportApi';
-import { Spinner } from 'react-bootstrap';
-import api from '../../../api/api';
-import UserService from '../../../services/UserService';
+import ReviewForm from '../forms/reviewForm/ReviewForm';
+import ProfileImage from '../profileImage/ProfileImage';
 
 const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, reloadReviews }) => {
   const { t } = useTranslation();
@@ -104,37 +101,27 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
   const [currentLikeStatus, setCurrentLikeStatus] = useState(false);
   useEffect(async () => {
     try {
-      if (source === 'list') {
-        setCurrentLikeStatus(
-          await UserService.currentUserHasLikedMoovieListReview(review.id, currentUser.username)
-        );
+      const response = await api.get(review.likesUrl + `/${currentUser.username}`);
+      if (response.status === 200) {
+        setCurrentLikeStatus(true);
       } else {
-        setCurrentLikeStatus(
-          await UserService.currentUserHasLikedReview(review.id, currentUser.username)
-        );
+        setCurrentLikeStatus(false);
       }
-    } catch (e) {}
+    } catch (e) {
+      setCurrentLikeStatus(false);
+    }
   }, [likeRefresh]);
 
   const handleLikeReview = async () => {
     try {
-      if (source === 'media' || source === 'user') {
-        await reviewService.likeReview(currentUser, review.id);
-        setLikeRefresh(!likeRefresh);
-        if (currentLikeStatus) {
-          review.likes = review.likes - 1;
-        } else {
-          review.likes = review.likes + 1;
-        }
+      if (currentLikeStatus) {
+        console.log('Deleting like', review.likesUrl + `/${currentUser.username}`);
+        await api.delete(review.likesUrl + `/${currentUser.username}`);
       } else {
-        await moovieListReviewService.likeMoovieListReview(currentUser, review.id);
-        setLikeRefresh(!likeRefresh);
-        if (currentLikeStatus) {
-          review.reviewLikes = review.reviewLikes - 1;
-        } else {
-          review.reviewLikes = review.reviewLikes + 1;
-        }
+        console.log('Adding like', review.likesUrl);
+        await api.post(review.likesUrl);
       }
+      setLikeRefresh(!likeRefresh);
     } catch (e) {}
   };
 
