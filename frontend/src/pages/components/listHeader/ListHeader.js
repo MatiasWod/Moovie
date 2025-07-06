@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import './listHeader.css';
-import listService from '../../../services/ListService';
-import { useSelector } from 'react-redux';
-import { NavLink, useNavigate } from 'react-router-dom';
-import ReviewForm from '../forms/reviewForm/ReviewForm';
-import EditListForm from '../forms/editListForm/editListForm';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import api from '../../../api/api';
 import MoovieListTypes from '../../../api/values/MoovieListTypes';
-import UserService from '../../../services/UserService';
+import EditListForm from '../forms/editListForm/editListForm';
+import './listHeader.css';
+import ListService from "../../../services/ListService";
 
 const ListHeader = ({
   list,
@@ -33,13 +32,26 @@ const ListHeader = ({
   useEffect(() => {
     const fetchHasLikedAndFollowed = async () => {
       try {
-        const likedAndFollowed = await UserService.currentUserLikeFollowStatus(
-          list.id,
-          user.username
-        );
-        setHasLikedAndFollowed(likedAndFollowed);
+        const [likedResult, followedResult] = await Promise.allSettled([
+          api.get(list.likesUrl + '/' + user.username),
+          api.get(list.followersUrl + '/' + user.username),
+        ]);
+
+        setHasLikedAndFollowed({
+          liked:
+              likedResult.status === 'fulfilled' &&
+              likedResult.value.status === 200,
+          followed:
+              followedResult.status === 'fulfilled' &&
+              followedResult.value.status === 200,
+        });
       } catch (error) {
-        // Handle error
+        // en teoría `Promise.allSettled` nunca lanza,
+        // pero por si falla algo fuera del `allSettled`:
+        setHasLikedAndFollowed({
+          liked: false,
+          followed: false,
+        });
       }
     };
 
@@ -52,9 +64,10 @@ const ListHeader = ({
         navigate('/login');
       }
       if (hasLikedAndFollowed.liked) {
-        await listService.unlikeList(list.id, user.username);
+
+        await api.delete(list.likesUrl + '/' + user.username);
       } else {
-        await listService.likeList(list.id, user.username);
+        await ListService.likeList(list.likesUrl);
       }
       setPing(!ping);
     } catch (error) {
@@ -68,9 +81,9 @@ const ListHeader = ({
         navigate('/login');
       }
       if (hasLikedAndFollowed.followed) {
-        await listService.unfollowList(list.id, user.username);
+        await api.delete(list.followersUrl + '/' + user.username);
       } else {
-        await listService.followList(list.id, user.username);
+        await api.post(list.followersUrl);
       }
       setPing(!ping);
     } catch (error) {
@@ -158,7 +171,7 @@ const ListHeader = ({
         <div className="overlay">
           <EditListForm
             listName={list.name}
-            listId={list.url}
+            listUrl={list.url}
             listDescription={list.description}
             closeEdit={handleCloseEdit}
             closeEditSuccess={handleCloseEditSucccess}

@@ -1,27 +1,34 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Comments.Comment;
+import ar.edu.itba.paw.models.Comments.CommentFeedback;
+import ar.edu.itba.paw.models.Comments.CommentFeedbackType;
 import ar.edu.itba.paw.models.User.User;
 
 import java.util.List;
 
 public interface CommentDao {
 
-    public List<Comment> getComments(int reviewId, int userId, int size, int pageNumber);
+    List<Comment> getComments(int reviewId, int userId, int size, int pageNumber);
+    List<Comment> getCommentsForUsername(int userId, int size, int pageNumber);
 
-    public Comment getCommentById(int commentId);
+    Comment getCommentById(int commentId);
 
-    public boolean userHasLiked(int commentId, int userId);
-    public boolean userHasDisliked(int commentId, int userId);
+    boolean userHasLiked(int commentId, int userId);
+    boolean userHasDisliked(int commentId, int userId);
 
-    public void likeComment(int commentId, int userId);
-    public void removeLikeComment(int commentId, int userId);
+    void likeComment(int commentId, int userId);
+    void removeLikeComment(int commentId, int userId);
 
-    public void dislikeComment(int commentId, int userId);
-    public void removeDislikeComment(int commentId, int userId);
+    void dislikeComment(int commentId, int userId);
+    void removeDislikeComment(int commentId, int userId);
 
-    public void createComment(int reviewId, String content, User user);
+    void createComment(int reviewId, String content, User user);
 
-    public void deleteComment(int commentId);
+    void deleteComment(int commentId);
 
+    List<Comment> getCommentFeedbackForUser(int uid, int pageNumber, int pageSize);
+    int getCommentFeedbackForUserCount(int uid);
+    List<CommentFeedback> getCommentFeedbackForComment(int commentId, int pageNumber, int pageSize);
+    int getCommentFeedbackForCommentCount(int commentId);
 }

@@ -28,8 +28,6 @@ public class MoovieListDto {
 
     private int movieCount;
 
-    private List<MoovieListReview> reviews;
-
     private List<String> images;
 
     private String url;
@@ -75,8 +73,8 @@ public class MoovieListDto {
                 .build(moovieList.getMoovieListId()).toString();
         dto.creatorUrl = uriInfo.getBaseUriBuilder().path("users/{username}").build(moovieList.getUsername())
                 .toString();
-        dto.recommendedListsUrl = uriInfo.getBaseUriBuilder().path("lists/{moovieListId}/recommendedLists")
-                .queryParam("id", moovieList.getMoovieListId()).build(moovieList.getMoovieListId()).toString();
+        dto.recommendedListsUrl = uriInfo.getBaseUriBuilder().path("lists/")
+                .queryParam("getRecommendedOfListId", moovieList.getMoovieListId()).build(moovieList.getMoovieListId()).toString();
         dto.reviewsUrl = uriInfo.getBaseUriBuilder().path("moovieListReviews")
                 .queryParam("listId", moovieList.getMoovieListId()).build().toString();
 
@@ -186,14 +184,6 @@ public class MoovieListDto {
 
     public void setMediaCount(int mediaCount) {
         this.mediaCount = mediaCount;
-    }
-
-    public List<MoovieListReview> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<MoovieListReview> reviews) {
-        this.reviews = reviews;
     }
 
     public String getUrl() {

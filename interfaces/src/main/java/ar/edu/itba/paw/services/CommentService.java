@@ -1,27 +1,36 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Comments.Comment;
+import ar.edu.itba.paw.models.Comments.CommentFeedback;
+import ar.edu.itba.paw.models.Comments.CommentFeedbackType;
 
 import java.util.List;
 
 public interface CommentService {
 
-    public List<Comment> getComments(int reviewId, int size, int pageNumber);
+    List<Comment> getComments(int reviewId, int size, int pageNumber);
+    List<Comment> getCommentsForUsername(int userId, int size, int pageNumber);
 
-    public Comment getCommentById(int commentId);
+    Comment getCommentById(int commentId);
 
-    public boolean userHasLiked(int commentId, int userId);
-    public boolean userHasDisliked(int commentId, int userId);
+    boolean userHasLiked(int commentId, int userId);
+    boolean userHasDisliked(int commentId, int userId);
 
-    public boolean likeComment(int commentId);
+    boolean likeComment(int commentId);
 
-    public void removeLikeComment(int commentId);
+    void removeLikeComment(int commentId);
 
-    public boolean dislikeComment(int commentId);
+    boolean dislikeComment(int commentId);
 
-    public void removeDislikeComment(int commentId);
+    void removeDislikeComment(int commentId);
 
-    public void createComment(int reviewId, String content);
+    void createComment(int reviewId, String content);
 
-    public void deleteComment(int commentId);
+    void deleteComment(int commentId);
+
+    List<Comment> getCommentFeedbackForUser(String username, int pageNumber, int pageSize);
+    int getCommentFeedbackForUserCount(String username);
+    List<CommentFeedback> getCommentFeedbackForComment(int commentId, int pageNumber, int pageSize);
+    int getCommentFeedbackForCommentCount(int commentId);
+
 }

@@ -93,7 +93,7 @@ export default function MoovieListReports() {
     try {
       const response = await api.get(ml.creatorUrl);
       const user = response.data;
-      await userApi.banUser(user.username);
+      await userApi.banUser(user.url);
       await fetchLists();
     } catch (error) {
       console.error('Error banning user:', error);

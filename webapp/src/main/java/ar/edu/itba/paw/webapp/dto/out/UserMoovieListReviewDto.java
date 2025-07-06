@@ -2,12 +2,12 @@ package ar.edu.itba.paw.webapp.dto.out;
 
 import javax.ws.rs.core.UriInfo;
 
-public class UserMoovieListReviewDto { // Renamed from UserReviewIdDto for consistency
+public class UserMoovieListReviewDto {
     private int moovieListReviewId;
     private String username;
-    private String moovieListReviewUrl; // New field for the moovieListReview's URL
-    private String userUrl;   // New field for the user's URL
-    private String url;       // Existing field, kept for consistency if needed for self-URL
+    private String moovieListReviewUrl;
+    private String userUrl;
+    private String url;
 
     public UserMoovieListReviewDto() {}
 

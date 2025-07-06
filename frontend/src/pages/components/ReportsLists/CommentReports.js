@@ -104,7 +104,7 @@ export default function CommentReports() {
     try {
       const response = await api.get(comment.userUrl);
       const user = response.data;
-      await userApi.banUser(user.username);
+      await userApi.banUser(user.url);
       await fetchComments();
     } catch (error) {
       console.error('Error banning user:', error);

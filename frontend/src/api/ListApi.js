@@ -38,9 +38,6 @@ const listApi = (() => {
     });
   };
 
-  const getListByIdList = (idListString) => {
-    return api.get(`/lists?ids=${idListString}`);
-  };
 
   const getListContent = ({ url, orderBy, sortOrder, pageNumber, pageSize }) => {
     return api.get(url, {
@@ -57,8 +54,8 @@ const listApi = (() => {
     return api.get(url + `/${mediaId}`);
   };
 
-  const deleteList = (id) => {
-    return api.delete(`/lists/${id}`);
+  const deleteList = (url) => {
+    return api.delete(url);
   };
 
   const insertMediaIntoMoovieList = (url, mediaIds) => {
@@ -79,12 +76,12 @@ const listApi = (() => {
 
   //PUT
 
-  const editMoovieList = async (mlId, name, description) => {
+  const editMoovieList = async (url, name, description) => {
     const form = {
       listName: name,
       listDescription: description,
     };
-    const response = await api.put('/lists/' + mlId, form, {
+    const response = await api.put(url, form, {
       headers: {
         'Content-Type': VndType.APPLICATION_MOOVIELIST_FORM,
       },
@@ -92,26 +89,17 @@ const listApi = (() => {
     return response;
   };
 
-  const getRecommendedLists = (id) => {
-    return api.get(`/lists/${id}/recommendedLists`, {
-      params: {
-        id: id,
-      },
-    });
-  };
-
   const getMediaFromList = (listId, mediaId) => {
     return api.get(`/lists/${listId}/content/${mediaId}`);
   };
 
-  const editListContent = (listId, mediaId, customOrder) => {
+  const editListContent = (url, mediaId, customOrder) => {
     const input = {
       mediaId: mediaId,
-      moovieListId: listId,
       customOrder: customOrder,
     };
 
-    const response = api.put(`lists/${listId}/content/${mediaId}`, input, {
+    const response = api.put(url + `/${mediaId}`, input, {
       headers: {
         'Content-Type': VndType.APPLICATION_MOOVIELIST_MEDIA_FORM,
       },
@@ -134,52 +122,10 @@ const listApi = (() => {
     });
   };
 
-  const likeList = (moovieListId, username) => {
-    return api.put(
-      `/lists/${moovieListId}`,
-      { username: username, feedbackType: 'LIKE' },
+  const likeList = (url) => {
+    return api.post(
+        url,
       {
-        headers: {
-          'Content-Type': VndType.APPLICATION_MOOVIELIST_FEEDBACK_FORM,
-        },
-      }
-    );
-  };
-
-  const unlikeList = (moovieListId, username) => {
-    return api.put(
-      `/lists/${moovieListId}`,
-      { username: username, feedbackType: 'UNLIKE' },
-      {
-        headers: {
-          'Content-Type': VndType.APPLICATION_MOOVIELIST_FEEDBACK_FORM,
-        },
-      }
-    );
-  };
-
-  const followList = (moovieListId, username) => {
-    return api.put(
-      `/lists/${moovieListId}`,
-      { username: username, actionType: 'FOLLOW' },
-
-      {
-        headers: {
-          'Content-Type': VndType.APPLICATION_MOOVIELIST_FOLLOW_FORM,
-        },
-      }
-    );
-  };
-
-  const unfollowList = (moovieListId, username) => {
-    return api.put(
-      `/lists/${moovieListId}`,
-      { username: username, actionType: 'UNFOLLOW' },
-
-      {
-        headers: {
-          'Content-Type': VndType.APPLICATION_MOOVIELIST_FOLLOW_FORM,
-        },
       }
     );
   };
@@ -188,7 +134,6 @@ const listApi = (() => {
     getLists,
     getListById,
     getListsFromUrl,
-    getListByIdList,
     getReportedLists,
     deleteList,
     getListContent,
@@ -196,13 +141,9 @@ const listApi = (() => {
     insertMediaIntoMoovieList,
     deleteMediaFromMoovieList,
     editMoovieList,
-    getRecommendedLists,
     editListContent,
     createMoovieList,
     likeList,
-    unlikeList,
-    followList,
-    unfollowList,
     getMediaFromList,
   };
 })();

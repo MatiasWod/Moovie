@@ -1,41 +1,20 @@
 import api from './api.js';
 import VndType from '../enums/VndType';
+import * as url from "url";
 
 const reviewApi = (() => {
-  const getReviewById = (id) => {
-    return api.get(`/reviews/${id}`);
-  };
 
-  const getReviewsByMediaId = (mediaId, page = 1) => {
-    return api.get(`/reviews`, {
+  const getReviewsByMediaIdandUrl = (url, mediaId) => {
+    return api.get(url, {
       params: {
         mediaId: mediaId,
-        pageNumber: page,
       },
     });
   };
 
-  const getReviewsByMediaIdandUsername = (mediaId, username) => {
-    return api.get(`/reviews`, {
-      params: {
-        mediaId: mediaId,
-        username: username,
-      },
-    });
-  };
-
-  const getMovieReviewsFromUser = (username, page = 1) => {
-    return api.get(`/reviews`, {
-      params: {
-        username: username,
-        pageNumber: page,
-      },
-    });
-  };
-
-  const editReview = ({ mediaId, rating, reviewContent, reviewId }) => {
+  const editReview = ({ url, mediaId, rating, reviewContent}) => {
     return api.put(
-      `/reviews/${reviewId}`,
+      url,
       { mediaId: mediaId, rating: Number(rating), reviewContent: reviewContent },
       {
         headers: {
@@ -57,30 +36,24 @@ const reviewApi = (() => {
     );
   };
 
-  const likeReview = (username, id) => {
-    return api.put(
-      `/reviews/${id}`,
-      { username: username, feedbackType: 'LIKE' },
-      {
-        headers: {
-          'Content-Type': VndType.APPLICATION_MOOVIELIST_FEEDBACK_FORM,
-        },
-      }
-    );
+  const likeReview = (url) => {
+    return api.post(url);
   };
 
-  const deleteReviewById = (id) => {
-    return api.delete(`/reviews/${id}`);
+  const deleteLikeFromReview = (url) => {
+    return api.delete(url);
+  };
+
+  const deleteReviewByUrl = (url) => {
+    return api.delete(url);
   };
 
   return {
-    getReviewById,
-    getReviewsByMediaId,
-    getReviewsByMediaIdandUsername,
-    getMovieReviewsFromUser,
+    getReviewsByMediaIdandUrl,
     editReview,
     createReview,
-    deleteReviewById,
+    deleteReviewByUrl,
+    deleteLikeFromReview,
     likeReview,
   };
 })();

@@ -74,7 +74,7 @@ public class ImageController {
         try {
             final int userId = userService.tryToGetCurrentUserId();
             imageService.setUserImage(userId, imageBytes, image.getMediaType().getSubtype());
-            LOGGER.info("Method: setProfileImage, Path: /images/{id}, UserId: {}", userId);
+            LOGGER.info("Method: setProfileImage, Path: /images/{id}");
             return Response.ok().build();
         } catch (UnableToFindUserException e) {
             LOGGER.error("Error updating profile image: {}", e.getMessage());

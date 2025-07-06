@@ -35,10 +35,6 @@ const ListService = (() => {
     return await listApi.getListsFromUrl(url, pageNumber, pageSize);
   };
 
-  const getListByIdList = async (idList) => {
-    const res = await listApi.getListByIdList(idList);
-    return res;
-  };
 
   const editMoovieList = async ({ url, name, description }) => {
     const res = await listApi.editMoovieList(url, name.trim(), description.trim());
@@ -89,8 +85,8 @@ const ListService = (() => {
     return await listApi.createMoovieList(name, type, description);
   };
 
-  const editListContent = async ({ listId, mediaId, customOrder }) => {
-    return listApi.editListContent(listId, mediaId, customOrder);
+  const editListContent = async ({ url, mediaId, customOrder }) => {
+    return await listApi.editListContent(url, mediaId, customOrder);
   };
 
   const insertMediaIntoMoovieList = async ({ url, mediaIds }) => {
@@ -103,41 +99,16 @@ const ListService = (() => {
     return res;
   };
 
-  const getRecommendedLists = async (id) => {
-    return await listApi.getRecommendedLists(id);
-  };
-
-  const likeList = async (moovieListId, username) => {
+  const likeList = async (url) => {
     try {
-      return await listApi.likeList(moovieListId, username);
+      return await listApi.likeList(url);
     } catch (error) {
       return null;
     }
   };
 
-  const unlikeList = async (moovieListId, username) => {
-    try {
-      return await listApi.unlikeList(moovieListId, username);
-    } catch (error) {
-      return null;
-    }
-  };
 
-  const followList = async (moovieListId, username) => {
-    try {
-      return await listApi.followList(moovieListId, username);
-    } catch (error) {
-      return null;
-    }
-  };
 
-  const unfollowList = async (moovieListId, username) => {
-    try {
-      return await listApi.unfollowList(moovieListId, username);
-    } catch (error) {
-      return null;
-    }
-  };
 
   return {
     getLists,
@@ -145,18 +116,13 @@ const ListService = (() => {
     getListsFromUrl,
     getListContent,
     getListContentByMediaId,
-    getListByIdList,
     getIdListFromObjectList,
     insertMediaIntoMoovieList,
     deleteMediaFromMoovieList,
     editMoovieList,
-    getRecommendedLists,
     editListContent,
     createMoovieList,
     likeList,
-    unlikeList,
-    followList,
-    unfollowList,
   };
 })();
 

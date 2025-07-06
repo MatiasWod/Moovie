@@ -133,7 +133,9 @@ public class ReviewServiceImpl implements ReviewService{
         }
         else {
             MoovieListReview review = reviewDao.getMoovieListReviewById(userService.tryToGetCurrentUserId(),reviewId).orElseThrow(() -> new ReviewNotFoundException("MoovieListReview not found for id: " + reviewId));
-            return false;
+            if (!review.isCurrentUserHasLiked()){
+                return false;
+            }
         }
         reviewDao.removeLikeReview(userService.getInfoOfMyUser().getUserId(),reviewId,type);
         LOGGER.info("Succesfully removed like in review: {}, user: {}.", reviewId, userService.getInfoOfMyUser().getUserId());

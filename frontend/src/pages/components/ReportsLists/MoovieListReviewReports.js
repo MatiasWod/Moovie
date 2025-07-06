@@ -92,7 +92,7 @@ export default function MoovieListReviewReports() {
     try {
       const response = await api.get(review.userUrl);
       const user = response.data;
-      await userApi.banUser(user.username);
+      await userApi.banUser(user.url);
       await fetchReviews();
     } catch (error) {
       console.error('Error banning user:', error);

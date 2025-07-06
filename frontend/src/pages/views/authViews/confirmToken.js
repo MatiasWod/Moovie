@@ -22,7 +22,7 @@ export default function ConfirmToken() {
     const confirmToken = async () => {
       try {
         const response = await userApi.confirmToken(username, token);
-
+        console.log(response)
         if (response.status === 500) {
           navigate(`/register/verify?error=token_expired&token=${token}`);
           return;
@@ -32,13 +32,15 @@ export default function ConfirmToken() {
           throw new Error(`Unexpected response status: ${response.status}`);
         }
 
-        const jwtToken = response.headers?.authorization;
+        const authToken = response.headers['moovie-authtoken'];
+        const refreshToken = response.headers['moovie-refreshtoken'];
 
-        if (!jwtToken) {
-          throw new Error('No token received');
+        if (!authToken || !refreshToken) {
+          throw new Error('No tokens received');
         }
 
-        sessionStorage.setItem('jwt', jwtToken);
+        sessionStorage.setItem('jwt', authToken);
+        sessionStorage.setItem('refreshToken', refreshToken);
         sessionStorage.setItem('username', username);
 
         await new Promise((resolve) => setTimeout(resolve, 10));

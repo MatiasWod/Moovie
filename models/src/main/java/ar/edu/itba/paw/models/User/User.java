@@ -31,9 +31,14 @@ public class User {
     @Formula("(SELECT COUNT(*) FROM moovieLists ml WHERE ml.userId = userId AND ml.type = 1)")
     private int moovieListCount;
 
-    //ReviewsCount is the sum of reviews + moovielistreviews + comments
     @Formula("(SELECT COUNT(*) FROM reviews r WHERE r.userId = userId)")
     private int reviewsCount;
+
+    @Formula("(SELECT COUNT(*) FROM moovielistsreviews r WHERE r.userid = userId)")
+    private int moovieListReviewsCount;
+
+    @Formula("(SELECT COUNT(*) FROM comments r WHERE r.userid = userId)")
+    private int commentsCount;
 
     @Formula("(SELECT " +
             "(SELECT COUNT(rl.reviewid) FROM reviewslikes rl LEFT OUTER JOIN reviews r ON r.reviewid = rl.reviewid WHERE r.userid = userId) + " +
@@ -56,7 +61,7 @@ public class User {
 
     }
 
-    public User(int userId, String username, String email, String password, int role, int milkyPoints, int moovieListCount, int reviewsCount, int imageId) {
+    public User(int userId, String username, String email, String password, int role, int milkyPoints, int moovieListCount, int reviewsCount, int moovieListReviewsCount, int commentsCount,  int imageId) {
         this.userId = userId;
         this.username = username;
         this.email = email;
@@ -65,6 +70,8 @@ public class User {
         this.milkyPoints = milkyPoints;
         this.moovieListCount = moovieListCount;
         this.reviewsCount = reviewsCount;
+        this.moovieListReviewsCount = moovieListReviewsCount;
+        this.commentsCount = commentsCount;
         this.imageId = imageId;
     }
 
@@ -127,6 +134,14 @@ public class User {
         return reviewsCount;
     }
 
+    public int getMoovieListReviewsCount() {
+        return moovieListReviewsCount;
+    }
+
+    public int getCommentsCount() {
+        return commentsCount;
+    }
+
     public Integer getImageId() {
         return imageId;
     }
@@ -163,7 +178,6 @@ public class User {
 
     @Override
     public int hashCode(){
-        // TODO add image id
         return Objects.hash(username, role, milkyPoints, userId, email, reviewsCount, imageId);
     }
 }

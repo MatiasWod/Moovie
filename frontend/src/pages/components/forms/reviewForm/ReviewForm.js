@@ -19,7 +19,7 @@ const ReviewForm = ({ mediaName, closeReview, mediaId, userReview, onReviewSubmi
       setError(null); // Limpiar errores previos
       let response;
       if (userReview.rating) {
-        response = await reviewService.editReview(mediaId, rating, review, userReview.id);
+        response = await reviewService.editReview(userReview.url ,mediaId, rating, review);
       } else {
         response = await reviewService.createReview(mediaId, rating, review);
       }

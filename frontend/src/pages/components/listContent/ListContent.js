@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import './listContent.css';
-import ListService from '../../../services/ListService';
-import SortOrder from '../../../api/values/SortOrder';
-import PagingSizes from '../../../api/values/PagingSizes';
-import listService from '../../../services/ListService';
 import Button from 'react-bootstrap/Button';
+import { useTranslation } from 'react-i18next';
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
-import WatchlistWatched from '../../../api/values/WatchlistWatched';
-import UserService from '../../../services/UserService';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import PagingSizes from '../../../api/values/PagingSizes';
+import WatchlistWatched from '../../../api/values/WatchlistWatched';
+import { default as ListService, default as listService } from '../../../services/ListService';
+import UserService from '../../../services/UserService';
+import './listContent.css';
 
 const MediaRow = ({
   position,
@@ -65,11 +63,11 @@ const MediaRow = ({
   const [menuOpen, setMenuOpen] = useState(false);
   const { t } = useTranslation();
 
-  const [ww, setWW] = useState({ watched: false, watchlist: false });
+  const [ww, setWW] = useState({ watched: false });
   const [refreshWatched, setRefreshWatched] = useState(false);
   useEffect(async () => {
     try {
-      const data = await UserService.currentUserWWStatus(
+      const data = await UserService.currentUserWatchedStatus(
         media.id,
         user.defaultPrivateMoovieListsUrl
       );
@@ -197,7 +195,6 @@ const ListContent = ({
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [hoveredId, setHoveredId] = useState(null);
-  console.log('ListContent rendered with listId:', listContent);
 
   const handleClick = (id) => {
     if (!editMode) {
@@ -212,14 +209,14 @@ const ListContent = ({
   const pageChange = async (to, mId) => {
     if (to === 1) {
       await ListService.editListContent({
+        url: listContentUrl,
         mediaId: mId,
-        listId: listId,
         customOrder: currentPage * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT + 1,
       });
     } else if (to === -1) {
       await ListService.editListContent({
+        url: listContentUrl,
         mediaId: mId,
-        listId: listId,
         customOrder: (currentPage - 1) * PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CONTENT,
       });
     }
@@ -228,7 +225,6 @@ const ListContent = ({
   };
 
   const removeFromList = async (mediaId) => {
-    console.log(listContentUrl);
     await listService.deleteMediaFromMoovieList({
       url: listContentUrl,
       mediaId: mediaId,
@@ -238,9 +234,10 @@ const ListContent = ({
 
   const moveItem = async (mediaId, fromOrder, toOrder) => {
     try {
+      console.log(listContentUrl)
       await ListService.editListContent({
+        url: listContentUrl,
         mediaId: mediaId,
-        listId: listId,
         customOrder: toOrder,
       });
       Refresh();

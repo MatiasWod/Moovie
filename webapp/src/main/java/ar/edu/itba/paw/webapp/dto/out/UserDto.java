@@ -33,6 +33,10 @@ public class UserDto {
     private String moovieListReviewsUrl;
     private String reviewsUrl;
 
+    private String banMessageUrl;
+    private String commentFeedbackUrl;
+    private String commentsUrl;
+
     public static UserDto fromUser(final User user, final UriInfo uriInfo) {
         final UserDto dto = new UserDto();
 
@@ -102,6 +106,19 @@ public class UserDto {
                 .build()
                 .toString();
 
+        dto.banMessageUrl = uriInfo.getBaseUriBuilder().path("users/{username}/banMessage")
+                .build(user.getUsername())
+                .toString();
+
+        dto.commentFeedbackUrl = uriInfo.getBaseUriBuilder().path("comments")
+                .queryParam("feebackedBy", user.getUsername())
+                .build()
+                .toString();
+
+        dto.commentsUrl = uriInfo.getBaseUriBuilder().path("comments")
+                .queryParam("username", user.getUsername())
+                .build()
+                .toString();
 
         return dto;
     }
@@ -252,5 +269,28 @@ public class UserDto {
 
     public void setPrivateMoovieListsUrl(String privateMoovieListsUrl) {
         this.privateMoovieListsUrl = privateMoovieListsUrl;
+    }
+
+    public String getBanMessageUrl() {
+        return banMessageUrl;
+    }
+    public void setBanMessageUrl(String banMessageUrl) {
+        this.banMessageUrl = banMessageUrl;
+    }
+
+    public String getCommentFeedbackUrl() {
+        return commentFeedbackUrl;
+    }
+
+    public void setCommentFeedbackUrl(String commentFeedback) {
+        this.commentFeedbackUrl = commentFeedback;
+    }
+
+    public String getCommentsUrl() {
+        return commentsUrl;
+    }
+
+    public void setCommentsUrl(String commentsUrl) {
+        this.commentsUrl = commentsUrl;
     }
 }

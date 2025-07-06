@@ -23,6 +23,8 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import ar.edu.itba.paw.webapp.dto.in.EditListContentDto;
+import ar.edu.itba.paw.webapp.dto.out.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -46,10 +48,6 @@ import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.dto.in.EditListDTO;
 import ar.edu.itba.paw.webapp.dto.in.MediaListDto;
 import ar.edu.itba.paw.webapp.dto.in.MoovieListCreateDto;
-import ar.edu.itba.paw.webapp.dto.out.MediaIdListIdDto;
-import ar.edu.itba.paw.webapp.dto.out.MoovieListDto;
-import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
-import ar.edu.itba.paw.webapp.dto.out.UserListIdDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import io.swagger.annotations.Api;
@@ -89,7 +87,7 @@ public class MoovieListController {
     @GET
     @Produces(VndType.APPLICATION_MOOVIELIST_LIST)
     public Response getMoovieList(
-            @QueryParam("ids") final String ids,
+            @QueryParam("getRecommendedOfListId") @DefaultValue("0") int getRecommendedOfListId,
             @QueryParam("search") String search,
             @QueryParam("ownerUsername") String ownerUsername,
             @QueryParam("type") @DefaultValue("-1") int type,
@@ -126,41 +124,17 @@ public class MoovieListController {
                 }
             }
             // Buscar por IDs si se proporcionan
-            if (ids != null && !ids.isEmpty()) {
-                if (ids.length() > 100) {
-                    throw new IllegalArgumentException(
-                            "Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
-                }
+            if (getRecommendedOfListId > 0) {
 
-                List<Integer> idList = new ArrayList<>();
-                String[] splitIds = ids.split(",");
-                for (String id : splitIds) {
-                    try {
-                        idList.add(Integer.parseInt(id.trim()));
-                    } catch (NumberFormatException e) {
-                        throw new IllegalArgumentException(
-                                "Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
-                    }
+                 List<MoovieListCard> recommendedLists = moovieListService.getRecommendedMoovieListCards(getRecommendedOfListId, 4, 0);
+                if (recommendedLists.isEmpty()) {
+                    return Response.noContent().build();
                 }
+                List<MoovieListDto> recommendedListDtos = MoovieListDto.fromMoovieListList(recommendedLists, uriInfo);
+                Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(recommendedListDtos) {
+                });
 
-                if (idList.size() >= 25 || idList.size() < 0) {
-                    throw new IllegalArgumentException(
-                            "Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
-                }
-
-                List<MoovieListDto> mlList = new ArrayList<>();
-                for (int id : idList) {
-                    try {
-                        MoovieListDto mlc = MoovieListDto.fromMoovieList(moovieListService.getMoovieListCardById(id),
-                                uriInfo);
-                        mlList.add(mlc);
-                    } catch (InvalidAccessToResourceException e) {
-                        // We just ignored the private list its trying to access
-                    }
-                }
-
-                return Response.ok(new GenericEntity<List<MoovieListDto>>(mlList) {
-                }).build();
+                return res.build();
             } else if (likedBy != null || followedBy != null) {
                 List<MoovieListCard> mlcList = new ArrayList<>();
                 int listCount = 0;
@@ -326,15 +300,26 @@ public class MoovieListController {
     }
 
     @DELETE
-    @Path("/{id}/likes")
+    @Path("/{id}/likes/{username}")
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteMoovieListLike(@PathParam("id") int id) {
-        boolean removed = moovieListService.removeLikeMoovieList(id);
-        if (removed)
-            return Response.noContent().build();
-        return Response.status(Response.Status.BAD_REQUEST)
-                .entity("{\"message\":\"List is not liked.\"}").build();
+    public Response deleteMoovieListLike(@PathParam("id") int id,@PathParam("username") String username) {
+        try{
+            User user = userService.getInfoOfMyUser();
+            if (!user.getUsername().equals(username)) {
+                return Response.status(Response.Status.FORBIDDEN)
+                        .entity("{\"message\":\"You can only remove your own likes.\"}")
+                        .build();
+            }
+            boolean removed = moovieListService.removeLikeMoovieList(id);
+            if (removed)
+                return Response.noContent().build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"message\":\"List is not liked.\"}").build();
+        } catch (UserNotLoggedException e) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(e.getMessage()).build();
+        }
     }
 
     // Returns like status for a specific list
@@ -393,20 +378,32 @@ public class MoovieListController {
         boolean followed = moovieListService.followMoovieList(id);
         if (followed)
             return Response.ok("{\"message\":\"Successfully followed list.\"}").build();
-        return Response.status(Response.Status.BAD_REQUEST)
+        return Response.status(Response.Status.CONFLICT)
                 .entity("{\"message\":\"List is already followed.\"}").build();
     }
 
     @DELETE
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Path("/{id}/followers")
+    @Path("/{id}/followers/{username}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response unfollowMoovieList(@PathParam("id") int id) {
+    public Response unfollowMoovieList(@PathParam("id") int id,
+                                       @PathParam("username") String username) {
+        try{
+            User user = userService.getInfoOfMyUser();
+            if (!user.getUsername().equals(username)) {
+                return Response.status(Response.Status.FORBIDDEN)
+                        .entity("{\"message\":\"You can only remove your own likes.\"}")
+                        .build();
+            }
         boolean unfollowed = moovieListService.removeFollowMoovieList(id);
         if (unfollowed)
             return Response.noContent().build();
-        return Response.status(Response.Status.BAD_REQUEST)
+        return Response.status(Response.Status.NOT_FOUND)
                 .entity("{\"message\":\"List is not followed.\"}").build();
+        } catch (UserNotLoggedException e) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(e.getMessage()).build();
+        }
     }
 
     // Returns like follow for a specific list
@@ -425,7 +422,7 @@ public class MoovieListController {
                     .build().toString();
             return Response.ok(new UserListIdDto(listId, username, uri, uriInfo)).build();
         }
-        return Response.noContent().build();
+        return Response.status(Response.Status.NOT_FOUND).entity("The user has not liked the list").build();
     }
 
     // Return all follows for a list
@@ -455,21 +452,6 @@ public class MoovieListController {
         }).build();
     }
 
-    @GET
-    @Path("{id}/recommendedLists")
-    @Produces(VndType.APPLICATION_MOOVIELIST_LIST)
-    public Response getRecommendedLists(@PathParam("id") final int id) {
-        try {
-            List<MoovieListDto> mlcList = MoovieListDto
-                    .fromMoovieListList(moovieListService.getRecommendedMoovieListCards(id, 4, 0), uriInfo);
-            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(mlcList) {
-            });
-            return res.build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ResponseMessage("An unexpected error occurred.")).build();
-        }
-    }
 
     // We have a separate endpoint for content to be able to use filters and no need
     // to do it every time we want to find a list
@@ -581,11 +563,11 @@ public class MoovieListController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response editMoovieListMediaByMediaId(@PathParam("id") final int id,
             @PathParam("mediaId") final int mediaId,
-            final MediaIdListIdDto input) {
+            final EditListContentDto input) {
         try {
             moovieListService.getMoovieListCardById(id);
 
-            moovieListService.updateMoovieListOrder(input.getMoovieListId(), input.getMediaId(),
+            moovieListService.updateMoovieListOrder(id, input.getMediaId(),
                     input.getCustomOrder());
             return Response.ok()
                     .entity("MoovieList order succesfully modified.").build();

@@ -126,8 +126,7 @@ public class ReviewController {
             return  res.build();
         }
         if (mediaId != null && username != null) {
-            // Caso: buscar una reseña específica por mediaId y userId
-            final int userId;
+            // Caso: buscar una reseña específica por mediaId y username
             User user = userService.findUserByUsername(username);
             final Review review = reviewService.getReviewByMediaIdAndUsername(mediaId, user.getUserId());
             if (review == null) {
@@ -245,27 +244,38 @@ public class ReviewController {
         boolean liked = reviewService.likeReview(id, ReviewTypes.REVIEW_MEDIA);
         if (liked)
             return Response.ok("{\"message\":\"Successfully liked list.\"}").build();
-        return Response.status(Response.Status.BAD_REQUEST)
+        return Response.status(Response.Status.CONFLICT)
                 .entity("{\"message\":\"List is already liked.\"}").build();
     }
 
     @DELETE
-    @Path("/{id}/likes")
+    @Path("/{id}/likes/{username}")
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteReviewLike(@PathParam("id") int id) {
-
-        boolean removed = reviewService.removeLikeReview(id, ReviewTypes.REVIEW_MEDIA);
-        if (removed)
-            return Response.noContent().build();
-        return Response.status(Response.Status.BAD_REQUEST)
-                .entity("{\"message\":\"List is not liked.\"}").build();
+    public Response deleteReviewLike(@PathParam("id") int id,
+                                     @PathParam("username") String username) {
+        try{
+            User user = userService.getInfoOfMyUser();
+            if (!user.getUsername().equals(username)) {
+                return Response.status(Response.Status.FORBIDDEN)
+                        .entity("{\"message\":\"You can only remove your own likes.\"}")
+                        .build();
+            }
+            boolean removed = reviewService.removeLikeReview(id, ReviewTypes.REVIEW_MEDIA);
+            if (removed)
+                return Response.noContent().build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"message\":\"List is not liked.\"}").build();
+        } catch (UserNotLoggedException e) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(e.getMessage()).build();
+        }
     }
 
     // Returns like status for a specific review for a user
     @GET
     @Path("/{id}/likes/{username}")
-    @Produces(VndType.APPLICATION_LIST_LIKE)
+    @Produces(VndType.APPLICATION_REVIEW_LIKE)
     public Response getUserLikedListById(@PathParam("id") final int reviewId,
                                          @PathParam("username") final String username) {
         if (reviewService.userLikesReview(reviewId, username, ReviewTypes.REVIEW_MEDIA)) {
@@ -277,16 +287,15 @@ public class ReviewController {
                     .build().toString();
             return Response.ok(new UserReviewDto(reviewId, username, uri, uriInfo)).build();
         }
-        return Response.noContent().build();
+        return Response.status(Response.Status.NOT_FOUND).entity("User has not liked the review.").build();
     }
 
     // Return all likes for a review
     @GET
     @Path("/{id}/likes")
-    @Produces(VndType.APPLICATION_LIST_LIKE_LISTS) // Asumiendo un VndType para listas de usuarios
+    @Produces(VndType.APPLICATION_REVIEW_LIKE_LIST) // Asumiendo un VndType para listas de usuarios
     public Response getUsersWhoLikedList(@PathParam("id") final int reviewId,
                                          @QueryParam("page") @DefaultValue("0") final int page) {
-
         List<User> likedUsers = reviewService.usersLikesReview(reviewId, page, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), ReviewTypes.REVIEW_MEDIA );
         if (likedUsers.isEmpty()) {
             return Response.noContent().build();

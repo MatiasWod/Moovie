@@ -2,23 +2,9 @@ import moovieListReviewApi from '../api/MoovieListReviewApi';
 import reviewApi from '../api/ReviewApi';
 
 const MoovieListReviewService = (() => {
-  const getMoovieListReview = async (id) => {
-    const res = await moovieListReviewApi.getMoovieListReviewById(id);
-    return res;
-  };
 
-  const getMoovieListReviewsByListId = async (id, pageNumber) => {
-    const res = await moovieListReviewApi.getMoovieListReviewsByListId(id, pageNumber);
-    return res;
-  };
-
-  const getMoovieListReviewsFromUserId = async (userId, pageNumber) => {
-    const res = await moovieListReviewApi.getMoovieListReviewsFromUserId(userId, pageNumber);
-    return res;
-  };
-
-  const editReview = async (id, listId, reviewContent) => {
-    const res = await moovieListReviewApi.editReview(id, listId, reviewContent);
+  const editReview = async (url, listId, reviewContent) => {
+    const res = await moovieListReviewApi.editReview(url, listId, reviewContent);
     return res;
   };
 
@@ -27,24 +13,28 @@ const MoovieListReviewService = (() => {
     return res;
   };
 
-  const deleteMoovieListReview = async (id) => {
-    const res = await moovieListReviewApi.deleteMoovieListReviewById(id);
+  const deleteMoovieListReviewByUrl = async (url) => {
+    const res = await moovieListReviewApi.deleteMoovieListReviewByUrl(url);
+    return res;
+  }
+
+
+  const likeMoovieListReview = async (url) => {
+    const res = await moovieListReviewApi.likeMoovieListReview(url);
     return res;
   };
 
-  const likeMoovieListReview = async (username, id) => {
-    const res = await moovieListReviewApi.likeMoovieListReview(username, id);
+  const deleteLikeFromMoovieListReview = async (url, username) => {
+    const res = await moovieListReviewApi.deleteLikeFromMoovieListReview(url, username);
     return res;
   };
 
   return {
-    getMoovieListReview,
-    getMoovieListReviewsByListId,
-    getMoovieListReviewsFromUserId,
     editReview,
     createMoovieListReview,
-    deleteMoovieListReview,
     likeMoovieListReview,
+    deleteMoovieListReviewByUrl,
+    deleteLikeFromMoovieListReview
   };
 })();
 

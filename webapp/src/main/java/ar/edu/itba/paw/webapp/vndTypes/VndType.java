@@ -115,11 +115,20 @@ public class VndType {
     // Tipo de medio para  likes  de review
     public static final String APPLICATION_REVIEW_LIKE = "application/vnd.review-like.v1+json";
 
+    // Tipo de medio para  likes  de review
+    public static final String APPLICATION_REVIEW_LIKE_LIST = "application/vnd.review-like-list.v1+json";
+
     // Tipo de medio para  likes  de review de lista
     public static final String APPLICATION_MOOVIELIST_REVIEW_LIKE = "application/vnd.moovielist-review-like.v1+json";
 
+    // Tipo de medio para  likes  de review de lista
+    public static final String APPLICATION_MOOVIELIST_REVIEW_LIKE_LIST = "application/vnd.moovielist-review-like-list.v1+json";
+
     // Tipo de medio para  likes  de comments
-    public static final String APPLICATION_COMMENT_LIKE = "application/vnd.comment-like.v1+json";
+    public static final String APPLICATION_COMMENT_FEEDBACK = "application/vnd.comment-feedback.v1+json";
+
+    public static final String APPLICATION_COMMENT_FEEDBACK_LIST = "application/vnd.comment-feedback-list.v1+json";
+
 
     // Tipo de medio para una lista de proveedores "
     public static final String APPLICATION_PROVIDER_LIST = "application/vnd.provider-list.v1+json";

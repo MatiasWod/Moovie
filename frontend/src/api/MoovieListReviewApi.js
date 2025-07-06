@@ -2,31 +2,10 @@ import api from './api.js';
 import VndType from '../enums/VndType';
 
 const moovieListReviewApi = (() => {
-  const getMoovieListReviewById = (id) => {
-    return api.get(`/moovieListReviews/${id}`);
-  };
 
-  const getMoovieListReviewsByListId = (id, page = 1) => {
-    return api.get(`/moovieListReviews`, {
-      params: {
-        listId: id,
-        pageNumber: page,
-      },
-    });
-  };
-
-  const getMoovieListReviewsFromUserId = (userId, page = 1) => {
-    return api.get(`/moovieListReviews`, {
-      params: {
-        userId: userId,
-        pageNumber: page,
-      },
-    });
-  };
-
-  const editReview = (id, listId, reviewContent) => {
+  const editReview = (url, listId, reviewContent) => {
     return api.put(
-      `/moovieListReviews/${id}`,
+      url,
       {
         reviewContent: reviewContent,
         listId: listId,
@@ -54,30 +33,24 @@ const moovieListReviewApi = (() => {
     );
   };
 
-  const deleteMoovieListReviewById = (id) => {
-    return api.delete(`/moovieListReviews/${id}`);
+  const deleteMoovieListReviewByUrl = (url) => {
+    return api.delete(url);
   };
 
-  const likeMoovieListReview = (username, id) => {
-    return api.put(
-      `/moovieListReviews/${id}`,
-      { username: username, feedbackType: 'LIKE' },
-      {
-        headers: {
-          'Content-Type': VndType.APPLICATION_MOOVIELIST_FEEDBACK_FORM,
-        },
-      }
-    );
+  const likeMoovieListReview = (url) => {
+    return api.post(url);
   };
+
+  const deleteLikeFromMoovieListReview = (url, username) => {
+    return api.delete(url + `/${username}`);
+  }
 
   return {
-    getMoovieListReviewById,
-    getMoovieListReviewsByListId,
-    getMoovieListReviewsFromUserId,
     editReview,
     createMoovieListReview,
-    deleteMoovieListReviewById,
+    deleteMoovieListReviewByUrl,
     likeMoovieListReview,
+    deleteLikeFromMoovieListReview
   };
 })();
 

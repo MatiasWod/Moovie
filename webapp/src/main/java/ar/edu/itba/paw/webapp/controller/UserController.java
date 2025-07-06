@@ -2,14 +2,8 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.models.BannedMessage.BannedMessage;
-import ar.edu.itba.paw.models.Media.Media;
-import ar.edu.itba.paw.models.MoovieList.MoovieListCard;
-import ar.edu.itba.paw.models.MoovieList.MoovieListTypes;
-import ar.edu.itba.paw.models.MoovieList.UserMoovieListId;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
-import ar.edu.itba.paw.models.Review.MoovieListReview;
-import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.models.User.Token;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.User.UserRoles;
@@ -30,8 +24,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.persistence.NoResultException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
@@ -48,10 +44,6 @@ public class UserController {
 
     private static int DEFAULT_PAGE_INT = 1;
     private final UserService userService;
-    private final MoovieListService moovieListService;
-    private final MediaService mediaService;
-    private final ReviewService reviewService;
-    private final CommentService commentService;
     private final VerificationTokenService verificationTokenService;
     private final BannedService bannedService;
     private final ModeratorService moderatorService;
@@ -64,12 +56,8 @@ public class UserController {
     private UriInfo uriInfo;
 
     @Autowired
-    public UserController(UserService userService, MoovieListService moovieListService, MediaService mediaService, ReviewService reviewService, CommentService commentService, VerificationTokenService verificationTokenService, BannedService bannedService, ModeratorService moderatorService, JwtTokenProvider jwtTokenProvider) {
+    public UserController(UserService userService, VerificationTokenService verificationTokenService, BannedService bannedService, ModeratorService moderatorService, JwtTokenProvider jwtTokenProvider) {
         this.userService = userService;
-        this.moovieListService = moovieListService;
-        this.mediaService = mediaService;
-        this.reviewService = reviewService;
-        this.commentService = commentService;
         this.verificationTokenService = verificationTokenService;
         this.bannedService=bannedService;
         this.moderatorService= moderatorService;
@@ -171,7 +159,7 @@ public class UserController {
             }
             userService.resendVerificationEmail(token);
 
-            LOGGER.info("Verification email resent successfully for user ID: {}", token.getUserId());
+            LOGGER.info("Verification email resent successfully for user");
             return Response.ok().entity("Verification email resent successfully").build();
 
         } catch (VerificationTokenNotFoundException e) {
@@ -208,7 +196,7 @@ public class UserController {
     @Path("/{username}")
     @Consumes(VndType.APPLICATION_USER_TOKEN_FORM)
     @Produces(VndType.APPLICATION_USER_TOKEN)
-    public Response verifyUser(@PathParam("username") final String username,@Valid @NotNull final TokenDto tokenDto) {
+    public Response verifyUser(@PathParam("username") final String username, @Valid @NotNull final TokenDto tokenDto, @Context HttpServletRequest request) {
         String tokenString = tokenDto.getToken();
         LOGGER.info("Method: verifyUser, Path: users, Token: {}", tokenString);
         try {
@@ -217,7 +205,13 @@ public class UserController {
                 Token token = tok.get();
                 if (userService.confirmRegister(token)) {
                     User user = userService.findUserById(token.getUserId());
+                    // No es un recuest de tipo Basic, por ende no manda token. Se pone manualmente
+                    ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromContextPath(request);
+                    String jwt = jwtTokenProvider.createAccessToken(builder, user);
+                    String refreshToken = jwtTokenProvider.createRefreshToken(builder, user);
                     return Response.ok(UserDto.fromUser(user, uriInfo))
+                            .header("Moovie-AuthToken", jwt)
+                            .header("Moovie-RefreshToken", refreshToken)
                             .build();
                 }
                 LOGGER.info("Token validation failed. Returning INTERNAL_SERVER_ERROR.");
@@ -280,7 +274,7 @@ public class UserController {
     @Path("/{username}")
     @Produces(VndType.APPLICATION_USER)
     public Response getUserByUsername(@PathParam("username") final String username, @Context Request request) {
-        LOGGER.info("Method: getUserByUsername, Path: /users/user/{username}, Username: {}", username);
+        LOGGER.info("Method: getUserByUsername, Path: /users/{username}, Username: {}", username);
         try {
             final User user = userService.findUserByUsername(username);
             final Supplier<UserDto> dtoSupplier = () ->UserDto.fromUser(user, uriInfo);
@@ -376,34 +370,5 @@ public class UserController {
         // Llegar aqui implica un exito en la operacion
         user.setRole(UserRoles.MODERATOR.getRole());
         return Response.ok(UserDto.fromUser(user, uriInfo)).build();
-    }
-
-
-    /***
-     * LIKES
-     */
-
-    @GET
-    @Path("/{username}/commentsFeedback/{commentId}")
-    @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Produces(VndType.APPLICATION_COMMENT_LIKE)
-    public Response getFeedbackedCommentById(@PathParam("username") final String username,
-                                                  @PathParam("commentId") final int commentId) {
-        try {
-            int uid = userService.findUserByUsername(username).getUserId();
-            boolean liked= commentService.userHasLiked(commentId, uid);
-            boolean disliked=commentService.userHasDisliked(commentId, uid);
-
-            if(liked || disliked){
-                return Response.ok(UserCommentIdDto.fromUserCommentId(commentId,username,liked,disliked)).build();
-            }
-            return Response.noContent().build();
-
-        } catch (UnableToFindUserException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-
     }
 }

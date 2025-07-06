@@ -3,7 +3,7 @@ import '../formsStyle.css';
 import listService from '../../../../services/ListService';
 import { useTranslation } from 'react-i18next';
 
-const EditListForm = ({ listName, listDescription, closeEdit, closeEditSuccess, listId }) => {
+const EditListForm = ({ listName, listDescription, closeEdit, closeEditSuccess, listUrl }) => {
   const { t } = useTranslation();
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -17,7 +17,7 @@ const EditListForm = ({ listName, listDescription, closeEdit, closeEditSuccess, 
     }
     try {
       const response = await listService.editMoovieList({
-        id: listId,
+        url: listUrl,
         name: name,
         description: description,
       });
