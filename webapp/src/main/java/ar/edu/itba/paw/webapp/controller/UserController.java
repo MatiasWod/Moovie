@@ -286,7 +286,7 @@ public class UserController {
     @Path("/{username}")
     @Produces(VndType.APPLICATION_USER)
     public Response getUserByUsername(@PathParam("username") final String username, @Context Request request) {
-        LOGGER.info("Method: getUserByUsername, Path: /users/user/{username}, Username: {}", username);
+        LOGGER.info("Method: getUserByUsername, Path: /users/{username}, Username: {}", username);
         try {
             final User user = userService.findUserByUsername(username);
             final Supplier<UserDto> dtoSupplier = () ->UserDto.fromUser(user, uriInfo);
