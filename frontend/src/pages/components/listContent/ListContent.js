@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import './listContent.css';
-import ListService from '../../../services/ListService';
-import SortOrder from '../../../api/values/SortOrder';
-import PagingSizes from '../../../api/values/PagingSizes';
-import listService from '../../../services/ListService';
 import Button from 'react-bootstrap/Button';
+import { useTranslation } from 'react-i18next';
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
-import WatchlistWatched from '../../../api/values/WatchlistWatched';
-import UserService from '../../../services/UserService';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import PagingSizes from '../../../api/values/PagingSizes';
+import WatchlistWatched from '../../../api/values/WatchlistWatched';
+import { default as ListService, default as listService } from '../../../services/ListService';
+import UserService from '../../../services/UserService';
+import './listContent.css';
 
 const MediaRow = ({
   position,
@@ -197,7 +195,6 @@ const ListContent = ({
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [hoveredId, setHoveredId] = useState(null);
-  console.log('ListContent rendered with listId:', listContent);
 
   const handleClick = (id) => {
     if (!editMode) {
