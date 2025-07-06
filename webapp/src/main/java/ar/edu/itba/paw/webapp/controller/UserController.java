@@ -42,10 +42,6 @@ public class UserController {
 
     private static int DEFAULT_PAGE_INT = 1;
     private final UserService userService;
-    private final MoovieListService moovieListService;
-    private final MediaService mediaService;
-    private final ReviewService reviewService;
-    private final CommentService commentService;
     private final VerificationTokenService verificationTokenService;
     private final BannedService bannedService;
     private final ModeratorService moderatorService;
@@ -58,12 +54,8 @@ public class UserController {
     private UriInfo uriInfo;
 
     @Autowired
-    public UserController(UserService userService, MoovieListService moovieListService, MediaService mediaService, ReviewService reviewService, CommentService commentService, VerificationTokenService verificationTokenService, BannedService bannedService, ModeratorService moderatorService, JwtTokenProvider jwtTokenProvider) {
+    public UserController(UserService userService, VerificationTokenService verificationTokenService, BannedService bannedService, ModeratorService moderatorService, JwtTokenProvider jwtTokenProvider) {
         this.userService = userService;
-        this.moovieListService = moovieListService;
-        this.mediaService = mediaService;
-        this.reviewService = reviewService;
-        this.commentService = commentService;
         this.verificationTokenService = verificationTokenService;
         this.bannedService=bannedService;
         this.moderatorService= moderatorService;
