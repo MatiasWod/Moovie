@@ -61,8 +61,13 @@ const reportApi = (() => {
   };
 
   const getCountFromUrl = async (url) => {
-    const response = await api.get(url, { params: { pageSize: 1, pageNumber: 1 } });
-    return response.headers['total-count'];
+    try {
+      const response = await api.get(url, { params: { pageSize: 1, pageNumber: 1 } });
+      return response.headers['total-count'] || response.headers['Total-Count'] || response.headers['Total-Elements'] || response.headers['total-elements'] || 0;
+    } catch (error) {
+      console.error('Error getting count from URL:', error);
+      return 0;
+    }
   };
 
   // --------------- ACTIONS ---------------
@@ -112,6 +117,7 @@ const reportApi = (() => {
     reportMoovieListReview,
     getReports,
     getReportCounts,
+    getCountFromUrl,
     resolveReviewReport,
     resolveCommentReport,
     resolveMoovieListReport,
