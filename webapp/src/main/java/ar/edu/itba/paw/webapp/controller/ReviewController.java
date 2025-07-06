@@ -90,14 +90,15 @@ public class ReviewController {
                             .entity("User is not moderator")
                             .build();
                 }
+                int pageSize = PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize();
                 final List<Review> reviews = reportService
-                        .getReportedReviews(PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize(), page);
+                        .getReportedReviews(pageSize, page);
                 final int reviewCount = reportService.getReportedReviewsCount();
                 final List<ReviewDto> reviewDtos = ReviewDto.fromReviewList(reviews, uriInfo);
                 Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ReviewDto>>(reviewDtos) {
                 });
                 final PagingUtils<Review> reviewPagingUtils = new PagingUtils<>(reviews, page,
-                        PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize(), reviewCount);
+                        pageSize, reviewCount);
                 ResponseUtils.setPaginationLinks(res, reviewPagingUtils, uriInfo);
                 return res.build();
             } catch (UserNotLoggedException e) {

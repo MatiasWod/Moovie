@@ -102,8 +102,9 @@ public class MoovieListReviewController {
                                 .entity("User is not moderator")
                                 .build();
                     }
+                    int pageSize = PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize();
                     final List<MoovieListReview> moovieListReviews = reportService
-                            .getReportedMoovieListReviews(PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize(), page);
+                            .getReportedMoovieListReviews(pageSize, page);
                     final int moovieListReviewsCount = reportService.getReportedMoovieListReviewsCount();
                     final List<MoovieListReviewDto> moovieListReviewDtos = MoovieListReviewDto
                             .fromMoovieListReviewList(moovieListReviews, uriInfo);
@@ -111,7 +112,7 @@ public class MoovieListReviewController {
                             .ok(new GenericEntity<List<MoovieListReviewDto>>(moovieListReviewDtos) {
                             });
                     final PagingUtils<MoovieListReview> toReturnMoovieListReviews = new PagingUtils<>(moovieListReviews,
-                            page - 1, PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize(), moovieListReviewsCount);
+                            page - 1, pageSize, moovieListReviewsCount);
                     ResponseUtils.setPaginationLinks(res, toReturnMoovieListReviews, uriInfo);
                     return res.build();
                 } catch (UserNotLoggedException e) {

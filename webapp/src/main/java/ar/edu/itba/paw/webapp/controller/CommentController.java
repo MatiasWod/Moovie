@@ -85,14 +85,15 @@ public class CommentController {
                     }
                     logger.info("isReported");
                     final int commentCount = reportService.getReportedCommentsCount();
+                    int pageSize = PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize();
                     final List<Comment> commentList = reportService
-                            .getReportedComments(PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize(), page);
+                            .getReportedComments(pageSize, page);
                     final List<CommentDto> commentDtoList = CommentDto.fromCommentList(commentList, uriInfo);
 
                     Response.ResponseBuilder res = Response.ok(new GenericEntity<List<CommentDto>>(commentDtoList) {
                     });
                     final PagingUtils<Comment> reviewPagingUtils = new PagingUtils<>(commentList, page,
-                            PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize(), commentCount);
+                            pageSize, commentCount);
                     ResponseUtils.setPaginationLinks(res, reviewPagingUtils, uriInfo);
                     return res.build();
                 } catch (UserNotLoggedException e) {

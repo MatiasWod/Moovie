@@ -94,14 +94,15 @@ public class MoovieListController {
                                 .entity("User is not moderator")
                                 .build();
                     }
+                    int pageSize = PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize();
                     final List<MoovieListCard> reported = reportService.getReportedMoovieLists(
-                            PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize(), pageNumber, user.getUserId());
+                            pageSize, pageNumber, user.getUserId());
                     int listCount = reportService.getReportedMoovieListsCount();
                     Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListDto>>(
                             MoovieListDto.fromMoovieListList(reported, uriInfo)) {
                     });
                     final PagingUtils<MoovieListCard> toReturnMoovieListCardList = new PagingUtils<>(reported,
-                            pageNumber, PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize(), listCount);
+                            pageNumber, pageSize, listCount);
                     ResponseUtils.setPaginationLinks(res, toReturnMoovieListCardList, uriInfo);
                     return res.build();
                 } catch (UserNotLoggedException e) {
