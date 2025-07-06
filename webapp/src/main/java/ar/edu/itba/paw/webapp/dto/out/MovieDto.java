@@ -12,10 +12,6 @@ public class MovieDto extends MediaDto{
 
     private Long revenue;
 
-    private Integer directorId;
-
-    private String director;
-
     private String directorUrl;
 
     public static MovieDto fromMovie(Movie movie, UriInfo uri){
@@ -24,8 +20,6 @@ public class MovieDto extends MediaDto{
         movieDto.runtime = movie.getRuntime();
         movieDto.budget = movie.getBudget();
         movieDto.revenue = movie.getRevenue();
-        movieDto.directorId = movie.getDirectorId();
-        movieDto.director = movie.getDirector();
         
         movieDto.directorUrl = uri.getBaseUriBuilder().path("directors/{id}").build(movie.getDirectorId()).toString();
 
@@ -58,22 +52,6 @@ public class MovieDto extends MediaDto{
 
     public void setRevenue(Long revenue) {
         this.revenue = revenue;
-    }
-
-    public Integer getDirectorId() {
-        return directorId;
-    }
-
-    public void setDirectorId(Integer directorId) {
-        this.directorId = directorId;
-    }
-
-    public String getDirector() {
-        return director;
-    }
-
-    public void setDirector(String director) {
-        this.director = director;
     }
 
     public String getDirectorUrl() {
