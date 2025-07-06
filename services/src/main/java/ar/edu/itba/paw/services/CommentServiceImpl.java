@@ -1,6 +1,9 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.exceptions.ResourceNotFoundException;
 import ar.edu.itba.paw.models.Comments.Comment;
+import ar.edu.itba.paw.models.Comments.CommentFeedback;
+import ar.edu.itba.paw.models.Comments.CommentFeedbackType;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.User.UserRoles;
 import ar.edu.itba.paw.persistence.CommentDao;
@@ -31,7 +34,11 @@ public class CommentServiceImpl implements CommentService{
     @Transactional(readOnly = true)
     @Override
     public Comment getCommentById(int commentId) {
-        return commentDao.getCommentById(commentId);
+        Comment comment = commentDao.getCommentById(commentId);
+        if(comment!=null){
+            return comment;
+        }
+        throw new ResourceNotFoundException("Comment by id providede wasnt found.");
     }
 
     @Transactional(readOnly = true)
@@ -116,5 +123,32 @@ public class CommentServiceImpl implements CommentService{
         }
 
         commentDao.deleteComment(commentId);
+    }
+
+    @Transactional
+    @Override
+    public List<Comment> getCommentFeedbackForUser(String username, int pageNumber, int pageSize) {
+        int uid = userService.findUserByUsername(username).getUserId();
+        return commentDao.getCommentFeedbackForUser(uid, pageNumber, pageSize);
+
+    }
+
+    @Transactional
+    @Override
+    public int getCommentFeedbackForUserCount(String username) {
+        int uid = userService.findUserByUsername(username).getUserId();
+        return commentDao.getCommentFeedbackForUserCount(uid);
+    }
+
+    @Transactional
+    @Override
+    public List<CommentFeedback> getCommentFeedbackForComment(int commentId, int pageNumber, int pageSize){
+        return commentDao.getCommentFeedbackForComment(commentId, pageNumber, pageSize);
+    }
+
+    @Transactional
+    @Override
+    public int getCommentFeedbackForCommentCount(int commentId){
+        return commentDao.getCommentFeedbackForCommentCount(commentId);
     }
 }

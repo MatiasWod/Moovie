@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Comments.Comment;
+import ar.edu.itba.paw.models.Comments.CommentFeedback;
+import ar.edu.itba.paw.models.Comments.CommentFeedbackType;
 
 import java.util.List;
 
@@ -24,4 +26,10 @@ public interface CommentService {
     public void createComment(int reviewId, String content);
 
     public void deleteComment(int commentId);
+
+    public List<Comment> getCommentFeedbackForUser(String username, int pageNumber, int pageSize);
+    public int getCommentFeedbackForUserCount(String username);
+    public List<CommentFeedback> getCommentFeedbackForComment(int commentId, int pageNumber, int pageSize);
+    public int getCommentFeedbackForCommentCount(int commentId);
+
 }

@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Comments.Comment;
+import ar.edu.itba.paw.models.Comments.CommentFeedback;
+import ar.edu.itba.paw.models.Comments.CommentFeedbackType;
 import ar.edu.itba.paw.models.User.User;
 
 import java.util.List;
@@ -24,4 +26,8 @@ public interface CommentDao {
 
     public void deleteComment(int commentId);
 
+    public List<Comment> getCommentFeedbackForUser(int uid, int pageNumber, int pageSize);
+    public int getCommentFeedbackForUserCount(int uid);
+    public List<CommentFeedback> getCommentFeedbackForComment(int commentId, int pageNumber, int pageSize);
+    public int getCommentFeedbackForCommentCount(int commentId);
 }

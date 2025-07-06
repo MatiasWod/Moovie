@@ -291,7 +291,6 @@ public class ReviewController {
     @Produces(VndType.APPLICATION_LIST_LIKE_LISTS) // Asumiendo un VndType para listas de usuarios
     public Response getUsersWhoLikedList(@PathParam("id") final int reviewId,
                                          @QueryParam("page") @DefaultValue("0") final int page) {
-
         List<User> likedUsers = reviewService.usersLikesReview(reviewId, page, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), ReviewTypes.REVIEW_MEDIA );
         if (likedUsers.isEmpty()) {
             return Response.noContent().build();

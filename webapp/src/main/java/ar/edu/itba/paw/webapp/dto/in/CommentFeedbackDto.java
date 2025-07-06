@@ -9,25 +9,46 @@ public class CommentFeedbackDto {
 
     @Pattern(regexp ="^(LIKE|DISLIKE)$")
     @NotNull
-    private String feedbackType;
+    private String feedback;
 
-    public CommentFeedbackDto() {
-    }
+    private String username;
 
-    public CommentFeedbackDto(String feedbackType) {
-        this.feedbackType = feedbackType;
+    private int commentId;
+
+    public CommentFeedbackDto() {}
+
+    public CommentFeedbackDto(String feedback, String username, int commentId) {
+        this.feedback = feedback;
+        this.username = username;
+        this.commentId = commentId;
     }
 
     public CommentFeedbackType transformToEnum() {
-        return CommentFeedbackType.valueOf(feedbackType);
+        return CommentFeedbackType.valueOf(feedback);
     }
 
-    public String getFeedbackType() {
-        return feedbackType;
+
+    public String getFeedback() {
+        return feedback;
     }
 
-    public void setFeedbackType(String feedbackType) {
-        this.feedbackType = feedbackType;
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public int getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(int commentId) {
+        this.commentId = commentId;
+    }
 }

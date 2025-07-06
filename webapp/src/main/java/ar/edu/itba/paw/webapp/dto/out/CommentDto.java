@@ -31,6 +31,8 @@ public class CommentDto {
 
     private String privacyReportsUrl;
 
+    private String feedbackUrl;
+
     private String url;
 
     private String userUrl;
@@ -83,6 +85,9 @@ public class CommentDto {
                 .toString();
         commentDto.userUrl = uriInfo.getBaseUriBuilder().path("/users/{username}").build(comment.getUsername())
                 .toString();
+
+        commentDto.feedbackUrl = uriInfo.getBaseUriBuilder().path("/comments/{id}/feedback").build(comment.getCommentId()).toString();
+
 
         return commentDto;
 
