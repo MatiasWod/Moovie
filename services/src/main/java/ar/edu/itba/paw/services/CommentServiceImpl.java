@@ -12,6 +12,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Id;
 import java.util.List;
 
 
@@ -29,6 +30,12 @@ public class CommentServiceImpl implements CommentService{
     @Override
     public List<Comment> getComments(int reviewId, int size, int pageNumber) {
         return commentDao.getComments(reviewId, userService.tryToGetCurrentUserId(), size, pageNumber);
+    }
+
+    @Transactional
+    @Override
+    public List<Comment> getCommentsForUsername(int userId, int size, int pageNumber){
+        return commentDao.getCommentsForUsername(userId, size, pageNumber);
     }
 
     @Transactional(readOnly = true)

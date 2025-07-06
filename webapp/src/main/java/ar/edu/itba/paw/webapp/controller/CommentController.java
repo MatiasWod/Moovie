@@ -85,6 +85,7 @@ public class CommentController {
     public Response getCommentsByReviewId(@QueryParam("reviewId") final Integer reviewId,
             @QueryParam("isReported") final boolean isReported,
             @QueryParam("feebackedBy") final String feedbackedBy,
+            @QueryParam("username") final String username,
             @QueryParam("pageNumber") @DefaultValue("1") final int page) {
         try {
             if (isReported) {
@@ -123,7 +124,20 @@ public class CommentController {
                         PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), commentCount);
                 ResponseUtils.setPaginationLinks(res, reviewPagingUtils, uriInfo);
                 return res.build();
-            } else if (reviewId == null) {
+            }
+            else if (username != null){
+                User user = userService.findUserByUsername(username);
+                final int commentCount = user.getCommentsCount();
+                final List<Comment> commentList = commentService.getCommentsForUsername(user.getUserId(), page-1, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize());
+                final List<CommentDto> commentDtoList = CommentDto.fromCommentList(commentList, uriInfo);
+                Response.ResponseBuilder res = Response.ok(new GenericEntity<List<CommentDto>>(commentDtoList) {
+                });
+                final PagingUtils<Comment> reviewPagingUtils = new PagingUtils<>(commentList, page,
+                        PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), commentCount);
+                ResponseUtils.setPaginationLinks(res, reviewPagingUtils, uriInfo);
+                return res.build();
+            }
+            else if (reviewId == null) {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity("Review id is required if not filtering by reported")
                         .build();

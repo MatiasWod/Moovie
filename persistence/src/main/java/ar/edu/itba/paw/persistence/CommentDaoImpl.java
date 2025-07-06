@@ -41,6 +41,25 @@ public class CommentDaoImpl implements CommentDao{
     }
 
     @Override
+    public List<Comment> getCommentsForUsername(int userId, int pageSize, int pageNumber) {
+        String jpql = "SELECT c FROM Comment c WHERE c.user.userId = :userId ORDER BY c.commentId";
+
+        List<Comment> comments = em.createQuery(jpql, Comment.class)
+                .setParameter("userId", userId)
+                .setFirstResult(pageNumber * pageSize)
+                .setMaxResults(pageSize)
+                .getResultList();
+
+        for (Comment c : comments) {
+            c.setCurrentUserHasLiked(userHasLiked(c.getCommentId(), userId));
+            c.setCurrentUserHasDisliked(userHasDisliked(c.getCommentId(), userId));
+        }
+
+        return comments;
+    }
+
+
+    @Override
     public Comment getCommentById(int commentId) {
         return em.find(Comment.class, commentId);
     }

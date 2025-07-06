@@ -35,7 +35,7 @@ public class UserDto {
 
     private String banMessageUrl;
     private String commentFeedbackUrl;
-    //private String commentsUrl;
+    private String commentsUrl;
 
     public static UserDto fromUser(final User user, final UriInfo uriInfo) {
         final UserDto dto = new UserDto();
@@ -112,6 +112,11 @@ public class UserDto {
 
         dto.commentFeedbackUrl = uriInfo.getBaseUriBuilder().path("comments")
                 .queryParam("feebackedBy", user.getUsername())
+                .build()
+                .toString();
+
+        dto.commentsUrl = uriInfo.getBaseUriBuilder().path("comments")
+                .queryParam("username", user.getUsername())
                 .build()
                 .toString();
 
@@ -279,5 +284,13 @@ public class UserDto {
 
     public void setCommentFeedbackUrl(String commentFeedback) {
         this.commentFeedbackUrl = commentFeedback;
+    }
+
+    public String getCommentsUrl() {
+        return commentsUrl;
+    }
+
+    public void setCommentsUrl(String commentsUrl) {
+        this.commentsUrl = commentsUrl;
     }
 }
