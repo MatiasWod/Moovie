@@ -62,6 +62,19 @@ const UserService = (() => {
     }
   };
 
+  const userWatchedStatus = async (url, mediaId, search) => {
+    try {
+      const res = await userApi.getMediaStatusFromWatched(url, mediaId, search);
+      const parsedResponse = parsePaginatedResponse(res);
+      if (!parsedResponse || res.status === 204) {
+        return false;
+      }
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
   const insertMediaIntoWW = async (ww, mediaId, username) => {
     try {
       return await userApi.insertMediaIntoWW(ww, mediaId, username);
@@ -116,9 +129,25 @@ const UserService = (() => {
     }
   };
 
-  const currentUserHasLikedReview = async (reviewId, username) => {
+  const currentUserWatchedStatus = async (mediaId, url) => {
     try {
-      const res = await userApi.currentUserHasLikedReview(reviewId, username);
+      const [watchedStatus, watchlistStatus] = await Promise.all([
+        userWatchedStatus(url, mediaId, WatchlistWatched.Watched),
+      ]);
+
+      return {
+        watched: watchedStatus,
+      };
+    } catch (error) {
+      return {
+        watched: false,
+      };
+    }
+  };
+
+  const currentUserHasLikedReview = async (url, username) => {
+    try {
+      const res = await userApi.currentUserHasLikedReview(url, username);
       const parsedResponse = parsePaginatedResponse(res);
       if (!parsedResponse || res.status === 204) {
         return false;
@@ -129,9 +158,9 @@ const UserService = (() => {
     }
   };
 
-  const currentUserHasLikedMoovieListReview = async (reviewId, username) => {
+  const currentUserHasLikedMoovieListReview = async (url, username) => {
     try {
-      const res = await userApi.currentUserHasLikedMoovieListReview(reviewId, username);
+      const res = await userApi.currentUserHasLikedMoovieListReview(url, username);
       const parsedResponse = parsePaginatedResponse(res);
       if (!parsedResponse || res.status === 204) {
         return false;
@@ -161,14 +190,17 @@ const UserService = (() => {
     }
   };
 
-  const getWatchedCountFromMovieListId = async (moovieListId, username) => {
-    try {
-      const res = await userApi.getWatchedCountFromMovieListId(moovieListId, username);
-      return parsePaginatedResponse(res);
-    } catch (e) {
-      return null;
-    }
-  };
+  const banUser = async (url) => {
+    return await userApi.banUser(url);
+  }
+
+  const unbanUser = async (url) => {
+      return await userApi.unbanUser(url);
+  }
+
+  const makeUserModerator = async (url) => {
+      return await userApi.makeUserModerator(url);
+  }
 
   return {
     getMilkyLeaderboard,
@@ -178,14 +210,18 @@ const UserService = (() => {
     currentUserHasLiked,
     currentUserHasFollowed,
     userWWStatus,
+    userWatchedStatus,
     insertMediaIntoWW,
     removeMediaFromWW,
     currentUserLikeFollowStatus,
     currentUserWWStatus,
+    currentUserWatchedStatus,
     currentUserHasLikedReview,
     currentUserHasLikedMoovieListReview,
     currentUserCommentFeedback,
-    getWatchedCountFromMovieListId,
+    banUser,
+    unbanUser,
+    makeUserModerator,
   };
 })();
 

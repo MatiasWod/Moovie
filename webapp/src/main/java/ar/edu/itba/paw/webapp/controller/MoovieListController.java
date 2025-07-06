@@ -23,6 +23,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import ar.edu.itba.paw.webapp.dto.in.EditListContentDto;
 import ar.edu.itba.paw.webapp.dto.out.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -352,20 +353,32 @@ public class MoovieListController {
         boolean followed = moovieListService.followMoovieList(id);
         if (followed)
             return Response.ok("{\"message\":\"Successfully followed list.\"}").build();
-        return Response.status(Response.Status.BAD_REQUEST)
+        return Response.status(Response.Status.CONFLICT)
                 .entity("{\"message\":\"List is already followed.\"}").build();
     }
 
     @DELETE
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Path("/{id}/followers")
+    @Path("/{id}/followers/{username}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response unfollowMoovieList(@PathParam("id") int id) {
+    public Response unfollowMoovieList(@PathParam("id") int id,
+                                       @PathParam("username") String username) {
+        try{
+            User user = userService.getInfoOfMyUser();
+            if (!user.getUsername().equals(username)) {
+                return Response.status(Response.Status.FORBIDDEN)
+                        .entity("{\"message\":\"You can only remove your own likes.\"}")
+                        .build();
+            }
         boolean unfollowed = moovieListService.removeFollowMoovieList(id);
         if (unfollowed)
             return Response.noContent().build();
-        return Response.status(Response.Status.BAD_REQUEST)
+        return Response.status(Response.Status.NOT_FOUND)
                 .entity("{\"message\":\"List is not followed.\"}").build();
+        } catch (UserNotLoggedException e) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(e.getMessage()).build();
+        }
     }
 
     // Returns like follow for a specific list
@@ -384,7 +397,7 @@ public class MoovieListController {
                     .build().toString();
             return Response.ok(new UserListIdDto(listId, username, uri, uriInfo)).build();
         }
-        return Response.noContent().build();
+        return Response.status(Response.Status.NOT_FOUND).entity("The user has not liked the list").build();
     }
 
     // Return all follows for a list
@@ -525,11 +538,11 @@ public class MoovieListController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response editMoovieListMediaByMediaId(@PathParam("id") final int id,
             @PathParam("mediaId") final int mediaId,
-            final MediaIdListIdDto input) {
+            final EditListContentDto input) {
         try {
             moovieListService.getMoovieListCardById(id);
 
-            moovieListService.updateMoovieListOrder(input.getMoovieListId(), input.getMediaId(),
+            moovieListService.updateMoovieListOrder(id, input.getMediaId(),
                     input.getCustomOrder());
             return Response.ok()
                     .entity("MoovieList order succesfully modified.").build();

@@ -106,11 +106,11 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
     try {
       if (source === 'list') {
         setCurrentLikeStatus(
-          await UserService.currentUserHasLikedMoovieListReview(review.id, currentUser.username)
+          await UserService.currentUserHasLikedMoovieListReview(review.likesUrl, currentUser.username)
         );
       } else {
         setCurrentLikeStatus(
-          await UserService.currentUserHasLikedReview(review.id, currentUser.username)
+          await UserService.currentUserHasLikedReview(review.likesUrl, currentUser.username)
         );
       }
     } catch (e) {}
@@ -119,7 +119,12 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
   const handleLikeReview = async () => {
     try {
       if (source === 'media' || source === 'user') {
-        await reviewService.likeReview(currentUser, review.id);
+        if (currentLikeStatus === false) {
+          await reviewService.likeReview(review.likesUrl);
+        }
+        else {
+            await reviewService.deleteLikeFromReview(review.likesUrl);
+        }
         setLikeRefresh(!likeRefresh);
         if (currentLikeStatus) {
           review.likes = review.likes - 1;
@@ -127,7 +132,12 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
           review.likes = review.likes + 1;
         }
       } else {
-        await moovieListReviewService.likeMoovieListReview(currentUser, review.id);
+        if (currentLikeStatus === false) {
+          await moovieListReviewService.likeMoovieListReview(review.likesUrl, currentUser);
+        }
+        else {
+            await moovieListReviewService.deleteLikeFromMoovieListReview(review.likesUrl, currentUser);
+        }
         setLikeRefresh(!likeRefresh);
         if (currentLikeStatus) {
           review.reviewLikes = review.reviewLikes - 1;

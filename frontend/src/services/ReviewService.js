@@ -39,10 +39,16 @@ const ReviewService = (() => {
     return response;
   };
 
-  const likeReview = async (username, id) => {
-    const response = await reviewApi.likeReview(username, id);
+  const likeReview = async (url) => {
+    const response = await reviewApi.likeReview(url);
     return response;
   };
+
+
+  const deleteLikeFromReview = async (url) => {
+    const response = await reviewApi.deleteLikeFromReview(url);
+    return response;
+  }
 
   return {
     getReviewById,
@@ -53,6 +59,7 @@ const ReviewService = (() => {
     createReview,
     deleteReviewById,
     likeReview,
+    deleteLikeFromReview
   };
 })();
 

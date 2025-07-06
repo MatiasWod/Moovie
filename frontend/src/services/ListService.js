@@ -89,8 +89,8 @@ const ListService = (() => {
     return await listApi.createMoovieList(name, type, description);
   };
 
-  const editListContent = async ({ listId, mediaId, customOrder }) => {
-    return listApi.editListContent(listId, mediaId, customOrder);
+  const editListContent = async ({ url, mediaId, customOrder }) => {
+    return await listApi.editListContent(url, mediaId, customOrder);
   };
 
   const insertMediaIntoMoovieList = async ({ url, mediaIds }) => {

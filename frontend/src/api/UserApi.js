@@ -93,6 +93,20 @@ const userApi = (() => {
     });
   };
 
+  const getMediaStatusFromWatched = async (url, mediaId, search) => {
+    const response = await api.get(url, {
+      params: {
+        ...(search && { search: search }),
+      },
+    });
+
+    const moovieList = response.data[0];
+    return ListService.getListContentByMediaId({
+      url: moovieList.contentUrl,
+      mediaId: mediaId,
+    });
+  }
+
   //TODO CAMBIAR A USAR URL.
   const insertMediaIntoWW = async (url, mediaId, search) => {
     const response = await api.get(url, {
@@ -123,21 +137,18 @@ const userApi = (() => {
   };
 
   //TODO CAMBIAR A USAR URL.
-  const currentUserHasLikedReview = (reviewId, username) => {
-    return api.get(`/users/${username}/reviewLikes/${reviewId}`);
+  const currentUserHasLikedReview = (url, username) => {
+    return api.get(url + `/${username}`);
   };
 
   //TODO CAMBIAR A USAR URL.
-  const currentUserHasLikedMoovieListReview = (reviewId, username) => {
-    return api.get(`/users/${username}/moovieListsReviewsLikes/${reviewId}`);
+  const currentUserHasLikedMoovieListReview = (url, username) => {
+    return api.get(url + `/${username}`);
   };
+
   //TODO CAMBIAR A USAR URL.
   const currentUserCommentFeedback = (commentId, username) => {
     return api.get(`/users/${username}/commentsFeedback/${commentId}`);
-  };
-  //TODO CAMBIAR A USAR URL.
-  const getWatchedCountFromMovieListId = (movieListId, username) => {
-    return api.get(`/users/${username}/watched/count?listId=${movieListId}`);
   };
 
   const login = async ({ username, password }) => {
@@ -278,7 +289,6 @@ const userApi = (() => {
       );
     } catch (error) {
       throw error;
-      throw error;
     }
   };
 
@@ -307,51 +317,34 @@ const userApi = (() => {
     });
   };
 
-  const getBanMessage = (username) => {
-    try {
-      return api.get(`/users/${username}/banMessage`);
-    } catch (error) {
-      return ' ';
-    }
-  };
-
-  const authTest = async () => {
-    try {
-      const response = await api.get('/users/authtest');
-      return response.status === 200;
-    } catch (error) {
-      console.error('Auth test error:', error);
-      return false;
-    }
-  };
 
   // MODERATION STUFF
 
-  const banUser = (username) => {
+  const banUser = (url) => {
     const banUserDTO = {
       modAction: 'BAN',
       banMessage: 'User banned by moderator',
     };
-    return api.put(`/users/${username}`, banUserDTO, {
+    return api.put(url, banUserDTO, {
       headers: {
         'Content-Type': VndType.APPLICATION_USER_BAN_FORM,
       },
     });
   };
 
-  const unbanUser = (username) => {
+  const unbanUser = (url) => {
     const banUserDTO = {
       modAction: 'UNBAN',
     };
-    return api.put(`/users/${username}`, banUserDTO, {
+    return api.put(url, banUserDTO, {
       headers: {
         'Content-Type': VndType.APPLICATION_USER_BAN_FORM,
       },
     });
   };
 
-  const makeUserModerator = (username) => {
-    return api.put(`/users/${username}`, {});
+  const makeUserModerator = (url) => {
+    return api.put(url, {});
   };
 
   return {
@@ -365,22 +358,20 @@ const userApi = (() => {
     currentUserHasLikedList,
     currentUserHasFollowedList,
     getMediaStatusFromWW,
+    getMediaStatusFromWatched,
     insertMediaIntoWW,
     removeMediaFromWW,
     currentUserHasLikedReview,
     currentUserHasLikedMoovieListReview,
     currentUserCommentFeedback,
-    getWatchedCountFromMovieListId,
     login,
     register,
     listUsers,
-    authTest,
     banUser,
     unbanUser,
     makeUserModerator,
     confirmToken,
     resendVerificationEmail,
-    getBanMessage,
     forgotPassword,
     resetPassword,
   };
