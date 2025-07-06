@@ -49,31 +49,31 @@ public class CommentDto {
         commentDto.commentDislikes = comment.getCommentDislikes();
         commentDto.username = comment.getUsername();
 
-        commentDto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/commentReports")
+        commentDto.spamReportsUrl = uriInfo.getBaseUriBuilder().path("/commentsReports")
                 .queryParam("commentId", commentDto.getId())
                 .queryParam("reportType", ReportTypesEnum.SPAM.getType())
                 .build()
                 .toString();
 
-        commentDto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/commentReports")
+        commentDto.hateReportsUrl = uriInfo.getBaseUriBuilder().path("/commentsReports")
                 .queryParam("commentId", commentDto.getId())
                 .queryParam("reportType", ReportTypesEnum.HATEFUL_CONTENT.getType())
                 .build()
                 .toString();
 
-        commentDto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/commentReports")
+        commentDto.privacyReportsUrl = uriInfo.getBaseUriBuilder().path("/commentsReports")
                 .queryParam("commentId", commentDto.getId())
                 .queryParam("reportType", ReportTypesEnum.PRIVACY.getType())
                 .build()
                 .toString();
 
-        commentDto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/commentReports")
+        commentDto.abuseReportsUrl = uriInfo.getBaseUriBuilder().path("/commentsReports")
                 .queryParam("commentId", commentDto.getId())
                 .queryParam("reportType", ReportTypesEnum.ABUSE.getType())
                 .build()
                 .toString();
 
-        commentDto.reportsUrl = uriInfo.getBaseUriBuilder().path("/commentReports")
+        commentDto.reportsUrl = uriInfo.getBaseUriBuilder().path("/commentsReports")
                 .queryParam("commentId", commentDto.getId())
                 .build()
                 .toString();
