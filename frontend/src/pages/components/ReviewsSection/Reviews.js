@@ -42,7 +42,7 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
         await reviewService.deleteReviewByUrl(review.url);
         setShowDeleteReview(!showDeleteReview);
       } else {
-        await moovieListReviewService.deleteMoovieListReview(review.id);
+        await moovieListReviewService.deleteMoovieListReviewByUrl(review.url);
       }
       reloadReviews();
     } catch (e) {}
@@ -132,11 +132,12 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
           review.likes = review.likes + 1;
         }
       } else {
+        console.log(currentLikeStatus)
         if (currentLikeStatus === false) {
-          await moovieListReviewService.likeMoovieListReview(review.likesUrl, currentUser);
+          await moovieListReviewService.likeMoovieListReview(review.likesUrl);
         }
         else {
-            await moovieListReviewService.deleteLikeFromMoovieListReview(review.likesUrl, currentUser);
+          await moovieListReviewService.deleteLikeFromMoovieListReview(review.likesUrl, currentUser.username);
         }
         setLikeRefresh(!likeRefresh);
         if (currentLikeStatus) {

@@ -33,12 +33,12 @@ const moovieListReviewApi = (() => {
     );
   };
 
-  const deleteMoovieListReviewById = (id) => {
-    return api.delete(`/moovieListReviews/${id}`);
+  const deleteMoovieListReviewByUrl = (url) => {
+    return api.delete(url);
   };
 
-  const likeMoovieListReview = (url, username) => {
-    return api.post(url + `/${username}`);
+  const likeMoovieListReview = (url) => {
+    return api.post(url);
   };
 
   const deleteLikeFromMoovieListReview = (url, username) => {
@@ -48,7 +48,7 @@ const moovieListReviewApi = (() => {
   return {
     editReview,
     createMoovieListReview,
-    deleteMoovieListReviewById,
+    deleteMoovieListReviewByUrl,
     likeMoovieListReview,
     deleteLikeFromMoovieListReview
   };

@@ -6,6 +6,7 @@ import api from '../../../api/api';
 import MoovieListTypes from '../../../api/values/MoovieListTypes';
 import EditListForm from '../forms/editListForm/editListForm';
 import './listHeader.css';
+import ListService from "../../../services/ListService";
 
 const ListHeader = ({
   list,
@@ -31,15 +32,22 @@ const ListHeader = ({
   useEffect(() => {
     const fetchHasLikedAndFollowed = async () => {
       try {
-        const [liked, followed] = await Promise.all([
+        const [likedResult, followedResult] = await Promise.allSettled([
           api.get(list.likesUrl + '/' + user.username),
           api.get(list.followersUrl + '/' + user.username),
         ]);
+
         setHasLikedAndFollowed({
-          liked: liked.status === 200,
-          followed: followed.status === 200,
+          liked:
+              likedResult.status === 'fulfilled' &&
+              likedResult.value.status === 200,
+          followed:
+              followedResult.status === 'fulfilled' &&
+              followedResult.value.status === 200,
         });
       } catch (error) {
+        // en teoría `Promise.allSettled` nunca lanza,
+        // pero por si falla algo fuera del `allSettled`:
         setHasLikedAndFollowed({
           liked: false,
           followed: false,
@@ -56,9 +64,10 @@ const ListHeader = ({
         navigate('/login');
       }
       if (hasLikedAndFollowed.liked) {
-        await api.delete(list.likesUrl);
+
+        await api.delete(list.likesUrl + '/' + user.username);
       } else {
-        await api.post(list.likesUrl);
+        await ListService.likeList(list.likesUrl);
       }
       setPing(!ping);
     } catch (error) {
@@ -72,7 +81,7 @@ const ListHeader = ({
         navigate('/login');
       }
       if (hasLikedAndFollowed.followed) {
-        await api.delete(list.followersUrl);
+        await api.delete(list.followersUrl + '/' + user.username);
       } else {
         await api.post(list.followersUrl);
       }

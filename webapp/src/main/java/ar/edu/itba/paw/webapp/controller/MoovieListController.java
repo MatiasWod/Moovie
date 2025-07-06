@@ -286,15 +286,26 @@ public class MoovieListController {
     }
 
     @DELETE
-    @Path("/{id}/likes")
+    @Path("/{id}/likes/{username}")
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteMoovieListLike(@PathParam("id") int id) {
-        boolean removed = moovieListService.removeLikeMoovieList(id);
-        if (removed)
-            return Response.noContent().build();
-        return Response.status(Response.Status.BAD_REQUEST)
-                .entity("{\"message\":\"List is not liked.\"}").build();
+    public Response deleteMoovieListLike(@PathParam("id") int id,@PathParam("username") String username) {
+        try{
+            User user = userService.getInfoOfMyUser();
+            if (!user.getUsername().equals(username)) {
+                return Response.status(Response.Status.FORBIDDEN)
+                        .entity("{\"message\":\"You can only remove your own likes.\"}")
+                        .build();
+            }
+            boolean removed = moovieListService.removeLikeMoovieList(id);
+            if (removed)
+                return Response.noContent().build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"message\":\"List is not liked.\"}").build();
+        } catch (UserNotLoggedException e) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(e.getMessage()).build();
+        }
     }
 
     // Returns like status for a specific list

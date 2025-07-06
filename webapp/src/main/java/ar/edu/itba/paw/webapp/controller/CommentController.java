@@ -321,7 +321,7 @@ public class CommentController {
     // Returns like status for a specific review for a user
     @GET
     @Path("/{id}/feedback/{username}")
-    @Produces(VndType.APPLICATION_LIST_LIKE)
+    @Produces(VndType.APPLICATION_COMMENT_FEEDBACK)
     public Response getCommentFeedbackByUsername(@PathParam("id") final int id,
                                          @PathParam("username") final String username) {
         int uid = userService.findUserByUsername(username).getUserId();
@@ -348,7 +348,7 @@ public class CommentController {
     // Return all likes for a review
     @GET
     @Path("/{id}/feedback")
-    @Produces(VndType.APPLICATION_LIST_LIKE_LISTS)
+    @Produces(VndType.APPLICATION_COMMENT_FEEDBACK_LIST)
     public Response getUsersWhoGaveFeedbackToComment(@PathParam("id") final int id,
                                          @QueryParam("page") @DefaultValue("1") final int page) {
         List<CommentFeedback> usersFeedback = commentService.getCommentFeedbackForComment(id, page-1, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize());

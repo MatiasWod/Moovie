@@ -270,7 +270,7 @@ public class ReviewController {
     // Returns like status for a specific review for a user
     @GET
     @Path("/{id}/likes/{username}")
-    @Produces(VndType.APPLICATION_LIST_LIKE)
+    @Produces(VndType.APPLICATION_REVIEW_LIKE)
     public Response getUserLikedListById(@PathParam("id") final int reviewId,
                                          @PathParam("username") final String username) {
         if (reviewService.userLikesReview(reviewId, username, ReviewTypes.REVIEW_MEDIA)) {
@@ -288,7 +288,7 @@ public class ReviewController {
     // Return all likes for a review
     @GET
     @Path("/{id}/likes")
-    @Produces(VndType.APPLICATION_LIST_LIKE_LISTS) // Asumiendo un VndType para listas de usuarios
+    @Produces(VndType.APPLICATION_REVIEW_LIKE_LIST) // Asumiendo un VndType para listas de usuarios
     public Response getUsersWhoLikedList(@PathParam("id") final int reviewId,
                                          @QueryParam("page") @DefaultValue("0") final int page) {
         List<User> likedUsers = reviewService.usersLikesReview(reviewId, page, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), ReviewTypes.REVIEW_MEDIA );

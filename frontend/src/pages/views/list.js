@@ -208,7 +208,7 @@ function List() {
 
   const handleDeleteList = async () => {
     try {
-      await ListApi.deleteList(id);
+      await ListApi.deleteList(list?.data?.url);
       navigate('/');
     } catch (error) {
       console.error('Error deleting list:', error);

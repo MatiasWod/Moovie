@@ -13,26 +13,27 @@ const MoovieListReviewService = (() => {
     return res;
   };
 
-  const deleteMoovieListReview = async (id) => {
-    const res = await moovieListReviewApi.deleteMoovieListReviewById(id);
+  const deleteMoovieListReviewByUrl = async (url) => {
+    const res = await moovieListReviewApi.deleteMoovieListReviewByUrl(url);
     return res;
-  };
+  }
 
-  const likeMoovieListReview = async (url, username) => {
-    const res = await moovieListReviewApi.likeMoovieListReview(url, username);
+
+  const likeMoovieListReview = async (url) => {
+    const res = await moovieListReviewApi.likeMoovieListReview(url);
     return res;
   };
 
   const deleteLikeFromMoovieListReview = async (url, username) => {
-    const res = await moovieListReviewApi.likeMoovieListReview(url, username);
+    const res = await moovieListReviewApi.deleteLikeFromMoovieListReview(url, username);
     return res;
   };
 
   return {
     editReview,
     createMoovieListReview,
-    deleteMoovieListReview,
     likeMoovieListReview,
+    deleteMoovieListReviewByUrl,
     deleteLikeFromMoovieListReview
   };
 })();
