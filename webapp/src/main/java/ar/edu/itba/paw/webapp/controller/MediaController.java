@@ -63,7 +63,6 @@ public class MediaController {
             @QueryParam("search") final String search,
             @QueryParam("providers") final List<Integer> providers,
             @QueryParam("genres") final List<Integer> genres,
-            @QueryParam("ids") final String ids,
             @QueryParam("tvCreatorId") final Integer tvCreatorId,
             @QueryParam("directorId") final Integer directorId,
             @QueryParam("actorId") final Integer actorId,
@@ -80,43 +79,7 @@ public class MediaController {
                 return Response.ok(new GenericEntity<List<MediaDto>>(mlcList) {
                 }).build();
             }
-
-            if (ids != null && !ids.isEmpty()) {
-                // Lógica para manejar la lista de IDs
-                if (ids.length() > 100) {
-                    throw new IllegalArgumentException(
-                            "Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
-                }
-
-                List<Integer> idList = new ArrayList<>();
-                String[] splitIds = ids.split(",");
-                for (String id : splitIds) {
-                    try {
-                        idList.add(Integer.parseInt(id.trim()));
-                    } catch (NumberFormatException e) {
-                        throw new IllegalArgumentException(
-                                "Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
-                    }
-                }
-
-                if (idList.size() > 100 || idList.isEmpty()) {
-                    throw new IllegalArgumentException(
-                            "Invalid ids, param. A comma separated list of Media IDs. Up to 100 are allowed in a single request.");
-                }
-
-                List<MediaDto> mediaList = new ArrayList<>();
-                for (int id : idList) {
-                    Media media = mediaService.getMediaById(id);
-                    if (media.isType()) {
-                        mediaList.add(TVSerieDto.fromTVSerie(mediaService.getTvById(id), uriInfo));
-                    } else {
-                        mediaList.add(MovieDto.fromMovie(mediaService.getMovieById(id), uriInfo));
-                    }
-                }
-                return Response.ok(new GenericEntity<List<MediaDto>>(mediaList) {
-                }).build();
-
-            } else if (tvCreatorId != null) {
+            else if (tvCreatorId != null) {
                 // Lógica para manejar el tvCreatorId
                 List<Media> mediaList = tvCreatorsService.getMediasForTVCreator(tvCreatorId, page, pageSizeQuery);
                 int totalCount = tvCreatorsService.getMediasForTVCreatorCount(tvCreatorId);
