@@ -33,6 +33,8 @@ public class UserDto {
     private String moovieListReviewsUrl;
     private String reviewsUrl;
 
+    private String banMessageUrl;
+
     public static UserDto fromUser(final User user, final UriInfo uriInfo) {
         final UserDto dto = new UserDto();
 
@@ -100,6 +102,10 @@ public class UserDto {
         dto.likedReviewsUrl = uriInfo.getBaseUriBuilder().path("reviews")
                 .queryParam("likedByUser", user.getUsername())
                 .build()
+                .toString();
+
+        dto.banMessageUrl = uriInfo.getBaseUriBuilder().path("users/{username}/banMessage")
+                .build(user.getUsername())
                 .toString();
 
 
@@ -252,5 +258,12 @@ public class UserDto {
 
     public void setPrivateMoovieListsUrl(String privateMoovieListsUrl) {
         this.privateMoovieListsUrl = privateMoovieListsUrl;
+    }
+
+    public String getBanMessageUrl() {
+        return banMessageUrl;
+    }
+    public void setBanMessageUrl(String banMessageUrl) {
+        this.banMessageUrl = banMessageUrl;
     }
 }
