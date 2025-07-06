@@ -115,7 +115,7 @@ function NavbarComponent({ onLocationChange }) {
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <RoleBadge role={user.role} size={'50px'}></RoleBadge>
                 <ProfileImage
-                  username={user.username}
+                  userUrl={user.userUrl}
                   size="60px" // Adjust size as needed
                   defaultProfilePicture="https://example.com/default-profile.jpg" // Your default image URL
                 />

@@ -44,13 +44,17 @@ const listApi = (() => {
     });
   };
 
+  const getListContentByMediaId = (url, mediaId) => {
+    return api.get(url + `/${mediaId}`);
+  }
+
   const deleteList = (id) => {
     return api.delete(`/lists/${id}`);
   };
 
-  const insertMediaIntoMoovieList = ({ id, mediaIds }) => {
+  const insertMediaIntoMoovieList = ( url, mediaIds) => {
     return api.post(
-      `/lists/${id}/content`,
+      url,
       { mediaIdList: mediaIds }, // Rename `mediaIds` to `mediaIdList`
       {
         headers: {
@@ -60,8 +64,8 @@ const listApi = (() => {
     );
   };
 
-  const deleteMediaFromMoovieList = ({ id, mediaId }) => {
-    return api.delete(`/lists/${id}/content/${mediaId}`);
+  const deleteMediaFromMoovieList = ({ url, mediaId }) => {
+    return api.delete(url + `/${mediaId}`);
   };
 
   //PUT
@@ -178,6 +182,7 @@ const listApi = (() => {
     getListByIdList,
     deleteList,
     getListContent,
+    getListContentByMediaId,
     insertMediaIntoMoovieList,
     deleteMediaFromMoovieList,
     editMoovieList,

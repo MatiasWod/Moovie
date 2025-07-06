@@ -33,7 +33,7 @@ export default function BannedUsers() {
       // Fetch ban messages and profile info in parallel for all users
       const detailPromises = bannedUsers.flatMap((user) => [
         userApi.getBanMessage(user.username).catch(() => ({ data: {} })),
-        userApi.getUserByUsername(user.username),
+        userApi.getUserByUsername(user.url),
       ]);
 
       const detailResponses = await Promise.all(detailPromises);

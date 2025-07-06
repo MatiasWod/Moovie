@@ -146,7 +146,7 @@ public class MoovieListController {
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Consumes(VndType.APPLICATION_MOOVIELIST_FORM)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createMoovieList(@Valid final MoovieListCreateDto listDto) {
+    public Response createMoovieList(@Valid final MoovieListCreateDto listDto, @Context Request request) {
         try {
 
             MoovieListTypes moovieListType = MoovieListTypes.fromType(listDto.getType());
@@ -156,12 +156,10 @@ public class MoovieListController {
                     moovieListType.getType(),
                     listDto.getDescription()
             ).getMoovieListId();
-            UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder().path(String.valueOf(listId));
 
-            return Response.created(uriBuilder.build())
-                    .entity("{\"message\":\"Movie list created successfully.\", \"url\": \"" + uriBuilder.build().toString() + "\"}")
-                    .build();
-
+            final MoovieListCard list = moovieListService.getMoovieListCardById(listId);
+            final Supplier<MoovieListDto> dtoSupplier = () -> MoovieListDto.fromMoovieList(list, uriInfo);
+            return ResponseUtils.setConditionalCacheHash(request, dtoSupplier, list.hashCode());
         }
         catch (UnableToInsertIntoDatabase | DuplicateKeyException e) {
             return Response.status(Response.Status.CONFLICT)

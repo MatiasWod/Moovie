@@ -22,6 +22,7 @@ const ListContentPaginated = ({
   setSortOrder,
   setListContent,
   isOwner,
+  listContentUrl,
   listId,
   Refresh,
 }) => {
@@ -29,6 +30,7 @@ const ListContentPaginated = ({
   const { t } = useTranslation();
 
   const { isLoggedIn, user } = useSelector((state) => state.auth);
+
 
   const handleEditMode = () => {
     setEditMode(!editMode);
@@ -85,6 +87,7 @@ const ListContentPaginated = ({
         Refresh={Refresh}
         isLoggedIn={isLoggedIn}
         username={isLoggedIn ? user.username : null}
+        listContentUrl={listContentUrl}
       />
 
       <div className="flex justify-center pt-4">

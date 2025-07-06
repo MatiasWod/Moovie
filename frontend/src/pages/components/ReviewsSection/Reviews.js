@@ -167,7 +167,7 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
       <div className="review-header d-flex align-items-center justify-between">
         <div>
           <ProfileImage
-            username={review.username}
+            username={review.userUrl}
             size="100px"
             onClick={() => navigate(`/profile/${review.username}`)}
           />

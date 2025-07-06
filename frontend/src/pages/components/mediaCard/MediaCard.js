@@ -21,7 +21,7 @@ const MediaCard = ({ media, size = 'normal', showWWButtons = true, disableOnClic
   useEffect(() => {
     const fetchWW = async () => {
       try {
-        const WW = await UserService.currentUserWWStatus(media.id, user.username);
+        const WW = await UserService.currentUserWWStatus(media.id, user.defaultPrivateMoovieListsUrl);
         setWW(WW);
       } catch (error) {}
     };
@@ -54,9 +54,9 @@ const MediaCard = ({ media, size = 'normal', showWWButtons = true, disableOnClic
       }
 
       if (ww.watched) {
-        await UserService.removeMediaFromWW(WatchlistWatched.Watched, media.id, user.username);
+        await UserService.removeMediaFromWW(user.defaultPrivateMoovieListsUrl, media.id, WatchlistWatched.Watched);
       } else {
-        await UserService.insertMediaIntoWW(WatchlistWatched.Watched, media.id, user.username);
+        await UserService.insertMediaIntoWW(user.defaultPrivateMoovieListsUrl, media.id, WatchlistWatched.Watched);
       }
       setPing(!ping);
     } catch (error) {}
@@ -70,9 +70,9 @@ const MediaCard = ({ media, size = 'normal', showWWButtons = true, disableOnClic
       }
 
       if (ww.watchlist) {
-        await UserService.removeMediaFromWW(WatchlistWatched.Watchlist, media.id, user.username);
+        await UserService.removeMediaFromWW(user.defaultPrivateMoovieListsUrl, media.id, WatchlistWatched.Watchlist);
       } else {
-        await UserService.insertMediaIntoWW(WatchlistWatched.Watchlist, media.id, user.username);
+        await UserService.insertMediaIntoWW(user.defaultPrivateMoovieListsUrl, media.id, WatchlistWatched.Watchlist);
       }
       setPing(!ping);
     } catch (error) {}

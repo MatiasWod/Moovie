@@ -158,7 +158,7 @@ const ListHeader = ({
         <div className="overlay">
           <EditListForm
             listName={list.name}
-            listId={list.id}
+            listId={list.url}
             listDescription={list.description}
             closeEdit={handleCloseEdit}
             closeEditSuccess={handleCloseEditSucccess}

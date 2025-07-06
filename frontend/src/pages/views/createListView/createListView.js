@@ -91,10 +91,12 @@ const CreateListView = () => {
         throw new Error(t('createList.failed_extract_id'));
       }
 
+      console.log(response)
       if (selectedMedia.length > 0) {
         const mediaIds = selectedMedia.map((media) => media.id);
+        console.log('Inserting media into list:', mediaIds);
         await ListService.insertMediaIntoMoovieList({
-          id: listId,
+          url: response?.data?.contentUrl,
           mediaIds: mediaIds,
         });
       }

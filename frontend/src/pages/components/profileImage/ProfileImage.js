@@ -3,15 +3,15 @@ import './profileImage.css';
 import defaultProfilePicture from '../../../images/defaultProfilePicture.png';
 import userApi from '../../../api/UserApi';
 
-const ProfileImage = ({ image, username, size, onClick }) => {
+const ProfileImage = ({ image, userUrl, size, onClick }) => {
     const [imageSrc, setImageSrc] = useState(image || defaultProfilePicture);
 
     useEffect(() => {
         const fetchImage = async () => {
-            if (!image && username) {
+            if (!image && userUrl) {
                 try {
                     // TODO do fetch with url. En vez de pasarle el username ctr + f y pasar el link que ta en todos las veces que se fetchea.
-                    const response = await userApi.getUserByUsername(username);
+                    const response = await userApi.getUserByUsername(userUrl);
                     const imageUrl = response?.data?.imageUrl;
 
                     if (imageUrl) {
@@ -27,7 +27,7 @@ const ProfileImage = ({ image, username, size, onClick }) => {
         };
 
         fetchImage();
-    }, [image, username]);
+    }, [image, userUrl]);
 
     return (
         <img

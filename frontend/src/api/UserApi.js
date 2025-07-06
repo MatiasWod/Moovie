@@ -1,10 +1,18 @@
 import api from './api';
 import VndType from '../enums/VndType';
 import { parsePaginatedResponse } from '../utils/ResponseUtils';
+import MediaService from "../services/MediaService";
+import ListService from "../services/ListService";
+import sortOrder from "./values/SortOrder";
 
 const userApi = (() => {
-  const getUserByUsername = (username) => {
+
+  const getUserByUsernameForProfile = (username) => {
     return api.get(`/users/${username}`);
+  }
+
+  const getUserByUsername = (url) => {
+    return api.get(url);
   };
 
   const getMilkyLeaderboard = ({ page, pageSize }) => {
@@ -27,34 +35,37 @@ const userApi = (() => {
     });
   };
 
-  const getSpecialListFromUser = async (username, type, orderBy, order, pageNumber = 1) => {
-    const response = await api.get(
-      `/lists?ownerUsername=${username}&type=${type}&orderBy=${orderBy}&order=${order}&pageNumber=${pageNumber}`
-    );
-    const parsedResponse = parsePaginatedResponse(response);
-    const { links, data } = parsedResponse;
-
-    if (data.length === 0) {
-      return {
-        data: [],
-        links: links,
-      };
-    }
-
-    const medias = await Promise.all(
-      data.map(async (content) => {
-        const res = await api.get(content.mediaUrl);
-        const media = res.data;
-        media.customOrder = content.customOrder;
-        return media;
-      })
+  const getSpecialListFromUser = async (url, orderBy, order, pageNumber = 1, search) => {
+    const response = await api.get(url,
+        {
+        params: {
+          ...(search && { 'search': search })
+        },
+        }
     );
 
-    return {
-      data: medias,
-      links: links,
-    };
+    const moovieList = response.data[0];
+    return ListService.getListContent({
+      url: moovieList.contentUrl,
+      orderBy,
+      sortOrder: order,
+      pageNumber
+    });
   };
+
+  const getProfileListsFromUser = async (url, orderBy, order, pageNumber = 1, search) => {
+    const response = await api.get(url,
+        {
+          params: {
+            orderBy: orderBy,
+            order: order,
+            pageNumber: pageNumber,
+            ...(search && { 'search': search })
+          },
+        }
+    );
+    return response;
+  }
 
   const setPfp = (username, pfp) => {
     return api.post(`/images`, pfp);
@@ -64,60 +75,59 @@ const userApi = (() => {
   /*
     LIKES AND FOLLOWED
     */
-  const getLikedOrFollowedListFromUser = (username, type, orderBy, sortOrder, pageNumber = 1) => {
-    if (type !== 'followed' && type !== 'liked') {
-      throw new Error(`Invalid type: ${type}. Expected "followed" or "liked".`);
-    }
-    const endpoint = type === 'followed' ? 'listLikes' : 'listFollows';
-    return api.get(`/users/${username}/${endpoint}`, {
-      params: {
-        username,
-        orderBy,
-        sortOrder,
-        pageNumber,
-      },
-    });
+
+  const currentUserHasLikedList = (url, username) => {
+    return api.get(url + `/${username}`);
   };
 
-  const currentUserHasLikedList = (moovieListId, username) => {
-    return api.get(`/users/${username}/listLikes/${moovieListId}`);
-  };
-
-  const currentUserHasFollowedList = (moovieListId, username) => {
-    return api.get(`/users/${username}/listFollows/${moovieListId}`);
+  const currentUserHasFollowedList = (url, username) => {
+    return api.get(url + `/${username}`);
   };
 
   //WATCHED AND WATCHLIST (WW)
-  //TODO CAMBIAR A USAR URL.
-  const currentUserWW = (ww, username, mediaId) => {
-    return api.get(`/lists?${username}%${ww}/${mediaId}`);
-  };
-
-  //TODO CAMBIAR A USAR URL.
-  const insertMediaIntoWW = (ww, mediaId, username) => {
-    let contentType = 'application/json';
-
-    if (ww === 'watched') {
-      contentType = VndType.APPLICATION_WATCHED_MEDIA_FORM;
-    } else {
-      contentType = VndType.APPLICATION_WATCHLIST_MEDIA_FORM;
-    }
-
-    return api.post(
-      `/users/${username}/${ww}`,
-
-      { id: mediaId },
-      {
-        headers: {
-          'Content-Type': contentType,
-        },
-      }
+  const getMediaStatusFromWW = async (url, mediaId, search) => {
+    const response = await api.get(url,
+        {
+          params: {
+            ...(search && { 'search': search })
+          },
+        }
     );
+
+    const moovieList = response.data[0];
+    return ListService.getListContentByMediaId({
+      url: moovieList.contentUrl, mediaId: mediaId
+    });
   };
 
   //TODO CAMBIAR A USAR URL.
-  const removeMediaFromWW = (ww, username, mediaId) => {
-    return api.delete(`/users/${username}/${ww}/${mediaId}`);
+  const insertMediaIntoWW = async (url, mediaId, search) => {
+    const response = await api.get(url,
+        {
+          params: {
+            ...(search && { 'search': search })
+          },
+        }
+    );
+
+    const moovieList = response.data[0];
+
+    return ListService.insertMediaIntoMoovieList({url: moovieList.contentUrl, mediaIds: [mediaId]});
+  };
+
+  //TODO CAMBIAR A USAR URL.
+  const removeMediaFromWW = async (url, mediaId, search) => {
+    const response = await api.get(url,
+        {
+          params: {
+            ...(search && { 'search': search })
+          },
+        }
+    );
+
+    const moovieList = response.data[0];
+
+    return ListService.deleteMediaFromMoovieList({url: moovieList.contentUrl, mediaId: mediaId});
   };
 
   //TODO CAMBIAR A USAR URL.
@@ -350,15 +360,16 @@ const userApi = (() => {
 
 
   return {
+    getUserByUsernameForProfile,
     getUserByUsername,
     getMilkyLeaderboard,
     getSpecialListFromUser,
+    getProfileListsFromUser,
     getSearchedUsers,
     setPfp,
     currentUserHasLikedList,
-    getLikedOrFollowedListFromUser,
     currentUserHasFollowedList,
-    currentUserWW,
+    getMediaStatusFromWW,
     insertMediaIntoWW,
     removeMediaFromWW,
     currentUserHasLikedReview,

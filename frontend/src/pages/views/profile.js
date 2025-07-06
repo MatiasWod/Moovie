@@ -15,17 +15,17 @@ import userService from "../../services/UserService";
 function ProfileTab({ selectedTab, profile }) {
   switch (selectedTab.toLowerCase()) {
     case 'watched':
-      return <ProfileTabMediaLists username={profile.username} type="watched" />;
+      return <ProfileTabMediaLists user={profile} search="watched" />;
     case 'watchlist':
-      return <ProfileTabMediaLists username={profile.username} type="watchlist" />;
+      return <ProfileTabMediaLists user={profile} search="watchlist" />;
     case 'public-lists':
-      return <ProfileTabMoovieLists username={profile.username} type="public-lists" />;
+      return <ProfileTabMoovieLists user={profile} search="public-lists" />;
     case 'private-lists':
-      return <ProfileTabMoovieLists username={profile.username} type="private-lists" />;
+      return <ProfileTabMoovieLists user={profile} search="private-lists" />;
     case 'liked-lists':
-      return <ProfileTabMoovieLists username={profile.username} type="liked-lists" />;
+      return <ProfileTabMoovieLists user={profile} search="liked-lists" />;
     case 'followed-lists':
-      return <ProfileTabMoovieLists username={profile.username} type="followed-lists" />;
+      return <ProfileTabMoovieLists user={profile} search="followed-lists" />;
     case 'reviews':
       return <Reviews username={profile.username} source="user" />;
     default:
@@ -49,7 +49,7 @@ function Profile() {
 
   const fetchProfile = async () => {
     try {
-      const response = await userApi.getUserByUsername(username);
+      const response = await userApi.getUserByUsernameForProfile(username);
       setProfile(response.data);
       setProfileError(null);
     } catch (err) {

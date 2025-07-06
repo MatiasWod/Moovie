@@ -308,12 +308,19 @@ public class MoovieListHibernateDao implements MoovieListDao{
             sortOrder = "DESC";
         }
 
+        if (sortOrder.equalsIgnoreCase("desc")) {
+            sortOrder = "DESC";
+        }
+        else{
+            sortOrder = "ASC";
+        }
 
         if(orderBy.equals("customOrder")){
             jpql += " mlc." + orderBy + " " + sortOrder;
         } else{
             jpql += " m." + orderBy + " " + sortOrder;
         }
+
 
 
         TypedQuery<Media> query = em.createQuery(jpql, Media.class);

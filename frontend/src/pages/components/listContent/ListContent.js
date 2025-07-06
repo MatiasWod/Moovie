@@ -10,6 +10,7 @@ import Button from 'react-bootstrap/Button';
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
 import WatchlistWatched from '../../../api/values/WatchlistWatched';
 import UserService from "../../../services/UserService";
+import {useSelector} from "react-redux";
 
 const MediaRow = ({
   position,
@@ -25,6 +26,7 @@ const MediaRow = ({
   isLoggedIn,
   username,
 }) => {
+  const { user } = useSelector((state) => state.auth);
   const [isDragging, setIsDragging] = useState(false);
 
   const handleDragStart = (e) => {
@@ -67,7 +69,7 @@ const MediaRow = ({
   const [refreshWatched, setRefreshWatched] = useState(false);
   useEffect(async () => {
     try {
-      const data = await UserService.currentUserWWStatus(media.id, username);
+      const data = await UserService.currentUserWWStatus(media.id, user.defaultPrivateMoovieListsUrl);
       setWW(data);
     } catch (e) {}
   }, [media, refreshWatched]);
@@ -75,9 +77,9 @@ const MediaRow = ({
   const handleWatched = async () => {
     try {
       if (ww.watched) {
-        await UserService.removeMediaFromWW(WatchlistWatched.Watched, media.id, username);
+        await UserService.removeMediaFromWW(user.defaultPrivateMoovieListsUrl, media.id, WatchlistWatched.Watched);
       } else {
-        await UserService.insertMediaIntoWW(WatchlistWatched.Watched, media.id, username);
+        await UserService.insertMediaIntoWW(user.defaultPrivateMoovieListsUrl, media.id, WatchlistWatched.Watched);
       }
       setRefreshWatched(!refreshWatched);
     } catch (e) {}
@@ -179,10 +181,12 @@ const ListContent = ({
   Refresh,
   isLoggedIn,
   username,
+  listContentUrl
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [hoveredId, setHoveredId] = useState(null);
+  console.log('ListContent rendered with listId:', listContent);
 
   const handleClick = (id) => {
     if (!editMode) {
@@ -213,8 +217,9 @@ const ListContent = ({
   };
 
   const removeFromList = async (mediaId) => {
+    console.log(listContentUrl);
     await listService.deleteMediaFromMoovieList({
-      id: listId,
+      url: listContentUrl,
       mediaId: mediaId,
     });
     Refresh();

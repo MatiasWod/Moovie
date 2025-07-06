@@ -48,6 +48,7 @@ const AddMediaToListButton = ({ currentId, media }) => {
       const listOptions = combinedLists.map((list) => ({
         name: list.name,
         id: list.id,
+        listContentUrl: list.contentUrl,
       }));
       setOptions(listOptions);
     } catch (err) {
@@ -110,26 +111,10 @@ const AddMediaToListButton = ({ currentId, media }) => {
     setPopupType('loading');
 
     try {
-      let response;
-      if (option.name === 'Watchlist') {
-        response = await UserService.insertMediaIntoWW(
-          WatchlistWatched.Watchlist,
-          Number(currentId),
-          user.username
-        );
-      } else if (option.name === 'Watched') {
-        response = await UserService.insertMediaIntoWW(
-          WatchlistWatched.Watched,
-          Number(currentId),
-          user.username
-        );
-      } else {
-        response = await listService.insertMediaIntoMoovieList({
-          id: option.id,
+        const response = await listService.insertMediaIntoMoovieList({
+          url: option.listContentUrl,
           mediaIds: [Number(currentId)],
         });
-      }
-
       if (response.status === 200) {
         setPopupType('success');
         setPopupMessage(t('addMediaToListButton.successfullyAddedToList'));
