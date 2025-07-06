@@ -25,9 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
-import ar.edu.itba.paw.exceptions.MoovieListNotFoundException;
 import ar.edu.itba.paw.exceptions.ReviewNotFoundException;
-import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.exceptions.UserNotLoggedException;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
@@ -40,8 +38,12 @@ import ar.edu.itba.paw.services.ReviewService;
 import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.dto.in.ReviewCreateDto;
 import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
+import ar.edu.itba.paw.webapp.dto.out.UserReviewDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
+import java.util.ArrayList;
+
+
 
 //import com.sun.org.slf4j.internal.Logger;
 //import com.sun.org.slf4j.internal.LoggerFactory;
@@ -81,6 +83,7 @@ public class ReviewController {
             @QueryParam("mediaId") final Integer mediaId,
             @QueryParam("username") final String username,
             @QueryParam("isReported") final boolean isReported,
+            @QueryParam("likedByUser") final String likedByUser,
             @QueryParam("pageNumber") @DefaultValue("1") final int page) {
         if (isReported) {
             try {
@@ -106,6 +109,16 @@ public class ReviewController {
                         .entity(e.getMessage())
                         .build();
             }
+        }
+        // Damos todos los likes para un usuario
+        if(likedByUser != null){
+            final List<Review> reviews = reviewService.getLikedReviewsByUser(likedByUser, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), page);
+            final int reviewCount = reviewService.getLikedReviewsCountByUser(likedByUser);
+            final List<ReviewDto> reviewDtos = ReviewDto.fromReviewList(reviews, uriInfo);
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ReviewDto>>(reviewDtos) {});
+            final PagingUtils<Review> reviewPagingUtils = new PagingUtils<>(reviews, page, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), reviewCount);
+            ResponseUtils.setPaginationLinks(res, reviewPagingUtils, uriInfo);
+            return  res.build();
         }
         if (mediaId != null && username != null) {
             // Caso: buscar una reseña específica por mediaId y userId
@@ -200,40 +213,7 @@ public class ReviewController {
         }
     }
 
-    @PUT
-    @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response feedbackReview(@PathParam("id") final int id) {
-        try {
-            boolean liked = reviewService.likeReview(id, ReviewTypes.REVIEW_MEDIA);
-            if (liked) {
-                return Response.ok()
-                        .entity("Review successfully liked.")
-                        .build();
-            } else {
-                return Response.ok()
-                        .entity("Review successfully unliked.")
-                        .build();
-            }
-        } catch (UserNotLoggedException | UnableToFindUserException e) {
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\":\"User must be logged in to like a review.\"}")
-                    .build();
-        } catch (ReviewNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"Review not found.\"}")
-                    .build();
-        } catch (MoovieListNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"Review not found or you do not have permission to delete.\"}")
-                    .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
-        }
-    }
+
 
     @DELETE
     @PreAuthorize("@accessValidator.isUserReviewAuthor(#reviewId) or @accessValidator.isUserAdmin()")
@@ -246,6 +226,77 @@ public class ReviewController {
                 .entity("Review successfully deleted.")
                 .build();
 
+    }
+
+
+
+    // Likes
+
+    @POST
+    @Path("/{id}/likes")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createReviewLike(@PathParam("id") int id) {
+        boolean liked = reviewService.likeReview(id, ReviewTypes.REVIEW_MEDIA);
+        if (liked)
+            return Response.ok("{\"message\":\"Successfully liked list.\"}").build();
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity("{\"message\":\"List is already liked.\"}").build();
+    }
+
+    @DELETE
+    @Path("/{id}/likes")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteReviewLike(@PathParam("id") int id) {
+
+        boolean removed = reviewService.removeLikeReview(id, ReviewTypes.REVIEW_MEDIA);
+        if (removed)
+            return Response.noContent().build();
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity("{\"message\":\"List is not liked.\"}").build();
+    }
+
+    // Returns like status for a specific review for a user
+    @GET
+    @Path("/{id}/likes/{username}")
+    @Produces(VndType.APPLICATION_LIST_LIKE)
+    public Response getUserLikedListById(@PathParam("id") final int reviewId,
+                                         @PathParam("username") final String username) {
+        if (reviewService.userLikesReview(reviewId, username, ReviewTypes.REVIEW_MEDIA)) {
+            final String uri = uriInfo.getBaseUriBuilder()
+                    .path("reviews")
+                    .path(String.valueOf(reviewId))
+                    .path("likes")
+                    .path(username)
+                    .build().toString();
+            return Response.ok(new UserReviewDto(reviewId, username, uri, uriInfo)).build();
+        }
+        return Response.noContent().build();
+    }
+
+    // Return all likes for a review
+    @GET
+    @Path("/{reviewId}/likes")
+    @Produces(VndType.APPLICATION_LIST_LIKE_LISTS) // Asumiendo un VndType para listas de usuarios
+    public Response getUsersWhoLikedList(@PathParam("reviewId") final int reviewId,
+                                         @QueryParam("page") @DefaultValue("0") final int page) {
+
+        List<User> likedUsers = reviewService.usersLikesReview(reviewId, page, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), ReviewTypes.REVIEW_MEDIA );
+        if (likedUsers.isEmpty()) {
+            return Response.noContent().build();
+        }
+        List<UserReviewDto> toRet =  new ArrayList<>();
+        for (User user : likedUsers) {
+            final String uri = uriInfo.getBaseUriBuilder()
+                    .path("reviews")
+                    .path(String.valueOf(reviewId))
+                    .path("likes")
+                    .path(user.getUsername())
+                    .build().toString();
+            toRet.add(new UserReviewDto(reviewId, user.getUsername(), uri, uriInfo));
+        }
+        return Response.ok(new GenericEntity<List<UserReviewDto>>(toRet) {}).build();
     }
 
 }

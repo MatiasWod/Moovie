@@ -563,7 +563,6 @@ public class MoovieListController {
 
     @PUT
     @Path("/{id}/content/{mediaId}")
-    @PreAuthorize("@accessValidator.isUserListAuthor(#id)")
     @Consumes(VndType.APPLICATION_MOOVIELIST_MEDIA_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response editMoovieListMediaByMediaId(@PathParam("id") final int id,
@@ -594,7 +593,6 @@ public class MoovieListController {
 
     @DELETE
     @Path("/{id}/content/{mediaId}")
-    @PreAuthorize("@accessValidator.isUserListAuthor(#id)")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteMediaMoovieList(@PathParam("id") final int id, @PathParam("mediaId") final int mId) {
         try {

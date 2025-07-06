@@ -28,6 +28,8 @@ public class MoovieListReviewDto {
 
     private String abuseReportsUrl;
 
+    private String likesUrl;
+
     private String privacyReportsUrl;
     private String username;
 
@@ -82,6 +84,10 @@ public class MoovieListReviewDto {
         moovieListReviewDto.moovieListUrl = uriInfo.getBaseUriBuilder().path("/lists/{id}")
                 .build(moovieListReview.getMoovieListId()).toString();
 
+        moovieListReviewDto.likesUrl = uriInfo.getBaseUriBuilder().path("/moovieListReviews/{listId}/likes")
+                .build(moovieListReview.getMoovieListReviewId())
+                .toString();
+
         return moovieListReviewDto;
     }
 
@@ -105,6 +111,14 @@ public class MoovieListReviewDto {
 
     public void setMoovieListid(int moovieListid) {
         this.moovieListid = moovieListid;
+    }
+
+    public String getLikesUrl() {
+        return likesUrl;
+    }
+
+    public void setLikesUrl(String likesUrl) {
+        this.likesUrl = likesUrl;
     }
 
     public int getReviewLikes() {
