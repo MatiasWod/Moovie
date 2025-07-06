@@ -247,6 +247,7 @@ public class MoovieListController {
 
     @POST
     @Path("/{id}/likes")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response createMoovieListLike(@PathParam("id") int id) {
         boolean liked = moovieListService.likeMoovieList(id);
@@ -258,6 +259,7 @@ public class MoovieListController {
 
     @DELETE
     @Path("/{id}/likes")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteMoovieListLike(@PathParam("id") int id) {
         boolean removed = moovieListService.removeLikeMoovieList(id);
@@ -270,6 +272,7 @@ public class MoovieListController {
     // Returns like status for a specific list
     @GET
     @Path("/{listId}/likes/{username}")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(VndType.APPLICATION_LIST_LIKE)
     public Response getUserLikedListById(@PathParam("listId") final int listId,
                                          @PathParam("username") final String username) {
@@ -280,7 +283,7 @@ public class MoovieListController {
                     .path("likes")
                     .path(username)
                     .build().toString();
-            return Response.ok(new UserListIdDto(listId, username, uri)).build();
+            return Response.ok(new UserListIdDto(listId, username, uri, uriInfo)).build();
         }
         return Response.noContent().build();
     }
@@ -288,6 +291,7 @@ public class MoovieListController {
     // Return all likes for a list
     @GET
     @Path("/{listId}/likes")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(VndType.APPLICATION_LIST_LIKE_LISTS) // Asumiendo un VndType para listas de usuarios
     public Response getUsersWhoLikedList(@PathParam("listId") final int listId,
                                          @QueryParam("page") @DefaultValue("0") final int page) {
@@ -304,7 +308,7 @@ public class MoovieListController {
                     .path("likes")
                     .path(user.getUsername())
                     .build().toString();
-            toRet.add(new UserListIdDto(listId, user.getUsername(), uri));
+            toRet.add(new UserListIdDto(listId, user.getUsername(), uri, uriInfo));
         }
         return Response.ok(new GenericEntity<List<UserListIdDto>>(toRet) {}).build();
     }
@@ -314,6 +318,7 @@ public class MoovieListController {
 
     @POST
     @Path("/{id}/followers")
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response followMoovieList(@PathParam("id") int id) {
         boolean followed = moovieListService.followMoovieList(id);
@@ -324,6 +329,7 @@ public class MoovieListController {
     }
 
     @DELETE
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Path("/{id}/followers")
     @Produces(MediaType.APPLICATION_JSON)
     public Response unfollowMoovieList(@PathParam("id") int id) {
@@ -336,6 +342,7 @@ public class MoovieListController {
 
     // Returns like follow for a specific list
     @GET
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Path("/{listId}/followers/{username}")
     @Produces(VndType.APPLICATION_FOLLOWED_LISTS_USER_LIST)
     public Response getUserFollowsListById(@PathParam("listId") final int listId,
@@ -347,13 +354,14 @@ public class MoovieListController {
                     .path("followers")
                     .path(username)
                     .build().toString();
-            return Response.ok(new UserListIdDto(listId, username, uri)).build();
+            return Response.ok(new UserListIdDto(listId, username, uri, uriInfo)).build();
         }
         return Response.noContent().build();
     }
 
     // Return all follows for a list
     @GET
+    @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Path("/{listId}/followers")
     @Produces(VndType.APPLICATION_FOLLOWED_LISTS)
     public Response getUsersWhoFollowList(@PathParam("listId") final int listId,
@@ -371,7 +379,7 @@ public class MoovieListController {
                     .path("followers")
                     .path(user.getUsername())
                     .build().toString();
-            toRet.add(new UserListIdDto(listId, user.getUsername(), uri));
+            toRet.add(new UserListIdDto(listId, user.getUsername(), uri, uriInfo));
         }
         return Response.ok(new GenericEntity<List<UserListIdDto>>(toRet) {}).build();
     }

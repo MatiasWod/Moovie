@@ -378,31 +378,6 @@ public class UserController {
 
 
     /***
-     * FOLLOWS
-     */
-
-
-    @GET
-    @Path("/{username}/listFollows/{listId}")
-    @PreAuthorize("@accessValidator.isUserLoggedIn()")
-    @Produces(VndType.APPLICATION_FOLLOWED_LISTS_USER_LIST)
-    public Response getUserFollowedListById(@PathParam("username") String username,
-                                            @PathParam("listId") final int listId) {
-        try {
-            UserMoovieListId userMoovieListId = moovieListService.currentUserHasFollowed(listId);
-            if (userMoovieListId != null && userMoovieListId.getUsername().equals(username)) {
-                return Response.ok(UserListIdDto.fromUserMoovieList(userMoovieListId, username)).build();
-            }
-            return Response.noContent().build();
-        } catch (UnableToFindUserException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-
-    }
-
-    /***
      * LIKES
      */
 
@@ -443,7 +418,6 @@ public class UserController {
             if(liked){
                 return Response.ok(UserReviewIdDto.fromUserReviewId(moovieListReviewId,username)).build();
             }
-
             return Response.noContent().build();
         } catch (UnableToFindUserException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();

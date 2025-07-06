@@ -2,39 +2,40 @@ package ar.edu.itba.paw.webapp.dto.out;
 
 import ar.edu.itba.paw.models.MoovieList.UserMoovieListId;
 
+import javax.ws.rs.core.UriInfo;
+
 public class UserListIdDto {
-    private int mlId;
+    private int moovieListId;
+    private String moovieListUrl;
     private String username;
+    private String userUrl;
     private String url;
 
     public UserListIdDto() {}
 
-    public UserListIdDto(int mlId, String username, String url) {
-        this.mlId = mlId;
+    public UserListIdDto(int mlId, String username, String url, UriInfo uriInfo) {
+        this.moovieListId = mlId;
         this.username = username;
         this.url = url;
+
+        this.moovieListUrl =  uriInfo.getBaseUriBuilder().path("lists/{moovieListId}").build(moovieListId).toString();
+        this.userUrl =  uriInfo.getBaseUriBuilder().path("users/{username}").build(username).toString();
     }
 
-    public static UserListIdDto fromUserMoovieList(UserMoovieListId obj, String username){
-        UserListIdDto dto = new UserListIdDto();
-        dto.mlId = obj.getMlId();
-        dto.username = username;
-        return dto;
+    public int getMoovieListId() {
+        return moovieListId;
     }
 
-    public static UserListIdDto fromUserMoovieListIdAndUsername(int mlId, String username){
-        UserListIdDto dto = new UserListIdDto();
-        dto.mlId = mlId;
-        dto.username = username;
-        return dto;
+    public void setMoovieListId(int moovieListId) {
+        this.moovieListId = moovieListId;
     }
 
-    public int getMlId() {
-        return mlId;
+    public String getMoovieListUrl() {
+        return moovieListUrl;
     }
 
-    public void setMlId(int mlId) {
-        this.mlId = mlId;
+    public void setMoovieListUrl(String moovieListUrl) {
+        this.moovieListUrl = moovieListUrl;
     }
 
     public String getUsername() {
@@ -45,6 +46,20 @@ public class UserListIdDto {
         this.username = username;
     }
 
+    public String getUserUrl() {
+        return userUrl;
+    }
 
+    public void setUserUrl(String userUrl) {
+        this.userUrl = userUrl;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }
 
