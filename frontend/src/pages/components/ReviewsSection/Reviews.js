@@ -1,25 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
-import PaginationButton from '../paginationButton/PaginationButton';
-import ProfileImage from '../profileImage/ProfileImage';
 import { Divider, Pagination } from '@mui/material';
-import reviewService from '../../../services/ReviewService';
-import moovieListReviewService from '../../../services/MoovieListReviewService';
+import React, { useEffect, useState } from 'react';
+import { Spinner } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom';
+import api from '../../../api/api';
 import commentApi from '../../../api/CommentApi';
 import moovieListReviewApi from '../../../api/MoovieListReviewApi';
-import CommentList from '../commentList/CommentList';
-import CommentField from '../commentField/CommentField';
+import reportApi from '../../../api/ReportApi';
 import mediaService from '../../../services/MediaService';
-import ReviewForm from '../forms/reviewForm/ReviewForm';
-import ConfirmationForm from '../forms/confirmationForm/confirmationForm';
+import moovieListReviewService from '../../../services/MoovieListReviewService';
+import reviewService from '../../../services/ReviewService';
+import UserService from '../../../services/UserService';
+import CommentField from '../commentField/CommentField';
+import CommentList from '../commentList/CommentList';
 import ConfirmationModal from '../forms/confirmationForm/confirmationModal';
 import ReportForm from '../forms/reportForm/reportForm';
-import reportApi from '../../../api/ReportApi';
-import { Spinner } from 'react-bootstrap';
-import api from '../../../api/api';
-import UserService from '../../../services/UserService';
+import ReviewForm from '../forms/reviewForm/ReviewForm';
+import ProfileImage from '../profileImage/ProfileImage';
 
 const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, reloadReviews }) => {
   const { t } = useTranslation();
@@ -123,7 +121,7 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
           await reviewService.likeReview(review.likesUrl);
         }
         else {
-            await reviewService.deleteLikeFromReview(review.likesUrl);
+            await api.delete(review.likesUrl + `/${currentUser.username}`);
         }
         setLikeRefresh(!likeRefresh);
         if (currentLikeStatus) {
