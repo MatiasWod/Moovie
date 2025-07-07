@@ -304,7 +304,7 @@ function Details() {
                     overlay={popoverUserRating}
                   >
                     <div className="m-3">
-                      <i className={'bi bi-star'} /> {media.totalRating}
+                      <i className={'bi bi-star'} /> {media.totalRating.toFixed(2)}
                     </div>
                   </OverlayTrigger>
                 </>

@@ -9,8 +9,6 @@ import java.util.List;
 public class UserDto {
     private String username;
     private int role;
-    private int moovieListCount;
-    private int reviewsCount;
     private int milkyPoints;
     private boolean hasBadge;
     private String imageUrl;
@@ -42,8 +40,6 @@ public class UserDto {
 
         dto.username = user.getUsername();
         dto.role = user.getRole();
-        dto.moovieListCount = user.getMoovieListCount();
-        dto.reviewsCount = user.getReviewsCount();
         dto.milkyPoints = user.getMilkyPoints();
         dto.hasBadge = user.isHasBadge();
 
@@ -142,22 +138,7 @@ public class UserDto {
     public void setRole(int role) {
         this.role = role;
     }
-
-    public int getMoovieListCount() {
-        return moovieListCount;
-    }
-
-    public void setMoovieListCount(int moovieListCount) {
-        this.moovieListCount = moovieListCount;
-    }
-
-    public int getReviewsCount() {
-        return reviewsCount;
-    }
-
-    public void setReviewsCount(int reviewsCount) {
-        this.reviewsCount = reviewsCount;
-    }
+    
 
     public int getMilkyPoints() {
         return milkyPoints;
