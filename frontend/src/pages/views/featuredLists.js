@@ -3,6 +3,7 @@ import { Spinner } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { createSearchParams, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import api from '../../api/api';
 import { MediaOrderBy as OrderBy } from '../../api/values/MediaOrderBy';
 import MediaTypes from '../../api/values/MediaTypes';
 import pagingSizes from '../../api/values/PagingSizes';
@@ -18,6 +19,8 @@ function FeaturedLists() {
   const [searchParams] = useSearchParams();
   const { t } = useTranslation();
   const { setErrorStatus } = useErrorStatus();
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
+
 
   //GET VALUES FOR FEATURED MEDIA
   const { type } = useParams();
@@ -25,6 +28,7 @@ function FeaturedLists() {
   const [featuredMediaLoading, setFeaturedMediaLoading] = useState(true);
   const [featuredMediaError, setFeaturedMediaError] = useState(null);
   const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
+  const [watchedUrl, setWatchedUrl] = useState(null);
 
   let featuredListTypeName;
   let mediaType;
@@ -90,7 +94,18 @@ function FeaturedLists() {
     });
   };
 
-  const { isLoggedIn, user } = useSelector((state) => state.auth);
+  useEffect(() => {
+    if (!user.defaultPrivateMoovieListsUrl) return;
+    const fetchWatchedUrl = async () => {
+      const res = await api.get(user.defaultPrivateMoovieListsUrl, {
+        params: {
+          search: 'Watched',
+        },
+      }).then((res) => res.data?.[0]?.url);
+      setWatchedUrl(res);
+    };
+    fetchWatchedUrl();
+  }, [user.defaultPrivateMoovieListsUrl]);
 
   useEffect(() => {
     async function getData() {
@@ -131,6 +146,7 @@ function FeaturedLists() {
         isLoggedIn={isLoggedIn}
         editMode={false}
         username={isLoggedIn ? user.username : null}
+        watchedUrl={watchedUrl}
       />
       <div className="flex justify-center pt-4">
         {featuredMedia?.data?.length > 0 && featuredMedia.links?.last?.pageNumber > 1 && (

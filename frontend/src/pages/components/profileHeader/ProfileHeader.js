@@ -58,7 +58,7 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser, handleMakeMode
             onClick={handleShowPfpPopup}
           >
             <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-4 border-white/20 shadow-xl transition-transform duration-200 group-hover:scale-105">
-              <ProfileImage image={profile.imageUrl} />
+              <ProfileImage image={profile.imageUrl} size="112px" noBorder={true} />
             </div>
             {user?.username === profile.username && (
               <div className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
