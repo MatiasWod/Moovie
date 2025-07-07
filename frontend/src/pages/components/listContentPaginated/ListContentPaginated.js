@@ -45,8 +45,8 @@ const ListContentPaginated = ({
 
   useEffect(() => {
     const fetchWatchedUrl = async () => {
-      if (!user.defaultPrivateMoovieListsUrl) return;
-      const res = await api.get(user.defaultPrivateMoovieListsUrl, {
+      if (!user?.defaultPrivateMoovieListsUrl) return;
+      const res = await api.get(user?.defaultPrivateMoovieListsUrl, {
         params: {
           search: 'Watched',
         },
@@ -54,7 +54,7 @@ const ListContentPaginated = ({
       setWatchedUrl(res.data?.[0]?.url);
     };
     fetchWatchedUrl();
-  }, [user.defaultPrivateMoovieListsUrl]);
+  }, [user?.defaultPrivateMoovieListsUrl]);
 
   return (
     <div>

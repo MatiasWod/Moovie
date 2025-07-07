@@ -19,15 +19,15 @@ function Home() {
   const [watchlistUrl, setWatchlistUrl] = useState('loading');
 
   useEffect(() => {
-    if (!user.defaultPrivateMoovieListsUrl) return;
+    if (!user?.defaultPrivateMoovieListsUrl) return;
     const fetchUrls = async () => {
       const [watchedRes, watchlistRes] = await Promise.all([
-        api.get(user.defaultPrivateMoovieListsUrl, {
+        api.get(user?.defaultPrivateMoovieListsUrl, {
           params: {
             search: 'Watched',
           },
         }).then((res) => res.data?.[0]?.url),
-        api.get(user.defaultPrivateMoovieListsUrl, {
+        api.get(user?.defaultPrivateMoovieListsUrl, {
           params: {
             search: 'Watchlist',
           },
@@ -37,7 +37,7 @@ function Home() {
       setWatchlistUrl(watchlistRes);
     };
     fetchUrls();
-  }, [user.defaultPrivateMoovieListsUrl]);
+  }, [user?.defaultPrivateMoovieListsUrl]);
 
   //GET VALUES FOT Top Rated Movies
   const [topRatedMovies, setTopRatedMovies] = useState([]);
