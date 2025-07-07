@@ -10,7 +10,6 @@ const ProfileImage = ({ image, userUrl, size, onClick }) => {
     const fetchImage = async () => {
       if (!image && userUrl) {
         try {
-          // TODO do fetch with url. En vez de pasarle el username ctr + f y pasar el link que ta en todos las veces que se fetchea.
           const response = await userApi.getUserByUsername(userUrl);
           const imageUrl = response?.data?.imageUrl;
 
