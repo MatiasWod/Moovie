@@ -217,4 +217,11 @@ public class CommentDto {
         this.reportsUrl = reportsUrl;
     }
 
+    public String getFeedbackUrl() {
+        return feedbackUrl;
+    }
+
+    public void setFeedbackUrl(String feedbackUrl) {
+        this.feedbackUrl = feedbackUrl;
+    }
 }
