@@ -197,13 +197,13 @@ function CommentItem({ comment, isLoggedIn, user, onDelete, reload, onReport }) 
       api.get(comment.feedbackUrl, {
         params: {
           pageSize: 1,
-          feedback: 'LIKE',
+          type: 'LIKE',
         },
       }),
       api.get(comment.feedbackUrl, {
         params: {
           pageSize: 1,
-          feedback: 'DISLIKE',
+          type: 'DISLIKE',
         },
       }),
     ]);
