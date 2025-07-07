@@ -107,7 +107,6 @@ const userApi = (() => {
     });
   }
 
-  //TODO CAMBIAR A USAR URL.
   const insertMediaIntoWW = async (url, mediaId, search) => {
     const response = await api.get(url, {
       params: {
@@ -123,7 +122,6 @@ const userApi = (() => {
     });
   };
 
-  //TODO CAMBIAR A USAR URL.
   const removeMediaFromWW = async (url, mediaId, search) => {
     const response = await api.get(url, {
       params: {
@@ -136,17 +134,14 @@ const userApi = (() => {
     return ListService.deleteMediaFromMoovieList({ url: moovieList.contentUrl, mediaId: mediaId });
   };
 
-  //TODO CAMBIAR A USAR URL.
   const currentUserHasLikedReview = (url, username) => {
     return api.get(url + `/${username}`);
   };
 
-  //TODO CAMBIAR A USAR URL.
   const currentUserHasLikedMoovieListReview = (url, username) => {
     return api.get(url + `/${username}`);
   };
 
-  //TODO CAMBIAR A USAR URL.
   const currentUserCommentFeedback = (commentId, username) => {
     return api.get(`/users/${username}/commentsFeedback/${commentId}`);
   };
