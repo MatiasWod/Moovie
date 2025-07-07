@@ -31,6 +31,8 @@ public interface CommentService {
     List<Comment> getCommentFeedbackForUser(String username, int pageNumber, int pageSize);
     int getCommentFeedbackForUserCount(String username);
     List<CommentFeedback> getCommentFeedbackForComment(int commentId, int pageNumber, int pageSize);
+    List<CommentFeedback> getCommentFeedbackForComment(int commentId, CommentFeedbackType feedback, int pageNumber, int pageSize);
     int getCommentFeedbackForCommentCount(int commentId);
+    int getCommentFeedbackForCommentCount(int commentId, CommentFeedbackType feedback);
 
 }

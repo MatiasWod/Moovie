@@ -5,6 +5,8 @@ import ar.edu.itba.paw.models.Comments.Comment;
 import ar.edu.itba.paw.models.Comments.CommentFeedback;
 import ar.edu.itba.paw.models.Comments.CommentFeedbackType;
 import ar.edu.itba.paw.models.User.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -20,6 +22,9 @@ public class CommentDaoImpl implements CommentDao{
 
     @PersistenceContext
     private EntityManager em;
+
+    Logger logger = LoggerFactory.getLogger(CommentDaoImpl.class);
+
 
     @Override
     public List<Comment> getComments(int reviewId, int userId, int size, int pageSize) {
@@ -268,10 +273,36 @@ public class CommentDaoImpl implements CommentDao{
         return result;
     }
 
+    @Override
+    public List<CommentFeedback> getCommentFeedbackForComment(int commentId, CommentFeedbackType feedback, int pageNumber, int pageSize) {
+        int offset = pageNumber * pageSize;
+
+        switch (feedback){
+            case LIKE:
+                logger.info("getCommentFeedbackForComment LIKE");
+                return getLikedFeedbackForComment(commentId, pageSize, offset);
+            case DISLIKE:
+                logger.info("getCommentFeedbackForComment DISLIKE");
+                return getDislikedFeedbackForComment(commentId, pageSize, offset);
+        }
+        return null;
+    }
+
 
     @Override
     public int getCommentFeedbackForCommentCount(int commentId) {
         return getLikedFeedbackForCommentCount(commentId) + getDislikedFeedbackForCommentCount(commentId);
+    }
+
+    @Override
+    public int getCommentFeedbackForCommentCount(int commentId, CommentFeedbackType feedback) {
+        switch (feedback){
+            case LIKE:
+                return getLikedFeedbackForCommentCount(commentId);
+            case DISLIKE:
+                return getDislikedFeedbackForCommentCount(commentId);
+        }
+        return 0;
     }
 
 

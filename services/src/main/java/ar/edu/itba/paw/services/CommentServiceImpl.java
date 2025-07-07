@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Id;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -147,15 +148,25 @@ public class CommentServiceImpl implements CommentService{
         return commentDao.getCommentFeedbackForUserCount(uid);
     }
 
+    @Override
+    public List<CommentFeedback> getCommentFeedbackForComment(int commentId, int pageNumber, int pageSize) {
+        return commentDao.getCommentFeedbackForComment(commentId, pageNumber, pageSize);
+    }
+
     @Transactional
     @Override
-    public List<CommentFeedback> getCommentFeedbackForComment(int commentId, int pageNumber, int pageSize){
-        return commentDao.getCommentFeedbackForComment(commentId, pageNumber, pageSize);
+    public List<CommentFeedback> getCommentFeedbackForComment(int commentId, CommentFeedbackType feedback, int pageNumber, int pageSize){
+        return commentDao.getCommentFeedbackForComment(commentId, feedback, pageNumber, pageSize);
     }
 
     @Transactional
     @Override
     public int getCommentFeedbackForCommentCount(int commentId){
         return commentDao.getCommentFeedbackForCommentCount(commentId);
+    }
+
+    @Override
+    public int getCommentFeedbackForCommentCount(int commentId, CommentFeedbackType feedback) {
+        return commentDao.getCommentFeedbackForCommentCount(commentId, feedback);
     }
 }

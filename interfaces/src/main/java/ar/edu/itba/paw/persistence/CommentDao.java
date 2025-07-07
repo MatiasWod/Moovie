@@ -30,5 +30,7 @@ public interface CommentDao {
     List<Comment> getCommentFeedbackForUser(int uid, int pageNumber, int pageSize);
     int getCommentFeedbackForUserCount(int uid);
     List<CommentFeedback> getCommentFeedbackForComment(int commentId, int pageNumber, int pageSize);
+    List<CommentFeedback> getCommentFeedbackForComment(int commentId, CommentFeedbackType feedback, int pageNumber, int pageSize);
     int getCommentFeedbackForCommentCount(int commentId);
+    int getCommentFeedbackForCommentCount(int commentId, CommentFeedbackType feedback);
 }
