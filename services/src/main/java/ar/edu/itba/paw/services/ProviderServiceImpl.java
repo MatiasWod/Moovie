@@ -17,14 +17,26 @@ public class ProviderServiceImpl implements ProviderService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<Provider> getAllProviders() {
-        return providerDao.getAllProviders();
+    public List<Provider> getAllProviders(int pageNumber,int pageSize) {
+        return providerDao.getAllProviders(pageNumber,pageSize);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<Provider> getProvidersForMedia(final int mediaId) {
-        return providerDao.getProvidersForMedia(mediaId);
+    public List<Provider> getProvidersForMedia(final int mediaId,int pageNumber,int pageSize) {
+        return providerDao.getProvidersForMedia(mediaId, pageNumber, pageSize);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public int getAllProvidersCount(){
+        return providerDao.getAllProvidersCount();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public int getProvidersForMediaCount(final int mediaId) {
+        return providerDao.getProvidersForMediaCount(mediaId);
     }
 
     @Transactional(readOnly = true)
