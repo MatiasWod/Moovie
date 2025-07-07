@@ -8,6 +8,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import ar.edu.itba.paw.exceptions.ForbiddenException;
+import ar.edu.itba.paw.exceptions.ResourceNotFoundException;
+import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Primary;
@@ -250,14 +253,17 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
-    public void resolveReviewReport(int reviewId) {
-        String sql = "SELECT r FROM ReviewReport r WHERE r.review.reviewId = :reviewId";
-        List<ReviewReport> toRemove = em.createQuery(sql, ReviewReport.class)
-                .setParameter("reviewId", reviewId)
-                .getResultList();
+    public void resolveReviewReport(int reportId) {
+        String sql = "SELECT r FROM ReviewReport r WHERE r.reportId = :reportId";
+        ReviewReport toRemove = em.createQuery(sql, ReviewReport.class)
+                .setParameter("reportId", reportId)
+                .getSingleResult();
 
-        for (ReviewReport report : toRemove) {
-            em.remove(report);
+        if (toRemove != null) {
+            em.remove(toRemove);
+        } else {
+            LOGGER.warn("Attempted to resolve a review report that does not exist: {}", reportId);
+            throw new ResourceNotFoundException("Review report does not exist");
         }
     }
 
@@ -365,14 +371,17 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
-    public void resolveMoovieListReviewReport(int moovieListReviewId) {
-        String sql = "SELECT r FROM MoovieListReviewReport r WHERE r.moovieListReview.moovieListReviewId = :moovieListReviewId";
-        List<MoovieListReviewReport> toRemove = em.createQuery(sql, MoovieListReviewReport.class)
-                .setParameter("moovieListReviewId", moovieListReviewId)
-                .getResultList();
+    public void resolveMoovieListReviewReport(int reportId) {
+        String sql = "SELECT r FROM MoovieListReviewReport r WHERE r.reportId = :reportId";
+        MoovieListReviewReport toRemove = em.createQuery(sql, MoovieListReviewReport.class)
+                .setParameter("reportId", reportId)
+                .getSingleResult();
 
-        for (MoovieListReviewReport report : toRemove) {
-            em.remove(report);
+        if (toRemove != null) {
+            em.remove(toRemove);
+        } else {
+            LOGGER.warn("Attempted to resolve a moovielist review report that does not exist: {}", reportId);
+            throw new ResourceNotFoundException("Moovielist review report does not exist");
         }
     }
 
@@ -514,14 +523,17 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
-    public void resolveMoovieListReport(int moovieListId) {
-        String sql = "SELECT r FROM MoovieListReport r WHERE r.moovieList.moovieListId = :moovieListId";
-        List<MoovieListReport> toRemove = em.createQuery(sql, MoovieListReport.class)
-                .setParameter("moovieListId", moovieListId)
-                .getResultList();
+    public void resolveMoovieListReport(int reportId) {
+        String sql = "SELECT r FROM MoovieListReport r WHERE r.reportId = :reportId";
+        MoovieListReport toRemove = em.createQuery(sql, MoovieListReport.class)
+                .setParameter("reportId", reportId)
+                .getSingleResult();
 
-        for (MoovieListReport report : toRemove) {
-            em.remove(report);
+        if (toRemove != null) {
+            em.remove(toRemove);
+        } else {
+            LOGGER.warn("Attempted to resolve a moovielist report that does not exist: {}", reportId);
+            throw new ResourceNotFoundException("Moovielist report does not exist");
         }
     }
 
@@ -631,15 +643,19 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
-    public void resolveCommentReport(int commentId) {
-        String sql = "SELECT r FROM CommentReport r WHERE r.comment.commentId = :commentId";
-        List<CommentReport> toRemove = em.createQuery(sql, CommentReport.class)
-                .setParameter("commentId", commentId)
-                .getResultList();
+    public void resolveCommentReport(int reportId) {
+        String sql = "SELECT r FROM CommentReport r WHERE r.reportId = :reportId";
+        CommentReport toRemove = em.createQuery(sql, CommentReport.class)
+                .setParameter("reportId", reportId)
+                .getSingleResult();
 
-        for (CommentReport report : toRemove) {
-            em.remove(report);
+        if (toRemove != null) {
+            em.remove(toRemove);
+        } else {
+            LOGGER.warn("Attempted to resolve a comment report that does not exist: {}", reportId);
+            throw new ResourceNotFoundException("Comment report does not exist");
         }
+
     }
 
     @Override

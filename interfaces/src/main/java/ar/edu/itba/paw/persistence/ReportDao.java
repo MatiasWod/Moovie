@@ -44,7 +44,7 @@ public interface ReportDao {
 
     ReviewReport reportReview(int reviewId, int userId, int type, String content);
 
-    void resolveReviewReport(int reviewId);
+    void resolveReviewReport(int reportId);
 
     // MoovieListReviews
 
@@ -63,7 +63,7 @@ public interface ReportDao {
 
     MoovieListReviewReport reportMoovieListReview(int moovieListReviewId, int userId, int type, String content);
 
-    void resolveMoovieListReviewReport(int mlrId);
+    void resolveMoovieListReviewReport(int reportId);
 
     // MoovieLists
 
@@ -81,7 +81,7 @@ public interface ReportDao {
 
     MoovieListReport reportMoovieList(int moovieListId, int userId, int type, String content);
 
-    void resolveMoovieListReport(int mlId);
+    void resolveMoovieListReport(int reportId);
 
     // (Review) Comments
 
@@ -99,6 +99,6 @@ public interface ReportDao {
 
     CommentReport reportComment(int commentId, int userId, int type, String content);
 
-    void resolveCommentReport(int commentId);
+    void resolveCommentReport(int reportId);
 
 }
