@@ -12,7 +12,6 @@ import pagingSizes from '../../api/values/PagingSizes';
 import SortOrder from '../../api/values/SortOrder';
 import useErrorStatus from '../../hooks/useErrorStatus';
 import { default as ListService } from '../../services/ListService';
-import UserService from '../../services/UserService';
 import ConfirmationModal from '../components/forms/confirmationForm/confirmationModal';
 import ReportForm from '../components/forms/reportForm/reportForm';
 import ListCard from '../components/listCard/ListCard';
@@ -143,13 +142,24 @@ function List() {
           aux = nextPage.data;
         }
 
+        const watchedUrl = await api.get(user.defaultPrivateMoovieListsUrl, {
+          params: {
+            search: 'Watched',
+          },
+        }).then((res) => res.data?.[0]?.url);
+
         // Get status
         const allWW = await Promise.all(Array.from(allMedia).map(async (media) => {
-          const WW = await UserService.currentUserWWStatus(
-            media.id,
-            user.defaultPrivateMoovieListsUrl
-          );
-          return WW;
+          try{
+            const resp = await api.get(watchedUrl + '/content/' + media.id);
+            if (resp.status === 200) {
+              return { watched: true };
+            } else {
+              return { watched: false };
+            }
+          } catch (e) {
+            return { watched: false };
+          }
         }));
         setWatchedCount(allWW.filter((ww) => ww.watched).length);
       } catch (e) {
@@ -157,7 +167,7 @@ function List() {
       }
     }
     getWatchedCount();
-  }, [listContent]);
+  }, [listContent, flag]);
 
   const [listRecommendations, setListRecommendations] = useState(undefined);
   const [listRecommendationsLoading, setlistRecommendationsLoading] = useState(true);

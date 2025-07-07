@@ -1,9 +1,10 @@
 // src/components/listContentPaginated/ListContentPaginated.js
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
+import api from '../../../api/api';
 import { MediaOrderBy, MediaOrderByLabels } from '../../../api/values/MediaOrderBy';
 import SortOrder from '../../../api/values/SortOrder';
 import DropdownMenu from '../dropdownMenu/DropdownMenu';
@@ -28,7 +29,7 @@ const ListContentPaginated = ({
 }) => {
   const [editMode, setEditMode] = useState(false);
   const { t } = useTranslation();
-
+  const [watchedUrl, setWatchedUrl] = useState(null);
   const { isLoggedIn, user } = useSelector((state) => state.auth);
 
   const handleEditMode = () => {
@@ -41,6 +42,19 @@ const ListContentPaginated = ({
   const handleSearchMediaToAdd = () => {
     setSearchMediaMode(!searchMediaMode);
   };
+
+  useEffect(() => {
+    const fetchWatchedUrl = async () => {
+      if (!user.defaultPrivateMoovieListsUrl) return;
+      const res = await api.get(user.defaultPrivateMoovieListsUrl, {
+        params: {
+          search: 'Watched',
+        },
+      });
+      setWatchedUrl(res.data?.[0]?.url);
+    };
+    fetchWatchedUrl();
+  }, [user.defaultPrivateMoovieListsUrl]);
 
   return (
     <div>
@@ -89,6 +103,8 @@ const ListContentPaginated = ({
         isLoggedIn={isLoggedIn}
         username={isLoggedIn ? user.username : null}
         listContentUrl={listContentUrl}
+        watchedUrl={watchedUrl}
+        refresh={Refresh ?? (() => {})}
       />
 
       <div className="flex justify-center pt-4">
