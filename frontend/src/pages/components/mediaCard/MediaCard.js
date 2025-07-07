@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import './mediaCard.css';
-import { useNavigate } from 'react-router-dom';
-import '../mainStyle.css';
-import mediaService from '../../../services/MediaService';
-import { useSelector } from 'react-redux';
-import WatchlistWatched from '../../../api/values/WatchlistWatched';
-import { Tooltip as ReactTooltip } from 'react-tooltip';
 import { useTranslation } from 'react-i18next';
-import { BsEye, BsEyeSlash, BsBookmark, BsBookmarkDash } from 'react-icons/bs';
+import { BsBookmark, BsBookmarkDash, BsEye, BsEyeSlash } from 'react-icons/bs';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { Tooltip as ReactTooltip } from 'react-tooltip';
+import api from '../../../api/api';
+import WatchlistWatched from '../../../api/values/WatchlistWatched';
 import UserService from '../../../services/UserService';
+import '../mainStyle.css';
+import './mediaCard.css';
 
-const MediaCard = ({ media, size = 'normal', showWWButtons = true, disableOnClick = false }) => {
+const MediaCard = ({ media, size = 'normal', showWWButtons = true, disableOnClick = false, watchedUrl, watchlistUrl }) => {
   const releaseDate = new Date(media.releaseDate).getFullYear();
 
   const [ww, setWW] = useState({ watched: false, watchlist: false });
@@ -21,6 +21,24 @@ const MediaCard = ({ media, size = 'normal', showWWButtons = true, disableOnClic
   useEffect(() => {
     const fetchWW = async () => {
       try {
+        if (watchedUrl && watchlistUrl){
+          if (watchedUrl === 'loading' || watchlistUrl === 'loading') return;
+          let watched = false;
+          let watchlist = false;
+          const [watchedResp, watchlistResp] = await Promise.all([
+            api.get(watchedUrl + '/content/' + media.id),
+            api.get(watchlistUrl + '/content/' + media.id)
+          ]);
+          if (watchedResp.status === 200) {
+            watched = true;
+          }
+          if (watchlistResp.status === 200) {
+            watchlist = true;
+          }
+          setWW({ watched, watchlist });
+          return;
+        }
+        
         const WW = await UserService.currentUserWWStatus(
           media.id,
           user.defaultPrivateMoovieListsUrl
@@ -30,7 +48,7 @@ const MediaCard = ({ media, size = 'normal', showWWButtons = true, disableOnClic
     };
 
     fetchWW();
-  }, [media.id, ping]);
+  }, [media.id, ping, watchedUrl, watchlistUrl]);
 
   const navigate = useNavigate();
   const [hovered, setHovered] = useState(false);

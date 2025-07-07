@@ -1,10 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import Loader from '../../Loader';
 import MediaCard from '../mediaCard/MediaCard';
 import './cardsHorizontalContainer.css';
-import Loader from '../../Loader';
-import { useTranslation } from 'react-i18next';
 
-const CardsHorizontalContainer = ({ mediaList, loading, error }) => {
+const CardsHorizontalContainer = ({ mediaList, loading, error, watchedUrl, watchlistUrl }) => {
   const { t } = useTranslation();
 
   if (loading) {
@@ -18,7 +18,7 @@ const CardsHorizontalContainer = ({ mediaList, loading, error }) => {
   return (
     <div className="cardsHorizontalContainer">
       {Array.isArray(mediaList) && mediaList.length > 0 ? (
-        mediaList.map((media) => <MediaCard key={media.id} media={media} />)
+        mediaList.map((media) => <MediaCard key={media.id} media={media} watchedUrl={watchedUrl} watchlistUrl={watchlistUrl} />)
       ) : (
         <div>{t('cardsHorizontalContainer.noMediaFound')}</div>
       )}
