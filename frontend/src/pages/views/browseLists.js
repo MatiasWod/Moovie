@@ -103,7 +103,8 @@ function BrowseLists() {
             <DropdownMenu
               setOrderBy={setOrderBy}
               setSortOrder={setSortOrder}
-              currentOrderDefault={sortOrder}
+              currentSortOrder={sortOrder}
+              currentOrderBy={orderBy}
               values={Object.values(CardsListOrderBy)}
               labels={CardsListOrderByLabels}
             />

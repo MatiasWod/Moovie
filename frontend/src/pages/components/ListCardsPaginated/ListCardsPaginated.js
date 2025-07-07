@@ -22,7 +22,8 @@ const ListCardsPaginated = ({
       <DropdownMenu
         setOrderBy={setOrderBy}
         setSortOrder={setSortOrder}
-        currentOrderDefault={currentSortOrder}
+        currentSortOrder={currentSortOrder}
+        currentOrderBy={currentOrderBy}
         values={Object.values(CardsListOrderBy)}
         labels={CardsListOrderByLabels}
       />

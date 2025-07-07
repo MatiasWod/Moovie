@@ -77,9 +77,9 @@ const ListContentPaginated = ({
         {!editMode && (
           <DropdownMenu
             setOrderBy={setOrderBy}
-            orderBy={currentOrderBy}
             setSortOrder={setSortOrder}
-            currentOrderDefault={currentSortOrder}
+            currentSortOrder={currentSortOrder}
+            currentOrderBy={currentOrderBy}
             values={Object.values(MediaOrderBy)}
             labels={MediaOrderByLabels}
           />

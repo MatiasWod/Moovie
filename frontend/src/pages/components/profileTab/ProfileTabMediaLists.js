@@ -35,6 +35,7 @@ function ProfileTabMediaLists({ user, search, isMe }) {
             search
           );
         }
+        console.log('The response is: ', response);
         setListPagination(response);
         setListContent(response);
         setListContentLoading(false);
