@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import listApi from '../../api/ListApi';
-import DropdownMenu from '../components/dropdownMenu/DropdownMenu';
-import CardsListOrderBy from '../../api/values/CardsListOrderBy';
-import SortOrder from '../../api/values/SortOrder';
-import ListCard from '../components/listCard/ListCard';
-import './browseLists.css';
-import BrowseListsSearchBar from '../components/browseListsSearchBar/browseListsSearchBar';
-import './../components/mainStyle.css';
-import PaginationButton from '../components/paginationButton/PaginationButton';
-import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom';
-import ListService from '../../services/ListService';
-import pagingSizes from '../../api/values/PagingSizes';
-import { useTranslation } from 'react-i18next';
 import { Spinner } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { CardsListOrderBy, CardsListOrderByLabels } from '../../api/values/CardsListOrderBy';
+import pagingSizes from '../../api/values/PagingSizes';
+import SortOrder from '../../api/values/SortOrder';
+import ListService from '../../services/ListService';
+import BrowseListsSearchBar from '../components/browseListsSearchBar/browseListsSearchBar';
+import DropdownMenu from '../components/dropdownMenu/DropdownMenu';
+import ListCard from '../components/listCard/ListCard';
 import '../components/listContent/listContent.css';
+import PaginationButton from '../components/paginationButton/PaginationButton';
+import './../components/mainStyle.css';
+import './browseLists.css';
 
 function BrowseLists() {
   const navigate = useNavigate();
@@ -106,6 +105,7 @@ function BrowseLists() {
               setSortOrder={setSortOrder}
               currentOrderDefault={sortOrder}
               values={Object.values(CardsListOrderBy)}
+              labels={CardsListOrderByLabels}
             />
           </div>
         </div>

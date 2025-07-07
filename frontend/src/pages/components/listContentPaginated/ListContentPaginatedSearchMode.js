@@ -1,16 +1,14 @@
-import '../forms/formsStyle.css';
-import React, { useState, useEffect, useCallback } from 'react';
-import mediaService from '../../../services/MediaService';
-import MediaService from '../../../services/MediaService';
-import pagingSizes from '../../../api/values/PagingSizes';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { MediaOrderBy } from '../../../api/values/MediaOrderBy';
 import '../../../api/values/MediaTypes';
 import MediaTypes from '../../../api/values/MediaTypes';
+import pagingSizes from '../../../api/values/PagingSizes';
 import SortOrder from '../../../api/values/SortOrder';
-import MediaOrderBy from '../../../api/values/MediaOrderBy';
-import MediaCard from '../mediaCard/MediaCard';
-import moovieListReviewService from '../../../services/MoovieListReviewService';
 import listService from '../../../services/ListService';
-import { useTranslation } from 'react-i18next';
+import MediaService from '../../../services/MediaService';
+import '../forms/formsStyle.css';
+import MediaCard from '../mediaCard/MediaCard';
 
 const ListContentPaginatedSearchMode = ({ moovieListId, handleCloseSearchMode, onMediaAdded }) => {
   const [searchQuery, setSearchQuery] = useState('');

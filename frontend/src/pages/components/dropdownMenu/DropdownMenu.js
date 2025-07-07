@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-import OrderBy from '../../../api/values/MediaOrderBy';
-import SortOrder from '../../../api/values/SortOrder';
+import React, { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
-import { Tooltip as ReactTooltip } from 'react-tooltip';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useTranslation } from 'react-i18next';
+import { Tooltip as ReactTooltip } from 'react-tooltip';
+import SortOrder from '../../../api/values/SortOrder';
 
-const DropdownMenu = ({ setOrderBy, setSortOrder, currentSortOrder, values }) => {
+const DropdownMenu = ({ setOrderBy, setSortOrder, currentSortOrder, values, labels }) => {
   const [btnState, setBtnState] = useState(currentSortOrder);
   const { t } = useTranslation();
 
@@ -25,11 +24,15 @@ const DropdownMenu = ({ setOrderBy, setSortOrder, currentSortOrder, values }) =>
   };
 
   return (
-    <div style={{ display: 'flex' }}>
-      <NavDropdown title={t('dropdownMenu.orderBy')}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <NavDropdown
+        title={t('dropdownMenu.orderBy')}
+        style={{ minWidth: 120 }}
+        menuVariant="light"
+      >
         {values.map((value) => (
           <NavDropdown.Item key={value} onClick={() => handleSelect(value)}>
-            {value}
+            {labels[value] ? t(labels[value]) : value}
           </NavDropdown.Item>
         ))}
       </NavDropdown>
@@ -39,6 +42,7 @@ const DropdownMenu = ({ setOrderBy, setSortOrder, currentSortOrder, values }) =>
         onClick={handleClick}
         data-tooltip-id={'tooltip-id'}
         data-tooltip-content={t('dropdownMenu.invertOrder')}
+        aria-label={t('dropdownMenu.invertOrder')}
       >
         {btnState === SortOrder.DESC ? '↑' : '↓'}
       </Button>

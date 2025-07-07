@@ -1,15 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { Divider } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import mediaApi from '../../api/MediaApi'; // Adjust the path if needed
-import CardsHorizontalContainer from '../components/cardsHorizontalContainer/CardsHorizontalContainer';
+import { MediaOrderBy as OrderBy } from '../../api/values/MediaOrderBy';
 import MediaTypes from '../../api/values/MediaTypes';
-import OrderBy from '../../api/values/MediaOrderBy';
 import SortOrder from '../../api/values/SortOrder';
+import CardsHorizontalContainer from '../components/cardsHorizontalContainer/CardsHorizontalContainer';
 import '../components/mainStyle.css';
 import './home.css';
-import Button from 'react-bootstrap/Button';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { Divider } from '@mui/material';
 
 function Home() {
   const navigate = useNavigate();

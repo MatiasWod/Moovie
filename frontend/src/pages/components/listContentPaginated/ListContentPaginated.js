@@ -1,14 +1,14 @@
 // src/components/listContentPaginated/ListContentPaginated.js
 
 import React, { useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { MediaOrderBy, MediaOrderByLabels } from '../../../api/values/MediaOrderBy';
+import SortOrder from '../../../api/values/SortOrder';
+import DropdownMenu from '../dropdownMenu/DropdownMenu';
 import ListContent from '../listContent/ListContent';
 import PaginationButton from '../paginationButton/PaginationButton';
-import DropdownMenu from '../dropdownMenu/DropdownMenu';
-import MediaOrderBy from '../../../api/values/MediaOrderBy';
-import Button from 'react-bootstrap/Button';
-import { useSelector } from 'react-redux';
-import SortOrder from '../../../api/values/SortOrder';
-import { useTranslation } from 'react-i18next';
 import ListContentPaginatedSearchMode from './ListContentPaginatedSearchMode';
 
 const ListContentPaginated = ({
@@ -63,9 +63,11 @@ const ListContentPaginated = ({
         {!editMode && (
           <DropdownMenu
             setOrderBy={setOrderBy}
+            orderBy={currentOrderBy}
             setSortOrder={setSortOrder}
             currentOrderDefault={currentSortOrder}
             values={Object.values(MediaOrderBy)}
+            labels={MediaOrderByLabels}
           />
         )}
       </div>

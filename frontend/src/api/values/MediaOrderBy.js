@@ -7,4 +7,13 @@ const MediaOrderBy = {
   CUSTOM_ORDER: 'customOrder',
 };
 
-export default MediaOrderBy;
+const MediaOrderByLabels = {
+  [MediaOrderBy.NAME]: 'orderBy.name',
+  [MediaOrderBy.TOTAL_RATING]: 'orderBy.totalRating',
+  [MediaOrderBy.TMDB_RATING]: 'orderBy.tmdbRating',
+  [MediaOrderBy.RELEASE_DATE]: 'orderBy.releaseDate',
+  [MediaOrderBy.VOTE_COUNT]: 'orderBy.voteCount',
+  [MediaOrderBy.CUSTOM_ORDER]: 'orderBy.customOrder',
+};
+
+export { MediaOrderBy, MediaOrderByLabels };

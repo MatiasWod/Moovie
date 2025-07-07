@@ -1,23 +1,17 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import mediaApi from '../../api/MediaApi'; // Adjust the path if needed
-import CardsHorizontalContainer from '../components/cardsHorizontalContainer/CardsHorizontalContainer';
-import MediaTypes from '../../api/values/MediaTypes';
-import OrderBy from '../../api/values/MediaOrderBy';
-import SortOrder from '../../api/values/SortOrder';
-import '../components/mainStyle.css';
-import ListHeader from '../components/listHeader/ListHeader';
-import DropdownMenu from '../components/dropdownMenu/DropdownMenu';
-import ListContent from '../components/listContent/ListContent';
-import PaginationButton from '../components/paginationButton/PaginationButton';
-import PagingSizes from '../../api/values/PagingSizes';
-import { createSearchParams, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import Error404 from './errorViews/error404';
-import MediaService from '../../services/MediaService';
-import pagingSizes from '../../api/values/PagingSizes';
-import { useTranslation } from 'react-i18next';
+import React, { useEffect, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
-import useErrorStatus from '../../hooks/useErrorStatus';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
+import { createSearchParams, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { MediaOrderBy as OrderBy } from '../../api/values/MediaOrderBy';
+import MediaTypes from '../../api/values/MediaTypes';
+import pagingSizes from '../../api/values/PagingSizes';
+import SortOrder from '../../api/values/SortOrder';
+import useErrorStatus from '../../hooks/useErrorStatus';
+import MediaService from '../../services/MediaService';
+import ListContent from '../components/listContent/ListContent';
+import '../components/mainStyle.css';
+import PaginationButton from '../components/paginationButton/PaginationButton';
 
 function FeaturedLists() {
   const navigate = useNavigate();

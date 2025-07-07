@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import './profileHeader.css';
-import ProfileImage from '../profileImage/ProfileImage';
-import { Button } from 'react-bootstrap';
-import ChangePfpForm from '../forms/changePfpForm/changePfpForm';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import UserRoles from '../../../api/values/UserRoles';
+import ChangePfpForm from '../forms/changePfpForm/changePfpForm';
+import ProfileImage from '../profileImage/ProfileImage';
 import RoleBadge from '../RoleBadge/RoleBadge';
+import './profileHeader.css';
 
 const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser, handleMakeModerator }) => {
   const { t } = useTranslation();
@@ -33,62 +32,98 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser, handleMakeMode
     showModActions && profile.role !== UserRoles.MODERATOR && profile.role !== UserRoles.BANNED;
 
   return (
-    <div className="profile-header">
-      <div className="profile-header-info">
-        <div
-          className="profile-header-avatar"
-          style={{ cursor: 'pointer' }}
-          onClick={handleShowPfpPopup}
-        >
-          <ProfileImage image={profile.imageUrl} />
-        </div>
-        <div>
-          <h1 className="profile-header-username">
-            {profile.username}
-            {profile.hasBadge && <span title={t('tooltips.badgeTooltip')}> 🏆</span>}
-            {showModActions && (
-              <>
-                {profile.role !== UserRoles.MODERATOR ? (
-                  <>
-                    {profile.role === UserRoles.BANNED_NOT_REGISTERED ||
-                    profile.role === UserRoles.BANNED ? (
-                      <Button
-                        variant="success"
-                        size="sm"
-                        className="ms-2"
-                        onClick={handleUnbanUser}
-                      >
-                        {t('profile.unbanUser')}
-                      </Button>
-                    ) : (
-                      <Button variant="danger" size="sm" className="ms-2" onClick={handleBanUser}>
-                        {t('profile.banUser')}
-                      </Button>
-                    )}
-                    {canBeMadeModerator && (
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        className="ms-2"
-                        onClick={handleMakeModerator}
-                      >
-                        {t('profile.makeUserModerator')}
-                      </Button>
-                    )}
-                  </>
-                ) : (
-                  <RoleBadge role={profile.role} size={'50px'}></RoleBadge>
-                )}
-              </>
+    <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div className="flex items-center gap-6">
+          <div
+            className="relative cursor-pointer group"
+            onClick={handleShowPfpPopup}
+          >
+            <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-4 border-white/20 shadow-xl transition-transform duration-200 group-hover:scale-105">
+              <ProfileImage image={profile.imageUrl} />
+            </div>
+            {user?.username === profile.username && (
+              <div className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                <i className="bi bi-camera text-white text-xl"></i>
+              </div>
             )}
-          </h1>
-          <p className="profile-header-email">{profile.email}</p>
+          </div>
+          <div className="text-white">
+            <div className="flex flex-wrap items-center gap-3 mb-2">
+              <h1 className="text-2xl md:text-3xl font-bold">
+                {profile.username}
+              </h1>
+              {profile.hasBadge && (
+                <span 
+                  title={t('tooltips.badgeTooltip')}
+                  className="text-2xl animate-pulse"
+                > 
+                  🏆
+                </span>
+              )}
+              {showModActions && profile.role === UserRoles.MODERATOR && (
+                <RoleBadge role={profile.role} size={'50px'} />
+              )}
+            </div>
+            <p className="text-blue-100 text-sm md:text-base opacity-90">{profile.email}</p>
+            
+            {showModActions && profile.role !== UserRoles.MODERATOR && (
+              <div className="flex flex-wrap gap-2 mt-3">
+                {profile.role === UserRoles.BANNED_NOT_REGISTERED ||
+                profile.role === UserRoles.BANNED ? (
+                  <button
+                    className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm font-medium transition-colors duration-200 flex items-center gap-2"
+                    onClick={handleUnbanUser}
+                  >
+                    <i className="bi bi-check-circle"></i>
+                    {t('profile.unbanUser')}
+                  </button>
+                ) : (
+                  <button
+                    className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition-colors duration-200 flex items-center gap-2"
+                    onClick={handleBanUser}
+                  >
+                    <i className="bi bi-x-circle"></i>
+                    {t('profile.banUser')}
+                  </button>
+                )}
+                {canBeMadeModerator && (
+                  <button
+                    className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg text-sm font-medium transition-colors duration-200 flex items-center gap-2"
+                    onClick={handleMakeModerator}
+                  >
+                    <i className="bi bi-shield-check"></i>
+                    {t('profile.makeUserModerator')}
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-      <div className="profile-header-stats">
-        <span title={t('tooltips.moovieListTooltip')}>📋 {profile.moovieListCount}</span>
-        <span title={t('tooltips.reviewsTooltip')}>⭐ {profile.reviewsCount}</span>
-        <span title={t('tooltips.milkyPointsTooltip')}>🐵 {profile.milkyPoints}</span>
+        
+        <div className="flex flex-wrap gap-4 md:gap-6">
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 text-center border border-white/20">
+            <div className="text-2xl mb-1">📋</div>
+            <div className="text-white font-bold text-lg">{profile.moovieListCount}</div>
+            <div className="text-blue-100 text-xs" title={t('tooltips.moovieListTooltip')}>
+              Lists
+            </div>
+          </div>
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 text-center border border-white/20">
+            <div className="text-2xl mb-1">⭐</div>
+            <div className="text-white font-bold text-lg">{profile.reviewsCount}</div>
+            <div className="text-blue-100 text-xs" title={t('tooltips.reviewsTooltip')}>
+              Reviews
+            </div>
+          </div>
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 text-center border border-white/20">
+            <div className="text-2xl mb-1">🐵</div>
+            <div className="text-white font-bold text-lg">{profile.milkyPoints}</div>
+            <div className="text-blue-100 text-xs" title={t('tooltips.milkyPointsTooltip')}>
+              Points
+            </div>
+          </div>
+        </div>
       </div>
       {showPfpPopup && <ChangePfpForm onCancel={handleClosePfpPopup} />}
     </div>

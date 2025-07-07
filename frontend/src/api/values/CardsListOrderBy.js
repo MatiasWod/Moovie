@@ -3,4 +3,9 @@ const CardsListOrderBy = {
   LIKE_COUNT: 'likeCount',
 };
 
-export default CardsListOrderBy;
+const CardsListOrderByLabels = {
+  [CardsListOrderBy.MOOVIE_LIST_ID]: 'orderBy.moovieListId',
+  [CardsListOrderBy.LIKE_COUNT]: 'orderBy.likeCount',
+};
+
+export { CardsListOrderBy, CardsListOrderByLabels };

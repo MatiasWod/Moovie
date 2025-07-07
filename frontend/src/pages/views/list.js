@@ -7,7 +7,7 @@ import api from '../../api/api';
 import ListApi from '../../api/ListApi';
 import moovieListReviewApi from '../../api/MoovieListReviewApi';
 import reportApi from '../../api/ReportApi';
-import OrderBy from '../../api/values/MediaOrderBy';
+import { MediaOrderBy as OrderBy } from '../../api/values/MediaOrderBy';
 import pagingSizes from '../../api/values/PagingSizes';
 import SortOrder from '../../api/values/SortOrder';
 import useErrorStatus from '../../hooks/useErrorStatus';
@@ -128,18 +128,19 @@ function List() {
       // Go through all the media in the paginated list content. Promise.all the WW status of each media.
       try {
         // Get all media content
+        let aux = listContent;
         const allMedia = new Set();
 
-        listContent.data.forEach((media) => {
+        aux.data.forEach((media) => {
           allMedia.add(media);
         });
 
-        while (listContent.links.next) {
-          const nextPage = await api.get(listContent.links.next);
+        while (aux.links.next) {
+          const nextPage = await api.get(aux.links.next);
           nextPage.data.forEach((media) => {
             allMedia.add(media);
           });
-          listContent = nextPage.data;
+          aux = nextPage.data;
         }
 
         // Get status

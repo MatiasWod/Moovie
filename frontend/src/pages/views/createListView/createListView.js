@@ -1,14 +1,12 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import mediaTypes from '../../../api/values/MediaTypes';
-import mediaOrderBy from '../../../api/values/MediaOrderBy';
-import SortOrder from '../../../api/values/SortOrder';
-import { Spinner } from 'react-bootstrap';
-import FiltersGroup from '../../components/filters/filtersGroup/filtersGroup';
-import MediaCard from '../../components/media/mediaCard/mediaCard';
 import { Pagination } from '@mui/material';
-import CreateListForm from '../../components/forms/createListForm/CreateListForm';
+import { useMemo, useState } from 'react';
+import { Spinner } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
+import { MediaOrderBy as mediaOrderBy } from '../../../api/values/MediaOrderBy';
+import mediaTypes from '../../../api/values/MediaTypes';
+import MoovieListTypes from '../../../api/values/MoovieListTypes';
+import SortOrder from '../../../api/values/SortOrder';
 import {
   resetList,
   setDescription,
@@ -16,9 +14,11 @@ import {
   setName,
   toggleMediaSelection,
 } from '../../../features/createListSlice';
-import ListService from '../../../services/ListService';
 import useMediaList from '../../../hooks/useMediasList';
-import MoovieListTypes from '../../../api/values/MoovieListTypes';
+import ListService from '../../../services/ListService';
+import FiltersGroup from '../../components/filters/filtersGroup/filtersGroup';
+import CreateListForm from '../../components/forms/createListForm/CreateListForm';
+import MediaCard from '../../components/media/mediaCard/mediaCard';
 
 const CreateListView = () => {
   const { t } = useTranslation(); // Initialize translation

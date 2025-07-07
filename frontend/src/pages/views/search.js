@@ -1,26 +1,25 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { createSearchParams, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import SortOrder from '../../api/values/SortOrder';
-import mediaOrderBy from '../../api/values/MediaOrderBy';
-import MediaTypes from '../../api/values/MediaTypes';
-import MediaCard from '../components/mediaCard/MediaCard';
-import MediaService from '../../services/MediaService';
-import pagingSizes from '../../api/values/PagingSizes';
-import PaginationButton from '../components/paginationButton/PaginationButton';
-import ListService from '../../services/ListService';
-import cardsListOrderBy from '../../api/values/CardsListOrderBy';
-import sortOrder from '../../api/values/SortOrder';
-import ListCard from '../components/listCard/ListCard';
-import CastService from '../../services/CastService';
-import ActorCard from '../components/actorCards/ActorCard';
-import MediaOrderBy from '../../api/values/MediaOrderBy';
-import CardsListOrderBy from '../../api/values/CardsListOrderBy';
+import { Divider } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Spinner } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { Divider, Pagination } from '@mui/material';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import MediaTypes from '../../api/values/MediaTypes';
+import pagingSizes from '../../api/values/PagingSizes';
+import { default as SortOrder, default as sortOrder } from '../../api/values/SortOrder';
+import CastService from '../../services/CastService';
+import ListService from '../../services/ListService';
+import MediaService from '../../services/MediaService';
+import UserService from '../../services/UserService';
+import ActorCard from '../components/actorCards/ActorCard';
+import ListCard from '../components/listCard/ListCard';
+import MediaCard from '../components/mediaCard/MediaCard';
+import PaginationButton from '../components/paginationButton/PaginationButton';
 import './discover.css';
 import './search.css';
-import { Spinner } from 'react-bootstrap';
-import UserService from '../../services/UserService';
+
+import { CardsListOrderBy as cardsListOrderBy } from '../../api/values/CardsListOrderBy';
+import { MediaOrderBy as mediaOrderBy } from '../../api/values/MediaOrderBy';
+
 
 function Healthcheck() {
   const { t } = useTranslation();
