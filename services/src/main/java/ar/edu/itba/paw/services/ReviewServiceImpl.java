@@ -144,7 +144,7 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Transactional
     @Override
-    public void createReview(int mediaId, int rating, String reviewContent, ReviewTypes type) {
+    public int createReview(int mediaId, int rating, String reviewContent, ReviewTypes type) {
         User user = userService.getInfoOfMyUser();
 
         if (type.getType() == ReviewTypes.REVIEW_MEDIA.getType() && (rating < 1 || rating > 5)) {
@@ -156,9 +156,9 @@ public class ReviewServiceImpl implements ReviewService{
         else if (type.getType() == ReviewTypes.REVIEW_MOOVIE_LIST.getType() && reviewDao.getMoovieListReviewByListIdAndUsername(mediaId, user.getUserId()) != null)
             throw new ReviewAlreadyCreatedException("Review already created in list with id: " + mediaId);
 
-        reviewDao.createReview(user, mediaId, rating, reviewContent,type);
+        int createdId = reviewDao.createReview(user, mediaId, rating, reviewContent,type);
         LOGGER.info("Succesfully created review in media: {}, user: {}.", mediaId , userService.getInfoOfMyUser().getUserId());
-
+        return createdId;
     }
 
     @Transactional

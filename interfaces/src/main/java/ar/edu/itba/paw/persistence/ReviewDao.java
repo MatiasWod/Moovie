@@ -20,7 +20,7 @@ public interface ReviewDao {
     List<MoovieListReview> getMoovieListReviewsFromUser(int currentUserId, int userId, int size, int pageNumber);
     int getMoovieListReviewsFromUserCount(int userId);
 
-    void createReview(User user, int mediaId, int rating, String reviewContent, ReviewTypes type);
+    int createReview(User user, int mediaId, int rating, String reviewContent, ReviewTypes type);
 
     boolean editReview(int userId, int mediaId, int rating, String reviewContent, ReviewTypes type);
     void deleteReview(int reviewId, ReviewTypes type);

@@ -173,14 +173,18 @@ public class ReviewController {
     @Consumes(VndType.APPLICATION_REVIEW_FORM)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createReview(@Valid final ReviewCreateDto reviewDto) {
-        reviewService.createReview(
+        int reviewId = reviewService.createReview(
                 reviewDto.getMediaId(),
                 reviewDto.getRating(),
                 reviewDto.getReviewContent(),
                 ReviewTypes.REVIEW_MEDIA);
 
-        return Response.status(Response.Status.CREATED)
-                .entity("Review successfully created to the media with ID: " + reviewDto.getMediaId())
+        return Response.created(
+                        uriInfo.getBaseUriBuilder()
+                                .path("reviews")
+                                .path(String.valueOf(reviewId))
+                                .build()
+                )
                 .build();
     }
 
@@ -236,9 +240,15 @@ public class ReviewController {
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response createReviewLike(@PathParam("id") int id) {
+        String username = userService.getInfoOfMyUser().getUsername();
         boolean liked = reviewService.likeReview(id, ReviewTypes.REVIEW_MEDIA);
         if (liked)
-            return Response.ok("{\"message\":\"Successfully liked list.\"}").build();
+            return Response.created(uriInfo.getBaseUriBuilder()
+                    .path("reviews")
+                    .path(String.valueOf(id))
+                    .path("likes")
+                    .path(username)
+                    .build()).build();
         return Response.status(Response.Status.CONFLICT)
                 .entity("{\"message\":\"List is already liked.\"}").build();
     }

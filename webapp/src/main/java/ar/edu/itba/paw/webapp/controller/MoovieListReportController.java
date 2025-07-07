@@ -109,7 +109,13 @@ public class MoovieListReportController {
                     reportDto.getResourceId(),
                     currentUser.getUserId(),
                     reportDto.getType());
-            return Response.ok(MoovieListReportDto.fromMoovieListReport(response, uriInfo)).build();
+
+            return Response.created(uriInfo
+                    .getBaseUriBuilder()
+                    .path("listReports")
+                    .path(String.valueOf(response.getReportId()))
+                    .build())
+                .build();
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage(), e);
         }

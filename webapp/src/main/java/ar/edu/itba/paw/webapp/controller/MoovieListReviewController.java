@@ -188,15 +188,17 @@ public class MoovieListReviewController {
         try {
             moovieListService.getMoovieListById(moovieListReviewDto.getListId());
 
-            reviewService.createReview(
+            int reviewId = reviewService.createReview(
                     moovieListReviewDto.getListId(),
                     0,
                     moovieListReviewDto.getReviewContent(),
                     ReviewTypes.REVIEW_MOOVIE_LIST);
 
-            return Response.status(Response.Status.CREATED)
-                    .entity("MoovieList review successfully created to the list with ID: "
-                            + moovieListReviewDto.getListId())
+            return Response.created(uriInfo
+                            .getBaseUriBuilder()
+                            .path("moovieListReviews")
+                            .path(String.valueOf(reviewId))
+                            .build())
                     .build();
         } catch (ForbiddenException e) {
             return Response.status(Response.Status.FORBIDDEN)
@@ -293,9 +295,18 @@ public class MoovieListReviewController {
     @Consumes({VndType.APPLICATION_MOOVIELIST_REVIEW_LIKE})
     @Produces(MediaType.APPLICATION_JSON)
     public Response createReviewLike(@PathParam("id") int id) {
+        String currentUser = userService.getInfoOfMyUser().getUsername();
         boolean liked = reviewService.likeReview(id, ReviewTypes.REVIEW_MOOVIE_LIST);
         if (liked)
-            return Response.ok("{\"message\":\"Successfully liked list.\"}").build();
+            return Response.created(
+                    uriInfo
+                            .getBaseUriBuilder()
+                            .path("moovieListReviews")
+                            .path(String.valueOf(id))
+                            .path("likes")
+                            .path(currentUser)
+                            .build()
+            ).build();
         return Response.status(Response.Status.CONFLICT)
                 .entity("{\"message\":\"List is already liked.\"}").build();
     }

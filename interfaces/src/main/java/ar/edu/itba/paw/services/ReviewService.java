@@ -23,7 +23,7 @@ public interface ReviewService {
 
 
     //The following work for both MoovieListsReviews and Reviews
-    void createReview(int mediaId, int rating, String reviewContent, ReviewTypes type);
+    int createReview(int mediaId, int rating, String reviewContent, ReviewTypes type);
 
     boolean editReview(int mediaId, int rating, String reviewContent, ReviewTypes type);
     void deleteReview(int reviewId, ReviewTypes type);
