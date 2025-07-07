@@ -271,15 +271,19 @@ public class CommentController {
     }
 
     @PUT
-    @Path("/{id}/feedback")
+    @Path("/{id}/feedback/{username}")
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response changeFeedback(@PathParam("id") int id,
+                                   @PathParam("username") String username,
                                    @Valid @NotNull final CommentFeedbackDto commentFeedbackDto) {
         Comment comment = commentService.getCommentById(id);
         CommentFeedbackType commentFeedbackType = commentFeedbackDto.transformToEnum();
         int uid = userService.getInfoOfMyUser().getUserId();
-        String username = userService.getInfoOfMyUser().getUsername();
+        String currentUsername = userService.getInfoOfMyUser().getUsername();
+        if(!Objects.equals(username, currentUsername)){
+            throw new ForbiddenException("You are not allowed to modify this comment feedback.");
+        }
         boolean existed = false;
         if (commentService.userHasLiked(id, uid) || commentService.userHasDisliked(id, uid) ) {
             existed = true; // If resource already existed then 200 if not (we create and) 201.

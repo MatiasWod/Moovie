@@ -47,8 +47,6 @@ public class TvCreatorsController {
                 pageSizeQuery = PagingSizes.TV_CREATOR_DEFAULT_PAGE_SIZE.getSize();
             }
 
-//            TODO: If yes: then both are missing a proper method to get the Total-Count for the paginated responses.
-
             if (search != null && !search.isEmpty()) {
                 // Lógica para obtener creadores de TV por consulta de búsqueda
                 List<TVCreators> tvCreatorsList = tvCreatorsService.getTVCreatorsForQuery(search, pageNumber, pageSizeQuery);
