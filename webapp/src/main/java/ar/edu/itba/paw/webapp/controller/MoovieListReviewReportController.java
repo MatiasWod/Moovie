@@ -107,7 +107,10 @@ public class MoovieListReviewReportController {
                     reportDto.getResourceId(),
                     currentUser.getUserId(),
                     reportDto.getType());
-            return Response.ok(MoovieListReviewReportDto.fromMoovieListReviewReport(response, uriInfo)).build();
+            return Response.created(uriInfo.getBaseUriBuilder()
+                    .path("moovieListReviewReports")
+                    .path(String.valueOf(response))
+                    .build()).build();
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage(), e);
         }

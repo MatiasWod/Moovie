@@ -184,11 +184,16 @@ public class CommentController {
     @Consumes({ VndType.APPLICATION_COMMENT_FORM })
     public Response createComment(@Valid @NotNull final CommentCreateDto commentDto) {
         try {
-            commentService.createComment(
+            int createdID = commentService.createComment(
                     commentDto.getReviewId(),
                     commentDto.getCommentContent());
-            return Response.status(Response.Status.CREATED)
-                    .entity("Comment successfully created to review with id:" + commentDto.getReviewId())
+
+            final URI uri = uriInfo.getBaseUriBuilder()
+                    .path("comments")
+                    .path(String.valueOf(createdID))
+                    .build();
+
+            return Response.created(uri)
                     .build();
         } catch (UserNotLoggedException e) {
             return Response.status(Response.Status.UNAUTHORIZED)

@@ -26,12 +26,13 @@ public class ImageHibernateDaoImpl implements ImageDao {
     }
 
     @Override
-    public void setUserImage(int userId, byte[] imageBytes) {
+    public int setUserImage(int userId, byte[] imageBytes) {
         Optional<Image> existingImage = getImageByUserId(userId);
         existingImage.ifPresent(image -> entityManager.remove(image));
         int imageId = Objects.hash(userId, LocalDateTime.now());
         final Image toInsertImage = new Image(userId, imageId, imageBytes);
         entityManager.persist(toInsertImage);
+        return toInsertImage.getImageId();
     }
 
     @Override

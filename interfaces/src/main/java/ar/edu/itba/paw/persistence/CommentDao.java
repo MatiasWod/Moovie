@@ -23,7 +23,7 @@ public interface CommentDao {
     void dislikeComment(int commentId, int userId);
     void removeDislikeComment(int commentId, int userId);
 
-    void createComment(int reviewId, String content, User user);
+    int createComment(int reviewId, String content, User user);
 
     void deleteComment(int commentId);
 

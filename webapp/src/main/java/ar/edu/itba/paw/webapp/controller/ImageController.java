@@ -20,6 +20,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.net.URI;
 import java.util.Optional;
 
 @Path("images")
@@ -71,9 +72,13 @@ public class ImageController {
                                        @Size(max = MAX_IMAGE_SIZE) @FormDataParam("image") byte[] imageBytes) {
         try {
             final int userId = userService.tryToGetCurrentUserId();
-            imageService.setUserImage(userId, imageBytes, image.getMediaType().getSubtype());
+            int imageId = imageService.setUserImage(userId, imageBytes, image.getMediaType().getSubtype());
             LOGGER.info("Method: setProfileImage, Path: /images/{id}");
-            return Response.ok().build();
+            final URI uri = uriInfo.getBaseUriBuilder()
+                    .path("images")
+                    .path(String.valueOf(imageId))
+                    .build();
+            return Response.created(uri).build();
         } catch (UnableToFindUserException e) {
             LOGGER.error("Error updating profile image: {}", e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();

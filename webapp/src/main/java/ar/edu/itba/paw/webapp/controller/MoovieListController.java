@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -189,9 +190,14 @@ public class MoovieListController {
                     moovieListType.getType(),
                     listDto.getDescription()).getMoovieListId();
 
-            final MoovieListCard list = moovieListService.getMoovieListCardById(listId);
-            final Supplier<MoovieListDto> dtoSupplier = () -> MoovieListDto.fromMoovieList(list, uriInfo);
-            return ResponseUtils.setConditionalCacheHash(request, dtoSupplier, list.hashCode());
+
+            final URI uri = uriInfo.getBaseUriBuilder()
+                    .path("lists")
+                    .path(String.valueOf(listId))
+                    .build();
+
+            return Response.created(uri).build();
+
         } catch (UnableToInsertIntoDatabase | DuplicateKeyException e) {
             return Response.status(Response.Status.CONFLICT)
                     .entity("A movie list with the same name already exists.")
@@ -278,9 +284,16 @@ public class MoovieListController {
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response createMoovieListLike(@PathParam("id") int id) {
+        String username = userService.getInfoOfMyUser().getUsername();
         boolean liked = moovieListService.likeMoovieList(id);
         if (liked)
-            return Response.ok("{\"message\":\"Successfully liked list.\"}").build();
+            return Response.created(uriInfo.getBaseUriBuilder()
+                    .path("lists")
+                    .path(String.valueOf(id))
+                    .path("likes")
+                    .path(username)
+                    .build()
+                ).build();
         return Response.status(Response.Status.BAD_REQUEST)
                 .entity("{\"message\":\"List is already liked.\"}").build();
     }
@@ -361,9 +374,17 @@ public class MoovieListController {
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response followMoovieList(@PathParam("id") int id) {
+        String username = userService.getInfoOfMyUser().getUsername();
         boolean followed = moovieListService.followMoovieList(id);
         if (followed)
-            return Response.ok("{\"message\":\"Successfully followed list.\"}").build();
+            return Response.created(
+                uriInfo.getBaseUriBuilder()
+                .path("lists")
+                .path(String.valueOf(id))
+                .path("followers")
+                .path(username)
+                .build()
+        ).build();
         return Response.status(Response.Status.CONFLICT)
                 .entity("{\"message\":\"List is already followed.\"}").build();
     }
@@ -494,7 +515,12 @@ public class MoovieListController {
                         .entity(new ResponseMessage("No media IDs provided."))
                         .build();
             }
-            return Response.ok(updatedList).entity(new ResponseMessage("Media added successfully to the list."))
+            return Response.created(
+                    uriInfo.getBaseUriBuilder()
+                        .path("lists")
+                        .path(String.valueOf(id))
+                        .path("content")
+                        .build())
                     .build();
         } catch (InvalidAccessToResourceException e) {
             return Response.status(Response.Status.FORBIDDEN)

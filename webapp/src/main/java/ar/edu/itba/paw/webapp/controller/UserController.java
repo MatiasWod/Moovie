@@ -127,8 +127,12 @@ public class UserController {
             userService.createUser(userCreateDto.getUsername(), userCreateDto.getEmail(), userCreateDto.getPassword());
             final User user = userService.findUserByUsername(userCreateDto.getUsername());
             return Response
-                    .created(uriInfo.getBaseUriBuilder().path("users").path(user.getUsername()).build())
-                    .entity(UserDto.fromUser(user, uriInfo)).build();
+                    .created(uriInfo
+                            .getBaseUriBuilder()
+                            .path("users")
+                            .path(user.getUsername())
+                            .build())
+                    .build();
         } catch (UnableToCreateUserException e) {
             LOGGER.info("User already exists. Returning CONFLICT.");
             return Response.status(Response.Status.CONFLICT).entity("User already exists").build();
