@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import PagingSizes from '../../api/values/PagingSizes';
-import '../components/mainStyle.css';
-import './milkyLeaderboard.css';
-import ProfileImage from '../components/profileImage/ProfileImage';
-import logo from '../../images/logo.png';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Spinner } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { FaInfoCircle } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import api from '../../api/api';
+import PagingSizes from '../../api/values/PagingSizes';
 import userService from '../../services/UserService';
+import { parsePaginatedResponse } from '../../utils/ResponseUtils';
+import '../components/mainStyle.css';
+import ProfileImage from '../components/profileImage/ProfileImage';
+import './milkyLeaderboard.css';
 
 function MilkyLeaderboard() {
   const [milkyLeaderboard, setMilkyLeaderboard] = useState([]);
@@ -78,11 +79,27 @@ function MilkyLeaderboard() {
 export default MilkyLeaderboard;
 
 function MilkyLeaderboardProfile({ profile }) {
+  const [reviewsCount, setReviewsCount] = useState(0);
+  const [moovieListCount, setMoovieListCount] = useState(0);
   const navigate = useNavigate();
 
   const handleUsernameClick = (username) => {
     navigate(`/profile/${username}`);
   };
+
+  useEffect(() => {
+    const fetchReviewsCount = async () => {
+      const response = await api.get(profile.reviewsUrl);
+      const res = parsePaginatedResponse(response);
+      setReviewsCount(res.totalElements);
+    };
+    const fetchMoovieListCount = async () => {
+      const response = await api.get(profile.moovieListsUrl);
+      const res = parsePaginatedResponse(response);
+      setMoovieListCount(res.totalElements);
+    };
+    Promise.all([fetchReviewsCount(), fetchMoovieListCount()]);
+  }, [profile.reviewsUrl, profile.moovieListsUrl]);
 
   return (
     <tr className="milky-leaderboard-profile">
@@ -101,8 +118,8 @@ function MilkyLeaderboardProfile({ profile }) {
       >
         {profile.username}
       </td>
-      <td className="col">{profile.moovieListCount}</td>
-      <td className="col">{profile.reviewsCount}</td>
+      <td className="col">{moovieListCount}</td>
+      <td className="col">{reviewsCount}</td>
       <td className="col">{profile.milkyPoints}</td>
     </tr>
   );

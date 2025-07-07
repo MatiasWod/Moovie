@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import api from '../../../api/api';
 import UserRoles from '../../../api/values/UserRoles';
+import { parsePaginatedResponse } from '../../../utils/ResponseUtils';
 import ChangePfpForm from '../forms/changePfpForm/changePfpForm';
 import ProfileImage from '../profileImage/ProfileImage';
 import RoleBadge from '../RoleBadge/RoleBadge';
@@ -13,6 +15,8 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser, handleMakeMode
   const [showPfpPopup, setShowPfpPopup] = useState(false);
   const navigate = useNavigate();
   const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const [reviewsCount, setReviewsCount] = useState(0);
+  const [moovieListCount, setMoovieListCount] = useState(0);
 
   const handleShowPfpPopup = () => {
     if (!isLoggedIn) {
@@ -22,6 +26,20 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser, handleMakeMode
       setShowPfpPopup(true);
     }
   };
+
+  useEffect(() => {
+    const fetchReviewsCount = async () => {
+      const response = await api.get(profile.reviewsUrl);
+      const res = parsePaginatedResponse(response);
+      setReviewsCount(res.totalElements);
+    };
+    const fetchMoovieListCount = async () => {
+      const response = await api.get(profile.moovieListsUrl);
+      const res = parsePaginatedResponse(response);
+      setMoovieListCount(res.totalElements);
+    };
+    Promise.all([fetchReviewsCount(), fetchMoovieListCount()]);
+  }, [profile.reviewsUrl, profile.moovieListsUrl]);
 
   const handleClosePfpPopup = () => setShowPfpPopup(false);
 
@@ -104,14 +122,14 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser, handleMakeMode
         <div className="flex flex-wrap gap-4 md:gap-6">
           <div className="bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 text-center border border-white/20">
             <div className="text-2xl mb-1">📋</div>
-            <div className="text-white font-bold text-lg">{profile.moovieListCount}</div>
+            <div className="text-white font-bold text-lg">{moovieListCount}</div>
             <div className="text-blue-100 text-xs" title={t('tooltips.moovieListTooltip')}>
               Lists
             </div>
           </div>
           <div className="bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 text-center border border-white/20">
             <div className="text-2xl mb-1">⭐</div>
-            <div className="text-white font-bold text-lg">{profile.reviewsCount}</div>
+            <div className="text-white font-bold text-lg">{reviewsCount}</div>
             <div className="text-blue-100 text-xs" title={t('tooltips.reviewsTooltip')}>
               Reviews
             </div>
