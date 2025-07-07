@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import './profileImage.css';
-import defaultProfilePicture from '../../../images/defaultProfilePicture.png';
 import userApi from '../../../api/UserApi';
+import defaultProfilePicture from '../../../images/defaultProfilePicture.png';
+import './profileImage.css';
 
-const ProfileImage = ({ image, userUrl, size, onClick }) => {
+const ProfileImage = ({ image, userUrl, size, onClick, noBorder }) => {
   const [imageSrc, setImageSrc] = useState(image || defaultProfilePicture);
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const ProfileImage = ({ image, userUrl, size, onClick }) => {
   return (
     <img
       id="profile-image"
-      className="profileImage"
+      className={`profileImage${noBorder ? ' no-border' : ''}`}
       style={{ height: size, width: size, cursor: 'pointer' }}
       src={imageSrc + '?size=100'}
       alt="Profile"
