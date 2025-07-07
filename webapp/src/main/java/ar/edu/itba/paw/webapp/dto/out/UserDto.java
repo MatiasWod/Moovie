@@ -138,7 +138,7 @@ public class UserDto {
     public void setRole(int role) {
         this.role = role;
     }
-    
+
 
     public int getMilkyPoints() {
         return milkyPoints;
