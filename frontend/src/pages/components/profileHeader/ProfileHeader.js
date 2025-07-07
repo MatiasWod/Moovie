@@ -19,8 +19,9 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser, handleMakeMode
   const [moovieListCount, setMoovieListCount] = useState(0);
 
   const handleShowPfpPopup = () => {
-    if (!isLoggedIn) {
+    if (!isLoggedIn || !user  ) {
       navigate('/login');
+      return;
     }
     if (user.username === profile.username) {
       setShowPfpPopup(true);
