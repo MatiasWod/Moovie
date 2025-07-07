@@ -1,31 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import ProfileHeader from '../components/profileHeader/ProfileHeader';
-import ProfileTabNavigation from '../components/profileTabNavigation/profileTabNavigation';
-import Reviews from '../components/ReviewsSection/Reviews';
-import ProfileTabMediaLists from '../components/profileTab/ProfileTabMediaLists';
-import ProfileTabMoovieLists from '../components/profileTab/ProfileTabMoovieLists';
-import userApi from '../../api/UserApi';
-import ConfirmationModal from '../components/forms/confirmationForm/confirmationModal';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import userApi from '../../api/UserApi';
 import useErrorStatus from '../../hooks/useErrorStatus';
 import userService from '../../services/UserService';
+import ConfirmationModal from '../components/forms/confirmationForm/confirmationModal';
+import ProfileHeader from '../components/profileHeader/ProfileHeader';
+import ProfileTabMediaLists from '../components/profileTab/ProfileTabMediaLists';
+import ProfileTabMoovieLists from '../components/profileTab/ProfileTabMoovieLists';
+import ProfileTabNavigation from '../components/profileTabNavigation/profileTabNavigation';
+import Reviews from '../components/ReviewsSection/Reviews';
 
-function ProfileTab({ selectedTab, profile }) {
+function ProfileTab({ selectedTab, profile, isMe }) {
   switch (selectedTab.toLowerCase()) {
     case 'watched':
-      return <ProfileTabMediaLists user={profile} search="watched" />;
+      return <ProfileTabMediaLists user={profile} search="watched" isMe={isMe} />;
     case 'watchlist':
-      return <ProfileTabMediaLists user={profile} search="watchlist" />;
+      return <ProfileTabMediaLists user={profile} search="watchlist" isMe={isMe} />;
     case 'public-lists':
-      return <ProfileTabMoovieLists user={profile} search="public-lists" />;
+      return <ProfileTabMoovieLists user={profile} search="public-lists" isMe={isMe} />;
     case 'private-lists':
-      return <ProfileTabMoovieLists user={profile} search="private-lists" />;
+      return <ProfileTabMoovieLists user={profile} search="private-lists" isMe={isMe} />;
     case 'liked-lists':
-      return <ProfileTabMoovieLists user={profile} search="liked-lists" />;
+      return <ProfileTabMoovieLists user={profile} search="liked-lists" isMe={isMe} />;
     case 'followed-lists':
-      return <ProfileTabMoovieLists user={profile} search="followed-lists" />;
+      return <ProfileTabMoovieLists user={profile} search="followed-lists" isMe={isMe} />;
     case 'reviews':
       return <Reviews username={profile?.username} reviewsUrl={profile?.reviewsUrl} source="user" />;
     default:
@@ -136,24 +136,26 @@ function Profile() {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="bg-white shadow rounded-lg">
-        <ProfileHeader
-          profile={profile}
-          handleBanUser={handleBanUser}
-          handleUnbanUser={handleUnbanUser}
-          handleMakeModerator={handleMakeModerator}
-        />
-        <div className="border-t">
-          <ProfileTabNavigation
-            selectedTab={selectedTab}
-            onTabSelect={handleTabSelect}
-            isLoggedIn={isLoggedIn}
-            isMe={isMe}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-white shadow-xl rounded-2xl overflow-hidden">
+          <ProfileHeader
+            profile={profile}
+            handleBanUser={handleBanUser}
+            handleUnbanUser={handleUnbanUser}
+            handleMakeModerator={handleMakeModerator}
           />
-        </div>
-        <div className="p-4">
-          <ProfileTab selectedTab={selectedTab} profile={profile} />
+          <div className="p-8">
+            <ProfileTabNavigation
+              selectedTab={selectedTab}
+              onTabSelect={handleTabSelect}
+              isLoggedIn={isLoggedIn}
+              isMe={isMe}
+            />
+            <div className="bg-gray-50 rounded-xl p-6 min-h-[400px] mt-6">
+              <ProfileTab selectedTab={selectedTab} profile={profile} isMe={isMe} />
+            </div>
+          </div>
         </div>
       </div>
 

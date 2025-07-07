@@ -1,18 +1,43 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { Divider } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import api from '../../api/api';
 import mediaApi from '../../api/MediaApi'; // Adjust the path if needed
-import CardsHorizontalContainer from '../components/cardsHorizontalContainer/CardsHorizontalContainer';
+import { MediaOrderBy as OrderBy } from '../../api/values/MediaOrderBy';
 import MediaTypes from '../../api/values/MediaTypes';
-import OrderBy from '../../api/values/MediaOrderBy';
 import SortOrder from '../../api/values/SortOrder';
+import CardsHorizontalContainer from '../components/cardsHorizontalContainer/CardsHorizontalContainer';
 import '../components/mainStyle.css';
 import './home.css';
-import Button from 'react-bootstrap/Button';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { Divider } from '@mui/material';
 
 function Home() {
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
+  const [watchedUrl, setWatchedUrl] = useState('loading');
+  const [watchlistUrl, setWatchlistUrl] = useState('loading');
+
+  useEffect(() => {
+    if (!user.defaultPrivateMoovieListsUrl) return;
+    const fetchUrls = async () => {
+      const [watchedRes, watchlistRes] = await Promise.all([
+        api.get(user.defaultPrivateMoovieListsUrl, {
+          params: {
+            search: 'Watched',
+          },
+        }).then((res) => res.data?.[0]?.url),
+        api.get(user.defaultPrivateMoovieListsUrl, {
+          params: {
+            search: 'Watchlist',
+          },
+        }).then((res) => res.data?.[0]?.url),
+      ]);
+      setWatchedUrl(watchedRes);
+      setWatchlistUrl(watchlistRes);
+    };
+    fetchUrls();
+  }, [user.defaultPrivateMoovieListsUrl]);
 
   //GET VALUES FOT Top Rated Movies
   const [topRatedMovies, setTopRatedMovies] = useState([]);
@@ -166,6 +191,8 @@ function Home() {
             mediaList={topRatedMovies}
             loading={topRatedMoviesLoading}
             error={topRatedMoviesError}
+            watchedUrl={watchedUrl}
+            watchlistUrl={watchlistUrl}
           />
         </div>
       </div>
@@ -195,6 +222,8 @@ function Home() {
             mediaList={mostPopularMovies}
             loading={mostPopularMoviesLoading}
             error={mostPopularMoviesError}
+            watchedUrl={watchedUrl}
+            watchlistUrl={watchlistUrl}
           />
         </div>
       </div>
@@ -224,6 +253,8 @@ function Home() {
             mediaList={topRatedSeries}
             loading={topRatedSeriesLoading}
             error={topRatedSeriesError}
+            watchedUrl={watchedUrl}
+            watchlistUrl={watchlistUrl}
           />
         </div>
       </div>
@@ -253,6 +284,8 @@ function Home() {
             mediaList={mostPopularSeries}
             loading={mostPopularSeriesLoading}
             error={mostPopularSeriesError}
+            watchedUrl={watchedUrl}
+            watchlistUrl={watchlistUrl}
           />
         </div>
       </div>

@@ -7,12 +7,11 @@ import api from '../../api/api';
 import ListApi from '../../api/ListApi';
 import moovieListReviewApi from '../../api/MoovieListReviewApi';
 import reportApi from '../../api/ReportApi';
-import OrderBy from '../../api/values/MediaOrderBy';
+import { MediaOrderBy as OrderBy } from '../../api/values/MediaOrderBy';
 import pagingSizes from '../../api/values/PagingSizes';
 import SortOrder from '../../api/values/SortOrder';
 import useErrorStatus from '../../hooks/useErrorStatus';
 import { default as ListService } from '../../services/ListService';
-import UserService from '../../services/UserService';
 import ConfirmationModal from '../components/forms/confirmationForm/confirmationModal';
 import ReportForm from '../components/forms/reportForm/reportForm';
 import ListCard from '../components/listCard/ListCard';
@@ -128,27 +127,39 @@ function List() {
       // Go through all the media in the paginated list content. Promise.all the WW status of each media.
       try {
         // Get all media content
+        let aux = listContent;
         const allMedia = new Set();
 
-        listContent.data.forEach((media) => {
+        aux.data.forEach((media) => {
           allMedia.add(media);
         });
 
-        while (listContent.links.next) {
-          const nextPage = await api.get(listContent.links.next);
+        while (aux.links.next) {
+          const nextPage = await api.get(aux.links.next);
           nextPage.data.forEach((media) => {
             allMedia.add(media);
           });
-          listContent = nextPage.data;
+          aux = nextPage.data;
         }
+
+        const watchedUrl = await api.get(user.defaultPrivateMoovieListsUrl, {
+          params: {
+            search: 'Watched',
+          },
+        }).then((res) => res.data?.[0]?.url);
 
         // Get status
         const allWW = await Promise.all(Array.from(allMedia).map(async (media) => {
-          const WW = await UserService.currentUserWWStatus(
-            media.id,
-            user.defaultPrivateMoovieListsUrl
-          );
-          return WW;
+          try{
+            const resp = await api.get(watchedUrl + '/content/' + media.id);
+            if (resp.status === 200) {
+              return { watched: true };
+            } else {
+              return { watched: false };
+            }
+          } catch (e) {
+            return { watched: false };
+          }
         }));
         setWatchedCount(allWW.filter((ww) => ww.watched).length);
       } catch (e) {
@@ -156,7 +167,7 @@ function List() {
       }
     }
     getWatchedCount();
-  }, [listContent]);
+  }, [listContent, flag]);
 
   const [listRecommendations, setListRecommendations] = useState(undefined);
   const [listRecommendationsLoading, setlistRecommendationsLoading] = useState(true);

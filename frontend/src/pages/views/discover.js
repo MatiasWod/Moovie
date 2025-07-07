@@ -1,19 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import './discover.css';
-import MediaCard from '../components/mediaCard/MediaCard';
-import MediaService from '../../services/MediaService';
-import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom';
-import pagingSizes from '../../api/values/PagingSizes';
-import ProviderService from '../../services/ProviderService';
-import GenreService from '../../services/GenreService';
-import { useTranslation } from 'react-i18next';
-import { Spinner } from 'react-bootstrap';
-import FiltersGroup from '../components/filters/filtersGroup/filtersGroup';
 import { Pagination } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Spinner } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { MediaOrderBy as mediaOrderBy } from '../../api/values/MediaOrderBy';
 import mediaTypes from '../../api/values/MediaTypes';
-import mediaOrderBy from '../../api/values/MediaOrderBy';
+import pagingSizes from '../../api/values/PagingSizes';
 import SortOrder from '../../api/values/SortOrder';
-import { useLocation } from 'react-router-dom';
+import MediaService from '../../services/MediaService';
+import FiltersGroup from '../components/filters/filtersGroup/filtersGroup';
+import MediaCard from '../components/mediaCard/MediaCard';
+import './discover.css';
 
 const Discover = () => {
   const { t } = useTranslation();

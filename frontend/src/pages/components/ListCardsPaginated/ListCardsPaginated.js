@@ -1,11 +1,11 @@
 // src/components/listContentPaginated/ListContentPaginated.js
 
 import React from 'react';
-import PaginationButton from '../paginationButton/PaginationButton';
-import DropdownMenu from '../dropdownMenu/DropdownMenu';
-import MediaOrderBy from '../../../api/values/MediaOrderBy';
-import ListCard from '../listCard/ListCard';
+import { CardsListOrderBy, CardsListOrderByLabels } from '../../../api/values/CardsListOrderBy';
 import '../../views/browseLists.css';
+import DropdownMenu from '../dropdownMenu/DropdownMenu';
+import ListCard from '../listCard/ListCard';
+import PaginationButton from '../paginationButton/PaginationButton';
 
 const ListCardsPaginated = ({
   mlcList,
@@ -22,8 +22,10 @@ const ListCardsPaginated = ({
       <DropdownMenu
         setOrderBy={setOrderBy}
         setSortOrder={setSortOrder}
-        currentOrderDefault={currentSortOrder}
-        values={Object.values(MediaOrderBy)}
+        currentSortOrder={currentSortOrder}
+        currentOrderBy={currentOrderBy}
+        values={Object.values(CardsListOrderBy)}
+        labels={CardsListOrderByLabels}
       />
 
       <div className="list-card-container">

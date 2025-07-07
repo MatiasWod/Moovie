@@ -1,22 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import commentApi from '../../../api/CommentApi';
-import { useSelector } from 'react-redux';
-import reportApi from '../../../api/ReportApi';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import ReportForm from '../forms/reportForm/reportForm';
-import ConfirmationForm from '../forms/confirmationForm/confirmationForm';
-import reviewService from '../../../services/ReviewService';
-import ConfirmationModal from '../forms/confirmationForm/confirmationModal';
-import userApi from '../../../api/UserApi';
-import CommentStatusEnum from '../../../api/values/CommentStatusEnum';
+import React, { useEffect, useState } from 'react';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import './CommentList.css';
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../../../api/api';
-import { parsePaginatedResponse } from '../../../utils/ResponseUtils';
-import PaginationButton from '../paginationButton/PaginationButton';
-import UserService from '../../../services/UserService';
+import commentApi from '../../../api/CommentApi';
+import reportApi from '../../../api/ReportApi';
 import CommentService from '../../../services/CommentService';
+import ConfirmationModal from '../forms/confirmationForm/confirmationModal';
+import ReportForm from '../forms/reportForm/reportForm';
+import PaginationButton from '../paginationButton/PaginationButton';
+import './CommentList.css';
 
 export default function CommentList({ reviewId, reload, commentsUrl }) {
   const { t } = useTranslation();
@@ -198,19 +192,49 @@ function CommentItem({ comment, isLoggedIn, user, onDelete, reload, onReport }) 
   const [currentDislikeStatus, setCurrentDislikeStatus] = useState(false);
   const [refreshLikeStatus, setRefreshLikeStatus] = useState(false);
 
+  const fetchFeedbackCounts = async () => {
+    const [likeResponse, dislikeResponse] = await Promise.all([
+      api.get(comment.feedbackUrl, {
+        params: {
+          pageSize: 1,
+          type: 'LIKE',
+        },
+      }),
+      api.get(comment.feedbackUrl, {
+        params: {
+          pageSize: 1,
+          type: 'DISLIKE',
+        },
+      }),
+    ]);
+
+    setLocalLikes(Number(likeResponse.headers['total-elements']) || 0);
+    setLocalDislikes(Number(dislikeResponse.headers['total-elements']) || 0);
+  };
+
   useEffect(() => {
     const fetchFeedbackStatus = async () => {
       if (!isLoggedIn || !user) return;
 
       try {
-        const feedback = await UserService.currentUserCommentFeedback(comment?.id, user.username);
-        setCurrentLikeStatus(feedback === CommentStatusEnum.LIKE);
-        setCurrentDislikeStatus(feedback === CommentStatusEnum.DISLIKE);
+        const response = await api.get(comment.feedbackUrl + `/${user.username}`);
+        if (response.status === 404) {
+          setCurrentLikeStatus(false);
+          setCurrentDislikeStatus(false);
+        } else {
+          setCurrentLikeStatus(response.data.feedback === 'LIKE');
+          setCurrentDislikeStatus(response.data.feedback === 'DISLIKE');
+        }
       } catch (e) {
-        console.error('Error fetching feedback status:', e);
+        if (e.response.status === 404) {
+          setCurrentLikeStatus(false);
+          setCurrentDislikeStatus(false);
+        } else {
+          console.error('Error fetching feedback status:', e);
+        }
       }
     };
-
+    fetchFeedbackCounts();
     fetchFeedbackStatus();
   }, [comment?.id, user?.username, isLoggedIn, refreshLikeStatus]);
 
@@ -219,27 +243,56 @@ function CommentItem({ comment, isLoggedIn, user, onDelete, reload, onReport }) 
 
   const handleLikeComment = async () => {
     try {
-      await commentApi.commentFeedback(comment.id, 'LIKE');
-      // Update counts based on previous state
-      if (currentLikeStatus) {
-        setLocalLikes((prev) => prev - 1);
-      } else {
-        setLocalLikes((prev) => prev + 1);
-        if (currentDislikeStatus) {
-          setLocalDislikes((prev) => prev - 1);
-        }
+      console.log('Liking comment');
+      if (currentLikeStatus){
+        await api.delete(comment.feedbackUrl + `/${user.username}`);
+        setRefreshLikeStatus(!refreshLikeStatus);
+        return;
       }
+      const response = await api.post(comment.feedbackUrl, {
+        feedback: 'LIKE',
+        username: user.username,
+        commentId: comment.id,
+      });
+      console.log(response);
       setRefreshLikeStatus(!refreshLikeStatus);
     } catch (e) {
+      if (e.response.status === 409) {
+        console.log('Comment already liked');
+        try {
+          const response = await api.put(comment.feedbackUrl + `/${user.username}`, {
+            feedback: 'LIKE',
+            username: user.username,
+            commentId: comment.id,
+          });
+          console.log(response);
+        } catch (e) {
+          console.error('Error unliking comment:', e);
+        }
+      } else {
+        console.error('Error liking comment:', e);
+      }
       // Revert to original counts if the API call fails
       setLocalLikes(comment?.commentLikes);
       setLocalDislikes(comment?.commentDislikes);
+    } finally {
+      setRefreshLikeStatus(!refreshLikeStatus);
     }
   };
 
   const handleDislikeComment = async () => {
     try {
-      await commentApi.commentFeedback(comment?.id, 'DISLIKE');
+      if (currentDislikeStatus){
+        await api.delete(comment.feedbackUrl + `/${user.username}`);
+        setRefreshLikeStatus(!refreshLikeStatus);
+        return;
+      }
+      const response = await api.post(comment.feedbackUrl, {
+        feedback: 'DISLIKE',
+        username: user.username,
+        commentId: comment.id,
+      });
+      console.log(response);
       // Update counts based on previous state
       if (currentDislikeStatus) {
         setLocalDislikes((prev) => prev - 1);
@@ -251,9 +304,26 @@ function CommentItem({ comment, isLoggedIn, user, onDelete, reload, onReport }) 
       }
       setRefreshLikeStatus(!refreshLikeStatus);
     } catch (e) {
+      if (e.response.status === 409) {
+        console.log('Comment already disliked');
+        try {
+          const response = await api.put(comment.feedbackUrl + `/${user.username}`, {
+            feedback: 'DISLIKE',
+            username: user.username,
+            commentId: comment.id,
+          });
+          console.log(response);
+        } catch (e) {
+          console.error('Error undisliking comment:', e);
+        }
+      } else {
+        console.error('Error disliking comment:', e);
+      }
       // Revert to original counts if the API call fails
       setLocalLikes(comment?.commentLikes);
       setLocalDislikes(comment?.commentDislikes);
+    } finally {
+      setRefreshLikeStatus(!refreshLikeStatus);
     }
   };
 

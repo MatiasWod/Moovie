@@ -1,56 +1,76 @@
-import React, { useState } from 'react';
-import Nav from 'react-bootstrap/Nav';
-import './profileTabNavigation.css';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 function ProfileTabNavigation({ selectedTab, onTabSelect, isLoggedIn, isMe }) {
   const { t } = useTranslation();
 
+  const tabs = [
+    {
+      id: 'public-lists',
+      label: t('profile.public'),
+      icon: 'bi-collection',
+      show: true,
+    },
+    {
+      id: 'private-lists',
+      label: t('profile.private'),
+      icon: 'bi-lock',
+      show: isMe,
+    },
+    {
+      id: 'liked-lists',
+      label: t('profile.liked'),
+      icon: 'bi-heart',
+      show: isLoggedIn,
+    },
+    {
+      id: 'followed-lists',
+      label: t('profile.followed'),
+      icon: 'bi-eye',
+      show: isLoggedIn,
+    },
+    {
+      id: 'reviews',
+      label: t('profile.reviews'),
+      icon: 'bi-chat-square-text',
+      show: true,
+    },
+    {
+      id: 'watched',
+      label: t('profile.watched'),
+      icon: 'bi-check-circle',
+      show: isMe,
+    },
+    {
+      id: 'watchlist',
+      label: t('profile.watchlist'),
+      icon: 'bi-clock',
+      show: isMe,
+    },
+  ];
+
+  const visibleTabs = tabs.filter(tab => tab.show);
+
   return (
-    <Nav
-      variant="tabs"
-      activeKey={selectedTab}
-      onSelect={(selectedKey) => onTabSelect(selectedKey)}
-      className="custom-nav"
-    >
-      <Nav.Item>
-        <Nav.Link eventKey="public-lists">{t('profile.public')}</Nav.Link>
-      </Nav.Item>
-
-      {isMe && (
-        <Nav.Item>
-          <Nav.Link eventKey="private-lists">{t('profile.private')}</Nav.Link>
-        </Nav.Item>
-      )}
-
-      {isLoggedIn && (
-        <Nav.Item>
-          <Nav.Link eventKey="liked-lists">{t('profile.liked')}</Nav.Link>
-        </Nav.Item>
-      )}
-
-      {isLoggedIn && (
-        <Nav.Item>
-          <Nav.Link eventKey="followed-lists">{t('profile.followed')}</Nav.Link>
-        </Nav.Item>
-      )}
-
-      <Nav.Item>
-        <Nav.Link eventKey="reviews">{t('profile.reviews')}</Nav.Link>
-      </Nav.Item>
-
-      {isMe && (
-        <Nav.Item>
-          <Nav.Link eventKey="watched">{t('profile.watched')}</Nav.Link>
-        </Nav.Item>
-      )}
-
-      {isMe && (
-        <Nav.Item>
-          <Nav.Link eventKey="watchlist">{t('profile.watchlist')}</Nav.Link>
-        </Nav.Item>
-      )}
-    </Nav>
+    <div className="flex flex-wrap justify-center gap-2 mb-6">
+      {visibleTabs.map((tab) => (
+        <button
+          key={tab.id}
+          onClick={() => onTabSelect(tab.id)}
+          className={`
+            flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105
+            ${
+              selectedTab === tab.id
+                ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/25'
+                : 'bg-gray-50 text-gray-700 hover:bg-gray-100 hover:text-gray-900 border border-gray-200'
+            }
+          `}
+        >
+          <i className={`${tab.icon} text-lg`}></i>
+          <span className="whitespace-nowrap">{tab.label}</span>
+        </button>
+      ))}
+    </div>
   );
 }
 

@@ -1,29 +1,26 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import mediaApi from '../../api/MediaApi'; // Adjust the path if needed
-import CardsHorizontalContainer from '../components/cardsHorizontalContainer/CardsHorizontalContainer';
-import MediaTypes from '../../api/values/MediaTypes';
-import OrderBy from '../../api/values/MediaOrderBy';
-import SortOrder from '../../api/values/SortOrder';
-import '../components/mainStyle.css';
-import ListHeader from '../components/listHeader/ListHeader';
-import DropdownMenu from '../components/dropdownMenu/DropdownMenu';
-import ListContent from '../components/listContent/ListContent';
-import PaginationButton from '../components/paginationButton/PaginationButton';
-import PagingSizes from '../../api/values/PagingSizes';
-import { createSearchParams, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import Error404 from './errorViews/error404';
-import MediaService from '../../services/MediaService';
-import pagingSizes from '../../api/values/PagingSizes';
-import { useTranslation } from 'react-i18next';
+import React, { useEffect, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
-import useErrorStatus from '../../hooks/useErrorStatus';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
+import { createSearchParams, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import api from '../../api/api';
+import { MediaOrderBy as OrderBy } from '../../api/values/MediaOrderBy';
+import MediaTypes from '../../api/values/MediaTypes';
+import pagingSizes from '../../api/values/PagingSizes';
+import SortOrder from '../../api/values/SortOrder';
+import useErrorStatus from '../../hooks/useErrorStatus';
+import MediaService from '../../services/MediaService';
+import ListContent from '../components/listContent/ListContent';
+import '../components/mainStyle.css';
+import PaginationButton from '../components/paginationButton/PaginationButton';
 
 function FeaturedLists() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { t } = useTranslation();
   const { setErrorStatus } = useErrorStatus();
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
+
 
   //GET VALUES FOR FEATURED MEDIA
   const { type } = useParams();
@@ -31,6 +28,7 @@ function FeaturedLists() {
   const [featuredMediaLoading, setFeaturedMediaLoading] = useState(true);
   const [featuredMediaError, setFeaturedMediaError] = useState(null);
   const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
+  const [watchedUrl, setWatchedUrl] = useState(null);
 
   let featuredListTypeName;
   let mediaType;
@@ -96,7 +94,18 @@ function FeaturedLists() {
     });
   };
 
-  const { isLoggedIn, user } = useSelector((state) => state.auth);
+  useEffect(() => {
+    if (!user.defaultPrivateMoovieListsUrl) return;
+    const fetchWatchedUrl = async () => {
+      const res = await api.get(user.defaultPrivateMoovieListsUrl, {
+        params: {
+          search: 'Watched',
+        },
+      }).then((res) => res.data?.[0]?.url);
+      setWatchedUrl(res);
+    };
+    fetchWatchedUrl();
+  }, [user.defaultPrivateMoovieListsUrl]);
 
   useEffect(() => {
     async function getData() {
@@ -137,6 +146,7 @@ function FeaturedLists() {
         isLoggedIn={isLoggedIn}
         editMode={false}
         username={isLoggedIn ? user.username : null}
+        watchedUrl={watchedUrl}
       />
       <div className="flex justify-center pt-4">
         {featuredMedia?.data?.length > 0 && featuredMedia.links?.last?.pageNumber > 1 && (

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import api from '../../../api/api';
 import PagingSizes from '../../../api/values/PagingSizes';
 import WatchlistWatched from '../../../api/values/WatchlistWatched';
 import { default as ListService, default as listService } from '../../../services/ListService';
@@ -23,6 +24,8 @@ const MediaRow = ({
   removeFromList,
   isLoggedIn,
   username,
+  watchedUrl,
+  refresh,
 }) => {
   const { user } = useSelector((state) => state.auth);
   const [isDragging, setIsDragging] = useState(false);
@@ -67,13 +70,22 @@ const MediaRow = ({
   const [refreshWatched, setRefreshWatched] = useState(false);
   useEffect(async () => {
     try {
-      const data = await UserService.currentUserWatchedStatus(
-        media.id,
-        user.defaultPrivateMoovieListsUrl
-      );
-      setWW(data);
-    } catch (e) {}
-  }, [media, refreshWatched]);
+
+      // const data = await UserService.currentUserWatchedStatus(
+      //   media.id,
+      //   user.defaultPrivateMoovieListsUrl
+      // );
+      if (!watchedUrl) return;
+      const data = await api.get(watchedUrl + '/content/' + media.id);
+      if (data.status === 200) {
+        setWW({ watched: true });
+      } else {
+        setWW({ watched: false });
+      }
+    } catch (e) {
+      setWW({ watched: false });
+    }
+  }, [media, refreshWatched, watchedUrl]);
 
   const handleWatched = async () => {
     try {
@@ -90,6 +102,7 @@ const MediaRow = ({
           WatchlistWatched.Watched
         );
       }
+      refresh();
       setRefreshWatched(!refreshWatched);
     } catch (e) {}
   };
@@ -191,6 +204,8 @@ const ListContent = ({
   isLoggedIn,
   username,
   listContentUrl,
+  watchedUrl,
+  refresh,
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -285,6 +300,8 @@ const ListContent = ({
             removeFromList={removeFromList}
             isLoggedIn={isLoggedIn}
             username={username}
+            watchedUrl={watchedUrl}
+            refresh={refresh}
           />
         ))}
       </div>

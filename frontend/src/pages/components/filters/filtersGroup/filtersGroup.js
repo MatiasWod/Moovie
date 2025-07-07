@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import ChipsDisplay from './chipsDisplay';
-import FilterSection from './filterSection';
-import FilterList from './filterList';
-import FormButtons from './formButtons';
-import mediaTypes from '../../../../api/values/MediaTypes';
-import mediaOrderBy from '../../../../api/values/MediaOrderBy';
-import ProviderService from '../../../../services/ProviderService';
-import GenreService from '../../../../services/GenreService';
-import SortOrder from '../../../../api/values/SortOrder';
 import { CircularProgress } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { MediaOrderBy as mediaOrderBy } from '../../../../api/values/MediaOrderBy';
+import mediaTypes from '../../../../api/values/MediaTypes';
+import SortOrder from '../../../../api/values/SortOrder';
+import GenreService from '../../../../services/GenreService';
+import ProviderService from '../../../../services/ProviderService';
+import ChipsDisplay from './chipsDisplay';
+import FilterList from './filterList';
+import FilterSection from './filterSection';
+import FormButtons from './formButtons';
 
 const FiltersGroup = ({
   type,

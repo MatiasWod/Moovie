@@ -26,14 +26,6 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import ar.edu.itba.paw.exceptions.ConflictException;
-import ar.edu.itba.paw.exceptions.ForbiddenException;
-import ar.edu.itba.paw.exceptions.ResourceNotFoundException;
-import ar.edu.itba.paw.models.Comments.CommentFeedback;
-import ar.edu.itba.paw.models.Review.ReviewTypes;
-import ar.edu.itba.paw.webapp.dto.out.UserCommentFeedbackDto;
-import ar.edu.itba.paw.webapp.dto.out.UserReviewDto;
-import com.sun.jndi.toolkit.url.Uri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +33,14 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
+import ar.edu.itba.paw.exceptions.ConflictException;
+import ar.edu.itba.paw.exceptions.ForbiddenException;
+import ar.edu.itba.paw.exceptions.ResourceNotFoundException;
 import ar.edu.itba.paw.exceptions.UserNotLoggedException;
 import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.Comments.Comment;
+import ar.edu.itba.paw.models.Comments.CommentFeedback;
 import ar.edu.itba.paw.models.Comments.CommentFeedbackType;
 import ar.edu.itba.paw.models.User.User;
 import ar.edu.itba.paw.models.User.UserRoles;
@@ -55,6 +51,7 @@ import ar.edu.itba.paw.services.UserService;
 import ar.edu.itba.paw.webapp.dto.in.CommentCreateDto;
 import ar.edu.itba.paw.webapp.dto.in.CommentFeedbackDto;
 import ar.edu.itba.paw.webapp.dto.out.CommentDto;
+import ar.edu.itba.paw.webapp.dto.out.UserCommentFeedbackDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import io.swagger.annotations.Api;
@@ -128,9 +125,10 @@ public class CommentController {
                             .entity(e.getMessage())
                             .build();
                 }
-            } else if(feedbackedBy != null) {
+            } else if (feedbackedBy != null) {
                 final int commentCount = commentService.getCommentFeedbackForUserCount(feedbackedBy);
-                final List<Comment> commentList = commentService.getCommentFeedbackForUser(feedbackedBy, page-1, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize());
+                final List<Comment> commentList = commentService.getCommentFeedbackForUser(feedbackedBy, page - 1,
+                        PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize());
                 final List<CommentDto> commentDtoList = CommentDto.fromCommentList(commentList, uriInfo);
                 Response.ResponseBuilder res = Response.ok(new GenericEntity<List<CommentDto>>(commentDtoList) {
                 });
@@ -138,11 +136,11 @@ public class CommentController {
                         PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), commentCount);
                 ResponseUtils.setPaginationLinks(res, reviewPagingUtils, uriInfo);
                 return res.build();
-            }
-            else if (username != null){
+            } else if (username != null) {
                 User user = userService.findUserByUsername(username);
                 final int commentCount = user.getCommentsCount();
-                final List<Comment> commentList = commentService.getCommentsForUsername(user.getUserId(), page-1, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize());
+                final List<Comment> commentList = commentService.getCommentsForUsername(user.getUserId(), page - 1,
+                        PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize());
                 final List<CommentDto> commentDtoList = CommentDto.fromCommentList(commentList, uriInfo);
                 Response.ResponseBuilder res = Response.ok(new GenericEntity<List<CommentDto>>(commentDtoList) {
                 });
@@ -150,8 +148,7 @@ public class CommentController {
                         PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), commentCount);
                 ResponseUtils.setPaginationLinks(res, reviewPagingUtils, uriInfo);
                 return res.build();
-            }
-            else if (reviewId == null) {
+            } else if (reviewId == null) {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity("Review id is required if not filtering by reported")
                         .build();
@@ -222,8 +219,6 @@ public class CommentController {
         }
     }
 
-
-
     @DELETE
     @Path("/{id}")
     @PreAuthorize("@accessValidator.isUserLoggedIn() or @accessValidator.isUserAdmin()")
@@ -257,12 +252,12 @@ public class CommentController {
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response createFeedback(@PathParam("id") int id,
-                                   @Valid @NotNull final CommentFeedbackDto commentFeedbackDto) {
+            @Valid @NotNull final CommentFeedbackDto commentFeedbackDto) {
         Comment comment = commentService.getCommentById(id);
         CommentFeedbackType commentFeedbackType = commentFeedbackDto.transformToEnum();
         int uid = userService.getInfoOfMyUser().getUserId();
         String username = userService.getInfoOfMyUser().getUsername();
-        if (commentService.userHasLiked(id, uid) || commentService.userHasDisliked(id, uid) ) {
+        if (commentService.userHasLiked(id, uid) || commentService.userHasDisliked(id, uid)) {
             throw new ConflictException("User already has feedback on this list.");
         }
         final URI uri = uriInfo.getBaseUriBuilder()
@@ -285,17 +280,21 @@ public class CommentController {
     }
 
     @PUT
-    @Path("/{id}/feedback")
+    @Path("/{id}/feedback/{username}")
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response changeFeedback(@PathParam("id") int id,
-                                   @Valid @NotNull final CommentFeedbackDto commentFeedbackDto) {
+            @PathParam("username") String username,
+            @Valid @NotNull final CommentFeedbackDto commentFeedbackDto) {
         Comment comment = commentService.getCommentById(id);
         CommentFeedbackType commentFeedbackType = commentFeedbackDto.transformToEnum();
         int uid = userService.getInfoOfMyUser().getUserId();
-        String username = userService.getInfoOfMyUser().getUsername();
+        String currentUsername = userService.getInfoOfMyUser().getUsername();
+        if (!Objects.equals(username, currentUsername)) {
+            throw new ForbiddenException("You are not allowed to modify this comment feedback.");
+        }
         boolean existed = false;
-        if (commentService.userHasLiked(id, uid) || commentService.userHasDisliked(id, uid) ) {
+        if (commentService.userHasLiked(id, uid) || commentService.userHasDisliked(id, uid)) {
             existed = true; // If resource already existed then 200 if not (we create and) 201.
         }
         final URI uri = uriInfo.getBaseUriBuilder()
@@ -306,25 +305,24 @@ public class CommentController {
                 .build();
         if (commentFeedbackType == CommentFeedbackType.LIKE) {
             commentService.likeComment(id);
-            if(!existed) {
+            if (!existed) {
                 return Response.created(uri).build();
             }
-            return Response.ok( new UserCommentFeedbackDto(id, username, uri.toString(), "LIKE", uriInfo))
+            return Response.ok(new UserCommentFeedbackDto(id, username, uri.toString(), "LIKE", uriInfo))
                     .build();
         }
         if (commentFeedbackType == CommentFeedbackType.DISLIKE) {
             commentService.dislikeComment(id);
-            if(!existed) {
+            if (!existed) {
                 return Response.created(uri).build();
             }
-            return Response.ok( new UserCommentFeedbackDto(id, username, uri.toString(), "DISLIKE", uriInfo))
+            return Response.ok(new UserCommentFeedbackDto(id, username, uri.toString(), "DISLIKE", uriInfo))
                     .build();
         }
         return Response.status(Response.Status.BAD_REQUEST)
                 .entity("Invalid feedback type")
                 .build();
     }
-
 
     @DELETE
     @Path("/{id}/feedback/{username}")
@@ -333,11 +331,11 @@ public class CommentController {
     public Response deleteCommentFeedbackLike(@PathParam("id") int id, @PathParam("username") String username) {
         Comment comment = commentService.getCommentById(id);
         String currentUsername = userService.getInfoOfMyUser().getUsername();
-        if(!Objects.equals(username, currentUsername)){
+        if (!Objects.equals(username, currentUsername)) {
             throw new ForbiddenException("You are not allowed to delete this comment feedback.");
         }
         int uid = userService.getInfoOfMyUser().getUserId();
-        if (commentService.userHasLiked(id, uid) || commentService.userHasDisliked(id, uid) ) {
+        if (commentService.userHasLiked(id, uid) || commentService.userHasDisliked(id, uid)) {
             commentService.removeDislikeComment(id);
             commentService.removeLikeComment(id);
 
@@ -351,7 +349,7 @@ public class CommentController {
     @Path("/{id}/feedback/{username}")
     @Produces(VndType.APPLICATION_COMMENT_FEEDBACK)
     public Response getCommentFeedbackByUsername(@PathParam("id") final int id,
-                                         @PathParam("username") final String username) {
+            @PathParam("username") final String username) {
         int uid = userService.findUserByUsername(username).getUserId();
         boolean hasLiked = commentService.userHasLiked(id, uid);
         boolean hasDisliked = commentService.userHasDisliked(id, uid);
@@ -362,12 +360,12 @@ public class CommentController {
                 .path(username)
                 .build();
 
-        if(hasLiked){
-            return Response.ok( new UserCommentFeedbackDto(id, username, uri.toString(), "LIKE", uriInfo))
+        if (hasLiked) {
+            return Response.ok(new UserCommentFeedbackDto(id, username, uri.toString(), "LIKE", uriInfo))
                     .build();
         }
-        if(hasDisliked){
-            return Response.ok( new UserCommentFeedbackDto(id, username, uri.toString(), "DISLIKE", uriInfo))
+        if (hasDisliked) {
+            return Response.ok(new UserCommentFeedbackDto(id, username, uri.toString(), "DISLIKE", uriInfo))
                     .build();
         }
         throw new ResourceNotFoundException("No feedback for comment with id and username given.");
@@ -378,22 +376,43 @@ public class CommentController {
     @Path("/{id}/feedback")
     @Produces(VndType.APPLICATION_COMMENT_FEEDBACK_LIST)
     public Response getUsersWhoGaveFeedbackToComment(@PathParam("id") final int id,
-                                         @QueryParam("page") @DefaultValue("1") final int page) {
-        List<CommentFeedback> usersFeedback = commentService.getCommentFeedbackForComment(id, page-1, PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize());
-        if (usersFeedback.isEmpty()) {
-            return Response.noContent().build();
+            @QueryParam("page") @DefaultValue("1") final int page,
+            @QueryParam("type") final String feedback) {
+        try{
+            List<CommentFeedback> usersFeedback;
+            int totalCount = 0;
+            if (feedback != null) {
+                CommentFeedbackType feedbackType = CommentFeedbackType.valueOf(feedback);
+                logger.info("Received comment feedback type {}", feedbackType);
+                    usersFeedback = commentService.getCommentFeedbackForComment(id, feedbackType, page - 1,
+                            PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize());
+                    totalCount = commentService.getCommentFeedbackForCommentCount(id, feedbackType);
+                logger.info("Total count {}; usersFeedback size {}", totalCount, usersFeedback.size());
+            } else{
+                usersFeedback = commentService.getCommentFeedbackForComment(id, page - 1,
+                        PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize());
+                totalCount = commentService.getCommentFeedbackForCommentCount(id);
+            }
+            if (usersFeedback.isEmpty() || totalCount == 0) {
+                return Response.noContent().build();
+            }
+
+            List<UserCommentFeedbackDto> toRet = new ArrayList<>();
+            for (CommentFeedback commentFeedback : usersFeedback) {
+                toRet.add(UserCommentFeedbackDto.fromCommentFeedback(commentFeedback, uriInfo));
+            }
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserCommentFeedbackDto>>(toRet) {
+            });
+            final PagingUtils<UserCommentFeedbackDto> reviewPagingUtils = new PagingUtils<>(toRet, page,
+                    PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), totalCount);
+            ResponseUtils.setPaginationLinks(res, reviewPagingUtils, uriInfo);
+            return res.build();
+        } catch (IllegalArgumentException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid feedback type. Only LIKE and DISLIKE are valid feedback types.").build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("There was an unexpected error.").build();
         }
-        List<UserCommentFeedbackDto> toRet =  new ArrayList<>();
-        for (CommentFeedback feedback : usersFeedback) {
-            final String uri = uriInfo.getBaseUriBuilder()
-                    .path("comments")
-                    .path(String.valueOf(id))
-                    .path("feedback")
-                    .path(feedback.getUsername())
-                    .build().toString();
-            toRet.add(new UserCommentFeedbackDto(id, feedback.getUsername(), feedback.getCommentFeedbackType().toString(), uri, uriInfo));
-        }
-        return Response.ok(new GenericEntity<List<UserCommentFeedbackDto>>(toRet) {}).build();
+
     }
 
 }

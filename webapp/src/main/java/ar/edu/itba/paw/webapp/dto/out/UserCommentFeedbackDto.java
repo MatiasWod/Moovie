@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.webapp.dto.out;
 
+import ar.edu.itba.paw.models.Comments.CommentFeedback;
+
 import javax.ws.rs.core.UriInfo;
 
 public class UserCommentFeedbackDto {
@@ -20,6 +22,16 @@ public class UserCommentFeedbackDto {
 
         this.commentUrl = uriInfo.getBaseUriBuilder().path("comments/{commentId}").build(commentId).toString();
         this.userUrl = uriInfo.getBaseUriBuilder().path("users/{username}").build(username).toString();
+    }
+
+    static public UserCommentFeedbackDto fromCommentFeedback(CommentFeedback commentFeedback, UriInfo uriInfo) {
+        String url = uriInfo.getBaseUriBuilder()
+                .path("comments")
+                .path(String.valueOf(commentFeedback.getCommentId()))
+                .path("feedback")
+                .path(commentFeedback.getUsername())
+                .build().toString();
+        return new UserCommentFeedbackDto(commentFeedback.getCommentId(), commentFeedback.getUsername(), url, commentFeedback.getCommentFeedbackType().toString(), uriInfo);
     }
 
     public int getCommentId() {
