@@ -31,43 +31,38 @@ public class ProviderController {
     @GET
     @Produces(VndType.APPLICATION_PROVIDER_LIST)
     public Response getProviders(@QueryParam("mediaId") final Integer mediaId,@QueryParam("pageNumber") @DefaultValue("1") final Integer pageNumber, @QueryParam("pageSize") @DefaultValue("-1") final Integer pageSize) {
-        try {
-            List<Provider> providerList;
 
-            int pageSizeQuery = pageSize;
-            if (pageSize < 1 || pageSize > PagingSizes.PROVIDER_DEFAULT_PAGE_SIZE.getSize()) {
-                pageSizeQuery = PagingSizes.PROVIDER_DEFAULT_PAGE_SIZE.getSize();
-            }
+        List<Provider> providerList;
 
-            int totalCount=0;
-            // Si se proporciona un mediaId, obtener proveedores para ese medio
-            if (mediaId != null) {
-                providerList = providerService.getProvidersForMedia(mediaId,pageNumber,pageSizeQuery);
-                totalCount = providerService.getProvidersForMediaCount(mediaId);
-            }
-            // Si no se proporciona un mediaId, obtener todos los proveedores
-            else {
-                providerList = providerService.getAllProviders(pageNumber, pageSizeQuery);
-                totalCount = providerService.getAllProvidersCount();
-            }
-
-            // Convertir la lista de proveedores a DTOs
-            final List<ProviderDto> providerDtoList = ProviderDto.fromProviderList(providerList, uriInfo);
-
-            // Devolver la respuesta con la lista de DTOs
-            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ProviderDto>>(providerDtoList) {
-            });
-            final PagingUtils<ProviderDto> providerDtoPagingUtils = new PagingUtils<>(providerDtoList, pageNumber, pageSizeQuery,
-                    totalCount);
-            ResponseUtils.setPaginationLinks(res, providerDtoPagingUtils, uriInfo);
-            ResponseUtils.setMaxAgeCache(res);
-            return res.build();
-        } catch (RuntimeException e) {
-            // Manejar errores
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ResponseMessage(e.getMessage()))
-                    .build();
+        int pageSizeQuery = pageSize;
+        if (pageSize < 1 || pageSize > PagingSizes.PROVIDER_DEFAULT_PAGE_SIZE.getSize()) {
+            pageSizeQuery = PagingSizes.PROVIDER_DEFAULT_PAGE_SIZE.getSize();
         }
+
+        int totalCount=0;
+        // Si se proporciona un mediaId, obtener proveedores para ese medio
+        if (mediaId != null) {
+            providerList = providerService.getProvidersForMedia(mediaId,pageNumber,pageSizeQuery);
+            totalCount = providerService.getProvidersForMediaCount(mediaId);
+        }
+        // Si no se proporciona un mediaId, obtener todos los proveedores
+        else {
+            providerList = providerService.getAllProviders(pageNumber, pageSizeQuery);
+            totalCount = providerService.getAllProvidersCount();
+        }
+
+        // Convertir la lista de proveedores a DTOs
+        final List<ProviderDto> providerDtoList = ProviderDto.fromProviderList(providerList, uriInfo);
+
+        // Devolver la respuesta con la lista de DTOs
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ProviderDto>>(providerDtoList) {
+        });
+        final PagingUtils<ProviderDto> providerDtoPagingUtils = new PagingUtils<>(providerDtoList, pageNumber, pageSizeQuery,
+                totalCount);
+        ResponseUtils.setPaginationLinks(res, providerDtoPagingUtils, uriInfo);
+        ResponseUtils.setMaxAgeCache(res);
+        return res.build();
+
     }
 
     @GET()

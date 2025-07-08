@@ -84,8 +84,6 @@ public class MoovieListReviewController {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("{\"error\":\"MoovieList review not found.\"}")
                     .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
 
@@ -175,8 +173,6 @@ public class MoovieListReviewController {
                     .build();
         } catch (UnableToFindUserException e) {
             return Response.status(Response.Status.NOT_FOUND).entity("{\"error\":\"User not found.\"}").build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
 
@@ -212,10 +208,6 @@ public class MoovieListReviewController {
             return Response.status(Response.Status.CONFLICT)
                     .entity("{\"error\":\"Review already created for this MoovieList.\"}")
                     .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
         }
     }
 
@@ -249,10 +241,6 @@ public class MoovieListReviewController {
             return Response.status(Response.Status.FORBIDDEN)
                     .entity("{\"error\":\"You do not have permission, list is private.\"}")
                     .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
         }
     }
 
@@ -279,10 +267,6 @@ public class MoovieListReviewController {
         } catch (InvalidAccessToResourceException e) {
             return Response.status(Response.Status.FORBIDDEN)
                     .entity("{\"error\":\"You do not have permission to delete this review.\"}")
-                    .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
                     .build();
         }
     }

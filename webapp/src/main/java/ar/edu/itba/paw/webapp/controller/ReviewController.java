@@ -209,10 +209,6 @@ public class ReviewController {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("{\"error\":\"Review not found.\"}")
                     .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
         }
     }
 

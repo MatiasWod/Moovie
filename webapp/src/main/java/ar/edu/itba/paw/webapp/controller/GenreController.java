@@ -25,31 +25,24 @@ public class GenreController {
     @GET
     @Produces(VndType.APPLICATION_GENRE_LIST)
     public Response getGenres(@QueryParam("mediaId") final Integer mediaId) {
-        try {
-            List<Genre> genreList;
+        List<Genre> genreList;
 
-            // Si se proporciona un mediaId, obtener géneros para ese medio
-            if (mediaId != null) {
-                genreList = genreService.getGenresForMedia(mediaId);
-            }
-            // Si no se proporciona un mediaId, obtener todos los géneros
-            else {
-                genreList = genreService.getAllGenres();
-            }
-
-            // Convertir la lista de géneros a DTOs
-            final List<GenreDto> genreDtoList = GenreDto.fromGenreList(genreList, uriInfo);
-
-            // Devolver la respuesta con la lista de DTOs
-            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<GenreDto>>(genreDtoList) {});
-            ResponseUtils.setMaxAgeCache(res);
-            return res.build();
-        } catch (RuntimeException e) {
-            // Manejar errores
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(e.getMessage())
-                    .build();
+        // Si se proporciona un mediaId, obtener géneros para ese medio
+        if (mediaId != null) {
+            genreList = genreService.getGenresForMedia(mediaId);
         }
+        // Si no se proporciona un mediaId, obtener todos los géneros
+        else {
+            genreList = genreService.getAllGenres();
+        }
+
+        // Convertir la lista de géneros a DTOs
+        final List<GenreDto> genreDtoList = GenreDto.fromGenreList(genreList, uriInfo);
+
+        // Devolver la respuesta con la lista de DTOs
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<GenreDto>>(genreDtoList) {});
+        ResponseUtils.setMaxAgeCache(res);
+        return res.build();
     }
 
     @GET()

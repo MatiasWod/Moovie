@@ -51,50 +51,43 @@ public class CommentReportController {
             @QueryParam("commentId") Integer commentId,
             @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber,
             @QueryParam("pageSize") @DefaultValue("-1") final int pageSize) {
-        try {
 
-            if (reportType != null && (reportType < ReportTypesEnum.HATEFUL_CONTENT.getType()
-                    || reportType > ReportTypesEnum.SPAM.getType())) {
-                throw new IllegalArgumentException(
-                        "The 'reportType' query parameter must be between 0 and 3 (0=hatefulContent, 1=abuse, 2=privacy, 3=spam).");
-            }
-
-            int pageSizeQuery = pageSize;
-            if (pageSize < 1 || pageSize > PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize()) {
-                pageSizeQuery = PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize();
-            }
-
-            List<CommentReport> reports;
-            int totalCount;
-
-            if (reportType != null) {
-                reports = reportService.getCommentReports(reportType, commentId, pageSizeQuery, pageNumber);
-                totalCount = reportService.getReportsCount(ResourceTypesEnum.COMMENT.getDescription(), reportType, commentId);
-            } else {
-                if (commentId != null) {
-                    reports = reportService.getCommentReports(null, commentId, pageSizeQuery, pageNumber);
-                    totalCount = reportService.getReportsCount(ResourceTypesEnum.COMMENT.getDescription(), null, commentId);
-                } else{
-                    reports = reportService.getCommentReports(pageSizeQuery, pageNumber);
-                    totalCount = reportService.getReportsCount(ResourceTypesEnum.COMMENT.getDescription());
-                }
-            }
-
-            List<CommentReportDto> reportDTOs = CommentReportDto.fromCommentReportList(reports, uriInfo);
-
-            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<CommentReportDto>>(reportDTOs) {
-            });
-            final PagingUtils<CommentReportDto> pagingUtils = new PagingUtils<>(reportDTOs, pageNumber, pageSizeQuery,
-                    totalCount);
-            ResponseUtils.setPaginationLinks(res, pagingUtils, uriInfo);
-            return res.build();
-        } catch (Exception e) {
-            logger.error(
-                    "Getting reports:\n  reportType: {}, pageNumber: {}, pageSize: {}",
-                    reportType, pageNumber, pageSize);
-            logger.error(e.getMessage());
-            throw new InternalServerErrorException(e.getMessage(), e);
+        if (reportType != null && (reportType < ReportTypesEnum.HATEFUL_CONTENT.getType()
+                || reportType > ReportTypesEnum.SPAM.getType())) {
+            throw new IllegalArgumentException(
+                    "The 'reportType' query parameter must be between 0 and 3 (0=hatefulContent, 1=abuse, 2=privacy, 3=spam).");
         }
+
+        int pageSizeQuery = pageSize;
+        if (pageSize < 1 || pageSize > PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize()) {
+            pageSizeQuery = PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize();
+        }
+
+        List<CommentReport> reports;
+        int totalCount;
+
+        if (reportType != null) {
+            reports = reportService.getCommentReports(reportType, commentId, pageSizeQuery, pageNumber);
+            totalCount = reportService.getReportsCount(ResourceTypesEnum.COMMENT.getDescription(), reportType, commentId);
+        } else {
+            if (commentId != null) {
+                reports = reportService.getCommentReports(null, commentId, pageSizeQuery, pageNumber);
+                totalCount = reportService.getReportsCount(ResourceTypesEnum.COMMENT.getDescription(), null, commentId);
+            } else{
+                reports = reportService.getCommentReports(pageSizeQuery, pageNumber);
+                totalCount = reportService.getReportsCount(ResourceTypesEnum.COMMENT.getDescription());
+            }
+        }
+
+        List<CommentReportDto> reportDTOs = CommentReportDto.fromCommentReportList(reports, uriInfo);
+
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<CommentReportDto>>(reportDTOs) {
+        });
+        final PagingUtils<CommentReportDto> pagingUtils = new PagingUtils<>(reportDTOs, pageNumber, pageSizeQuery,
+                totalCount);
+        ResponseUtils.setPaginationLinks(res, pagingUtils, uriInfo);
+        return res.build();
+
     }
 
     @POST
@@ -103,22 +96,19 @@ public class CommentReportController {
     @Produces(VndType.APPLICATION_COMMENT_REPORT)
     public Response report(
             @Valid final ReportCreateDto reportDto) {
-        try {
-            User currentUser = userService.getInfoOfMyUser();
-            CommentReport response = reportService.reportComment(
-                    reportDto.getResourceId(),
-                    currentUser.getUserId(),
-                    reportDto.getType());
+        User currentUser = userService.getInfoOfMyUser();
+        CommentReport response = reportService.reportComment(
+                reportDto.getResourceId(),
+                currentUser.getUserId(),
+                reportDto.getType());
 
-            final URI uri = uriInfo.getBaseUriBuilder()
-                    .path("commentsReports")
-                    .path(String.valueOf(response.getReportId()))
-                    .build();
+        final URI uri = uriInfo.getBaseUriBuilder()
+                .path("commentsReports")
+                .path(String.valueOf(response.getReportId()))
+                .build();
 
-            return Response.created(uri).build();
-        } catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage(), e);
-        }
+        return Response.created(uri).build();
+
     }
 
     @GET
@@ -132,8 +122,6 @@ public class CommentReportController {
             return ResponseUtils.setConditionalCacheHash(request, dtoSupplier, report.hashCode());
         } catch (IllegalArgumentException e) {
             throw new BadRequestException(e.getMessage(), e);
-        } catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage(), e);
         }
     }
 
@@ -148,8 +136,6 @@ public class CommentReportController {
             return Response.ok().build();
         } catch (IllegalArgumentException e) {
             throw new BadRequestException(e.getMessage(), e);
-        } catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage(), e);
         }
     }
 }

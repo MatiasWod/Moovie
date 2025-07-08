@@ -203,10 +203,6 @@ public class MoovieListController {
             return Response.status(Response.Status.CONFLICT)
                     .entity("A movie list with the same name already exists.")
                     .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
         }
     }
 
@@ -224,11 +220,7 @@ public class MoovieListController {
         } catch (MoovieListNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage("MoovieList not found."))
                     .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ResponseMessage("An unexpected error occurred.")).build();
         }
-
     }
 
     @PUT
@@ -247,12 +239,7 @@ public class MoovieListController {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("MoovieList not found.")
                     .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
         }
-
     }
 
     @DELETE
@@ -270,10 +257,6 @@ public class MoovieListController {
         } catch (InvalidAccessToResourceException e) {
             return Response.status(Response.Status.FORBIDDEN)
                     .entity("You do not have access to this resource.")
-                    .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
                     .build();
         }
     }
@@ -505,11 +488,7 @@ public class MoovieListController {
         } catch (InvalidAccessToResourceException e) {
             return Response.status(Response.Status.FORBIDDEN)
                     .entity(new ResponseMessage("You do not have access to this resource.")).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ResponseMessage("An unexpected error occurred.")).build();
         }
-
     }
 
     @POST
@@ -571,12 +550,7 @@ public class MoovieListController {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(new ResponseMessage("MoovieList not found."))
                     .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ResponseMessage("An unexpected error occurred."))
-                    .build();
         }
-
     }
 
     @PUT
@@ -601,12 +575,7 @@ public class MoovieListController {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(new ResponseMessage("MoovieList not found."))
                     .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ResponseMessage("An unexpected error occurred."))
-                    .build();
         }
-
     }
 
     @DELETE
@@ -624,12 +593,7 @@ public class MoovieListController {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(new ResponseMessage("MoovieList not found."))
                     .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ResponseMessage("An unexpected error occurred."))
-                    .build();
         }
-
     }
 
 }

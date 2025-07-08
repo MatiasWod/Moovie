@@ -58,10 +58,6 @@ public class ImageController {
             LOGGER.error("Error retrieving profile image: {}", e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
-        catch (RuntimeException e) {
-            LOGGER.error("Error retrieving profile image: {}", e.getMessage());
-            return Response.serverError().entity(e.getMessage()).build();
-        }
     }
 
     @POST
@@ -82,9 +78,6 @@ public class ImageController {
         } catch (UnableToFindUserException e) {
             LOGGER.error("Error updating profile image: {}", e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (RuntimeException e) {
-            LOGGER.error("Error updating profile image: {}", e.getMessage());
-            return Response.serverError().entity(e.getMessage()).build();
         }
     }
 }

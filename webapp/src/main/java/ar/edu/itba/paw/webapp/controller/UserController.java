@@ -84,36 +84,34 @@ public class UserController {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        try {
-            final List<User> all;
-            final int totalCount;
-            if (search!= null){
-                all = userService.searchUsers(search, orderBy, sortOrder, pageSizeQuery, pageNumber);
-                totalCount = userService.getSearchCount(search);
-            } else if (role != null) {
-                UserRoles enumRole = UserRoles.getRoleFromInt(role);
-                if (enumRole == null) {
-                    return Response.status(Response.Status.BAD_REQUEST).build();
-                }
-                all = userService.listAll(role, pageSizeQuery,pageNumber);
-                totalCount = userService.getUserCount(UserRoles.getRoleFromInt(role));
-            } else {
-                all = userService.listAll(pageSizeQuery,pageNumber);
-                totalCount = userService.getUserCount();
-            }
-            if (all.isEmpty()) {
-                return Response.status(Response.Status.NO_CONTENT).build();
-            }
 
-            List<UserDto> userDtoList = UserDto.fromUserList(all, uriInfo);
-            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserDto>>(userDtoList) {
-            });
-            final PagingUtils<User> toReturnUserList = new PagingUtils<>(all, pageNumber-1,pageSizeQuery, totalCount);
-            ResponseUtils.setPaginationLinks(res, toReturnUserList, uriInfo);
-            return res.build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        final List<User> all;
+        final int totalCount;
+        if (search!= null){
+            all = userService.searchUsers(search, orderBy, sortOrder, pageSizeQuery, pageNumber);
+            totalCount = userService.getSearchCount(search);
+        } else if (role != null) {
+            UserRoles enumRole = UserRoles.getRoleFromInt(role);
+            if (enumRole == null) {
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+            all = userService.listAll(role, pageSizeQuery,pageNumber);
+            totalCount = userService.getUserCount(UserRoles.getRoleFromInt(role));
+        } else {
+            all = userService.listAll(pageSizeQuery,pageNumber);
+            totalCount = userService.getUserCount();
         }
+        if (all.isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        List<UserDto> userDtoList = UserDto.fromUserList(all, uriInfo);
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserDto>>(userDtoList) {
+        });
+        final PagingUtils<User> toReturnUserList = new PagingUtils<>(all, pageNumber-1,pageSizeQuery, totalCount);
+        ResponseUtils.setPaginationLinks(res, toReturnUserList, uriInfo);
+        return res.build();
+
     }
 
     @POST
@@ -136,9 +134,6 @@ public class UserController {
         } catch (UnableToCreateUserException e) {
             LOGGER.info("User already exists. Returning CONFLICT.");
             return Response.status(Response.Status.CONFLICT).entity("User already exists").build();
-        } catch (RuntimeException e) {
-            LOGGER.error("Error creating user: {}", e.getMessage());
-            return Response.serverError().entity(e.getMessage()).build();
         }
     }
 
@@ -170,10 +165,6 @@ public class UserController {
         } catch (UserVerifiedException e) {
             LOGGER.error("User is already verified. Returning CONFLICT.");
             return Response.status(Response.Status.CONFLICT).entity("User is already verified").build();
-        } catch (Exception e) {
-            LOGGER.error("Error resending verification email: {}", e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to resend verification email")
-                    .build();
         }
     }
 
@@ -183,14 +174,11 @@ public class UserController {
     @Consumes(VndType.APPLICATION_PASSWORD_TOKEN_FORM)
     public Response createPasswordResetToken(@Valid UserEmailDto userEmailDto) {
         LOGGER.info("Method: createPasswordResetToken, Path: /users, Email: {}", userEmailDto.getEmail());
-        try {
-            final User user = userService.findUserByEmail(userEmailDto.getEmail());
-            userService.forgotPassword(user);
-            return Response.noContent().build();
-        } catch (RuntimeException e) {
-            LOGGER.error("Error creating password reset token: {}", e.getMessage());
-            return Response.serverError().entity(e.getMessage()).build();
-        }
+
+        final User user = userService.findUserByEmail(userEmailDto.getEmail());
+        userService.forgotPassword(user);
+        return Response.noContent().build();
+
 
     }
 
@@ -232,19 +220,16 @@ public class UserController {
     @Consumes(VndType.APPLICATION_USER_PASSWORD)
     public Response resetPassword(@PathParam("username") final String username,@Valid UserResetPasswordDto userResetPasswordDto) {
         LOGGER.info("Method: resetPassword, Path: /users, Token: {}", userResetPasswordDto.getToken());
-        try {
-            final Optional<Token> tokenOptional = verificationTokenService.getToken(userResetPasswordDto.getToken());
-            if (!tokenOptional.isPresent()) {
-                LOGGER.info("Token not found. Returning NOT_FOUND.");
-                return Response.status(Response.Status.NOT_FOUND).entity("Token not found").build();
-            }
-            Token tok = tokenOptional.get();
-            userService.resetPassword(tok, userResetPasswordDto.getPassword());
-            return Response.noContent().build();
-        } catch (RuntimeException e) {
-            LOGGER.error("Error reset passoword: {}", e.getMessage());
-            return Response.serverError().entity(e.getMessage()).build();
+
+        final Optional<Token> tokenOptional = verificationTokenService.getToken(userResetPasswordDto.getToken());
+        if (!tokenOptional.isPresent()) {
+            LOGGER.info("Token not found. Returning NOT_FOUND.");
+            return Response.status(Response.Status.NOT_FOUND).entity("Token not found").build();
         }
+        Token tok = tokenOptional.get();
+        userService.resetPassword(tok, userResetPasswordDto.getPassword());
+        return Response.noContent().build();
+
 
     }
 
@@ -254,22 +239,19 @@ public class UserController {
     public Response getMilkyLeaderboard(@QueryParam("pageNumber") @DefaultValue("1") final int page,
                                         @QueryParam("pageSize") @DefaultValue("-1") final int pageSize) {
         LOGGER.info("Method: getMilkyLeaderboard, Path: /users/milkyLeaderboard, Page: {}, PageSize: {}", page, pageSize);
-        try {
-            int pageSizeQuery = pageSize;
-            if (pageSize < 1 || pageSize > PagingSizes.MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE.getSize()) {
-                pageSizeQuery = PagingSizes.MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE.getSize();
-            }
-            List<UserDto> leaderboards = UserDto.fromUserList(userService.getMilkyPointsLeaders(pageSizeQuery, page), uriInfo);
-            int totalCount = userService.getUserCount();
-            
-            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserDto>>(leaderboards) {});
-            final PagingUtils<UserDto> pagingUtils = new PagingUtils<>(leaderboards, page, pageSizeQuery, totalCount);
-            ResponseUtils.setPaginationLinks(res, pagingUtils, uriInfo);
-            return res.build();
-        } catch (RuntimeException e) {
-            LOGGER.error("Error retrieving milky leaderboard: {}", e.getMessage());
-            return Response.serverError().entity(e.getMessage()).build();
+
+        int pageSizeQuery = pageSize;
+        if (pageSize < 1 || pageSize > PagingSizes.MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE.getSize()) {
+            pageSizeQuery = PagingSizes.MILKY_LEADERBOARD_DEFAULT_PAGE_SIZE.getSize();
         }
+        List<UserDto> leaderboards = UserDto.fromUserList(userService.getMilkyPointsLeaders(pageSizeQuery, page), uriInfo);
+        int totalCount = userService.getUserCount();
+
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserDto>>(leaderboards) {});
+        final PagingUtils<UserDto> pagingUtils = new PagingUtils<>(leaderboards, page, pageSizeQuery, totalCount);
+        ResponseUtils.setPaginationLinks(res, pagingUtils, uriInfo);
+        return res.build();
+
     }
 
     @GET
@@ -285,10 +267,7 @@ public class UserController {
             LOGGER.error("Error retrieving user: {}", e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
-        catch (RuntimeException e) {
-            LOGGER.error("Error retrieving user: {}", e.getMessage());
-            return Response.serverError().entity(e.getMessage()).build();
-        }
+
     }
 
 // MODERATION
@@ -308,8 +287,6 @@ public class UserController {
             return Response.ok(BanMessageDTO.fromBannedMessage(message, user.getUsername(), uriInfo)).build();
         } catch (BannedMessageNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
     }
@@ -347,8 +324,6 @@ public class UserController {
             }
         } catch (UnableToFindUserException e) {
             return new UnableToFindUserEM().toResponse(e);
-        } catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage(), e);
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
@@ -360,14 +335,8 @@ public class UserController {
     @Produces(VndType.APPLICATION_USER)
     public Response makeUserMod(@PathParam("username") final String username) {
         User user = null;
-        try {
-            user = userService.findUserByUsername(username);
-            moderatorService.makeUserModerator(user.getUserId());
-        } catch (UnableToFindUserException e) {
-            return new UnableToFindUserEM().toResponse(e);
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
+        user = userService.findUserByUsername(username);
+        moderatorService.makeUserModerator(user.getUserId());
         // Actualizar el modelo a devolver
         // Llegar aqui implica un exito en la operacion
         user.setRole(UserRoles.MODERATOR.getRole());

@@ -42,51 +42,44 @@ public class ActorsController {
             @QueryParam("search") final String search,
             @QueryParam("pageNumber") @DefaultValue("1") final Integer pageNumber,
             @QueryParam("pageSize") @DefaultValue("-1") final int pageSize) {
-        try {
-            int pageSizeQuery = pageSize;
-            if (pageSize < 1 || pageSize > PagingSizes.ACTOR_DEFAULT_PAGE_SIZE.getSize()) {
-                pageSizeQuery = PagingSizes.ACTOR_DEFAULT_PAGE_SIZE.getSize();
-            }
-            if (mediaId != null) {
-                logger.info("Getting actors for mediaId {}", mediaId);
-                // Buscar actores por mediaId
-                final List<ActorDto> actorDtoList = ActorDto.fromActorList(
-                        actorService.getAllActorsForMedia(mediaId, pageNumber, pageSizeQuery),
-                        uriInfo);
-                int totalCount = actorService.getAllActorsForMediaCount(mediaId);
-                Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ActorDto>>(actorDtoList) {
-                });
-                ResponseUtils.setMaxAgeCache(res);
-                final PagingUtils<ActorDto> actorPagingUtils = new PagingUtils<>(actorDtoList, pageNumber, pageSizeQuery,
-                        totalCount);
-                ResponseUtils.setPaginationLinks(res, actorPagingUtils, uriInfo);
-                return res.build();
 
-            } else if (search != null && !search.isEmpty()) {
-                logger.info("Getting actors for search {}", search);
-                // Buscar actores por consulta de texto
-                List<Actor> actorList = actorService.getActorsForQuery(search, pageNumber, pageSizeQuery);
-                int totalCount = actorService.getActorsForQueryCount(search);
-                List<ActorDto> actorDtoList = ActorDto.fromActorList(actorList, uriInfo);
-                Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ActorDto>>(actorDtoList) {
-                });
-                final PagingUtils<Actor> actorPagingUtils = new PagingUtils<>(actorList, pageNumber, pageSizeQuery,
-                        totalCount);
-                ResponseUtils.setPaginationLinks(res, actorPagingUtils, uriInfo);
-                return res.build();
-            } else {
-                // Si no se proporcionan parámetros válidos
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("You must provide either 'mediaId' or 'search' as query parameters.")
-                        .build();
-            }
-        } catch (Exception e) {
-            logger.error("Error getting actors", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An error occurred while processing the request.")
+        int pageSizeQuery = pageSize;
+        if (pageSize < 1 || pageSize > PagingSizes.ACTOR_DEFAULT_PAGE_SIZE.getSize()) {
+            pageSizeQuery = PagingSizes.ACTOR_DEFAULT_PAGE_SIZE.getSize();
+        }
+        if (mediaId != null) {
+            logger.info("Getting actors for mediaId {}", mediaId);
+            // Buscar actores por mediaId
+            final List<ActorDto> actorDtoList = ActorDto.fromActorList(
+                    actorService.getAllActorsForMedia(mediaId, pageNumber, pageSizeQuery),
+                    uriInfo);
+            int totalCount = actorService.getAllActorsForMediaCount(mediaId);
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ActorDto>>(actorDtoList) {
+            });
+            ResponseUtils.setMaxAgeCache(res);
+            final PagingUtils<ActorDto> actorPagingUtils = new PagingUtils<>(actorDtoList, pageNumber, pageSizeQuery,
+                    totalCount);
+            ResponseUtils.setPaginationLinks(res, actorPagingUtils, uriInfo);
+            return res.build();
+
+        } else if (search != null && !search.isEmpty()) {
+            logger.info("Getting actors for search {}", search);
+            // Buscar actores por consulta de texto
+            List<Actor> actorList = actorService.getActorsForQuery(search, pageNumber, pageSizeQuery);
+            int totalCount = actorService.getActorsForQueryCount(search);
+            List<ActorDto> actorDtoList = ActorDto.fromActorList(actorList, uriInfo);
+            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<ActorDto>>(actorDtoList) {
+            });
+            final PagingUtils<Actor> actorPagingUtils = new PagingUtils<>(actorList, pageNumber, pageSizeQuery,
+                    totalCount);
+            ResponseUtils.setPaginationLinks(res, actorPagingUtils, uriInfo);
+            return res.build();
+        } else {
+            // Si no se proporcionan parámetros válidos
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("You must provide either 'mediaId' or 'search' as query parameters.")
                     .build();
         }
-
     }
 
     @GET
@@ -101,10 +94,6 @@ public class ActorsController {
         } catch (NoResultException e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("Actor not found.")
-                    .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An error occurred while processing the request.")
                     .build();
         }
     }

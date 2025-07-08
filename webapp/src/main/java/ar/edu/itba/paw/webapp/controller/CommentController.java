@@ -154,9 +154,6 @@ public class CommentController {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("Review not found")
                     .build();
-        } catch (RuntimeException e) {
-            logger.error(e.getMessage(), e);
-            return Response.serverError().entity(e.getMessage()).build();
         }
     }
 
@@ -164,18 +161,14 @@ public class CommentController {
     @Path("/{id}")
     @Produces(VndType.APPLICATION_COMMENT)
     public Response getCommentById(@PathParam("id") @NotNull int id, @Context Request request) {
-        try {
-            final Comment comment = commentService.getCommentById(id);
-            if (comment == null) {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("Comment not found")
-                        .build();
-            }
-            final Supplier<CommentDto> dtoSupplier = () -> CommentDto.fromComment(comment, uriInfo);
-            return ResponseUtils.setConditionalCacheHash(request, dtoSupplier, comment.hashCode());
-        } catch (RuntimeException e) {
-            return Response.serverError().entity(e.getMessage()).build();
+        final Comment comment = commentService.getCommentById(id);
+        if (comment == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Comment not found")
+                    .build();
         }
+        final Supplier<CommentDto> dtoSupplier = () -> CommentDto.fromComment(comment, uriInfo);
+        return ResponseUtils.setConditionalCacheHash(request, dtoSupplier, comment.hashCode());
     }
 
     @POST
@@ -203,10 +196,6 @@ public class CommentController {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("Review not found")
                     .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
         }
     }
 
@@ -230,10 +219,6 @@ public class CommentController {
         } catch (UserNotLoggedException e) {
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"error\":\"User must be logged in to delete a comment.\"}")
-                    .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
                     .build();
         }
     }
@@ -400,10 +385,7 @@ public class CommentController {
             return res.build();
         } catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid feedback type. Only LIKE and DISLIKE are valid feedback types.").build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("There was an unexpected error.").build();
         }
-
     }
 
 }
