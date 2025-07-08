@@ -82,7 +82,7 @@ public class MoovieListReviewController {
             return ResponseUtils.setConditionalCacheHash(request, dtoSupplier, moovieListReview.hashCode());
         } catch (MoovieListNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"MoovieList review not found.\"}")
+                    .entity(new ResponseMessage("{\"error\":\"MoovieList review not found.\"}"))
                     .build();
         }
     }
@@ -101,7 +101,7 @@ public class MoovieListReviewController {
                     User user = userService.getInfoOfMyUser();
                     if (user.getRole() < UserRoles.MODERATOR.getRole()) {
                         return Response.status(Response.Status.FORBIDDEN)
-                                .entity("User is not moderator")
+                                .entity(new ResponseMessage("User is not moderator"))
                                 .build();
                     }
                     int pageSize = PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize();
@@ -119,7 +119,7 @@ public class MoovieListReviewController {
                     return res.build();
                 } catch (UserNotLoggedException e) {
                     return Response.status(Response.Status.UNAUTHORIZED)
-                            .entity(e.getMessage())
+                            .entity(new ResponseMessage(e.getMessage()))
                             .build();
                 }
             }
@@ -164,15 +164,16 @@ public class MoovieListReviewController {
                 return res.build();
 
             } else {
-                return Response.status(Response.Status.BAD_REQUEST).entity("Either listId or userId must be provided.")
+                return Response.status(Response.Status.BAD_REQUEST).entity(
+                        new ResponseMessage("Either listId or userId must be provided."))
                         .build();
             }
         } catch (MoovieListNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"MoovieList not found.\"}")
+                    .entity(new ResponseMessage("{\"error\":\"MoovieList not found.\"}"))
                     .build();
         } catch (UnableToFindUserException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity("{\"error\":\"User not found.\"}").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage("{\"error\":\"User not found.\"}")).build();
         }
     }
 
@@ -198,15 +199,18 @@ public class MoovieListReviewController {
                     .build();
         } catch (ForbiddenException e) {
             return Response.status(Response.Status.FORBIDDEN)
-                    .entity("{\"error\":\"You do not have permission to create a review for this MoovieList.\"}")
+                    .entity(new ResponseMessage(
+                            "{\"error\":\"You do not have permission to create a review for this MoovieList.\"}"))
                     .build();
         } catch (MoovieListNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"MoovieList not found.\"}")
+                    .entity(
+                            new ResponseMessage("{\"error\":\"MoovieList not found.\"}"))
                     .build();
         } catch (ReviewAlreadyCreatedException e) {
             return Response.status(Response.Status.CONFLICT)
-                    .entity("{\"error\":\"Review already created for this MoovieList.\"}")
+                    .entity(
+                            new ResponseMessage("{\"error\":\"Review already created for this MoovieList.\"}"))
                     .build();
         }
     }
@@ -226,20 +230,21 @@ public class MoovieListReviewController {
                     moovieListReviewDto.getReviewContent(),
                     ReviewTypes.REVIEW_MOOVIE_LIST);
             return Response.ok()
-                    .entity("MoovieList review successfully updated for MoovieList with ID: "
-                            + moovieListReviewDto.getListId())
+                    .entity(
+                            new ResponseMessage("MoovieList review successfully updated for MoovieList with ID: "
+                            + moovieListReviewDto.getListId()))
                     .build();
         } catch (MoovieListNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"MoovieList not found.\"}")
+                    .entity(new ResponseMessage("{\"error\":\"MoovieList not found.\"}"))
                     .build();
         } catch (ReviewNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"Review not found.\"}")
+                    .entity(new ResponseMessage("{\"error\":\"Review not found.\"}"))
                     .build();
         } catch (ForbiddenException e) {
             return Response.status(Response.Status.FORBIDDEN)
-                    .entity("{\"error\":\"You do not have permission, list is private.\"}")
+                    .entity(new ResponseMessage("{\"error\":\"You do not have permission, list is private.\"}"))
                     .build();
         }
     }
@@ -253,20 +258,20 @@ public class MoovieListReviewController {
             reviewService.deleteReview(id, ReviewTypes.REVIEW_MOOVIE_LIST);
 
             return Response.ok()
-                    .entity("Review successfully deleted.")
+                    .entity(new ResponseMessage("Review successfully deleted."))
                     .build();
 
         } catch (UserNotLoggedException e) {
             return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\":\"User must be logged in to delete a review.\"}")
+                    .entity(new ResponseMessage("{\"error\":\"User must be logged in to delete a review.\"}"))
                     .build();
         } catch (MoovieListNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"MoovieList review not found.\"}")
+                    .entity(new ResponseMessage("{\"error\":\"MoovieList review not found.\"}"))
                     .build();
         } catch (InvalidAccessToResourceException e) {
             return Response.status(Response.Status.FORBIDDEN)
-                    .entity("{\"error\":\"You do not have permission to delete this review.\"}")
+                    .entity(new ResponseMessage("{\"error\":\"You do not have permission to delete this review.\"}"))
                     .build();
         }
     }
@@ -292,7 +297,7 @@ public class MoovieListReviewController {
                             .build()
             ).build();
         return Response.status(Response.Status.CONFLICT)
-                .entity("{\"message\":\"List is already liked.\"}").build();
+                .entity(new ResponseMessage("{\"message\":\"List is already liked.\"}")).build();
     }
 
     @DELETE
@@ -305,17 +310,17 @@ public class MoovieListReviewController {
             User user = userService.getInfoOfMyUser();
             if (!user.getUsername().equals(username)) {
                 return Response.status(Response.Status.FORBIDDEN)
-                        .entity("{\"message\":\"You can only remove your own likes.\"}")
+                        .entity(new ResponseMessage("{\"message\":\"You can only remove your own likes.\"}"))
                         .build();
             }
         boolean removed = reviewService.removeLikeReview(id, ReviewTypes.REVIEW_MOOVIE_LIST);
         if (removed)
             return Response.noContent().build();
         return Response.status(Response.Status.NOT_FOUND)
-                .entity("{\"message\":\"List review is not liked.\"}").build();
+                .entity(new ResponseMessage("{\"message\":\"List review is not liked.\"}")).build();
         } catch (UserNotLoggedException e) {
             return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity(e.getMessage()).build();
+                    .entity(new ResponseMessage(e.getMessage())).build();
         }
     }
 
@@ -334,7 +339,7 @@ public class MoovieListReviewController {
                     .build().toString();
             return Response.ok(new UserMoovieListReviewDto(reviewId, username, uri, uriInfo)).build();
         }
-        return Response.status(Response.Status.NOT_FOUND).entity("User has not liked the Moovie List Review").build();
+        return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage("User has not liked the Moovie List Review")).build();
     }
 
     // Return all likes for a review

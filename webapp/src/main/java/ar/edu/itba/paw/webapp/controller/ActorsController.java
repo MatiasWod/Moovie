@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.services.ActorService;
 import ar.edu.itba.paw.webapp.dto.out.ActorDto;
+import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.slf4j.Logger;
@@ -77,7 +78,7 @@ public class ActorsController {
         } else {
             // Si no se proporcionan parámetros válidos
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("You must provide either 'mediaId' or 'search' as query parameters.")
+                    .entity(new ResponseMessage("You must provide either 'mediaId' or 'search' as query parameters."))
                     .build();
         }
     }

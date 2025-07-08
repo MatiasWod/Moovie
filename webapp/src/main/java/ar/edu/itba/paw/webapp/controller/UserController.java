@@ -133,7 +133,7 @@ public class UserController {
                     .build();
         } catch (UnableToCreateUserException e) {
             LOGGER.info("User already exists. Returning CONFLICT.");
-            return Response.status(Response.Status.CONFLICT).entity("User already exists").build();
+            return Response.status(Response.Status.CONFLICT).entity(new ResponseMessage("User already exists")).build();
         }
     }
 
@@ -148,7 +148,7 @@ public class UserController {
 
             if (!tokenOptional.isPresent()) {
                 LOGGER.info("Token not found. Returning NOT_FOUND.");
-                return Response.status(Response.Status.NOT_FOUND).entity("Token not found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage("Token not found")).build();
             }
             Token token = tokenOptional.get();
             if (userService.findUserById(token.getUserId()).getRole() > 0) {
@@ -157,14 +157,14 @@ public class UserController {
             userService.resendVerificationEmail(token);
 
             LOGGER.info("Verification email resent successfully for user");
-            return Response.ok().entity("Verification email resent successfully").build();
+            return Response.ok().entity(new ResponseMessage("Verification email resent successfully")).build();
 
         } catch (VerificationTokenNotFoundException e) {
             LOGGER.error("Verification token not found: {}", e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity("Verification token not found").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage("Verification token not found")).build();
         } catch (UserVerifiedException e) {
             LOGGER.error("User is already verified. Returning CONFLICT.");
-            return Response.status(Response.Status.CONFLICT).entity("User is already verified").build();
+            return Response.status(Response.Status.CONFLICT).entity(new ResponseMessage("User is already verified")).build();
         }
     }
 
@@ -222,7 +222,7 @@ public class UserController {
         final Optional<Token> tokenOptional = verificationTokenService.getToken(userResetPasswordDto.getToken());
         if (!tokenOptional.isPresent()) {
             LOGGER.info("Token not found. Returning NOT_FOUND.");
-            return Response.status(Response.Status.NOT_FOUND).entity("Token not found").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage("Token not found")).build();
         }
         Token tok = tokenOptional.get();
         userService.resetPassword(tok, userResetPasswordDto.getPassword());
@@ -263,7 +263,7 @@ public class UserController {
             return ResponseUtils.setConditionalCacheHash(request, dtoSupplier, user.hashCode());
         } catch (UnableToFindUserException e) {
             LOGGER.error("Error retrieving user: {}", e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage(e.getMessage())).build();
         }
 
     }
