@@ -6,7 +6,9 @@ import java.util.List;
 
 
 public interface GenreDao {
-    List<Genre> getAllGenres();
-    List<Genre> getGenresForMedia(int mediaId);
+    List<Genre> getAllGenres(int pageSize, int pageNumber);
+    int getAllGenresCount();
+    List<Genre> getGenresForMedia(int mediaId, int pageSize, int pageNumber);
+    int getGenresForMediaCount(int mediaId);
     Genre getGenreById (int genreId);
 }
