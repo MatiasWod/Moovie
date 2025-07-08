@@ -27,6 +27,8 @@ import javax.ws.rs.core.UriInfo;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.webapp.dto.in.EditListContentDto;
 import ar.edu.itba.paw.webapp.dto.out.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -71,6 +73,9 @@ public class MoovieListController {
         this.userService = userService;
         this.reportService = reportService;
     }
+
+    Logger logger = LoggerFactory.getLogger(MoovieListController.class);
+
 
     @GET
     @Produces(VndType.APPLICATION_MOOVIELIST_LIST)
@@ -130,7 +135,7 @@ public class MoovieListController {
                     int userid = userService.findUserByUsername(followedBy).getUserId();
                     mlcList = moovieListService.getFollowedMoovieListCards(userid,
                             MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
-                            PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1);
+                            PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), pageNumber - 1);
                     listCount = moovieListService.getFollowedMoovieListCardsCount(userid,
                             MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
                 }
@@ -138,7 +143,7 @@ public class MoovieListController {
                     int userid = userService.findUserByUsername(likedBy).getUserId();
                     mlcList = moovieListService.getLikedMoovieListCards(likedBy,
                             MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
-                            PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1);
+                            PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), pageNumber - 1);
                     listCount = moovieListService.getLikedMoovieListCount(userid,
                             MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
                 }
