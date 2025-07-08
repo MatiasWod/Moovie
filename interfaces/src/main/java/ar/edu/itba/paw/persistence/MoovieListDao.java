@@ -22,7 +22,9 @@ public interface MoovieListDao {
     List<MoovieListCard> getFollowedMoovieListCards(int userId, int type, int size, int pageNumber, int currentUserId);
     List<User> getMoovieListFollowers(int moovieListId);
     int getFollowedMoovieListCardsCount(int userId, int type);
-
+    int getLikedMoovieListCount(int userId, int type);
+    int getLikedMoovieListCountByListId(int listId);
+    int getFollowedMoovieListCardsCountByListId(int listId);
     List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber, int currentUserId);
     List<Media> getRecommendedMediaToAdd(int moovieListId, int size);
 

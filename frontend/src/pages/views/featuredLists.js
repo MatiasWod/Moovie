@@ -95,9 +95,9 @@ function FeaturedLists() {
   };
 
   useEffect(() => {
-    if (!user.defaultPrivateMoovieListsUrl) return;
+    if (!user?.defaultPrivateMoovieListsUrl) return;
     const fetchWatchedUrl = async () => {
-      const res = await api.get(user.defaultPrivateMoovieListsUrl, {
+      const res = await api.get(user?.defaultPrivateMoovieListsUrl, {
         params: {
           search: 'Watched',
         },
@@ -105,7 +105,7 @@ function FeaturedLists() {
       setWatchedUrl(res);
     };
     fetchWatchedUrl();
-  }, [user.defaultPrivateMoovieListsUrl]);
+  }, [user?.defaultPrivateMoovieListsUrl]);
 
   useEffect(() => {
     async function getData() {

@@ -139,14 +139,16 @@ public class ReviewHibernateDao implements ReviewDao {
 
 
     @Override
-    public void createReview(User user, int mediaId, int rating, String reviewContent, ReviewTypes type) {
+    public int createReview(User user, int mediaId, int rating, String reviewContent, ReviewTypes type) {
         try {
             if(type.getType() == ReviewTypes.REVIEW_MEDIA.getType()) {
                 Review review = new Review(user, mediaId, rating, reviewContent);
                 em.persist(review);
+                return  review.getReviewId();
             }else{
                 MoovieListReview review = new MoovieListReview(user, mediaId,  reviewContent);
                 em.persist(review);
+                return  review.getMoovieListReviewId();
             }
         } catch (Exception e) {
             throw new UnableToInsertIntoDatabase("An error occurred while creating the review.", e);
@@ -190,6 +192,19 @@ public class ReviewHibernateDao implements ReviewDao {
         }else{
             MoovieListReview review = em.find(MoovieListReview.class, reviewId);
             em.remove(review);
+        }
+    }
+
+    @Override
+    public int getLikedReviewsCountByReviewId(int id, ReviewTypes type) {
+        if(type.getType() == ReviewTypes.REVIEW_MEDIA.getType()) {
+            return ((Number) em.createQuery("SELECT COUNT(rl) FROM ReviewsLikes rl WHERE rl.review.reviewId = :reviewId")
+                    .setParameter("reviewId", id)
+                    .getSingleResult()).intValue();
+        }else{
+            return ((Number) em.createQuery("SELECT COUNT(mlrl) FROM MoovieListsReviewsLikes mlrl WHERE mlrl.moovieListReview.moovieListReviewId = :reviewId")
+                    .setParameter("reviewId", id)
+                    .getSingleResult()).intValue();
         }
     }
 

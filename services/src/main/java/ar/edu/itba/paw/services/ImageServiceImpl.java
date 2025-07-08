@@ -74,7 +74,7 @@ public class ImageServiceImpl implements ImageService{
 
     @Transactional
     @Override
-    public void setUserImage(int userId, byte[] imageBytes, String extension) {
+    public int setUserImage(int userId, byte[] imageBytes, String extension) {
         if (imageBytes.length > 0) {
             if (imageBytes.length > MAX_IMAGE_SIZE) {
                 throw new InvalidTypeException("File is too big (Max is 5MB).");
@@ -82,7 +82,7 @@ public class ImageServiceImpl implements ImageService{
 
             if (extension != null || extension.equals("png") || extension.equals("jpg")
                     || extension.equals("jpeg") || extension.equals("gif")) {
-                imageDao.setUserImage(userId, imageBytes);
+                return imageDao.setUserImage(userId, imageBytes);
             } else {
                 throw new InvalidTypeException("File is not of type image");
             }

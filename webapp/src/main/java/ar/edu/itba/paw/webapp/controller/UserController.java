@@ -129,8 +129,12 @@ public class UserController {
             userService.createUser(userCreateDto.getUsername(), userCreateDto.getEmail(), userCreateDto.getPassword());
             final User user = userService.findUserByUsername(userCreateDto.getUsername());
             return Response
-                    .created(uriInfo.getBaseUriBuilder().path("users").path(user.getUsername()).build())
-                    .entity(UserDto.fromUser(user, uriInfo)).build();
+                    .created(uriInfo
+                            .getBaseUriBuilder()
+                            .path("users")
+                            .path(user.getUsername())
+                            .build())
+                    .build();
         } catch (UnableToCreateUserException e) {
             LOGGER.info("User already exists. Returning CONFLICT.");
             return Response.status(Response.Status.CONFLICT).entity("User already exists").build();
@@ -177,7 +181,7 @@ public class UserController {
 
 
     @POST
-    @Path("reset-tokens")
+    @Path("/reset-tokens")
     @Consumes(VndType.APPLICATION_PASSWORD_TOKEN_FORM)
     public Response createPasswordResetToken(@Valid UserEmailDto userEmailDto) {
         LOGGER.info("Method: createPasswordResetToken, Path: /users, Email: {}", userEmailDto.getEmail());

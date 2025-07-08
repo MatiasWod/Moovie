@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface ImageService {
     Image getImageById(int imageId, int size);
-    void setUserImage(int userId, byte[] imageBytes, String extension);
+    int setUserImage(int userId, byte[] imageBytes, String extension);
 }

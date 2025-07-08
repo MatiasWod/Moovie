@@ -28,6 +28,7 @@ public class TVCreatorsServiceImpl implements TVCreatorsService{
         return tvCreatorsDao.getTvCreatorsByMediaId(mediaId, pageNumber, pageSize);
     }
 
+    @Transactional
     @Override
     public int getTvCreatorsByMediaIdCount(int mediaId) {
         return tvCreatorsDao.getTvCreatorsByMediaIdCount(mediaId);
@@ -56,6 +57,7 @@ public class TVCreatorsServiceImpl implements TVCreatorsService{
         return tvCreatorsDao.getMediasForTVCreator(creatorId, pageNumber, pageSize, userService.tryToGetCurrentUserId());
     }
 
+    @Transactional
     @Override
     public int getMediasForTVCreatorCount(int creatorId) {
         return tvCreatorsDao.getMediasForTVCreatorCount(creatorId);
@@ -81,6 +83,7 @@ public class TVCreatorsServiceImpl implements TVCreatorsService{
         return toReturn;
     }
 
+    @Transactional
     @Override
     public int getTVCreatorsForQueryCount(String query) {
         return tvCreatorsDao.getTVCreatorsForQueryCount(query);

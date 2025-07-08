@@ -109,7 +109,11 @@ public class ReviewReportController {
                     reportDto.getResourceId(),
                     currentUser.getUserId(),
                     reportDto.getType());
-            return Response.ok(ReviewReportDto.fromReviewReport(response, uriInfo)).build();
+            return Response.created(
+                    uriInfo.getBaseUriBuilder()
+                    .path("reviewReports")
+                    .path(String.valueOf(response))
+                    .build()).build();
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage(), e);
         }

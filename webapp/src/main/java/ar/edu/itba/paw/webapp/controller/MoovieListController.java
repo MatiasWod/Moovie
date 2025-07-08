@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -23,6 +24,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.webapp.dto.in.EditListContentDto;
 import ar.edu.itba.paw.webapp.dto.out.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -151,7 +153,7 @@ public class MoovieListController {
                     mlcList = moovieListService.getLikedMoovieListCards(likedBy,
                             MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
                             PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1);
-                    listCount = moovieListService.getFollowedMoovieListCardsCount(userid,
+                    listCount = moovieListService.getLikedMoovieListCount(userid,
                             MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
                 }
                 Response.ResponseBuilder res = Response
@@ -203,9 +205,14 @@ public class MoovieListController {
                     moovieListType.getType(),
                     listDto.getDescription()).getMoovieListId();
 
-            final MoovieListCard list = moovieListService.getMoovieListCardById(listId);
-            final Supplier<MoovieListDto> dtoSupplier = () -> MoovieListDto.fromMoovieList(list, uriInfo);
-            return ResponseUtils.setConditionalCacheHash(request, dtoSupplier, list.hashCode());
+
+            final URI uri = uriInfo.getBaseUriBuilder()
+                    .path("lists")
+                    .path(String.valueOf(listId))
+                    .build();
+
+            return Response.created(uri).build();
+
         } catch (UnableToInsertIntoDatabase | DuplicateKeyException e) {
             return Response.status(Response.Status.CONFLICT)
                     .entity("A movie list with the same name already exists.")
@@ -292,9 +299,16 @@ public class MoovieListController {
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response createMoovieListLike(@PathParam("id") int id) {
+        String username = userService.getInfoOfMyUser().getUsername();
         boolean liked = moovieListService.likeMoovieList(id);
         if (liked)
-            return Response.ok("{\"message\":\"Successfully liked list.\"}").build();
+            return Response.created(uriInfo.getBaseUriBuilder()
+                    .path("lists")
+                    .path(String.valueOf(id))
+                    .path("likes")
+                    .path(username)
+                    .build()
+                ).build();
         return Response.status(Response.Status.BAD_REQUEST)
                 .entity("{\"message\":\"List is already liked.\"}").build();
     }
@@ -351,6 +365,8 @@ public class MoovieListController {
 
         List<User> likedUsers = moovieListService.usersLikesMoovieList(listId, page,
                 PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize());
+        int totalCount = moovieListService.getLikedMoovieListCountByListId(listId);
+
         if (likedUsers.isEmpty()) {
             return Response.noContent().build();
         }
@@ -364,8 +380,13 @@ public class MoovieListController {
                     .build().toString();
             toRet.add(new UserListIdDto(listId, user.getUsername(), uri, uriInfo));
         }
-        return Response.ok(new GenericEntity<List<UserListIdDto>>(toRet) {
-        }).build();
+
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserListIdDto>>(toRet) {
+        });
+        final PagingUtils<UserListIdDto> likesPagingUtils= new PagingUtils<>(toRet, page,
+                PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), totalCount);
+        ResponseUtils.setPaginationLinks(res, likesPagingUtils, uriInfo);
+        return res.build();
     }
 
     // Follows
@@ -375,9 +396,17 @@ public class MoovieListController {
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(MediaType.APPLICATION_JSON)
     public Response followMoovieList(@PathParam("id") int id) {
+        String username = userService.getInfoOfMyUser().getUsername();
         boolean followed = moovieListService.followMoovieList(id);
         if (followed)
-            return Response.ok("{\"message\":\"Successfully followed list.\"}").build();
+            return Response.created(
+                uriInfo.getBaseUriBuilder()
+                .path("lists")
+                .path(String.valueOf(id))
+                .path("followers")
+                .path(username)
+                .build()
+        ).build();
         return Response.status(Response.Status.CONFLICT)
                 .entity("{\"message\":\"List is already followed.\"}").build();
     }
@@ -435,6 +464,8 @@ public class MoovieListController {
 
         List<User> followedUsers = moovieListService.usersFollowsMoovieList(listId, page,
                 PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize());
+        final int totalCount = moovieListService.getFollowedMoovieListCardsCountByListId(listId);
+
         if (followedUsers.isEmpty()) {
             return Response.noContent().build();
         }
@@ -448,8 +479,12 @@ public class MoovieListController {
                     .build().toString();
             toRet.add(new UserListIdDto(listId, user.getUsername(), uri, uriInfo));
         }
-        return Response.ok(new GenericEntity<List<UserListIdDto>>(toRet) {
-        }).build();
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserListIdDto>>(toRet) {
+        });
+        final PagingUtils<UserListIdDto> followsPagingUtils = new PagingUtils<>(toRet, page,
+                PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), totalCount);
+        ResponseUtils.setPaginationLinks(res, followsPagingUtils, uriInfo);
+        return res.build();
     }
 
 
@@ -508,7 +543,12 @@ public class MoovieListController {
                         .entity(new ResponseMessage("No media IDs provided."))
                         .build();
             }
-            return Response.ok(updatedList).entity(new ResponseMessage("Media added successfully to the list."))
+            return Response.created(
+                    uriInfo.getBaseUriBuilder()
+                        .path("lists")
+                        .path(String.valueOf(id))
+                        .path("content")
+                        .build())
                     .build();
         } catch (InvalidAccessToResourceException e) {
             return Response.status(Response.Status.FORBIDDEN)
@@ -517,10 +557,6 @@ public class MoovieListController {
         } catch (MoovieListNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(new ResponseMessage("MoovieList not found."))
-                    .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ResponseMessage("An unexpected error occurred."))
                     .build();
         }
 

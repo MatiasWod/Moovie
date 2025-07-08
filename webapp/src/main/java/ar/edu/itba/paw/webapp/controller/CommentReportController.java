@@ -24,6 +24,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.net.URI;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -110,7 +111,13 @@ public class CommentReportController {
                     reportDto.getResourceId(),
                     currentUser.getUserId(),
                     reportDto.getType());
-            return Response.ok(CommentReportDto.fromCommentReport(response, uriInfo)).build();
+
+            final URI uri = uriInfo.getBaseUriBuilder()
+                    .path("commentsReports")
+                    .path(String.valueOf(response.getReportId()))
+                    .build();
+
+            return Response.created(uri).build();
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage(), e);
         }

@@ -128,8 +128,10 @@ public class CommentDaoImpl implements CommentDao{
     }
 
     @Override
-    public void createComment(int reviewId, String content, User user) {
-        em.persist(new Comment(user,reviewId,content));
+    public int createComment(int reviewId, String content, User user) {
+        Comment comment = new Comment(user, reviewId, content);
+        em.persist(comment);
+        return comment.getCommentId();
     }
 
     @Override
@@ -139,16 +141,6 @@ public class CommentDaoImpl implements CommentDao{
             em.remove(toDelete);
         }
     }
-/*
-/final TypedQuery<User> query = em.createQuery(
-                "SELECT cl.user FROM CommentLikes cl WHERE cl.comment.commentId = :commentId",
-                User.class
-        );
-        query.setParameter("commentId", commentId);
-        query.setFirstResult(pageNumber * pageSize);
-        query.setMaxResults(pageSize);
-        return query.getResultList();
- */
 
     @Override
     public List<Comment> getCommentFeedbackForUser(int uid, int pageNumber, int pageSize) {

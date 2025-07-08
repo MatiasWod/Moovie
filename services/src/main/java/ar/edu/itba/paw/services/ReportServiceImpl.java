@@ -107,6 +107,7 @@ public class ReportServiceImpl implements ReportService {
         return reports;
     }
 
+    @Transactional
     @Override
     public int getReportsCount(String contentType) {
 
@@ -341,6 +342,7 @@ public class ReportServiceImpl implements ReportService {
         return reportDao.getReports(contentType, reportType, resourceId, pageSize, pageNumber);
     }
 
+    @Transactional
     @Override
     public int getReportsCount(String contentType, Integer reportType, Integer resourceId) {
         return reportDao.getReportsCount(contentType, reportType, resourceId);

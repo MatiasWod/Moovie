@@ -121,7 +121,7 @@ function List() {
   const [watchedCount, setWatchedCount] = useState(0);
   useEffect(() => {
     async function getWatchedCount() {
-      if (!listContent) {
+      if (!listContent || !user?.defaultPrivateMoovieListsUrl) {
         return;
       }
       // Go through all the media in the paginated list content. Promise.all the WW status of each media.
@@ -142,7 +142,7 @@ function List() {
           aux = nextPage.data;
         }
 
-        const watchedUrl = await api.get(user.defaultPrivateMoovieListsUrl, {
+        const watchedUrl = await api.get(user?.defaultPrivateMoovieListsUrl, {
           params: {
             search: 'Watched',
           },
@@ -167,7 +167,7 @@ function List() {
       }
     }
     getWatchedCount();
-  }, [listContent, flag]);
+  }, [listContent, flag, user?.defaultPrivateMoovieListsUrl]);
 
   const [listRecommendations, setListRecommendations] = useState(undefined);
   const [listRecommendationsLoading, setlistRecommendationsLoading] = useState(true);

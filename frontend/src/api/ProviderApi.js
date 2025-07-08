@@ -1,8 +1,14 @@
 import api from './api';
 
 const providerApi = (() => {
-  const getAllProviders = () => {
-    return api.get('/providers');
+  const getAllProviders = (page) => {
+    return api.get('/providers',
+        {
+        params: {
+          pageNumber: page || 1,
+        },
+      }
+    );
   };
 
   const getProvidersFromUrl = (url) => {

@@ -274,7 +274,7 @@ const userApi = (() => {
   const forgotPassword = async (email) => {
     try {
       return await api.post(
-        '/users/',
+        '/users/reset-tokens',
         { email: email },
         {
           headers: {

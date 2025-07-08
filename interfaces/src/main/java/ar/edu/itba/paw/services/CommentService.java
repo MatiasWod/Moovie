@@ -24,7 +24,7 @@ public interface CommentService {
 
     void removeDislikeComment(int commentId);
 
-    void createComment(int reviewId, String content);
+    int createComment(int reviewId, String content);
 
     void deleteComment(int commentId);
 

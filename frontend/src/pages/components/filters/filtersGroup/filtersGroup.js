@@ -10,6 +10,8 @@ import ChipsDisplay from './chipsDisplay';
 import FilterList from './filterList';
 import FilterSection from './filterSection';
 import FormButtons from './formButtons';
+import {parsePaginatedResponse} from "../../../../utils/ResponseUtils";
+import PaginationButton from "../../paginationButton/PaginationButton";
 
 const FiltersGroup = ({
   type,
@@ -36,15 +38,18 @@ const FiltersGroup = ({
   const [mediaOrderByInput, setMediaOrderByInput] = useState(orderBy || mediaOrderBy.TOTAL_RATING);
 
   const [genresList, setGenresList] = useState([]);
+  const [providersRes, setProvidersRes] = useState([]);
   const [providersList, setProvidersList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     async function getProviders() {
       try {
         setLoading(true);
-        const response = await ProviderService.getAllProviders();
+        const response = await ProviderService.getAllProviders(page);
+        setProvidersRes(response);
         const providerList = response.data.map((provider) => ({
           name: provider.providerName,
           id: provider.providerId,
@@ -57,8 +62,12 @@ const FiltersGroup = ({
         setLoading(false);
       }
     }
+    getProviders();
 
-    async function getGenres() {
+  },[page]);
+
+  useEffect(() => {
+      async function getGenres() {
       try {
         setLoading(true);
         const response = await GenreService.getAllGenres();
@@ -77,7 +86,6 @@ const FiltersGroup = ({
       }
     }
 
-    getProviders();
     getGenres();
   }, []);
 
@@ -108,6 +116,7 @@ const FiltersGroup = ({
 
   if (loading) return <CircularProgress />;
   if (error) return <div>{error}</div>;
+  console.log('providersRes', providersRes);
 
   return (
     <div style={{ maxHeight: '85vh', width: '30vw', overflowY: 'auto' }}>
@@ -220,6 +229,7 @@ const FiltersGroup = ({
             isOpen={openProviders}
             toggleOpen={() => setOpenProviders(!openProviders)}
           >
+
             <FilterList
               searchValue={searchProvider}
               onSearchChange={setSearchProvider}
@@ -233,8 +243,16 @@ const FiltersGroup = ({
                 )
               }
             />
+            <div className="m-1 d-flex justify-content-center">
+              {providersRes?.links?.last?.pageNumber > 1 && (
+                  <PaginationButton
+                      page={page}
+                      lastPage={providersRes.links.last.pageNumber}
+                      setPage={setPage}
+                  />
+              )}
+            </div>
           </FilterSection>
-
           <FormButtons onApply={handleFilterSubmit} onReset={handleReset} />
         </form>
       </div>
