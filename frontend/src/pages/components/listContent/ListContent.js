@@ -75,7 +75,7 @@ const MediaRow = ({
       //   media.id,
       //   user.defaultPrivateMoovieListsUrl
       // );
-      if (!watchedUrl){
+      if (!watchedUrl) {
         setWW({ watched: false });
         return;
       }
@@ -152,6 +152,7 @@ const MediaRow = ({
 
       {isLoggedIn && !editMode && (
         <span
+          className="watched-status-button"
           onClick={(e) => {
             e.stopPropagation();
             handleWatched();
