@@ -10,7 +10,7 @@ import MediaService from '../../../services/MediaService';
 import '../forms/formsStyle.css';
 import MediaCard from '../mediaCard/MediaCard';
 
-const ListContentPaginatedSearchMode = ({ moovieListId, handleCloseSearchMode, onMediaAdded }) => {
+const ListContentPaginatedSearchMode = ({ moovieListId, handleCloseSearchMode, onMediaAdded , listContentUrl}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [mediaList, setMediaList] = useState(null);
   const { t } = useTranslation();
@@ -67,7 +67,7 @@ const ListContentPaginatedSearchMode = ({ moovieListId, handleCloseSearchMode, o
   const handleMediaClick = async (media) => {
     try {
       const response = await listService.insertMediaIntoMoovieList({
-        id: moovieListId,
+        url: listContentUrl,
         mediaIds: [media.id],
       });
       if (response.status === 200) {

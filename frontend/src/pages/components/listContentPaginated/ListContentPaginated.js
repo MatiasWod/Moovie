@@ -118,6 +118,7 @@ const ListContentPaginated = ({
           moovieListId={listId}
           handleCloseSearchMode={handleSearchMediaToAdd}
           onMediaAdded={Refresh}
+          listContentUrl={listContentUrl}
         />
       )}
     </div>
