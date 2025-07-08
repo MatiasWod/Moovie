@@ -24,6 +24,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.webapp.dto.in.EditListContentDto;
 import ar.edu.itba.paw.webapp.dto.out.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,7 +139,7 @@ public class MoovieListController {
                     mlcList = moovieListService.getLikedMoovieListCards(likedBy,
                             MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
                             PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1);
-                    listCount = moovieListService.getFollowedMoovieListCardsCount(userid,
+                    listCount = moovieListService.getLikedMoovieListCount(userid,
                             MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
                 }
                 Response.ResponseBuilder res = Response
@@ -350,6 +351,8 @@ public class MoovieListController {
 
         List<User> likedUsers = moovieListService.usersLikesMoovieList(listId, page,
                 PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize());
+        int totalCount = moovieListService.getLikedMoovieListCountByListId(listId);
+
         if (likedUsers.isEmpty()) {
             return Response.noContent().build();
         }
@@ -363,8 +366,13 @@ public class MoovieListController {
                     .build().toString();
             toRet.add(new UserListIdDto(listId, user.getUsername(), uri, uriInfo));
         }
-        return Response.ok(new GenericEntity<List<UserListIdDto>>(toRet) {
-        }).build();
+
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserListIdDto>>(toRet) {
+        });
+        final PagingUtils<UserListIdDto> likesPagingUtils= new PagingUtils<>(toRet, page,
+                PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), totalCount);
+        ResponseUtils.setPaginationLinks(res, likesPagingUtils, uriInfo);
+        return res.build();
     }
 
     // Follows
@@ -442,6 +450,8 @@ public class MoovieListController {
 
         List<User> followedUsers = moovieListService.usersFollowsMoovieList(listId, page,
                 PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize());
+        final int totalCount = moovieListService.getFollowedMoovieListCardsCountByListId(listId);
+
         if (followedUsers.isEmpty()) {
             return Response.noContent().build();
         }
@@ -455,8 +465,12 @@ public class MoovieListController {
                     .build().toString();
             toRet.add(new UserListIdDto(listId, user.getUsername(), uri, uriInfo));
         }
-        return Response.ok(new GenericEntity<List<UserListIdDto>>(toRet) {
-        }).build();
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserListIdDto>>(toRet) {
+        });
+        final PagingUtils<UserListIdDto> followsPagingUtils = new PagingUtils<>(toRet, page,
+                PagingSizes.REVIEW_DEFAULT_PAGE_SIZE.getSize(), totalCount);
+        ResponseUtils.setPaginationLinks(res, followsPagingUtils, uriInfo);
+        return res.build();
     }
 
 

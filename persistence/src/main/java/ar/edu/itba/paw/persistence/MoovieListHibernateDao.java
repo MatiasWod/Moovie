@@ -150,6 +150,39 @@ public class MoovieListHibernateDao implements MoovieListDao{
     }
 
     @Override
+    public int getLikedMoovieListCount(int userId, int type) {
+        String jpql = "SELECT COUNT(mlc) " +
+                "FROM MoovieListCard mlc JOIN MoovieListLikes mll " +
+                "ON mlc.moovieListId = mll.moovieList.moovieListId " +
+                "WHERE mll.user.userId = :userId AND type = :type";
+
+        Number result = (Number) em.createQuery(jpql)
+                .setParameter("userId", userId)
+                .setParameter("type", type)
+                .getSingleResult();
+
+        return result.intValue();
+    }
+
+    @Override
+    public int getLikedMoovieListCountByListId(int listId) {
+        String jpql = "SELECT COUNT(mll) FROM MoovieListLikes mll WHERE mll.moovieList.moovieListId = :listId";
+        Number result = (Number) em.createQuery(jpql)
+                .setParameter("listId", listId)
+                .getSingleResult();
+        return result.intValue();
+    }
+
+    @Override
+    public int getFollowedMoovieListCardsCountByListId(int listId) {
+        String jpql = "SELECT COUNT(mlf) FROM MoovieListFollowers mlf WHERE mlf.moovieList.moovieListId = :listId";
+        Number result = (Number) em.createQuery(jpql)
+                .setParameter("listId", listId)
+                .getSingleResult();
+        return result.intValue();
+    }
+
+    @Override
     public List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber, int currentUserId) {
 
         String jpql = "SELECT mlc, " +

@@ -18,6 +18,7 @@ public interface MoovieListService {
     //For controllers is best to use the CARDS
     MoovieList getMoovieListById(int moovieListId);
 
+
     //Union of the content and the card of a moovieListId, also workds searching with name username
     MoovieListDetails getMoovieListDetails(int moovieListId, String name, String ownerUsername, String orderBy, String sortOrder, int size, int pageNumber);
 
@@ -33,6 +34,9 @@ public interface MoovieListService {
     UserMoovieListId currentUserHasFollowed( int moovieListId);
 
     int getFollowedMoovieListCardsCount(int userId, int type);
+    int getLikedMoovieListCount(int userId, int type);
+    int getLikedMoovieListCountByListId(int listId);
+    int getFollowedMoovieListCardsCountByListId(int listId);
 
     //Returns a list of recomended amount of moovie list, recomends are based on user who liked this list likes (if the return size < size its filled with random moovie lists)
     List<MoovieListCard> getRecommendedMoovieListCards(int moovieListId, int size, int pageNumber);
