@@ -114,6 +114,15 @@ public class MoovieList {
         return type;
     }
 
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
