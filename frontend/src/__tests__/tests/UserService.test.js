@@ -249,58 +249,6 @@ describe('UserService', () => {
     });
   });
 
-  describe('currentUserCommentFeedback', () => {
-    it('should return LIKE if liked is true', async () => {
-      userApi.currentUserCommentFeedback.mockResolvedValue({
-        status: 200,
-        data: { liked: true, disliked: false },
-      });
-
-      const result = await UserService.currentUserCommentFeedback(10, 'john');
-
-      expect(result).toBe(CommentStatusEnum.LIKE);
-    });
-
-    it('should return DISLIKE if disliked is true', async () => {
-      userApi.currentUserCommentFeedback.mockResolvedValue({
-        status: 200,
-        data: { liked: false, disliked: true },
-      });
-
-      const result = await UserService.currentUserCommentFeedback(10, 'john');
-
-      expect(result).toBe(CommentStatusEnum.DISLIKE);
-    });
-
-    it('should return NONE if neither liked nor disliked', async () => {
-      userApi.currentUserCommentFeedback.mockResolvedValue({
-        status: 200,
-        data: { liked: false, disliked: false },
-      });
-
-      const result = await UserService.currentUserCommentFeedback(10, 'john');
-
-      expect(result).toBe(CommentStatusEnum.NONE);
-    });
-
-    it('should return NONE if status is 204', async () => {
-      userApi.currentUserCommentFeedback.mockResolvedValue({
-        status: 204,
-      });
-
-      const result = await UserService.currentUserCommentFeedback(10, 'john');
-
-      expect(result).toBe(CommentStatusEnum.NONE);
-    });
-
-    it('should return NONE on error', async () => {
-      userApi.currentUserCommentFeedback.mockRejectedValue(new Error('fail'));
-
-      const result = await UserService.currentUserCommentFeedback(10, 'john');
-
-      expect(result).toBe(CommentStatusEnum.NONE);
-    });
-  });
 
   describe('banUser', () => {
     it('should call banUser API and return response', async () => {

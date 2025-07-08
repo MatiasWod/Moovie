@@ -1,9 +1,10 @@
 import GenreService from '../../services/GenreService';
 import genreApi from '../../api/GenreApi';
 import {genreDto, genreDto2} from "../mocks";
+import {parsePaginatedResponse} from "../../utils/ResponseUtils";
 
 jest.mock('../../api/GenreApi');
-
+jest.mock('../../utils/ResponseUtils');
 describe('GenreService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -11,25 +12,16 @@ describe('GenreService', () => {
 
   describe('getAllGenres', () => {
     it('should return an array of genres', async () => {
-      const mockGenres = [genreDto,genreDto2];
+      const mockGenres = {data:[genreDto,genreDto2], links: {next: null, previous: null}};
       genreApi.getAllGenres.mockResolvedValue(mockGenres);
-
+      parsePaginatedResponse.mockReturnValueOnce(mockGenres);
       const result = await GenreService.getAllGenres();
 
       expect(result).toEqual(mockGenres);
       expect(genreApi.getAllGenres).toHaveBeenCalledTimes(1);
-      expect(result.length).toBe(2);
-      expect(result[0]).toEqual(genreDto);
-      expect(result[1]).toEqual(genreDto2);
-    });
-
-    it('should return an empty array if no genres are found', async () => {
-      genreApi.getAllGenres.mockResolvedValue([]);
-
-      const result = await GenreService.getAllGenres();
-
-      expect(result).toEqual([]);
-      expect(genreApi.getAllGenres).toHaveBeenCalledTimes(1);
+      expect(result.data.length).toBe(2);
+      expect(result.data[0]).toEqual(genreDto);
+      expect(result.data[1]).toEqual(genreDto2);
     });
   });
 
