@@ -6,6 +6,7 @@
   "addMediaToListButton.errorAddedToList": "Error al añadir media a la lista",
   "addMediaToListButton.addedToList": "Ya está en la lista",
   "addMediaToListButton.createNewList": "Crear nueva lista",
+  "addMediaToListButton.alreadyInList": "Media ya estaba en la lista",
   "awaitEmailValidation.goHome": "Ir al inicio",
   "bannedUsers.bannedUsers": "Usuarios Baneados",
   "bannedUsers.confirmationModalTitle": "Confirmar desbaneo",
