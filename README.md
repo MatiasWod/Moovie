@@ -25,5 +25,5 @@ o correr el archivo media.sql
 
 ## Documentacion de la API
 Se puede acceder a la documentacion de la API en el siguiente link:
-https://app.swaggerhub.com/apis-docs/moovie/paw-2023b-06/1.0.0
+https://app.swaggerhub.com/apis-docs/MATIASWODTKE/Moovie/1.0.0
 
