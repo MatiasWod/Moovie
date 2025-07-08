@@ -49,12 +49,12 @@ export default function ReportsDashboard() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white shadow-xl rounded-2xl overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6">
+          <div className="bg-gradient-to-r from-green-600 to-green-700 px-8 py-6">
             <h1 className="text-3xl font-bold text-white text-center flex items-center justify-center gap-3">
               <i className="bi bi-shield-exclamation text-4xl"></i>
               {t('reportsDashboard.title')}
             </h1>
-            <p className="text-blue-100 text-center mt-2 text-sm">
+            <p className="text-green-100 text-center mt-2 text-sm">
               {t('reportsDashboard.subtitle')}
             </p>
           </div>
@@ -69,7 +69,7 @@ export default function ReportsDashboard() {
                     flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105
                     ${
                       selectedType === tab.id
-                        ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/25'
+                        ? 'bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg shadow-green-500/25'
                         : 'bg-gray-50 text-gray-700 hover:bg-gray-100 hover:text-gray-900 border border-gray-200'
                     }
                   `}

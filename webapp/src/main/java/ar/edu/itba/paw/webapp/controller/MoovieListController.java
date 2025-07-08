@@ -544,10 +544,6 @@ public class MoovieListController {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(new ResponseMessage("MoovieList not found."))
                     .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ResponseMessage("An unexpected error occurred."))
-                    .build();
         }
 
     }

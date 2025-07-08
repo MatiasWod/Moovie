@@ -18,6 +18,15 @@ const MediaCard = ({ media, size = 'normal', showWWButtons = true, disableOnClic
   const [ping, setPing] = useState(false);
   const { t } = useTranslation();
 
+  const fetchStatus = async (axiosPromise) => {
+    try {
+      const response = await axiosPromise;
+      return response.status === 200;
+    } catch(e){
+      return false;
+    }
+  }
+
   useEffect(() => {
     const fetchWW = async () => {
       try {
@@ -26,15 +35,16 @@ const MediaCard = ({ media, size = 'normal', showWWButtons = true, disableOnClic
           let watched = false;
           let watchlist = false;
           const [watchedResp, watchlistResp] = await Promise.all([
-            api.get(watchedUrl + '/content/' + media.id),
-            api.get(watchlistUrl + '/content/' + media.id)
+            fetchStatus(api.get(watchedUrl + '/content/' + media.id)),
+            fetchStatus(api.get(watchlistUrl + '/content/' + media.id))
           ]);
-          if (watchedResp.status === 200) {
+          if (watchedResp) {
             watched = true;
           }
-          if (watchlistResp.status === 200) {
+          if (watchlistResp) {
             watchlist = true;
           }
+          console.log('WW', { watched, watchlist });
           setWW({ watched, watchlist });
           return;
         }

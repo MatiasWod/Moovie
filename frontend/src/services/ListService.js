@@ -31,6 +31,7 @@ const ListService = (() => {
     return parsePaginatedResponse(res);
   };
 
+
   const getListsFromUrl = async ({ url, pageNumber, pageSize }) => {
     return await listApi.getListsFromUrl(url, pageNumber, pageSize);
   };

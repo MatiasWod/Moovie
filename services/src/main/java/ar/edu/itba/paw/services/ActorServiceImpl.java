@@ -28,11 +28,13 @@ public class ActorServiceImpl implements ActorService{
         return actorDao.getAllActorsForMedia(mediaId);
     }
 
+    @Transactional
     @Override
     public List<Actor> getAllActorsForMedia(int mediaId, int pageNumber, int pageSize) {
         return actorDao.getAllActorsForMedia(mediaId, pageNumber, pageSize);
     }
 
+    @Transactional
     @Override
     public int getAllActorsForMediaCount(int mediaId) {
         return actorDao.getAllActorsForMediaCount(mediaId);
@@ -72,6 +74,7 @@ public class ActorServiceImpl implements ActorService{
         return actorDao.getActorsForQuery(query);
     }
 
+    @Transactional
     @Override
     public List<Actor> getActorsForQuery(String query, int pageNumber, int pageSize) {
         return actorDao.getActorsForQuery(query, pageNumber, pageSize);
@@ -83,6 +86,7 @@ public class ActorServiceImpl implements ActorService{
         return actorDao.getMediaForActor(actorId, pageNumber, pageSize, userService.tryToGetCurrentUserId());
     }
 
+    @Transactional
     @Override
     public int getMediaForActorCount(int actorId) {
         return actorDao.getMediaForActorCount(actorId);

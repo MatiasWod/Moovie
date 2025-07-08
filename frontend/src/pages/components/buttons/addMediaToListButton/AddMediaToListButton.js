@@ -127,11 +127,18 @@ const AddMediaToListButton = ({ currentId, media }) => {
         url: option.listContentUrl,
         mediaIds: [Number(currentId)],
       });
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         setPopupType('success');
         setPopupMessage(t('addMediaToListButton.successfullyAddedToList'));
         setAlreadyInList((prev) => [...prev, option.id]);
-      } else {
+        return;
+
+      }
+      if( response.status === 409){
+        setPopupType('success');
+        setPopupMessage(t('addMediaToListButton.successfullyAddedToList'));
+      }
+      else {
         setPopupType('error');
         setPopupMessage(response.data.message);
       }

@@ -11,6 +11,7 @@ import DropdownMenu from '../components/dropdownMenu/DropdownMenu';
 import ListCard from '../components/listCard/ListCard';
 import '../components/listContent/listContent.css';
 import PaginationButton from '../components/paginationButton/PaginationButton';
+import EmptyStateWithActions from '../components/ReportsLists/EmptyStateWithActions';
 import './../components/mainStyle.css';
 import './browseLists.css';
 
@@ -91,6 +92,54 @@ function BrowseLists() {
         <Spinner />
       </div>
     );
+
+  // Show empty state when no lists are found
+  if (!mlcList?.data || mlcList.data.length === 0) {
+    const actions = [
+      {
+        label: t('browseLists.empty.createList'),
+        icon: 'bi-plus-circle',
+        path: '/createList',
+        primary: true
+      },
+      {
+        label: t('browseLists.empty.discover'),
+        icon: 'bi-compass',
+        path: '/discover',
+        primary: false
+      }
+    ];
+
+    return (
+      <div className="moovie-default default-container">
+        <div className="browse-lists-header">
+          <div className="title">{t('browseLists.communityLists')}</div>
+
+          <div className="browse-list-header-searchable">
+            <BrowseListsSearchBar />
+            <div style={{ display: 'flex', float: 'right', marginLeft: '10px' }}>
+              <DropdownMenu
+                setOrderBy={setOrderBy}
+                setSortOrder={setSortOrder}
+                currentSortOrder={sortOrder}
+                currentOrderBy={orderBy}
+                values={Object.values(CardsListOrderBy)}
+                labels={CardsListOrderByLabels}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="list-card-container" style={{ display: 'block' }}>
+          <EmptyStateWithActions
+            title={t('browseLists.empty.title')}
+            message={t('browseLists.empty.message')}
+            actions={actions}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="moovie-default default-container">

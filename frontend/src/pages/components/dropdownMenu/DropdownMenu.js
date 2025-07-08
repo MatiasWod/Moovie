@@ -46,8 +46,8 @@ const DropdownMenu = ({ setOrderBy, setSortOrder, currentSortOrder, currentOrder
           </NavDropdown.Item>
         ))}
       </NavDropdown>
-      <ReactTooltip 
-        id="tooltip-id" 
+      <ReactTooltip
+        id="tooltip-id"
         place="bottom"
         variant="dark"
         style={{ zIndex: 1000 }}
@@ -57,6 +57,8 @@ const DropdownMenu = ({ setOrderBy, setSortOrder, currentSortOrder, currentOrder
         data-tooltip-id="tooltip-id"
         data-tooltip-content={t('dropdownMenu.invertOrder')}
         aria-label={t('dropdownMenu.invertOrder')}
+        style={{ zIndex: 0 }}
+        className="btn-success"
       >
         {currentSortOrder === SortOrder.ASC ? '↑' : '↓'}
       </Button>

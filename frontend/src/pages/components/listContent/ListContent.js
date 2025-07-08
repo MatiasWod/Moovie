@@ -75,7 +75,10 @@ const MediaRow = ({
       //   media.id,
       //   user.defaultPrivateMoovieListsUrl
       // );
-      if (!watchedUrl) return;
+      if (!watchedUrl){
+        setWW({ watched: false });
+        return;
+      }
       const data = await api.get(watchedUrl + '/content/' + media.id);
       if (data.status === 200) {
         setWW({ watched: true });
@@ -102,9 +105,12 @@ const MediaRow = ({
           WatchlistWatched.Watched
         );
       }
-      refresh();
+      refresh?.();
+    } catch (e) {
+      console.log('Error in handleWatched')
+    } finally {
       setRefreshWatched(!refreshWatched);
-    } catch (e) {}
+    }
   };
 
   return (

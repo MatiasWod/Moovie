@@ -87,6 +87,7 @@ public class MediaServiceImpl implements MediaService{
         return mediaDao.getMediaForDirectorId(directorId, pageNumber, pageSize, userService.tryToGetCurrentUserId());
     }
 
+    @Transactional
     @Override
     public int getMediaForDirectorIdCount(int directorId) {
         return mediaDao.getMediaForDirectorIdCount(directorId);

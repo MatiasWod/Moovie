@@ -96,6 +96,7 @@ public class ReviewServiceImpl implements ReviewService{
         return reviewDao.getMoovieListReviewsFromUser(userService.tryToGetCurrentUserId(), userId,size,pageNumber);
     }
 
+    @Transactional
     @Override
     public int getMoovieListReviewsFromUserCount(int userId) {
         return reviewDao.getMoovieListReviewsFromUserCount(userId);
