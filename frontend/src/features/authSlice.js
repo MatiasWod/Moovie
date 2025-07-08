@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import userApi from '../api/UserApi';
 import api from '../api/api';
 
@@ -87,6 +87,11 @@ const authSlice = createSlice({
       localStorage.removeItem('username');
       localStorage.removeItem('refreshToken');
     },
+    updateUserImage(state, action) {
+      if (state.user) {
+        state.user.imageUrl = action.payload.imageUrl;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -148,5 +153,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, updateUserImage } = authSlice.actions;
 export default authSlice.reducer;

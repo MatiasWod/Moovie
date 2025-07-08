@@ -1,19 +1,19 @@
+import React from 'react';
+import { Image } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { Image } from 'react-bootstrap';
-import Logo from '../../../images/logo.png';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../../../features/authSlice';
-import ProfileImage from '../profileImage/ProfileImage';
-import React from 'react';
-import SearchBar from '../searchBar/SearchBar';
-import RoleBadge from '../RoleBadge/RoleBadge';
 import { useTranslation } from 'react-i18next';
-import './navbarStyle.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import UserRoles from '../../../api/values/UserRoles';
+import { logout } from '../../../features/authSlice';
+import Logo from '../../../images/logo.png';
+import ProfileImage from '../profileImage/ProfileImage';
+import RoleBadge from '../RoleBadge/RoleBadge';
+import SearchBar from '../searchBar/SearchBar';
+import './navbarStyle.css';
 
 function NavbarComponent({ onLocationChange }) {
   const dispatch = useDispatch();
@@ -115,9 +115,8 @@ function NavbarComponent({ onLocationChange }) {
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <RoleBadge role={user.role} size={'50px'}></RoleBadge>
                 <ProfileImage
-                  userUrl={user.url}
-                  size="60px" // Adjust size as needed
-                  defaultProfilePicture="https://example.com/default-profile.jpg" // Your default image URL
+                  image={user.imageUrl}
+                  size="60px"
                 />
               </div>
             )}

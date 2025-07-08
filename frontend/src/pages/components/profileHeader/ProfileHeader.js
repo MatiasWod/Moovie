@@ -50,6 +50,9 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser, handleMakeMode
   const canBeMadeModerator =
     showModActions && profile.role !== UserRoles.MODERATOR && profile.role !== UserRoles.BANNED;
 
+  // Use Redux state imageUrl for own profile, profile.imageUrl for others
+  const profileImageUrl = user?.username === profile.username ? user?.imageUrl : profile.imageUrl;
+
   return (
     <div className="bg-gradient-to-r from-green-600 to-green-700 px-8 py-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -59,7 +62,7 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser, handleMakeMode
             onClick={handleShowPfpPopup}
           >
             <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-4 border-white/20 shadow-xl transition-transform duration-200 group-hover:scale-105">
-              <ProfileImage image={profile.imageUrl} size="112px" noBorder={true} />
+              <ProfileImage image={profileImageUrl} size="112px" noBorder={true} />
             </div>
             {user?.username === profile.username && (
               <div className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">

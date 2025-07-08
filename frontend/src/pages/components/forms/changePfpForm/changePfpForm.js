@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import '../formsStyle.css';
-import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateUserImage } from '../../../../features/authSlice';
 import UserService from '../../../../services/UserService';
+import '../formsStyle.css';
 
 const ChangePfpForm = ({ onCancel }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth); // Fetch logged-in user's details
   const [selectedFile, setSelectedFile] = useState(null);
   const [error, setError] = useState(null);
@@ -31,6 +33,8 @@ const ChangePfpForm = ({ onCancel }) => {
         pfp: form,
       });
       if (response.status === 200 || response.status === 201) {
+        // Update Redux state with new image URL
+        dispatch(updateUserImage({ imageUrl: response.headers.location }));
         setSuccess('Profile picture updated successfully!');
       } else {
         throw new Error();
