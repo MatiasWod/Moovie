@@ -104,6 +104,12 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Transactional
     @Override
+    public int getLikedReviewsCountByReviewId(int id, ReviewTypes type) {
+        return reviewDao.getLikedReviewsCountByReviewId(id, type);
+    }
+
+    @Transactional
+    @Override
     public boolean likeReview(int reviewId, ReviewTypes type) {
         if (type.getType()==ReviewTypes.REVIEW_MEDIA.getType()) {
             Review review = reviewDao.getReviewById(userService.tryToGetCurrentUserId(), reviewId).orElseThrow(() -> new ReviewNotFoundException("Review not found for id: " + reviewId));

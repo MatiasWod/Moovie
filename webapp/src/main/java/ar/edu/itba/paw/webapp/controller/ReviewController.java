@@ -305,6 +305,9 @@ public class ReviewController {
         if (likedUsers.isEmpty()) {
             return Response.noContent().build();
         }
+
+        int totalCount = reviewService.getLikedReviewsCountByReviewId(reviewId, ReviewTypes.REVIEW_MEDIA);
+
         List<UserReviewDto> toRet =  new ArrayList<>();
         for (User user : likedUsers) {
             final String uri = uriInfo.getBaseUriBuilder()
@@ -315,7 +318,10 @@ public class ReviewController {
                     .build().toString();
             toRet.add(new UserReviewDto(reviewId, user.getUsername(), uri, uriInfo));
         }
-        return Response.ok(new GenericEntity<List<UserReviewDto>>(toRet) {}).build();
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<UserReviewDto>>(toRet) {});
+        final PagingUtils<UserReviewDto> pagingUtils = new PagingUtils<>(toRet, page, PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), totalCount);
+        ResponseUtils.setPaginationLinks(res, pagingUtils, uriInfo);
+        return res.build();
     }
 
 }

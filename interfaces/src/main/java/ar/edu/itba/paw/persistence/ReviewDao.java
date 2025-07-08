@@ -25,6 +25,8 @@ public interface ReviewDao {
     boolean editReview(int userId, int mediaId, int rating, String reviewContent, ReviewTypes type);
     void deleteReview(int reviewId, ReviewTypes type);
 
+    int getLikedReviewsCountByReviewId(int id, ReviewTypes type);
+
     void likeReview(int userId, int reviewId, ReviewTypes type);
     void removeLikeReview(int userId, int reviewId, ReviewTypes type);
     Review getReviewByMediaIdAndUsername(int mediaId, int userId);

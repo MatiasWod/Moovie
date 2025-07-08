@@ -196,6 +196,19 @@ public class ReviewHibernateDao implements ReviewDao {
     }
 
     @Override
+    public int getLikedReviewsCountByReviewId(int id, ReviewTypes type) {
+        if(type.getType() == ReviewTypes.REVIEW_MEDIA.getType()) {
+            return ((Number) em.createQuery("SELECT COUNT(rl) FROM ReviewsLikes rl WHERE rl.review.reviewId = :reviewId")
+                    .setParameter("reviewId", id)
+                    .getSingleResult()).intValue();
+        }else{
+            return ((Number) em.createQuery("SELECT COUNT(mlrl) FROM MoovieListsReviewsLikes mlrl WHERE mlrl.moovieListReview.moovieListReviewId = :reviewId")
+                    .setParameter("reviewId", id)
+                    .getSingleResult()).intValue();
+        }
+    }
+
+    @Override
     public void likeReview(int userId, int reviewId, ReviewTypes type) {
         Query query =null;
         if(type.getType() == ReviewTypes.REVIEW_MEDIA.getType()) {

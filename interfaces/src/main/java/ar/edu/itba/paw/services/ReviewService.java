@@ -21,6 +21,8 @@ public interface ReviewService {
     List<MoovieListReview> getMoovieListReviewsFromUser(int userId, int size, int pageNumber);
     int getMoovieListReviewsFromUserCount(int userId);
 
+    int  getLikedReviewsCountByReviewId(int id, ReviewTypes type);
+
 
     //The following work for both MoovieListsReviews and Reviews
     int createReview(int mediaId, int rating, String reviewContent, ReviewTypes type);
