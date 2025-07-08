@@ -18,6 +18,7 @@ import ConfirmationModal from '../forms/confirmationForm/confirmationModal';
 import ReportForm from '../forms/reportForm/reportForm';
 import ReviewForm from '../forms/reviewForm/ReviewForm';
 import ProfileImage from '../profileImage/ProfileImage';
+import EmptyStateWithActions from '../ReportsLists/EmptyStateWithActions';
 
 const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, reloadReviews }) => {
   const { t } = useTranslation();
@@ -43,7 +44,7 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
         await moovieListReviewService.deleteMoovieListReviewByUrl(review.url);
       }
       reloadReviews();
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const handleToggleEdit = () => {
@@ -111,7 +112,7 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
           await UserService.currentUserHasLikedReview(review.likesUrl, currentUser.username)
         );
       }
-    } catch (e) {}
+    } catch (e) { }
   }, [likeRefresh]);
 
   const handleLikeReview = async () => {
@@ -121,7 +122,7 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
           await reviewService.likeReview(review.likesUrl);
         }
         else {
-            await api.delete(review.likesUrl + `/${currentUser.username}`);
+          await api.delete(review.likesUrl + `/${currentUser.username}`);
         }
         setLikeRefresh(!likeRefresh);
         if (currentLikeStatus) {
@@ -144,7 +145,7 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
           review.reviewLikes = review.reviewLikes + 1;
         }
       }
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const handleReportSubmit = async (reportReason) => {
@@ -313,7 +314,7 @@ const ReviewItem = ({ review, source, isLoggedIn, currentUser, handleReport, rel
   );
 };
 
-function Reviews({ id, username, source, handleParentReload, parentReload, reviewsUrl }) {
+function Reviews({ id, username, source, handleParentReload, parentReload, reviewsUrl, emptyState }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -385,20 +386,23 @@ function Reviews({ id, username, source, handleParentReload, parentReload, revie
       )}
       {!loading && !error && reviews.length > 0
         ? reviews
-            .slice()
-            .reverse()
-            .map((review) => (
-              <ReviewItem
-                key={review.id}
-                review={review}
-                source={source}
-                isLoggedIn={isLoggedIn}
-                currentUser={user}
-                reloadComments={() => handleParentReload()}
-                reloadReviews={() => toggleReload()}
-              />
-            ))
-        : !loading && !error && <p>{t('reviews.noneFound')}</p>}
+          .slice()
+          .reverse()
+          .map((review) => (
+            <ReviewItem
+              key={review.id}
+              review={review}
+              source={source}
+              isLoggedIn={isLoggedIn}
+              currentUser={user}
+              reloadComments={() => handleParentReload()}
+              reloadReviews={() => toggleReload()}
+            />
+          ))
+        : !loading && !error && emptyState ? (
+          <EmptyStateWithActions {...emptyState} />
+        ) :
+          !loading && !error && <p>{t('reviews.noneFound')}</p>}
       {!loading && !error && totalPages > 1 && (
         <div className="d-flex justify-center pt-4">
           <Pagination page={page} count={totalPages} onChange={handlePageChange} />
