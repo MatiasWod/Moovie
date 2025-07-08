@@ -35,7 +35,7 @@ const ReportForm = ({ onCancel, onReportSubmit }) => {
       const response = await onReportSubmit?.(reportType);
       console.log('reported', response);
       if (response) {
-        if (response.status === 200) {
+        if (response.status === 200 || response.status === 201) {
           onCancel();
         } else {
           console.log(response);

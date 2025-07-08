@@ -34,7 +34,7 @@ const AwaitEmailValidation = () => {
 
       const response = await userApi.resendVerificationEmail(token);
 
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201 || response.status === 204) {
         setMessage(t('awaitEmailValidation.success'));
       } else {
         setMessage(response.data);
