@@ -154,6 +154,23 @@ public class MoovieListServiceImpl implements MoovieListService{
         return moovieListDao.getFollowedMoovieListCardsCount(userId,type);
     }
 
+    @Transactional (readOnly = true)
+    @Override
+    public int getLikedMoovieListCount(int userId, int type) {
+        return moovieListDao.getLikedMoovieListCount(userId,type);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public int getLikedMoovieListCountByListId(int listId) {
+        return moovieListDao.getLikedMoovieListCountByListId(listId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public int getFollowedMoovieListCardsCountByListId(int listId) {
+        return moovieListDao.getFollowedMoovieListCardsCountByListId(listId);
+    }
 
     @Transactional(readOnly = true)
     @Override
