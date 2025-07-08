@@ -53,7 +53,7 @@ public class ReportHibernateDaoTest {
     public void testReportReview() {
         // Create a review to report
         Assert.assertEquals(0, reportDao.getReportedReviews(10, 1).size());
-        reportDao.reportReview(Constants.INSERTED_REVIEW_ID, Constants.INSERTED_REVIEW_USER_ID,
+        ReviewReport report = reportDao.reportReview(Constants.INSERTED_REVIEW_ID, Constants.INSERTED_REVIEW_USER_ID,
                 ReviewTypes.REVIEW_MEDIA.getType(), Constants.REPORT_CONTENT);
         // Check that the review was reported
         Assert.assertEquals(1, reportDao.getReportedReviews(10, 1).size());
@@ -63,9 +63,9 @@ public class ReportHibernateDaoTest {
         Assert.assertEquals(Constants.INSERTED_REVIEW_USER_ID, reviewReports.get(0).getReportedBy().getUserId());
         Assert.assertEquals(Constants.REPORT_CONTENT, reviewReports.get(0).getContent());
         // Resolve the report
-//        reportDao.resolveReviewReport(Constants.INSERTED_REVIEW_ID);
-//        entityManager.flush();
-//        Assert.assertEquals(0, reportDao.getReportedReviews(10, 1).size());
+        reportDao.resolveReviewReport(report.getReportId());
+        entityManager.flush();
+        Assert.assertNull(reportDao.getCommentReport(report.getReportId()));
     }
 
     @Rollback
@@ -73,7 +73,7 @@ public class ReportHibernateDaoTest {
     public void testReportComment() {
         // Create a comment to report
         Assert.assertEquals(0, reportDao.getReportedComments(10, 1).size());
-        reportDao.reportComment(Constants.INSERTED_COMMENT_ID, user.getUserId(), ReviewTypes.REVIEW_MEDIA.getType(),
+        CommentReport commentReport= reportDao.reportComment(Constants.INSERTED_COMMENT_ID, user.getUserId(), ReviewTypes.REVIEW_MEDIA.getType(),
                 Constants.REPORT_CONTENT);
         // Check that the comment was reported
         Assert.assertEquals(1, reportDao.getReportedComments(10, 1).size());
@@ -83,9 +83,9 @@ public class ReportHibernateDaoTest {
         Assert.assertEquals(user.getUserId(), commentReports.get(0).getReportedBy().getUserId());
         Assert.assertEquals(Constants.REPORT_CONTENT, commentReports.get(0).getContent());
         // Resolve the report
-//        reportDao.resolveCommentReport(Constants.INSERTED_COMMENT_ID);
-//        entityManager.flush();
-//        Assert.assertEquals(0, reportDao.getReportedComments(10, 1).size());
+        reportDao.resolveCommentReport(commentReport.getReportId());
+        entityManager.flush();
+        Assert.assertNull(reportDao.getCommentReport(commentReport.getReportId()));
     }
 
     @Rollback
@@ -93,7 +93,7 @@ public class ReportHibernateDaoTest {
     public void testReportMoovieList() {
         // Create a moovielist to report
         Assert.assertEquals(0, reportDao.getReportedMoovieLists(10, 1, user.getUserId()).size());
-        reportDao.reportMoovieList(Constants.INSERTED_MOOVIELIST_ID, user.getUserId(),
+        MoovieListReport moovieListReport = reportDao.reportMoovieList(Constants.INSERTED_MOOVIELIST_ID, user.getUserId(),
                 ReviewTypes.REVIEW_MEDIA.getType(), Constants.REPORT_CONTENT);
         // Check that the moovielist was reported
         Assert.assertEquals(1, reportDao.getReportedMoovieLists(10, 1, user.getUserId()).size());
@@ -104,8 +104,8 @@ public class ReportHibernateDaoTest {
         Assert.assertEquals(user.getUserId(), moovieListReports.get(0).getReportedBy().getUserId());
         Assert.assertEquals(Constants.REPORT_CONTENT, moovieListReports.get(0).getContent());
         // Resolve the report
-        reportDao.resolveMoovieListReport(Constants.INSERTED_MOOVIELIST_ID);
+        reportDao.resolveMoovieListReport(moovieListReport.getReportId());
         entityManager.flush();
-        Assert.assertEquals(0, reportDao.getReportedMoovieLists(10, 1, user.getUserId()).size());
+        Assert.assertNull(reportDao.getMoovieListReport(moovieListReport.getReportId()));
     }
 }
