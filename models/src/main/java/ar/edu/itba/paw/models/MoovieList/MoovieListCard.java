@@ -128,6 +128,14 @@ public class MoovieListCard {
         return moviesAmount;
     }
 
+    public void setUserId(int uid) {
+        user.setUserId(uid);
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public List<String> getImages() {
         List<String> toRet = new ArrayList<>();
         if(this.images!=null){
