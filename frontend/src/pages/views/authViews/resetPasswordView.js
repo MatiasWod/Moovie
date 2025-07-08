@@ -25,7 +25,7 @@ const ResetPassword = () => {
   const [searchParams] = useSearchParams();
 
   const token = searchParams.get('token');
-  const username = searchParams.get('username');
+  const username = searchParams.get('user');
 
   if (!token) {
     navigate('/login');
