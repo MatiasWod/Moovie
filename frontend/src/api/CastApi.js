@@ -43,21 +43,6 @@ const castApi = (() => {
     return api.get(`/tvCreators/${id}`);
   };
 
-  const getTvCreatorsSearch = (search) => {
-    return api.get(`/tvCreators`, {
-      params: {
-        search: search,
-      },
-    });
-  };
-
-  const getTvCreatorsByMediaId = (mediaId) => {
-    return api.get(`/tvCreators`, {
-      params: {
-        mediaId: mediaId,
-      },
-    });
-  };
 
   const getTvCreatorsFromUrl = (url) => {
     return api.get(url);
@@ -75,8 +60,6 @@ const castApi = (() => {
     getDirectorsForQuery,
     getDirectorFromUrl,
     getTvCreatorById,
-    getTvCreatorsSearch,
-    getTvCreatorsByMediaId,
     getTvCreatorsFromUrl,
     getDirectorById,
   };
