@@ -2,7 +2,9 @@ import { Pagination } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import api from '../../api/api';
 import { MediaOrderBy as mediaOrderBy } from '../../api/values/MediaOrderBy';
 import mediaTypes from '../../api/values/MediaTypes';
 import pagingSizes from '../../api/values/PagingSizes';
@@ -34,6 +36,10 @@ const Discover = () => {
   const [medias, setMedias] = useState(undefined);
   const [mediasLoading, setMediasLoading] = useState(true);
   const [mediasError, setMediasError] = useState(null);
+
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const [watchedUrl, setWatchedUrl] = useState('loading');
+  const [watchlistUrl, setWatchlistUrl] = useState('loading');
 
   const handlePaginationChange = (event, value) => {
     setPage(value);
@@ -80,6 +86,27 @@ const Discover = () => {
     setSelectedGenres(newGenres);
     setPage(1);
   };
+
+  useEffect(() => {
+    if (!user?.defaultPrivateMoovieListsUrl) return;
+    const fetchUrls = async () => {
+      const [watchedRes, watchlistRes] = await Promise.all([
+        api.get(user?.defaultPrivateMoovieListsUrl, {
+          params: {
+            search: 'Watched',
+          },
+        }).then((res) => res.data?.[0]?.url),
+        api.get(user?.defaultPrivateMoovieListsUrl, {
+          params: {
+            search: 'Watchlist',
+          },
+        }).then((res) => res.data?.[0]?.url),
+      ]);
+      setWatchedUrl(watchedRes);
+      setWatchlistUrl(watchlistRes);
+    };
+    fetchUrls();
+  }, [user?.defaultPrivateMoovieListsUrl]);
 
   useEffect(() => {
     async function fetchMediaData() {
@@ -160,7 +187,7 @@ const Discover = () => {
                 {t('common.errorOccurred')}
               </div>
             ) : (
-              medias?.data?.map((media) => <MediaCard key={media.id} media={media} size="small" />)
+              medias?.data?.map((media) => <MediaCard key={media.id} media={media} watchedUrl={watchedUrl} watchlistUrl={watchlistUrl} size="small" />)
             )}
 
             {medias?.data?.length === 0 && (
