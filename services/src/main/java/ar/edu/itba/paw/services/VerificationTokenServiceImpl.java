@@ -53,6 +53,7 @@ public class VerificationTokenServiceImpl implements VerificationTokenService{
         return LocalDateTime.now().plusDays(expirationTimeInDays);
     }
 
+    @Transactional
     @Override
     public Optional<Token> getTokenByUserId(int userId) {
         return verificationTokenDao.getTokenByUserId(userId);
@@ -69,7 +70,7 @@ public class VerificationTokenServiceImpl implements VerificationTokenService{
     public void deleteToken(Token token) {
         verificationTokenDao.deleteToken(token);
     }
-    
+
     @Override
     public boolean isValidToken(Token token) {
         return token.getExpirationDate().isAfter(LocalDateTime.now());

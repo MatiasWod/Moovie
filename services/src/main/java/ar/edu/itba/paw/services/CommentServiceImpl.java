@@ -148,6 +148,7 @@ public class CommentServiceImpl implements CommentService{
         return commentDao.getCommentFeedbackForUserCount(uid);
     }
 
+    @Transactional
     @Override
     public List<CommentFeedback> getCommentFeedbackForComment(int commentId, int pageNumber, int pageSize) {
         return commentDao.getCommentFeedbackForComment(commentId, pageNumber, pageSize);
@@ -165,6 +166,7 @@ public class CommentServiceImpl implements CommentService{
         return commentDao.getCommentFeedbackForCommentCount(commentId);
     }
 
+    @Transactional
     @Override
     public int getCommentFeedbackForCommentCount(int commentId, CommentFeedbackType feedback) {
         return commentDao.getCommentFeedbackForCommentCount(commentId, feedback);

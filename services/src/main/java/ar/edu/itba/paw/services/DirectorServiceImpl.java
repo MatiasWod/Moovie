@@ -27,6 +27,7 @@ public class DirectorServiceImpl implements DirectorService{
         return directorDao.getDirectorsForQuery(query, pageNumber, size);
     }
 
+    @Transactional
     @Override
     public int getDirectorsForQueryCount(String query) {
         return directorDao.getDirectorsForQueryCount(query);
