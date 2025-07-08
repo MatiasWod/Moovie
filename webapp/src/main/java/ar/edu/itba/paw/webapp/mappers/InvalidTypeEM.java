@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.mappers;
 import ar.edu.itba.paw.exceptions.InvalidTypeException;
+import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Singleton;
@@ -13,6 +14,6 @@ import javax.ws.rs.ext.Provider;
 public class InvalidTypeEM implements ExceptionMapper<InvalidTypeException> {
     @Override
     public Response toResponse(InvalidTypeException e) {
-        return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(e.getMessage())).build();
     }
 }

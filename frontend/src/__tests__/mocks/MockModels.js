@@ -409,7 +409,7 @@ class UserCommentFeedbackDto {
     }
 }
 
-class UserDto {
+export class UserDto {
     constructor(username, role, milkyPoints, hasBadge, imageUrl, url, moovieListsUrl, defaultPrivateMoovieListsUrl, publicMoovieListsUrl, privateMoovieListsUrl, likedMoovieListsUrl, followedMoovieListsUrl, likedMoovieListsReviewsUrl, likedReviewsUrl, moovieListReviewsUrl, reviewsUrl, banMessageUrl, commentFeedbackUrl, commentsUrl) {
         this.username = username;
         this.role = role;

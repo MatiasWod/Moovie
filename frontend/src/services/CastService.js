@@ -33,15 +33,6 @@ const CastService = (() => {
     return await castApi.getTvCreatorById(id);
   };
 
-  const getTvCreatorsSearch = async (search) => {
-    return await castApi.getTvCreatorsSearch(search);
-  };
-
-  const getTvCreatorsByMediaId = async (mediaId) => {
-    const res = await castApi.getTvCreatorsByMediaId(mediaId);
-    return parsePaginatedResponse(res);
-  };
-
   const getTvCreatorsFromUrl = async (url) => {
     return await castApi.getTvCreatorsFromUrl(url);
   };
@@ -58,8 +49,6 @@ const CastService = (() => {
     getDirectorsForQuery,
     getDirectorFromUrl,
     getTvCreatorById,
-    getTvCreatorsSearch,
-    getTvCreatorsByMediaId,
     getTvCreatorsFromUrl,
     getDirectorById,
   };

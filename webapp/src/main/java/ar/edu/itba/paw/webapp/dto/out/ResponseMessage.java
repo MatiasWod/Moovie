@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.webapp.dto.out;
 
-//TODO: DELETE?|
 public class ResponseMessage {
     private String message;
 

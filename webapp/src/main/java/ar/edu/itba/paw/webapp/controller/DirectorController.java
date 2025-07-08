@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.services.DirectorService;
 import ar.edu.itba.paw.webapp.dto.out.DirectorDto;
+import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
 import org.slf4j.Logger;
@@ -63,7 +64,7 @@ public class DirectorController {
 
         // Si no se proporcionan parámetros válidos
         return Response.status(Response.Status.BAD_REQUEST)
-                .entity("You must provide 'search' as query parameter.")
+                .entity(new ResponseMessage("You must provide 'search' as query parameter."))
                 .build();
 
 

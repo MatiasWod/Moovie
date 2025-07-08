@@ -26,6 +26,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,7 +137,7 @@ public class CommentController {
                 return res.build();
             } else if (reviewId == null) {
                 return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("Review id is required if not filtering by reported")
+                        .entity(new ResponseMessage("Review id is required if not filtering by reported"))
                         .build();
             }
             final int commentCount = reviewService.getReviewById(reviewId).getCommentCount().intValue();
@@ -152,7 +153,7 @@ public class CommentController {
             return res.build();
         } catch (NoResultException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Review not found")
+                    .entity(new ResponseMessage("Review not found"))
                     .build();
         }
     }
@@ -164,7 +165,7 @@ public class CommentController {
         final Comment comment = commentService.getCommentById(id);
         if (comment == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Comment not found")
+                    .entity(new ResponseMessage("Comment not found"))
                     .build();
         }
         final Supplier<CommentDto> dtoSupplier = () -> CommentDto.fromComment(comment, uriInfo);
@@ -190,11 +191,11 @@ public class CommentController {
                     .build();
         } catch (UserNotLoggedException e) {
             return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\":\"User must be logged in to create a comment.\"}")
+                    .entity(new ResponseMessage("{\"error\":\"User must be logged in to create a comment.\"}"))
                     .build();
         } catch (NoResultException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Review not found")
+                    .entity(new ResponseMessage("Review not found"))
                     .build();
         }
     }
@@ -207,18 +208,18 @@ public class CommentController {
         try {
             if (commentService.getCommentById(id) == null) {
                 return Response.status(Response.Status.NOT_FOUND)
-                        .entity("Comment not found")
+                        .entity(new ResponseMessage("Comment not found"))
                         .build();
             }
             commentService.deleteComment(id);
             return Response.ok().entity("Comment deleted").build();
         } catch (AccessDeniedException e) {
             return Response.status(Response.Status.FORBIDDEN)
-                    .entity("{\"error\":\"User is not the author of the comment.\"}")
+                    .entity(new ResponseMessage("{\"error\":\"User is not the author of the comment.\"}"))
                     .build();
         } catch (UserNotLoggedException e) {
             return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\":\"User must be logged in to delete a comment.\"}")
+                    .entity(new ResponseMessage("{\"error\":\"User must be logged in to delete a comment.\"}"))
                     .build();
         }
     }
@@ -251,7 +252,7 @@ public class CommentController {
             return Response.created(uri).build();
         }
         return Response.status(Response.Status.BAD_REQUEST)
-                .entity("Invalid feedback type")
+                .entity(new ResponseMessage("Invalid feedback type"))
                 .build();
     }
 
@@ -296,7 +297,7 @@ public class CommentController {
                     .build();
         }
         return Response.status(Response.Status.BAD_REQUEST)
-                .entity("Invalid feedback type")
+                .entity(new ResponseMessage("Invalid feedback type"))
                 .build();
     }
 
@@ -384,7 +385,7 @@ public class CommentController {
             ResponseUtils.setPaginationLinks(res, reviewPagingUtils, uriInfo);
             return res.build();
         } catch (IllegalArgumentException e){
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid feedback type. Only LIKE and DISLIKE are valid feedback types.").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage("Invalid feedback type. Only LIKE and DISLIKE are valid feedback types.")).build();
         }
     }
 

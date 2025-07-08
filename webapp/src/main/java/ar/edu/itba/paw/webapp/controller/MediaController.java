@@ -10,10 +10,7 @@ import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.services.*;
 
-import ar.edu.itba.paw.webapp.dto.out.MediaDto;
-import ar.edu.itba.paw.webapp.dto.out.MovieDto;
-import ar.edu.itba.paw.webapp.dto.out.ReviewDto;
-import ar.edu.itba.paw.webapp.dto.out.TVSerieDto;
+import ar.edu.itba.paw.webapp.dto.out.*;
 
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
@@ -86,7 +83,7 @@ public class MediaController {
 
             if (mediaList == null || mediaList.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND)
-                        .entity("No media found for TV creator with ID: " + tvCreatorId)
+                        .entity(new ResponseMessage("No media found for TV creator with ID: " + tvCreatorId))
                         .build();
             }
             List<MediaDto> mediaDtos = MediaDto.fromMediaList(mediaList, uriInfo);
@@ -104,7 +101,7 @@ public class MediaController {
 
             if (mediaList == null || mediaList.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND)
-                        .entity("No media found for director with ID: " + directorId)
+                        .entity(new ResponseMessage("No media found for director with ID: " + directorId))
                         .build();
             }
             List<MovieDto> mediaDtos = MovieDto.fromMovieList(mediaList, uriInfo);
@@ -122,7 +119,7 @@ public class MediaController {
 
             if (mediaList == null || mediaList.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND)
-                        .entity("No media found for actor with ID: " + actorId)
+                        .entity(new ResponseMessage("No media found for actor with ID: " + actorId))
                         .build();
             }
             List<MediaDto> mediaDtos = MediaDto.fromMediaList(mediaList, uriInfo);
@@ -167,7 +164,7 @@ public class MediaController {
 
             if (media == null) {
                 return Response.status(Response.Status.NOT_FOUND)
-                        .entity("Media with ID: " + id + " not found.")
+                        .entity(new ResponseMessage("Media with ID: " + id + " not found."))
                         .build();
             }
 
@@ -183,7 +180,7 @@ public class MediaController {
 
         } catch (MediaNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Media with ID: " + id + " not found.")
+                    .entity(new ResponseMessage("Media with ID: " + id + " not found."))
                     .build();
         }
 

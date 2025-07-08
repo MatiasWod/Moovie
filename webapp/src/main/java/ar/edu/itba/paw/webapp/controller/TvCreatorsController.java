@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.PagingSizes;
 import ar.edu.itba.paw.models.PagingUtils;
 import ar.edu.itba.paw.models.TV.TVCreators;
 import ar.edu.itba.paw.services.TVCreatorsService;
+import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
 import ar.edu.itba.paw.webapp.dto.out.TvCreatorsDto;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import ar.edu.itba.paw.webapp.vndTypes.VndType;
@@ -72,7 +73,7 @@ public class TvCreatorsController {
 
         // Si no se proporcionan parámetros válidos
         return Response.status(Response.Status.BAD_REQUEST)
-                .entity("You must provide either 'search' or 'mediaId' as query parameters.")
+                .entity(new ResponseMessage("You must provide either 'search' or 'mediaId' as query parameters."))
                 .build();
 
 
@@ -89,7 +90,7 @@ public class TvCreatorsController {
             return res.build();
         }catch (NoResultException e){
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("TV Creator with id " + tvCreatorId + " not found.")
+                    .entity(new ResponseMessage("TV Creator with id " + tvCreatorId + " not found."))
                     .build();
         }
     }
