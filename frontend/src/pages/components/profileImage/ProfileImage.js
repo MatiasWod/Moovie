@@ -14,10 +14,8 @@ const ProfileImage = ({ image, userUrl, size, onClick, noBorder }) => {
           const imageUrl = response?.data?.imageUrl;
 
           if (imageUrl) {
-            console.log('imageUrl', imageUrl);
             setImageSrc(imageUrl);
           } else {
-            console.log('defaultProfilePicture', defaultProfilePicture);
             setImageSrc(defaultProfilePicture);
           }
         } catch (e) {

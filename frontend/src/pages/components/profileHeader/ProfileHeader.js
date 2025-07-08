@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import api from '../../../api/api';
 import UserRoles from '../../../api/values/UserRoles';
+import defaultProfilePicture from '../../../images/defaultProfilePicture.png';
 import { parsePaginatedResponse } from '../../../utils/ResponseUtils';
 import ChangePfpForm from '../forms/changePfpForm/changePfpForm';
 import ProfileImage from '../profileImage/ProfileImage';
@@ -17,6 +18,7 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser, handleMakeMode
   const { isLoggedIn, user } = useSelector((state) => state.auth);
   const [reviewsCount, setReviewsCount] = useState(0);
   const [moovieListCount, setMoovieListCount] = useState(0);
+  const [profileImageUrl, setProfileImageUrl] = useState(null);
 
   const handleShowPfpPopup = () => {
     if (!isLoggedIn || !user  ) {
@@ -50,8 +52,15 @@ const ProfileHeader = ({ profile, handleBanUser, handleUnbanUser, handleMakeMode
   const canBeMadeModerator =
     showModActions && profile.role !== UserRoles.MODERATOR && profile.role !== UserRoles.BANNED;
 
-  // Use Redux state imageUrl for own profile, profile.imageUrl for others
-  const profileImageUrl = user?.username === profile.username ? user?.imageUrl : profile.imageUrl;
+
+  useEffect(() => {
+    const newProfileImageUrl = user?.username === profile.username ? user?.imageUrl : profile.imageUrl;
+    if (!newProfileImageUrl) {
+      setProfileImageUrl(defaultProfilePicture);
+      return;
+    }
+    setProfileImageUrl(newProfileImageUrl);
+  }, [user?.imageUrl, profile.imageUrl, user?.username, profile.username]);
 
   return (
     <div className="bg-gradient-to-r from-green-600 to-green-700 px-8 py-8">
