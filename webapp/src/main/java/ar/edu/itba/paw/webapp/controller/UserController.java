@@ -178,8 +178,6 @@ public class UserController {
         final User user = userService.findUserByEmail(userEmailDto.getEmail());
         userService.forgotPassword(user);
         return Response.noContent().build();
-
-
     }
 
     @PUT
