@@ -104,7 +104,7 @@ const MediaRow = ({
       }
       refresh();
       setRefreshWatched(!refreshWatched);
-    } catch (e) {}
+    } catch (e) { }
   };
 
   return (
@@ -146,6 +146,7 @@ const MediaRow = ({
 
       {isLoggedIn && !editMode && (
         <span
+          className="watched-status-button"
           onClick={(e) => {
             e.stopPropagation();
             handleWatched();

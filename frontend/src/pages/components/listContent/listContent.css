@@ -145,7 +145,31 @@
 }
 
 /* Remove the fixed width constraints to allow cards to be responsive */
-.list-card-container > * {
+.list-card-container>* {
   width: 100%;
   max-width: none;
+}
+
+/* Watched status button styles */
+.watched-status-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 40px;
+  min-height: 40px;
+  border: 2px solid transparent;
+}
+
+.watched-status-button:hover {
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+  transform: scale(1.1);
+}
+
+.watched-status-button:active {
+  transform: scale(0.95);
 }
