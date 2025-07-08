@@ -70,7 +70,7 @@ const ListContentPaginatedSearchMode = ({ moovieListId, handleCloseSearchMode, o
         url: listContentUrl,
         mediaIds: [media.id],
       });
-      if (response.status === 200) {
+      if (response.status === 201) {
         // Show success message
         setSuccessMessage(media.name);
         // Trigger refresh in parent component
