@@ -34,7 +34,7 @@ const ProfileImage = ({ image, userUrl, size, onClick, noBorder }) => {
 
   const buildImageUrl = (baseUrl) => {
     if (!baseUrl || baseUrl === defaultProfilePicture) {
-      return baseUrl;
+      return defaultProfilePicture;
     }
     if (baseUrl.includes('size=')) {
       return baseUrl;
