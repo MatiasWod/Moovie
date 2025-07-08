@@ -251,7 +251,7 @@ public class UserController {
     @GET
     @Produces(VndType.APPLICATION_USER_LIST)
     @Path("/milkyLeaderboard")
-    public Response getMilkyLeaderboard(@QueryParam("page") @DefaultValue("1") final int page,
+    public Response getMilkyLeaderboard(@QueryParam("pageNumber") @DefaultValue("1") final int page,
                                         @QueryParam("pageSize") @DefaultValue("-1") final int pageSize) {
         LOGGER.info("Method: getMilkyLeaderboard, Path: /users/milkyLeaderboard, Page: {}, PageSize: {}", page, pageSize);
         try {

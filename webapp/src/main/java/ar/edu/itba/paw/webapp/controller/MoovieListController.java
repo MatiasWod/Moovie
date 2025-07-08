@@ -347,9 +347,9 @@ public class MoovieListController {
     @PreAuthorize("@accessValidator.isUserLoggedIn()")
     @Produces(VndType.APPLICATION_LIST_LIKE_LISTS) // Asumiendo un VndType para listas de usuarios
     public Response getUsersWhoLikedList(@PathParam("id") final int listId,
-            @QueryParam("page") @DefaultValue("0") final int page) {
+            @QueryParam("pageNumber") @DefaultValue("1") final int page) {
 
-        List<User> likedUsers = moovieListService.usersLikesMoovieList(listId, page,
+        List<User> likedUsers = moovieListService.usersLikesMoovieList(listId, page-1,
                 PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize());
         int totalCount = moovieListService.getLikedMoovieListCountByListId(listId);
 
@@ -446,9 +446,9 @@ public class MoovieListController {
     @Path("/{id}/followers")
     @Produces(VndType.APPLICATION_FOLLOWED_LISTS)
     public Response getUsersWhoFollowList(@PathParam("id") final int listId,
-            @QueryParam("page") @DefaultValue("0") final int page) {
+            @QueryParam("pageNumber") @DefaultValue("1") final int page) {
 
-        List<User> followedUsers = moovieListService.usersFollowsMoovieList(listId, page,
+        List<User> followedUsers = moovieListService.usersFollowsMoovieList(listId, page-1,
                 PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize());
         final int totalCount = moovieListService.getFollowedMoovieListCardsCountByListId(listId);
 
