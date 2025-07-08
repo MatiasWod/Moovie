@@ -1,8 +1,10 @@
 import genreApi from '../api/GenreApi';
+import { parsePaginatedResponse } from "../utils/ResponseUtils";
 
 const GenreService = (() => {
-  const getAllGenres = async () => {
-    return await genreApi.getAllGenres();
+  const getAllGenres = async (page) => {
+    const res = await genreApi.getAllGenres(page);
+    return parsePaginatedResponse(res);
   };
 
   const getGenresFromUrl = async (url) => {

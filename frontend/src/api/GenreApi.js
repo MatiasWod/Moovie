@@ -1,8 +1,12 @@
 import api from './api';
 
 const genreApi = (() => {
-  const getAllGenres = () => {
-    return api.get('/genres');
+  const getAllGenres = (page) => {
+    return api.get('/genres', {
+      params: {
+        pageNumber: page || 1,
+      },
+    });
   };
 
   const getGenresFromUrl = (url) => {

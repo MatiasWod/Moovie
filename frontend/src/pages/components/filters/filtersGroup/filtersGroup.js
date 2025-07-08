@@ -48,6 +48,8 @@ const FiltersGroup = ({
   const [initialLoading, setInitialLoading] = useState(true);
   const [genresLoaded, setGenresLoaded] = useState(false);
   const [providersLoaded, setProvidersLoaded] = useState(false);
+  const [genresPage, setGenresPage] = useState(1);
+  const [hasMoreGenres, setHasMoreGenres] = useState(true);
 
   useEffect(() => {
     async function getProviders() {
@@ -83,15 +85,24 @@ const FiltersGroup = ({
     async function getGenres() {
       try {
         setLoading(true);
-        const response = await GenreService.getAllGenres();
+        const response = await GenreService.getAllGenres(genresPage);
+        // response.data is the genre array, response.links is pagination
         const genreList = response.data.map((genre) => ({
           name: genre.genreName,
           id: genre.genreId,
         }));
-        setGenresList(genreList);
-        console.log('genreList', genreList);
-        console.log('selectedGenres', selectedGenres);
-        setGenresLoaded(true);
+        setGenresList((prev) => {
+          const existingIds = new Set(prev.map((g) => g.id));
+          const newGenres = genreList.filter((g) => !existingIds.has(g.id));
+          return genresPage === 1 ? genreList : [...prev, ...newGenres];
+        });
+        // Check if there are more pages
+        if (response?.links?.last?.pageNumber && genresPage >= response.links.last.pageNumber) {
+          setHasMoreGenres(false);
+        } else {
+          setHasMoreGenres(true);
+        }
+        if (genresPage === 1) setGenresLoaded(true);
       } catch (error) {
         setError(t('filters.error.fetch_genres'));
         setLoading(false);
@@ -101,7 +112,7 @@ const FiltersGroup = ({
     }
 
     getGenres();
-  }, []);
+  }, [genresPage]);
 
   useEffect(() => {
     if (genresLoaded && providersLoaded) {
@@ -137,6 +148,12 @@ const FiltersGroup = ({
   const loadMoreProviders = () => {
     if (!loading && hasMoreProviders) {
       setPage((prev) => prev + 1);
+    }
+  };
+
+  const loadMoreGenres = () => {
+    if (!loading && hasMoreGenres) {
+      setGenresPage((prev) => prev + 1);
     }
   };
 
@@ -235,19 +252,26 @@ const FiltersGroup = ({
             isOpen={openGenres}
             toggleOpen={() => setOpenGenres(!openGenres)}
           >
-            <FilterList
-              searchValue={searchGenre}
-              onSearchChange={setSearchGenre}
-              items={genresList}
-              selectedItems={selectedGenres}
-              onToggleItem={(genre) => {
-                setSelectedGenres((prev) =>
-                  prev.some((g) => g.id === genre.id)
-                    ? prev.filter((g) => g.id !== genre.id)
-                    : [...prev, genre]
-                );
-              }}
-            />
+            <InfiniteScrollList
+              loadMore={loadMoreGenres}
+              hasMore={hasMoreGenres}
+              loading={loading}
+              maxHeight="250px"
+            >
+              <FilterList
+                searchValue={searchGenre}
+                onSearchChange={setSearchGenre}
+                items={genresList}
+                selectedItems={selectedGenres}
+                onToggleItem={(genre) => {
+                  setSelectedGenres((prev) =>
+                    prev.some((g) => g.id === genre.id)
+                      ? prev.filter((g) => g.id !== genre.id)
+                      : [...prev, genre]
+                  );
+                }}
+              />
+            </InfiniteScrollList>
           </FilterSection>
 
           <FilterSection
