@@ -146,10 +146,6 @@ const userApi = (() => {
     return api.get(url + `/${username}`);
   };
 
-  //TODO CAMBIAR A USAR URL.
-  const currentUserCommentFeedback = (commentId, username) => {
-    return api.get(`/users/${username}/commentsFeedback/${commentId}`);
-  };
 
   const login = async ({ username, password }) => {
     const credentials = btoa(`${username}:${password}`);
@@ -363,7 +359,6 @@ const userApi = (() => {
     removeMediaFromWW,
     currentUserHasLikedReview,
     currentUserHasLikedMoovieListReview,
-    currentUserCommentFeedback,
     login,
     register,
     listUsers,
