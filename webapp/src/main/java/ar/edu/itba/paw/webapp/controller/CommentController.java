@@ -381,7 +381,7 @@ public class CommentController {
     @Path("/{id}/feedback")
     @Produces(VndType.APPLICATION_COMMENT_FEEDBACK_LIST)
     public Response getUsersWhoGaveFeedbackToComment(@PathParam("id") final int id,
-            @QueryParam("page") @DefaultValue("1") final int page,
+            @QueryParam("pageNumber") @DefaultValue("1") final int page,
             @QueryParam("type") final String feedback) {
         try{
             List<CommentFeedback> usersFeedback;
