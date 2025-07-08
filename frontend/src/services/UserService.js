@@ -171,24 +171,7 @@ const UserService = (() => {
     }
   };
 
-  const currentUserCommentFeedback = async (commentId, username) => {
-    try {
-      let res = await userApi.currentUserCommentFeedback(commentId, username);
-      if (res.status === 204) {
-        return CommentStatusEnum.NONE;
-      }
-      res = res.data;
-      if (res.liked === true) {
-        return CommentStatusEnum.LIKE;
-      }
-      if (res.disliked === true) {
-        return CommentStatusEnum.DISLIKE;
-      }
-      return CommentStatusEnum.NONE;
-    } catch (e) {
-      return CommentStatusEnum.NONE;
-    }
-  };
+
 
   const banUser = async (url) => {
     return await userApi.banUser(url);
@@ -218,7 +201,6 @@ const UserService = (() => {
     currentUserWatchedStatus,
     currentUserHasLikedReview,
     currentUserHasLikedMoovieListReview,
-    currentUserCommentFeedback,
     banUser,
     unbanUser,
     makeUserModerator,

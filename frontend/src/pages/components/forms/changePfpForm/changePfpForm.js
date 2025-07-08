@@ -30,7 +30,7 @@ const ChangePfpForm = ({ onCancel }) => {
         username: user.username,
         pfp: form,
       });
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         setSuccess('Profile picture updated successfully!');
       } else {
         throw new Error();

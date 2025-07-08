@@ -52,51 +52,44 @@ public class MoovieListReportController {
             @QueryParam("moovieListId") Integer moovieListId,
             @QueryParam("pageNumber") @DefaultValue("1") final int pageNumber,
             @QueryParam("pageSize") @DefaultValue("-1") final int pageSize) {
-        try {
 
-            if (reportType != null && (reportType < ReportTypesEnum.HATEFUL_CONTENT.getType()
-                    || reportType > ReportTypesEnum.SPAM.getType())) {
-                throw new IllegalArgumentException(
-                        "The 'reportType' query parameter must be between 0 and 3 (0=hatefulContent, 1=abuse, 2=privacy, 3=spam).");
-            }
-
-            int pageSizeQuery = pageSize;
-            if (pageSize < 1 || pageSize > PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize()) {
-                pageSizeQuery = PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize();
-            }
-
-            List<MoovieListReport> reports;
-            int totalCount;
-
-            if (reportType != null) {
-                reports = reportService.getMoovieListReports(reportType, moovieListId, pageSizeQuery, pageNumber);
-                totalCount = reportService.getReportsCount(ResourceTypesEnum.MOOVIELIST.getDescription(), reportType, moovieListId);
-            } else {
-                if (moovieListId != null) {
-                    reports = reportService.getMoovieListReports(null, moovieListId, pageSizeQuery, pageNumber);
-                    totalCount = reportService.getReportsCount(ResourceTypesEnum.MOOVIELIST.getDescription(), null, moovieListId);
-                } else{
-                    reports = reportService.getMoovieListReports(pageSizeQuery, pageNumber);
-                    totalCount = reportService.getReportsCount(ResourceTypesEnum.MOOVIELIST.getDescription());
-                }
-
-            }
-
-            List<MoovieListReportDto> reportDTOs = MoovieListReportDto.fromMoovieListReportList(reports, uriInfo);
-
-            Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListReportDto>>(reportDTOs) {
-            });
-            final PagingUtils<MoovieListReportDto> pagingUtils = new PagingUtils<>(reportDTOs, pageNumber, pageSizeQuery,
-                    totalCount);
-            ResponseUtils.setPaginationLinks(res, pagingUtils, uriInfo);
-            return res.build();
-        } catch (Exception e) {
-            logger.error(
-                    "Getting reports:\n  reportType: {}, pageNumber: {}, pageSize: {}",
-                    reportType, pageNumber, pageSize);
-            logger.error(e.getMessage());
-            throw new InternalServerErrorException(e.getMessage(), e);
+        if (reportType != null && (reportType < ReportTypesEnum.HATEFUL_CONTENT.getType()
+                || reportType > ReportTypesEnum.SPAM.getType())) {
+            throw new IllegalArgumentException(
+                    "The 'reportType' query parameter must be between 0 and 3 (0=hatefulContent, 1=abuse, 2=privacy, 3=spam).");
         }
+
+        int pageSizeQuery = pageSize;
+        if (pageSize < 1 || pageSize > PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize()) {
+            pageSizeQuery = PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize();
+        }
+
+        List<MoovieListReport> reports;
+        int totalCount;
+
+        if (reportType != null) {
+            reports = reportService.getMoovieListReports(reportType, moovieListId, pageSizeQuery, pageNumber);
+            totalCount = reportService.getReportsCount(ResourceTypesEnum.MOOVIELIST.getDescription(), reportType, moovieListId);
+        } else {
+            if (moovieListId != null) {
+                reports = reportService.getMoovieListReports(null, moovieListId, pageSizeQuery, pageNumber);
+                totalCount = reportService.getReportsCount(ResourceTypesEnum.MOOVIELIST.getDescription(), null, moovieListId);
+            } else{
+                reports = reportService.getMoovieListReports(pageSizeQuery, pageNumber);
+                totalCount = reportService.getReportsCount(ResourceTypesEnum.MOOVIELIST.getDescription());
+            }
+
+        }
+
+        List<MoovieListReportDto> reportDTOs = MoovieListReportDto.fromMoovieListReportList(reports, uriInfo);
+
+        Response.ResponseBuilder res = Response.ok(new GenericEntity<List<MoovieListReportDto>>(reportDTOs) {
+        });
+        final PagingUtils<MoovieListReportDto> pagingUtils = new PagingUtils<>(reportDTOs, pageNumber, pageSizeQuery,
+                totalCount);
+        ResponseUtils.setPaginationLinks(res, pagingUtils, uriInfo);
+        return res.build();
+
     }
 
     @POST
@@ -105,22 +98,20 @@ public class MoovieListReportController {
     @Produces(VndType.APPLICATION_MOOVIELIST_REPORT)
     public Response report(
             @Valid final ReportCreateDto reportDto) {
-        try {
-            User currentUser = userService.getInfoOfMyUser();
-            MoovieListReport response = reportService.reportMoovieList(
-                    reportDto.getResourceId(),
-                    currentUser.getUserId(),
-                    reportDto.getType());
 
-            return Response.created(uriInfo
-                    .getBaseUriBuilder()
-                    .path("listReports")
-                    .path(String.valueOf(response.getReportId()))
-                    .build())
-                .build();
-        } catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage(), e);
-        }
+        User currentUser = userService.getInfoOfMyUser();
+        MoovieListReport response = reportService.reportMoovieList(
+                reportDto.getResourceId(),
+                currentUser.getUserId(),
+                reportDto.getType());
+
+        return Response.created(uriInfo
+                .getBaseUriBuilder()
+                .path("listReports")
+                .path(String.valueOf(response.getReportId()))
+                .build())
+            .build();
+
     }
 
     @GET
@@ -134,8 +125,6 @@ public class MoovieListReportController {
             return ResponseUtils.setConditionalCacheHash(request, dtoSupplier, report.hashCode());
         } catch (IllegalArgumentException e) {
             throw new BadRequestException(e.getMessage(), e);
-        } catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage(), e);
         }
     }
 
@@ -150,8 +139,6 @@ public class MoovieListReportController {
             return Response.ok().build();
         } catch (IllegalArgumentException e) {
             throw new BadRequestException(e.getMessage(), e);
-        } catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage(), e);
         }
     }
 }

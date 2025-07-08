@@ -16,14 +16,26 @@ public class GenreServiceImpl implements GenreService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<Genre> getAllGenres() {
-        return genreDao.getAllGenres();
+    public List<Genre> getAllGenres(int pageSize, int pageNumber) {
+        return genreDao.getAllGenres(pageSize, pageNumber);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<Genre> getGenresForMedia(int mediaId) {
-        return genreDao.getGenresForMedia(mediaId);
+    public int getAllGenresCount() {
+        return genreDao.getAllGenresCount();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Genre> getGenresForMedia(int mediaId, int pageSize, int pageNumber) {
+        return genreDao.getGenresForMedia(mediaId, pageSize, pageNumber);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public int getGenresForMediaCount(int mediaId) {
+        return genreDao.getGenresForMediaCount(mediaId);
     }
 
     @Transactional(readOnly = true)

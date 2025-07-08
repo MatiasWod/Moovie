@@ -138,6 +138,10 @@ public class User {
         return moovieListReviewsCount;
     }
 
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
     public int getCommentsCount() {
         return commentsCount;
     }

@@ -10,8 +10,9 @@ import ChipsDisplay from './chipsDisplay';
 import FilterList from './filterList';
 import FilterSection from './filterSection';
 import FormButtons from './formButtons';
-import {parsePaginatedResponse} from "../../../../utils/ResponseUtils";
+import { parsePaginatedResponse } from "../../../../utils/ResponseUtils";
 import PaginationButton from "../../paginationButton/PaginationButton";
+import InfiniteScrollList from './InfiniteScrollList';
 
 const FiltersGroup = ({
   type,
@@ -43,6 +44,12 @@ const FiltersGroup = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
+  const [hasMoreProviders, setHasMoreProviders] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [genresLoaded, setGenresLoaded] = useState(false);
+  const [providersLoaded, setProvidersLoaded] = useState(false);
+  const [genresPage, setGenresPage] = useState(1);
+  const [hasMoreGenres, setHasMoreGenres] = useState(true);
 
   useEffect(() => {
     async function getProviders() {
@@ -54,7 +61,16 @@ const FiltersGroup = ({
           name: provider.providerName,
           id: provider.providerId,
         }));
-        setProvidersList(providerList);
+        setProvidersList((prev) =>
+          page === 1 ? providerList : [...prev, ...providerList]
+        );
+        // Check if there are more pages
+        if (response?.links?.last?.pageNumber && page >= response.links.last.pageNumber) {
+          setHasMoreProviders(false);
+        } else {
+          setHasMoreProviders(true);
+        }
+        if (page === 1) setProvidersLoaded(true);
       } catch (error) {
         setError(t('filters.error.fetch_providers'));
         setLoading(false);
@@ -63,21 +79,30 @@ const FiltersGroup = ({
       }
     }
     getProviders();
-
-  },[page]);
+  }, [page]);
 
   useEffect(() => {
-      async function getGenres() {
+    async function getGenres() {
       try {
         setLoading(true);
-        const response = await GenreService.getAllGenres();
+        const response = await GenreService.getAllGenres(genresPage);
+        // response.data is the genre array, response.links is pagination
         const genreList = response.data.map((genre) => ({
           name: genre.genreName,
           id: genre.genreId,
         }));
-        setGenresList(genreList);
-        console.log('genreList', genreList);
-        console.log('selectedGenres', selectedGenres);
+        setGenresList((prev) => {
+          const existingIds = new Set(prev.map((g) => g.id));
+          const newGenres = genreList.filter((g) => !existingIds.has(g.id));
+          return genresPage === 1 ? genreList : [...prev, ...newGenres];
+        });
+        // Check if there are more pages
+        if (response?.links?.last?.pageNumber && genresPage >= response.links.last.pageNumber) {
+          setHasMoreGenres(false);
+        } else {
+          setHasMoreGenres(true);
+        }
+        if (genresPage === 1) setGenresLoaded(true);
       } catch (error) {
         setError(t('filters.error.fetch_genres'));
         setLoading(false);
@@ -87,10 +112,28 @@ const FiltersGroup = ({
     }
 
     getGenres();
-  }, []);
+  }, [genresPage]);
 
-  const handleChipRemove = (setFunction, item) => {
-    setFunction((prev) => prev.filter((i) => i !== item));
+  useEffect(() => {
+    if (genresLoaded && providersLoaded) {
+      setInitialLoading(false);
+    }
+  }, [genresLoaded, providersLoaded]);
+
+  const handleChipRemove = (setFunction, item, type) => {
+    setFunction((prev) => {
+      const updated = prev.filter((i) => i !== item);
+      // After updating, call submitCallback with the new state
+      submitCallback({
+        type: mediaTypeInput,
+        sortOrder: sortOrderInput,
+        orderBy: mediaOrderByInput,
+        search: queryInput,
+        selectedProviders: type === 'provider' ? updated : selectedProviders,
+        selectedGenres: type === 'genre' ? updated : selectedGenres,
+      });
+      return updated;
+    });
   };
 
   const handleFilterSubmit = (e) => {
@@ -114,7 +157,19 @@ const FiltersGroup = ({
     setMediaOrderByInput(mediaOrderBy.TOTAL_RATING);
   };
 
-  if (loading) return <CircularProgress />;
+  const loadMoreProviders = () => {
+    if (!loading && hasMoreProviders) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  const loadMoreGenres = () => {
+    if (!loading && hasMoreGenres) {
+      setGenresPage((prev) => prev + 1);
+    }
+  };
+
+  if (initialLoading) return <CircularProgress />;
   if (error) return <div>{error}</div>;
   console.log('providersRes', providersRes);
 
@@ -123,12 +178,12 @@ const FiltersGroup = ({
       <ChipsDisplay
         title={t('filters.genres')}
         items={selectedGenres}
-        onRemove={(genre) => handleChipRemove(setSelectedGenres, genre)}
+        onRemove={(genre) => handleChipRemove(setSelectedGenres, genre, 'genre')}
       />
       <ChipsDisplay
         title={t('filters.providers')}
         items={selectedProviders}
-        onRemove={(provider) => handleChipRemove(setSelectedProviders, provider)}
+        onRemove={(provider) => handleChipRemove(setSelectedProviders, provider, 'provider')}
       />
 
       {query && (
@@ -146,18 +201,17 @@ const FiltersGroup = ({
               name="type"
               className="form-select m-1"
               onChange={(e) => setMediaTypeInput(e.target.value)}
+              value={mediaTypeInput}
             >
-              <option selected={mediaTypeInput === mediaTypes.TYPE_ALL} value={mediaTypes.TYPE_ALL}>
+              <option value={mediaTypes.TYPE_ALL}>
                 {t('filters.all')}
               </option>
               <option
-                selected={mediaTypeInput === mediaTypes.TYPE_TVSERIE}
                 value={mediaTypes.TYPE_TVSERIE}
               >
                 {t('filters.series')}
               </option>
               <option
-                selected={mediaTypeInput === mediaTypes.TYPE_MOVIE}
                 value={mediaTypes.TYPE_MOVIE}
               >
                 {t('filters.movies')}
@@ -168,24 +222,22 @@ const FiltersGroup = ({
               name="orderBy"
               className="form-select m-1"
               onChange={(e) => setMediaOrderByInput(e.target.value)}
+              value={mediaOrderByInput}
             >
-              <option selected={mediaOrderByInput === mediaOrderBy.NAME} value={mediaOrderBy.NAME}>
+              <option value={mediaOrderBy.NAME}>
                 {t('filters.title')}
               </option>
               <option
-                selected={mediaOrderByInput === mediaOrderBy.TOTAL_RATING}
                 value={mediaOrderBy.TOTAL_RATING}
               >
                 {t('filters.total_rating')}
               </option>
               <option
-                selected={mediaOrderByInput === mediaOrderBy.TMDB_RATING}
                 value={mediaOrderBy.TMDB_RATING}
               >
                 {t('filters.tmdb_rating')}
               </option>
               <option
-                selected={mediaOrderByInput === mediaOrderBy.RELEASE_DATE}
                 value={mediaOrderBy.RELEASE_DATE}
               >
                 {t('filters.release_date')}
@@ -209,19 +261,26 @@ const FiltersGroup = ({
             isOpen={openGenres}
             toggleOpen={() => setOpenGenres(!openGenres)}
           >
-            <FilterList
-              searchValue={searchGenre}
-              onSearchChange={setSearchGenre}
-              items={genresList}
-              selectedItems={selectedGenres}
-              onToggleItem={(genre) => {
-                setSelectedGenres((prev) =>
-                  prev.some((g) => g.id === genre.id)
-                    ? prev.filter((g) => g.id !== genre.id)
-                    : [...prev, genre]
-                );
-              }}
-            />
+            <InfiniteScrollList
+              loadMore={loadMoreGenres}
+              hasMore={hasMoreGenres}
+              loading={loading}
+              maxHeight="250px"
+            >
+              <FilterList
+                searchValue={searchGenre}
+                onSearchChange={setSearchGenre}
+                items={genresList}
+                selectedItems={selectedGenres}
+                onToggleItem={(genre) => {
+                  setSelectedGenres((prev) =>
+                    prev.some((g) => g.id === genre.id)
+                      ? prev.filter((g) => g.id !== genre.id)
+                      : [...prev, genre]
+                  );
+                }}
+              />
+            </InfiniteScrollList>
           </FilterSection>
 
           <FilterSection
@@ -229,29 +288,27 @@ const FiltersGroup = ({
             isOpen={openProviders}
             toggleOpen={() => setOpenProviders(!openProviders)}
           >
+            <InfiniteScrollList
+              loadMore={loadMoreProviders}
+              hasMore={hasMoreProviders}
+              loading={loading}
+              maxHeight="250px"
+            >
+              <FilterList
+                searchValue={searchProvider}
+                onSearchChange={setSearchProvider}
+                items={providersList}
+                selectedItems={selectedProviders}
+                onToggleItem={(provider) =>
+                  setSelectedProviders((prev) =>
+                    prev.some((p) => p.id === provider.id)
+                      ? prev.filter((p) => p.id !== provider.id)
+                      : [...prev, provider]
+                  )
+                }
+              />
+            </InfiniteScrollList>
 
-            <FilterList
-              searchValue={searchProvider}
-              onSearchChange={setSearchProvider}
-              items={providersList}
-              selectedItems={selectedProviders}
-              onToggleItem={(provider) =>
-                setSelectedProviders((prev) =>
-                  prev.some((p) => p.id === provider.id)
-                    ? prev.filter((p) => p.id !== provider.id)
-                    : [...prev, provider]
-                )
-              }
-            />
-            <div className="m-1 d-flex justify-content-center">
-              {providersRes?.links?.last?.pageNumber > 1 && (
-                  <PaginationButton
-                      page={page}
-                      lastPage={providersRes.links.last.pageNumber}
-                      setPage={setPage}
-                  />
-              )}
-            </div>
           </FilterSection>
           <FormButtons onApply={handleFilterSubmit} onReset={handleReset} />
         </form>

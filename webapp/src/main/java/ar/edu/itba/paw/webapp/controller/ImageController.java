@@ -5,6 +5,7 @@ import ar.edu.itba.paw.exceptions.UnableToFindUserException;
 import ar.edu.itba.paw.models.User.Image;
 import ar.edu.itba.paw.services.ImageService;
 import ar.edu.itba.paw.services.UserService;
+import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
 import ar.edu.itba.paw.webapp.utils.ResponseUtils;
 import io.swagger.annotations.Api;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -58,11 +59,7 @@ public class ImageController {
             return res.build();
         }catch (NoFileException | UnableToFindUserException e) {
             LOGGER.error("Error retrieving profile image: {}", e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        }
-        catch (RuntimeException e) {
-            LOGGER.error("Error retrieving profile image: {}", e.getMessage());
-            return Response.serverError().entity(e.getMessage()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage(e.getMessage())).build();
         }
     }
 
@@ -83,10 +80,7 @@ public class ImageController {
             return Response.created(uri).build();
         } catch (UnableToFindUserException e) {
             LOGGER.error("Error updating profile image: {}", e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (RuntimeException e) {
-            LOGGER.error("Error updating profile image: {}", e.getMessage());
-            return Response.serverError().entity(e.getMessage()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage(e.getMessage())).build();
         }
     }
 }

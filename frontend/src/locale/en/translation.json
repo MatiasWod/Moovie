@@ -259,6 +259,7 @@
   "profile.currentUser.emptyMessage.privateLists": "You haven't created any private lists yet",
   "profile.currentUser.emptyMessage.likedLists": "You haven't liked any lists yet",
   "profile.currentUser.emptyMessage.followedLists": "You aren't following any lists yet",
+  "profile.currentUser.emptyMessage.reviews": "You haven't written any reviews yet",
   "profile.actions.discover": "Discover Media",
   "profile.actions.browseLists": "Browse Lists",
   "profile.actions.createList": "Create List",

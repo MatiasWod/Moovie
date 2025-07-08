@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.mappers;
 
 import ar.edu.itba.paw.exceptions.NoFileException;
+import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Singleton;
@@ -14,6 +15,6 @@ import javax.ws.rs.ext.Provider;
 public class NoFileEM implements ExceptionMapper<NoFileException> {
     @Override
     public Response toResponse(NoFileException e) {
-        return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(e.getMessage())).build();
     }
 }

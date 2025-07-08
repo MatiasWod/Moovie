@@ -21,6 +21,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import ar.edu.itba.paw.webapp.dto.out.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -95,7 +96,7 @@ public class ReviewController {
                 User user = userService.getInfoOfMyUser();
                 if (user.getRole() < UserRoles.MODERATOR.getRole()) {
                     return Response.status(Response.Status.FORBIDDEN)
-                            .entity("User is not moderator")
+                            .entity(new ResponseMessage("User is not moderator"))
                             .build();
                 }
                 int pageSize = PagingSizes.REPORT_DEFAULT_PAGE_SIZE.getSize();
@@ -131,7 +132,7 @@ public class ReviewController {
             final Review review = reviewService.getReviewByMediaIdAndUsername(mediaId, user.getUserId());
             if (review == null) {
                 return Response.status(Response.Status.NOT_FOUND)
-                        .entity("Review not found.")
+                        .entity(new ResponseMessage("Review not found."))
                         .build();
             }
             final ReviewDto reviewDto = ReviewDto.fromReview(review, uriInfo);
@@ -168,7 +169,7 @@ public class ReviewController {
         } else {
             // Caso: parámetros inválidos o faltantes
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("At least one valid parameter is required.")
+                    .entity(new ResponseMessage("At least one valid parameter is required."))
                     .build();
         }
     }
@@ -208,15 +209,11 @@ public class ReviewController {
                     ReviewTypes.REVIEW_MEDIA);
 
             return Response.ok()
-                    .entity("Review successfully updated for media with ID: " + reviewDto.getMediaId())
+                    .entity(new ResponseMessage("Review successfully updated for media with ID: " + reviewDto.getMediaId()))
                     .build();
         } catch (ReviewNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"Review not found.\"}")
-                    .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .entity(new ResponseMessage("{\"error\":\"Review not found.\"}"))
                     .build();
         }
     }
@@ -231,7 +228,7 @@ public class ReviewController {
         reviewService.deleteReview(reviewId, ReviewTypes.REVIEW_MEDIA);
 
         return Response.ok()
-                .entity("Review successfully deleted.")
+                .entity(new ResponseMessage("Review successfully deleted."))
                 .build();
 
     }
@@ -255,7 +252,7 @@ public class ReviewController {
                     .path(username)
                     .build()).build();
         return Response.status(Response.Status.CONFLICT)
-                .entity("{\"message\":\"List is already liked.\"}").build();
+                .entity(new ResponseMessage("{\"message\":\"List is already liked.\"}")).build();
     }
 
     @DELETE
@@ -268,17 +265,17 @@ public class ReviewController {
             User user = userService.getInfoOfMyUser();
             if (!user.getUsername().equals(username)) {
                 return Response.status(Response.Status.FORBIDDEN)
-                        .entity("{\"message\":\"You can only remove your own likes.\"}")
+                        .entity(new ResponseMessage("{\"message\":\"You can only remove your own likes.\"}"))
                         .build();
             }
             boolean removed = reviewService.removeLikeReview(id, ReviewTypes.REVIEW_MEDIA);
             if (removed)
                 return Response.noContent().build();
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"message\":\"List is not liked.\"}").build();
+                    .entity(new ResponseMessage("{\"message\":\"List is not liked.\"}")).build();
         } catch (UserNotLoggedException e) {
             return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity(e.getMessage()).build();
+                    .entity(new ResponseMessage(e.getMessage())).build();
         }
     }
 
@@ -297,7 +294,7 @@ public class ReviewController {
                     .build().toString();
             return Response.ok(new UserReviewDto(reviewId, username, uri, uriInfo)).build();
         }
-        return Response.status(Response.Status.NOT_FOUND).entity("User has not liked the review.").build();
+        return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage("User has not liked the review.")).build();
     }
 
     // Return all likes for a review

@@ -162,11 +162,12 @@ CREATE TABLE IF NOT EXISTS moovieListsLikes(
 
 --UserImages
 CREATE TABLE IF NOT EXISTS userImages(
-    image                               BYTEA NOT NULL,
-    userId                              INTEGER NOT NULL,
-    UNIQUE(userId),
+                                         imageId INTEGER NOT NULL,
+                                         image BYTEA NOT NULL,
+                                         userId INTEGER NOT NULL,
+                                         PRIMARY KEY (imageId),
     FOREIGN KEY(userId) REFERENCES users(userId) ON DELETE CASCADE
-);
+    );
 
 --Verification Tokens
 CREATE TABLE IF NOT EXISTS verificationTokens(

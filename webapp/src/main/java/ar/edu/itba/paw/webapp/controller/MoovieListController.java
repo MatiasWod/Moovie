@@ -27,6 +27,8 @@ import javax.ws.rs.core.UriInfo;
 import ar.edu.itba.paw.models.Review.Review;
 import ar.edu.itba.paw.webapp.dto.in.EditListContentDto;
 import ar.edu.itba.paw.webapp.dto.out.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -86,6 +88,9 @@ public class MoovieListController {
         this.reportService = reportService;
     }
 
+    Logger logger = LoggerFactory.getLogger(MoovieListController.class);
+
+
     @GET
     @Produces(VndType.APPLICATION_MOOVIELIST_LIST)
     public Response getMoovieList(
@@ -144,7 +149,7 @@ public class MoovieListController {
                     int userid = userService.findUserByUsername(followedBy).getUserId();
                     mlcList = moovieListService.getFollowedMoovieListCards(userid,
                             MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
-                            PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1);
+                            PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), pageNumber - 1);
                     listCount = moovieListService.getFollowedMoovieListCardsCount(userid,
                             MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
                 }
@@ -152,7 +157,7 @@ public class MoovieListController {
                     int userid = userService.findUserByUsername(likedBy).getUserId();
                     mlcList = moovieListService.getLikedMoovieListCards(likedBy,
                             MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType(),
-                            PagingSizes.USER_LIST_DEFAULT_PAGE_SIZE.getSize(), pageNumber - 1);
+                            PagingSizes.MOOVIE_LIST_DEFAULT_PAGE_SIZE_CARDS.getSize(), pageNumber - 1);
                     listCount = moovieListService.getLikedMoovieListCount(userid,
                             MoovieListTypes.MOOVIE_LIST_TYPE_STANDARD_PUBLIC.getType());
                 }
@@ -187,7 +192,7 @@ public class MoovieListController {
                 return res.build();
             }
         } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(e.getMessage())).build();
         }
     }
 
@@ -215,11 +220,7 @@ public class MoovieListController {
 
         } catch (UnableToInsertIntoDatabase | DuplicateKeyException e) {
             return Response.status(Response.Status.CONFLICT)
-                    .entity("A movie list with the same name already exists.")
-                    .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .entity(new ResponseMessage("A movie list with the same name already exists."))
                     .build();
         }
     }
@@ -238,11 +239,7 @@ public class MoovieListController {
         } catch (MoovieListNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage("MoovieList not found."))
                     .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ResponseMessage("An unexpected error occurred.")).build();
         }
-
     }
 
     @PUT
@@ -255,18 +252,13 @@ public class MoovieListController {
         try {
             moovieListService.editMoovieList(listId, editListForm.getListName(), editListForm.getListDescription());
             return Response.ok()
-                    .entity("MoovieList successfully edited for MoovieList with ID: " + listId)
+                    .entity(new ResponseMessage("MoovieList successfully edited for MoovieList with ID: " + listId))
                     .build();
         } catch (MoovieListNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("MoovieList not found.")
-                    .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .entity(new ResponseMessage("MoovieList not found."))
                     .build();
         }
-
     }
 
     @DELETE
@@ -279,15 +271,11 @@ public class MoovieListController {
             return Response.ok().build();
         } catch (MoovieListNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("MoovieList not found.")
+                    .entity(new ResponseMessage("MoovieList not found."))
                     .build();
         } catch (InvalidAccessToResourceException e) {
             return Response.status(Response.Status.FORBIDDEN)
-                    .entity("You do not have access to this resource.")
-                    .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .entity(new ResponseMessage("You do not have access to this resource."))
                     .build();
         }
     }
@@ -310,7 +298,7 @@ public class MoovieListController {
                     .build()
                 ).build();
         return Response.status(Response.Status.BAD_REQUEST)
-                .entity("{\"message\":\"List is already liked.\"}").build();
+                .entity(new ResponseMessage("{\"message\":\"List is already liked.\"}")).build();
     }
 
     @DELETE
@@ -322,17 +310,17 @@ public class MoovieListController {
             User user = userService.getInfoOfMyUser();
             if (!user.getUsername().equals(username)) {
                 return Response.status(Response.Status.FORBIDDEN)
-                        .entity("{\"message\":\"You can only remove your own likes.\"}")
+                        .entity(new ResponseMessage("{\"message\":\"You can only remove your own likes.\"}"))
                         .build();
             }
             boolean removed = moovieListService.removeLikeMoovieList(id);
             if (removed)
                 return Response.noContent().build();
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("{\"message\":\"List is not liked.\"}").build();
+                    .entity(new ResponseMessage("{\"message\":\"List is not liked.\"}")).build();
         } catch (UserNotLoggedException e) {
             return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity(e.getMessage()).build();
+                    .entity(new ResponseMessage(e.getMessage())).build();
         }
     }
 
@@ -408,7 +396,7 @@ public class MoovieListController {
                 .build()
         ).build();
         return Response.status(Response.Status.CONFLICT)
-                .entity("{\"message\":\"List is already followed.\"}").build();
+                .entity(new ResponseMessage("{\"message\":\"List is already followed.\"}")).build();
     }
 
     @DELETE
@@ -421,14 +409,14 @@ public class MoovieListController {
             User user = userService.getInfoOfMyUser();
             if (!user.getUsername().equals(username)) {
                 return Response.status(Response.Status.FORBIDDEN)
-                        .entity("{\"message\":\"You can only remove your own likes.\"}")
+                        .entity(new ResponseMessage("{\"message\":\"You can only remove your own likes.\"}"))
                         .build();
             }
         boolean unfollowed = moovieListService.removeFollowMoovieList(id);
         if (unfollowed)
             return Response.noContent().build();
         return Response.status(Response.Status.NOT_FOUND)
-                .entity("{\"message\":\"List is not followed.\"}").build();
+                .entity(new ResponseMessage("{\"message\":\"List is not followed.\"}")).build();
         } catch (UserNotLoggedException e) {
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity(e.getMessage()).build();
@@ -451,7 +439,7 @@ public class MoovieListController {
                     .build().toString();
             return Response.ok(new UserListIdDto(listId, username, uri, uriInfo)).build();
         }
-        return Response.status(Response.Status.NOT_FOUND).entity("The user has not liked the list").build();
+        return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage("The user has not liked the list")).build();
     }
 
     // Return all follows for a list
@@ -519,11 +507,7 @@ public class MoovieListController {
         } catch (InvalidAccessToResourceException e) {
             return Response.status(Response.Status.FORBIDDEN)
                     .entity(new ResponseMessage("You do not have access to this resource.")).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ResponseMessage("An unexpected error occurred.")).build();
         }
-
     }
 
     @POST
@@ -585,12 +569,7 @@ public class MoovieListController {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(new ResponseMessage("MoovieList not found."))
                     .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ResponseMessage("An unexpected error occurred."))
-                    .build();
         }
-
     }
 
     @PUT
@@ -615,12 +594,7 @@ public class MoovieListController {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(new ResponseMessage("MoovieList not found."))
                     .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ResponseMessage("An unexpected error occurred."))
-                    .build();
         }
-
     }
 
     @DELETE
@@ -638,12 +612,7 @@ public class MoovieListController {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(new ResponseMessage("MoovieList not found."))
                     .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ResponseMessage("An unexpected error occurred."))
-                    .build();
         }
-
     }
 
 }
