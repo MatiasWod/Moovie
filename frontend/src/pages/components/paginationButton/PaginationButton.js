@@ -10,7 +10,7 @@ const PaginationButton = (props) => {
     <Pagination
       count={parseInt(props.lastPage)}
       variant="outlined"
-      color="secondary"
+      color="success"
       page={parseInt(props.page)}
       onChange={handleChange}
     />
