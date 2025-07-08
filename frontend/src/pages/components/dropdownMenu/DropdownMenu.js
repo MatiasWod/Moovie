@@ -57,6 +57,7 @@ const DropdownMenu = ({ setOrderBy, setSortOrder, currentSortOrder, currentOrder
         data-tooltip-id="tooltip-id"
         data-tooltip-content={t('dropdownMenu.invertOrder')}
         aria-label={t('dropdownMenu.invertOrder')}
+        style={{ zIndex: 0 }}
       >
         {currentSortOrder === SortOrder.ASC ? '↑' : '↓'}
       </Button>
