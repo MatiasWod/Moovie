@@ -16,18 +16,42 @@ public class GenreHibernateDao implements GenreDao{
     private EntityManager em;
 
     @Override
-    public List<Genre> getAllGenres() {
+    public List<Genre> getAllGenres(int pageSize, int pageNumber) {
+        int offset = (pageNumber - 1) * pageSize;
+
         return em.createQuery("SELECT g FROM Genre g JOIN g.medias GROUP BY g.genreId, g.genreName ORDER BY g.genreId ASC", Genre.class)
+                .setFirstResult(offset)
+                .setMaxResults(pageSize)
                 .getResultList();
     }
 
     @Override
-    public List<Genre> getGenresForMedia(int mediaId) {
+    public int getAllGenresCount() {
+        return em.createQuery("SELECT COUNT(DISTINCT g) FROM Genre g JOIN g.medias", Number.class)
+                .getSingleResult().intValue();
+    }
+
+
+    @Override
+    public List<Genre> getGenresForMedia(int mediaId, int pageSize, int pageNumber) {
+        int offset = (pageNumber - 1) * pageSize;
+
         return em.createQuery(
                         "SELECT g FROM Genre g JOIN g.medias m WHERE m.id = :mediaId GROUP BY g.genreId, g.genreName", Genre.class)
                 .setParameter("mediaId", mediaId)
+                .setFirstResult(offset)
+                .setMaxResults(pageSize)
                 .getResultList();
     }
+
+    @Override
+    public int getGenresForMediaCount(int mediaId) {
+        return em.createQuery(
+                        "SELECT COUNT(DISTINCT g) FROM Genre g JOIN g.medias m WHERE m.id = :mediaId", Number.class)
+                .setParameter("mediaId", mediaId)
+                .getSingleResult().intValue();
+    }
+
 
     @Override
     public Genre getGenreById(int genreId) {

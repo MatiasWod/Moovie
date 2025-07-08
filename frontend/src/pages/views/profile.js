@@ -13,6 +13,7 @@ import ProfileTabNavigation from '../components/profileTabNavigation/profileTabN
 import Reviews from '../components/ReviewsSection/Reviews';
 
 function ProfileTab({ selectedTab, profile, isMe }) {
+  const { t } = useTranslation();
   switch (selectedTab.toLowerCase()) {
     case 'watched':
       return <ProfileTabMediaLists user={profile} search="watched" isMe={isMe} />;
@@ -26,8 +27,30 @@ function ProfileTab({ selectedTab, profile, isMe }) {
       return <ProfileTabMoovieLists user={profile} search="liked-lists" isMe={isMe} />;
     case 'followed-lists':
       return <ProfileTabMoovieLists user={profile} search="followed-lists" isMe={isMe} />;
-    case 'reviews':
-      return <Reviews username={profile?.username} reviewsUrl={profile?.reviewsUrl} source="user" />;
+    case 'reviews': {
+      let emptyState = undefined;
+      if (isMe) {
+        emptyState = {
+          title: t('reviews.noneFound'),
+          message: t('profile.currentUser.emptyMessage.reviews', 'You have not written any reviews yet.'),
+          actions: [
+            {
+              label: t('profile.actions.discover'),
+              icon: 'bi-compass',
+              path: '/discover',
+              primary: true
+            },
+            {
+              label: t('profile.actions.browseLists'),
+              icon: 'bi-collection',
+              path: '/browseLists',
+              primary: false
+            }
+          ]
+        };
+      }
+      return <Reviews username={profile?.username} reviewsUrl={profile?.reviewsUrl} source="user" emptyState={emptyState} />;
+    }
     default:
       return <div className="text-center p-4">{selectedTab}</div>;
   }
