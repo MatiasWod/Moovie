@@ -15,8 +15,7 @@ import javax.ws.rs.ext.Provider;
 @Component
 @Provider
 public class ConflictExceptionEM implements ExceptionMapper<ConflictException> {
-    @
-            Override
+    @Override
     public Response toResponse(ConflictException exception) {
         return Response.status(Response.Status.CONFLICT)
                 .entity(new ResponseMessage(exception.getMessage()))

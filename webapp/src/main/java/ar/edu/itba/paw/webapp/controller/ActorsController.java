@@ -86,16 +86,10 @@ public class ActorsController {
     @Path("/{id}")
     @Produces(VndType.APPLICATION_ACTOR)
     public Response getActor(@PathParam("id") @NotNull final int id) {
-        try {
             Actor actor = actorService.getActorById(id);
             Response.ResponseBuilder res = Response.ok(ActorDto.fromActor(actor, uriInfo));
             ResponseUtils.setMaxAgeCache(res);
             return res.build();
-        } catch (NoResultException e) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Actor not found.")
-                    .build();
-        }
     }
 
 }
