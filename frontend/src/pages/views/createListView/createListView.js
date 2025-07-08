@@ -80,23 +80,27 @@ const CreateListView = () => {
         description: description,
       });
 
-      if (!response || !response.data || !response.data.url) {
+      const location = response.headers["location"];
+
+      if (!location || (response.status !== 200 && response.status !== 201)) {
         throw new Error(t('createList.invalid_response'));
       }
 
-      const urlParts = response.data.url.split('/');
-      const listId = urlParts[urlParts.length - 1];
+      const parts = location.split("/");
+      const listId = parts[parts.length - 1];
 
       if (!listId) {
         throw new Error(t('createList.failed_extract_id'));
       }
 
-      console.log(response);
+      const responseListId = await ListService.getListById(listId);
+      const contentUrl = responseListId?.data?.contentUrl;
+
       if (selectedMedia.length > 0) {
         const mediaIds = selectedMedia.map((media) => media.id);
         console.log('Inserting media into list:', mediaIds);
         await ListService.insertMediaIntoMoovieList({
-          url: response?.data?.contentUrl,
+          url: contentUrl,
           mediaIds: mediaIds,
         });
       }
