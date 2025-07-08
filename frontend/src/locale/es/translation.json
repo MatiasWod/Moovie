@@ -259,6 +259,7 @@
   "profile.currentUser.emptyMessage.watchlist": "Tu lista por ver está vacía",
   "profile.currentUser.emptyMessage.publicLists": "No has creado ninguna lista pública aún",
   "profile.currentUser.emptyMessage.privateLists": "No has creado ninguna lista privada aún",
+  "profile.currentUser.emptyMessage.reviews": "No has escrito ninguna reseña aún",
   "profile.currentUser.emptyMessage.likedLists": "No te ha gustado ninguna lista aún",
   "profile.currentUser.emptyMessage.followedLists": "No estás siguiendo ninguna lista aún",
   "profile.actions.discover": "Descubrir Medios",
