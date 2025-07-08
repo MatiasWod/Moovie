@@ -31,6 +31,8 @@ const ForgotPassword = () => {
     } catch (error) {
       setLoading(false);
       setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
