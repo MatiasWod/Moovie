@@ -73,9 +73,14 @@ const AddMediaToListButton = ({ currentId, media }) => {
   const fetchMediasInList = async () => {
     try {
       for (const list of lists) {
-        const response = await listApi.getMediaFromList(list.id, currentId);
-        if (response.status === 200) {
-          setAlreadyInList((prev) => [...prev, list.id]);
+        try{
+          const response = await listApi.getMediaFromList(list.id, currentId);
+          if (response.status === 200) {
+            setAlreadyInList((prev) => [...prev, list.id]);
+          }
+        }
+        catch(e){
+          console.error(e);
         }
       }
     } catch (err) {
