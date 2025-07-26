@@ -1,7 +1,11 @@
 # Proyecto de Aplicación Web - Moovie
 Este repositorio contiene el codigo fuente y los recursos
 necesarios para desarollar y desplegar una aplicación web utilizando
-Java 8 y la metodologia Scrum
+Java 8.
+
+Moovie es una página web con una API integrada que permite a los usuarios explorar y gestionar contenido audiovisual, como películas y series. Los usuarios pueden buscar títulos por nombre, género o proveedor de streaming (como Netflix, Amazon Prime, entre otros), acceder a reseñas hechas por otros usuarios, puntuar contenidos y dejar sus propias opiniones.
+
+Además, Moovie permite crear listas personalizadas para organizar qué ver, guardar favoritos o simplemente agrupar contenido según las preferencias del usuario. La plataforma cuenta con una API REST que expone todos los datos de manera estructurada y segura.
 
 # Integrantes
 - Juan Segundo Arnaude - Legajo: 62184
